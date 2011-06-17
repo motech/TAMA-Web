@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_Gender" modelAttribute="gender" path="/genders" render="${empty dependencies}" z="Y7tG2w97u7FRVyGzX6gmGsQAJoM=">
-        <field:input field="type" id="c_org_motechproject_tama_Gender_type" z="z5T9YTFMJ5H4/5+IShIn1hNi0Ik="/>
+        <field:input field="type" id="c_org_motechproject_tama_Gender_type" required="true" z="YpNilXR24pKcOGlgb1NQ439fvhY="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_Gender" render="${not empty dependencies}" z="jzEZK+lUrvGziGY1cSsRgGO7Myw="/>
 </div>

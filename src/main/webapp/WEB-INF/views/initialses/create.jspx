@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_Initials" modelAttribute="initials" path="/initialses" render="${empty dependencies}" z="QLWiuAe3u0gegM+GqwsXbB0vIs4=">
-        <field:input field="type" id="c_org_motechproject_tama_Initials_type" z="LIH5yKrNI2EDBn6Ubj0hEST+KxI="/>
+        <field:input field="type" id="c_org_motechproject_tama_Initials_type" required="true" z="U8cF1Js4kB6TsLhDNg3nhL8MwAI="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_Initials" render="${not empty dependencies}" z="jz9hofDxjI5UgUowLjBPJJ2DpDA="/>
 </div>

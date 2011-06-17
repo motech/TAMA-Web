@@ -3,9 +3,9 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_Patient" modelAttribute="patient" path="/patients" render="${empty dependencies}" z="HkT/39qeIawAHTgF7FpZDeoTr94=">
-        <field:input field="patientId" id="c_org_motechproject_tama_Patient_patientId" z="j9atYoViisByV7EzA2aXaQNLuLg="/>
-        <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_Patient_mobilePhoneNumber" z="OMDcMSnwTVi/y+KNgJpbdPFyH4c="/>
-        <field:datetime dateTimePattern="${patient_dateofbirth_date_format}" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" z="/68tg581rf7AkLmZqmE/XdDZ2q0="/>
+        <field:input field="patientId" id="c_org_motechproject_tama_Patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
+        <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_Patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
+        <field:datetime dateTimePattern="${patient_dateofbirth_date_format}" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
         <field:input field="travelTimeToClincInDays" id="c_org_motechproject_tama_Patient_travelTimeToClincInDays" z="RI72MdHdMmCK7RyLR31wDka/1ZE="/>
         <field:input field="travelTimeToClincInHours" id="c_org_motechproject_tama_Patient_travelTimeToClincInHours" z="g1Un2u4ikk3rRnQ5rz9T41msg10="/>
         <field:input field="travelTimeToClincInMinutes" id="c_org_motechproject_tama_Patient_travelTimeToClincInMinutes" z="eusD8V8PAHunc5DWdGt12JWzABY="/>
