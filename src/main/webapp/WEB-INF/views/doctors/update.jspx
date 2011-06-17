@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_org_motechproject_tama_Doctor" modelAttribute="doctor" path="/doctors" versionField="Version" z="U+tUMxuqz+/MIZ416x98VYw/ZvM=">
+        <field:input field="doctorId" id="c_org_motechproject_tama_Doctor_doctorId" z="Vd1Wkk5ZhrAzI1aNpwudRuJ9Tvg="/>
+        <field:input field="firstName" id="c_org_motechproject_tama_Doctor_firstName" z="oRZEeQrIQg5u/b1PQTrl0lQ3ylo="/>
+        <field:input field="lastName" id="c_org_motechproject_tama_Doctor_lastName" z="IIui08OtLCBEcJ24vmMDdQj7B0M="/>
+    </form:update>
+</div>

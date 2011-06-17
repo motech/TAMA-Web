@@ -1,0 +1,16 @@
+.classpath
+.project
+.settings/
+target/
+.externalToolBuilders/
+maven-eclipse.xml
+*.iml
+*.ipr
+*.iws
+.idea
+log.roo
+*.class
+out/
+Error_log/
+test-output/
+database.properties
