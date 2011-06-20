@@ -15,6 +15,10 @@
         <intercept-url pattern="/choices/**" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/member/**" access="isAuthenticated()" />
         <intercept-url pattern="/resources/**" access="permitAll" />
+        <intercept-url pattern="/genders/**" access="isAuthenticated()" />
+        <intercept-url pattern="/initialses/**" access="isAuthenticated()" />
+        <intercept-url pattern="/doctors/**" access="isAuthenticated()" />
+        <intercept-url pattern="/patients/**" access="isAuthenticated()" />
         <intercept-url pattern="/**" access="permitAll" />
     </http>
 
