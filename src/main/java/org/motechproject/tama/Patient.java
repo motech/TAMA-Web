@@ -27,11 +27,11 @@ public class Patient {
     @NotNull
     private Date dateOfBirth;
 
-    private int travelTimeToClincInDays;
+    private int travelTimeToClinicInDays;
 
-    private int travelTimeToClincInHours;
+    private int travelTimeToClinicInHours;
 
-    private int travelTimeToClincInMinutes;
+    private int travelTimeToClinicInMinutes;
 
     @ManyToOne
     private Gender gender;

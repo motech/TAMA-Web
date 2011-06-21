@@ -34,9 +34,9 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
         setPatientId(obj, index);
         setMobilePhoneNumber(obj, index);
         setDateOfBirth(obj, index);
-        setTravelTimeToClincInDays(obj, index);
-        setTravelTimeToClincInHours(obj, index);
-        setTravelTimeToClincInMinutes(obj, index);
+        setTravelTimeToClinicInDays(obj, index);
+        setTravelTimeToClinicInHours(obj, index);
+        setTravelTimeToClinicInMinutes(obj, index);
         setGender(obj, index);
         setInitials(obj, index);
         setPrincipalDoctor(obj, index);
@@ -58,19 +58,19 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
         obj.setDateOfBirth(dateOfBirth);
     }
     
-    public void PatientDataOnDemand.setTravelTimeToClincInDays(Patient obj, int index) {
-        int travelTimeToClincInDays = index;
-        obj.setTravelTimeToClincInDays(travelTimeToClincInDays);
+    public void PatientDataOnDemand.setTravelTimeToClinicInDays(Patient obj, int index) {
+        int travelTimeToClinicInDays = index;
+        obj.setTravelTimeToClinicInDays(travelTimeToClinicInDays);
     }
     
-    public void PatientDataOnDemand.setTravelTimeToClincInHours(Patient obj, int index) {
-        int travelTimeToClincInHours = index;
-        obj.setTravelTimeToClincInHours(travelTimeToClincInHours);
+    public void PatientDataOnDemand.setTravelTimeToClinicInHours(Patient obj, int index) {
+        int travelTimeToClinicInHours = index;
+        obj.setTravelTimeToClinicInHours(travelTimeToClinicInHours);
     }
     
-    public void PatientDataOnDemand.setTravelTimeToClincInMinutes(Patient obj, int index) {
-        int travelTimeToClincInMinutes = index;
-        obj.setTravelTimeToClincInMinutes(travelTimeToClincInMinutes);
+    public void PatientDataOnDemand.setTravelTimeToClinicInMinutes(Patient obj, int index) {
+        int travelTimeToClinicInMinutes = index;
+        obj.setTravelTimeToClinicInMinutes(travelTimeToClinicInMinutes);
     }
     
     public void PatientDataOnDemand.setGender(Patient obj, int index) {

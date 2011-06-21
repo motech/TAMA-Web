@@ -48,7 +48,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.PatientConverter implements Converter<Patient, String>  {
         public String convert(Patient patient) {
-            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).append(" ").append(patient.getTravelTimeToClincInDays()).toString();
+            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).append(" ").append(patient.getTravelTimeToClinicInDays()).toString();
         }
         
     }

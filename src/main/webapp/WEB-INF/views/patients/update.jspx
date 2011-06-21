@@ -6,9 +6,9 @@
         <field:input field="patientId" id="c_org_motechproject_tama_Patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
         <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_Patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
         <field:datetime dateTimePattern="${patient_dateofbirth_date_format}" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
-        <field:input field="travelTimeToClincInDays" id="c_org_motechproject_tama_Patient_travelTimeToClincInDays" z="RI72MdHdMmCK7RyLR31wDka/1ZE="/>
-        <field:input field="travelTimeToClincInHours" id="c_org_motechproject_tama_Patient_travelTimeToClincInHours" z="g1Un2u4ikk3rRnQ5rz9T41msg10="/>
-        <field:input field="travelTimeToClincInMinutes" id="c_org_motechproject_tama_Patient_travelTimeToClincInMinutes" z="eusD8V8PAHunc5DWdGt12JWzABY="/>
+        <field:input field="travelTimeToClinicInDays" id="c_org_motechproject_tama_Patient_travelTimeToClinicInDays" z="user-managed"/>
+        <field:input field="travelTimeToClinicInHours" id="c_org_motechproject_tama_Patient_travelTimeToClinicInHours" z="user-managed"/>
+        <field:input field="travelTimeToClinicInMinutes" id="c_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" z="user-managed"/>
         <field:select field="gender" id="c_org_motechproject_tama_Patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE="/>
         <field:select field="initials" id="c_org_motechproject_tama_Patient_initials" itemValue="id" items="${initialses}" path="/initialses" z="pHLlNq2pGFmxIPqUjpAGeUdLuNQ="/>
         <field:select field="principalDoctor" id="c_org_motechproject_tama_Patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q="/>

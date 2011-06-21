@@ -7,9 +7,9 @@
             <table:column id="c_org_motechproject_tama_Patient_patientId" property="patientId" z="4I1LBMUNYSxNw1zomaU2BkBlauc="/>
             <table:column id="c_org_motechproject_tama_Patient_mobilePhoneNumber" property="mobilePhoneNumber" z="7Q1JZV8VeDnWQrIfdkR4tVmzIOQ="/>
             <table:column date="true" dateTimePattern="${patient_dateofbirth_date_format}" id="c_org_motechproject_tama_Patient_dateOfBirth" property="dateOfBirth" z="lOla2UTSFt+Jb+D2uFWNFNLkszo="/>
-            <table:column id="c_org_motechproject_tama_Patient_travelTimeToClincInDays" property="travelTimeToClincInDays" z="wgxeK4GwwcHX6MEk3869ZvzwqlY="/>
-            <table:column id="c_org_motechproject_tama_Patient_travelTimeToClincInHours" property="travelTimeToClincInHours" z="KPz9lg9w8TC02LsadHrN1rTMSW8="/>
-            <table:column id="c_org_motechproject_tama_Patient_travelTimeToClincInMinutes" property="travelTimeToClincInMinutes" z="Rm3iKLpfeuDYvRUVrH3D/qB0BPc="/>
+            <table:column id="c_org_motechproject_tama_Patient_travelTimeToClinicInDays" property="travelTimeToClinicInDays" z="user-managed"/>
+            <table:column id="c_org_motechproject_tama_Patient_travelTimeToClinicInHours" property="travelTimeToClinicInHours" z="user-managed"/>
+            <table:column id="c_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" property="travelTimeToClinicInMinutes" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

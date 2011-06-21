@@ -35,28 +35,28 @@ privileged aspect Patient_Roo_JavaBean {
         this.dateOfBirth = dateOfBirth;
     }
     
-    public int Patient.getTravelTimeToClincInDays() {
-        return this.travelTimeToClincInDays;
+    public int Patient.getTravelTimeToClinicInDays() {
+        return this.travelTimeToClinicInDays;
     }
     
-    public void Patient.setTravelTimeToClincInDays(int travelTimeToClincInDays) {
-        this.travelTimeToClincInDays = travelTimeToClincInDays;
+    public void Patient.setTravelTimeToClinicInDays(int travelTimeToClinicInDays) {
+        this.travelTimeToClinicInDays = travelTimeToClinicInDays;
     }
     
-    public int Patient.getTravelTimeToClincInHours() {
-        return this.travelTimeToClincInHours;
+    public int Patient.getTravelTimeToClinicInHours() {
+        return this.travelTimeToClinicInHours;
     }
     
-    public void Patient.setTravelTimeToClincInHours(int travelTimeToClincInHours) {
-        this.travelTimeToClincInHours = travelTimeToClincInHours;
+    public void Patient.setTravelTimeToClinicInHours(int travelTimeToClinicInHours) {
+        this.travelTimeToClinicInHours = travelTimeToClinicInHours;
     }
     
-    public int Patient.getTravelTimeToClincInMinutes() {
-        return this.travelTimeToClincInMinutes;
+    public int Patient.getTravelTimeToClinicInMinutes() {
+        return this.travelTimeToClinicInMinutes;
     }
     
-    public void Patient.setTravelTimeToClincInMinutes(int travelTimeToClincInMinutes) {
-        this.travelTimeToClincInMinutes = travelTimeToClincInMinutes;
+    public void Patient.setTravelTimeToClinicInMinutes(int travelTimeToClinicInMinutes) {
+        this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
     }
     
     public Gender Patient.getGender() {
