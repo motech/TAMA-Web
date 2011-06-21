@@ -3,14 +3,6 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
-        <menu:category id="c_gender" z="rs6Edo9pdk6gqZx5Augnd7P/lu0=">
-            <menu:item id="i_gender_new" messageCode="global_menu_new" url="/genders?form" z="FOZA/tkKuZU8kcWIe8OiMaP5CiA="/>
-            <menu:item id="i_gender_list" messageCode="global_menu_list" url="/genders?page=1&amp;size=${empty param.size ? 10 : param.size}" z="OlI2PsbrQB3JpnCZPVE5DRB+iN4="/>
-        </menu:category>
-        <menu:category id="c_initials" z="yCYlVVIFJKhmsyWyzX+xkKUFwHw=">
-            <menu:item id="i_initials_new" messageCode="global_menu_new" url="/initialses?form" z="lNQ23Ub+jqUPYuMeByMyWCZx9iQ="/>
-            <menu:item id="i_initials_list" messageCode="global_menu_list" url="/initialses?page=1&amp;size=${empty param.size ? 10 : param.size}" z="K68gVWYZODdUyWsWL/VLRjw1iYo="/>
-        </menu:category>
         <menu:category id="c_doctor" z="VN2p5Aytuw4KpwEZ1rOV1dx/Zqo=">
             <menu:item id="i_doctor_new" messageCode="global_menu_new" url="/doctors?form" z="H2mXVD1wm4YfgSXqE6cZxN76eww="/>
             <menu:item id="i_doctor_list" messageCode="global_menu_list" url="/doctors?page=1&amp;size=${empty param.size ? 10 : param.size}" z="nlQosh9IBqyF4rLMv+ifW1gxGeE="/>
