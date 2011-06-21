@@ -5,13 +5,13 @@ package org.motechproject.tama;
 
 import java.lang.String;
 
-privileged aspect Initials_Roo_JavaBean {
+privileged aspect Title_Roo_JavaBean {
     
-    public String Initials.getType() {
+    public String Title.getType() {
         return this.type;
     }
     
-    public void Initials.setType(String type) {
+    public void Title.setType(String type) {
         this.type = type;
     }
     

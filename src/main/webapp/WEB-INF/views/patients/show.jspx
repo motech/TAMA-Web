@@ -10,7 +10,7 @@
         <field:display field="travelTimeToClinicInHours" id="s_org_motechproject_tama_Patient_travelTimeToClinicInHours" object="${patient}" z="user-managed"/>
         <field:display field="travelTimeToClinicInMinutes" id="s_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" object="${patient}" z="user-managed"/>
         <field:display field="gender" id="s_org_motechproject_tama_Patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
-        <field:display field="initials" id="s_org_motechproject_tama_Patient_initials" object="${patient}" z="DzTv7VfPMDn12IVZ14eQitBdQ5w="/>
+        <field:display field="title" id="s_org_motechproject_tama_Patient_title" object="${patient}" z="DzTv7VfPMDn12IVZ14eQitBdQ5w="/>
         <field:display field="principalDoctor" id="s_org_motechproject_tama_Patient_principalDoctor" object="${patient}" z="xGM8DAhXesd5SMbgvRK932oTGNI="/>
     </page:show>
 </div>

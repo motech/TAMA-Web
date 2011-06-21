@@ -5,8 +5,8 @@ package org.motechproject.tama;
 
 import org.springframework.beans.factory.annotation.Configurable;
 
-privileged aspect InitialsIntegrationTest_Roo_Configurable {
+privileged aspect TitleDataOnDemand_Roo_Configurable {
     
-    declare @type: InitialsIntegrationTest: @Configurable;
+    declare @type: TitleDataOnDemand: @Configurable;
     
 }

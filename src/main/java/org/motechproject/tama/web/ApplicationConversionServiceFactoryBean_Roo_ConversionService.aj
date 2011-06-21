@@ -6,7 +6,7 @@ package org.motechproject.tama.web;
 import java.lang.String;
 import org.motechproject.tama.Doctor;
 import org.motechproject.tama.Gender;
-import org.motechproject.tama.Initials;
+import org.motechproject.tama.Title;
 import org.motechproject.tama.Patient;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -16,7 +16,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
         registry.addConverter(new DoctorConverter());
         registry.addConverter(new GenderConverter());
-        registry.addConverter(new InitialsConverter());
+        registry.addConverter(new TitleConverter());
         registry.addConverter(new PatientConverter());
     }
     
@@ -39,9 +39,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         
     }
     
-    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.InitialsConverter implements Converter<Initials, String>  {
-        public String convert(Initials initials) {
-            return new StringBuilder().append(initials.getType()).toString();
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.TitleConverter implements Converter<Title, String>  {
+        public String convert(Title title) {
+            return new StringBuilder().append(title.getType()).toString();
         }
         
     }

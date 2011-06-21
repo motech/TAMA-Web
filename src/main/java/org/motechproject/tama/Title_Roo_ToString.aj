@@ -5,13 +5,11 @@ package org.motechproject.tama;
 
 import java.lang.String;
 
-privileged aspect Initials_Roo_ToString {
+privileged aspect Title_Roo_ToString {
     
-    public String Initials.toString() {
+    public String Title.toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Id: ").append(getId()).append(", ");
-        sb.append("Type: ").append(getType()).append(", ");
-        sb.append("Version: ").append(getVersion());
+        sb.append("Type: ").append(getType());
         return sb.toString();
     }
     

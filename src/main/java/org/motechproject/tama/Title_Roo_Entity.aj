@@ -14,99 +14,99 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
-import org.motechproject.tama.Initials;
+import org.motechproject.tama.Title;
 import org.springframework.transaction.annotation.Transactional;
 
-privileged aspect Initials_Roo_Entity {
+privileged aspect Title_Roo_Entity {
     
-    declare @type: Initials: @Entity;
+    declare @type: Title: @Entity;
     
     @PersistenceContext
-    transient EntityManager Initials.entityManager;
+    transient EntityManager Title.entityManager;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long Initials.id;
+    private Long Title.id;
     
     @Version
     @Column(name = "version")
-    private Integer Initials.version;
+    private Integer Title.version;
     
-    public Long Initials.getId() {
+    public Long Title.getId() {
         return this.id;
     }
     
-    public void Initials.setId(Long id) {
+    public void Title.setId(Long id) {
         this.id = id;
     }
     
-    public Integer Initials.getVersion() {
+    public Integer Title.getVersion() {
         return this.version;
     }
     
-    public void Initials.setVersion(Integer version) {
+    public void Title.setVersion(Integer version) {
         this.version = version;
     }
     
     @Transactional
-    public void Initials.persist() {
+    public void Title.persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
     
     @Transactional
-    public void Initials.remove() {
+    public void Title.remove() {
         if (this.entityManager == null) this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            Initials attached = Initials.findInitials(this.id);
+            Title attached = Title.findTitle(this.id);
             this.entityManager.remove(attached);
         }
     }
     
     @Transactional
-    public void Initials.flush() {
+    public void Title.flush() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.flush();
     }
     
     @Transactional
-    public void Initials.clear() {
+    public void Title.clear() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.clear();
     }
     
     @Transactional
-    public Initials Initials.merge() {
+    public Title Title.merge() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        Initials merged = this.entityManager.merge(this);
+        Title merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }
     
-    public static final EntityManager Initials.entityManager() {
-        EntityManager em = new Initials().entityManager;
+    public static final EntityManager Title.entityManager() {
+        EntityManager em = new Title().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
     
-    public static long Initials.countInitialses() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Initials o", Long.class).getSingleResult();
+    public static long Title.countTitles() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM Title o", Long.class).getSingleResult();
     }
     
-    public static List<Initials> Initials.findAllInitialses() {
-        return entityManager().createQuery("SELECT o FROM Initials o", Initials.class).getResultList();
+    public static List<Title> Title.findAllTitles() {
+        return entityManager().createQuery("SELECT o FROM Title o", Title.class).getResultList();
     }
     
-    public static Initials Initials.findInitials(Long id) {
+    public static Title Title.findTitle(Long id) {
         if (id == null) return null;
-        return entityManager().find(Initials.class, id);
+        return entityManager().find(Title.class, id);
     }
     
-    public static List<Initials> Initials.findInitialsEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Initials o", Initials.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    public static List<Title> Title.findTitleEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM Title o", Title.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
 }

@@ -5,8 +5,8 @@ package org.motechproject.tama;
 
 import org.springframework.beans.factory.annotation.Configurable;
 
-privileged aspect Initials_Roo_Configurable {
+privileged aspect Title_Roo_Configurable {
     
-    declare @type: Initials: @Configurable;
+    declare @type: Title: @Configurable;
     
 }

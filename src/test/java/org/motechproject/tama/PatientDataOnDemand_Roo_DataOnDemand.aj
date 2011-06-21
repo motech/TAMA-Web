@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import org.motechproject.tama.DoctorDataOnDemand;
 import org.motechproject.tama.GenderDataOnDemand;
-import org.motechproject.tama.InitialsDataOnDemand;
+import org.motechproject.tama.TitleDataOnDemand;
 import org.motechproject.tama.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     private GenderDataOnDemand PatientDataOnDemand.genderDataOnDemand;
     
     @Autowired
-    private InitialsDataOnDemand PatientDataOnDemand.initialsDataOnDemand;
+    private TitleDataOnDemand PatientDataOnDemand.titleDataOnDemand;
     
     @Autowired
     private DoctorDataOnDemand PatientDataOnDemand.doctorDataOnDemand;
@@ -38,7 +38,7 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
         setTravelTimeToClinicInHours(obj, index);
         setTravelTimeToClinicInMinutes(obj, index);
         setGender(obj, index);
-        setInitials(obj, index);
+        setTitle(obj, index);
         setPrincipalDoctor(obj, index);
         return obj;
     }
@@ -78,9 +78,9 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
         obj.setGender(gender);
     }
     
-    public void PatientDataOnDemand.setInitials(Patient obj, int index) {
-        org.motechproject.tama.Initials initials = initialsDataOnDemand.getRandomInitials();
-        obj.setInitials(initials);
+    public void PatientDataOnDemand.setTitle(Patient obj, int index) {
+        org.motechproject.tama.Title title = titleDataOnDemand.getRandomTitle();
+        obj.setTitle(title);
     }
     
     public void PatientDataOnDemand.setPrincipalDoctor(Patient obj, int index) {

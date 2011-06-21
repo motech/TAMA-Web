@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.Doctor;
 import org.motechproject.tama.Gender;
-import org.motechproject.tama.Initials;
+import org.motechproject.tama.Title;
 import org.motechproject.tama.Patient;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
@@ -107,9 +107,9 @@ privileged aspect PatientController_Roo_Controller {
         return Gender.findAllGenders();
     }
     
-    @ModelAttribute("initialses")
-    public Collection<Initials> PatientController.populateInitialses() {
-        return Initials.findAllInitialses();
+    @ModelAttribute("titles")
+    public Collection<Title> PatientController.populateTitles() {
+        return Title.findAllTitles();
     }
     
     @ModelAttribute("patients")

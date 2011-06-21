@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @RooJavaBean
 @RooToString
 @RooEntity
-public class Initials {
+public class Title {
 
     @NotNull
     private String type;
