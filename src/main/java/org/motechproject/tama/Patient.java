@@ -41,8 +41,5 @@ public class Patient {
     private Gender gender;
 
     @ManyToOne
-    private Title title;
-
-    @ManyToOne
     private Doctor principalDoctor;
 }

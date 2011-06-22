@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_org_motechproject_tama_Title" object="${title}" path="/titles" z="bKwpHNfDmnsR7nA5YiW7+7TuOJI=">
-        <field:display field="type" id="s_org_motechproject_tama_Title_type" object="${title}" z="s55Gso0WTexOMngcv04zoz9NvDU="/>
-    </page:show>
-</div>

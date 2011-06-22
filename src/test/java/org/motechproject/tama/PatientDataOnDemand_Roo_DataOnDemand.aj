@@ -8,7 +8,6 @@ import java.util.Random;
 import org.motechproject.tama.DoctorDataOnDemand;
 import org.motechproject.tama.GenderDataOnDemand;
 import org.motechproject.tama.Patient;
-import org.motechproject.tama.TitleDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +23,6 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     private GenderDataOnDemand PatientDataOnDemand.genderDataOnDemand;
     
     @Autowired
-    private TitleDataOnDemand PatientDataOnDemand.titleDataOnDemand;
-    
-    @Autowired
     private DoctorDataOnDemand PatientDataOnDemand.doctorDataOnDemand;
     
     public Patient PatientDataOnDemand.getNewTransientPatient(int index) {
@@ -38,7 +34,6 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
         setTravelTimeToClinicInHours(obj, index);
         setTravelTimeToClinicInMinutes(obj, index);
         setGender(obj, index);
-        setTitle(obj, index);
         setPrincipalDoctor(obj, index);
         return obj;
     }
@@ -54,7 +49,7 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     }
     
     public void PatientDataOnDemand.setDateOfBirth(Patient obj, int index) {
-        java.util.Date dateOfBirth = new java.util.GregorianCalendar(java.util.Calendar.getInstance().get(java.util.Calendar.YEAR), java.util.Calendar.getInstance().get(java.util.Calendar.MONTH), java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH), java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY), java.util.Calendar.getInstance().get(java.util.Calendar.MINUTE), java.util.Calendar.getInstance().get(java.util.Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
+        java.util.Date dateOfBirth = new java.util.Date(new java.util.Date().getTime() - 10000000L);
         obj.setDateOfBirth(dateOfBirth);
     }
     
@@ -76,11 +71,6 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     public void PatientDataOnDemand.setGender(Patient obj, int index) {
         org.motechproject.tama.Gender gender = genderDataOnDemand.getRandomGender();
         obj.setGender(gender);
-    }
-    
-    public void PatientDataOnDemand.setTitle(Patient obj, int index) {
-        org.motechproject.tama.Title title = titleDataOnDemand.getRandomTitle();
-        obj.setTitle(title);
     }
     
     public void PatientDataOnDemand.setPrincipalDoctor(Patient obj, int index) {
