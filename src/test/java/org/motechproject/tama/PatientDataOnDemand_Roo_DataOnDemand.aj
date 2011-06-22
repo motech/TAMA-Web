@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Random;
 import org.motechproject.tama.DoctorDataOnDemand;
 import org.motechproject.tama.GenderDataOnDemand;
-<<<<<<< HEAD
-=======
 import org.motechproject.tama.Patient;
->>>>>>> b768216b4d1b2e6f7f0d4e410dd3eb37633dc32c
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
