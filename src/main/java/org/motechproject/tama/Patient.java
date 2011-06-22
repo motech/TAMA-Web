@@ -19,17 +19,17 @@ import java.util.Date;
 public class Patient {
 
     @NotNull
-    private String patientId;
+    protected String patientId;
 
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
-    private String mobilePhoneNumber;
+    protected String mobilePhoneNumber;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
     @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
     @NotNull
-    private Date dateOfBirth;
+    protected Date dateOfBirth;
 
     private int travelTimeToClinicInDays;
 
