@@ -9,7 +9,9 @@ privileged aspect Title_Roo_ToString {
     
     public String Title.toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Type: ").append(getType());
+        sb.append("Id: ").append(getId()).append(", ");
+        sb.append("Type: ").append(getType()).append(", ");
+        sb.append("Version: ").append(getVersion());
         return sb.toString();
     }
     

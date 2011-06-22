@@ -13,8 +13,8 @@ import javax.validation.Valid;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.Doctor;
 import org.motechproject.tama.Gender;
-import org.motechproject.tama.Title;
 import org.motechproject.tama.Patient;
+import org.motechproject.tama.Title;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -107,14 +107,14 @@ privileged aspect PatientController_Roo_Controller {
         return Gender.findAllGenders();
     }
     
-    @ModelAttribute("titles")
-    public Collection<Title> PatientController.populateTitles() {
-        return Title.findAllTitles();
-    }
-    
     @ModelAttribute("patients")
     public Collection<Patient> PatientController.populatePatients() {
         return Patient.findAllPatients();
+    }
+    
+    @ModelAttribute("titles")
+    public Collection<Title> PatientController.populateTitles() {
+        return Title.findAllTitles();
     }
     
     void PatientController.addDateTimeFormatPatterns(Model uiModel) {

@@ -6,8 +6,8 @@ package org.motechproject.tama.web;
 import java.lang.String;
 import org.motechproject.tama.Doctor;
 import org.motechproject.tama.Gender;
-import org.motechproject.tama.Title;
 import org.motechproject.tama.Patient;
+import org.motechproject.tama.Title;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 
@@ -16,8 +16,8 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
         registry.addConverter(new DoctorConverter());
         registry.addConverter(new GenderConverter());
-        registry.addConverter(new TitleConverter());
         registry.addConverter(new PatientConverter());
+        registry.addConverter(new TitleConverter());
     }
     
     public void ApplicationConversionServiceFactoryBean.afterPropertiesSet() {
@@ -39,16 +39,16 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         
     }
     
-    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.TitleConverter implements Converter<Title, String>  {
-        public String convert(Title title) {
-            return new StringBuilder().append(title.getType()).toString();
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.PatientConverter implements Converter<Patient, String>  {
+        public String convert(Patient patient) {
+            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).append(" ").append(patient.getTravelTimeToClinicInDays()).toString();
         }
         
     }
     
-    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.PatientConverter implements Converter<Patient, String>  {
-        public String convert(Patient patient) {
-            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).append(" ").append(patient.getTravelTimeToClinicInDays()).toString();
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.TitleConverter implements Converter<Title, String>  {
+        public String convert(Title title) {
+            return new StringBuilder().append(title.getType()).toString();
         }
         
     }
