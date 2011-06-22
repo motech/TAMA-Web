@@ -82,6 +82,9 @@
     <bean id="patients" class="org.motechproject.tama.repository.Patients">
         <constructor-arg ref="patients-db" />
     </bean>
+    <bean id="doctors" class="org.motechproject.tama.repository.Doctors">
+        <constructor-arg ref="patients-db" />
+    </bean>
     <bean id="patients-db" class="org.ektorp.impl.StdCouchDbConnector">
         <constructor-arg value="patients-db"/>
         <constructor-arg>

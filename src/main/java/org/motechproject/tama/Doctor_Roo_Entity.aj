@@ -4,40 +4,37 @@
 package org.motechproject.tama;
 
 import java.lang.Integer;
-import java.lang.Long;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import org.motechproject.tama.Doctor;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.repository.Doctors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect Doctor_Roo_Entity {
     
-    declare @type: Doctor: @Entity;
-    
-    @PersistenceContext
-    transient EntityManager Doctor.entityManager;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long Doctor.id;
-    
-    @Version
-    @Column(name = "version")
+
+    @Autowired
+    transient Doctors Doctor.doctors;
+
+    @JsonProperty("_id")
+    private String Doctor.id;
+
+    @JsonProperty("_rev")
+    private String Doctor.revision;
+
+    @TypeDiscriminator
+    private String Doctor.documentType = "Doctor";
+
     private Integer Doctor.version;
     
-    public Long Doctor.getId() {
+    public String Doctor.getId() {
         return this.id;
     }
     
-    public void Doctor.setId(Long id) {
+    public void Doctor.setId(String id) {
         this.id = id;
     }
     
@@ -51,62 +48,47 @@ privileged aspect Doctor_Roo_Entity {
     
     @Transactional
     public void Doctor.persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
+        doctors.add(this);
     }
     
     @Transactional
     public void Doctor.remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            Doctor attached = Doctor.findDoctor(this.id);
-            this.entityManager.remove(attached);
-        }
+        doctors.remove(this);
     }
     
     @Transactional
     public void Doctor.flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
     }
     
     @Transactional
     public void Doctor.clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
     }
     
     @Transactional
     public Doctor Doctor.merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        Doctor merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
+        return this;
     }
     
-    public static final EntityManager Doctor.entityManager() {
-        EntityManager em = new Doctor().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
+    public static final Doctors Doctor.doctors() {
+        Doctors doctors = new Doctor().doctors;
+        return doctors;
     }
-    
+
     public static long Doctor.countDoctors() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Doctor o", Long.class).getSingleResult();
+        return 10;
     }
     
     public static List<Doctor> Doctor.findAllDoctors() {
-        return entityManager().createQuery("SELECT o FROM Doctor o", Doctor.class).getResultList();
+        return doctors().getAll();
     }
     
-    public static Doctor Doctor.findDoctor(Long id) {
+    public static Doctor Doctor.findDoctor(String id) {
         if (id == null) return null;
-        return entityManager().find(Doctor.class, id);
+        return doctors().get(id);
     }
     
     public static List<Doctor> Doctor.findDoctorEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Doctor o", Doctor.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return doctors().getAll();
     }
     
 }

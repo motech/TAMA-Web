@@ -33,7 +33,7 @@ privileged aspect DoctorIntegrationTest_Roo_IntegrationTest {
     public void DoctorIntegrationTest.testFindDoctor() {
         org.motechproject.tama.Doctor obj = dod.getRandomDoctor();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to provide an identifier", id);
         obj = org.motechproject.tama.Doctor.findDoctor(id);
         org.junit.Assert.assertNotNull("Find method for 'Doctor' illegally returned null for id '" + id + "'", obj);
@@ -64,7 +64,7 @@ privileged aspect DoctorIntegrationTest_Roo_IntegrationTest {
     public void DoctorIntegrationTest.testFlush() {
         org.motechproject.tama.Doctor obj = dod.getRandomDoctor();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to provide an identifier", id);
         obj = org.motechproject.tama.Doctor.findDoctor(id);
         org.junit.Assert.assertNotNull("Find method for 'Doctor' illegally returned null for id '" + id + "'", obj);
@@ -78,7 +78,7 @@ privileged aspect DoctorIntegrationTest_Roo_IntegrationTest {
     public void DoctorIntegrationTest.testMerge() {
         org.motechproject.tama.Doctor obj = dod.getRandomDoctor();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to provide an identifier", id);
         obj = org.motechproject.tama.Doctor.findDoctor(id);
         boolean modified =  dod.modifyDoctor(obj);
@@ -104,7 +104,7 @@ privileged aspect DoctorIntegrationTest_Roo_IntegrationTest {
     public void DoctorIntegrationTest.testRemove() {
         org.motechproject.tama.Doctor obj = dod.getRandomDoctor();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Doctor' failed to provide an identifier", id);
         obj = org.motechproject.tama.Doctor.findDoctor(id);
         obj.remove();

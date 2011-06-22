@@ -91,13 +91,11 @@ privileged aspect Patient_Roo_Entity {
     }
 
     public static long Patient.countPatients() {
-       // return entityManager().createQuery("SELECT COUNT(o) FROM Patient o", Long.class).getSingleResult();
         return 10;
     }
     
     public static List<Patient> Patient.findAllPatients() {
-        //return entityManager().createQuery("SELECT o FROM Patient o", Patient.class).getResultList();
-        return null;
+       return patients().getAll();
     }
     
     public static Patient Patient.findPatient(String id) {
@@ -106,8 +104,7 @@ privileged aspect Patient_Roo_Entity {
     }
     
     public static List<Patient> Patient.findPatientEntries(int firstResult, int maxResults) {
-       // return entityManager().createQuery("SELECT o FROM Patient o", Patient.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-        return null;
+         return patients().getAll();
     }
     
 }
