@@ -3,6 +3,7 @@
 
 package org.motechproject.tama;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.repository.Patients;
@@ -37,6 +38,7 @@ privileged aspect Patient_Roo_Entity {
         this.version = version;
     }
 
+    @JsonIgnore
     public String Patient.getId() {
         return this.id;
     }
@@ -45,6 +47,7 @@ privileged aspect Patient_Roo_Entity {
         this.id = id;
     }
     
+    @JsonIgnore
     public String Patient.getRevision() {
         return this.revision;
     }
@@ -61,27 +64,24 @@ privileged aspect Patient_Roo_Entity {
         this.documentType = documentType;
     }
 
-    @Transactional
     public void Patient.persist() {
         this.patients.add(this);
     }
     
-    @Transactional
     public void Patient.remove() {
         this.patients.remove(this);
     }
     
-    @Transactional
     public void Patient.flush() {
     }
     
-    @Transactional
     public void Patient.clear() {
     }
     
-    @Transactional
     public Patient Patient.merge() {
-        return this;
+       this.setRevision(this.patients.get(this.getId()).getRevision());
+       this.patients.update(this);
+       return this;
     }
     
 
@@ -91,7 +91,7 @@ privileged aspect Patient_Roo_Entity {
     }
 
     public static long Patient.countPatients() {
-        return 10;
+        return patients().countAllPatients();
     }
     
     public static List<Patient> Patient.findAllPatients() {

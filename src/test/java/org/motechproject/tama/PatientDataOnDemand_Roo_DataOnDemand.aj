@@ -3,13 +3,11 @@
 
 package org.motechproject.tama;
 
-import java.util.List;
-import java.util.Random;
-import org.motechproject.tama.DoctorDataOnDemand;
-import org.motechproject.tama.GenderDataOnDemand;
-import org.motechproject.tama.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Random;
 
 privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     

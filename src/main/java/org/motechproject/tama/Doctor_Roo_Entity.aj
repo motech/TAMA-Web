@@ -7,6 +7,7 @@ import java.lang.Integer;
 import java.util.List;
 import javax.persistence.Entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.repository.Doctors;
@@ -30,6 +31,7 @@ privileged aspect Doctor_Roo_Entity {
 
     private Integer Doctor.version;
     
+    @JsonIgnore
     public String Doctor.getId() {
         return this.id;
     }
@@ -38,6 +40,7 @@ privileged aspect Doctor_Roo_Entity {
         this.id = id;
     }
     
+    @JsonIgnore
     public Integer Doctor.getVersion() {
         return this.version;
     }
@@ -45,7 +48,24 @@ privileged aspect Doctor_Roo_Entity {
     public void Doctor.setVersion(Integer version) {
         this.version = version;
     }
-    
+
+    public String Doctor.getDocumentType() {
+        return documentType;
+    }
+
+    public void Doctor.setDocumentType(String documentType) {
+        this.documentType = documentType;
+    }
+
+    @JsonIgnore
+    public String Doctor.getRevision() {
+        return this.revision;
+    }
+
+    public void Doctor.setRevision(String revision) {
+        this.revision = revision;
+    }
+
     @Transactional
     public void Doctor.persist() {
         doctors.add(this);
