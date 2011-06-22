@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 
@@ -22,11 +23,12 @@ public class Patient {
     private String patientId;
 
     @NotNull
-    @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAConstants.MOBILE_NUMBER_REGEX_MESSAGE)
+    @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String mobilePhoneNumber;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
+    @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
     @NotNull
     private Date dateOfBirth;
 
@@ -38,9 +40,6 @@ public class Patient {
 
     @ManyToOne
     private Gender gender;
-
-    @ManyToOne
-    private Title title;
 
     @ManyToOne
     private Doctor principalDoctor;

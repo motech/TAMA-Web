@@ -15,7 +15,6 @@ privileged aspect Patient_Roo_ToString {
         sb.append("MobilePhoneNumber: ").append(getMobilePhoneNumber()).append(", ");
         sb.append("PatientId: ").append(getPatientId()).append(", ");
         sb.append("PrincipalDoctor: ").append(getPrincipalDoctor()).append(", ");
-        sb.append("Title: ").append(getTitle()).append(", ");
         sb.append("TravelTimeToClinicInDays: ").append(getTravelTimeToClinicInDays()).append(", ");
         sb.append("TravelTimeToClinicInHours: ").append(getTravelTimeToClinicInHours()).append(", ");
         sb.append("TravelTimeToClinicInMinutes: ").append(getTravelTimeToClinicInMinutes()).append(", ");

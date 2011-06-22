@@ -5,12 +5,11 @@
     <page:show id="ps_org_motechproject_tama_Patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=">
         <field:display field="patientId" id="s_org_motechproject_tama_Patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
         <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_Patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
-        <field:display date="true" dateTimePattern="${patient_dateofbirth_date_format}" field="dateOfBirth" id="s_org_motechproject_tama_Patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+        <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="s_org_motechproject_tama_Patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
         <field:display field="travelTimeToClinicInDays" id="s_org_motechproject_tama_Patient_travelTimeToClinicInDays" object="${patient}" z="user-managed"/>
         <field:display field="travelTimeToClinicInHours" id="s_org_motechproject_tama_Patient_travelTimeToClinicInHours" object="${patient}" z="user-managed"/>
         <field:display field="travelTimeToClinicInMinutes" id="s_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" object="${patient}" z="user-managed"/>
         <field:display field="gender" id="s_org_motechproject_tama_Patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
-        <!--<field:display field="title" id="s_org_motechproject_tama_Patient_title" object="${patient}" z="DzTv7VfPMDn12IVZ14eQitBdQ5w="/>-->
         <field:display field="principalDoctor" id="s_org_motechproject_tama_Patient_principalDoctor" object="${patient}" z="xGM8DAhXesd5SMbgvRK932oTGNI="/>
     </page:show>
 </div>

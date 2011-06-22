@@ -5,12 +5,11 @@
     <form:create id="fc_org_motechproject_tama_Patient" modelAttribute="patient" path="/patients" render="${empty dependencies}" z="HkT/39qeIawAHTgF7FpZDeoTr94=">
         <field:input field="patientId" id="c_org_motechproject_tama_Patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
         <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_Patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
-        <field:datetime dateTimePattern="${patient_dateofbirth_date_format}" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
+        <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
         <field:select field="travelTimeToClinicInDays" id="c_org_motechproject_tama_Patient_travelTimeToClinicInDays" items="${daysInAMonth}" path="/daysInAMonth" z="user-managed"/>
         <field:select field="travelTimeToClinicInHours" id="c_org_motechproject_tama_Patient_travelTimeToClinicInHours" items="${hoursInADay}" path="/hoursInADay" z="user-managed"/>
         <field:select field="travelTimeToClinicInMinutes" id="c_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" items="${minutesInAnHour}" path="/minutesInAnHour" z="user-managed"/>
         <field:select field="gender" id="c_org_motechproject_tama_Patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE="/>
-        <!--<field:select field="title" id="c_org_motechproject_tama_Patient_title" itemValue="id" items="${titles}" path="/titles" z="pHLlNq2pGFmxIPqUjpAGeUdLuNQ="/>-->
         <field:select field="principalDoctor" id="c_org_motechproject_tama_Patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_Patient" render="${not empty dependencies}" z="T7kM5bLklANd4sGT5ihnrXA5ODk="/>

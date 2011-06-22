@@ -7,7 +7,6 @@ import java.lang.String;
 import java.util.Date;
 import org.motechproject.tama.Doctor;
 import org.motechproject.tama.Gender;
-import org.motechproject.tama.Title;
 
 privileged aspect Patient_Roo_JavaBean {
     
@@ -65,14 +64,6 @@ privileged aspect Patient_Roo_JavaBean {
     
     public void Patient.setGender(Gender gender) {
         this.gender = gender;
-    }
-    
-    public Title Patient.getTitle() {
-        return this.title;
-    }
-    
-    public void Patient.setTitle(Title title) {
-        this.title = title;
     }
     
     public Doctor Patient.getPrincipalDoctor() {

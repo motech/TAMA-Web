@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <form:create id="fc_org_motechproject_tama_Title" modelAttribute="title" path="/titles" render="${empty dependencies}" z="MhQDlhi8iG3lJM47Yncs9Fsh4cg=">
-        <field:input field="type" id="c_org_motechproject_tama_Title_type" required="true" z="YBb7kk/DXQVXcrzKI43C/yVKmys="/>
-    </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_Title" render="${not empty dependencies}" z="wACRdO0nnTcDp7XGI1IjpA8F1Qw="/>
-</div>
