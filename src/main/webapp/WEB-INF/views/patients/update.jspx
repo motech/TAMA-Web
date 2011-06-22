@@ -5,7 +5,7 @@
     <form:update id="fu_org_motechproject_tama_Patient" modelAttribute="patient" path="/patients" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
         <field:input field="patientId" id="c_org_motechproject_tama_Patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
         <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_Patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
-        <field:datetime dateTimePattern="${patient_dateofbirth_date_format}" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
+        <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
         <field:select field="travelTimeToClinicInDays" id="c_org_motechproject_tama_Patient_travelTimeToClinicInDays" items="${daysInAMonth}" path="/daysInAMonth" z="user-managed"/>
         <field:select field="travelTimeToClinicInHours" id="c_org_motechproject_tama_Patient_travelTimeToClinicInHours" items="${hoursInADay}" path="/hoursInADay" z="user-managed"/>
         <field:select field="travelTimeToClinicInMinutes" id="c_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" items="${minutesInAnHour}" path="/minutesInAnHour" z="user-managed"/>
