@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 import org.motechproject.tama.DoctorDataOnDemand;
 import org.motechproject.tama.GenderDataOnDemand;
-import org.motechproject.tama.Patient;
-import org.motechproject.tama.TitleDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

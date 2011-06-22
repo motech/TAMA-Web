@@ -5,7 +5,6 @@ package org.motechproject.tama.web;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.Integer;
-import java.lang.Long;
 import java.lang.String;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +47,7 @@ privileged aspect PatientController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String PatientController.show(@PathVariable("id") Long id, Model uiModel) {
+    public String PatientController.show(@PathVariable("id") String id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("patient", Patient.findPatient(id));
         uiModel.addAttribute("itemId", id);
@@ -82,14 +81,14 @@ privileged aspect PatientController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String PatientController.updateForm(@PathVariable("id") Long id, Model uiModel) {
+    public String PatientController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("patient", Patient.findPatient(id));
         addDateTimeFormatPatterns(uiModel);
         return "patients/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String PatientController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String PatientController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         Patient.findPatient(id).remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());

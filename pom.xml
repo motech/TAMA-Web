@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.motechproject.tama</groupId>
     <artifactId>tama</artifactId>
@@ -12,7 +13,7 @@
         <aspectj.version>1.6.11</aspectj.version>
         <slf4j.version>1.6.1</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-security.version>3.0.5.RELEASE</spring-security.version>
+        <spring-security.version>3.0.5.RELEASE</spring-security.version>
     </properties>
     <repositories>
         <repository>
@@ -30,7 +31,7 @@
             <name>Spring Roo Repository</name>
             <url>http://spring-roo-repository.springsource.org/release</url>
         </repository>
-    <repository>
+        <repository>
             <id>JBoss Repo</id>
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
             <name>JBoss Repo</name>
@@ -59,6 +60,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.5.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -153,7 +160,7 @@
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.13</version>
@@ -261,7 +268,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
@@ -337,7 +344,7 @@
             <artifactId>commons-codec</artifactId>
             <version>1.4</version>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-core</artifactId>
             <version>2.2.1</version>
@@ -353,7 +360,7 @@
             <artifactId>tiles-jsp</artifactId>
             <version>2.2.1</version>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
             <version>${spring-security.version}</version>
@@ -385,6 +392,16 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring-security.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.ektorp</groupId>
+            <artifactId>org.ektorp</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ektorp</groupId>
+            <artifactId>org.ektorp.spring</artifactId>
+            <version>1.1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -407,7 +424,8 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.2</version> <!-- NB: do use 1.3 or 1.3.x due to MASPECTJ-90 - wait for 1.4 -->
+                <version>1.2</version>
+                <!-- NB: do use 1.3 or 1.3.x due to MASPECTJ-90 - wait for 1.4 -->
                 <dependencies>
                     <!-- NB: You must use Maven 2.0.9 or above or these are ignored (see MNG-2972) -->
                     <dependency>
@@ -479,7 +497,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.7</version>  <!-- Note 2.8 does not work with AspectJ aspect path -->
+                <version>2.7</version>
+                <!-- Note 2.8 does not work with AspectJ aspect path -->
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>false</downloadJavadocs>

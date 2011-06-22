@@ -3,110 +3,111 @@
 
 package org.motechproject.tama;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import org.motechproject.tama.Patient;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.repository.Patients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 privileged aspect Patient_Roo_Entity {
     
-    declare @type: Patient: @Entity;
+
+    @Autowired
+    transient Patients Patient.patients;
+
+
+    @TypeDiscriminator
+    private String Patient.documentType = "Patient";
     
-    @PersistenceContext
-    transient EntityManager Patient.entityManager;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long Patient.id;
-    
-    @Version
-    @Column(name = "version")
+    @JsonProperty("_id")
+    private String Patient.id;
+
+    @JsonProperty("_rev")
+    private String Patient.revision;
+
     private Integer Patient.version;
-    
-    public Long Patient.getId() {
-        return this.id;
-    }
-    
-    public void Patient.setId(Long id) {
-        this.id = id;
-    }
-    
+
     public Integer Patient.getVersion() {
-        return this.version;
+        return version;
     }
-    
+
     public void Patient.setVersion(Integer version) {
         this.version = version;
     }
+
+    public String Patient.getId() {
+        return this.id;
+    }
     
+    public void Patient.setId(String id) {
+        this.id = id;
+    }
+    
+    public String Patient.getRevision() {
+        return this.revision;
+    }
+
+    public void Patient.setRevision(String revision) {
+        this.revision = revision;
+    }
+
+    public String Patient.getDocumentType() {
+        return this.documentType;
+    }
+
+    public void Patient.setDocumentType(String documentType) {
+        this.documentType = documentType;
+    }
+
     @Transactional
     public void Patient.persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
+        this.patients.add(this);
     }
     
     @Transactional
     public void Patient.remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            Patient attached = Patient.findPatient(this.id);
-            this.entityManager.remove(attached);
-        }
+        this.patients.remove(this);
     }
     
     @Transactional
     public void Patient.flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
     }
     
     @Transactional
     public void Patient.clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
     }
     
     @Transactional
     public Patient Patient.merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        Patient merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
+        return this;
     }
     
-    public static final EntityManager Patient.entityManager() {
-        EntityManager em = new Patient().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
+
+    public static final Patients Patient.patients() {
+        Patients patients = new Patient().patients;
+        return patients;
     }
-    
+
     public static long Patient.countPatients() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Patient o", Long.class).getSingleResult();
+       // return entityManager().createQuery("SELECT COUNT(o) FROM Patient o", Long.class).getSingleResult();
+        return 10;
     }
     
     public static List<Patient> Patient.findAllPatients() {
-        return entityManager().createQuery("SELECT o FROM Patient o", Patient.class).getResultList();
+        //return entityManager().createQuery("SELECT o FROM Patient o", Patient.class).getResultList();
+        return null;
     }
     
-    public static Patient Patient.findPatient(Long id) {
+    public static Patient Patient.findPatient(String id) {
         if (id == null) return null;
-        return entityManager().find(Patient.class, id);
+        return patients().get(id);
     }
     
     public static List<Patient> Patient.findPatientEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Patient o", Patient.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+       // return entityManager().createQuery("SELECT o FROM Patient o", Patient.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return null;
     }
     
 }

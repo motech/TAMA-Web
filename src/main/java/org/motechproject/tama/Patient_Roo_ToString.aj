@@ -19,7 +19,7 @@ privileged aspect Patient_Roo_ToString {
         sb.append("TravelTimeToClinicInDays: ").append(getTravelTimeToClinicInDays()).append(", ");
         sb.append("TravelTimeToClinicInHours: ").append(getTravelTimeToClinicInHours()).append(", ");
         sb.append("TravelTimeToClinicInMinutes: ").append(getTravelTimeToClinicInMinutes()).append(", ");
-        sb.append("Version: ").append(getVersion());
+        sb.append("Revision: ").append(getRevision());
         return sb.toString();
     }
     

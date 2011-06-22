@@ -10,6 +10,8 @@ maven-eclipse.xml
 .idea
 log.roo
 *.class
+*.eml
+*.userlibraries
 out/
 Error_log/
 test-output/
