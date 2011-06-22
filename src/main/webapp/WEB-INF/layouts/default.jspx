@@ -18,7 +18,23 @@
   	<body class="tundra spring">
    		<div id="wrapper">
 		    <tiles:insertAttribute name="header" ignore="true" />
-		    <tiles:insertAttribute name="menu" ignore="true" />   
+               <spring:url value="/" var="home"/>
+               <div id="links">
+                 <a href="${home}" align="right">
+                   <spring:message code="button_home"/>
+                 </a>
+                   <c:if test="${pageContext['request'].userPrincipal != null}">
+                     <c:out value=" | "/>
+                     <span>
+                       <spring:url value="/resources/j_spring_security_logout" var="logout"/>
+                       <a href="${logout}">
+                         <spring:message code="security_logout"/>
+                       </a>
+                     </span>
+                   </c:if>
+               </div>
+               <br />
+		    <tiles:insertAttribute name="menu" ignore="true" />
 		    <div id="main">
 	    		<tiles:insertAttribute name="body"/> 
 		    	<tiles:insertAttribute name="footer" ignore="true"/>

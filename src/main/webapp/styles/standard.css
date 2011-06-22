@@ -29,6 +29,10 @@ body {
 	display:block;
 }
 
+#links {
+    text-align: right;
+}
+
 /* header and footer elements */
 
 #main {

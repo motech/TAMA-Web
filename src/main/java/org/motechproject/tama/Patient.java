@@ -1,6 +1,5 @@
 package org.motechproject.tama;
 
-import org.ektorp.docref.DocumentReferences;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
