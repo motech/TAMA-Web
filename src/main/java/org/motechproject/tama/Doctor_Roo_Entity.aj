@@ -95,7 +95,7 @@ privileged aspect Doctor_Roo_Entity {
     }
 
     public static long Doctor.countDoctors() {
-        return 10;
+        return doctors().getAll().size();
     }
     
     public static List<Doctor> Doctor.findAllDoctors() {

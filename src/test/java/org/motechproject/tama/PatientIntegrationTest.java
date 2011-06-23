@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
-@RooIntegrationTest(entity = Patient.class)
 public class PatientIntegrationTest {
 
     private LocalValidatorFactoryBean localValidatorFactory;

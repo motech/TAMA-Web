@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 privileged aspect Patient_Roo_Entity {
-    
+
 
     @Autowired
     transient Patients Patient.patients;
@@ -91,13 +91,13 @@ privileged aspect Patient_Roo_Entity {
     }
 
     public static long Patient.countPatients() {
-        return patients().countAllPatients();
+        return patients().getAll().size();
     }
     
     public static List<Patient> Patient.findAllPatients() {
        return patients().getAll();
     }
-    
+
     public static Patient Patient.findPatient(String id) {
         if (id == null) return null;
         return patients().get(id);
@@ -106,5 +106,13 @@ privileged aspect Patient_Roo_Entity {
     public static List<Patient> Patient.findPatientEntries(int firstResult, int maxResults) {
          return patients().getAll();
     }
-    
+
+    public Patients Patient.getPatients() {
+        return patients;
+    }
+
+    public void Patient.setPatients(Patients patients) {
+        this.patients = patients;
+    }
+
 }

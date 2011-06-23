@@ -17,11 +17,4 @@ public class Doctors extends CouchDbRepositorySupport<Doctor> {
         initStandardDesignDocument();
     }
 
-    @View(name = "all", map = "function(doc) { if (doc.documentType == 'Doctor') { emit(null, doc) } }")
-    @Override
-    public List<Doctor> getAll() {
-        ViewQuery q = createQuery("all").descending(true);
-        return db.queryView(q, Doctor.class);
-    }
-
 }
