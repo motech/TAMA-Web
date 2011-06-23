@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Doctors extends CouchDbRepositorySupport<Doctor> {
 
-    public Doctors(@Qualifier("patients")CouchDbConnector db) {
+    public Doctors(CouchDbConnector db) {
         super(Doctor.class, db);
         initStandardDesignDocument();
     }
