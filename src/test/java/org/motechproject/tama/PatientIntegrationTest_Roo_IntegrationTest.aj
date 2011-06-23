@@ -100,7 +100,7 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
         org.junit.Assert.assertNotNull("Expected 'Patient' identifier to no longer be null", obj.getId());
     }
     
-    @Test
+    @Test(expected = org.ektorp.DocumentNotFoundException.class)
     public void PatientIntegrationTest.testRemove() {
         org.motechproject.tama.Patient obj = dod.getRandomPatient();
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", obj);
