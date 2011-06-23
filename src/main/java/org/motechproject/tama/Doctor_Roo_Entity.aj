@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect Doctor_Roo_Entity {
-    
+
 
     @Autowired
     transient Doctors Doctor.doctors;
@@ -30,21 +30,21 @@ privileged aspect Doctor_Roo_Entity {
     private String Doctor.documentType = "Doctor";
 
     private Integer Doctor.version;
-    
+
     @JsonIgnore
     public String Doctor.getId() {
         return this.id;
     }
-    
+
     public void Doctor.setId(String id) {
         this.id = id;
     }
-    
+
     @JsonIgnore
     public Integer Doctor.getVersion() {
         return this.version;
     }
-    
+
     public void Doctor.setVersion(Integer version) {
         this.version = version;
     }
@@ -70,25 +70,27 @@ privileged aspect Doctor_Roo_Entity {
     public void Doctor.persist() {
         doctors.add(this);
     }
-    
+
     @Transactional
     public void Doctor.remove() {
         doctors.remove(this);
     }
-    
+
     @Transactional
     public void Doctor.flush() {
     }
-    
+
     @Transactional
     public void Doctor.clear() {
     }
-    
+
     @Transactional
     public Doctor Doctor.merge() {
+        this.setRevision(this.doctors.get(this.getId()).getRevision());
+        this.doctors.update(this);
         return this;
     }
-    
+
     public static final Doctors Doctor.doctors() {
         Doctors doctors = new Doctor().doctors;
         return doctors;
@@ -97,18 +99,26 @@ privileged aspect Doctor_Roo_Entity {
     public static long Doctor.countDoctors() {
         return doctors().getAll().size();
     }
-    
+
     public static List<Doctor> Doctor.findAllDoctors() {
         return doctors().getAll();
     }
-    
+
     public static Doctor Doctor.findDoctor(String id) {
         if (id == null) return null;
         return doctors().get(id);
     }
-    
+
     public static List<Doctor> Doctor.findDoctorEntries(int firstResult, int maxResults) {
         return doctors().getAll();
     }
-    
+
+    public Doctors Doctor.getDoctors() {
+        return doctors;
+    }
+
+    public void Doctor.setDoctors(Doctors doctors) {
+        this.doctors = doctors;
+    }
+
 }
