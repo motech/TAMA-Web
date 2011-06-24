@@ -30,6 +30,9 @@ privileged aspect Patient_Roo_Entity {
 
     private Integer Patient.version;
 
+    private String Patient.doctorId;
+    private String Patient.genderId;
+
     public Integer Patient.getVersion() {
         return version;
     }
@@ -115,5 +118,23 @@ privileged aspect Patient_Roo_Entity {
     public void Patient.setPatients(Patients patients) {
         this.patients = patients;
     }
+
+    public String Patient.getDoctorId() {
+        return doctorId;
+    }
+
+    public void Patient.setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public String Patient.getGenderId() {
+        return genderId;
+    }
+
+    public void Patient.setGenderId(String genderId) {
+        this.genderId = genderId;
+    }
+
+
 
 }

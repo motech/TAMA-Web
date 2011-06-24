@@ -5,8 +5,11 @@ package org.motechproject.tama;
 
 import java.lang.String;
 import java.util.Date;
+
+import org.mockito.internal.matchers.Null;
 import org.motechproject.tama.Doctor;
 import org.motechproject.tama.Gender;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 privileged aspect Patient_Roo_JavaBean {
     
@@ -58,20 +61,28 @@ privileged aspect Patient_Roo_JavaBean {
         this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
     }
     
+   @JsonIgnore
     public Gender Patient.getGender() {
-        return this.gender;
+       if (this.gender != null) return this.gender;
+       if (this.genderId != null) return Gender.findGender(genderId);
+       return null;
     }
     
     public void Patient.setGender(Gender gender) {
         this.gender = gender;
+        this.genderId = gender.getId();
     }
-    
+
+    @JsonIgnore
     public Doctor Patient.getPrincipalDoctor() {
-        return this.principalDoctor;
+        if (this.principalDoctor != null) return this.principalDoctor;
+        if(this.doctorId != null) return Doctor.findDoctor(doctorId);
+        return null;
     }
     
     public void Patient.setPrincipalDoctor(Doctor principalDoctor) {
         this.principalDoctor = principalDoctor;
+        this.doctorId = principalDoctor.getId();
     }
     
 }
