@@ -113,6 +113,7 @@ privileged aspect Doctor_Roo_Entity {
         return doctors().getAll();
     }
 
+    @JsonIgnore
     public Doctors Doctor.getDoctors() {
         return doctors;
     }

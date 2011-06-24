@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
+@View( name="all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
 public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public Patients(CouchDbConnector db) {

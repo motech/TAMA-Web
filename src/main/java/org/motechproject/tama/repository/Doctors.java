@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
+@View( name="all", map = "function(doc) { if (doc.documentType == 'Doctor') { emit(null, doc) } }")
 public class Doctors extends CouchDbRepositorySupport<Doctor> {
 
     public Doctors(CouchDbConnector db) {

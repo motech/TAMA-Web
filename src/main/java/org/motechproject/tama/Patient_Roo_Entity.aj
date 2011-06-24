@@ -107,6 +107,7 @@ privileged aspect Patient_Roo_Entity {
          return patients().getAll();
     }
 
+    @JsonIgnore
     public Patients Patient.getPatients() {
         return patients;
     }

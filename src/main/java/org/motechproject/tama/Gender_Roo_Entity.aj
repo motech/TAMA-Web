@@ -108,6 +108,7 @@ privileged aspect Gender_Roo_Entity {
          return genders().getAll();
     }
 
+    @JsonIgnore
     public Genders Gender.getGenders() {
         return genders;
     }
