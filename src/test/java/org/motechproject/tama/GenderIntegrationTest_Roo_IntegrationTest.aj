@@ -33,7 +33,7 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
     public void GenderIntegrationTest.testFindGender() {
         org.motechproject.tama.Gender obj = dod.getRandomGender();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to provide an identifier", id);
         obj = org.motechproject.tama.Gender.findGender(id);
         org.junit.Assert.assertNotNull("Find method for 'Gender' illegally returned null for id '" + id + "'", obj);
@@ -64,7 +64,7 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
     public void GenderIntegrationTest.testFlush() {
         org.motechproject.tama.Gender obj = dod.getRandomGender();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to provide an identifier", id);
         obj = org.motechproject.tama.Gender.findGender(id);
         org.junit.Assert.assertNotNull("Find method for 'Gender' illegally returned null for id '" + id + "'", obj);
@@ -78,7 +78,7 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
     public void GenderIntegrationTest.testMerge() {
         org.motechproject.tama.Gender obj = dod.getRandomGender();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to provide an identifier", id);
         obj = org.motechproject.tama.Gender.findGender(id);
         boolean modified =  dod.modifyGender(obj);
@@ -104,7 +104,7 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
     public void GenderIntegrationTest.testRemove() {
         org.motechproject.tama.Gender obj = dod.getRandomGender();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to initialize correctly", obj);
-        java.lang.Long id = obj.getId();
+        String id = obj.getId();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to provide an identifier", id);
         obj = org.motechproject.tama.Gender.findGender(id);
         obj.remove();

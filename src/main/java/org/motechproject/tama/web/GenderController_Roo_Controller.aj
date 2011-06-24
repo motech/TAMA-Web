@@ -5,7 +5,7 @@ package org.motechproject.tama.web;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.Integer;
-import java.lang.Long;
+import java.lang.String;
 import java.lang.String;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ privileged aspect GenderController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String GenderController.show(@PathVariable("id") Long id, Model uiModel) {
+    public String GenderController.show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("gender", Gender.findGender(id));
         uiModel.addAttribute("itemId", id);
         return "genders/show";
@@ -72,13 +72,13 @@ privileged aspect GenderController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String GenderController.updateForm(@PathVariable("id") Long id, Model uiModel) {
+    public String GenderController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("gender", Gender.findGender(id));
         return "genders/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String GenderController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String GenderController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         Gender.findGender(id).remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());

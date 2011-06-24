@@ -4,109 +4,117 @@
 package org.motechproject.tama;
 
 import java.lang.Integer;
-import java.lang.Long;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import org.motechproject.tama.Gender;
-import org.springframework.transaction.annotation.Transactional;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.repository.Genders;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.motechproject.tama.Gender.genders;
 
 privileged aspect Gender_Roo_Entity {
-    
-    declare @type: Gender: @Entity;
-    
-    @PersistenceContext
-    transient EntityManager Gender.entityManager;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long Gender.id;
-    
-    @Version
-    @Column(name = "version")
+
+
+    @Autowired
+    transient Genders Gender.genders;
+
+
+    @TypeDiscriminator
+    private String Gender.documentType = "Gender";
+
+    @JsonProperty("_id")
+    private String Gender.id;
+
+    @JsonProperty("_rev")
+    private String Gender.revision;
+
     private Integer Gender.version;
-    
-    public Long Gender.getId() {
-        return this.id;
-    }
-    
-    public void Gender.setId(Long id) {
-        this.id = id;
-    }
-    
+
     public Integer Gender.getVersion() {
-        return this.version;
+        return version;
     }
-    
+
     public void Gender.setVersion(Integer version) {
         this.version = version;
     }
-    
-    @Transactional
+
+    @JsonIgnore
+    public String Gender.getId() {
+        return this.id;
+    }
+
+    public void Gender.setId(String id) {
+        this.id = id;
+    }
+
+    @JsonIgnore
+    public String Gender.getRevision() {
+        return this.revision;
+    }
+
+    public void Gender.setRevision(String revision) {
+        this.revision = revision;
+    }
+
+    public String Gender.getDocumentType() {
+        return this.documentType;
+    }
+
+    public void Gender.setDocumentType(String documentType) {
+        this.documentType = documentType;
+    }
+
     public void Gender.persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
+        this.genders.add(this);
     }
-    
-    @Transactional
+
     public void Gender.remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            Gender attached = Gender.findGender(this.id);
-            this.entityManager.remove(attached);
-        }
+        this.genders.remove(this);
     }
-    
-    @Transactional
+
     public void Gender.flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
     }
-    
-    @Transactional
+
     public void Gender.clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
     }
-    
-    @Transactional
+
     public Gender Gender.merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        Gender merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
+       this.setRevision(this.genders.get(this.getId()).getRevision());
+       this.genders.update(this);
+       return this;
     }
-    
-    public static final EntityManager Gender.entityManager() {
-        EntityManager em = new Gender().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
+
+    public static final Genders Gender.genders() {
+        Genders genders = new Gender().genders;
+        return genders;
     }
-    
+
     public static long Gender.countGenders() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Gender o", Long.class).getSingleResult();
+        return genders().getAll().size();
     }
-    
+
     public static List<Gender> Gender.findAllGenders() {
-        return entityManager().createQuery("SELECT o FROM Gender o", Gender.class).getResultList();
+       return  genders().getAll();
     }
-    
-    public static Gender Gender.findGender(Long id) {
+
+    public static Gender Gender.findGender(String id) {
         if (id == null) return null;
-        return entityManager().find(Gender.class, id);
+        return genders().get(id);
     }
-    
+
     public static List<Gender> Gender.findGenderEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Gender o", Gender.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+         return genders().getAll();
+    }
+
+    public Genders Gender.getGenders() {
+        return genders;
+    }
+
+    public void Gender.setGenders(Genders genders) {
+        this.genders = genders;
     }
     
+
 }
