@@ -3,6 +3,7 @@ package org.motechproject.tama;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.builders.PatientBuilder;
 import org.motechproject.tama.repository.Patients;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -49,8 +50,9 @@ public class PatientPersistenceTest{
         Patients mockPatients = mock(Patients.class);
         String dummyPatientId = "Dummy";
         String mobileNumber = "+919876324678";
-        Patient testPatient = new Patient();
-        testPatient.setMobilePhoneNumber(mobileNumber);
+        Patient testPatient = PatientBuilder.startRecording().
+                withPatientId(dummyPatientId).
+                withMobileNumber(mobileNumber).build();
 
         when(mockPatients.get(dummyPatientId)).thenReturn(testPatient);
         PowerMockito.spy(Patient.class);
@@ -84,7 +86,7 @@ public class PatientPersistenceTest{
     @Test
     public void testSavePatient(){
         Patients mockPatients = mock(Patients.class);
-        Patient patient = new Patient();
+        Patient patient = PatientBuilder.startRecording().build();
         patient.setPatients(mockPatients);
 
         patient.persist();
@@ -94,7 +96,7 @@ public class PatientPersistenceTest{
     @Test
     public void testDeletePatient(){
         Patients mockPatients = mock(Patients.class);
-        Patient patient = new Patient();
+        Patient patient = PatientBuilder.startRecording().build();
         patient.setPatients(mockPatients);
 
         patient.persist();
@@ -108,10 +110,12 @@ public class PatientPersistenceTest{
     @Test
     public void testUpdatePatient(){
         Patients mockPatients = mock(Patients.class);
+        String revision = "rev";
         String id = "Dummy";
-        Patient patient = new Patient();
-        patient.setId(id);
-        patient.setRevision("rev");
+        Patient patient = PatientBuilder.startRecording().
+                withId(id).
+                withRevision(revision).
+                build();
         patient.setPatients(mockPatients);
         when(mockPatients.get(id)).thenReturn(patient);
 
