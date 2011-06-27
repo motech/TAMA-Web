@@ -117,6 +117,21 @@
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
             <name>JBoss Repo</name>
         </repository>
+    <repository>
+            <id>googlecode.rooequals.repo</id>
+            <url>https://spring-roo-equals-roo-addon.googlecode.com/svn/maven-repository/
+			</url>
+            <name>Repository for Roo equals addon</name>
+        </repository>
+    <repository>
+            <id>googlecode.rooequals.snapshotrepo</id>
+            <url>https://spring-roo-equals-roo-addon.googlecode.com/svn/maven-snapshot-repository/
+			</url>
+            <name>Repository for Roo equals addon</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -504,6 +519,16 @@
             <groupId>org.seleniumhq.webdriver</groupId>
             <artifactId>webdriver-firefox</artifactId>
             <version>0.9.7376</version>
+	</dependency>
+    <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+        </dependency>
+    <dependency>
+            <groupId>de.saxsys.roo</groupId>
+            <artifactId>de.saxsys.roo.equals.annotations</artifactId>
+            <version>1.2.1</version>
         </dependency>
     </dependencies>
     <build>
