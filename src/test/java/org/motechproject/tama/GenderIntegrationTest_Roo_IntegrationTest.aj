@@ -88,7 +88,7 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
         org.junit.Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         org.junit.Assert.assertTrue("Version for 'Gender' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
-    
+
     @Test
     public void GenderIntegrationTest.testPersist() {
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to initialize correctly", dod.getRandomGender());
@@ -100,7 +100,7 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
         org.junit.Assert.assertNotNull("Expected 'Gender' identifier to no longer be null", obj.getId());
     }
     
-    @Test
+    @Test(expected = org.ektorp.DocumentNotFoundException.class)
     public void GenderIntegrationTest.testRemove() {
         org.motechproject.tama.Gender obj = dod.getRandomGender();
         org.junit.Assert.assertNotNull("Data on demand for 'Gender' failed to initialize correctly", obj);
