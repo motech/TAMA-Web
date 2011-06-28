@@ -2,20 +2,20 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <form:update id="fu_org_motechproject_tama_Patient" modelAttribute="patient" path="/patients" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
-        <util:panel id="fc_org_motechproject_tama_Patient_Basic_Information" title="Basic Information" openPane="true">
-            <field:input field="patientId" id="c_org_motechproject_tama_Patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
-            <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_Patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
-            <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_Patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
-            <field:select field="travelTimeToClinicInDays" id="c_org_motechproject_tama_Patient_travelTimeToClinicInDays" items="${daysInAMonth}" path="/daysInAMonth" z="user-managed"/>
-            <field:select field="travelTimeToClinicInHours" id="c_org_motechproject_tama_Patient_travelTimeToClinicInHours" items="${hoursInADay}" path="/hoursInADay" z="user-managed"/>
-            <field:select field="travelTimeToClinicInMinutes" id="c_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" items="${minutesInAnHour}" path="/minutesInAnHour" z="user-managed"/>
-            <field:select field="gender" id="c_org_motechproject_tama_Patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE="/>
-            <field:select field="principalDoctor" id="c_org_motechproject_tama_Patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q="/>
+    <form:update id="fu_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="Basic Information" openPane="true">
+            <field:input field="patientId" id="c_org_motechproject_tama_domain_patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
+            <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
+            <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
+            <field:select field="travelTimeToClinicInDays" id="c_org_motechproject_tama_domain_patient_travelTimeToClinicInDays" items="${daysInAMonth}" path="/daysInAMonth" z="user-managed"/>
+            <field:select field="travelTimeToClinicInHours" id="c_org_motechproject_tama_domain_patient_travelTimeToClinicInHours" items="${hoursInADay}" path="/hoursInADay" z="user-managed"/>
+            <field:select field="travelTimeToClinicInMinutes" id="c_org_motechproject_tama_domain_patient_travelTimeToClinicInMinutes" items="${minutesInAnHour}" path="/minutesInAnHour" z="user-managed"/>
+            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE="/>
+            <field:select field="principalDoctor" id="c_org_motechproject_tama_domain_patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q="/>
         </util:panel>
         <br />
-        <util:panel id="fc_org_motechproject_tama_Patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
-            <field:input field="passcode" id="c_org_motechproject_tama_Patient_passcode" required="true" />
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
+            <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" />
         </util:panel>
         <br />
     </form:update>

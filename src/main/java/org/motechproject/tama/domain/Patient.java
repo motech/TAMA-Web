@@ -1,6 +1,8 @@
-package org.motechproject.tama;
+package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.TAMAMessages;
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
 import org.springframework.format.annotation.DateTimeFormat;

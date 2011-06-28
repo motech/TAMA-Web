@@ -3,7 +3,7 @@ package org.motechproject.tama.repository;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
-import org.motechproject.tama.Patient;
+import org.motechproject.tama.domain.Patient;
 
 @View( name="all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
 public class Patients extends CouchDbRepositorySupport<Patient> {

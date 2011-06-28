@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.Patient;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.builders.PatientBuilder;
 import org.motechproject.tama.functional.pages.LoginPage;
 import org.motechproject.tama.functional.pages.ShowPatientPage;

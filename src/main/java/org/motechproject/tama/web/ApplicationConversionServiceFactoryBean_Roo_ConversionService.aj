@@ -6,7 +6,7 @@ package org.motechproject.tama.web;
 import java.lang.String;
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.Patient;
+import org.motechproject.tama.domain.Patient;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 

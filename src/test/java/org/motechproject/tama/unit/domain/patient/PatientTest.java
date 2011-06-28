@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import org.hibernate.validator.HibernateValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.Patient;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.builders.PatientBuilder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
@@ -26,7 +26,7 @@ public class PatientTest {
     @Test
     public void testNotNullConstraintFieldsOnPatient() {
         Patient nullPatient = PatientBuilder.startRecording().build();
-        Set<ConstraintViolation<org.motechproject.tama.Patient>> constraintViolations = localValidatorFactory.validate(nullPatient);
+        Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(nullPatient);
         Assert.assertEquals(4, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "patientId", "may not be null");
         assertConstraintViolation(constraintViolations, "dateOfBirth", "may not be null");

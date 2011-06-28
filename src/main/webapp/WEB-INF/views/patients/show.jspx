@@ -2,20 +2,20 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_org_motechproject_tama_Patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=">
-        <util:panel id="fc_org_motechproject_tama_Patient_Basic_Information" title="Basic Information" openPane="true">
-            <field:display field="patientId" id="s_org_motechproject_tama_Patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
-            <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_Patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
-            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="s_org_motechproject_tama_Patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
-            <field:display field="travelTimeToClinicInDays" id="s_org_motechproject_tama_Patient_travelTimeToClinicInDays" object="${patient}" z="user-managed"/>
-            <field:display field="travelTimeToClinicInHours" id="s_org_motechproject_tama_Patient_travelTimeToClinicInHours" object="${patient}" z="user-managed"/>
-            <field:display field="travelTimeToClinicInMinutes" id="s_org_motechproject_tama_Patient_travelTimeToClinicInMinutes" object="${patient}" z="user-managed"/>
-            <field:display field="gender" id="s_org_motechproject_tama_Patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
-            <field:display field="principalDoctor" id="s_org_motechproject_tama_Patient_principalDoctor" object="${patient}" z="xGM8DAhXesd5SMbgvRK932oTGNI="/>
+    <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=">
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="Basic Information" openPane="true">
+            <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
+            <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
+            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="s_org_motechproject_tama_domain_patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display field="travelTimeToClinicInDays" id="s_org_motechproject_tama_domain_patient_travelTimeToClinicInDays" object="${patient}" z="user-managed"/>
+            <field:display field="travelTimeToClinicInHours" id="s_org_motechproject_tama_domain_patient_travelTimeToClinicInHours" object="${patient}" z="user-managed"/>
+            <field:display field="travelTimeToClinicInMinutes" id="s_org_motechproject_tama_domain_patient_travelTimeToClinicInMinutes" object="${patient}" z="user-managed"/>
+            <field:display field="gender" id="s_org_motechproject_tama_domain_patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
+            <field:display field="principalDoctor" id="s_org_motechproject_tama_domain_patient_principalDoctor" object="${patient}" z="xGM8DAhXesd5SMbgvRK932oTGNI="/>
         </util:panel>
         <br />
-        <util:panel id="fc_org_motechproject_tama_Patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
-            <field:display field="passcode" id="c_org_motechproject_tama_Patient_passcode" object="${patient}" />
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
+            <field:display field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" object="${patient}" />
         </util:panel>
         <br />
     </page:show>

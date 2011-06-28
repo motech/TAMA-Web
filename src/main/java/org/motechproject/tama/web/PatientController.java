@@ -1,6 +1,6 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tama.Patient;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.TAMAConstants;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;

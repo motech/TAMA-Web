@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.Patient;
+import org.motechproject.tama.domain.Patient;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

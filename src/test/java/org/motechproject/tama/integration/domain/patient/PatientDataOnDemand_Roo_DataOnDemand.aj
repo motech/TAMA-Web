@@ -5,9 +5,9 @@ package org.motechproject.tama.integration.domain.patient;
 
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.integration.domain.doctor.DoctorDataOnDemand;
 import org.motechproject.tama.integration.domain.gender.GenderDataOnDemand;
-import org.motechproject.tama.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     private DoctorDataOnDemand PatientDataOnDemand.doctorDataOnDemand;
     
     public Patient PatientDataOnDemand.getNewTransientPatient(int index) {
-        org.motechproject.tama.Patient obj = new org.motechproject.tama.Patient();
+        Patient obj = new Patient();
         setPatientId(obj, index);
         setMobilePhoneNumber(obj, index);
         setDateOfBirth(obj, index);
@@ -100,15 +100,15 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     }
     
     public void PatientDataOnDemand.init() {
-        data = org.motechproject.tama.Patient.findPatientEntries(0, 10);
+        data = Patient.findPatientEntries(0, 10);
         if (data == null) throw new IllegalStateException("Find entries implementation for 'Patient' illegally returned null");
         if (!data.isEmpty()) {
             return;
         }
         
-        data = new java.util.ArrayList<org.motechproject.tama.Patient>();
+        data = new java.util.ArrayList<Patient>();
         for (int i = 0; i < 10; i++) {
-            org.motechproject.tama.Patient obj = getNewTransientPatient(i);
+            Patient obj = getNewTransientPatient(i);
             obj.persist();
             obj.flush();
             data.add(obj);
