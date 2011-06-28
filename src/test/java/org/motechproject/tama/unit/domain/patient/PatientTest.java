@@ -1,4 +1,4 @@
-package org.motechproject.tama.PatientTest;
+package org.motechproject.tama.unit.domain.patient;
 
 import junit.framework.Assert;
 import org.hibernate.validator.HibernateValidator;

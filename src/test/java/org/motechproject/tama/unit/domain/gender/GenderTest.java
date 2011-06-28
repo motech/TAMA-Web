@@ -1,4 +1,4 @@
-package org.motechproject.tama.GenderTest;
+package org.motechproject.tama.unit.domain.gender;
 
 import org.junit.Assert;
 import org.junit.Test;

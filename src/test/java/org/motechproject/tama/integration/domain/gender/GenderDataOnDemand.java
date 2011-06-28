@@ -1,4 +1,4 @@
-package org.motechproject.tama.GenderTest;
+package org.motechproject.tama.integration.domain.gender;
 
 import org.motechproject.tama.Gender;
 import org.springframework.roo.addon.dod.RooDataOnDemand;

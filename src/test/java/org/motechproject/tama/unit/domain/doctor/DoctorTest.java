@@ -1,4 +1,4 @@
-package org.motechproject.tama.DoctorTest;
+package org.motechproject.tama.unit.domain.doctor;
 
 import org.junit.Assert;
 import org.junit.Test;

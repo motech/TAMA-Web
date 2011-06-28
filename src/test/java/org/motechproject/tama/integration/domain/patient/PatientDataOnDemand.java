@@ -1,4 +1,4 @@
-package org.motechproject.tama.PatientTest;
+package org.motechproject.tama.integration.domain.patient;
 
 import org.motechproject.tama.Patient;
 import org.springframework.roo.addon.dod.RooDataOnDemand;
