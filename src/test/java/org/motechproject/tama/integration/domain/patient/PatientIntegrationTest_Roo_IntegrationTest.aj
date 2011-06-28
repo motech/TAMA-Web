@@ -17,8 +17,6 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     
     declare @type: PatientTest: @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml");
     
-    declare @type: PatientTest: @Transactional;
-    
     @Autowired
     private PatientDataOnDemand PatientTest.dod;
     

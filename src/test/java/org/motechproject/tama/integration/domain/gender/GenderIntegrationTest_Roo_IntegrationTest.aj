@@ -16,8 +16,6 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
     
     declare @type: GenderIntegrationTest: @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml");
     
-    declare @type: GenderIntegrationTest: @Transactional;
-    
     @Autowired
     private GenderDataOnDemand GenderIntegrationTest.dod;
     
