@@ -67,14 +67,16 @@
     <bean id="genders" class="org.motechproject.tama.repository.Genders">
         <constructor-arg ref="tama-web" />
     </bean>
+   <bean id="webDriver" class="org.openqa.selenium.htmlunit.HtmlUnitDriver" scope="prototype">
+       <constructor-arg value="true" type="boolean" />
+    </bean>
+    <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
+        <constructor-arg>
+            <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
+        </constructor-arg>
+    </bean>
     <bean id="tama-web" class="org.ektorp.impl.StdCouchDbConnector">
         <constructor-arg value="tama-web"/>
-        <constructor-arg>
-            <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
-                <constructor-arg>
-                    <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="couchDbInstance" />
     </bean>
 </beans>

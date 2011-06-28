@@ -2,35 +2,46 @@ package org.motechproject.tama.functional.tests;
 
 import junit.framework.Assert;
 import org.junit.*;
+import org.junit.runner.RunWith;
 import org.motechproject.tama.functional.pages.HomePage;
 import org.motechproject.tama.functional.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-public class LoginTest{
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
+public class LoginTest {
 
-    private static WebDriver webDriver;
-
-    @BeforeClass
-    public static void setUp(){
-        webDriver = new HtmlUnitDriver(true);
-    }
+    @Autowired
+    private WebDriver webDriver;
 
     @Test
-    public void testLoginFailure(){
+    public void testLoginFailure() {
         LoginPage page = PageFactory.initElements(webDriver, LoginPage.class).loginWithIncorrectUserNamePassword();
         Assert.assertEquals(LoginPage.FAILURE_MESSAGE, page.errorMessage());
     }
+
     @Test
-    public void testLoginSuccess(){
+    public void testLoginSuccess() {
         HomePage homePage = PageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectUserNamePassword();
         Assert.assertEquals(HomePage.WELCOME_MESSAGE, homePage.getWelcomeMessage());
     }
 
-    @AfterClass
-    public static void tearDown(){
-        webDriver.quit();
+    public WebDriver getWebDriver() {
+        return webDriver;
     }
+
+    public void setWebDriver(WebDriver webDriver) {
+        this.webDriver = webDriver;
+    }
+
+    @After
+    public void tearDown(){
+        this.webDriver.quit();
+    }
+
+
 }
