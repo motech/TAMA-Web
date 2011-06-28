@@ -14,57 +14,12 @@ import java.util.List;
 privileged aspect Patient_Roo_Entity {
 
 
+    declare parents : Patient extends BaseEntity;
     @Autowired
     transient Patients Patient.patients;
 
-
-    @TypeDiscriminator
-    private String Patient.documentType = "Patient";
-    
-    @JsonProperty("_id")
-    private String Patient.id;
-
-    @JsonProperty("_rev")
-    private String Patient.revision;
-
-    private Integer Patient.version;
-
     private String Patient.doctorId;
     private String Patient.genderId;
-
-    public Integer Patient.getVersion() {
-        return version;
-    }
-
-    public void Patient.setVersion(Integer version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public String Patient.getId() {
-        return this.id;
-    }
-    
-    public void Patient.setId(String id) {
-        this.id = id;
-    }
-    
-    @JsonIgnore
-    public String Patient.getRevision() {
-        return this.revision;
-    }
-
-    public void Patient.setRevision(String revision) {
-        this.revision = revision;
-    }
-
-    public String Patient.getDocumentType() {
-        return this.documentType;
-    }
-
-    public void Patient.setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
 
     public void Patient.persist() {
         this.patients.add(this);

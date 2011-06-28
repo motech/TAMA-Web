@@ -15,75 +15,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect Doctor_Roo_Entity {
 
+    declare parents : Doctor extends BaseEntity;
 
     @Autowired
     transient Doctors Doctor.doctors;
 
-    @JsonProperty("_id")
-    private String Doctor.id;
-
-    @JsonProperty("_rev")
-    private String Doctor.revision;
-
-    @TypeDiscriminator
-    private String Doctor.documentType = "Doctor";
-
-    private Integer Doctor.version;
-
-    @JsonIgnore
-    public String Doctor.getId() {
-        return this.id;
-    }
-
-    public void Doctor.setId(String id) {
-        this.id = id;
-    }
-
-    @JsonIgnore
-    public Integer Doctor.getVersion() {
-        return this.version;
-    }
-
-    public void Doctor.setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public String Doctor.getDocumentType() {
-        return documentType;
-    }
-
-    public void Doctor.setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
-
-    @JsonIgnore
-    public String Doctor.getRevision() {
-        return this.revision;
-    }
-
-    public void Doctor.setRevision(String revision) {
-        this.revision = revision;
-    }
-
-    @Transactional
     public void Doctor.persist() {
         doctors.add(this);
     }
 
-    @Transactional
     public void Doctor.remove() {
         doctors.remove(this);
     }
 
-    @Transactional
     public void Doctor.flush() {
     }
 
-    @Transactional
     public void Doctor.clear() {
     }
 
-    @Transactional
     public Doctor Doctor.merge() {
         this.setRevision(this.doctors.get(this.getId()).getRevision());
         this.doctors.update(this);
