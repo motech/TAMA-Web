@@ -1,8 +1,9 @@
-package org.motechproject.tama;
+package org.motechproject.tama.GenderTest;
 
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.Gender;
 import org.motechproject.tama.repository.Genders;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;

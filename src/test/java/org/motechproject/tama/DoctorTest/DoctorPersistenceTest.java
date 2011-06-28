@@ -1,8 +1,9 @@
-package org.motechproject.tama;
+package org.motechproject.tama.DoctorTest;
 
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.Doctor;
 import org.motechproject.tama.repository.Doctors;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;

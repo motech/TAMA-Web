@@ -1,8 +1,9 @@
-package org.motechproject.tama;
+package org.motechproject.tama.PatientTest;
 
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.Patient;
 import org.motechproject.tama.builders.PatientBuilder;
 import org.motechproject.tama.repository.Patients;
 import org.powermock.api.mockito.PowerMockito;
