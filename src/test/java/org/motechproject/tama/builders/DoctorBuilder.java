@@ -1,6 +1,6 @@
 package org.motechproject.tama.builders;
 
-import org.motechproject.tama.Doctor;
+import org.motechproject.tama.domain.Doctor;
 
 public class DoctorBuilder {
 

@@ -2,9 +2,9 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_org_motechproject_tama_Doctor" object="${doctor}" path="/doctors" z="ODZgqrHFZWVckHxv6yiEAqF28nQ=">
-        <field:display field="doctorId" id="s_org_motechproject_tama_Doctor_doctorId" object="${doctor}" z="9EfQ6ZW8KfhNV+1a3M7xS66H1e0="/>
-        <field:display field="firstName" id="s_org_motechproject_tama_Doctor_firstName" object="${doctor}" z="4HYStnVBHy2X1C4SOZJEqJnBfL4="/>
-        <field:display field="lastName" id="s_org_motechproject_tama_Doctor_lastName" object="${doctor}" z="0DMZsm9BkD7m+s7imc0/ax+M/cQ="/>
+    <page:show id="ps_org_motechproject_tama_domain_Doctor" object="${doctor}" path="/doctors" z="ODZgqrHFZWVckHxv6yiEAqF28nQ=">
+        <field:display field="doctorId" id="s_org_motechproject_tama_domain_Doctor_doctorId" object="${doctor}" z="9EfQ6ZW8KfhNV+1a3M7xS66H1e0="/>
+        <field:display field="firstName" id="s_org_motechproject_tama_domain_Doctor_firstName" object="${doctor}" z="4HYStnVBHy2X1C4SOZJEqJnBfL4="/>
+        <field:display field="lastName" id="s_org_motechproject_tama_domain_Doctor_lastName" object="${doctor}" z="0DMZsm9BkD7m+s7imc0/ax+M/cQ="/>
     </page:show>
 </div>

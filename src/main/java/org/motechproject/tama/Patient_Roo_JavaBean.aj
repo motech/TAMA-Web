@@ -9,8 +9,6 @@ import java.util.Date;
 import org.motechproject.tama.domain.Gender;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import java.util.Date;
-
 privileged aspect Patient_Roo_JavaBean {
     
     public String Patient.getPatientId() {

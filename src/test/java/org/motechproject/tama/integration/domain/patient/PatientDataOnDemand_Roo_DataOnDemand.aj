@@ -3,6 +3,7 @@
 
 package org.motechproject.tama.integration.domain.patient;
 
+import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.integration.domain.doctor.DoctorDataOnDemand;
 import org.motechproject.tama.integration.domain.gender.GenderDataOnDemand;
@@ -76,7 +77,7 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     }
     
     public void PatientDataOnDemand.setPrincipalDoctor(Patient obj, int index) {
-        org.motechproject.tama.Doctor principalDoctor = doctorDataOnDemand.getRandomDoctor();
+        Doctor principalDoctor = doctorDataOnDemand.getRandomDoctor();
         obj.setPrincipalDoctor(principalDoctor);
     }
     

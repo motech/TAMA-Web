@@ -5,7 +5,7 @@ package org.motechproject.tama.integration.domain.doctor;
 
 import java.util.List;
 import java.util.Random;
-import org.motechproject.tama.Doctor;
+import org.motechproject.tama.domain.Doctor;
 import org.springframework.stereotype.Component;
 
 privileged aspect DoctorDataOnDemand_Roo_DataOnDemand {
@@ -17,7 +17,7 @@ privileged aspect DoctorDataOnDemand_Roo_DataOnDemand {
     private List<Doctor> DoctorDataOnDemand.data;
     
     public Doctor DoctorDataOnDemand.getNewTransientDoctor(int index) {
-        org.motechproject.tama.Doctor obj = new org.motechproject.tama.Doctor();
+        Doctor obj = new Doctor();
         setDoctorId(obj, index);
         setFirstName(obj, index);
         setLastName(obj, index);
@@ -58,15 +58,15 @@ privileged aspect DoctorDataOnDemand_Roo_DataOnDemand {
     }
     
     public void DoctorDataOnDemand.init() {
-        data = org.motechproject.tama.Doctor.findDoctorEntries(0, 10);
+        data = Doctor.findDoctorEntries(0, 10);
         if (data == null) throw new IllegalStateException("Find entries implementation for 'Doctor' illegally returned null");
         if (!data.isEmpty()) {
             return;
         }
         
-        data = new java.util.ArrayList<org.motechproject.tama.Doctor>();
+        data = new java.util.ArrayList<Doctor>();
         for (int i = 0; i < 10; i++) {
-            org.motechproject.tama.Doctor obj = getNewTransientDoctor(i);
+            Doctor obj = getNewTransientDoctor(i);
             obj.persist();
             obj.flush();
             data.add(obj);

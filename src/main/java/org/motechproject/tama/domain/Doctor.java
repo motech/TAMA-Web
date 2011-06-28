@@ -1,4 +1,4 @@
-package org.motechproject.tama;
+package org.motechproject.tama.domain;
 
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
