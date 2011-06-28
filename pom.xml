@@ -17,7 +17,7 @@
     </properties>
     <profiles>
         <profile>
-            <id>integrationTest</id>
+            <id>smoke</id>
             <build>
                 <plugins>
                     <plugin>
@@ -515,11 +515,6 @@
             <artifactId>selenium-server</artifactId>
             <version>2.0a7</version>
         </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.webdriver</groupId>
-            <artifactId>webdriver-firefox</artifactId>
-            <version>0.9.7376</version>
-	</dependency>
     <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
