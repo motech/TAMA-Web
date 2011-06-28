@@ -15,6 +15,12 @@ body {
 	margin-bottom: 1em;
 }
 
+#tama-logo {
+	width:150px;
+	height:68px;
+	margin:10px;
+}
+
 #wrapper {
 	width:800px;
 	min-width: 800px;
