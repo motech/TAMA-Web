@@ -9,9 +9,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @RooJavaBean
@@ -23,6 +21,7 @@ public class Patient {
     protected String patientId;
 
     @NotNull
+    @Pattern(regexp = TAMAConstants.PASSCODE_REGEX, message = TAMAMessages.PASSCODE_REGEX_MESSAGE)
     protected String passcode;
 
     @NotNull

@@ -44,6 +44,15 @@ public class PatientTest {
     }
 
     @Test
+    public void testPasscodeToMatchASpecificCriteria() {
+        String invalidPasscode = "111";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPasscode(invalidPasscode).build();
+        Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
+        Assert.assertEquals(1, constraintViolations.size());
+        assertConstraintViolation(constraintViolations, "passcode", "Passcode should be numeric and 4-10 digits long.");
+    }
+
+    @Test
     public void testDateOfBirthToBeAPastDate() {
         Calendar futureDate = Calendar.getInstance();
         futureDate.set(2020, 1, 20);
