@@ -38,6 +38,8 @@ public class Patient {
     @NotNull
     protected Date dateOfBirth;
 
+    private ReminderCall reminderCall = ReminderCall.Daily;
+
     private int travelTimeToClinicInDays;
 
     private int travelTimeToClinicInHours;
@@ -50,4 +52,8 @@ public class Patient {
     @ManyToOne
     @JsonIgnore
     private Doctor principalDoctor;
+
+    public enum ReminderCall {
+        Daily, Weekly
+    }
 }

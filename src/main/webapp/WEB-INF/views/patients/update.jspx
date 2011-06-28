@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:springform="http://www.springframework.org/tags/form" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
@@ -16,6 +16,13 @@
         <br />
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
             <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" />
+            <table>
+                <tr>
+                    <td>Medicine Adherence Report Calls :</td>
+                    <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_daily_reminderCall" path="reminderCall" value="Daily" label="Activate Daily Pill Reminder Call"/></td></tr>
+                    <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_weekly_reminderCall" path="reminderCall" value="Weekly" label="Activate Weekly Adherence Calls" disabled="true"/></td></tr>
+                </tr>
+            </table>
         </util:panel>
         <br />
     </form:update>

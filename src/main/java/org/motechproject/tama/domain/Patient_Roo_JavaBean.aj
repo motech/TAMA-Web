@@ -5,8 +5,8 @@ package org.motechproject.tama.domain;
 
 import java.lang.String;
 import java.util.Date;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.tama.domain.Gender;
 
 privileged aspect Patient_Roo_JavaBean {
     
@@ -24,6 +24,14 @@ privileged aspect Patient_Roo_JavaBean {
 
     public void Patient.setPasscode(String passcode) {
         this.passcode = passcode;
+    }
+
+    public ReminderCall Patient.getReminderCall() {
+        return this.reminderCall;
+    }
+
+    public void Patient.setReminderCall(ReminderCall reminderCall) {
+        this.reminderCall = reminderCall;
     }
 
     public String Patient.getMobilePhoneNumber() {
