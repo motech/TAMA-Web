@@ -1,15 +1,14 @@
 package org.motechproject.tama.functional.tests;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import junit.framework.Assert;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.motechproject.tama.Patient;
 import org.motechproject.tama.builders.PatientBuilder;
 import org.motechproject.tama.functional.pages.LoginPage;
 import org.motechproject.tama.functional.pages.ShowPatientPage;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.PageFactory;
 

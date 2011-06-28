@@ -27,10 +27,11 @@ public class PatientTest {
     public void testNotNullConstraintFieldsOnPatient() {
         Patient nullPatient = PatientBuilder.startRecording().build();
         Set<ConstraintViolation<org.motechproject.tama.Patient>> constraintViolations = localValidatorFactory.validate(nullPatient);
-        Assert.assertEquals(3, constraintViolations.size());
+        Assert.assertEquals(4, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "patientId", "may not be null");
         assertConstraintViolation(constraintViolations, "dateOfBirth", "may not be null");
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "may not be null");
+        assertConstraintViolation(constraintViolations, "passcode", "may not be null");
     }
 
     @Test

@@ -3,13 +3,9 @@
 
 package org.motechproject.tama;
 
-import java.lang.String;
-import java.util.Date;
-
-import org.mockito.internal.matchers.Null;
-import org.motechproject.tama.Doctor;
-import org.motechproject.tama.Gender;
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.Date;
 
 privileged aspect Patient_Roo_JavaBean {
     
@@ -20,7 +16,15 @@ privileged aspect Patient_Roo_JavaBean {
     public void Patient.setPatientId(String patientId) {
         this.patientId = patientId;
     }
-    
+
+    public String Patient.getPasscode() {
+        return this.passcode;
+    }
+
+    public void Patient.setPasscode(String passcode) {
+        this.passcode = passcode;
+    }
+
     public String Patient.getMobilePhoneNumber() {
         return this.mobilePhoneNumber;
     }

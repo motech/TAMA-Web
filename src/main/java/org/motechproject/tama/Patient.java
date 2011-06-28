@@ -23,6 +23,9 @@ public class Patient {
     protected String patientId;
 
     @NotNull
+    protected String passcode;
+
+    @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     protected String mobilePhoneNumber;
 

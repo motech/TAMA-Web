@@ -1,17 +1,13 @@
 package org.motechproject.tama.functional.pages;
 
 
-import org.motechproject.tama.Gender;
 import org.motechproject.tama.Patient;
-import org.motechproject.tama.builders.PatientBuilder;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.Select;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class PatientRegistrationPage {
@@ -34,6 +30,8 @@ public class PatientRegistrationPage {
     private WebElement gender;
     @FindBy(how = How.ID, using = "_principalDoctor_id")
     private WebElement principalDoctor;
+    @FindBy(how = How.ID, using = "_passcode_id")
+    private WebElement passcode;
 
     public PatientRegistrationPage(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -49,6 +47,8 @@ public class PatientRegistrationPage {
         travelTimeInHrs.sendKeys(String.valueOf(patient.getTravelTimeToClinicInHours()));
         travelTimeInMins.clear();
         travelTimeInMins.sendKeys(String.valueOf(patient.getTravelTimeToClinicInMinutes()));
+        passcode.clear();
+        passcode.sendKeys(String.valueOf(patient.getPasscode()));
         patientId.submit();
         return PageFactory.initElements(webDriver, ShowPatientPage.class);
     }

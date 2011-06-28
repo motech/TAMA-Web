@@ -23,6 +23,11 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withPasscode(String passcode) {
+        patient.setPasscode(passcode);
+        return this;
+    }
+
     public PatientBuilder withTravelTimeToClinicInDays(int days) {
         patient.setTravelTimeToClinicInDays(days);
         return this;
@@ -60,6 +65,7 @@ public class PatientBuilder {
         return this.withPatientId("1234").
                 withDateOfBirth(new Date()).
                 withMobileNumber("+919765456789").
+                withPasscode("123456").
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3);
