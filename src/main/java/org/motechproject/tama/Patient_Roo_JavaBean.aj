@@ -3,6 +3,10 @@
 
 package org.motechproject.tama;
 
+import java.lang.String;
+import java.util.Date;
+
+import org.motechproject.tama.domain.Gender;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.Date;

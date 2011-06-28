@@ -5,7 +5,7 @@ package org.motechproject.tama.integration.domain.gender;
 
 import java.util.List;
 import java.util.Random;
-import org.motechproject.tama.Gender;
+import org.motechproject.tama.domain.Gender;
 import org.springframework.stereotype.Component;
 
 privileged aspect GenderDataOnDemand_Roo_DataOnDemand {
@@ -17,7 +17,7 @@ privileged aspect GenderDataOnDemand_Roo_DataOnDemand {
     private List<Gender> GenderDataOnDemand.data;
     
     public Gender GenderDataOnDemand.getNewTransientGender(int index) {
-        org.motechproject.tama.Gender obj = new org.motechproject.tama.Gender();
+        Gender obj = new Gender();
         setType(obj, index);
         return obj;
     }
@@ -46,15 +46,15 @@ privileged aspect GenderDataOnDemand_Roo_DataOnDemand {
     }
     
     public void GenderDataOnDemand.init() {
-        data = org.motechproject.tama.Gender.findGenderEntries(0, 10);
+        data = Gender.findGenderEntries(0, 10);
         if (data == null) throw new IllegalStateException("Find entries implementation for 'Gender' illegally returned null");
         if (!data.isEmpty()) {
             return;
         }
         
-        data = new java.util.ArrayList<org.motechproject.tama.Gender>();
+        data = new java.util.ArrayList<Gender>();
         for (int i = 0; i < 10; i++) {
-            org.motechproject.tama.Gender obj = getNewTransientGender(i);
+            Gender obj = getNewTransientGender(i);
             obj.persist();
             obj.flush();
             data.add(obj);

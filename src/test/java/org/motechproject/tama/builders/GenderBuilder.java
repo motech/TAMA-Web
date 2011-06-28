@@ -1,6 +1,6 @@
 package org.motechproject.tama.builders;
 
-import org.motechproject.tama.Gender;
+import org.motechproject.tama.domain.Gender;
 
 public class GenderBuilder {
 

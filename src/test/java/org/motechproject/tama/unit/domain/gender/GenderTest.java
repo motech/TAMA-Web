@@ -2,7 +2,7 @@ package org.motechproject.tama.unit.domain.gender;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.motechproject.tama.Gender;
+import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.builders.GenderBuilder;
 
 public class GenderTest {

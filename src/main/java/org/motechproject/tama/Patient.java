@@ -1,6 +1,7 @@
 package org.motechproject.tama;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.tama.domain.Gender;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
