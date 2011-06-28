@@ -46,10 +46,10 @@
         instantiate your @Controller classes, as these should be instantiated
         by a web tier application context. Refer to web.xml for more details
         about the web tier application context setup services.
-        
-        Furthermore, this turns on @Autowired, @PostConstruct etc support. These 
-        annotations allow you to use common Spring and Java Enterprise Edition 
-        annotations in your classes without needing to do any special configuration. 
+
+        Furthermore, this turns on @Autowired, @PostConstruct etc support. These
+        annotations allow you to use common Spring and Java Enterprise Edition
+        annotations in your classes without needing to do any special configuration.
         The most commonly used annotation is @Autowired, which instructs Spring to
         dependency inject an object into your class.
     -->
@@ -66,6 +66,9 @@
     </bean>
     <bean id="genders" class="org.motechproject.tama.repository.Genders">
         <constructor-arg ref="tama-web"/>
+    </bean>
+    <bean id="webDriver" class="org.openqa.selenium.htmlunit.HtmlUnitDriver" scope="prototype">
+        <constructor-arg value="true" type="boolean"/>
     </bean>
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
