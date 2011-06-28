@@ -14,55 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect Gender_Roo_Entity {
 
+    declare parents : Gender extends BaseEntity;
 
     @Autowired
     transient Genders Gender.genders;
 
-
-    @TypeDiscriminator
-    private String Gender.documentType = "Gender";
-
-    @JsonProperty("_id")
-    private String Gender.id;
-
-    @JsonProperty("_rev")
-    private String Gender.revision;
-
-    private Integer Gender.version;
-
-    public Integer Gender.getVersion() {
-        return version;
-    }
-
-    public void Gender.setVersion(Integer version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public String Gender.getId() {
-        return this.id;
-    }
-
-    public void Gender.setId(String id) {
-        this.id = id;
-    }
-
-    @JsonIgnore
-    public String Gender.getRevision() {
-        return this.revision;
-    }
-
-    public void Gender.setRevision(String revision) {
-        this.revision = revision;
-    }
-
-    public String Gender.getDocumentType() {
-        return this.documentType;
-    }
-
-    public void Gender.setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
 
     public void Gender.persist() {
         this.genders.add(this);
@@ -114,6 +70,4 @@ privileged aspect Gender_Roo_Entity {
     public void Gender.setGenders(Genders genders) {
         this.genders = genders;
     }
-    
-
 }

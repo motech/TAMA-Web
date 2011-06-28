@@ -11,7 +11,7 @@ privileged aspect Gender_Roo_ToString {
         StringBuilder sb = new StringBuilder();
         sb.append("Id: ").append(getId()).append(", ");
         sb.append("Type: ").append(getType()).append(", ");
-        sb.append("Version: ").append(getVersion());
+        sb.append("Revision: ").append(getRevision());
         return sb.toString();
     }
     

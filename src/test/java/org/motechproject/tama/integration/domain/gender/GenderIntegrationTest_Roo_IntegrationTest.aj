@@ -70,7 +70,7 @@ privileged aspect GenderIntegrationTest_Roo_IntegrationTest {
         obj.flush();
         org.junit.Assert.assertTrue("Version for 'Gender' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
-    
+
     @Test
     public void GenderIntegrationTest.testMerge() {
         Gender obj = dod.getRandomGender();
