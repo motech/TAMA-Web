@@ -13,7 +13,7 @@ import org.openqa.selenium.support.PageFactory;
 public class LoginPage {
 
 
-    public static final String LOGIN_URL = "http://localhost:8080/tama/login";
+    public static final String LOGIN_URL = "http://localhost:"+System.getProperty("jetty.port","8080")+"/tama/login";
 
     public static final String USERNAME_ID = "j_username";
     public static final String PASSWORD_ID = "j_password";

@@ -8,6 +8,7 @@
     <version>0.1.0.BUILD-SNAPSHOT</version>
     <name>tama</name>
     <properties>
+
         <roo.version>1.1.4.RELEASE</roo.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <aspectj.version>1.6.11</aspectj.version>
@@ -18,6 +19,9 @@
     <profiles>
         <profile>
             <id>smoke</id>
+            <properties>
+                <jetty.port>9887</jetty.port>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -56,6 +60,12 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <systemProperties>
+                                <property>
+                                    <name>jetty.port</name>
+                                    <value>${jetty.port}</value>
+                                </property>
+                            </systemProperties>
                             <includes>
                                 <include>**/functional/**/*Test.java</include>
                             </includes>
@@ -68,10 +78,15 @@
                         <artifactId>jetty-maven-plugin</artifactId>
 
                         <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <name>jetty.port</name>
+                                    <value>${jetty.port}</value>
+                                </systemProperty>
+                            </systemProperties>
                             <daemon>true</daemon>
                             <stopPort>6667</stopPort>
                             <stopKey>secret</stopKey>
-
                         </configuration>
                         <executions>
                             <execution>
@@ -117,16 +132,16 @@
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
             <name>JBoss Repo</name>
         </repository>
-    <repository>
+        <repository>
             <id>googlecode.rooequals.repo</id>
             <url>https://spring-roo-equals-roo-addon.googlecode.com/svn/maven-repository/
-			</url>
+            </url>
             <name>Repository for Roo equals addon</name>
         </repository>
-    <repository>
+        <repository>
             <id>googlecode.rooequals.snapshotrepo</id>
             <url>https://spring-roo-equals-roo-addon.googlecode.com/svn/maven-snapshot-repository/
-			</url>
+            </url>
             <name>Repository for Roo equals addon</name>
             <snapshots>
                 <enabled>true</enabled>
@@ -515,12 +530,12 @@
             <artifactId>selenium-server</artifactId>
             <version>2.0a7</version>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.5</version>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>de.saxsys.roo</groupId>
             <artifactId>de.saxsys.roo.equals.annotations</artifactId>
             <version>1.2.1</version>
