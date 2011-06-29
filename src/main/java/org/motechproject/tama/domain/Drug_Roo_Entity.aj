@@ -34,7 +34,7 @@ privileged aspect Drug_Roo_Entity {
     }
     
     public static long Drug.countDrugs() {
-		return 0;
+		return drugs().count();
     }
     
     public static List<Drug> Drug.findAllDrugs() {
