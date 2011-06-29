@@ -3,9 +3,9 @@
 
 package org.motechproject.tama.web;
 
-import java.lang.String;
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
+import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -16,6 +16,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(new DoctorConverter());
         registry.addConverter(new GenderConverter());
         registry.addConverter(new PatientConverter());
+        registry.addConverter(new IVRLanguageConverter());
     }
     
     public void ApplicationConversionServiceFactoryBean.afterPropertiesSet() {
@@ -35,6 +36,13 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
             return new StringBuilder().append(gender.getType()).toString();
         }
         
+    }
+
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.IVRLanguageConverter implements Converter<IVRLanguage, String>  {
+        public String convert(IVRLanguage ivrLanguage) {
+            return new StringBuilder().append(ivrLanguage.getName()).toString();
+        }
+
     }
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.PatientConverter implements Converter<Patient, String>  {

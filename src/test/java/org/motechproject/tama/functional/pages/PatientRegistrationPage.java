@@ -28,6 +28,8 @@ public class PatientRegistrationPage {
     private WebElement travelTimeInMins;
     @FindBy(how = How.ID, using = "_gender_id")
     private WebElement gender;
+    @FindBy(how = How.ID, using = "_ivrLanguage_id")
+    private WebElement ivrLanguage;
     @FindBy(how = How.ID, using = "_principalDoctor_id")
     private WebElement principalDoctor;
     @FindBy(how = How.ID, using = "_passcode_id")

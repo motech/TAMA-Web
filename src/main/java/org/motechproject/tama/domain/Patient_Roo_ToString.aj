@@ -11,6 +11,7 @@ privileged aspect Patient_Roo_ToString {
         StringBuilder sb = new StringBuilder();
         sb.append("DateOfBirth: ").append(getDateOfBirth()).append(", ");
         sb.append("Gender: ").append(getGender()).append(", ");
+        sb.append("IVRLanguage: ").append(getIvrLanguage()).append(", ");
         sb.append("Id: ").append(getId()).append(", ");
         sb.append("MobilePhoneNumber: ").append(getMobilePhoneNumber()).append(", ");
         sb.append("PatientId: ").append(getPatientId()).append(", ");

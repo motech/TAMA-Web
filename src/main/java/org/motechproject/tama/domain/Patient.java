@@ -3,8 +3,6 @@ package org.motechproject.tama.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
-import org.motechproject.tama.domain.Doctor;
-import org.motechproject.tama.domain.Gender;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -13,7 +11,9 @@ import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @RooJavaBean
@@ -48,6 +48,9 @@ public class Patient {
 
     @ManyToOne
     private Gender gender;
+
+    @ManyToOne
+    private IVRLanguage ivrLanguage;
 
     @ManyToOne
     @JsonIgnore

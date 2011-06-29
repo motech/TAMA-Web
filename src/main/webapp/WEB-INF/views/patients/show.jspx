@@ -22,6 +22,9 @@
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
             <field:display field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" object="${patient}" />
             <br/>
+            <field:display field="ivrLanguage" id="s_org_motechproject_tama_domain_patient_ivrLanguage" object="${patient}" />
+            <br/>
+            <br/>
             <field:display field="reminderCall" id="c_org_motechproject_tama_domain_Patient_reminderCall" object="${patient}" />
             <br/>
         </util:panel>

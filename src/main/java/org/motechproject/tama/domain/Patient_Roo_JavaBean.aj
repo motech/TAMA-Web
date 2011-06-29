@@ -7,6 +7,7 @@ import java.lang.String;
 import java.util.Date;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.domain.Gender;
+import org.motechproject.tama.domain.IVRLanguage;
 
 privileged aspect Patient_Roo_JavaBean {
     
@@ -74,7 +75,7 @@ privileged aspect Patient_Roo_JavaBean {
         this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
     }
     
-   @JsonIgnore
+    @JsonIgnore
     public Gender Patient.getGender() {
        if (this.gender != null) return this.gender;
        if (this.genderId != null) return Gender.findGender(genderId);
@@ -84,6 +85,18 @@ privileged aspect Patient_Roo_JavaBean {
     public void Patient.setGender(Gender gender) {
         this.gender = gender;
         this.genderId = gender.getId();
+    }
+
+    @JsonIgnore
+    public IVRLanguage Patient.getIvrLanguage() {
+       if (this.ivrLanguage != null) return this.ivrLanguage;
+       if (this.ivrLanguageId != null) return IVRLanguage.findIVRLanguage(ivrLanguageId);
+       return null;
+    }
+
+    public void Patient.setIvrLanguage(IVRLanguage ivrLanguage) {
+        this.ivrLanguage = ivrLanguage;
+        this.ivrLanguageId = ivrLanguage.getId();
     }
 
     @JsonIgnore

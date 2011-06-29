@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
+import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
@@ -104,7 +105,12 @@ privileged aspect PatientController_Roo_Controller {
     public Collection<Gender> PatientController.populateGenders() {
         return Gender.findAllGenders();
     }
-    
+
+    @ModelAttribute("ivrlanguages")
+    public Collection<IVRLanguage> PatientController.populateIVRLanguages() {
+        return IVRLanguage.findAllIVRLanguages();
+    }
+
     @ModelAttribute("patients")
     public Collection<Patient> PatientController.populatePatients() {
         return Patient.findAllPatients();

@@ -16,6 +16,7 @@
         <br />
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
             <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" />
+            <field:select field="ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed"/>
             <table>
                 <tr>
                     <td>Medicine Adherence Report Calls :</td>
