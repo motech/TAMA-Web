@@ -1,9 +1,5 @@
 package org.motechproject.tama.functional.pages;
 
-import com.thoughtworks.selenium.SeleneseTestCase;
-import junit.framework.Assert;
-import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

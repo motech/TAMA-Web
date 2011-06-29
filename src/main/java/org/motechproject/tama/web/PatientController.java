@@ -1,13 +1,13 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tama.domain.Patient;
+import java.util.ArrayList;
+
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.domain.Patient;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
 
 @RooWebScaffold(path = "patients", formBackingObject = Patient.class)
 @RequestMapping("/patients")

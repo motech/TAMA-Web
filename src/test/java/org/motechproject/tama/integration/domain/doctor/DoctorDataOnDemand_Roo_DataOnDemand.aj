@@ -5,6 +5,7 @@ package org.motechproject.tama.integration.domain.doctor;
 
 import java.util.List;
 import java.util.Random;
+
 import org.motechproject.tama.domain.Doctor;
 import org.springframework.stereotype.Component;
 

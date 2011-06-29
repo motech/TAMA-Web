@@ -4,11 +4,11 @@
 package org.motechproject.tama.web;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.Integer;
-import java.lang.String;
 import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;

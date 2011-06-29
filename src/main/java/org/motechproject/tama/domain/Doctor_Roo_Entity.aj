@@ -3,15 +3,11 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.Integer;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.repository.Doctors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect Doctor_Roo_Entity {
 

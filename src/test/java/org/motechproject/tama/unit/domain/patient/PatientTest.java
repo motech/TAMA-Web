@@ -1,16 +1,18 @@
 package org.motechproject.tama.unit.domain.patient;
 
+import java.util.Calendar;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+
 import junit.framework.Assert;
+
 import org.hibernate.validator.HibernateValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.builders.PatientBuilder;
+import org.motechproject.tama.domain.Patient;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import javax.validation.ConstraintViolation;
-import java.util.Calendar;
-import java.util.Set;
 
 public class PatientTest {
 

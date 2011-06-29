@@ -1,19 +1,22 @@
 package org.motechproject.tama.integration.domain.patient;
 
-import junit.framework.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.builders.PatientBuilder;
-import org.motechproject.tama.repository.Patients;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.motechproject.tama.builders.PatientBuilder;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.repository.Patients;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith( PowerMockRunner.class )
 @PrepareForTest( Patient.class )

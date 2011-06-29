@@ -3,11 +3,11 @@
 
 package org.motechproject.tama.domain;
 
+import java.util.List;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.repository.IVRLanguages;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 privileged aspect IVRLanguage_Roo_Entity {
 

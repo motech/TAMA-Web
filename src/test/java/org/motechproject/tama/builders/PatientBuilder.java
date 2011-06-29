@@ -1,8 +1,8 @@
 package org.motechproject.tama.builders;
 
-import org.motechproject.tama.domain.Patient;
-
 import java.util.Date;
+
+import org.motechproject.tama.domain.Patient;
 
 public class PatientBuilder {
 

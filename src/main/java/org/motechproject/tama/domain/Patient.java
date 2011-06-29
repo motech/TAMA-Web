@@ -1,5 +1,14 @@
 package org.motechproject.tama.domain;
 
+import java.util.Date;
+
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;

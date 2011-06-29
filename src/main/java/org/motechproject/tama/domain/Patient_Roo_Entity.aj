@@ -3,13 +3,11 @@
 
 package org.motechproject.tama.domain;
 
+import java.util.List;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 privileged aspect Patient_Roo_Entity {
 

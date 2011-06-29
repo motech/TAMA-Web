@@ -1,7 +1,9 @@
 package org.motechproject.tama.functional.tests;
 
 import junit.framework.Assert;
-import org.junit.*;
+
+import org.junit.After;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.functional.pages.HomePage;
 import org.motechproject.tama.functional.pages.LoginPage;
