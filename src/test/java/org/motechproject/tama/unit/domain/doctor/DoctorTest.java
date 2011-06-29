@@ -2,7 +2,7 @@ package org.motechproject.tama.unit.domain.doctor;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.motechproject.tama.builders.DoctorBuilder;
+import org.motechproject.tama.builder.DoctorBuilder;
 import org.motechproject.tama.domain.Doctor;
 
 public class DoctorTest {

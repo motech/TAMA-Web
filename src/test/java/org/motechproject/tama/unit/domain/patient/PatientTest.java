@@ -10,7 +10,7 @@ import junit.framework.Assert;
 import org.hibernate.validator.HibernateValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.builders.PatientBuilder;
+import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 

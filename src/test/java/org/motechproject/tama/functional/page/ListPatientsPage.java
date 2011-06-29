@@ -1,4 +1,4 @@
-package org.motechproject.tama.functional.pages;
+package org.motechproject.tama.functional.page;
 
 public class ListPatientsPage {
 

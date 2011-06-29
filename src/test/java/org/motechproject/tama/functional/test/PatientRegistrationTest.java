@@ -1,4 +1,4 @@
-package org.motechproject.tama.functional.tests;
+package org.motechproject.tama.functional.test;
 
 import java.text.SimpleDateFormat;
 
@@ -7,10 +7,10 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.builders.PatientBuilder;
+import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.functional.pages.LoginPage;
-import org.motechproject.tama.functional.pages.ShowPatientPage;
+import org.motechproject.tama.functional.page.LoginPage;
+import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;

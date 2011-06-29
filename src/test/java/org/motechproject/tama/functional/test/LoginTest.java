@@ -1,12 +1,12 @@
-package org.motechproject.tama.functional.tests;
+package org.motechproject.tama.functional.test;
 
 import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.functional.pages.HomePage;
-import org.motechproject.tama.functional.pages.LoginPage;
+import org.motechproject.tama.functional.page.HomePage;
+import org.motechproject.tama.functional.page.LoginPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;

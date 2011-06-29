@@ -1,4 +1,4 @@
-package org.motechproject.tama.builders;
+package org.motechproject.tama.builder;
 
 import java.util.Date;
 

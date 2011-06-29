@@ -1,4 +1,4 @@
-package org.motechproject.tama.functional.pages;
+package org.motechproject.tama.functional.page;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
