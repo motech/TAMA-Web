@@ -1,14 +1,6 @@
 package org.motechproject.tama.integration.domain.patient;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
@@ -17,6 +9,10 @@ import org.motechproject.tama.repository.Patients;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
 @RunWith( PowerMockRunner.class )
 @PrepareForTest( Patient.class )
@@ -95,6 +91,17 @@ public class PatientPersistenceTest{
 
         patient.persist();
         verify(mockPatients).add(patient);
+    }
+
+    @Test
+    public void testSavedPatientShouldHaveRegistrationDate(){
+        Patients mockPatients = mock(Patients.class);
+        Patient patient = PatientBuilder.startRecording().build();
+        patient.setPatients(mockPatients);
+
+        patient.persist();
+        verify(mockPatients).add(patient);
+        assertNotNull(patient.getRegistrationDate());
     }
 
     @Test
