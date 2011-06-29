@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect Gender_Roo_Entity {
 
-    declare parents : Gender extends BaseEntity;
+    declare parents : Gender extends CouchDocument;
 
     @Autowired
     transient Genders Gender.genders;

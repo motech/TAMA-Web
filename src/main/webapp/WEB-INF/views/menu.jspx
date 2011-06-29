@@ -11,5 +11,17 @@
             <menu:item id="i_patient_new" messageCode="global_menu_new" url="/patients?form" z="/FWw96bQNbLZGfOq6+cGeWYQz8Y="/>
             <menu:item id="i_patient_list" messageCode="global_menu_list" url="/patients?page=1&amp;size=${empty param.size ? 10 : param.size}" z="mnvxypr4za1eNqrO8/rSPpLv4/U="/>
         </menu:category>
+        <menu:category id="c_company" z="tmJjNcrRZwdZqruFqwG+TB5GMek=">
+            <menu:item id="i_company_new" messageCode="global_menu_new" url="/companys?form" z="SWjXbZ96+4L3yJZ+Q7yyqEFQPV4="/>
+            <menu:item id="i_company_list" messageCode="global_menu_list" url="/companys?page=1&amp;size=${empty param.size ? 10 : param.size}" z="vk1qspgPYbGCO4tYu2Ikm8DhmbY="/>
+        </menu:category>
+        <menu:category id="c_brand" z="bjOhBOeTe9dTd9R7+6ToH1Ck65Y=">
+            <menu:item id="i_brand_new" messageCode="global_menu_new" url="/brands?form" z="elLlPhP1xJh1hr4pA86cwpzPXyM="/>
+            <menu:item id="i_brand_list" messageCode="global_menu_list" url="/brands?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Ew8SbM9jNLtY10kWQKkGh3zr6mE="/>
+        </menu:category>
+        <menu:category id="c_drug" z="gpGI7B+iNO2HDabErRdvjrpCJJc=">
+            <menu:item id="i_drug_new" messageCode="global_menu_new" url="/drugs?form" z="g0ROvL4tH9E5Z0k1u9Lp6ZBBsdI="/>
+            <menu:item id="i_drug_list" messageCode="global_menu_list" url="/drugs?page=1&amp;size=${empty param.size ? 10 : param.size}" z="OQalj7zhuCYpOCcxgoJXf+SbvJc="/>
+        </menu:category>
     </menu:menu>
 </div>

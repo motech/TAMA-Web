@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_org_motechproject_tama_domain_Drug" modelAttribute="drug" path="/drugs" render="${empty dependencies}" z="Adr9khlDdTrRdOa7NX6oBaCWpjM=">
+        <field:input field="name" id="c_org_motechproject_tama_domain_Drug_name" required="true" z="NUYeN1/HD+2iW1V/OH4wHnGa5cA="/>
+        <field:select field="brands" id="c_org_motechproject_tama_domain_Drug_brands" itemValue="id" items="${brands}" multiple="true" path="/brands" z="4Am0ROwoeJ7grUKuMeMOeLNLk0w="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_Drug" render="${not empty dependencies}" z="d5UBHha4GWszBZJ9sXDJP503+ww="/>
+</div>

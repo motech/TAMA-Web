@@ -15,18 +15,8 @@ import org.motechproject.tama.TAMAMessages;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.tostring.RooToString;
-
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-import java.util.Date;
 
 @RooJavaBean
-@RooToString
 @RooEntity
 public class Patient {
 

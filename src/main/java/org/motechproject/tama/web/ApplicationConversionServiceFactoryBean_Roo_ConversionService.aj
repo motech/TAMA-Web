@@ -3,7 +3,11 @@
 
 package org.motechproject.tama.web;
 
+import java.lang.String;
+import org.motechproject.tama.domain.Brand;
+import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.domain.Doctor;
+import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
@@ -13,10 +17,13 @@ import org.springframework.format.FormatterRegistry;
 privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService {
     
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
+        registry.addConverter(new BrandConverter());
+        registry.addConverter(new CompanyConverter());
         registry.addConverter(new DoctorConverter());
+        registry.addConverter(new DrugConverter());
         registry.addConverter(new GenderConverter());
-        registry.addConverter(new PatientConverter());
         registry.addConverter(new IVRLanguageConverter());
+        registry.addConverter(new PatientConverter());
     }
     
     public void ApplicationConversionServiceFactoryBean.afterPropertiesSet() {
@@ -24,9 +31,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         installLabelConverters(getObject());
     }
     
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.BrandConverter implements Converter<Brand, String>  {
+        public String convert(Brand brand) {
+            return new StringBuilder().append(brand.getName()).toString();
+        }
+        
+    }
+    
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.CompanyConverter implements Converter<Company, String>  {
+        public String convert(Company company) {
+            return new StringBuilder().append(company.getName()).toString();
+        }
+        
+    }
+    
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DoctorConverter implements Converter<Doctor, String>  {
         public String convert(Doctor doctor) {
             return new StringBuilder().append(doctor.getDoctorId()).append(" ").append(doctor.getFirstName()).append(" ").append(doctor.getLastName()).toString();
+        }
+        
+    }
+    
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DrugConverter implements Converter<Drug, String>  {
+        public String convert(Drug drug) {
+            return new StringBuilder().append(drug.getName()).toString();
         }
         
     }
@@ -37,17 +65,17 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         }
         
     }
-
+    
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.IVRLanguageConverter implements Converter<IVRLanguage, String>  {
-        public String convert(IVRLanguage ivrLanguage) {
-            return new StringBuilder().append(ivrLanguage.getName()).toString();
+        public String convert(IVRLanguage iVRLanguage) {
+            return new StringBuilder().append(iVRLanguage.getName()).toString();
         }
-
+        
     }
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.PatientConverter implements Converter<Patient, String>  {
         public String convert(Patient patient) {
-            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).append(" ").append(patient.getTravelTimeToClinicInDays()).toString();
+            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getPasscode()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).toString();
         }
         
     }

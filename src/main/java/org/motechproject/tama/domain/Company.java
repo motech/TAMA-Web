@@ -7,8 +7,8 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 
 @RooJavaBean
 @RooEntity
-public class Gender {
+public class Company {
 
     @NotNull
-    private String type;
+    private String name;
 }
