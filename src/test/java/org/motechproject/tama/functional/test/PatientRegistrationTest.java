@@ -11,6 +11,7 @@ import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowPatientPage;
+import org.motechproject.tama.functional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class PatientRegistrationTest {
     @Test
     public void testSuccessfulPatientRegistration() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        ShowPatientPage showPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
+        ShowPatientPage showPatientPage = PageFactory.initElements(WebDriverFactory.getInstance(), LoginPage.class).
                 loginWithCorrectUserNamePassword().
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
@@ -31,21 +32,4 @@ public class PatientRegistrationTest {
         Assert.assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
         Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
     }
-
-    @Autowired
-    protected WebDriver webDriver;
-
-    public WebDriver getWebDriver() {
-        return webDriver;
-    }
-
-    public void setWebDriver(WebDriver webDriver) {
-        this.webDriver = webDriver;
-    }
-
-    @After
-    public void tearDown(){
-        this.webDriver.quit();
-    }
-
 }

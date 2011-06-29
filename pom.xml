@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.motechproject.tama</groupId>
     <artifactId>tama</artifactId>
@@ -20,6 +21,7 @@
             <id>smoke</id>
             <properties>
                 <jetty.port>9887</jetty.port>
+                <web.driver>htmlunit</web.driver> <!--firefox, ie, htmlunit-->
             </properties>
             <build>
                 <plugins>
@@ -64,6 +66,10 @@
                                     <name>jetty.port</name>
                                     <value>${jetty.port}</value>
                                 </property>
+                                <property>
+                                    <name>web.driver</name>
+                                    <value>${web.driver}</value>
+                                </property>
                             </systemProperties>
                             <includes>
                                 <include>**/functional/**/*Test.java</include>
@@ -73,14 +79,16 @@
                     </plugin>
                     <plugin>
                         <groupId>org.mortbay.jetty</groupId>
-
                         <artifactId>jetty-maven-plugin</artifactId>
-
                         <configuration>
                             <systemProperties>
                                 <systemProperty>
                                     <name>jetty.port</name>
                                     <value>${jetty.port}</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>web.driver</name>
+                                    <value>${web.driver}</value>
                                 </systemProperty>
                             </systemProperties>
                             <daemon>true</daemon>
@@ -111,8 +119,7 @@
     <repositories>
         <repository>
             <id>spring-maven-release</id>
-            <name>Spring Mav
-                en Release Repository
+            <name>Spring Maven Release Repository
             </name>
             <url>http://maven.springframework.org/release</url>
         </repository>
@@ -539,7 +546,7 @@
             <artifactId>de.saxsys.roo.equals.annotations</artifactId>
             <version>1.2.1</version>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
