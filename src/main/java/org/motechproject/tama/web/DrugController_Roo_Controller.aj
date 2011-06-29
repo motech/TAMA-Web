@@ -42,7 +42,7 @@ privileged aspect DrugController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String DrugController.show(@PathVariable("id") Long id, Model uiModel) {
+    public String DrugController.show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("drug", Drug.findDrug(id));
         uiModel.addAttribute("itemId", id);
         return "drugs/show";
@@ -73,13 +73,13 @@ privileged aspect DrugController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String DrugController.updateForm(@PathVariable("id") Long id, Model uiModel) {
+    public String DrugController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("drug", Drug.findDrug(id));
         return "drugs/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String DrugController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String DrugController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         Drug.findDrug(id).remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());

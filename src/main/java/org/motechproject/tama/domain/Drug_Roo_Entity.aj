@@ -5,11 +5,19 @@ package org.motechproject.tama.domain;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.tama.repository.Drugs;
+import org.springframework.beans.factory.annotation.Autowired;
+
 privileged aspect Drug_Roo_Entity {
     
 	declare parents : Drug extends CouchDocument;
+
+	@Autowired
+	transient Drugs Drug.drugs; 
     
     public void Drug.persist() {
+    	this.drugs.add(this);
     }
     
     public void Drug.remove() {
@@ -33,12 +41,24 @@ privileged aspect Drug_Roo_Entity {
 		return null;
     }
     
-    public static Drug Drug.findDrug(Long id) {
-		return null;
+    public static Drugs drugs(){
+    	return new Drug().drugs;
+    }
+    
+    public static Drug Drug.findDrug(String id) {
+		return drugs().get(id);
     }
     
     public static List<Drug> Drug.findDrugEntries(int firstResult, int maxResults) {
 		return null;
     }
-    
+
+    @JsonIgnore
+	public Drugs Drug.getDrugs() {
+		return drugs;
+	}
+
+	public void Drug.setDrugs(Drugs drugs) {
+		this.drugs = drugs;
+	}
 }
