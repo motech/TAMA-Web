@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_org_motechproject_tama_domain_IVRLanguage" items="${ivrlanguages}" z="j7vRhn4948e2SsKha3yLWIDsuLU=">
+        <table:table data="${ivrlanguages}" id="l_org_motechproject_tama_domain_IVRLanguage" path="/ivrlanguages" z="8012qqN8Zd6tV0dAokZSBCK2VlE=">
+            <table:column id="c_org_motechproject_tama_domain_IVRLanguage_name" property="name" maxLength="20" z="NG5Ktpd1ViX8r72AgD4fP/sydKg="/>
+        </table:table>
+    </page:list>
+</div>

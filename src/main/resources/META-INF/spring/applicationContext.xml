@@ -67,6 +67,9 @@
     <bean id="genders" class="org.motechproject.tama.repository.Genders">
         <constructor-arg ref="tama-web"/>
     </bean>
+    <bean id="ivrlanguages" class="org.motechproject.tama.repository.IVRLanguages">
+        <constructor-arg ref="tama-web"/>
+    </bean>
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
             <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
