@@ -32,12 +32,14 @@ privileged aspect BrandController_Roo_Controller {
         }
         uiModel.asMap().clear();
         brand.persist();
-        return "redirect:/brands/" + encodeUrlPathSegment(brand.getId().toString(), httpServletRequest);
+        //TODO we might not need controller for Brand it has to be persisted along with the drug.
+        return null;
+//        return "redirect:/brands/" + encodeUrlPathSegment(brand.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String BrandController.createForm(Model uiModel) {
-        uiModel.addAttribute("brand", new Brand());
+        uiModel.addAttribute("brand", new Brand(""));
         return "brands/create";
     }
     
@@ -69,7 +71,9 @@ privileged aspect BrandController_Roo_Controller {
         }
         uiModel.asMap().clear();
         brand.merge();
-        return "redirect:/brands/" + encodeUrlPathSegment(brand.getId().toString(), httpServletRequest);
+        //TODO we may not need separate controller for Brand, it has to be persisted along with the Drug
+        return null;
+//        return "redirect:/brands/" + encodeUrlPathSegment(brand.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)

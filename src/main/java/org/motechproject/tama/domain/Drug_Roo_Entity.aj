@@ -23,11 +23,11 @@ privileged aspect Drug_Roo_Entity {
     
     public void Drug.remove() {
         this.drugs.remove(this);
-
     }
     
     public Drug Drug.merge() {
-		return null;
+		drugs.update(this);
+		return this;
     }
     
     public static long Drug.countDrugs() {

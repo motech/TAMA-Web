@@ -19,4 +19,12 @@ public class Drug {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Brand> brands = new HashSet<Brand>();
+
+	public void addBrand(Brand brand) {
+		brands.add(brand);
+	}
+
+	public void removeBrand(Brand brand) {
+		brands.remove(brand);
+	}
 }

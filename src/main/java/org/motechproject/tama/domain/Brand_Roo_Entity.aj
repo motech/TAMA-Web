@@ -7,7 +7,7 @@ import java.util.List;
 
 privileged aspect Brand_Roo_Entity {
 	
-	declare parents : Brand extends CouchDocument;
+	declare parents : Brand extends BaseEntity;
     
     public void Brand.persist() {
     }
