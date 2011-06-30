@@ -1,32 +1,34 @@
 package org.motechproject.tama.unit.domain.patient;
 
+import java.util.Calendar;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
 import junit.framework.Assert;
-import org.hibernate.validator.HibernateValidator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import javax.validation.ConstraintViolation;
-import java.util.Calendar;
-import java.util.Set;
 
 public class PatientTest {
 
-    private LocalValidatorFactoryBean localValidatorFactory;
+	private Validator validator;
 
     @Before
     public void setup() {
-        localValidatorFactory = new LocalValidatorFactoryBean();
-        localValidatorFactory.setProviderClass(HibernateValidator.class);
-        localValidatorFactory.afterPropertiesSet();
+    	ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    	validator = validatorFactory.getValidator();
     }
 
     @Test
     public void testNotNullConstraintFieldsOnPatient() {
         Patient nullPatient = PatientBuilder.startRecording().build();
-        Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(nullPatient);
+        Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(nullPatient);
         Assert.assertEquals(4, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "patientId", "may not be null");
         assertConstraintViolation(constraintViolations, "dateOfBirth", "may not be null");
@@ -38,7 +40,7 @@ public class PatientTest {
     public void testMobilePhoneNumberToMatchASpecificCriteria() {
         String invalidPhoneNumber = "2222";
         Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber(invalidPhoneNumber).build();
-        Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
+        Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
         Assert.assertEquals(1, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "Mobile Phone Number should be numeric and 10 digits long.");
     }
@@ -47,7 +49,7 @@ public class PatientTest {
     public void testPasscodeToMatchASpecificCriteria() {
         String invalidPasscode = "111";
         Patient patient = PatientBuilder.startRecording().withDefaults().withPasscode(invalidPasscode).build();
-        Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
+        Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
         Assert.assertEquals(1, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "passcode", "Passcode should be numeric and 4-10 digits long.");
     }
@@ -57,7 +59,7 @@ public class PatientTest {
         Calendar futureDate = Calendar.getInstance();
         futureDate.set(2020, 1, 20);
         Patient patient = PatientBuilder.startRecording().withDefaults().withDateOfBirth(futureDate.getTime()).build();
-        Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
+        Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
         Assert.assertEquals(1, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "dateOfBirth", "Date Of Birth must be in the past.");
     }
@@ -66,7 +68,7 @@ public class PatientTest {
     public void testPatientWithNoConstraintViolation() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
-        Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
+        Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
         Assert.assertTrue(constraintViolations == null || constraintViolations.isEmpty());
     }
 

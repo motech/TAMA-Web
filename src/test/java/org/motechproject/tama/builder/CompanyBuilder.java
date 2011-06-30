@@ -1,7 +1,6 @@
 package org.motechproject.tama.builder;
 
 import org.motechproject.tama.domain.Company;
-import org.motechproject.tama.domain.Gender;
 
 public class CompanyBuilder {
 

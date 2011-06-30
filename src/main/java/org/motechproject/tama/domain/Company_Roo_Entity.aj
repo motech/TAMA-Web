@@ -3,13 +3,12 @@
 
 package org.motechproject.tama.domain;
 
+import java.util.List;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.DocumentNotFoundException;
 import org.motechproject.tama.repository.Companies;
-import org.motechproject.tama.repository.Genders;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 privileged aspect Company_Roo_Entity {
 
