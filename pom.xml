@@ -21,10 +21,27 @@
             <id>smoke</id>
             <properties>
                 <jetty.port>9887</jetty.port>
-                <web.driver>htmlunit</web.driver> <!--firefox, ie, htmlunit-->
+                <web.driver>htmlunit</web.driver>
+                <!--firefox, ie, htmlunit-->
             </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.1.1</version>
+                        <executions>
+                            <execution>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>org.motechproject.tama.tools.SetupSeedData</mainClass>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>selenium-maven-plugin</artifactId>
