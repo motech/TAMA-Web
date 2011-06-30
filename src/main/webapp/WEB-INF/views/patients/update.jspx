@@ -7,11 +7,11 @@
             <field:input field="patientId" id="c_org_motechproject_tama_domain_patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
             <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
             <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
+            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE="/>
+            <field:select field="principalDoctor" id="c_org_motechproject_tama_domain_patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q="/>
             <field:select field="travelTimeToClinicInDays" id="c_org_motechproject_tama_domain_patient_travelTimeToClinicInDays" items="${daysInAMonth}" path="/daysInAMonth" z="user-managed"/>
             <field:select field="travelTimeToClinicInHours" id="c_org_motechproject_tama_domain_patient_travelTimeToClinicInHours" items="${hoursInADay}" path="/hoursInADay" z="user-managed"/>
             <field:select field="travelTimeToClinicInMinutes" id="c_org_motechproject_tama_domain_patient_travelTimeToClinicInMinutes" items="${minutesInAnHour}" path="/minutesInAnHour" z="user-managed"/>
-            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE="/>
-            <field:select field="principalDoctor" id="c_org_motechproject_tama_domain_patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q="/>
         </util:panel>
         <br />
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">

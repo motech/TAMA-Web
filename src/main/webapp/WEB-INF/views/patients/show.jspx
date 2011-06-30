@@ -8,21 +8,22 @@
             <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
             <br/>
             <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="s_org_motechproject_tama_domain_patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display field="gender" id="s_org_motechproject_tama_domain_patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
+            <br/>
+            <field:display field="principalDoctor" id="s_org_motechproject_tama_domain_patient_principalDoctor" object="${patient}" z="xGM8DAhXesd5SMbgvRK932oTGNI="/>
+            <br/>
             <field:display field="travelTimeToClinicInDays" id="s_org_motechproject_tama_domain_patient_travelTimeToClinicInDays" object="${patient}" z="user-managed"/>
             <br/>
             <field:display field="travelTimeToClinicInHours" id="s_org_motechproject_tama_domain_patient_travelTimeToClinicInHours" object="${patient}" z="user-managed"/>
             <br/>
             <field:display field="travelTimeToClinicInMinutes" id="s_org_motechproject_tama_domain_patient_travelTimeToClinicInMinutes" object="${patient}" z="user-managed"/>
-            <br/>
-            <field:display field="gender" id="s_org_motechproject_tama_domain_patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
-            <br/>
-            <field:display field="principalDoctor" id="s_org_motechproject_tama_domain_patient_principalDoctor" object="${patient}" z="xGM8DAhXesd5SMbgvRK932oTGNI="/>
         </util:panel>
         <br />
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
             <field:display field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" object="${patient}" />
             <br/>
             <field:display field="ivrLanguage" id="s_org_motechproject_tama_domain_patient_ivrLanguage" object="${patient}" />
+            <br/>
             <br/>
             <br/>
             <field:display field="reminderCall" id="c_org_motechproject_tama_domain_Patient_reminderCall" object="${patient}" />
