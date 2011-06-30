@@ -3,42 +3,72 @@
 
 package org.motechproject.tama.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.ektorp.DocumentNotFoundException;
+import org.motechproject.tama.repository.Companies;
+import org.motechproject.tama.repository.Genders;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 
 privileged aspect Company_Roo_Entity {
 
-    declare parents : Company extends CouchDocument;
-    
+    declare parents :Company extends CouchDocument;
+
+    @Autowired
+    transient Companies Company.companies;
+
     public void Company.persist() {
+        this.companies.add(this);
     }
-    
+
     public void Company.remove() {
+        this.companies.remove(this);
     }
-    
-    public void Company.flush() {
-    }
-    
+
     public void Company.clear() {
     }
-    
+
     public Company Company.merge() {
-    	return null;
+        this.setRevision(this.companies.get(this.getId()).getRevision());
+        this.companies.update(this);
+        return this;
     }
-    
+
     public static long Company.countCompanys() {
-    	return 0;
+        return company().count();
     }
-    
+
     public static List<Company> Company.findAllCompanys() {
-    	return null;
+        return company().getAll();
     }
-    
-    public static Company Company.findCompany(Long id) {
-    	return null;
+
+    public static Company Company.findCompany(String id) {
+        Company company = null;
+        try {
+            company = company().get(id);
+        } catch (DocumentNotFoundException e) {
+
+        }
+        return company;
     }
-    
+
     public static List<Company> Company.findCompanyEntries(int firstResult, int maxResults) {
-    	return null;
+        return company().getAll();
     }
-    
+
+    public static final Companies Company.company() {
+        return new Company().companies;
+    }
+
+    @JsonIgnore
+    public Companies Company.getCompanies() {
+        return this.companies;
+    }
+
+    public void Company.setCompanies(Companies companies) {
+        this.companies = companies;
+    }
+
+
 }

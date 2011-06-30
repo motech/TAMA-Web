@@ -73,7 +73,10 @@
     <bean id="drugs" class="org.motechproject.tama.repository.Drugs">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
-    
+    <bean id="companies" class="org.motechproject.tama.repository.Companies">
+        <constructor-arg ref="couchDbConnector"/>
+    </bean>
+
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
             <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>

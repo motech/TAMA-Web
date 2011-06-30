@@ -26,23 +26,23 @@ privileged aspect Patient_Roo_Entity {
     public void Patient.persist() {
         this.patients.add(this);
     }
-    
+
     public void Patient.remove() {
         this.patients.remove(this);
     }
-    
+
     public void Patient.flush() {
     }
-    
+
     public void Patient.clear() {
     }
-    
+
     public Patient Patient.merge() {
        this.setRevision(this.patients.get(this.getId()).getRevision());
        this.patients.update(this);
        return this;
     }
-    
+
 
     public static final Patients Patient.patients() {
         Patients patients = new Patient().patients;
@@ -52,7 +52,7 @@ privileged aspect Patient_Roo_Entity {
     public static long Patient.countPatients() {
         return patients().getAll().size();
     }
-    
+
     public static List<Patient> Patient.findAllPatients() {
        return patients().getAll();
     }
@@ -61,7 +61,7 @@ privileged aspect Patient_Roo_Entity {
         if (id == null) return null;
         return patients().get(id);
     }
-    
+
     public static List<Patient> Patient.findPatientEntries(int firstResult, int maxResults) {
          return patients().getAll();
     }

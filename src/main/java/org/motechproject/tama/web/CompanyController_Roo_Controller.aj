@@ -3,23 +3,17 @@
 
 package org.motechproject.tama.web;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.String;
-import java.util.Collection;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import org.motechproject.tama.domain.Company;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 
 privileged aspect CompanyController_Roo_Controller {
     
@@ -41,7 +35,7 @@ privileged aspect CompanyController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String CompanyController.show(@PathVariable("id") Long id, Model uiModel) {
+    public String CompanyController.show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("company", Company.findCompany(id));
         uiModel.addAttribute("itemId", id);
         return "companys/show";
@@ -72,13 +66,13 @@ privileged aspect CompanyController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String CompanyController.updateForm(@PathVariable("id") Long id, Model uiModel) {
+    public String CompanyController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("company", Company.findCompany(id));
         return "companys/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String CompanyController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String CompanyController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         Company.findCompany(id).remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
