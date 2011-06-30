@@ -40,7 +40,7 @@ public class PatientTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber(invalidPhoneNumber).build();
         Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
         Assert.assertEquals(1, constraintViolations.size());
-        assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "Mobile Phone Number be numeric and 10 digits long.");
+        assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "Mobile Phone Number should be numeric and 10 digits long.");
     }
 
     @Test
