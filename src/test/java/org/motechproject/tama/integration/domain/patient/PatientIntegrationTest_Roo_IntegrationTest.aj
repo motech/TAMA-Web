@@ -6,29 +6,29 @@ package org.motechproject.tama.integration.domain.patient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.unit.domain.patient.PatientTest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     
-    declare @type: PatientTest: @RunWith(SpringJUnit4ClassRunner.class);
+    declare @type: PatientIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
     
-    declare @type: PatientTest: @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml");
+    declare @type: PatientIntegrationTest: @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml");
     
     @Autowired
-    private PatientDataOnDemand PatientTest.dod;
+    private PatientDataOnDemand PatientIntegrationTest.dod;
     
     @Test
-    public void PatientTest.testCountPatients() {
+    public void PatientIntegrationTest.testCountPatients() {
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", dod.getRandomPatient());
         long count = Patient.countPatients();
         org.junit.Assert.assertTrue("Counter for 'Patient' incorrectly reported there were no entries", count > 0);
     }
     
     @Test
-    public void PatientTest.testFindPatient() {
+    public void PatientIntegrationTest.testFindPatient() {
         Patient obj = dod.getRandomPatient();
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", obj);
         String id = obj.getId();
@@ -39,7 +39,7 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void PatientTest.testFindAllPatients() {
+    public void PatientIntegrationTest.testFindAllPatients() {
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", dod.getRandomPatient());
         long count = Patient.countPatients();
         org.junit.Assert.assertTrue("Too expensive to perform a find all test for 'Patient', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
@@ -49,7 +49,7 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void PatientTest.testFindPatientEntries() {
+    public void PatientIntegrationTest.testFindPatientEntries() {
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", dod.getRandomPatient());
         long count = Patient.countPatients();
         if (count > 20) count = 20;
@@ -59,7 +59,7 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void PatientTest.testFlush() {
+    public void PatientIntegrationTest.testFlush() {
         Patient obj = dod.getRandomPatient();
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", obj);
         String id = obj.getId();
@@ -73,7 +73,7 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void PatientTest.testMerge() {
+    public void PatientIntegrationTest.testMerge() {
         Patient obj = dod.getRandomPatient();
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", obj);
         String id = obj.getId();
@@ -88,7 +88,7 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void PatientTest.testPersist() {
+    public void PatientIntegrationTest.testPersist() {
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", dod.getRandomPatient());
         Patient obj = dod.getNewTransientPatient(Integer.MAX_VALUE);
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to provide a new transient entity", obj);
@@ -99,7 +99,7 @@ privileged aspect PatientIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test(expected = org.ektorp.DocumentNotFoundException.class)
-    public void PatientTest.testRemove() {
+    public void PatientIntegrationTest.testRemove() {
         Patient obj = dod.getRandomPatient();
         org.junit.Assert.assertNotNull("Data on demand for 'Patient' failed to initialize correctly", obj);
         String id = obj.getId();
