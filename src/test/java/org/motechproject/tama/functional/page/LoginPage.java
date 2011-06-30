@@ -7,13 +7,15 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
 public class LoginPage {
-
-
     public static final String LOGIN_URL = "http://localhost:"+System.getProperty("jetty.port","8080")+"/tama/login";
-
     public static final String USERNAME_ID = "j_username";
     public static final String PASSWORD_ID = "j_password";
     public static final String ERROR_MESSAGE_XPATH = "//div[@class='errors']/p";
+    public static final String INCORRECT_USERNAME = "Incorrect";
+    public static final String INCORRECT_PASSWORD = "Incorrect";
+    public static final String CORRECT_USERNAME = "admin";
+    public static final String CORRECT_PASSWORD = "admin";
+    public static final String FAILURE_MESSAGE = "Your login attempt was not successful, try again. Reason: Bad credentials .";
 
     @FindBy(how = How.ID, using = USERNAME_ID)
     private WebElement userName;
@@ -21,16 +23,6 @@ public class LoginPage {
     private WebElement password;
     @FindBy(how = How.XPATH, using = ERROR_MESSAGE_XPATH)
     private WebElement errorMessage;
-
-    public static final String INCORRECT_USERNAME = "Incorrect";
-
-    public static final String INCORRECT_PASSWORD = "Incorrect";
-    public static final String CORRECT_USERNAME = "admin";
-
-    public static final String CORRECT_PASSWORD = "admin";
-
-    public static final String FAILURE_MESSAGE = "Your login attempt was not successful, try again. Reason: Bad credentials .";
-
 
     private WebDriver webDriver;
 

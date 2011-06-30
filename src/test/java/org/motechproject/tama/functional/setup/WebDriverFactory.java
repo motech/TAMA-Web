@@ -57,7 +57,6 @@ public class WebDriverFactory {
 
     public static WebDriver getInstance() {
         String name = System.getProperty(WEB_DRIVER, HTMLUNIT);
-        WebDriver give = Driver.enumFor(name).give();
-        return give;
+        return Driver.enumFor(name).give();
     }
 }

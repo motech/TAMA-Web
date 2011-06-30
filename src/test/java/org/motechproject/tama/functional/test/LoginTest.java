@@ -3,6 +3,7 @@ package org.motechproject.tama.functional.test;
 import junit.framework.Assert;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.functional.page.HomePage;
@@ -17,15 +18,28 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
 public class LoginTest {
+
+    private WebDriver webDriver;
+
+    @Before
+    public void setUp() {
+        webDriver = WebDriverFactory.getInstance();
+    }
+
     @Test
     public void testLoginFailure() {
-        LoginPage page = PageFactory.initElements(WebDriverFactory.getInstance(), LoginPage.class).loginWithIncorrectUserNamePassword();
+        LoginPage page = PageFactory.initElements(webDriver, LoginPage.class).loginWithIncorrectUserNamePassword();
         Assert.assertEquals(LoginPage.FAILURE_MESSAGE, page.errorMessage());
     }
 
     @Test
     public void testLoginSuccess() {
-        HomePage homePage = PageFactory.initElements(WebDriverFactory.getInstance(), LoginPage.class).loginWithCorrectUserNamePassword();
+        HomePage homePage = PageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectUserNamePassword();
         Assert.assertEquals(HomePage.WELCOME_MESSAGE, homePage.getWelcomeMessage());
+    }
+
+    @After
+    public void tearDown() {
+        webDriver.quit();
     }
 }
