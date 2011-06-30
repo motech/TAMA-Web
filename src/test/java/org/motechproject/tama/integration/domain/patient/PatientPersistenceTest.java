@@ -91,6 +91,8 @@ public class PatientPersistenceTest{
 
         patient.persist();
         verify(mockPatients).add(patient);
+        Assert.assertEquals(Patient.Status.Inactive, patient.getStatus());
+        Assert.assertEquals(Patient.ReminderCall.Daily, patient.getReminderCall());
     }
 
     @Test

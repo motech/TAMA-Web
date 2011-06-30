@@ -33,6 +33,14 @@ privileged aspect Patient_Roo_JavaBean {
         this.reminderCall = reminderCall;
     }
 
+    public Status Patient.getStatus() {
+        return this.status;
+    }
+
+    public void Patient.setStatus(Status status) {
+        this.status = status;
+    }
+
     public String Patient.getMobilePhoneNumber() {
         return this.mobilePhoneNumber;
     }

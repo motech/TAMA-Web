@@ -32,5 +32,6 @@
         <br />
         <br />
         <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
+        <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
     </page:show>
 </div>

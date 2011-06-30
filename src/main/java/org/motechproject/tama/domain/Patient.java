@@ -1,6 +1,11 @@
 package org.motechproject.tama.domain;
 
-import java.util.Date;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.TAMAMessages;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.roo.addon.entity.RooEntity;
+import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -8,13 +13,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.TAMAMessages;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
+import java.util.Date;
 
 @RooJavaBean
 @RooEntity
@@ -39,6 +38,8 @@ public class Patient {
 
     private ReminderCall reminderCall = ReminderCall.Daily;
 
+    private Status status = Status.Inactive;
+
     private int travelTimeToClinicInDays;
 
     private int travelTimeToClinicInHours;
@@ -59,5 +60,9 @@ public class Patient {
 
     public enum ReminderCall {
         Daily, Weekly
+    }
+
+    public enum Status {
+        Inactive, Active
     }
 }
