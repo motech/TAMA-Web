@@ -4,6 +4,8 @@
 package org.motechproject.tama.domain;
 
 import java.lang.String;
+import java.util.Set;
+import java.util.Date;
 
 privileged aspect Dosage_Roo_JavaBean {
     
