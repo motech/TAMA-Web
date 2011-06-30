@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="regimens/list">
+        <put-attribute name="body" value="/WEB-INF/views/regimens/list.jspx"/>
+    </definition>
+<definition extends="default" name="regimens/show">
+        <put-attribute name="body" value="/WEB-INF/views/regimens/show.jspx"/>
+    </definition>
+<definition extends="default" name="regimens/create">
+        <put-attribute name="body" value="/WEB-INF/views/regimens/create.jspx"/>
+    </definition>
+<definition extends="default" name="regimens/update">
+        <put-attribute name="body" value="/WEB-INF/views/regimens/update.jspx"/>
+    </definition>
+</tiles-definitions>

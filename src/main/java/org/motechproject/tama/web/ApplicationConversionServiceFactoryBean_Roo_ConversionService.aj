@@ -7,10 +7,14 @@ import java.lang.String;
 import org.motechproject.tama.domain.Brand;
 import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.domain.Doctor;
+import org.motechproject.tama.domain.DosageType;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
+import org.motechproject.tama.domain.MealAdviceType;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.Regimen;
+import org.motechproject.tama.domain.TreatmentAdvice;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 
@@ -20,10 +24,14 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(new BrandConverter());
         registry.addConverter(new CompanyConverter());
         registry.addConverter(new DoctorConverter());
+        registry.addConverter(new DosageTypeConverter());
         registry.addConverter(new DrugConverter());
         registry.addConverter(new GenderConverter());
         registry.addConverter(new IVRLanguageConverter());
+        registry.addConverter(new MealAdviceTypeConverter());
         registry.addConverter(new PatientConverter());
+        registry.addConverter(new RegimenConverter());
+        registry.addConverter(new TreatmentAdviceConverter());
     }
     
     public void ApplicationConversionServiceFactoryBean.afterPropertiesSet() {
@@ -33,7 +41,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.BrandConverter implements Converter<Brand, String>  {
         public String convert(Brand brand) {
-            return new StringBuilder().append(brand.getName()).toString();
+            return new StringBuilder().append(brand.getName()).append(" ").append(brand.getCompanyId()).toString();
         }
         
     }
@@ -48,6 +56,13 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DoctorConverter implements Converter<Doctor, String>  {
         public String convert(Doctor doctor) {
             return new StringBuilder().append(doctor.getDoctorId()).append(" ").append(doctor.getFirstName()).append(" ").append(doctor.getLastName()).toString();
+        }
+        
+    }
+    
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DosageTypeConverter implements Converter<DosageType, String>  {
+        public String convert(DosageType dosageType) {
+            return new StringBuilder().append(dosageType.getType()).toString();
         }
         
     }
@@ -73,9 +88,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         
     }
     
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.MealAdviceTypeConverter implements Converter<MealAdviceType, String>  {
+        public String convert(MealAdviceType mealAdviceType) {
+            return new StringBuilder().append(mealAdviceType.getType()).toString();
+        }
+        
+    }
+    
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.PatientConverter implements Converter<Patient, String>  {
         public String convert(Patient patient) {
             return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getPasscode()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).toString();
+        }
+        
+    }
+    
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.RegimenConverter implements Converter<Regimen, String>  {
+        public String convert(Regimen regimen) {
+            return new StringBuilder().append(regimen.getName()).toString();
+        }
+        
+    }
+    
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.TreatmentAdviceConverter implements Converter<TreatmentAdvice, String>  {
+        public String convert(TreatmentAdvice treatmentAdvice) {
+            return new StringBuilder().append(treatmentAdvice.getPatientId()).append(" ").append(treatmentAdvice.getRegimenId()).append(" ").append(treatmentAdvice.getRegimenCompositionId()).toString();
         }
         
     }

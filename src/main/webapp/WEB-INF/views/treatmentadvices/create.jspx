@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_org_motechproject_tama_domain_TreatmentAdvice" modelAttribute="treatmentAdvice" path="/treatmentadvices" render="${empty dependencies}" z="fHi3nZ2yXf8qzpuAArmXy4h8ghE=">
+        <field:input field="patientId" id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" required="true" z="8+OQi7Ordem6EqER6AqqloC4FfY="/>
+        <field:input field="regimenId" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenId" required="true" z="PuavmBdA0OmJPx2n9RG4rsz9HKY="/>
+        <field:input field="regimenCompositionId" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenCompositionId" required="true" z="+nDMmuf9MrboCUrECP9UK9dQ0Sg="/>
+        <field:select field="drugDosages" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" itemValue="id" items="${drugdosages}" multiple="true" path="/drugdosages" z="Hzh8H6BubuDUgPyMKWPB1PsUjNw="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
+</div>

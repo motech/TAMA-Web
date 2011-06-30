@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_org_motechproject_tama_domain_Regimen" object="${regimen}" path="/regimens" z="1YBmus0mDcGgvIYtYh1n4i/t0zw=">
+        <field:display field="name" id="s_org_motechproject_tama_domain_Regimen_name" object="${regimen}" z="Kzr25MGh8cxCR2BEIaPzt7BkdkI="/>
+        <field:display field="compositions" id="s_org_motechproject_tama_domain_Regimen_compositions" object="${regimen}" z="5e+nI4PQXt6g9Bx5lHjshKXOy+s="/>
+    </page:show>
+</div>

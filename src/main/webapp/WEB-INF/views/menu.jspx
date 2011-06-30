@@ -25,5 +25,21 @@
             <menu:item id="i_drug_list" messageCode="global_menu_list" url="/drugs?page=1&amp;size=${empty param.size ? 10 : param.size}" z="OQalj7zhuCYpOCcxgoJXf+SbvJc="/>
         </menu:category>
         -->
+        <menu:category id="c_dosagetype" z="+OTsN0MWYbnZpiQ+k9BbJdePdnc=">
+            <menu:item id="i_dosagetype_new" messageCode="global_menu_new" url="/dosagetypes?form" z="MCnbyGi27lSYVceC7Ah0lft19iw="/>
+            <menu:item id="i_dosagetype_list" messageCode="global_menu_list" url="/dosagetypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="eIc4q2Oh/6kKYkGxtRHgnHtG+Zc="/>
+        </menu:category>
+        <menu:category id="c_regimen" z="gns5z6AluKmFGUMdGfVUsusGMhg=">
+            <menu:item id="i_regimen_new" messageCode="global_menu_new" url="/regimens?form" z="NAgZ0FCeHZVUVVrQcA5PwWLwyPk="/>
+            <menu:item id="i_regimen_list" messageCode="global_menu_list" url="/regimens?page=1&amp;size=${empty param.size ? 10 : param.size}" z="WStMd0PIcHDp/26Aav30fZBtYjc="/>
+        </menu:category>
+        <menu:category id="c_mealadvicetype" z="AhG1ju+ndAvlkP5PBDo/bchT5cU=">
+            <menu:item id="i_mealadvicetype_new" messageCode="global_menu_new" url="/mealadvicetypes?form" z="12JENMHEbWsYPfTcdJPSwOkP7gk="/>
+            <menu:item id="i_mealadvicetype_list" messageCode="global_menu_list" url="/mealadvicetypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="VWYQGGWjIgeh++JgtxiolJ21lUU="/>
+        </menu:category>
+        <menu:category id="c_treatmentadvice" z="DRhFTtIld5U9o40YRDVyHVloZgU=">
+            <menu:item id="i_treatmentadvice_new" messageCode="global_menu_new" url="/treatmentadvices?form" z="DwtIKdPoWdCos22YcWXVucPJOMc="/>
+            <menu:item id="i_treatmentadvice_list" messageCode="global_menu_list" url="/treatmentadvices?page=1&amp;size=${empty param.size ? 10 : param.size}" z="FVSVPNhQR/toTvs27diBRupihwI="/>
+        </menu:category>
     </menu:menu>
 </div>
