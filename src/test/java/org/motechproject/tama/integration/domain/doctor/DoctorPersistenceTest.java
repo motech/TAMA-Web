@@ -1,3 +1,4 @@
+
 package org.motechproject.tama.integration.domain.doctor;
 
 import static org.mockito.Mockito.mock;
@@ -19,7 +20,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Doctor.class)
-
 public class DoctorPersistenceTest {
     @Test
     public void testFindAllDoctors() {

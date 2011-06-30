@@ -6,6 +6,7 @@ package org.motechproject.tama.domain;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.ektorp.DocumentNotFoundException;
 import org.motechproject.tama.repository.Drugs;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,19 +15,15 @@ privileged aspect Drug_Roo_Entity {
 	declare parents : Drug extends CouchDocument;
 
 	@Autowired
-	transient Drugs Drug.drugs; 
+    transient Drugs Drug.drugs;
     
     public void Drug.persist() {
     	this.drugs.add(this);
     }
     
     public void Drug.remove() {
-    }
-    
-    public void Drug.flush() {
-    }
-    
-    public void Drug.clear() {
+        this.drugs.remove(this);
+
     }
     
     public Drug Drug.merge() {
@@ -38,19 +35,26 @@ privileged aspect Drug_Roo_Entity {
     }
     
     public static List<Drug> Drug.findAllDrugs() {
-		return null;
+		return drugs().getAll();
     }
-    
-    public static Drugs drugs(){
+
+    public static Drugs Drug.drugs() {
     	return new Drug().drugs;
     }
-    
+
     public static Drug Drug.findDrug(String id) {
-		return drugs().get(id);
+        Drug drug = null;
+        try {
+            drug = drugs().get(id);
+        } catch (DocumentNotFoundException e) {
+            //TODO just log that document not found
+        }
+        return drug;
     }
     
     public static List<Drug> Drug.findDrugEntries(int firstResult, int maxResults) {
-		return null;
+        //TODO pagination is not yet handled but this method is being used by controllers
+		return drugs().getAll();
     }
 
     @JsonIgnore

@@ -1,6 +1,9 @@
 package org.motechproject.tama.integration.domain;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -39,5 +42,35 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
 		Assert.assertEquals(1, numberOfDrugs);
 		
 		delete(drug);
+	}
+	
+	@Test
+	public void shouldFindAllDrugs() {
+		
+		Drug drugOne = new Drug();
+		Drug drugTwo = new Drug();
+		
+		List<Drug> drugs = Drug.findAllDrugs();
+		Assert.assertTrue(drugs.isEmpty());
+		
+		drugOne.persist();
+		drugTwo.persist();
+		drugs = Drug.findAllDrugs();
+		
+		Assert.assertEquals(2,drugs.size());
+		Assert.assertTrue(drugs.containsAll(Arrays.asList(drugOne, drugTwo)));
+
+        delete(drugOne);
+        delete(drugTwo);
+	}
+	@Test
+	public void shouldRemoveDrugs() {
+
+		Drug drug = new Drug();
+		drug.persist();
+
+        String id = drug.getId();
+        drug.remove();
+        Assert.assertNull(Drug.findDrug(id));
 	}
 }
