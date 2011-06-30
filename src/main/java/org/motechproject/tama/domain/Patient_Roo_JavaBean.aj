@@ -85,6 +85,19 @@ privileged aspect Patient_Roo_JavaBean {
         this.genderId = gender.getId();
     }
 
+    public Date Patient.getRegistrationDate() {
+        if (this.registrationDate == null) {
+            this.registrationDate = new Date();
+        }
+        return this.registrationDate;
+    }
+
+    public void Patient.setRegistrationDate(Date registrationDate) {
+        if (registrationDate != null) {
+            this.registrationDate = registrationDate;
+        }
+    }
+
     @JsonIgnore
     public IVRLanguage Patient.getIvrLanguage() {
        if (this.ivrLanguage != null) return this.ivrLanguage;

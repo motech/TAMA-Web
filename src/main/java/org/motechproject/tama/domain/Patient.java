@@ -55,6 +55,8 @@ public class Patient {
     @JsonIgnore
     private Doctor principalDoctor;
 
+    private Date registrationDate;
+
     public enum ReminderCall {
         Daily, Weekly
     }

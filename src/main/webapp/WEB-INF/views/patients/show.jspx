@@ -29,5 +29,7 @@
             <br/>
         </util:panel>
         <br />
+        <br />
+        <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
     </page:show>
 </div>
