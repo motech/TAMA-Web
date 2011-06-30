@@ -20,4 +20,7 @@ public class Regimen {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<RegimenComposition> compositions = new HashSet<RegimenComposition>();
+
+    @NotNull
+    private String regimenDisplayName;
 }

@@ -5,5 +5,6 @@
     <page:show id="ps_org_motechproject_tama_domain_Regimen" object="${regimen}" path="/regimens" z="1YBmus0mDcGgvIYtYh1n4i/t0zw=">
         <field:display field="name" id="s_org_motechproject_tama_domain_Regimen_name" object="${regimen}" z="Kzr25MGh8cxCR2BEIaPzt7BkdkI="/>
         <field:display field="compositions" id="s_org_motechproject_tama_domain_Regimen_compositions" object="${regimen}" z="5e+nI4PQXt6g9Bx5lHjshKXOy+s="/>
+        <field:display field="regimenDisplayName" id="s_org_motechproject_tama_domain_Regimen_regimenDisplayName" object="${regimen}" z="SvCez1Iiy/cie5/VKksiJ2ZBrHc="/>
     </page:show>
 </div>

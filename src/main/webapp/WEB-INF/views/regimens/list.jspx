@@ -6,6 +6,7 @@
         <table:table data="${regimens}" id="l_org_motechproject_tama_domain_Regimen" path="/regimens" z="/RXKWRJHEI8QybZpWNL2iZG6wls=">
             <table:column id="c_org_motechproject_tama_domain_Regimen_name" property="name" z="d/zbrJSPwisIZ1eK2gTWdCAzwtQ="/>
             <table:column id="c_org_motechproject_tama_domain_Regimen_compositions" property="compositions" z="JKJ7buKApCsWc3UORC1euWR+oqE="/>
+            <table:column id="c_org_motechproject_tama_domain_Regimen_regimenDisplayName" property="regimenDisplayName" z="WOaHiRDu68a10Qr+CNyhFRQRnXE="/>
         </table:table>
     </page:list>
 </div>

@@ -104,7 +104,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.RegimenConverter implements Converter<Regimen, String>  {
         public String convert(Regimen regimen) {
-            return new StringBuilder().append(regimen.getName()).toString();
+            return new StringBuilder().append(regimen.getName()).append(" ").append(regimen.getRegimenDisplayName()).toString();
         }
         
     }

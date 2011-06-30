@@ -5,6 +5,7 @@
     <form:create id="fc_org_motechproject_tama_domain_Regimen" modelAttribute="regimen" path="/regimens" render="${empty dependencies}" z="1Xxj+9Az722kZgLJzxZ5kWlyWVw=">
         <field:input field="name" id="c_org_motechproject_tama_domain_Regimen_name" required="true" z="67BQZ4sNERk/Ip5fb85Rg6Pstbo="/>
         <field:select field="compositions" id="c_org_motechproject_tama_domain_Regimen_compositions" itemValue="id" items="${regimencompositions}" multiple="true" path="/regimencompositions" z="zjGSIXadz9MWYGroICnZoJ3h9GY="/>
+        <field:input field="regimenDisplayName" id="c_org_motechproject_tama_domain_Regimen_regimenDisplayName" required="true" z="eBGGB5kWa1s5hFUSjTVHqRUjhRM="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_Regimen" render="${not empty dependencies}" z="HPBYoW1B30RcV6nw5oi9/m0suSo="/>
 </div>

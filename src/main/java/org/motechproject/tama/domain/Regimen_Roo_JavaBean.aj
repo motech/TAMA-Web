@@ -25,4 +25,12 @@ privileged aspect Regimen_Roo_JavaBean {
         this.compositions = compositions;
     }
     
+    public String Regimen.getRegimenDisplayName() {
+        return this.regimenDisplayName;
+    }
+    
+    public void Regimen.setRegimenDisplayName(String regimenDisplayName) {
+        this.regimenDisplayName = regimenDisplayName;
+    }
+    
 }
