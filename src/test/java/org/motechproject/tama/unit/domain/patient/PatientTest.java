@@ -67,7 +67,7 @@ public class PatientTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
         Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
-        Assert.assertTrue(constraintViolations.isEmpty());
+        Assert.assertTrue(constraintViolations == null || constraintViolations.isEmpty());
     }
 
     private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {
