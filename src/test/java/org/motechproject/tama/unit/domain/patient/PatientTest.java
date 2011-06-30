@@ -1,18 +1,16 @@
 package org.motechproject.tama.unit.domain.patient;
 
-import java.util.Calendar;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-
 import junit.framework.Assert;
-
 import org.hibernate.validator.HibernateValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
+import javax.validation.ConstraintViolation;
+import java.util.Calendar;
+import java.util.Set;
 
 public class PatientTest {
 
@@ -38,11 +36,11 @@ public class PatientTest {
 
     @Test
     public void testMobilePhoneNumberToMatchASpecificCriteria() {
-        String invalidPhoneNumber = "+001111111111";
+        String invalidPhoneNumber = "2222";
         Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber(invalidPhoneNumber).build();
         Set<ConstraintViolation<Patient>> constraintViolations = localValidatorFactory.validate(patient);
         Assert.assertEquals(1, constraintViolations.size());
-        assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "Mobile Phone Number should start with +91 and should be 10 digits long.");
+        assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "Mobile Phone Number be numeric and 10 digits long.");
     }
 
     @Test

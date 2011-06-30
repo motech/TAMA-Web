@@ -64,7 +64,7 @@ public class PatientBuilder {
     public PatientBuilder withDefaults(){
         return this.withPatientId("1234").
                 withDateOfBirth(new Date()).
-                withMobileNumber("+919765456789").
+                withMobileNumber("9765456789").
                 withPasscode("123456").
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).

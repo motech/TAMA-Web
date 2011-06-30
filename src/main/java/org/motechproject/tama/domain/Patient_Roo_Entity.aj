@@ -24,7 +24,6 @@ privileged aspect Patient_Roo_Entity {
     private String Patient.ivrLanguageId;
 
     public void Patient.persist() {
-        this.setRegistrationDate(Calendar.getInstance().getTime());
         this.patients.add(this);
     }
     

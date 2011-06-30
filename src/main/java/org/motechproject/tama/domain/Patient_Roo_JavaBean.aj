@@ -86,11 +86,16 @@ privileged aspect Patient_Roo_JavaBean {
     }
 
     public Date Patient.getRegistrationDate() {
+        if (this.registrationDate == null) {
+            this.registrationDate = new Date();
+        }
         return this.registrationDate;
     }
 
     public void Patient.setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
+        if (registrationDate != null) {
+            this.registrationDate = registrationDate;
+        }
     }
 
     @JsonIgnore

@@ -49,7 +49,7 @@ public class PatientPersistenceTest{
     public void testFindPatientWithValidId(){
         Patients mockPatients = mock(Patients.class);
         String dummyPatientId = "Dummy";
-        String mobileNumber = "+919876324678";
+        String mobileNumber = "9876324678";
         Patient testPatient = PatientBuilder.startRecording().
                 withPatientId(dummyPatientId).
                 withMobileNumber(mobileNumber).build();
