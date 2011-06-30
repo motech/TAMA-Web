@@ -80,7 +80,13 @@ privileged aspect Patient_Roo_JavaBean {
     public void Patient.setTravelTimeToClinicInMinutes(int travelTimeToClinicInMinutes) {
         this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
     }
-    
+
+    @JsonIgnore
+    public String Patient.getGenderType() {
+        if (this.getGender() != null) return this.getGender().getType();
+        return null;
+    }
+
     @JsonIgnore
     public Gender Patient.getGender() {
        if (this.gender != null) return this.gender;
