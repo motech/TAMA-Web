@@ -18,4 +18,5 @@ public class BrandTest {
 		Assert.assertTrue(brandOne.equals(brandOne));
 		Assert.assertTrue(brandOne.equals(brandOneWithSameName));
 	}
+
 }

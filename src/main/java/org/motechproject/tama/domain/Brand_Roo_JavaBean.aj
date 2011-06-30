@@ -4,6 +4,8 @@
 package org.motechproject.tama.domain;
 
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 privileged aspect Brand_Roo_JavaBean {
     
     public String Brand.getName() {
@@ -14,12 +16,17 @@ privileged aspect Brand_Roo_JavaBean {
         this.name = name;
     }
     
+    @JsonIgnore
     public Company Brand.getCompany() {
-        return this.company;
+        return Company.findCompany(getCompanyId());
     }
-    
-    public void Brand.setCompany(Company company) {
-        this.company = company;
+
+    public String Brand.getCompanyId(){
+        return companyId;
     }
-    
+
+    public void Brand.setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
 }

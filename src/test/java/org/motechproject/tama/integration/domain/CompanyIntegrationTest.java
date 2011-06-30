@@ -25,7 +25,7 @@ public class CompanyIntegrationTest extends SpringIntegrationTest{
         Assert.assertNotNull(company);
         Assert.assertEquals(testCompany.getName(), company.getName());
 
-        delete(testCompany);
+        markForDeletion(testCompany);
     }
 
     public void shouldUpdateCompany() {
@@ -37,7 +37,7 @@ public class CompanyIntegrationTest extends SpringIntegrationTest{
         testCompany.setName("NewCompany");
         testCompany.merge();
         Assert.assertEquals("NewCompany", Company.findCompany(testCompany.getId()));
-        delete(testCompany);
+        markForDeletion(testCompany);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class CompanyIntegrationTest extends SpringIntegrationTest{
         numberOfCompanies = Company.countCompanys();
         Assert.assertEquals(1, numberOfCompanies);
 
-        delete(company);
+        markForDeletion(company);
     }
 
     @Test
@@ -69,8 +69,8 @@ public class CompanyIntegrationTest extends SpringIntegrationTest{
         Assert.assertEquals(2,companyList.size());
         Assert.assertTrue(companyList.containsAll(Arrays.asList(companyOne, companyTwo)));
 
-        delete(companyOne);
-        delete(companyTwo);
+        markForDeletion(companyOne);
+        markForDeletion(companyTwo);
     }
     @Test
     public void shouldRemoveCompanies() {
@@ -82,7 +82,7 @@ public class CompanyIntegrationTest extends SpringIntegrationTest{
         company.remove();
         Assert.assertNull(Company.findCompany(id));
 
-        delete(company);
+        markForDeletion(company);
     }
 
 }

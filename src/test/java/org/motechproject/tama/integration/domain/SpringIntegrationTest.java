@@ -29,7 +29,7 @@ public abstract class SpringIntegrationTest {
 		couchDbConnector.executeBulk(toDelete);
 	}
 	
-	protected void delete(Object document) {
+	protected void markForDeletion(Object document) {
 		toDelete.add(BulkDeleteDocument.of(document));
 	}
 }
