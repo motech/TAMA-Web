@@ -73,14 +73,12 @@ public class PatientTest {
     }
 
     private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {
-        Object[] violations = constraintViolations.toArray();
-        for (int i = 0; i < violations.length; i++) {
-            ConstraintViolation<Patient> patientViolation = (ConstraintViolation<Patient>) violations[i];
+    	
+    	for (ConstraintViolation<Patient> patientViolation : constraintViolations) {
             if (patientViolation.getPropertyPath().toString().equals(property) && patientViolation.getMessage().equals(message)) {
                 return;
             }
-        }
+		}
         Assert.fail("could not find expected violation for property " + property);
     }
-
 }

@@ -89,7 +89,8 @@ privileged aspect TreatmentAdviceController_Roo_Controller {
     
     @ModelAttribute("drugdosages")
     public Collection<DrugDosage> TreatmentAdviceController.populateDrugDosages() {
-        return DrugDosage.findAllDrugDosages();
+		return null;
+//        return DrugDosage.findAllDrugDosages();
     }
     
     @ModelAttribute("treatmentadvices")

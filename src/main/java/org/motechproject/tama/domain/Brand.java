@@ -1,6 +1,5 @@
 package org.motechproject.tama.domain;
 
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.roo.addon.entity.RooEntity;

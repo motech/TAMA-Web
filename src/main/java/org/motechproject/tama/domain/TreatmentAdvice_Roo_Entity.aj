@@ -3,110 +3,47 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
+
 import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import org.motechproject.tama.domain.TreatmentAdvice;
-import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect TreatmentAdvice_Roo_Entity {
     
-    declare @type: TreatmentAdvice: @Entity;
+    declare parents : TreatmentAdvice extends CouchDocument;
     
-    @PersistenceContext
-    transient EntityManager TreatmentAdvice.entityManager;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long TreatmentAdvice.id;
-    
-    @Version
-    @Column(name = "version")
-    private Integer TreatmentAdvice.version;
-    
-    public Long TreatmentAdvice.getId() {
-        return this.id;
-    }
-    
-    public void TreatmentAdvice.setId(Long id) {
-        this.id = id;
-    }
-    
-    public Integer TreatmentAdvice.getVersion() {
-        return this.version;
-    }
-    
-    public void TreatmentAdvice.setVersion(Integer version) {
-        this.version = version;
-    }
-    
-    @Transactional
     public void TreatmentAdvice.persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
     }
     
-    @Transactional
     public void TreatmentAdvice.remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            TreatmentAdvice attached = TreatmentAdvice.findTreatmentAdvice(this.id);
-            this.entityManager.remove(attached);
-        }
     }
     
-    @Transactional
     public void TreatmentAdvice.flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
     }
     
-    @Transactional
     public void TreatmentAdvice.clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
     }
     
-    @Transactional
     public TreatmentAdvice TreatmentAdvice.merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        TreatmentAdvice merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
+		return null;
     }
     
     public static final EntityManager TreatmentAdvice.entityManager() {
-        EntityManager em = new TreatmentAdvice().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
+		return null;
     }
     
     public static long TreatmentAdvice.countTreatmentAdvices() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM TreatmentAdvice o", Long.class).getSingleResult();
+		return 0;
     }
     
     public static List<TreatmentAdvice> TreatmentAdvice.findAllTreatmentAdvices() {
-        return entityManager().createQuery("SELECT o FROM TreatmentAdvice o", TreatmentAdvice.class).getResultList();
+		return null;
     }
     
     public static TreatmentAdvice TreatmentAdvice.findTreatmentAdvice(Long id) {
-        if (id == null) return null;
-        return entityManager().find(TreatmentAdvice.class, id);
+		return null;
     }
     
     public static List<TreatmentAdvice> TreatmentAdvice.findTreatmentAdviceEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM TreatmentAdvice o", TreatmentAdvice.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+		return null;
     }
-    
 }
