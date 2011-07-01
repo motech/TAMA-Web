@@ -4,14 +4,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.CouchDbDocument;
-import org.ektorp.support.TypeDiscriminator;
 
 
 public abstract class CouchEntity extends CouchDbDocument {
 
 	private static final long serialVersionUID = 4517930750095396426L;
 
-	@TypeDiscriminator
+	
 	private String documentType;
 
 	public CouchEntity() {

@@ -7,12 +7,14 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.DocumentNotFoundException;
+import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.repository.DosageTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect DosageType_Roo_Entity {
     
     declare parents : DosageType extends CouchEntity;
+	declare @type : DosageType : @TypeDiscriminator("doc.documentType == 'DosageType'");
 
 	@Autowired
 	transient DosageTypes DosageType.dosageTypes;
