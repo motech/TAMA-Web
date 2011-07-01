@@ -87,7 +87,9 @@
         </exec>
     </target>
 
-    <target name="deploy.tama" depends="stop.tomcat,recreate.db,deploy.war,start.tomcat,load.seed.data"
-            description="Deploy TAMA"/>
+    <target name="deploy.tama.and.reset.db" depends="stop.tomcat,recreate.db,deploy.war,start.tomcat,load.seed.data"
+            description="Deploy TAMA by recreating database and seed data"/>
 
+    <target name="deploy.tama" depends="stop.tomcat,deploy.war,start.tomcat"
+            description="Deploy TAMA without recreating database and seed data"/>
 </project>
