@@ -76,6 +76,9 @@
     <bean id="companies" class="org.motechproject.tama.repository.Companies">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
+    <bean id="dosageTypes" class="org.motechproject.tama.repository.DosageTypes">
+        <constructor-arg ref="couchDbConnector"/>
+    </bean>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>

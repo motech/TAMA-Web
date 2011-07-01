@@ -5,40 +5,64 @@ package org.motechproject.tama.domain;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.ektorp.DocumentNotFoundException;
+import org.motechproject.tama.repository.DosageTypes;
+import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect DosageType_Roo_Entity {
     
     declare parents : DosageType extends CouchDocument;
+
+	@Autowired
+	transient DosageTypes DosageType.dosageTypes;
     
+	public static DosageTypes DosageType.dosageTypes() {
+		return new DosageType().dosageTypes;
+	}
+	
     public void DosageType.persist() {
+    	dosageTypes().add(this);
     }
     
     public void DosageType.remove() {
+    	dosageTypes().remove(this);
     }
     
     public DosageType DosageType.merge() {
-    	return null;
-    }
-    
-    public static final EntityManager DosageType.entityManager() {
-    	return null;
+    	dosageTypes().update(this);
+    	return this;
     }
     
     public static long DosageType.countDosageTypes() {
-		return 0;
+		throw new RuntimeException("Method not implemented");
     }
     
     public static List<DosageType> DosageType.findAllDosageTypes() {
-		return null;
+		return dosageTypes().getAll();
     }
     
-    public static DosageType DosageType.findDosageType(Long id) {
-		return null;
+    public static DosageType DosageType.findDosageType(String id) {
+		DosageType dosageType = null;;
+		try {
+			dosageType = dosageTypes().get(id);
+		} catch (DocumentNotFoundException e) {
+			// TODO: handle exception, log the exception
+		}
+		return dosageType;
     }
     
     public static List<DosageType> DosageType.findDosageTypeEntries(int firstResult, int maxResults) {
-		return null;
+    	return dosageTypes().getAll();
+    	//TODO pagination is not yet implemented, hence returning all
     }
     
+	public void DosageType.setDosageTypes(DosageTypes dosageTypes) {
+		this.dosageTypes = dosageTypes;
+	}
+
+	@JsonIgnore
+	public DosageTypes DosageType.getDosageTypes() {
+		return dosageTypes;
+	}
 }

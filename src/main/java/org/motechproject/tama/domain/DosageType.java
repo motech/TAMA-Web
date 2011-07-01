@@ -8,7 +8,14 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 @RooJavaBean
 @RooEntity
 public class DosageType {
+	
+    protected DosageType() {
+	}
 
-    @NotNull
+	public DosageType(String type) {
+    	this.type = type;
+    }
+
+	@NotNull
     private String type;
 }

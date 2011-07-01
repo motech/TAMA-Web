@@ -4,12 +4,11 @@
 package org.motechproject.tama.web;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.String;
 import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.motechproject.tama.domain.DosageType;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,7 +40,7 @@ privileged aspect DosageTypeController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String DosageTypeController.show(@PathVariable("id") Long id, Model uiModel) {
+    public String DosageTypeController.show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("dosagetype", DosageType.findDosageType(id));
         uiModel.addAttribute("itemId", id);
         return "dosagetypes/show";
@@ -72,13 +71,13 @@ privileged aspect DosageTypeController_Roo_Controller {
     }
     
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String DosageTypeController.updateForm(@PathVariable("id") Long id, Model uiModel) {
+    public String DosageTypeController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("dosageType", DosageType.findDosageType(id));
         return "dosagetypes/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String DosageTypeController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String DosageTypeController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         DosageType.findDosageType(id).remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
