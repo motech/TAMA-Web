@@ -79,6 +79,12 @@
     <bean id="dosageTypes" class="org.motechproject.tama.repository.DosageTypes">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
+    <bean id="regimens" class="org.motechproject.tama.repository.Regimens">
+        <constructor-arg ref="couchDbConnector"/>
+    </bean>
+    <bean id="regimenCompositions" class="org.motechproject.tama.repository.RegimenCompositions">
+        <constructor-arg ref="couchDbConnector"/>
+    </bean>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>

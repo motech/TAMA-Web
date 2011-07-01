@@ -5,7 +5,7 @@ package org.motechproject.tama.web;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.Integer;
-import java.lang.Long;
+import java.lang.String;
 import java.lang.String;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
@@ -28,66 +28,66 @@ privileged aspect RegimenController_Roo_Controller {
     public String RegimenController.create(@Valid Regimen regimen, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("regimen", regimen);
-            return "regimens/create";
+            return "regimenCompositions/create";
         }
         uiModel.asMap().clear();
         regimen.persist();
-        return "redirect:/regimens/" + encodeUrlPathSegment(regimen.getId().toString(), httpServletRequest);
+        return "redirect:/regimenCompositions/" + encodeUrlPathSegment(regimen.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String RegimenController.createForm(Model uiModel) {
         uiModel.addAttribute("regimen", new Regimen());
-        return "regimens/create";
+        return "regimenCompositions/create";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String RegimenController.show(@PathVariable("id") Long id, Model uiModel) {
+    public String RegimenController.show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("regimen", Regimen.findRegimen(id));
         uiModel.addAttribute("itemId", id);
-        return "regimens/show";
+        return "regimenCompositions/show";
     }
     
     @RequestMapping(method = RequestMethod.GET)
     public String RegimenController.list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
-            uiModel.addAttribute("regimens", Regimen.findRegimenEntries(page == null ? 0 : (page.intValue() - 1) * sizeNo, sizeNo));
+            uiModel.addAttribute("regimenCompositions", Regimen.findRegimenEntries(page == null ? 0 : (page.intValue() - 1) * sizeNo, sizeNo));
             float nrOfPages = (float) Regimen.countRegimens() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("regimens", Regimen.findAllRegimens());
+            uiModel.addAttribute("regimenCompositions", Regimen.findAllRegimens());
         }
-        return "regimens/list";
+        return "regimenCompositions/list";
     }
     
     @RequestMapping(method = RequestMethod.PUT)
     public String RegimenController.update(@Valid Regimen regimen, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("regimen", regimen);
-            return "regimens/update";
+            return "regimenCompositions/update";
         }
         uiModel.asMap().clear();
         regimen.merge();
-        return "redirect:/regimens/" + encodeUrlPathSegment(regimen.getId().toString(), httpServletRequest);
+        return "redirect:/regimenCompositions/" + encodeUrlPathSegment(regimen.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String RegimenController.updateForm(@PathVariable("id") Long id, Model uiModel) {
+    public String RegimenController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("regimen", Regimen.findRegimen(id));
-        return "regimens/update";
+        return "regimenCompositions/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String RegimenController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String RegimenController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         Regimen.findRegimen(id).remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/regimens";
+        return "redirect:/regimenCompositions";
     }
     
-    @ModelAttribute("regimens")
+    @ModelAttribute("regimenCompositions")
     public Collection<Regimen> RegimenController.populateRegimens() {
         return Regimen.findAllRegimens();
     }

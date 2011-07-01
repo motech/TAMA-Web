@@ -3,110 +3,60 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
+import org.ektorp.DocumentNotFoundException;
+import org.motechproject.tama.repository.Regimens;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import org.motechproject.tama.domain.Regimen;
-import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect Regimen_Roo_Entity {
-    
-    declare @type: Regimen: @Entity;
-    
-    @PersistenceContext
-    transient EntityManager Regimen.entityManager;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long Regimen.id;
-    
-    @Version
-    @Column(name = "version")
-    private Integer Regimen.version;
-    
-    public Long Regimen.getId() {
-        return this.id;
-    }
-    
-    public void Regimen.setId(Long id) {
-        this.id = id;
-    }
-    
-    public Integer Regimen.getVersion() {
-        return this.version;
-    }
-    
-    public void Regimen.setVersion(Integer version) {
-        this.version = version;
-    }
-    
-    @Transactional
+
+    declare parents : Regimen extends CouchEntity;
+
+    @Autowired
+    transient Regimens Regimen.regimens;
+
+
     public void Regimen.persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
+        regimens.add(this);
     }
-    
-    @Transactional
+
     public void Regimen.remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            Regimen attached = Regimen.findRegimen(this.id);
-            this.entityManager.remove(attached);
-        }
+        regimens.remove(this);
+
     }
-    
-    @Transactional
-    public void Regimen.flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
-    }
-    
-    @Transactional
-    public void Regimen.clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
-    }
-    
-    @Transactional
+
     public Regimen Regimen.merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        Regimen merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
+        regimens.update(this);
+        return this;
     }
-    
-    public static final EntityManager Regimen.entityManager() {
-        EntityManager em = new Regimen().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
-    }
-    
+
+
     public static long Regimen.countRegimens() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Regimen o", Long.class).getSingleResult();
+        return regimens().count();
     }
-    
+
     public static List<Regimen> Regimen.findAllRegimens() {
-        return entityManager().createQuery("SELECT o FROM Regimen o", Regimen.class).getResultList();
+        return regimens().getAll();
+
     }
-    
-    public static Regimen Regimen.findRegimen(Long id) {
-        if (id == null) return null;
-        return entityManager().find(Regimen.class, id);
+
+    public static Regimen Regimen.findRegimen(String id) {
+        Regimen regimen = null;
+        try {
+            regimen = regimens().get(id);
+        } catch (DocumentNotFoundException e){
+        }
+        return regimen;
+
     }
-    
+
     public static List<Regimen> Regimen.findRegimenEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Regimen o", Regimen.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return regimens().getAll();
     }
-    
+
+    public static Regimens Regimen.regimens() {
+        return new Regimen().regimens;
+    }
+
 }

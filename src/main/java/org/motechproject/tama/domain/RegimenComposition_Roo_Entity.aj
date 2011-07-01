@@ -3,110 +3,51 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
+import org.motechproject.tama.repository.RegimenCompositions;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-import org.motechproject.tama.domain.RegimenComposition;
-import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect RegimenComposition_Roo_Entity {
+
+    declare parents : RegimenComposition extends CouchEntity;
+
+    @Autowired
+    transient RegimenCompositions RegimenComposition.regimenCompositions;
     
-    declare @type: RegimenComposition: @Entity;
-    
-    @PersistenceContext
-    transient EntityManager RegimenComposition.entityManager;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long RegimenComposition.id;
-    
-    @Version
-    @Column(name = "version")
-    private Integer RegimenComposition.version;
-    
-    public Long RegimenComposition.getId() {
-        return this.id;
-    }
-    
-    public void RegimenComposition.setId(Long id) {
-        this.id = id;
-    }
-    
-    public Integer RegimenComposition.getVersion() {
-        return this.version;
-    }
-    
-    public void RegimenComposition.setVersion(Integer version) {
-        this.version = version;
-    }
-    
-    @Transactional
     public void RegimenComposition.persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
+        this.regimenCompositions.add(this);
     }
     
-    @Transactional
+
     public void RegimenComposition.remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            RegimenComposition attached = RegimenComposition.findRegimenComposition(this.id);
-            this.entityManager.remove(attached);
-        }
+        this.regimenCompositions.remove(this);
     }
     
-    @Transactional
-    public void RegimenComposition.flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
-    }
-    
-    @Transactional
-    public void RegimenComposition.clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
-    }
-    
-    @Transactional
+
     public RegimenComposition RegimenComposition.merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        RegimenComposition merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
+        this.regimenCompositions.update(this);
+        return this;
     }
-    
-    public static final EntityManager RegimenComposition.entityManager() {
-        EntityManager em = new RegimenComposition().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
-    }
-    
+
     public static long RegimenComposition.countRegimenCompositions() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM RegimenComposition o", Long.class).getSingleResult();
+        return regimenCompositions().count();
     }
     
     public static List<RegimenComposition> RegimenComposition.findAllRegimenCompositions() {
-        return entityManager().createQuery("SELECT o FROM RegimenComposition o", RegimenComposition.class).getResultList();
+        return regimenCompositions().getAll();
     }
     
-    public static RegimenComposition RegimenComposition.findRegimenComposition(Long id) {
-        if (id == null) return null;
-        return entityManager().find(RegimenComposition.class, id);
+    public static RegimenComposition RegimenComposition.findRegimenComposition(String id) {
+        return regimenCompositions().get(id);
     }
     
     public static List<RegimenComposition> RegimenComposition.findRegimenCompositionEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM RegimenComposition o", RegimenComposition.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return regimenCompositions().getAll();
+    }
+
+    public static RegimenCompositions regimenCompositions() {
+        return new RegimenComposition().regimenCompositions;
     }
     
 }

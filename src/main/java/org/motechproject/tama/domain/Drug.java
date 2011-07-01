@@ -17,6 +17,8 @@ public class Drug {
     @NotNull
     private String name;
 
+    private String regimenCompositionId;
+
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Brand> brands = new HashSet<Brand>();
 

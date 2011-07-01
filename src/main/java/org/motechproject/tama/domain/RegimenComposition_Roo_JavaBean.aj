@@ -15,5 +15,13 @@ privileged aspect RegimenComposition_Roo_JavaBean {
     public void RegimenComposition.setDrugs(Set<Drug> drugs) {
         this.drugs = drugs;
     }
-    
+
+    public String RegimenComposition.getRegimentCompositionId() {
+        return regimentCompositionId;
+    }
+
+    public void RegimenComposition.setRegimentCompositionId(String regimentCompositionId) {
+        this.regimentCompositionId = regimentCompositionId;
+    }
+
 }
