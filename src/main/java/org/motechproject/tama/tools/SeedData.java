@@ -1,5 +1,6 @@
 package org.motechproject.tama.tools;
 
+import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
@@ -9,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class SeedData {
-    public static final String TAMA_WEB = "tama-web";
     @Autowired
     private Genders genders;
     @Autowired
     private IVRLanguages languages;
     @Autowired
     private CouchDbInstance couchDbInstance;
+    @Autowired
+    private CouchDbConnector couchDbConnector;
 
     public void init() {
         recreateDB();
@@ -23,8 +25,9 @@ public class SeedData {
     }
 
     private void recreateDB() {
-        couchDbInstance.deleteDatabase(TAMA_WEB);
-        couchDbInstance.createDatabase(TAMA_WEB);
+        String dbName = couchDbConnector.getDatabaseName();
+        couchDbInstance.deleteDatabase(dbName);
+        couchDbInstance.createDatabase(dbName);
     }
 
     private void loadData() {
