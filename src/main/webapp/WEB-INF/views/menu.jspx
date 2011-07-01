@@ -24,7 +24,6 @@
             <menu:item id="i_drug_new" messageCode="global_menu_new" url="/drugs?form" z="g0ROvL4tH9E5Z0k1u9Lp6ZBBsdI="/>
             <menu:item id="i_drug_list" messageCode="global_menu_list" url="/drugs?page=1&amp;size=${empty param.size ? 10 : param.size}" z="OQalj7zhuCYpOCcxgoJXf+SbvJc="/>
         </menu:category>
-        -->
         <menu:category id="c_dosagetype" z="+OTsN0MWYbnZpiQ+k9BbJdePdnc=">
             <menu:item id="i_dosagetype_new" messageCode="global_menu_new" url="/dosagetypes?form" z="MCnbyGi27lSYVceC7Ah0lft19iw="/>
             <menu:item id="i_dosagetype_list" messageCode="global_menu_list" url="/dosagetypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="eIc4q2Oh/6kKYkGxtRHgnHtG+Zc="/>
@@ -41,5 +40,6 @@
             <menu:item id="i_treatmentadvice_new" messageCode="global_menu_new" url="/treatmentadvices?form" z="DwtIKdPoWdCos22YcWXVucPJOMc="/>
             <menu:item id="i_treatmentadvice_list" messageCode="global_menu_list" url="/treatmentadvices?page=1&amp;size=${empty param.size ? 10 : param.size}" z="FVSVPNhQR/toTvs27diBRupihwI="/>
         </menu:category>
+                -->
     </menu:menu>
 </div>
