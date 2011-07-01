@@ -1,7 +1,5 @@
 package org.motechproject.tama.tools;
 
-import org.ektorp.CouchDbConnector;
-import org.ektorp.CouchDbInstance;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.repository.Genders;
@@ -14,23 +12,8 @@ public class SeedData {
     private Genders genders;
     @Autowired
     private IVRLanguages languages;
-    @Autowired
-    private CouchDbInstance couchDbInstance;
-    @Autowired
-    private CouchDbConnector couchDbConnector;
 
     public void init() {
-        recreateDB();
-        loadData();
-    }
-
-    private void recreateDB() {
-        String dbName = couchDbConnector.getDatabaseName();
-        couchDbInstance.deleteDatabase(dbName);
-        couchDbInstance.createDatabase(dbName);
-    }
-
-    private void loadData() {
         loadGenders();
         loadLanguages();
     }
