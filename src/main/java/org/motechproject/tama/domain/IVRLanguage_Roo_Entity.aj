@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect IVRLanguage_Roo_Entity {
 
-    declare parents : IVRLanguage extends CouchDocument;
+    declare parents : IVRLanguage extends CouchEntity;
 
     @Autowired
     transient IVRLanguages IVRLanguage.ivrLanguages;

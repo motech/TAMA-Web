@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 
 privileged aspect TreatmentAdvice_Roo_Entity {
     
-    declare parents : TreatmentAdvice extends CouchDocument;
+    declare parents : TreatmentAdvice extends CouchEntity;
     
     public void TreatmentAdvice.persist() {
     }

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect Drug_Roo_Entity {
     
-	declare parents : Drug extends CouchDocument;
+	declare parents : Drug extends CouchEntity;
 
 	@Autowired
     transient Drugs Drug.drugs;

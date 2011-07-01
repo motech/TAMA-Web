@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect Patient_Roo_Entity {
 
-    declare parents : Patient extends CouchDocument;
+    declare parents : Patient extends CouchEntity;
 
     @Autowired
     transient Patients Patient.patients;
