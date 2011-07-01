@@ -5,8 +5,6 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
-import org.motechproject.tama.domain.Company;
-import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.RegimenComposition;
 
 @View( name="all", map = "function(doc) { if (doc.documentType == 'RegimenComposition') { emit(null, 1) } }", reduce="function(key, values, rereduce) { return sum(values); }")

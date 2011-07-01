@@ -3,7 +3,6 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.String;
 
 privileged aspect DosageType_Roo_JavaBean {
     

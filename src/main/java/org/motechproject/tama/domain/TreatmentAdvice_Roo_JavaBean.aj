@@ -3,9 +3,7 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.String;
 import java.util.Set;
-import org.motechproject.tama.domain.DrugDosage;
 
 privileged aspect TreatmentAdvice_Roo_JavaBean {
     

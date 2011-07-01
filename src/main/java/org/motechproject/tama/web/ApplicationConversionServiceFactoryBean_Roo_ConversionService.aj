@@ -3,7 +3,6 @@
 
 package org.motechproject.tama.web;
 
-import java.lang.String;
 import org.motechproject.tama.domain.Brand;
 import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.domain.Doctor;

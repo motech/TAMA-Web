@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect Company_Roo_Entity {
 
-    declare parents :Company extends CouchEntity;
+    declare parents : Company extends CouchEntity;
 
     @Autowired
     transient Companies Company.companies;

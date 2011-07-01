@@ -4,12 +4,11 @@
 package org.motechproject.tama.web;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.String;
 import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.springframework.ui.Model;

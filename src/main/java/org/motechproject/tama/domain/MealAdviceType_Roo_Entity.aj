@@ -3,9 +3,8 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.Integer;
-import java.lang.Long;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -14,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
-import org.motechproject.tama.domain.MealAdviceType;
+
 import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect MealAdviceType_Roo_Entity {

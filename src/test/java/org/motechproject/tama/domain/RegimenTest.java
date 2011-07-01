@@ -1,17 +1,16 @@
 package org.motechproject.tama.domain;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import junit.framework.Assert;
+
 import org.ektorp.DocumentNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.repository.Drugs;
 import org.motechproject.tama.repository.Regimens;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Regimen.class)

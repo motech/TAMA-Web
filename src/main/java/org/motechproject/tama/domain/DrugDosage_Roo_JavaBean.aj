@@ -3,9 +3,7 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.String;
 import java.util.Date;
-import org.motechproject.tama.domain.Dosage;
 
 privileged aspect DrugDosage_Roo_JavaBean {
     

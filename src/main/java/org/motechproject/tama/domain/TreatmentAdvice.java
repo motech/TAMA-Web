@@ -1,14 +1,15 @@
 package org.motechproject.tama.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
-import javax.validation.constraints.NotNull;
-import java.util.Set;
-import org.motechproject.tama.domain.DrugDosage;
-import java.util.HashSet;
-import javax.persistence.ManyToMany;
-import javax.persistence.CascadeType;
 
 @RooJavaBean
 @RooToString

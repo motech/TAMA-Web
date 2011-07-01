@@ -3,9 +3,7 @@
 
 package org.motechproject.tama.domain;
 
-import java.lang.String;
 import java.util.Set;
-import org.motechproject.tama.domain.RegimenComposition;
 
 privileged aspect Regimen_Roo_JavaBean {
     

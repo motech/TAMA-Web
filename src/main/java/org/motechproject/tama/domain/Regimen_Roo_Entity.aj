@@ -3,11 +3,11 @@
 
 package org.motechproject.tama.domain;
 
+import java.util.List;
+
 import org.ektorp.DocumentNotFoundException;
 import org.motechproject.tama.repository.Regimens;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 privileged aspect Regimen_Roo_Entity {
 

@@ -4,7 +4,6 @@
 package org.motechproject.tama.domain;
 
 import java.util.Set;
-import org.motechproject.tama.domain.Drug;
 
 privileged aspect RegimenComposition_Roo_JavaBean {
     

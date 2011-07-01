@@ -1,14 +1,15 @@
 package org.motechproject.tama.integration.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.motechproject.tama.builder.CompanyBuilder;
 import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.repository.Companies;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class CompanyIntegrationTest extends SpringIntegrationTest{
     @Autowired

@@ -3,10 +3,10 @@
 
 package org.motechproject.tama.domain;
 
+import java.util.List;
+
 import org.motechproject.tama.repository.RegimenCompositions;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 privileged aspect RegimenComposition_Roo_Entity {
 

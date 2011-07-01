@@ -1,14 +1,12 @@
 package org.motechproject.tama.integration.domain;
 
+import java.util.HashSet;
+
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.motechproject.tama.domain.Drug;
-import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.RegimenComposition;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 public class RegimenCompositionIntegrationTest extends SpringIntegrationTest {
     @Test

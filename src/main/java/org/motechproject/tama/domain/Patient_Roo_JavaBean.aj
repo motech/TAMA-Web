@@ -6,6 +6,7 @@ package org.motechproject.tama.domain;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.tama.domain.Patient.ReminderCall;
 
 privileged aspect Patient_Roo_JavaBean {
     
