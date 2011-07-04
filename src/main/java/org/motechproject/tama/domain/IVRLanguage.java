@@ -9,7 +9,14 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 @RooJavaBean
 @RooEntity
 public class IVRLanguage {
-
-    @NotNull
+    
+	@NotNull
     private String name;
+
+	protected IVRLanguage() {
+	}
+
+	public IVRLanguage(String name) {
+		this.name = name;
+	}
 }

@@ -11,6 +11,13 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 @TypeDiscriminator("doc.documentType == 'Company'")
 public class Company {
 
-    @NotNull
+	@NotNull
     private String name;
+	
+	protected Company() {
+	}
+
+	public Company(String name) {
+		this.name = name;
+	}
 }

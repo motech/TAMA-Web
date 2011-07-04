@@ -1,4 +1,4 @@
-package org.motechproject.tama.tools;
+package org.motechproject.tama.tools.seed;
 
 import org.motechproject.tama.domain.MealAdviceType;
 import org.motechproject.tama.repository.MealAdviceTypes;

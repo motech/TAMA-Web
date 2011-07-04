@@ -23,6 +23,13 @@ public class Drug {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Brand> brands = new HashSet<Brand>();
+    
+	protected Drug() {
+	}
+
+	public Drug(String name) {
+		this.name = name;
+	}
 
 	public void addBrand(Brand brand) {
 		brands.add(brand);

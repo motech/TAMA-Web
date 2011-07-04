@@ -9,6 +9,13 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 @RooEntity
 public class Gender {
 
-    @NotNull
+	@NotNull
     private String type;
+
+	protected Gender() {
+	}
+
+	public Gender(String type) {
+		this.type = type;
+	}
 }

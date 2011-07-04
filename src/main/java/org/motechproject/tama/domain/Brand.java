@@ -22,6 +22,16 @@ public class Brand {
     public Brand(String name) {
 		this.name = name;
 	}
+    
+    public Brand(String name, Company company) {
+    	this(name);
+		setCompany(company);
+	}
+    
+
+	private void setCompany(Company company) {
+		this.companyId = company.getId();
+	}
 
 	@Override
 	public int hashCode() {

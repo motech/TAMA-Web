@@ -18,5 +18,14 @@ public class BrandTest {
 		Assert.assertTrue(brandOne.equals(brandOne));
 		Assert.assertTrue(brandOne.equals(brandOneWithSameName));
 	}
-
+	
+	@Test
+	public void shouldSetCompany() {
+		Company company = new Company("comp1");
+		company.setId("c1");
+		
+		Brand brand = new Brand("One", company);
+		
+		Assert.assertEquals(company.getId(), brand.getCompanyId());
+	}
 }
