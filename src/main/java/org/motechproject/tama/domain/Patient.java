@@ -66,4 +66,10 @@ public class Patient {
     public enum Status {
         Inactive, Active
     }
+
+    public Patient activate() {
+        this.status = Status.Active;
+        return this;
+    }
+
 }
