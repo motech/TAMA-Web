@@ -51,7 +51,7 @@
                 <form action="updateStatus" method="POST">
                       <input type="hidden" name="id" value="${patient.id}"/>
                     <div class='submit'>
-                      <input type="submit" value="Activate"/>
+                      <input type="submit" id="activatePatient" value="Activate"/>
                     </div>
                 </form>
             </div>
