@@ -54,6 +54,11 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withStatus(Patient.Status status) {
+        this.patient.setStatus(status);
+        return this;
+    }
+
     public Patient build() {
         return this.patient;
     }
@@ -62,12 +67,13 @@ public class PatientBuilder {
         return new PatientBuilder();
     }
 
+
     public PatientBuilder withDefaults(){
-    	
+
     	Calendar calendar = Calendar.getInstance();
     	calendar.set(1990, 5, 21);
     	Date dob = calendar.getTime();
-    	
+
         return this.withPatientId("1234").
                 withDateOfBirth(dob).
                 withMobileNumber("9765456789").
@@ -76,6 +82,4 @@ public class PatientBuilder {
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3);
     }
-
-
 }

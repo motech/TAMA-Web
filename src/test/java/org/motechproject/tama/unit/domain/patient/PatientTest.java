@@ -10,6 +10,7 @@ import javax.validation.ValidatorFactory;
 
 import junit.framework.Assert;
 
+import org.hibernate.engine.Status;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.PatientBuilder;
@@ -17,12 +18,12 @@ import org.motechproject.tama.domain.Patient;
 
 public class PatientTest {
 
-	private Validator validator;
+    private Validator validator;
 
     @Before
     public void setup() {
-    	ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    	validator = validatorFactory.getValidator();
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
     }
 
     @Test
@@ -72,13 +73,26 @@ public class PatientTest {
         Assert.assertTrue(constraintViolations == null || constraintViolations.isEmpty());
     }
 
+    @Test
+    public void shouldTestIfPatientIsActive() {
+        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Assert.assertTrue(patient.isActive());
+    }
+
+    @Test
+    public void shouldTestActivationOfPatient() {
+        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Inactive).build();
+        patient.activate();
+        Assert.assertTrue(patient.getStatus().equals(Patient.Status.Active));
+    }
+
     private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {
-    	
-    	for (ConstraintViolation<Patient> patientViolation : constraintViolations) {
+
+        for (ConstraintViolation<Patient> patientViolation : constraintViolations) {
             if (patientViolation.getPropertyPath().toString().equals(property) && patientViolation.getMessage().equals(message)) {
                 return;
             }
-		}
+        }
         Assert.fail("could not find expected violation for property " + property);
     }
 }
