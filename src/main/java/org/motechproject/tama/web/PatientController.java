@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -20,10 +21,10 @@ import javax.validation.Valid;
 @Controller
 public class PatientController {
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateStatus")
-    public String updateStatus(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        Patient.findPatient(patient.getId()).activate().merge();
-        return "redirect:/patients/" + encodeUrlPathSegment(patient.getId().toString(), httpServletRequest);
+    @RequestMapping(method = RequestMethod.POST, value = "/updateStatus")
+    public String updateStatus(@RequestParam String id, HttpServletRequest httpServletRequest) {
+        Patient.findPatient(id).activate().merge();
+        return "redirect:/patients/" + encodeUrlPathSegment(id, httpServletRequest);
     }
 
 

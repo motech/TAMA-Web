@@ -29,18 +29,16 @@ public class PatientControllerTest {
     @Test
     public void shouldActivatePatients() {
         PowerMockito.spy(Patient.class);
-        Patient patient = mock(Patient.class);
         Patients patients = mock(Patients.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         Patient dbPatient = mock(Patient.class);
         String id = "1234";
-        when(patient.getId()).thenReturn(id);
         when(Patient.patients()).thenReturn(patients);
         when(patients.get(id)).thenReturn(dbPatient);
         when(dbPatient.activate()).thenReturn(dbPatient);
 
-        controller.updateStatus(patient, null, null, request);
+        controller.updateStatus(id, request);
 
         verify(dbPatient).activate();
         verify(dbPatient).merge();
