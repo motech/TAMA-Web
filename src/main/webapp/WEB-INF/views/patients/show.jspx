@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:c="http://java.sun.com/jsp/jstl/core"
      xmlns:form="urn:jsptagdir:/WEB-INF/tags/form"
      xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
-     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0"
+     xmlns:spring="http://www.springframework.org/tags" >
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/resources/styles/show-patient.css" var="show_patient_css_url" />
+    <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
+
     <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=">
         <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="Basic Information" openPane="true">
             <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
@@ -42,16 +47,14 @@
         <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
         <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
         <c:if test="${!patient.active}" >
-            <div>
+            <div class="update_patient">
                 <form action="updateStatus" method="POST">
                       <input type="hidden" name="id" value="${patient.id}"/>
+                    <div class='submit'>
                       <input type="submit" value="Activate"/>
+                    </div>
                 </form>
             </div>
         </c:if>
     </page:show>
-    <!--<c:if test="${!patient.active}" >-->
-        <!--<form id="fu_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients/updateStatus" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=" label="Activate">-->
-        <!--</form:update>-->
-    <!--</c:if>-->
 </div>
