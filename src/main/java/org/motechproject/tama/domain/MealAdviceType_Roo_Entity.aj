@@ -5,107 +5,40 @@ package org.motechproject.tama.domain;
 
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
-
-import org.springframework.transaction.annotation.Transactional;
-
 privileged aspect MealAdviceType_Roo_Entity {
+	
+	declare parents : MealAdviceType extends CouchEntity;
     
-    declare @type: MealAdviceType: @Entity;
-    
-    @PersistenceContext
-    transient EntityManager MealAdviceType.entityManager;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long MealAdviceType.id;
-    
-    @Version
-    @Column(name = "version")
-    private Integer MealAdviceType.version;
-    
-    public Long MealAdviceType.getId() {
-        return this.id;
-    }
-    
-    public void MealAdviceType.setId(Long id) {
-        this.id = id;
-    }
-    
-    public Integer MealAdviceType.getVersion() {
-        return this.version;
-    }
-    
-    public void MealAdviceType.setVersion(Integer version) {
-        this.version = version;
-    }
-    
-    @Transactional
     public void MealAdviceType.persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
     }
     
-    @Transactional
     public void MealAdviceType.remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            MealAdviceType attached = MealAdviceType.findMealAdviceType(this.id);
-            this.entityManager.remove(attached);
-        }
     }
     
-    @Transactional
     public void MealAdviceType.flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
     }
     
-    @Transactional
     public void MealAdviceType.clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
     }
     
-    @Transactional
     public MealAdviceType MealAdviceType.merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        MealAdviceType merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
-    }
-    
-    public static final EntityManager MealAdviceType.entityManager() {
-        EntityManager em = new MealAdviceType().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
+		return null;
     }
     
     public static long MealAdviceType.countMealAdviceTypes() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM MealAdviceType o", Long.class).getSingleResult();
+		return 0;
     }
     
     public static List<MealAdviceType> MealAdviceType.findAllMealAdviceTypes() {
-        return entityManager().createQuery("SELECT o FROM MealAdviceType o", MealAdviceType.class).getResultList();
+		return null;
     }
     
     public static MealAdviceType MealAdviceType.findMealAdviceType(Long id) {
-        if (id == null) return null;
-        return entityManager().find(MealAdviceType.class, id);
+		return null;
     }
     
     public static List<MealAdviceType> MealAdviceType.findMealAdviceTypeEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM MealAdviceType o", MealAdviceType.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+		return null;
     }
     
 }

@@ -10,5 +10,8 @@ public class SetupSeedData {
         ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
         SeedData seedData = context.getBean(SeedData.class);
         seedData.init();
+        
+        SeedLoader seedLoader = context.getBean(SeedLoader.class);
+        seedLoader.load();
     }
 }

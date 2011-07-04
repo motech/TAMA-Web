@@ -85,6 +85,10 @@
     <bean id="regimenCompositions" class="org.motechproject.tama.repository.RegimenCompositions">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
+    
+    <bean id="mealAdviceTypes" class="org.motechproject.tama.repository.MealAdviceTypes">
+    	<constructor-arg ref="couchDbConnector"/>
+    </bean>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>

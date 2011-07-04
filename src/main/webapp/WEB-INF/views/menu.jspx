@@ -11,7 +11,6 @@
             <menu:item id="i_patient_new" messageCode="global_menu_new" url="/patients?form" z="/FWw96bQNbLZGfOq6+cGeWYQz8Y="/>
             <menu:item id="i_patient_list" messageCode="global_menu_list" url="/patients?page=1&amp;size=${empty param.size ? 10 : param.size}" z="mnvxypr4za1eNqrO8/rSPpLv4/U="/>
         </menu:category>
-        <!-- Dont remove it, dev in progress thanks Roo :( <katta/sushant>  
         <menu:category id="c_company" z="tmJjNcrRZwdZqruFqwG+TB5GMek=">
             <menu:item id="i_company_new" messageCode="global_menu_new" url="/companys?form" z="SWjXbZ96+4L3yJZ+Q7yyqEFQPV4="/>
             <menu:item id="i_company_list" messageCode="global_menu_list" url="/companys?page=1&amp;size=${empty param.size ? 10 : param.size}" z="vk1qspgPYbGCO4tYu2Ikm8DhmbY="/>
@@ -40,6 +39,5 @@
             <menu:item id="i_treatmentadvice_new" messageCode="global_menu_new" url="/treatmentadvices?form" z="DwtIKdPoWdCos22YcWXVucPJOMc="/>
             <menu:item id="i_treatmentadvice_list" messageCode="global_menu_list" url="/treatmentadvices?page=1&amp;size=${empty param.size ? 10 : param.size}" z="FVSVPNhQR/toTvs27diBRupihwI="/>
         </menu:category>
-                -->
     </menu:menu>
 </div>

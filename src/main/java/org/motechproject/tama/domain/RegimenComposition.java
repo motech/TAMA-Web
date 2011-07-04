@@ -22,6 +22,4 @@ public class RegimenComposition {
     @DocumentReferences(backReference="regimenCompositionId", fetch = FetchType.EAGER)
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Drug> drugs = new HashSet<Drug>();
-
-            ;
 }

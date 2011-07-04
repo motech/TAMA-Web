@@ -3,6 +3,18 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <import resource="classpath*:META-INF/spring/applicationContext.xml"/>
+
+	<bean id="seedLoader" class="org.motechproject.tama.tools.SeedLoader">
+		<constructor-arg>
+			<list>
+				<ref bean="mealAdviceSeed"/>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="mealAdviceSeed" class="org.motechproject.tama.tools.MealAdviceTypeSeed" />
+
     <bean id="seedData" class="org.motechproject.tama.tools.SeedData"/>
+
     <bean id="couchDB" class="org.motechproject.tama.tools.CouchDB"/>
 </beans>

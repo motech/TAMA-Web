@@ -1,5 +1,6 @@
 package org.motechproject.tama.tools;
 
+
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.repository.Genders;
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class SeedData {
+	
     @Autowired
     private Genders genders;
+
     @Autowired
     private IVRLanguages languages;
 
@@ -18,7 +21,7 @@ public class SeedData {
         loadLanguages();
     }
 
-    private void loadLanguages() {
+	private void loadLanguages() {
         languages.add(language("Tamil"));
         languages.add(language("Manipuri"));
         languages.add(language("Kannada"));

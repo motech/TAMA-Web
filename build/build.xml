@@ -79,7 +79,7 @@
         </java>
     </target>
 
-    <target name="recreate.db">
+    <target name="drop.db">
         <exec executable="curl">
             <arg value="-X"/>
             <arg value="DELETE"/>
@@ -87,8 +87,8 @@
         </exec>
     </target>
 
-    <target name="deploy.tama.and.reset.db" depends="stop.tomcat,recreate.db,deploy.war,start.tomcat,load.seed.data"
-            description="Deploy TAMA by recreating database and seed data"/>
+    <target name="deploy.tama.and.reset.db" depends="stop.tomcat,drop.db,deploy.war,start.tomcat,load.seed.data"
+            description="Deploy TAMA by droping database and seed data (which creates database if doesn't exist)"/>
 
     <target name="deploy.tama" depends="stop.tomcat,deploy.war,start.tomcat"
             description="Deploy TAMA without recreating database and seed data"/>
