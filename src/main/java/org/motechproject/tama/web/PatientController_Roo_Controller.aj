@@ -76,10 +76,12 @@ privileged aspect PatientController_Roo_Controller {
             return "patients/update";
         }
         uiModel.asMap().clear();
+        if(Patient.findPatient(patient.getId()).isActive())patient.activate();
         patient.merge();
         return "redirect:/patients/" + encodeUrlPathSegment(patient.getId().toString(), httpServletRequest);
     }
-    
+
+
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String PatientController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("patient", Patient.findPatient(id));
