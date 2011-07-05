@@ -17,8 +17,11 @@ public class TreatmentAdvice {
     @NotNull
     private String patientId;
 
-    @NotNull
+    
     private String regimenId;
+    
+    @NotNull
+    private Regimen regimen;
 
     @NotNull
     private String regimenCompositionId;
