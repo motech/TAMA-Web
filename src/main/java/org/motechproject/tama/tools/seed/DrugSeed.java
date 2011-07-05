@@ -1,5 +1,6 @@
 package org.motechproject.tama.tools.seed;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.motechproject.tama.domain.Brand;
@@ -96,5 +97,13 @@ public class DrugSeed implements Seed {
 		drugs.add(drug10);
 		
 		
+	}
+
+	public Map<String, Drug> loadAll() {
+		Map<String, Drug> drugMap = new HashMap<String, Drug>();
+		for (Drug drug : drugs.getAll()) {
+			drugMap.put(drug.getName(), drug);
+		}
+		return drugMap;
 	}
 }

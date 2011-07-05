@@ -9,14 +9,20 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
-@RooToString
 @RooEntity
 public class Regimen {
+	
+    protected Regimen() {
+	}
 
-    @NotNull
+	public Regimen(String name, String displayName) {
+		this.name = name;
+		this.regimenDisplayName = displayName;
+	}
+
+	@NotNull
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -24,4 +30,8 @@ public class Regimen {
 
     @NotNull
     private String regimenDisplayName;
+
+	public void addComposition(RegimenComposition regimenComposition) {
+		compositions.add(regimenComposition);
+	}
 }

@@ -40,7 +40,7 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
 
         markForDeletion(regimen);
     }
-//
+
     @Test
     public void shouldReturnRegimenCount() {
         long numberOfRegimens = Regimen.countRegimens();

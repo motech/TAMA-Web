@@ -13,6 +13,7 @@
 				<ref bean="dosageTypeSeed"/>
 				<ref bean="companySeed"/>
 				<ref bean="drugSeed"/>
+				<ref bean="regimenSeed"/>
 			</list>
 		</constructor-arg>
 	</bean>
@@ -23,6 +24,7 @@
 	<bean id="dosageTypeSeed" class="org.motechproject.tama.tools.seed.DosageTypeSeed" />
 	<bean id="companySeed" class="org.motechproject.tama.tools.seed.CompanySeed" />
 	<bean id="drugSeed" class="org.motechproject.tama.tools.seed.DrugSeed" />
+	<bean id="regimenSeed" class="org.motechproject.tama.tools.seed.RegimenSeed" />
 
     <bean id="couchDB" class="org.motechproject.tama.tools.CouchDB"/>
 </beans>
