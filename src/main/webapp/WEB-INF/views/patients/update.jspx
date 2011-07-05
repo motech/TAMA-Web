@@ -8,9 +8,9 @@
             <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
             <field:input field="status" id="c_org_motechproject_tama_domain_Patient_status" disabled="true"/>
             <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
-            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE="/>
-            <field:select field="principalDoctor" id="c_org_motechproject_tama_domain_patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q="/>
-            <label for="_travelTimeToClinic_id">Travel Time To Clinic :</label>
+            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true"/>
+            <field:select field="principalDoctor" id="c_org_motechproject_tama_domain_patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q=" required="true"/>
+            <label for="_travelTimeToClinic_id">Travel Time To Clinic* :</label>
             In day(s) <springform:select path="travelTimeToClinicInDays" id="_travelTimeToClinicInDays_id" items="${daysInAMonth}" />
             In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />
             In minute(s) <springform:select path="travelTimeToClinicInMinutes" id="_travelTimeToClinicInMinutes_id" items="${minutesInAnHour}" />
@@ -18,10 +18,10 @@
         <br />
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
             <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" />
-            <field:select field="ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed"/>
+            <field:select field="ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed" required="true"/>
             <table>
                 <tr>
-                    <td>Medicine Adherence Report Calls :</td>
+                    <td>Medicine Adherence Report Calls* :</td>
                     <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_daily_reminderCall" path="reminderCall" value="Daily" label="Activate Daily Pill Reminder Call"/></td></tr>
                     <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_weekly_reminderCall" path="reminderCall" value="Weekly" label="Activate Weekly Adherence Calls" disabled="true"/></td></tr>
                 </tr>
