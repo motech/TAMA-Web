@@ -38,7 +38,7 @@
                                     <goal>java</goal>
                                 </goals>
                                 <configuration>
-                                    <mainClass>org.motechproject.tama.tools.RecreateDB</mainClass>
+                                    <mainClass>org.motechproject.tama.tools.seed.RecreateDB</mainClass>
                                 </configuration>
                             </execution>
                             <execution>
@@ -48,7 +48,7 @@
                                     <goal>java</goal>
                                 </goals>
                                 <configuration>
-                                    <mainClass>org.motechproject.tama.tools.SetupSeedData</mainClass>
+                                    <mainClass>org.motechproject.tama.tools.seed.SetupSeedData</mainClass>
                                 </configuration>
                             </execution>
                         </executions>
