@@ -93,7 +93,8 @@ privileged aspect RegimenController_Roo_Controller {
     
     @ModelAttribute("regimencompositions")
     public Collection<RegimenComposition> RegimenController.populateRegimenCompositions() {
-        return RegimenComposition.findAllRegimenCompositions();
+    	return null;
+//        return RegimenComposition.findAllRegimenCompositions();
     }
     
     String RegimenController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

@@ -5,14 +5,11 @@ import java.util.Map;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.RegimenComposition;
-import org.motechproject.tama.repository.RegimenCompositions;
 import org.motechproject.tama.repository.Regimens;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class RegimenSeed extends Seed {
 
-	@Autowired
-	private RegimenCompositions regimenCompositions;
 	@Autowired
 	private Regimens regimens;
 	@Autowired
@@ -61,7 +58,6 @@ public class RegimenSeed extends Seed {
 		for (String drugName : drugNames) {
 			regimenComposition.addDrug(drugs.get(drugName));	
 		}
-		regimenCompositions.add(regimenComposition);
 		return regimenComposition;
 	}
 }

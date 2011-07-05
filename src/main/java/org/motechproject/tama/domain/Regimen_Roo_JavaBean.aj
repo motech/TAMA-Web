@@ -30,5 +30,4 @@ privileged aspect Regimen_Roo_JavaBean {
     public void Regimen.setRegimenDisplayName(String regimenDisplayName) {
         this.regimenDisplayName = regimenDisplayName;
     }
-    
 }

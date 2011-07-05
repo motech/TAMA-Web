@@ -15,8 +15,7 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
 
     @Test
     public void shouldPersistRegimen() {
-        Regimen regimen = new Regimen();
-        regimen.setName("newRegimen");
+        Regimen regimen = new Regimen("newRegimen", "newRegimenDisplay");
         regimen.persist();
 
         Regimen actualRegimen = Regimen.findRegimen(regimen.getId());
@@ -28,8 +27,7 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
 
     @Test
     public void mergeRegimen() {
-        Regimen regimen = new Regimen();
-        regimen.setName("regimenFirst");
+        Regimen regimen = new Regimen("regimenFirst", "regimenFirstDisplay");
         regimen.persist();
 
         Assert.assertEquals("regimenFirst", Regimen.findRegimen(regimen.getId()).getName());
@@ -46,7 +44,7 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
         long numberOfRegimens = Regimen.countRegimens();
         Assert.assertEquals(0, numberOfRegimens);
 
-        Regimen regimen = new Regimen();
+        Regimen regimen = new Regimen("reg", "reg1");
         regimen.persist();
         numberOfRegimens = Regimen.countRegimens();
         Assert.assertEquals(1, numberOfRegimens);
@@ -57,8 +55,8 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
     @Test
     public void shouldFindAllRegimens() {
 
-        Regimen regimenOne = new Regimen();
-        Regimen regimenTwo = new Regimen();
+        Regimen regimenOne = new Regimen("one", "onedispl");
+        Regimen regimenTwo = new Regimen("two", "twodisp");
 
         List<Regimen> regimenList = Regimen.findAllRegimens();
         Assert.assertTrue(regimenList.isEmpty());
@@ -77,7 +75,7 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
     @Test
     public void shouldRemoveRegimens() {
 
-        Regimen regimen = new Regimen();
+        Regimen regimen = new Regimen("reg", "reg2");
         regimen.persist();
 
         String id = regimen.getId();
@@ -87,7 +85,7 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
 
     @Test
     public void shouldAddRegimenAndPersist() {
-        Regimen regimen = new Regimen();
+        Regimen regimen = new Regimen("reg", "reg1");
         final RegimenComposition composition = new RegimenComposition();
         regimen.setCompositions(new HashSet<RegimenComposition>(){{
             add(composition);
@@ -100,6 +98,4 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
 
         markForDeletion(regimen);
     }
-
-
 }

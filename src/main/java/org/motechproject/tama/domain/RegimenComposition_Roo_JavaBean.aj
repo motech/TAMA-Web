@@ -7,14 +7,15 @@ import java.util.Set;
 
 privileged aspect RegimenComposition_Roo_JavaBean {
     
-    public Set<Drug> RegimenComposition.getDrugs() {
-        return this.drugs;
+    public Set<String> RegimenComposition.getDrugIds() {
+        return this.drugIds;
     }
     
-    public void RegimenComposition.setDrugs(Set<Drug> drugs) {
-        this.drugs = drugs;
+    public void RegimenComposition.setDrugIds(Set<String> drugIds) {
+        this.drugIds = drugIds;
     }
 
+    
     public String RegimenComposition.getRegimentCompositionId() {
         return regimentCompositionId;
     }
@@ -22,5 +23,4 @@ privileged aspect RegimenComposition_Roo_JavaBean {
     public void RegimenComposition.setRegimentCompositionId(String regimentCompositionId) {
         this.regimentCompositionId = regimentCompositionId;
     }
-
 }

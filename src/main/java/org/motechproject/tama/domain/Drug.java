@@ -14,6 +14,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 @RooJavaBean
 @RooEntity
 @TypeDiscriminator("doc.documentType == 'Drug'")
+
 public class Drug {
 
     @NotNull

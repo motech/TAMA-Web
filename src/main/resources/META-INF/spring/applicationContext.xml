@@ -82,10 +82,6 @@
     <bean id="regimens" class="org.motechproject.tama.repository.Regimens">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
-    <bean id="regimenCompositions" class="org.motechproject.tama.repository.RegimenCompositions">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    
     <bean id="mealAdviceTypes" class="org.motechproject.tama.repository.MealAdviceTypes">
     	<constructor-arg ref="couchDbConnector"/>
     </bean>

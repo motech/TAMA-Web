@@ -18,8 +18,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldPersistDrug() {
-        Drug drug = new Drug();
-        drug.setName("AZT");
+        Drug drug = new Drug("AZT");
         drug.persist();
 
         Drug actualDrug = Drug.findDrug(drug.getId());
@@ -31,8 +30,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void mergeDrug() {
-        Drug drug = new Drug();
-        drug.setName("AZT");
+        Drug drug = new Drug("AZT");
         drug.persist();
 
         Assert.assertEquals("AZT", Drug.findDrug(drug.getId()).getName());
@@ -49,7 +47,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
         long numberOfDrugs = Drug.countDrugs();
         Assert.assertEquals(0, numberOfDrugs);
 
-        Drug drug = new Drug();
+        Drug drug = new Drug("DRT");
         drug.persist();
         numberOfDrugs = Drug.countDrugs();
         Assert.assertEquals(1, numberOfDrugs);
@@ -60,8 +58,8 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
     @Test
     public void shouldFindAllDrugs() {
 
-        Drug drugOne = new Drug();
-        Drug drugTwo = new Drug();
+        Drug drugOne = new Drug("DRT");
+        Drug drugTwo = new Drug("AFT");
 
         List<Drug> drugs = Drug.findAllDrugs();
         Assert.assertTrue(drugs.isEmpty());
@@ -80,7 +78,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
     @Test
     public void shouldRemoveDrugs() {
 
-        Drug drug = new Drug();
+        Drug drug = new Drug("AFT");
         drug.persist();
 
         String id = drug.getId();
@@ -90,7 +88,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldAddBrandsAndPersist() {
-        Drug drug = new Drug();
+        Drug drug = new Drug("AST");
         Brand brand = new Brand("name");
         drug.addBrand(brand);
         drug.persist();
@@ -105,7 +103,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldRemoveBrandsAndPersist() {
-        Drug drug = new Drug();
+        Drug drug = new Drug("AST");
         Brand brandOne = new Brand("one");
         drug.addBrand(brandOne);
 
@@ -131,8 +129,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
 
         Company company = createCompany("companyName");
 
-        Drug drug = new Drug();
-        drug.setName("drugName");
+        Drug drug = new Drug("drug name");
         Brand brand = new Brand("TestBrand");
         brand.setCompanyId(company.getId());
         drug.addBrand(brand);
@@ -146,8 +143,7 @@ public class DrugIntegrationTest extends SpringIntegrationTest {
     }
 
     private Company createCompany(String companyName) {
-        Company company = new Company();
-        company.setName(companyName);
+        Company company = new Company(companyName);
 
         company.persist();
 
