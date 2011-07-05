@@ -10,7 +10,7 @@ import org.motechproject.tama.repository.Drugs;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class DrugSeed implements Seed {
+public class DrugSeed extends Seed {
 
 	@Autowired
 	private Drugs drugs;

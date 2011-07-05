@@ -4,7 +4,7 @@ import org.motechproject.tama.domain.MealAdviceType;
 import org.motechproject.tama.repository.MealAdviceTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class MealAdviceTypeSeed implements Seed 
+public class MealAdviceTypeSeed extends Seed 
 {
 
 	@Autowired

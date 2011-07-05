@@ -8,7 +8,7 @@ import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.repository.Companies;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CompanySeed implements Seed {
+public class CompanySeed extends Seed {
 
 	@Autowired
 	private Companies companies;

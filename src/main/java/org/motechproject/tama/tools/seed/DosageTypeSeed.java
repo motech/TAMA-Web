@@ -4,7 +4,7 @@ import org.motechproject.tama.domain.DosageType;
 import org.motechproject.tama.repository.DosageTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DosageTypeSeed implements Seed {
+public class DosageTypeSeed extends Seed {
 
 	@Autowired
 	private DosageTypes dosageTypes;

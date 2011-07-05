@@ -9,7 +9,7 @@ import org.motechproject.tama.repository.RegimenCompositions;
 import org.motechproject.tama.repository.Regimens;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class RegimenSeed implements Seed {
+public class RegimenSeed extends Seed {
 
 	@Autowired
 	private RegimenCompositions regimenCompositions;

@@ -4,7 +4,7 @@ import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.repository.IVRLanguages;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class IVRLanguageSeed implements Seed 
+public class IVRLanguageSeed extends Seed 
 {
 
 	@Autowired
