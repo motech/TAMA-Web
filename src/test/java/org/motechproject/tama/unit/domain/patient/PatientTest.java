@@ -35,6 +35,7 @@ public class PatientTest {
         assertConstraintViolation(constraintViolations, "dateOfBirth", "may not be null");
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "may not be null");
         assertConstraintViolation(constraintViolations, "passcode", "may not be null");
+//        assertConstraintViolation(constraintViolations, "clinic", "may not be null");
     }
 
     @Test

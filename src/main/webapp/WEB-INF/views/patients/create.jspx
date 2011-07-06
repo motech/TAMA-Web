@@ -7,8 +7,9 @@
             <field:input field="patientId" id="c_org_motechproject_tama_domain_patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
             <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
             <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8=" />
-            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true" disableDefaultSelection="true"/>
-            <field:select field="principalDoctor" id="c_org_motechproject_tama_domain_patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q=" required="true" disableDefaultSelection="true"/>
+            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true" />
+            <field:select field="clinic" id="c_org_motechproject_tama_domain_patient_clinic" itemValue="id" items="${clinics}" path="/clinics" required="true" />
+            <field:select field="principalDoctor" id="c_org_motechproject_tama_domain_patient_principalDoctor" itemValue="id" items="${doctors}" path="/doctors" z="g5NKWmONAuqqFtQCd/nvcUI20/Q=" required="true"/>
             <label for="_travelTimeToClinic_id">Travel Time To Clinic* :</label>
             In day(s) <springform:select path="travelTimeToClinicInDays" id="_travelTimeToClinicInDays_id" items="${daysInAMonth}" />
             In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />

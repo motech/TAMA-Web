@@ -50,6 +50,9 @@ public class Patient {
     private Gender gender;
 
     @ManyToOne
+    private Clinic clinic;
+
+    @ManyToOne
     private IVRLanguage ivrLanguage;
 
     @ManyToOne

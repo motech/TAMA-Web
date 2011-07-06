@@ -22,6 +22,8 @@
             <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="s_org_motechproject_tama_domain_patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
             <field:display field="gender" id="s_org_motechproject_tama_domain_patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
             <br/>
+            <field:display field="clinic" id="s_org_motechproject_tama_domain_patient_clinic" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
+            <br/>
             <field:display field="principalDoctor" id="s_org_motechproject_tama_domain_patient_principalDoctor" object="${patient}" z="xGM8DAhXesd5SMbgvRK932oTGNI="/>
             <br/>
             <label for="_travelTimeToClinic_id">Travel Time To Clinic : </label>

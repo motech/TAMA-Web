@@ -9,9 +9,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sound.midi.VoiceStatus;
+
 privileged aspect Patient_Roo_Entity {
 
-    declare parents : Patient extends CouchEntity;
+    declare parents :Patient extends CouchEntity;
 
     @Autowired
     transient Patients Patient.patients;
@@ -35,9 +37,9 @@ privileged aspect Patient_Roo_Entity {
     }
 
     public Patient Patient.merge() {
-       this.setRevision(this.patients.get(this.getId()).getRevision());
-       this.patients.update(this);
-       return this;
+        this.setRevision(this.patients.get(this.getId()).getRevision());
+        this.patients.update(this);
+        return this;
     }
 
 
@@ -51,7 +53,7 @@ privileged aspect Patient_Roo_Entity {
     }
 
     public static List<Patient> Patient.findAllPatients() {
-       return patients().getAll();
+        return patients().getAll();
     }
 
     public static List<Patient> Patient.findByPatientId(String patientId) {
@@ -65,7 +67,7 @@ privileged aspect Patient_Roo_Entity {
     }
 
     public static List<Patient> Patient.findPatientEntries(int firstResult, int maxResults) {
-         return patients().getAll();
+        return patients().getAll();
     }
 
     @JsonIgnore
@@ -99,5 +101,13 @@ privileged aspect Patient_Roo_Entity {
 
     public void Patient.setIvrLanguageId(String ivrLanguageId) {
         this.ivrLanguageId = ivrLanguageId;
+    }
+
+    public void Patient.setClinic(Clinic clinic) {
+        this.clinic = clinic;
+    }
+
+    public Clinic Patient.getClinic() {
+        return clinic;
     }
 }

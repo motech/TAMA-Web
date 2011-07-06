@@ -3,6 +3,7 @@ package org.motechproject.tama.builder;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
 
 public class PatientBuilder {
@@ -78,8 +79,14 @@ public class PatientBuilder {
                 withDateOfBirth(dob).
                 withMobileNumber("9765456789").
                 withPasscode("123456").
+                withClinic(new Clinic()).
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3);
+    }
+
+    private PatientBuilder withClinic(Clinic clinic) {
+        patient.setClinic(clinic);
+        return this;
     }
 }
