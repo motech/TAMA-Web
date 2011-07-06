@@ -54,6 +54,11 @@ privileged aspect Patient_Roo_Entity {
        return patients().getAll();
     }
 
+    public static List<Patient> Patient.findByPatientId(String patientId) {
+        if (patientId == null) return null;
+        return patients().findByPatientId(patientId);
+    }
+
     public static Patient Patient.findPatient(String id) {
         if (id == null) return null;
         return patients().get(id);

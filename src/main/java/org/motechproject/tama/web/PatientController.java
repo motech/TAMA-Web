@@ -1,20 +1,17 @@
 package org.motechproject.tama.web;
 
-import java.util.ArrayList;
-
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RooWebScaffold(path = "patients", formBackingObject = Patient.class)
 @RequestMapping("/patients")
@@ -25,6 +22,15 @@ public class PatientController {
     public String updateStatus(@RequestParam String id, HttpServletRequest httpServletRequest) {
         Patient.findPatient(id).activate().merge();
         return "redirect:/patients/" + encodeUrlPathSegment(id, httpServletRequest);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
+    public String findByPatientId(@RequestParam String patientId, HttpServletRequest httpServletRequest) {
+        List<Patient> patients = Patient.findByPatientId(patientId);
+        if (patients == null || patients.isEmpty()) {
+            return "No patient found";
+        }
+        return "redirect:/patients/" + encodeUrlPathSegment(patients.get(0).getId(), httpServletRequest);
     }
 
 

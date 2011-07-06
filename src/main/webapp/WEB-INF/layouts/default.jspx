@@ -1,4 +1,4 @@
-<html xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" >  
+<html xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" >
 	
 	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
 	
@@ -36,7 +36,22 @@
                <br />
 		    <tiles:insertAttribute name="menu" ignore="true" />
 		    <div id="main">
-	    		<tiles:insertAttribute name="body"/> 
+                <c:if test="${pageContext['request'].userPrincipal != null}">
+                    <form name="searchPatientForm" action="patients/findByPatientId" method="GET">
+                      <div>
+                        <span>
+                            <input id="patientId" type='text' name='patientId' style="width:150px" />
+                            <spring:message code="global_patient_search_enter" var="patientId_msg" htmlEscape="false" />
+                        </span>
+                        <span class="submit">
+                            <spring:message code="button_search_patient" var="submit_search_patient" htmlEscape="false" />
+                            <input id="searchPatient" type="submit" value="${submit_search_patient}" />
+                        </span>
+                      </div>
+                    </form>
+                    <br />
+                </c:if>
+	    		<tiles:insertAttribute name="body"/>
 		    	<tiles:insertAttribute name="footer" ignore="true"/>
 		    </div>
 		</div>
