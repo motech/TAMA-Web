@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.joda.time.format.DateTimeFormat;
-import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
@@ -97,12 +96,7 @@ privileged aspect PatientController_Roo_Controller {
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/patients";
     }
-    
-    @ModelAttribute("doctors")
-    public Collection<Doctor> PatientController.populateDoctors() {
-        return Doctor.findAllDoctors();
-    }
-    
+
     @ModelAttribute("genders")
     public Collection<Gender> PatientController.populateGenders() {
         return Gender.findAllGenders();

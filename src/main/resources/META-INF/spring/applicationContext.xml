@@ -64,10 +64,7 @@
     <bean id="clinicians" class="org.motechproject.tama.repository.Clinicians">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
-    <bean id="doctors" class="org.motechproject.tama.repository.Doctors">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="genders" class="org.motechproject.tama.repository.Genders">
+     <bean id="genders" class="org.motechproject.tama.repository.Genders">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
     <bean id="ivrlanguages" class="org.motechproject.tama.repository.IVRLanguages">

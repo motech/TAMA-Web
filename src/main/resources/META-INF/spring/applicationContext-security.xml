@@ -18,7 +18,6 @@
         <intercept-url pattern="/genders/**" access="isAuthenticated()" />
         <intercept-url pattern="/ivrlanguages/**" access="isAuthenticated()" />
         <intercept-url pattern="/titles/**" access="isAuthenticated()" />
-        <intercept-url pattern="/doctors/**" access="isAuthenticated()" />
         <intercept-url pattern="/patients/**" access="isAuthenticated()" />
         <intercept-url pattern="/**" access="permitAll" />
     </http>

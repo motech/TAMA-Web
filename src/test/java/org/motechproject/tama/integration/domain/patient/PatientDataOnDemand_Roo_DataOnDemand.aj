@@ -6,10 +6,8 @@ package org.motechproject.tama.integration.domain.patient;
 import java.util.List;
 import java.util.Random;
 
-import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.integration.domain.doctor.DoctorDataOnDemand;
 import org.motechproject.tama.integration.domain.gender.GenderDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,10 +22,7 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
     
     @Autowired
     private GenderDataOnDemand PatientDataOnDemand.genderDataOnDemand;
-    
-    @Autowired
-    private DoctorDataOnDemand PatientDataOnDemand.doctorDataOnDemand;
-    
+
     public Patient PatientDataOnDemand.getNewTransientPatient(int index) {
         Patient obj = new Patient();
         setPatientId(obj, index);
@@ -37,7 +32,6 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
         setTravelTimeToClinicInHours(obj, index);
         setTravelTimeToClinicInMinutes(obj, index);
         setGender(obj, index);
-        setPrincipalDoctor(obj, index);
         return obj;
     }
     
@@ -75,12 +69,7 @@ privileged aspect PatientDataOnDemand_Roo_DataOnDemand {
         Gender gender = genderDataOnDemand.getRandomGender();
         obj.setGender(gender);
     }
-    
-    public void PatientDataOnDemand.setPrincipalDoctor(Patient obj, int index) {
-        Doctor principalDoctor = doctorDataOnDemand.getRandomDoctor();
-        obj.setPrincipalDoctor(principalDoctor);
-    }
-    
+
     public Patient PatientDataOnDemand.getSpecificPatient(int index) {
         init();
         if (index < 0) index = 0;

@@ -8,7 +8,6 @@ import org.motechproject.tama.domain.Brand;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Company;
-import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.DosageType;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.Gender;
@@ -27,7 +26,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(new ClinicConverter());
         registry.addConverter(new ClinicianConverter());
         registry.addConverter(new CompanyConverter());
-        registry.addConverter(new DoctorConverter());
         registry.addConverter(new DosageTypeConverter());
         registry.addConverter(new DrugConverter());
         registry.addConverter(new GenderConverter());
@@ -70,14 +68,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         }
         
     }
-    
-    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DoctorConverter implements Converter<Doctor, String>  {
-        public String convert(Doctor doctor) {
-            return new StringBuilder().append(doctor.getDoctorId()).append(" ").append(doctor.getFirstName()).append(" ").append(doctor.getLastName()).toString();
-        }
-        
-    }
-    
+
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DosageTypeConverter implements Converter<DosageType, String>  {
         public String convert(DosageType dosageType) {
             return new StringBuilder().append(dosageType.getType()).toString();

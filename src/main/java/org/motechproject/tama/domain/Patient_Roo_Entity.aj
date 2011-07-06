@@ -18,7 +18,6 @@ privileged aspect Patient_Roo_Entity {
     @Autowired
     transient Patients Patient.patients;
 
-    private String Patient.doctorId;
     private String Patient.genderId;
     private String Patient.ivrLanguageId;
 
@@ -77,14 +76,6 @@ privileged aspect Patient_Roo_Entity {
 
     public void Patient.setPatients(Patients patients) {
         this.patients = patients;
-    }
-
-    public String Patient.getDoctorId() {
-        return doctorId;
-    }
-
-    public void Patient.setDoctorId(String doctorId) {
-        this.doctorId = doctorId;
     }
 
     public String Patient.getGenderId() {
