@@ -2,6 +2,7 @@
 .project
 .settings/
 target/
+felix-cache/
 .externalToolBuilders/
 maven-eclipse.xml
 *.iml

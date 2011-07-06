@@ -57,12 +57,12 @@
                 </form>
             </div>
 	        <br/>
-	        <spring:url value="/treatmentadvices" var="clinic_visits_url">
-        		<spring:param name="form" />
-        		<spring:param name="patientId" value="${patient.patientId}" />
-      		</spring:url>
-	        <a href="${fn:escapeXml(clinic_visits_url)}">Clinic Visits / Appointment Details</a>
         </c:if>
-        
+        <spring:url value="/treatmentadvices" var="clinic_visits_url">
+            <spring:param name="form" />
+            <spring:param name="patientId" value="${patient.patientId}" />
+          </spring:url>
+        <a href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
+
     </page:show>
 </div>

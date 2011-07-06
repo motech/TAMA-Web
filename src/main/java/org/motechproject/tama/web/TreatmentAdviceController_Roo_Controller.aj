@@ -35,8 +35,10 @@ privileged aspect TreatmentAdviceController_Roo_Controller {
     }
     
     @RequestMapping(params = "form", method = RequestMethod.GET)
-    public String TreatmentAdviceController.createForm(Model uiModel) {
-        uiModel.addAttribute("treatmentAdvice", new TreatmentAdvice());
+    public String TreatmentAdviceController.createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+        treatmentAdvice.setPatientId(patientId);
+        uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
         return "treatmentadvices/create";
     }
     
