@@ -86,6 +86,14 @@
     	<constructor-arg ref="couchDbConnector"/>
     </bean>
 
+    <bean id="clinics" class="org.motechproject.tama.repository.Clinics">
+    	<constructor-arg ref="couchDbConnector"/>
+    </bean>
+
+    <bean id="cities" class="org.motechproject.tama.repository.Cities">
+    	<constructor-arg ref="couchDbConnector"/>
+    </bean>
+
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
             <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>

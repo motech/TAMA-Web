@@ -16,6 +16,9 @@ public class HomePage {
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_new']/a")
     private WebElement patientRegistrationLink;
 
+    @FindBy(how = How.XPATH, using = "//li[@id='i_clinic_new']/a")
+    private WebElement clinicRegistrationLink;
+
     @FindBy(how = How.XPATH, using = "//h3")
     private WebElement welcomeMessage;
 
@@ -26,6 +29,11 @@ public class HomePage {
     public PatientRegistrationPage goToPatientRegistrationPage() {
         patientRegistrationLink.click();
         return PageFactory.initElements(webDriver, PatientRegistrationPage.class);
+    }
+
+    public ClinicRegistrationPage goToClinicRegistrationPage() {
+        clinicRegistrationLink.click();
+        return PageFactory.initElements(webDriver, ClinicRegistrationPage.class);
     }
 
     public String getWelcomeMessage() {

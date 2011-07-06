@@ -39,5 +39,9 @@
             <menu:item id="i_treatmentadvice_new" messageCode="global_menu_new" url="/treatmentadvices?form" z="DwtIKdPoWdCos22YcWXVucPJOMc="/>
             <menu:item id="i_treatmentadvice_list" messageCode="global_menu_list" url="/treatmentadvices?page=1&amp;size=${empty param.size ? 10 : param.size}" z="FVSVPNhQR/toTvs27diBRupihwI="/>
         </menu:category>
+        <menu:category id="c_clinic" z="DRhFTtIld5U9o40YRDVyHVloZgU=">
+            <menu:item id="i_clinic_new" messageCode="global_menu_new" url="/clinics?form" z="DwtIKdPoWdCos22YcWXVucPJOMc="/>
+            <menu:item id="i_clinic_list" messageCode="global_menu_list" url="/clinics?page=1&amp;size=${empty param.size ? 10 : param.size}" z="FVSVPNhQR/toTvs27diBRupihwI="/>
+        </menu:category>
     </menu:menu>
 </div>
