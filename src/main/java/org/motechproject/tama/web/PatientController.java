@@ -4,8 +4,8 @@ import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,14 @@ public class PatientController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
-    public String findByPatientId(@RequestParam String patientId, HttpServletRequest httpServletRequest) {
+    public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
         List<Patient> patients = Patient.findByPatientId(patientId);
         if (patients == null || patients.isEmpty()) {
-            return "No patient found";
+            uiModel.addAttribute("patientIdNotFound", patientId);
+            String referer = httpServletRequest.getHeader("Referer");
+            return "redirect:"+referer;
         }
+
         return "redirect:/patients/" + encodeUrlPathSegment(patients.get(0).getId(), httpServletRequest);
     }
 

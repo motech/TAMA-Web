@@ -191,6 +191,12 @@ h4 {
 	margin-left: 105px;
 }
 
+.error {
+	color: red;
+	font-weight: bold;
+	display: block;
+}
+
 a {
 	text-decoration: underline;
 	font-size: 12px;

@@ -1,15 +1,35 @@
-<html xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" >
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:tiles="http://tiles.apache.org/tags-tiles"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:spring="http://www.springframework.org/tags"
+      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+      xmlns:form="http://www.springframework.org/tags/form" >
 	
 	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
 	
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />  
-	<jsp:directive.page pageEncoding="UTF-8" /> 
-			
+	<jsp:directive.page pageEncoding="UTF-8" />
+
+    <spring:message code="error_patient_search_empty" var="patient_search_error" htmlEscape="false" />
+    <spring:message code="error_patient_not_found" var="patient_not_found" arguments="${param.patientIdNotFound}" htmlEscape="false" />
+
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />	
 			
 		<util:load-scripts />
+
+        <script type="text/javascript">
+            function validatePatientId() {
+                var patientId = document.getElementById("patientId").value;
+                if(patientId == null || dojo.trim(patientId).length==0) {
+                    var patientSearchError = document.getElementById('patientSearchError');
+                    patientSearchError.innerHTML = "${patient_search_error}";
+                    return false;
+                }
+            }
+        </script>
 		
 		<spring:message code="application_name" var="app_name" htmlEscape="false"/>
 		<title><spring:message code="welcome_h3" arguments="${app_name}" /></title>
@@ -37,18 +57,26 @@
 		    <tiles:insertAttribute name="menu" ignore="true" />
 		    <div id="main">
                 <c:if test="${pageContext['request'].userPrincipal != null}">
-                    <form name="searchPatientForm" action="patients/findByPatientId" method="GET">
+                    <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
+                    <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
                       <div>
                         <span>
-                            <input id="patientId" type='text' name='patientId' style="width:150px" />
+                            <input id="patientId" type='text' name='patientId' style="width:150px" value="${param.patientIdNotFound}" />
                             <spring:message code="global_patient_search_enter" var="patientId_msg" htmlEscape="false" />
                         </span>
                         <span class="submit">
                             <spring:message code="button_search_patient" var="submit_search_patient" htmlEscape="false" />
-                            <input id="searchPatient" type="submit" value="${submit_search_patient}" />
+                            <input id="searchPatient" type="submit" value="${submit_search_patient}" onClick="return validatePatientId();"/>
                         </span>
                       </div>
-                    </form>
+                      <div>
+                          <span id="patientSearchError" class="error">
+                              <c:if test="${param.patientIdNotFound!=null}">
+                                 <c:out value="${patient_not_found}" />
+                              </c:if>
+                          </span>
+                      </div>
+                    </form:form>
                     <br />
                 </c:if>
 	    		<tiles:insertAttribute name="body"/>
