@@ -61,6 +61,9 @@
     <bean id="patients" class="org.motechproject.tama.repository.Patients">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
+    <bean id="clinicians" class="org.motechproject.tama.repository.Clinicians">
+        <constructor-arg ref="couchDbConnector"/>
+    </bean>
     <bean id="doctors" class="org.motechproject.tama.repository.Doctors">
         <constructor-arg ref="couchDbConnector"/>
     </bean>

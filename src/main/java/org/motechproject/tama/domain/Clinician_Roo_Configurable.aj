@@ -5,8 +5,8 @@ package org.motechproject.tama.domain;
 
 import org.springframework.beans.factory.annotation.Configurable;
 
-privileged aspect Clinic_Roo_Configurable {
+privileged aspect Clinician_Roo_Configurable {
     
-    declare @type: Clinic: @Configurable;
+    declare @type: Clinician: @Configurable;
     
 }

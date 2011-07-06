@@ -39,9 +39,13 @@
             <menu:item id="i_treatmentadvice_new" messageCode="global_menu_new" url="/treatmentadvices?form" z="DwtIKdPoWdCos22YcWXVucPJOMc="/>
             <menu:item id="i_treatmentadvice_list" messageCode="global_menu_list" url="/treatmentadvices?page=1&amp;size=${empty param.size ? 10 : param.size}" z="FVSVPNhQR/toTvs27diBRupihwI="/>
         </menu:category>
-        <menu:category id="c_clinic" z="DRhFTtIld5U9o40YRDVyHVloZgU=">
-            <menu:item id="i_clinic_new" messageCode="global_menu_new" url="/clinics?form" z="DwtIKdPoWdCos22YcWXVucPJOMc="/>
-            <menu:item id="i_clinic_list" messageCode="global_menu_list" url="/clinics?page=1&amp;size=${empty param.size ? 10 : param.size}" z="FVSVPNhQR/toTvs27diBRupihwI="/>
+        <menu:category id="c_clinic" z="user-managed">
+            <menu:item id="i_clinic_new" messageCode="global_menu_new" url="/clinics?form" z="user-managed"/>
+            <menu:item id="i_clinic_list" messageCode="global_menu_list" url="/clinics?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
+        </menu:category>
+        <menu:category id="c_clinician" z="SlZnUa70pX+9KFG6U8EaO+agT0o=">
+            <menu:item id="i_clinician_new" messageCode="global_menu_new" url="/clinicians?form" z="He31CdTMtJw3/V8zehvWm7LkjnU="/>
+            <menu:item id="i_clinician_list" messageCode="global_menu_list" url="/clinicians?page=1&amp;size=${empty param.size ? 10 : param.size}" z="rMVkRW+GTqYK5dSatl73x78mJhI="/>
         </menu:category>
     </menu:menu>
 </div>

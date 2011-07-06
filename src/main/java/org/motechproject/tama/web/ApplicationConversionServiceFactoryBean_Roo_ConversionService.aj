@@ -3,7 +3,10 @@
 
 package org.motechproject.tama.web;
 
+import java.lang.String;
 import org.motechproject.tama.domain.Brand;
+import org.motechproject.tama.domain.Clinic;
+import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.domain.Doctor;
 import org.motechproject.tama.domain.DosageType;
@@ -21,6 +24,8 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
         registry.addConverter(new BrandConverter());
+        registry.addConverter(new ClinicConverter());
+        registry.addConverter(new ClinicianConverter());
         registry.addConverter(new CompanyConverter());
         registry.addConverter(new DoctorConverter());
         registry.addConverter(new DosageTypeConverter());
@@ -41,6 +46,20 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.BrandConverter implements Converter<Brand, String>  {
         public String convert(Brand brand) {
             return new StringBuilder().append(brand.getName()).append(" ").append(brand.getCompanyId()).toString();
+        }
+        
+    }
+    
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.ClinicConverter implements Converter<Clinic, String>  {
+        public String convert(Clinic clinic) {
+            return new StringBuilder().append(clinic.getDocumentType()).append(" ").append(clinic.getName()).append(" ").append(clinic.getAddress()).append(" ").append(clinic.getPhone()).toString();
+        }
+        
+    }
+    
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.ClinicianConverter implements Converter<Clinician, String>  {
+        public String convert(Clinician clinician) {
+            return new StringBuilder().append(clinician.getName()).append(" ").append(clinician.getUsername()).append(" ").append(clinician.getContactNumber()).append(" ").append(clinician.getAlternateContactNumber()).toString();
         }
         
     }
@@ -68,7 +87,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DrugConverter implements Converter<Drug, String>  {
         public String convert(Drug drug) {
-            return new StringBuilder().append(drug.getName()).toString();
+            return new StringBuilder().append(drug.getName()).append(" ").append(drug.getRegimenCompositionId()).toString();
         }
         
     }
