@@ -4,10 +4,16 @@ import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+=======
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+>>>>>>> #141 Added activate link on patients list page <vijay>
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -18,8 +24,8 @@ import java.util.List;
 @Controller
 public class PatientController {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/updateStatus")
-    public String updateStatus(@RequestParam String id, HttpServletRequest httpServletRequest) {
+    @RequestMapping(method = RequestMethod.POST, value = "/activate")
+    public String activate(@RequestParam String id, HttpServletRequest httpServletRequest) {
         Patient.findPatient(id).activate().merge();
         return "redirect:/patients/" + encodeUrlPathSegment(id, httpServletRequest);
     }
@@ -33,6 +39,11 @@ public class PatientController {
         return "redirect:/patients/" + encodeUrlPathSegment(patients.get(0).getId(), httpServletRequest);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/activate/{id}")
+    public String activate(@PathVariable String id) {
+        Patient.findPatient(id).activate().merge();
+        return "redirect:/patients";
+    }
 
     @ModelAttribute("daysInAMonth")
     public ArrayList<Integer> getDaysInAMonth() {

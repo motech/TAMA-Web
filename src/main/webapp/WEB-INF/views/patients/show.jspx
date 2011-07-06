@@ -49,7 +49,7 @@
         <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
         <c:if test="${!patient.active}" >
             <div class="update_patient">
-                <form action="updateStatus" method="POST">
+                <form action="activate" method="POST">
                    <input type="hidden" name="id" value="${patient.id}"/>
                    <div class='submit'>
                      <input type="submit" id="activatePatient" value="Activate"/>

@@ -12,6 +12,11 @@
   <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
 
+  <jsp:directive.attribute name="customAction" type="java.lang.Boolean" required="false" rtexprvalue="true" description="" />
+  <jsp:directive.attribute name="customActionPath" type="java.lang.String" required="false" rtexprvalue="true" description="" />
+  <jsp:directive.attribute name="customActionLabel" type="java.lang.String" required="false" rtexprvalue="true" description="" />
+  <jsp:directive.attribute name="customActionCondition" type="java.lang.String" required="false" rtexprvalue="true" description="" />
+
   <c:if test="${empty render or render}">
 
     <c:set var="columnProperties" scope="request" />
@@ -32,6 +37,10 @@
 
     <c:if test="${empty delete}">
       <c:set var="delete" value="true" />
+    </c:if>
+
+     <c:if test="${empty customAction}">
+      <c:set var="customAction" value="true" />
     </c:if>
 
     <spring:message var="typeName" code="menu_item_${fn:toLowerCase(fn:split(id,'_')[fn:length(fn:split(id,'_')) - 1])}_new_label" htmlEscape="false" />
@@ -94,6 +103,22 @@
             </td>
           </c:forTokens>
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
+
+          <c:set var="doCustomAction"><spring:eval expression="${customActionCondition}"/></c:set>
+          <c:if test="${customAction}">
+                 <c:choose>
+                     <c:when test="${not doCustomAction}">
+                         <td class="utilbox">
+                         <spring:url value="${customActionPath}/${itemId}" var="custom_action_form_url"/>
+                            <a href="${fn:escapeXml(custom_action_form_url)}">${customActionLabel}</a>
+                         </td>
+                     </c:when>
+                     <c:otherwise>
+                          <td class="utilbox"></td>
+                     </c:otherwise>
+                 </c:choose>
+          </c:if>
+
           <td class="utilbox">
             <spring:url value="${path}/${itemId}" var="show_form_url" />
             <spring:url value="/resources/images/show.png" var="show_image_url" />
