@@ -45,7 +45,7 @@ public class ClinicianBuilder {
         return this.clinician;
     }
 
-    public Clinician withDefaults() {
+    public ClinicianBuilder withDefaults() {
         String validContactNumber = "1234567890";
         String validAlternateContactNumber = "1234567890";
         String username = "test";
@@ -57,6 +57,6 @@ public class ClinicianBuilder {
                 withContactNumber(validContactNumber).
                 withPassword(password).
                 withUserName(username).
-                withClinic(ClinicBuilder.startRecording().withDefaults().build()).build();
+                withClinic(ClinicBuilder.startRecording().withDefaults().build());
     }
 }

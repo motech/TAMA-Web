@@ -12,8 +12,14 @@
         <field:input field="alternateContactNumber" id="c_org_motechproject_tama_domain_Clinician_alternateContactNumber" required="true" z="hHrY/N/BZnieD/xEE9pKvuGiu4g="/>
         <field:input field="password" id="c_org_motechproject_tama_domain_Clinician_password" required="true" z="Di5/oYS0+lZ7+inW++ojVVhZA5g=" type="password"/>
         <field:select field="clinic" id="c_org_motechproject_tama_domain_Clinician_clinic" itemValue="id" items="${clinics}" path="/clinics" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
-        <springform:radiobutton id="c_org_motechproject_tama_domain_Clinician_Doctor_role" path="role" value="Doctor" label="Doctor"/>
-         <springform:radiobutton id="c_org_motechproject_tama_domain_Clinician_StudyNurse_role" path="role" value="StudyNurse" label="Study Nurse" />
+        <field:select field="role" id="c_org_motechproject_tama_domain_Clinician_role"  items="${roles}" path="/role" z="hNH07ivdEgsVTsaM5s/h5ALaRK8=" label="Role"/>
     </form:create>
+    <script type="text/javascript">
+          <![CDATA[
+             function encodePk(){
+                 return true;
+             }
+          ]]>
+      </script>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_Clinician" render="${not empty dependencies}" z="pTdLL5Yeig2t654mHdVNVB+jDcM="/>
 </div>

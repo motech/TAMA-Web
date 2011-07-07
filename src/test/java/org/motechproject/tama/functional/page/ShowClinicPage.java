@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 
 public class ShowClinicPage {
 
@@ -20,6 +21,9 @@ public class ShowClinicPage {
 
     @FindBy(how = How.ID,  id = "_s_org_motechproject_tama_domain_Clinic_city_city_id")
     private WebElement city;
+
+    @FindBy(how = How.XPATH,  xpath = "//a[@title='Home']")
+    private WebElement homePage;
 
     public ShowClinicPage(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -39,5 +43,10 @@ public class ShowClinicPage {
 
     public String getCity() {
         return city.getText();
+    }
+
+    public HomePage goToHomePage() {
+        homePage.click();
+        return PageFactory.initElements(webDriver, HomePage.class);
     }
 }

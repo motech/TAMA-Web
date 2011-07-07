@@ -62,7 +62,16 @@ public class Clinician extends CouchEntity{
     private Role role;
 
     public enum Role {
-        Doctor, StudyNurse
+        Doctor {
+            public String toString() {
+                return "Doctor";
+            }
+        }
+        , StudyNurse {
+            public String toString() {
+                return "Study Nurse";
+            }
+        }
     }
 
     private String clinicId;

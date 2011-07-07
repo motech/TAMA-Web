@@ -14,6 +14,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 public class ClinicianIntegrationTest extends SpringIntegrationTest{
+
     @Autowired
     private Clinicians clinicians;
 

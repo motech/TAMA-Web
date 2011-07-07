@@ -17,6 +17,7 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RooWebScaffold(path = "clinicians", formBackingObject = Clinician.class)
@@ -102,6 +103,14 @@ public class ClinicianController {
     @ModelAttribute("clinics")
     public Collection<Clinic> populateClinics() {
         return clinics.getAll();
+    }
+
+    @ModelAttribute("roles")
+    public Collection<Clinician.Role> populateRoles() {
+        return new ArrayList<Clinician.Role>() {{
+            add(Clinician.Role.Doctor);
+            add(Clinician.Role.StudyNurse);
+        }};
     }
 
 

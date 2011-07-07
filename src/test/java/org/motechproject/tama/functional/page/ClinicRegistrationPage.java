@@ -30,7 +30,7 @@ public class ClinicRegistrationPage {
         this.webDriver = webDriver;
     }
 
-    public ShowClinicPage registerClinic(Clinic clinic) {
+    public ShowClinicPage  registerClinic(Clinic clinic) {
         name.sendKeys(clinic.getName());
         address.sendKeys(clinic.getAddress());
         phoneNumber.sendKeys(clinic.getPhone());
