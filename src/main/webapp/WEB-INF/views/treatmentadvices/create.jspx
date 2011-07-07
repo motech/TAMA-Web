@@ -4,11 +4,33 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_domain_TreatmentAdvice" modelAttribute="treatmentAdvice" path="/treatmentadvices" render="${empty dependencies}" z="fHi3nZ2yXf8qzpuAArmXy4h8ghE=">
     	
-    	<field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" items="${regimens}" field="regimen" path="/regimens"></field:select> 
+    	<field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" items="${regimens}" field="regimen" itemValue="id" path="/regimens"></field:select>
         <field:input field="patientId" id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" disabled="true"/>
-        <!--<field:select field="regimenComposition" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenComposition" required="true" z="+nDMmuf9MrboCUrECP9UK9dQ0Sg="/>-->
+        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" items="${regimenCompositions}" field="regimenCompositionId" path="/regimenCompositions"></field:select>
         <!--<field:input field="regimenId" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenId" required="true" z="PuavmBdA0OmJPx2n9RG4rsz9HKY="/>-->
         <!--<field:select field="drugDosages" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" itemValue="id" items="${drugdosages}" multiple="true" path="/drugdosages" z="Hzh8H6BubuDUgPyMKWPB1PsUjNw="/>-->
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
+
+    <script type="text/javascript">
+        dojo.addOnLoad(function() {
+            var regimenDropDown = dijit.byId('_regimen_id');
+            var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
+
+            dojo.connect(regimenDropDown, 'onChange', function() {
+                dojo.require("dojo.data.ItemFileWriteStore");
+                dojo.xhrGet({
+                    url: "treatmentadvices/regimenCompositionsFor?regimenId=" + regimenDropDown,
+                    handleAs: "json",
+                    load: function(compositions) {
+                        var options = new dojo.data.ItemFileWriteStore({data: {identifier: 'name', items: []}});
+                        for (var i=0; i &lt; compositions.length; i++) {
+                          options.newItem({name: compositions[i]});
+                        }
+                        regimenCompositionDropDown.attr('store', options);
+                    }
+                });
+            });
+        });
+    </script>
 </div>
