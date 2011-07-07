@@ -9,6 +9,7 @@ var populateComboBox = function(urlToLoadFrom, target) {
               options.newItem({name: result[i]});
             }
             target.attr('store', options);
+            target.attr('value', result[0]);
         }
     });
 }
