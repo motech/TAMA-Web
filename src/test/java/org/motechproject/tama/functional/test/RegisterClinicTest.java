@@ -45,7 +45,6 @@ public class RegisterClinicTest {
         assertEquals(clinic.getName(), showClinicPage.getName());
         assertEquals(clinic.getPhone(), showClinicPage.getPhone());
         assertEquals(clinic.getAddress(), showClinicPage.getAddress());
-        assertEquals(clinic.getCity().getName(), showClinicPage.getCity());
     }
 
 
