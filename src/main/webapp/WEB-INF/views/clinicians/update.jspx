@@ -8,6 +8,6 @@
         <field:input field="contactNumber" id="c_org_motechproject_tama_domain_Clinician_contactNumber" required="true" z="1uZfPqoYabi6aa+Ea6oh6JEI3TE="/>
         <field:input field="alternateContactNumber" id="c_org_motechproject_tama_domain_Clinician_alternateContactNumber" required="true" z="hHrY/N/BZnieD/xEE9pKvuGiu4g="/>
         <field:input field="password" id="c_org_motechproject_tama_domain_Clinician_password" required="true" z="Di5/oYS0+lZ7+inW++ojVVhZA5g="/>
-        <field:select field="clinic" id="c_org_motechproject_tama_domain_Clinician_clinic" itemValue="id" items="${clinis}" path="/clinics" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
+        <field:select field="clinic" id="c_org_motechproject_tama_domain_Clinician_clinic" itemValue="id" items="${clinics}" path="/clinics" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
     </form:update>
 </div>

@@ -74,6 +74,7 @@ public class ClinicianController {
             return "clinicians/update";
         }
         uiModel.asMap().clear();
+        clinician.setRevision(clinicians.get(clinician.getId()).getRevision());
         clinicians.update(clinician);
         return "redirect:/clinicians/" + encodeUrlPathSegment(clinician.getId().toString(), httpServletRequest);
     }

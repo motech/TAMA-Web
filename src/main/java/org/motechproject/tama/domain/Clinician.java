@@ -11,6 +11,8 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.TAMAMessages;
 import org.motechproject.tama.repository.Clinics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.entity.RooEntity;
@@ -19,6 +21,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 
 @RooJavaBean
@@ -36,10 +39,11 @@ public class Clinician extends CouchEntity{
     private String username;
 
     @NotNull
-
+    @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String contactNumber;
 
     @NotNull
+    @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String alternateContactNumber;
 
     @NotNull
@@ -47,6 +51,20 @@ public class Clinician extends CouchEntity{
 
     @ManyToOne
     private Clinic clinic;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    private Role role;
+
+    public enum Role {
+        Doctor, StudyNurse
+    }
 
     private String clinicId;
 

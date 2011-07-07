@@ -7,6 +7,8 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.TAMAMessages;
 import org.motechproject.tama.repository.Cities;
 import org.motechproject.tama.repository.Clinics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.misc.resources.Messages;
 
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 
 @RooJavaBean
@@ -39,6 +42,8 @@ public class Clinic extends CouchEntity{
     @NotNull
     private String address;
 
+    @NotNull
+    @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String phone;
 
     @ManyToOne

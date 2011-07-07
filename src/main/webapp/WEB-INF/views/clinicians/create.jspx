@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:spring="http://www.springframework.org/tags" version="2.0"
+     xmlns:springform="http://www.springframework.org/tags/form">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_domain_Clinician" modelAttribute="clinician" path="/clinicians" render="${empty dependencies}" z="yMnxQutPi1EIeLUnJgzyQf6S47o=">
@@ -8,7 +11,9 @@
         <field:input field="contactNumber" id="c_org_motechproject_tama_domain_Clinician_contactNumber" required="true" z="1uZfPqoYabi6aa+Ea6oh6JEI3TE="/>
         <field:input field="alternateContactNumber" id="c_org_motechproject_tama_domain_Clinician_alternateContactNumber" required="true" z="hHrY/N/BZnieD/xEE9pKvuGiu4g="/>
         <field:input field="password" id="c_org_motechproject_tama_domain_Clinician_password" required="true" z="Di5/oYS0+lZ7+inW++ojVVhZA5g="/>
-        <field:select field="clinic" id="c_org_motechproject_tama_domain_Clinic_clinic" itemValue="id" items="${clinics}" path="/clinics" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
+        <field:select field="clinic" id="c_org_motechproject_tama_domain_Clinician_clinic" itemValue="id" items="${clinics}" path="/clinics" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
+        <springform:radiobutton id="c_org_motechproject_tama_domain_Clinician_Doctor_role" path="role" value="Doctor" label="Doctor"/>
+         <springform:radiobutton id="c_org_motechproject_tama_domain_Clinician_StudyNurse_role" path="role" value="StudyNurse" label="Study Nurse" />
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_Clinician" render="${not empty dependencies}" z="pTdLL5Yeig2t654mHdVNVB+jDcM="/>
 </div>

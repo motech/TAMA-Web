@@ -43,10 +43,6 @@ privileged aspect Clinic_Roo_JavaBean {
     }
     
     public void Clinic.setCity(City city) {
-        System.out.println("******************************************************************************************");
-        System.out.println("city");
-        System.out.println(city.getName());
-        System.out.println(city.getId());
         this.city = city;
         this.cityId = city.getId();
     }
