@@ -23,7 +23,7 @@ public class TreatmentAdviceController {
 	}
 
 	@ModelAttribute("regimenCompositions")
-	public List<String> regimenCompositions(String regimenId) {
+	public List<String> regimenCompositions() {
         ArrayList<String> regimenCompositions = new ArrayList<String>();
         for(Regimen regimen : regimens()) {
             for (RegimenComposition composition : regimen.getCompositions()) {
