@@ -9,5 +9,13 @@
         <field:select field="city" id="c_org_motechproject_tama_domain_Clinic_city" itemValue="id" items="${citys}" path="/citys" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
 
     </form:create>
+    <script type="text/javascript">
+          <![CDATA[
+             function encodePk(){
+                 return true;
+             }
+          ]]>
+      </script>
+
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_Clinic" render="${not empty dependencies}" z="SE1KalhQ4bERbvy6RBOQwjFgqH0="/>
 </div>

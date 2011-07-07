@@ -26,7 +26,7 @@ public class ClinicRegistrationPage {
 
     private WebDriver webDriver;
 
-    public ClinicRegistrationPage(WebDriver webDriver, WebDriver driver) {
+    public ClinicRegistrationPage(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
 
@@ -34,6 +34,7 @@ public class ClinicRegistrationPage {
         name.sendKeys(clinic.getName());
         address.sendKeys(clinic.getAddress());
         phoneNumber.sendKeys(clinic.getPhone());
+        city.clear();
         city.sendKeys(clinic.getCity().getName());
         registerClinicLink.click();
         return PageFactory.initElements(webDriver, ShowClinicPage.class);

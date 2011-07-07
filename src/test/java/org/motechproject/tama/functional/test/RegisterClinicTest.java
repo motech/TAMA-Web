@@ -10,6 +10,8 @@ import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowClinicPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,7 +26,7 @@ public class RegisterClinicTest {
 
     @Before
     public void setUp() {
-        webDriver = WebDriverFactory.getInstance();
+        webDriver = new FirefoxDriver();
     }
 
     @After
@@ -34,16 +36,16 @@ public class RegisterClinicTest {
 
     @Test
     public void testClinicRegistration() {
-//        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-//        ShowClinicPage showClinicPage = PageFactory.initElements(webDriver, LoginPage.class)
-//                .loginWithCorrectUserNamePassword()
-//                .goToClinicRegistrationPage()
-//                .registerClinic(clinic);
-//
-//        assertEquals(clinic.getName(), showClinicPage.getName());
-//        assertEquals(clinic.getPhone(), showClinicPage.getPhone());
-//        assertEquals(clinic.getAddress(), showClinicPage.getAddress());
-//        assertEquals(clinic.getCity().getName(), showClinicPage.getCity());
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
+        ShowClinicPage showClinicPage = PageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithCorrectUserNamePassword()
+                .goToClinicRegistrationPage()
+                .registerClinic(clinic);
+
+        assertEquals(clinic.getName(), showClinicPage.getName());
+        assertEquals(clinic.getPhone(), showClinicPage.getPhone());
+        assertEquals(clinic.getAddress(), showClinicPage.getAddress());
+        assertEquals(clinic.getCity().getName(), showClinicPage.getCity());
     }
 
 
