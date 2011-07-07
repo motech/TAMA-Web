@@ -14,11 +14,12 @@ public class City extends CouchEntity{
     @NotNull
     private String name;
 
-    public City(){
-
+    protected City(){
     }
 
-    public City(String name) {
+    public City(String id) {
+         super();
+        this.setId(id);
         this.name = name;
     }
 
@@ -27,4 +28,9 @@ public class City extends CouchEntity{
         return this.name;
     }
 
+    public static City newCity(String name){
+        City city = new City();
+        city.setName(name);
+        return city;
+    }
 }

@@ -7,9 +7,8 @@
             <table:column id="c_org_motechproject_tama_domain_Clinician_name" property="name" z="wybdweD9FHatbbtDfhfn31K0a7A="/>
             <table:column id="c_org_motechproject_tama_domain_Clinician_username" property="username" z="Er2thpAtpuhFK9fFSVmNgq2aNAs="/>
             <table:column id="c_org_motechproject_tama_domain_Clinician_contactNumber" property="contactNumber" z="ZfdZlrvSN1sOPouQ4udxPte3FcE="/>
-            <table:column id="c_org_motechproject_tama_domain_Clinician_alternateContactNumber" property="alternateContactNumber" z="KZVd7ILSdpeZ8t1IUA9rcbtPUQM="/>
             <table:column id="c_org_motechproject_tama_domain_Clinician_password" property="password" z="JtFW4mhCxXawJryZwQOUo4lNVYs="/>
-            <table:column id="c_org_motechproject_tama_domain_Clinic_clinic" property="clinic" z="/QmICRdaTyUWygUakCATUcZPUg8="/>
+            <table:column id="c_org_motechproject_tama_domain_Clinician_clinic" property="clinic" z="/QmICRdaTyUWygUakCATUcZPUg8="/>
         </table:table>
     </page:list>
 </div>

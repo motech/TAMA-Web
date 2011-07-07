@@ -7,6 +7,7 @@
         <field:input field="address" id="c_org_motechproject_tama_domain_Clinic_address" required="true" z="el9h7bV82cSK07OweHJkFNe9hcs="/>
         <field:input field="phone" id="c_org_motechproject_tama_domain_Clinic_phone" z="03H9gDTj8sPONwdGTSseYQCI8TI="/>
         <field:select field="city" id="c_org_motechproject_tama_domain_Clinic_city" itemValue="id" items="${citys}" path="/citys" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
+
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_Clinic" render="${not empty dependencies}" z="SE1KalhQ4bERbvy6RBOQwjFgqH0="/>
 </div>

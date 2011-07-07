@@ -5,7 +5,7 @@ import org.motechproject.tama.domain.Clinic;
 
 public class ClinicBuilder {
 
-    private Clinic clinic = new Clinic();
+    private Clinic clinic = Clinic.newClinic();
 
     public Clinic build() {
         return this.clinic;
@@ -37,7 +37,7 @@ public class ClinicBuilder {
     }
 
     private ClinicBuilder withCity(String city) {
-        this.clinic.setCity(new City(city));
+        this.clinic.setCity(City.newCity(city));
         return this;
     }
 

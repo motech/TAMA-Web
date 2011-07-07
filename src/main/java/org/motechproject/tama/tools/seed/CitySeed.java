@@ -10,11 +10,11 @@ public class CitySeed extends Seed {
 
     @Override
     public void load() {
-        cities.add(new City("Pune"));
-        cities.add(new City("Mumbai"));
-        cities.add(new City("Chennai"));
-        cities.add(new City("Chirala"));
-        cities.add(new City("Hyderabad"));
-        cities.add(new City("Manipur"));
+        cities.add(City.newCity("Pune"));
+        cities.add(City.newCity("Mumbai"));
+        cities.add(City.newCity("Chennai"));
+        cities.add(City.newCity("Chirala"));
+        cities.add(City.newCity("Hyderabad"));
+        cities.add(City.newCity("Manipur"));
     }
 }

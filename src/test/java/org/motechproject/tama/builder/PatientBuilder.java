@@ -79,7 +79,7 @@ public class PatientBuilder {
                 withDateOfBirth(dob).
                 withMobileNumber("9765456789").
                 withPasscode("123456").
-                withClinic(new Clinic()).
+                withClinic(Clinic.newClinic()).
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3);

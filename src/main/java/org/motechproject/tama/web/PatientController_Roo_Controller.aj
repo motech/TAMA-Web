@@ -3,12 +3,6 @@
 
 package org.motechproject.tama.web;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
@@ -16,13 +10,14 @@ import org.motechproject.tama.domain.Patient;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 
 privileged aspect PatientController_Roo_Controller {
     

@@ -5,9 +5,9 @@
     <page:show id="ps_org_motechproject_tama_domain_Clinician" object="${clinician}" path="/clinicians" z="QPzQl/N1tKQbDGik8rgmqstiZ7M=">
         <field:display field="name" id="s_org_motechproject_tama_domain_Clinician_name" object="${clinician}" z="mEJkaJjR4lg4d9h2I1fE9jUYSME="/>
         <field:display field="username" id="s_org_motechproject_tama_domain_Clinician_username" object="${clinician}" z="RECdfYOHjI7dSF9eCC1nBlJnixw="/>
-        <field:display field="contactNumber" id="s_org_motechproject_tama_domain_Clinician_contactNumber" object="${clinician}" z="f3Kx2ELmrWVvEZdcWwCM7gaSvfg="/>
-        <field:display field="alternatCcontactNumber" id="s_org_motechproject_tama_domain_Clinician_alternatCcontactNumber" object="${clinician}" z="2Dy0mQjf+wq+dUQyvOZRGCjk8W8="/>
+        <field:display field="contactNumber" id="s_org_motechproject_tama_domain_Clinician_contactnumber" object="${clinician}" z="f3Kx2ELmrWVvEZdcWwCM7gaSvfg="/>
+        <field:display field="alternateContactNumber" id="s_org_motechproject_tama_domain_Clinician_alternateContactNumber" object="${clinician}" z="2Dy0mQjf+wq+dUQyvOZRGCjk8W8="/>
         <field:display field="password" id="s_org_motechproject_tama_domain_Clinician_password" object="${clinician}" z="LBIZymx5jp/+78UZoAOUoOlIkao="/>
-        <field:display field="city" id="s_org_motechproject_tama_domain_Clinic_clinic" object="${clinician}" z="YrORrMBxutlTR2/3LVlW3SvJWVo="/>
+        <field:display field="clinic" id="s_org_motechproject_tama_domain_Clinic_clinic" object="${clinician}" z="YrORrMBxutlTR2/3LVlW3SvJWVo="/>
     </page:show>
 </div>

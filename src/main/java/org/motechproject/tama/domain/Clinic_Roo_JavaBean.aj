@@ -4,10 +4,13 @@
 package org.motechproject.tama.domain;
 
 import java.lang.String;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.domain.City;
 
 privileged aspect Clinic_Roo_JavaBean {
-    
+
+
     public String Clinic.getName() {
         return this.name;
     }
@@ -32,12 +35,30 @@ privileged aspect Clinic_Roo_JavaBean {
         this.phone = phone;
     }
     
+    @JsonIgnore
     public City Clinic.getCity() {
-        return this.city;
+        if(this.city != null) return city;
+        if(this.cityId != null) return cities.get(cityId);
+        return null;
     }
     
     public void Clinic.setCity(City city) {
+        System.out.println("******************************************************************************************");
+        System.out.println("city");
+        System.out.println(city.getName());
+        System.out.println(city.getId());
         this.city = city;
+        this.cityId = city.getId();
     }
+
+    public String Clinic.getCityId() {
+        return cityId;
+    }
+
+    public void Clinic.setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+
     
 }

@@ -41,7 +41,7 @@ public class ClinicController {
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
-        uiModel.addAttribute("clinic", new Clinic());
+        uiModel.addAttribute("clinic", Clinic.newClinic());
         return "clinics/create";
     }
 
@@ -62,6 +62,7 @@ public class ClinicController {
         } else {
             uiModel.addAttribute("clinics", clinics.getAll());
         }
+        System.out.println(clinics.getAll());
         return "clinics/list";
     }
 
@@ -72,6 +73,7 @@ public class ClinicController {
             return "clinics/update";
         }
         uiModel.asMap().clear();
+        clinic.setRevision(clinics.get(clinic.getId()).getRevision());
         clinics.update(clinic);
         return "redirect:/clinics/" + encodeUrlPathSegment(clinic.getId().toString(), httpServletRequest);
     }

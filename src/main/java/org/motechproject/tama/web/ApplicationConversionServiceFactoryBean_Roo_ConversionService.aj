@@ -16,6 +16,7 @@ import org.motechproject.tama.domain.MealAdviceType;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.*;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 
@@ -34,6 +35,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(new PatientConverter());
         registry.addConverter(new RegimenConverter());
         registry.addConverter(new TreatmentAdviceConverter());
+        registry.addConverter(new CityConverter());
     }
     
     public void ApplicationConversionServiceFactoryBean.afterPropertiesSet() {
@@ -123,6 +125,13 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
             return new StringBuilder().append(treatmentAdvice.getPatientId()).append(" ").append(treatmentAdvice.getRegimenId()).append(" ").append(treatmentAdvice.getRegimenCompositionId()).toString();
         }
         
+    }
+
+    static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.CityConverter implements Converter<City, String>  {
+        public String convert(City city) {
+            return new StringBuilder().append(city.getName()).toString();
+        }
+
     }
     
 }
