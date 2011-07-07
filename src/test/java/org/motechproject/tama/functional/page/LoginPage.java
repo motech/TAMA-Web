@@ -14,8 +14,8 @@ public class LoginPage {
     public static final String INCORRECT_USERNAME = "Incorrect";
     public static final String INCORRECT_PASSWORD = "Incorrect";
     public static final String CORRECT_USERNAME = "admin";
-    public static final String CORRECT_PASSWORD = "admin";
-    public static final String FAILURE_MESSAGE = "Your login attempt was not successful, try again. Reason: Bad credentials .";
+    public static final String CORRECT_PASSWORD = "password";
+    public static final String FAILURE_MESSAGE = "Your login attempt was not successful, try again. Reason: User not found .";
 
     @FindBy(how = How.ID, using = USERNAME_ID)
     private WebElement userName;

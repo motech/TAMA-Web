@@ -1,6 +1,7 @@
 package org.motechproject.tama.integration.domain;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.ClinicianBuilder;
@@ -30,8 +31,8 @@ public class ClinicianIntegrationTest extends SpringIntegrationTest{
 
         Clinician clinician = clinicians.get(testClinician.getId());
 
-        assertNotNull(clinician);
         markForDeletion(clinician);
+        assertNotNull(clinician);
     }
 
     @Test
@@ -46,9 +47,23 @@ public class ClinicianIntegrationTest extends SpringIntegrationTest{
 
         Clinician clinician = clinicians.get(testClinician.getId());
 
+        markForDeletion(testClinician);
         assertNotNull(clinician);
         assertEquals(newName, clinician.getName());
-        markForDeletion(testClinician);
     }
+
+
+    @Test
+    @Ignore
+    public void shouldFindByUserNameAndPassword(){
+        Clinician testClinician = ClinicianBuilder.startRecording().withName("testName").
+                withUserName("jack").withPassword("samurai").build();
+        clinicians.add(testClinician);
+        markForDeletion(testClinician);
+
+        Clinician byUserNameAndPassword = clinicians.findByUserNameAndPassword("jack", "samurai");
+        assertNotNull(byUserNameAndPassword);
+    }
+
 
 }

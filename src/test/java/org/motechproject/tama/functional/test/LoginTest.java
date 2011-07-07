@@ -10,6 +10,7 @@ import org.motechproject.tama.functional.page.HomePage;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
