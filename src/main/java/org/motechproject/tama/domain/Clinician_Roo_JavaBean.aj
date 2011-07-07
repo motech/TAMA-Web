@@ -4,10 +4,12 @@
 package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.jasypt.encryption.pbe.PBEStringEncryptor;
 
 import java.lang.String;
 
 privileged aspect Clinician_Roo_JavaBean {
+
 
     public String Clinician.getName() {
         return this.name;
@@ -41,12 +43,16 @@ privileged aspect Clinician_Roo_JavaBean {
         this.alternateContactNumber = alternateContactNumber;
     }
 
+    @JsonIgnore
     public String Clinician.getPassword() {
-        return this.password;
+        if(this.password != null) return this.password;
+        if(this.encryptedPassword != null) return this.encryptor.decrypt(encryptedPassword);
+        return null;
     }
 
     public void Clinician.setPassword(String password) {
         this.password = password;
+        this.encryptedPassword = this.encryptor.encrypt(password);
     }
 
     public String Clinician.getClinicId() {
@@ -68,6 +74,24 @@ privileged aspect Clinician_Roo_JavaBean {
         this.clinic = clinic;
         this.clinicId = clinic.getId();
     }
+
+    public String Clinician.getEncryptedPassword() {
+        return encryptedPassword;
+    }
+
+    public void Clinician.setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    @JsonIgnore
+    public PBEStringEncryptor Clinician.getEncryptor() {
+        return this.encryptor;
+    }
+
+    public void Clinician.setEncryptor(PBEStringEncryptor encryptor) {
+        this.encryptor = encryptor;
+    }
+
 
 
 }

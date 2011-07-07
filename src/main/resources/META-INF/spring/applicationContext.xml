@@ -64,7 +64,7 @@
     <bean id="clinicians" class="org.motechproject.tama.repository.Clinicians">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
-     <bean id="genders" class="org.motechproject.tama.repository.Genders">
+    <bean id="genders" class="org.motechproject.tama.repository.Genders">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
     <bean id="ivrlanguages" class="org.motechproject.tama.repository.IVRLanguages">
@@ -83,15 +83,19 @@
         <constructor-arg ref="couchDbConnector"/>
     </bean>
     <bean id="mealAdviceTypes" class="org.motechproject.tama.repository.MealAdviceTypes">
-    	<constructor-arg ref="couchDbConnector"/>
+        <constructor-arg ref="couchDbConnector"/>
     </bean>
 
     <bean id="clinics" class="org.motechproject.tama.repository.Clinics">
-    	<constructor-arg ref="couchDbConnector"/>
+        <constructor-arg ref="couchDbConnector"/>
     </bean>
 
     <bean id="cities" class="org.motechproject.tama.repository.Cities">
-    	<constructor-arg ref="couchDbConnector"/>
+        <constructor-arg ref="couchDbConnector"/>
+    </bean>
+    <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
+        <property name="algorithm" value="PBEWithMD5AndDES"/>
+        <property name="password" value="jasypt"/>
     </bean>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">

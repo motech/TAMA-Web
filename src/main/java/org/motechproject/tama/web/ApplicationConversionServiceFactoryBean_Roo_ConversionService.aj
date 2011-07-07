@@ -52,7 +52,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.ClinicConverter implements Converter<Clinic, String>  {
         public String convert(Clinic clinic) {
-            return new StringBuilder().append(clinic.getName()).append(" ").append(clinic.getCity().getName()).toString();
+            return new StringBuilder().append(clinic.getName()).append(" ").toString();
         }
         
     }

@@ -59,7 +59,7 @@ public class Clinic extends CouchEntity{
 
     @Override
     public String toString() {
-        return this.name+" "+this.getCity().getName();
+        return this.name;
     }
 
     public static Clinic newClinic() {

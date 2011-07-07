@@ -7,8 +7,10 @@ import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.domain.Patient.ReminderCall;
+import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect Patient_Roo_JavaBean {
+
 
     public String Patient.getPatientId() {
         return this.patientId;
