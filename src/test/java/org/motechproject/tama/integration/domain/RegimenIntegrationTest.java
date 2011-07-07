@@ -1,13 +1,13 @@
 package org.motechproject.tama.integration.domain;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import junit.framework.Assert;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
+import org.motechproject.tama.builder.DrugBuilder;
+import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.RegimenComposition;
 
@@ -23,6 +23,31 @@ public class RegimenIntegrationTest extends SpringIntegrationTest{
         Assert.assertEquals(actualRegimen.getName(), actualRegimen.getName());
 
         markForDeletion(actualRegimen);
+    }
+
+    @Test
+    public void shouldGetDrugsForAPersistedRegimenComposition() {
+        Drug drug1 = DrugBuilder.startRecording().withId("id1").withName("AZT").build();
+        Drug drug2 = DrugBuilder.startRecording().withId("id2").withName("NVP").build();
+        drug1.persist();
+        drug2.persist();
+
+        Regimen regimen = new Regimen("newRegimen", "newRegimenDisplay");
+        RegimenComposition regimenComposition = new RegimenComposition();
+        regimen.addComposition(regimenComposition);
+        regimenComposition.addDrug(drug1);
+        regimenComposition.addDrug(drug2);
+        regimen.persist();
+
+        Regimen actualRegimen = Regimen.findRegimen(regimen.getId());
+        RegimenComposition actualRegimenComposition = (RegimenComposition) CollectionUtils.get(actualRegimen.getCompositions(), 0);
+
+        Assert.assertEquals(2, actualRegimenComposition.getDrugs().size());
+        Assert.assertEquals("NVP / AZT", actualRegimenComposition.getDisplayName());
+
+        markForDeletion(actualRegimen);
+        markForDeletion(drug1);
+        markForDeletion(drug2);
     }
 
     @Test

@@ -1,15 +1,14 @@
 package org.motechproject.tama.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.ektorp.support.TypeDiscriminator;
+import org.springframework.roo.addon.entity.RooEntity;
+import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
-import org.ektorp.support.TypeDiscriminator;
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
+import java.util.HashSet;
+import java.util.Set;
 
 @RooJavaBean
 @RooEntity
@@ -24,8 +23,8 @@ public class Drug {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Brand> brands = new HashSet<Brand>();
-    
-	protected Drug() {
+
+	public Drug() {
 	}
 
 	public Drug(String name) {
@@ -39,4 +38,9 @@ public class Drug {
 	public void removeBrand(Brand brand) {
 		brands.remove(brand);
 	}
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

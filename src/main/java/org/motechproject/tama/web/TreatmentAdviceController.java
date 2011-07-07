@@ -38,7 +38,7 @@ public class TreatmentAdviceController {
         Set<String> regimenCompositions = new HashSet<String>();
         Set<RegimenComposition> compositions = Regimen.findRegimen(regimenId).getCompositions();
         for (RegimenComposition composition : compositions) {
-            regimenCompositions.add(composition.getRegimentCompositionId());
+            regimenCompositions.add(composition.getDisplayName());
         }
         return regimenCompositions;
 	}

@@ -3,14 +3,32 @@
 
 package org.motechproject.tama.domain;
 
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.HashSet;
 import java.util.Set;
 
 privileged aspect RegimenComposition_Roo_JavaBean {
     
+    @JsonIgnore
+    public Set<Drug> RegimenComposition.getDrugs() {
+        Set<Drug> drugs = new HashSet<Drug>();
+        for (String drugId : drugIds) {
+            drugs.add(Drug.findDrug(drugId));
+        }
+        return drugs;
+    }
+
+    @JsonIgnore
+    public String RegimenComposition.getDisplayName() {
+        return StringUtils.join(getDrugs().toArray(), " / ");
+    }
+
     public Set<String> RegimenComposition.getDrugIds() {
         return this.drugIds;
     }
-    
+
     public void RegimenComposition.setDrugIds(Set<String> drugIds) {
         this.drugIds = drugIds;
     }
