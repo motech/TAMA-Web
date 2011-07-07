@@ -43,9 +43,9 @@ public class ClinicBuilder {
 
     public ClinicBuilder withDefaults() {
         this.withName("DefaultName")
-                .withPhoneNumber("DefaultPhoneNumber")
+                .withPhoneNumber("1234567890")
                 .withAddress("DefaultAddress")
-                .withCity("Chennai");
+                .withCity("Pune");
         return this;
     }
 }
