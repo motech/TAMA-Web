@@ -7,6 +7,7 @@
     	<field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimen" items="${regimens}" itemValue="id" path="/regimens" />
         <field:input field="patientId" id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" disabled="true"/>
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="regimenCompositionId" items="${regimenCompositions}" path="/regimenCompositions"/>
+        <div id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" />
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
 
@@ -19,8 +20,23 @@
                 populateComboBox(regimenCompositionsURL, regimenCompositionDropDown);
             };
 
+            var populateDrugDosages = function() {
+                var regimenDropDown = dijit.byId('_regimen_id');
+                var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
+                <!--var drugDosagesURL = "treatmentadvices/drugDosagesFor?regimenId=" + regimenDropDown + "&amp;regimenCompositionId=" + regimenCompositionDropDown;-->
+                var drugDosagesURL = "treatmentadvices/drugDosagesFor?regimenId=dd446e717dfd35879357253396052b1e&amp;regimenCompositionId=52f658113464481d870ab86951dfc466";
+                dojo.xhrGet({
+                    url: drugDosagesURL,
+                    load: function(result) {
+                        dojo.byId('c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages').innerHTML = result;
+                    }
+                });
+            };
+
             populateRegimenCompositions();
             dojo.connect(dijit.byId('_regimen_id'), 'onChange', populateRegimenCompositions);
+            populateDrugDosages();
+            dojo.connect(dijit.byId('_regimenCompositionId_id'), 'onChange', populateDrugDosages);
         });
     </script>
 </div>
