@@ -61,7 +61,7 @@ public class TreatmentAdviceController {
         Set<Drug> drugs = regimenComposition.getDrugs();
         for(int i=0; i< drugs.size(); i++) {
             DrugDosage drugDosage = new DrugDosage();
-            Drug drug = (Drug) CollectionUtils.get(drugs, 0);
+            Drug drug = (Drug) CollectionUtils.get(drugs, i);
             drugDosage.setDrugId(((Drug) drug).getId());
             drugDosage.setDrugName(drug.getName());
             uiModel.addAttribute(String.format("drugDosages[%d]", i), drugDosage);

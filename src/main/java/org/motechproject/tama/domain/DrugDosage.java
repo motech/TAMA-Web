@@ -24,17 +24,20 @@ public class DrugDosage {
     @NotNull
     private String brandId;
 
+    @NotNull
+    private String dosageTypeId;
+
     @ManyToOne
     private Dosage dosage;
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-")
+    @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
     private Date startDate;
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-")
+    @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
     private Date endDate;
 
     @NotNull

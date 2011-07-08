@@ -39,6 +39,14 @@ privileged aspect DrugDosage_Roo_JavaBean {
         this.dosage = dosage;
     }
     
+    public String DrugDosage.getDosageTypeId() {
+        return this.dosageTypeId;
+    }
+
+    public void DrugDosage.setDosageTypeId(String dosageTypeId) {
+        this.dosageTypeId = dosageTypeId;
+    }
+
     public Date DrugDosage.getStartDate() {
         return this.startDate;
     }

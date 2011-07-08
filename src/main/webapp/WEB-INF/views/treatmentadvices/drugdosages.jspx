@@ -5,16 +5,51 @@
         <tr>
             <c:forEach items="${drugs}" varStatus="item">
                     <td>
-                        <field:input field="drugDosages[${item.index}].drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName" disabled="true"/>
+                        <field:input field="drugDosages[${item.index}].drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name" disabled="true"/>
                     </td>
             </c:forEach>
         </tr>
-        <!--<tr>-->
-            <!--<c:forEach items="${drugDosages}" var="item">-->
-                    <!--<td>-->
-                        <!--<field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageTypes" field="regimenCompositionId" itemLabel="name" items="${item.brands}" path="/name"/>-->
-                    <!--</td>-->
-            <!--</c:forEach>-->
-        <!--</tr>-->
+        <tr>
+            <c:forEach items="${drugs}" varStatus="item" var="drug">
+                    <td>
+                        <field:select field="drugDosages[${item.index}].brandId" id="c_org_motechproject_tama_domain_TreatmentAdvice_brand${item.index}" label="Brand Name" itemLabel="name" itemValue="companyId" items="${drug.brands}" path="/name"/>
+                    </td>
+            </c:forEach>
+        </tr>
+        <tr>
+            <c:forEach items="${drugs}" varStatus="item">
+                    <td>
+                        <field:select field="drugDosages[${item.index}].dosageTypeId" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage" itemLabel="type" itemValue="id" items="${dosageTypes}" path="/dosageTypes"/>
+                    </td>
+            </c:forEach>
+        </tr>
+        <tr>
+            <c:forEach items="${drugs}" varStatus="item">
+                    <td>
+                        <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].startDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}" label="Start Date" past="false" future="true" required="true" />
+                    </td>
+            </c:forEach>
+        </tr>
+        <tr>
+            <c:forEach items="${drugs}" varStatus="item">
+                    <td>
+                        <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].endDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}" label="End Date" past="false" future="true" required="true" />
+                    </td>
+            </c:forEach>
+        </tr>
+        <tr>
+            <c:forEach items="${drugs}" varStatus="item">
+                    <td>
+                        <field:input field="drugDosages[${item.index}].advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice" required="true"/>
+                    </td>
+            </c:forEach>
+        </tr>
+        <tr>
+            <c:forEach items="${drugs}" varStatus="item">
+                    <td>
+                        <field:select field="drugDosages[${item.index}].mealAdviceId" id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}" label="Meal Advice" itemLabel="type" itemValue="id" items="${mealAdviceTypes}" path="/dosageTypes"/>
+                    </td>
+            </c:forEach>
+        </tr>
     </table>
 </div>
