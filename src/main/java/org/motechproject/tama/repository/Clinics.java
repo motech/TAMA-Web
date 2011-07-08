@@ -1,6 +1,7 @@
 package org.motechproject.tama.repository;
 
 import org.ektorp.CouchDbConnector;
+import org.ektorp.support.GenerateView;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Company;
 
@@ -16,4 +17,5 @@ public class Clinics extends AbstractCouchRepository<Clinic> {
     public List<Clinic> findClinicEntries(int i, int sizeNo) {
         return getAll();
     }
+
 }

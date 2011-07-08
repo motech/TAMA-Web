@@ -55,9 +55,9 @@ public class PatientController {
         if (patientList == null || patientList.isEmpty()) {
             uiModel.addAttribute(PATIENT_ID_NOT_FOUND, patientId);
             String referer = httpServletRequest.getHeader("Referer");
-            referer = referer.replaceFirst("(\\?|&)"+PATIENT_ID_NOT_FOUND+"=[[0-9][^0-9]]*$", "");
+            referer = referer.replaceFirst("(\\?|&)" + PATIENT_ID_NOT_FOUND + "=[[0-9][^0-9]]*$", "");
 
-            return "redirect:"+referer;
+            return "redirect:" + referer;
         }
 
         return REDIRECT_SHOW_PATIENT + encodeUrlPathSegment(patientList.get(0).getId(), httpServletRequest);
@@ -79,7 +79,7 @@ public class PatientController {
             uiModel.addAttribute("hoursInADay", getHoursInADay());
             uiModel.addAttribute("minutesInAnHour", getMinutesInAnHour());
             addDateTimeFormatPatterns(uiModel);
-                return "patients/create";
+            return "patients/create";
         }
         uiModel.asMap().clear();
         patient.persist();
@@ -133,7 +133,7 @@ public class PatientController {
             return "patients/update";
         }
         uiModel.asMap().clear();
-        if(Patient.findPatient(patient.getId()).isActive())patient.activate();
+        if (Patient.findPatient(patient.getId()).isActive()) patient.activate();
         patient.merge();
         return REDIRECT_SHOW_PATIENT + encodeUrlPathSegment(patient.getId().toString(), httpServletRequest);
     }
@@ -173,8 +173,8 @@ public class PatientController {
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
         }
-        catch (UnsupportedEncodingException uee) {}
         return pathSegment;
     }
 
@@ -187,7 +187,7 @@ public class PatientController {
     }
 
     public Collection<Patient> populatePatients() {
-        return Patient.findAllPatients();
+        return patients.getPatientsForClinician();
     }
 
     public ArrayList<Integer> getDaysInAMonth() {

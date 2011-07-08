@@ -65,5 +65,9 @@ public class Clinic extends CouchEntity{
     public static Clinic newClinic() {
         return new Clinic();
     }
+
+    public Clinics allClinics() {
+        return clinics;
+    }
 }
 

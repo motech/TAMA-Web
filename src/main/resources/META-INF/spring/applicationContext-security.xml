@@ -23,14 +23,14 @@
     <beans:bean name="authenticationProvider" class="org.motechproject.tama.security.AuthenticationProvider">
         <beans:constructor-arg>
             <beans:list>
-                <beans:ref bean="clinicianProfile"/>
-                <beans:ref bean="adminProfile"/>
+                <beans:ref bean="clinicianGroup"/>
+                <beans:ref bean="adminGroup"/>
             </beans:list>
         </beans:constructor-arg>
     </beans:bean>
 
-    <beans:bean id="clinicianProfile" class="org.motechproject.tama.security.profiles.ClinicianSecurityProfile"/>
-    <beans:bean id="adminProfile" class="org.motechproject.tama.security.profiles.AdminSecurityProfile"/>
+    <beans:bean id="clinicianGroup" class="org.motechproject.tama.security.profiles.ClinicianSecurityGroup"/>
+    <beans:bean id="adminGroup" class="org.motechproject.tama.security.profiles.AdminSecurityGroup"/>
 
     <authentication-manager alias="authenticationManager">
         <authentication-provider ref="authenticationProvider"/>

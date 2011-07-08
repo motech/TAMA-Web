@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.domain.Patient.ReminderCall;
-import org.springframework.beans.factory.annotation.Autowired;
 
 privileged aspect Patient_Roo_JavaBean {
 
@@ -125,6 +124,18 @@ privileged aspect Patient_Roo_JavaBean {
     public void Patient.setIvrLanguage(IVRLanguage ivrLanguage) {
         this.ivrLanguage = ivrLanguage;
         this.ivrLanguageId = ivrLanguage.getId();
+    }
+
+    @JsonIgnore
+    public Clinic Patient.getClinic() {
+        if (this.clinic != null) return this.clinic;
+        if (this.clinicId != null) return new Clinic().allClinics().get(this.clinicId);
+        return null;
+    }
+
+    public void Patient.setClinic(Clinic clinic) {
+        this.clinicId = clinic.getId();
+        this.clinic = clinic;
     }
 
 }

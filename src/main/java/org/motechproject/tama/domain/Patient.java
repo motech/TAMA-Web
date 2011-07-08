@@ -55,7 +55,6 @@ public class Patient {
     @ManyToOne
     private IVRLanguage ivrLanguage;
 
-
     private Date registrationDate;
 
     @JsonIgnore

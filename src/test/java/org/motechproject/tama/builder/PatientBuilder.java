@@ -69,6 +69,11 @@ public class PatientBuilder {
     }
 
 
+    public PatientBuilder withClinic(Clinic clinic) {
+        patient.setClinic(clinic);
+        return this;
+    }
+
     public PatientBuilder withDefaults(){
 
     	Calendar calendar = Calendar.getInstance();
@@ -83,10 +88,5 @@ public class PatientBuilder {
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3);
-    }
-
-    private PatientBuilder withClinic(Clinic clinic) {
-        patient.setClinic(clinic);
-        return this;
     }
 }

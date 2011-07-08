@@ -20,6 +20,7 @@ privileged aspect Patient_Roo_Entity {
 
     private String Patient.genderId;
     private String Patient.ivrLanguageId;
+    private String Patient.clinicId;
 
     public void Patient.persist() {
         this.patients.add(this);
@@ -94,11 +95,12 @@ privileged aspect Patient_Roo_Entity {
         this.ivrLanguageId = ivrLanguageId;
     }
 
-    public void Patient.setClinic(Clinic clinic) {
-        this.clinic = clinic;
+    public String Patient.getClinicId() {
+        return clinicId;
     }
 
-    public Clinic Patient.getClinic() {
-        return clinic;
+    public void Patient.setClinicId(String clinicId) {
+        this.clinicId = clinicId;
     }
+
 }
