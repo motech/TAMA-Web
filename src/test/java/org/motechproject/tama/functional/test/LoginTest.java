@@ -29,7 +29,7 @@ public class LoginTest {
 
     @Test
     public void testLoginFailure() {
-        LoginPage page = PageFactory.initElements(webDriver, LoginPage.class).loginWithIncorrectUserNamePassword();
+        LoginPage page = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithIncorrectUserNamePassword();
         Assert.assertEquals(LoginPage.FAILURE_MESSAGE, page.errorMessage());
     }
 
