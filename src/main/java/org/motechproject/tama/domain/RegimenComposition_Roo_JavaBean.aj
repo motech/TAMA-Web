@@ -34,11 +34,11 @@ privileged aspect RegimenComposition_Roo_JavaBean {
     }
 
     
-    public String RegimenComposition.getRegimentCompositionId() {
-        return regimentCompositionId;
+    public String RegimenComposition.getRegimenCompositionId() {
+        return regimenCompositionId;
     }
 
-    public void RegimenComposition.setRegimentCompositionId(String regimentCompositionId) {
-        this.regimentCompositionId = regimentCompositionId;
+    public void RegimenComposition.setRegimenCompositionId(String regimenCompositionId) {
+        this.regimenCompositionId = regimenCompositionId;
     }
 }

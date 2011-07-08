@@ -23,8 +23,7 @@
             var populateDrugDosages = function() {
                 var regimenDropDown = dijit.byId('_regimen_id');
                 var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                <!--var drugDosagesURL = "treatmentadvices/drugDosagesFor?regimenId=" + regimenDropDown + "&amp;regimenCompositionId=" + regimenCompositionDropDown;-->
-                var drugDosagesURL = "treatmentadvices/drugDosagesFor?regimenId=dd446e717dfd358793572533960b2dc2&amp;regimenCompositionId=2ff332a029214098aad0a36b8e76a94a";
+                var drugDosagesURL = "treatmentadvices/drugDosagesFor?regimenId=" + regimenDropDown + "&amp;regimenCompositionId=" + regimenCompositionDropDown;
                 dojo.xhrGet({
                     url: drugDosagesURL,
                     load: function(result) {

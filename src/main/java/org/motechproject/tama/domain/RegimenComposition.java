@@ -9,12 +9,12 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 @RooJavaBean
 public class RegimenComposition extends BaseEntity {
 	
-	private String regimentCompositionId;
+	private String regimenCompositionId;
 
     private Set<String> drugIds = new HashSet<String>();
 
     public RegimenComposition() {
-    	regimentCompositionId = UUIDUtil.newUUID();
+    	regimenCompositionId = UUIDUtil.newUUID();
 	}
 
 	public void addDrug(Drug drug) {

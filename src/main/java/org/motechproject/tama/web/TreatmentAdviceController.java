@@ -37,20 +37,20 @@ public class TreatmentAdviceController {
         ArrayList<String> regimenCompositions = new ArrayList<String>();
         for(Regimen regimen : regimens()) {
             for (RegimenComposition composition : regimen.getCompositions()) {
-                regimenCompositions.add(composition.getRegimentCompositionId());
+                regimenCompositions.add(composition.getRegimenCompositionId());
             }
         }
         return regimenCompositions;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/regimenCompositionsFor")
-	public @ResponseBody Set<String> regimenCompositionsFor(@RequestParam String regimenId) {
-        Set<String> regimenCompositions = new HashSet<String>();
+	public @ResponseBody Set<ComboBoxView> regimenCompositionsFor(@RequestParam String regimenId) {
         Set<RegimenComposition> compositions = Regimen.findRegimen(regimenId).getCompositions();
-        for (RegimenComposition composition : compositions) {
-            regimenCompositions.add(composition.getDisplayName());
+        Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
+        for (RegimenComposition regimenComposition : compositions) {
+            comboBoxViews.add(new ComboBoxView(regimenComposition.getRegimenCompositionId(), regimenComposition.getDisplayName()));
         }
-        return regimenCompositions;
+        return comboBoxViews;
 	}
 
     @RequestMapping(method = RequestMethod.GET, value = "/drugDosagesFor")

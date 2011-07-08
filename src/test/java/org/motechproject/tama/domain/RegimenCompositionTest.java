@@ -21,6 +21,6 @@ public class RegimenCompositionTest {
 	@Test
 	public void shouldGenerateRegimenCompositionId() {
 		RegimenComposition regimenComposition = new RegimenComposition();
-		Assert.assertNotNull(regimenComposition.getRegimentCompositionId());
+		Assert.assertNotNull(regimenComposition.getRegimenCompositionId());
 	}
 }

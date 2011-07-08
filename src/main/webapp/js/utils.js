@@ -4,12 +4,12 @@ var populateComboBox = function(urlToLoadFrom, target) {
         url: urlToLoadFrom,
         handleAs: "json",
         load: function(result) {
-            var options = new dojo.data.ItemFileWriteStore({data: {identifier: 'name', items: []}});
+            var options = new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}});
             for (var i=0; i < result.length; i++) {
-              options.newItem({name: result[i]});
+              options.newItem({name: result[i].displayName, id: result[i].id });
             }
             target.attr('store', options);
-            target.attr('value', result[0]);
+            target.attr('value', result[0].id);
         }
     });
 }

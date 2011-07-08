@@ -36,7 +36,7 @@ public class Regimen {
 
     public RegimenComposition getCompositionsFor(String regimenCompositionId) {
         for (RegimenComposition regimenComposition : compositions) {
-            if (regimenComposition.getRegimentCompositionId().equals(regimenCompositionId))
+            if (regimenComposition.getRegimenCompositionId().equals(regimenCompositionId))
                 return regimenComposition;
         }
         return null;
