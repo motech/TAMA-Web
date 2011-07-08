@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.page;
 
+import org.motechproject.tama.functional.framework.MyWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -26,6 +27,11 @@ public class LoginPage extends Page {
 
     public LoginPage(WebDriver webDriver) {
         super(webDriver);
+    }
+
+    public void postInitialize() {
+        userName = new MyWebElement(userName);
+        password = new MyWebElement(password);
     }
 
     public LoginPage loginWithIncorrectUserNamePassword() {

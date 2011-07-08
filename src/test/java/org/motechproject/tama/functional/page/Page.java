@@ -37,4 +37,7 @@ public class Page {
     public String getPatientSearchErrorMessage() {
         return errorDiv.getText();
     }
+
+    public void postInitialize() {
+    }
 }

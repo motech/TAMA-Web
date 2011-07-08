@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.HomePage;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
@@ -34,7 +35,7 @@ public class LoginTest {
 
     @Test
     public void testLoginSuccess() {
-        HomePage homePage = PageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectUserNamePassword();
+        HomePage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectUserNamePassword();
         Assert.assertEquals(HomePage.WELCOME_MESSAGE, homePage.getWelcomeMessage());
     }
 
