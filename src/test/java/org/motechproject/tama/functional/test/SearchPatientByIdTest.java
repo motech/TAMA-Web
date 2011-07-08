@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.page.ListPatientsPage;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.Page;
@@ -23,16 +24,7 @@ import java.text.SimpleDateFormat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
-public class SearchPatientByIdTest {
-
-    private WebDriver webDriver;
-
-    @Before
-    public void setUp() {
-        webDriver = WebDriverFactory.getInstance();
-//        webDriver = new FirefoxDriver();
-    }
-
+public class SearchPatientByIdTest extends BaseTest {
     @Test
     public void testSuccessfulPatientSearch() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
@@ -57,10 +49,5 @@ public class SearchPatientByIdTest {
                 unsuccesfulSearchPatientBy(non_existing_id, ListPatientsPage.class);
 
         Assert.assertEquals(listPatientPage.getPatientSearchErrorMessage(), String.format("Patient with id: %s not found", non_existing_id));
-    }
-
-    @After
-    public void tearDown() {
-        webDriver.quit();
     }
 }

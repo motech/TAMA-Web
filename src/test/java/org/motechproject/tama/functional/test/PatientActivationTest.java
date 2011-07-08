@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
@@ -17,14 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
-public class PatientActivationTest {
-    private WebDriver webDriver;
-
-    @Before
-    public void setUp() {
-        webDriver = WebDriverFactory.getInstance();
-    }
-
+public class PatientActivationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientActivation() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
@@ -36,10 +30,5 @@ public class PatientActivationTest {
 
         ShowPatientPage pageAfterActivation = showPatientPage.activatePatient();
         Assert.assertEquals(pageAfterActivation.getStatus().trim(), Patient.Status.Active.toString());
-    }
-
-    @After
-    public void tearDown() {
-        webDriver.quit();
     }
 }

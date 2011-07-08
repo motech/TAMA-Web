@@ -95,8 +95,8 @@
                                     <value>${jetty.port}</value>
                                 </property>
                                 <property>
-                                    <name>web.driver</name>
-                                    <value>${web.driver}</value>
+                                    <name>test.driver</name>
+                                    <value>${test.driver}</value>
                                 </property>
                             </systemProperties>
                             <includes>
@@ -115,8 +115,8 @@
                                     <value>${jetty.port}</value>
                                 </systemProperty>
                                 <systemProperty>
-                                    <name>web.driver</name>
-                                    <value>${web.driver}</value>
+                                    <name>test.driver</name>
+                                    <value>${test.driver}</value>
                                 </systemProperty>
                             </systemProperties>
                             <daemon>true</daemon>

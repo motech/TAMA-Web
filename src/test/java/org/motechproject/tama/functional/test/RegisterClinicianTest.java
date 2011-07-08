@@ -8,6 +8,7 @@ import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.ClinicianBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
+import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowClinicianPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
@@ -20,20 +21,7 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
-
-public class RegisterClinicianTest {
-    private WebDriver webDriver;
-
-    @Before
-    public void setUp() {
-        webDriver = WebDriverFactory.getInstance();
-    }
-
-    @After
-    public void tearDown() {
-        webDriver.quit();
-    }
-
+public class RegisterClinicianTest extends BaseTest {
     @Test
     public void testClinicianRegistration() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();

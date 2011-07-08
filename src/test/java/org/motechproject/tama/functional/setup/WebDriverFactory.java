@@ -22,7 +22,6 @@ public class WebDriverFactory {
     private static Hashtable<String, WebDriver> createDrivers() {
         Hashtable<String, WebDriver> drivers = new Hashtable<String, WebDriver>();
         drivers.put(FIREFOX, new FirefoxDriver());
-        drivers.put(IE, new InternetExplorerDriver());
         drivers.put(HTMLUNIT, new HtmlUnitDriver(true));
         return drivers;
     }

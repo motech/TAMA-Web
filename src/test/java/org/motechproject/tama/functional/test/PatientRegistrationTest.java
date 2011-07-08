@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
@@ -20,14 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
-public class PatientRegistrationTest {
-    private WebDriver webDriver;
-
-    @Before
-    public void setUp() {
-        webDriver = WebDriverFactory.getInstance();
-    }
-
+public class PatientRegistrationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientRegistration() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
@@ -38,10 +32,5 @@ public class PatientRegistrationTest {
         Assert.assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
         Assert.assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
         Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
-    }
-
-    @After
-    public void tearDown() {
-        webDriver.quit();
     }
 }
