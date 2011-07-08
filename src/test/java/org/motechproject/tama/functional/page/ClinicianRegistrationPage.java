@@ -8,8 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
-public class ClinicianRegistrationPage {
-
+public class ClinicianRegistrationPage extends Page {
 
     @FindBy(how = How.ID, using = "_name_id")
     private WebElement name;
@@ -29,10 +28,8 @@ public class ClinicianRegistrationPage {
     @FindBy(how = How.ID, using = "proceed")
     private WebElement registerClinicianLink;
 
-    private WebDriver webDriver;
-
     public ClinicianRegistrationPage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public ShowClinicianPage registerClinician(Clinician clinician) {

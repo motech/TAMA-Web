@@ -6,7 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
-public class LoginPage {
+public class LoginPage extends Page {
     public static final String LOGIN_URL = "http://localhost:"+System.getProperty("jetty.port","8080")+"/tama/login";
     public static final String USERNAME_ID = "j_username";
     public static final String PASSWORD_ID = "j_password";
@@ -24,10 +24,8 @@ public class LoginPage {
     @FindBy(how = How.XPATH, using = ERROR_MESSAGE_XPATH)
     private WebElement errorMessage;
 
-    private WebDriver webDriver;
-
     public LoginPage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public LoginPage loginWithIncorrectUserNamePassword() {

@@ -10,9 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
-public class PatientRegistrationPage {
-
-    private WebDriver webDriver;
+public class PatientRegistrationPage extends Page {
 
     @FindBy(how = How.ID, using = "_patientId_id")
     private WebElement patientId;
@@ -34,7 +32,7 @@ public class PatientRegistrationPage {
     private WebElement passcode;
 
     public PatientRegistrationPage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public ShowPatientPage registerNewPatient(Patient patient){

@@ -7,14 +7,15 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
 
-public class HomePage {
-
-    private WebDriver webDriver;
+public class HomePage extends Page {
 
     public final static String WELCOME_MESSAGE = "Welcome to Tama";
 
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_new']/a")
     private WebElement patientRegistrationLink;
+
+    @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")
+    private WebElement listPatientsLink;
 
     @FindBy(how = How.XPATH, using = "//li[@id='i_clinic_new']/a")
     private WebElement clinicRegistrationLink;
@@ -26,12 +27,17 @@ public class HomePage {
     private WebElement welcomeMessage;
 
     public HomePage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public PatientRegistrationPage goToPatientRegistrationPage() {
         patientRegistrationLink.click();
         return PageFactory.initElements(webDriver, PatientRegistrationPage.class);
+    }
+
+    public ListPatientsPage goToListPatientsPage() {
+        listPatientsLink.click();
+        return PageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
     public ClinicRegistrationPage goToClinicRegistrationPage() {

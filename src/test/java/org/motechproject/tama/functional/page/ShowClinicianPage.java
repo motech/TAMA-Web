@@ -5,12 +5,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class ShowClinicianPage {
-
-    private WebDriver webDriver;
+public class ShowClinicianPage extends Page {
 
     public ShowClinicianPage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_Clinician_name_name_id")
@@ -24,7 +22,6 @@ public class ShowClinicianPage {
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_Clinician_username_username_id")
     private WebElement username;
-
 
     public String getName() {
         return name.getText();

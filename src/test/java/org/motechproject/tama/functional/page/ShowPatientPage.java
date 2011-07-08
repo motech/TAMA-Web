@@ -6,8 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
-public class ShowPatientPage {
-    private WebDriver webDriver;
+public class ShowPatientPage extends Page {
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_patientId_patientId_id")
     private WebElement patientId;
@@ -28,7 +27,7 @@ public class ShowPatientPage {
     private WebElement listPatientsLink;
 
     public ShowPatientPage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public String getPatientId() {
