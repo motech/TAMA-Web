@@ -11,14 +11,21 @@ public class ShowPatientPage {
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_patientId_patientId_id")
     private WebElement patientId;
+
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_mobilePhoneNumber_mobilePhoneNumber_id")
     private WebElement mobileNumber;
+
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_dateOfBirth_dateOfBirth_id")
     private WebElement dateOfBirth;
+
     @FindBy(how = How.ID, using = "activatePatient")
     private WebElement activationLink;
+
    @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_status_status_id")
     private WebElement status;
+
+    @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")
+    private WebElement listPatientsLink;
 
     public ShowPatientPage(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -43,5 +50,10 @@ public class ShowPatientPage {
     public ShowPatientPage activatePatient() {
         this.activationLink.click();
         return PageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public ListPatientsPage goToListPatientsPage() {
+        listPatientsLink.click();
+        return PageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 }
