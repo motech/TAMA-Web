@@ -7,6 +7,7 @@
         <field:display field="username" id="s_org_motechproject_tama_domain_Clinician_username" object="${clinician}" z="RECdfYOHjI7dSF9eCC1nBlJnixw="/>
         <field:display field="contactNumber" id="s_org_motechproject_tama_domain_Clinician_contactnumber" object="${clinician}" z="f3Kx2ELmrWVvEZdcWwCM7gaSvfg="/>
         <field:display field="alternateContactNumber" id="s_org_motechproject_tama_domain_Clinician_alternateContactNumber" object="${clinician}" z="2Dy0mQjf+wq+dUQyvOZRGCjk8W8="/>
-        <field:display field="clinic" id="s_org_motechproject_tama_domain_Clinic_clinic" object="${clinician}" z="YrORrMBxutlTR2/3LVlW3SvJWVo="/>
+        <field:display field="role" id="s_org_motechproject_tama_domain_Clinician_role" object="${clinician}" z="2Dy0mQjf+wq+dUQyvOZRGCjk8W8=" label="Role"/>
+        <field:display field="clinic" id="s_org_motechproject_tama_domain_Clinician_clinic" object="${clinician}" z="YrORrMBxutlTR2/3LVlW3SvJWVo="/>
     </page:show>
 </div>

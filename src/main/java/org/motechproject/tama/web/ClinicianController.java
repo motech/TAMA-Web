@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.repository.Clinicians;
@@ -75,7 +74,9 @@ public class ClinicianController {
             return "clinicians/update";
         }
         uiModel.asMap().clear();
-        clinician.setRevision(clinicians.get(clinician.getId()).getRevision());
+        Clinician dbClinician = clinicians.get(clinician.getId());
+        clinician.setRevision(dbClinician.getRevision());
+//        clinician.setEncryptedPassword(dbClinician.getEncryptedPassword());
         clinicians.update(clinician);
         return "redirect:/clinicians/" + encodeUrlPathSegment(clinician.getId().toString(), httpServletRequest);
     }
