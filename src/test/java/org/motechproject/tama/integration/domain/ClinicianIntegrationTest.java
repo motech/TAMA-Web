@@ -52,9 +52,7 @@ public class ClinicianIntegrationTest extends SpringIntegrationTest{
         assertEquals(newName, clinician.getName());
     }
 
-
     @Test
-    @Ignore
     public void shouldFindByUserNameAndPassword(){
         Clinician testClinician = ClinicianBuilder.startRecording().withName("testName").
                 withUserName("jack").withPassword("samurai").build();

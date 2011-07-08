@@ -16,7 +16,7 @@ import javax.validation.constraints.Pattern;
 @RooJavaBean
 @RooToString
 @TypeDiscriminator("doc.documentType == 'Clinician'")
-public class Clinician extends CouchEntity{
+public class Clinician extends CouchEntity {
 
     @Autowired
     private Clinics clinics;
@@ -53,13 +53,16 @@ public class Clinician extends CouchEntity{
 
     private Role role;
 
+    public boolean credentialsAre(String password) {
+        return getPassword().equals(password);
+    }
+
     public enum Role {
         Doctor {
             public String toString() {
                 return "Doctor";
             }
-        }
-        , StudyNurse {
+        }, StudyNurse {
             public String toString() {
                 return "Study Nurse";
             }
@@ -67,7 +70,6 @@ public class Clinician extends CouchEntity{
     }
 
     private String encryptedPassword;
-
 
     private String clinicId;
 
