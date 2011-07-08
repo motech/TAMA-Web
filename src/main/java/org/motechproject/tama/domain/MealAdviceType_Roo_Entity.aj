@@ -3,12 +3,26 @@
 
 package org.motechproject.tama.domain;
 
+import org.motechproject.tama.repository.MealAdviceTypes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.ektorp.DocumentNotFoundException;
+import org.motechproject.tama.repository.DosageTypes;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 
 privileged aspect MealAdviceType_Roo_Entity {
 	
 	declare parents : MealAdviceType extends CouchEntity;
-    
+
+    @Autowired
+    transient MealAdviceTypes MealAdviceType.mealAdviceTypes;
+
+    public static MealAdviceTypes MealAdviceType.mealAdviceTypes() {
+        return new MealAdviceType().mealAdviceTypes;
+    }
+
     public void MealAdviceType.persist() {
     }
     
@@ -30,7 +44,7 @@ privileged aspect MealAdviceType_Roo_Entity {
     }
     
     public static List<MealAdviceType> MealAdviceType.findAllMealAdviceTypes() {
-		return null;
+		return mealAdviceTypes().getAll();
     }
     
     public static MealAdviceType MealAdviceType.findMealAdviceType(Long id) {

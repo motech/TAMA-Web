@@ -7,8 +7,6 @@
     	<field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimen" items="${regimens}" itemValue="id" path="/regimens" />
         <field:input field="patientId" id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" disabled="true"/>
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="regimenCompositionId" items="${regimenCompositions}" path="/regimenCompositions"/>
-        <!--<field:input field="regimenId" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenId" required="true" z="PuavmBdA0OmJPx2n9RG4rsz9HKY="/>-->
-        <!--<field:select field="drugDosages" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" itemValue="id" items="${drugdosages}" multiple="true" path="/drugdosages" z="Hzh8H6BubuDUgPyMKWPB1PsUjNw="/>-->
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
 

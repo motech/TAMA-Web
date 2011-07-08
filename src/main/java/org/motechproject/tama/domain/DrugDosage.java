@@ -1,15 +1,15 @@
 package org.motechproject.tama.domain;
 
-import java.util.Date;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.roo.addon.entity.RooEntity;
+import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
+import java.util.Date;
 
 @RooJavaBean
 @RooEntity
@@ -17,6 +17,9 @@ public class DrugDosage {
 
     @NotNull
     private String drugId;
+
+    @JsonIgnore
+    private String drugName;
 
     @NotNull
     private String brandId;

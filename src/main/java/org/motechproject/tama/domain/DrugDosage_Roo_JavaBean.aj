@@ -15,6 +15,14 @@ privileged aspect DrugDosage_Roo_JavaBean {
         this.drugId = drugId;
     }
     
+    public String DrugDosage.getDrugName() {
+        return this.drugName;
+    }
+
+    public void DrugDosage.setDrugName(String drugName) {
+        this.drugName = drugName;
+    }
+
     public String DrugDosage.getBrandId() {
         return this.brandId;
     }

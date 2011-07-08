@@ -1,14 +1,13 @@
 package org.motechproject.tama.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.roo.addon.entity.RooEntity;
+import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
+import java.util.HashSet;
+import java.util.Set;
 
 @RooJavaBean
 @RooEntity
@@ -34,4 +33,12 @@ public class Regimen {
 	public void addComposition(RegimenComposition regimenComposition) {
 		compositions.add(regimenComposition);
 	}
+
+    public RegimenComposition getCompositionsFor(String regimenCompositionId) {
+        for (RegimenComposition regimenComposition : compositions) {
+            if (regimenComposition.getRegimentCompositionId().equals(regimenCompositionId))
+                return regimenComposition;
+        }
+        return null;
+    }
 }
