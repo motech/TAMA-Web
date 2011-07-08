@@ -91,10 +91,25 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void shouldReturnToTheSamePageIfPatientIsNotFound() {
+    public void shouldReturnToTheSamePageIfPatientIsNotFound_WithOnlyOneQueryParameter() {
         String patientId = "123";
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
-        String previousPage = expectedPreviousPageUrl +"?patientIdNotFound=1234&patientIdNotFound=5678";
+        String previousPage = expectedPreviousPageUrl +"?patientIdNotFound=1_abcd";
+
+        when(patients.findByPatientId(patientId)).thenReturn(new ArrayList<Patient>());
+        when(request.getHeader("Referer")).thenReturn(previousPage);
+
+        String nextPage = controller.findByPatientId(patientId, uiModel, request);
+
+        verify(uiModel).addAttribute(PatientController.PATIENT_ID_NOT_FOUND, patientId);
+        assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
+    }
+
+    @Test
+    public void shouldReturnToTheSamePageIfPatientIsNotFound_WithMultipleQueryParameters() {
+        String patientId = "123";
+        String expectedPreviousPageUrl = "http://localhost:8080/tama/patients?page=1";
+        String previousPage = expectedPreviousPageUrl +"&patientIdNotFound=abc_8";
 
         when(patients.findByPatientId(patientId)).thenReturn(new ArrayList<Patient>());
         when(request.getHeader("Referer")).thenReturn(previousPage);

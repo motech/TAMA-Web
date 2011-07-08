@@ -11,7 +11,6 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />  
 	<jsp:directive.page pageEncoding="UTF-8" />
 
-    <spring:message code="error_patient_search_empty" var="patient_search_error" htmlEscape="false" />
     <spring:message code="error_patient_not_found" var="patient_not_found" arguments="${param.patientIdNotFound}" htmlEscape="false" />
 
 	<head>
@@ -24,8 +23,6 @@
             function validatePatientId() {
                 var patientId = document.getElementById("patientId").value;
                 if(patientId == null || dojo.trim(patientId).length==0) {
-                    var patientSearchError = document.getElementById('patientSearchError');
-                    patientSearchError.innerHTML = "${patient_search_error}";
                     return false;
                 }
             }

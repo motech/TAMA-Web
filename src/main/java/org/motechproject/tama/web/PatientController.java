@@ -55,8 +55,7 @@ public class PatientController {
         if (patientList == null || patientList.isEmpty()) {
             uiModel.addAttribute(PATIENT_ID_NOT_FOUND, patientId);
             String referer = httpServletRequest.getHeader("Referer");
-            referer = referer.replaceFirst("&"+PATIENT_ID_NOT_FOUND+"=[0-9]*$", "");
-            referer = referer.replaceFirst("\\?"+PATIENT_ID_NOT_FOUND+"=[0-9]*$", "");
+            referer = referer.replaceFirst("(\\?|&)"+PATIENT_ID_NOT_FOUND+"=[[0-9][^0-9]]*$", "");
 
             return "redirect:"+referer;
         }
