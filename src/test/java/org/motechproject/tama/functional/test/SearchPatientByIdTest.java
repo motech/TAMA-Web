@@ -30,6 +30,7 @@ public class SearchPatientByIdTest {
     @Before
     public void setUp() {
         webDriver = WebDriverFactory.getInstance();
+//        webDriver = new FirefoxDriver();
     }
 
     @Test
