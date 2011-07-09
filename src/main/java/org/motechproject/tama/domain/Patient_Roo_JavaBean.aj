@@ -133,6 +133,7 @@ privileged aspect Patient_Roo_JavaBean {
         return null;
     }
 
+    @JsonIgnore
     public void Patient.setClinic(Clinic clinic) {
         this.clinicId = clinic.getId();
         this.clinic = clinic;

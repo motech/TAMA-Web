@@ -61,6 +61,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
 
         assertTrue(results.contains(patient));
         assertFalse(results.contains(anotherPatient));
+        System.out.println(results);
 
     }
 

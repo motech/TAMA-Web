@@ -9,6 +9,7 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import sun.rmi.runtime.Log;
 
 import java.util.List;
 

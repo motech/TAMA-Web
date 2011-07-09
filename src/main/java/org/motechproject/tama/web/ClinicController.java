@@ -62,7 +62,6 @@ public class ClinicController {
         } else {
             uiModel.addAttribute("clinics", clinics.getAll());
         }
-        System.out.println(clinics.getAll());
         return "clinics/list";
     }
 
