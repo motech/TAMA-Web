@@ -53,15 +53,15 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).build();
         patient.persist();
-        markForDeletion(patient);
         anotherPatient.persist();
+        markForDeletion(patient);
         markForDeletion(anotherPatient);
 
-        List<Patient> results = patients.findByClinicId(clinicForPatient.getId());
+        List<Patient> results = patients.findByClinic(clinicForPatient.getId());
 
         assertTrue(results.contains(patient));
         assertFalse(results.contains(anotherPatient));
-        System.out.println(results);
+        System.out.println("\n\n\n\n"+results.get(0));
 
     }
 

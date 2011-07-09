@@ -129,14 +129,13 @@ privileged aspect Patient_Roo_JavaBean {
     @JsonIgnore
     public Clinic Patient.getClinic() {
         if (this.clinic != null) return this.clinic;
-        if (this.clinicId != null) return new Clinic().allClinics().get(this.clinicId);
+        if (this.clinic_id != null) return new Clinic().allClinics().get(this.clinic_id);
         return null;
     }
 
-    @JsonIgnore
     public void Patient.setClinic(Clinic clinic) {
-        this.clinicId = clinic.getId();
         this.clinic = clinic;
+        this.clinic_id = clinic.getId();
     }
 
 }

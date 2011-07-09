@@ -9,8 +9,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.sound.midi.VoiceStatus;
-
 privileged aspect Patient_Roo_Entity {
 
     declare parents :Patient extends CouchEntity;
@@ -20,7 +18,7 @@ privileged aspect Patient_Roo_Entity {
 
     private String Patient.genderId;
     private String Patient.ivrLanguageId;
-    private String Patient.clinicId;
+    private String Patient.clinic_id;
 
     public void Patient.persist() {
         this.patients.add(this);
@@ -95,12 +93,12 @@ privileged aspect Patient_Roo_Entity {
         this.ivrLanguageId = ivrLanguageId;
     }
 
-    public String Patient.getClinicId() {
-        return clinicId;
+    public String Patient.getClinic_id() {
+        return clinic_id;
     }
 
-    public void Patient.setClinicId(String clinicId) {
-        this.clinicId = clinicId;
+    public void Patient.setClinic_id(String clinic_id) {
+        this.clinic_id = clinic_id;
     }
 
 }

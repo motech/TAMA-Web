@@ -105,7 +105,7 @@ public class PatientController {
 //        } else {
 //            uiModel.addAttribute("patients", patients.getPatientsForClinician());
 //        }
-        uiModel.addAttribute("patients", patients.getPatientsForClinician());
+        uiModel.addAttribute("patients", patients.getPatientsForClinic());
         addDateTimeFormatPatterns(uiModel);
         return "patients/list";
     }
@@ -138,7 +138,7 @@ public class PatientController {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        uiModel.addAttribute("patients", patients.getPatientsForClinician());
+        uiModel.addAttribute("patients", patients.getPatientsForClinic());
         return REDIRECT_LIST_PATIENTS;
     }
 
