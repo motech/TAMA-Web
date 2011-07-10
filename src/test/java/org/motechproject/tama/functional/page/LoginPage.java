@@ -34,7 +34,7 @@ public class LoginPage extends Page {
         password = new MyWebElement(password);
     }
 
-    public LoginPage loginWithIncorrectUserNamePassword() {
+    public LoginPage loginWithIncorrectAdminUserNamePassword() {
         webDriver.get(LOGIN_URL);
         userName.sendKeys(INCORRECT_USERNAME);
         password.sendKeys(INCORRECT_PASSWORD);
@@ -42,7 +42,7 @@ public class LoginPage extends Page {
         return this;
     }
 
-    public HomePage loginWithCorrectUserNamePassword() {
+    public HomePage loginWithCorrectAdminUserNamePassword() {
         webDriver.get(LOGIN_URL);
         userName.sendKeys(CORRECT_USERNAME);
         password.sendKeys(CORRECT_PASSWORD);
@@ -54,4 +54,11 @@ public class LoginPage extends Page {
       return errorMessage.getText();
     }
 
+    public HomePage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {
+        webDriver.get(LOGIN_URL);
+        userName.sendKeys(clinicianUsername);
+        password.sendKeys(clinicianPassword);
+        userName.submit();
+        return PageFactory.initElements(webDriver, HomePage.class);
+    }
 }

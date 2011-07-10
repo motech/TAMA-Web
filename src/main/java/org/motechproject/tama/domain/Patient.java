@@ -171,7 +171,6 @@ public class Patient extends CouchEntity {
         this.genderId = gender.getId();
     }
 
-
     @JsonIgnore
     public IVRLanguage getIvrLanguage() {
         if (this.ivrLanguage != null) return this.ivrLanguage;

@@ -21,7 +21,7 @@
             <id>smoke</id>
             <properties>
                 <jetty.port>9887</jetty.port>
-                <test.driver>firefox</test.driver>
+                <test.driver>htmlunit</test.driver>
                 <!--firefox, ie, htmlunit-->
             </properties>
             <build>

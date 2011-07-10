@@ -1,7 +1,5 @@
 package org.motechproject.tama.functional.test;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.ClinicBuilder;
@@ -9,10 +7,6 @@ import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowClinicPage;
-import org.motechproject.tama.functional.setup.WebDriverFactory;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,7 +20,7 @@ public class RegisterClinicTest extends BaseTest {
     public void testClinicRegistration() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
         ShowClinicPage showClinicPage = PageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithCorrectUserNamePassword()
+                .loginWithCorrectAdminUserNamePassword()
                 .goToClinicRegistrationPage()
                 .registerClinic(clinic);
 

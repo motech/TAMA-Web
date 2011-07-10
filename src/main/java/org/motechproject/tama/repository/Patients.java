@@ -6,6 +6,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.GenerateView;
 import org.ektorp.support.View;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.springframework.security.core.context.SecurityContext;
@@ -34,7 +35,8 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     }
 
     public List<Patient> byClinic() {
-        return findByClinic(loggedInClinic());
+        String clinicId = loggedInClinic();
+        return findByClinic(clinicId);
     }
 
     public void addToClinic(Patient patient) {

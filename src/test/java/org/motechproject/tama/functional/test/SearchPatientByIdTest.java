@@ -2,20 +2,17 @@ package org.motechproject.tama.functional.test;
 
 
 import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.page.ListPatientsPage;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.Page;
 import org.motechproject.tama.functional.page.ShowPatientPage;
-import org.motechproject.tama.functional.setup.WebDriverFactory;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.motechproject.tama.functional.preset.LoggedInClinicianPreset;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,9 +24,10 @@ import java.text.SimpleDateFormat;
 public class SearchPatientByIdTest extends BaseTest {
     @Test
     public void testSuccessfulPatientSearch() {
+        Clinician clinician = new LoggedInClinicianPreset(webDriver).create();
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         ShowPatientPage showPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
-                loginWithCorrectUserNamePassword().
+                loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient).
                 goToListPatientsPage().
@@ -42,9 +40,10 @@ public class SearchPatientByIdTest extends BaseTest {
 
     @Test
     public void testUnsuccessfulPatientSearch() {
+        Clinician clinician = new LoggedInClinicianPreset(webDriver).create();
         String non_existing_id = "non_existing_id";
         Page listPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
-                loginWithCorrectUserNamePassword().
+                loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToListPatientsPage().
                 unsuccesfulSearchPatientBy(non_existing_id, ListPatientsPage.class);
 
