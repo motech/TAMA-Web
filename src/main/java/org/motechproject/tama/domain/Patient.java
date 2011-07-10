@@ -19,7 +19,7 @@ import java.util.Date;
 @RooJavaBean
 @RooEntity
 @TypeDiscriminator("doc.documentType == 'Patient'")
-public class Patient extends CouchEntity{
+public class Patient extends CouchEntity {
     @NotNull
     protected String patientId;
     @NotNull
@@ -140,6 +140,19 @@ public class Patient extends CouchEntity{
         this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
     }
 
+    public Date getRegistrationDate() {
+        if (this.registrationDate == null) {
+            this.registrationDate = new Date();
+        }
+        return this.registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        if (registrationDate != null) {
+            this.registrationDate = registrationDate;
+        }
+    }
+
     @JsonIgnore
     public String getGenderType() {
         if (this.getGender() != null) return this.getGender().getType();
@@ -158,18 +171,6 @@ public class Patient extends CouchEntity{
         this.genderId = gender.getId();
     }
 
-    public Date getRegistrationDate() {
-        if (this.registrationDate == null) {
-            this.registrationDate = new Date();
-        }
-        return this.registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        if (registrationDate != null) {
-            this.registrationDate = registrationDate;
-        }
-    }
 
     @JsonIgnore
     public IVRLanguage getIvrLanguage() {

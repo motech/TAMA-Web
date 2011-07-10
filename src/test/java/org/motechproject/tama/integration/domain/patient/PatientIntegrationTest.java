@@ -1,6 +1,5 @@
 package org.motechproject.tama.integration.domain.patient;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
@@ -30,9 +29,9 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("12345678").build();
         patients.add(patient);
         markForDeletion(patient);
-        assertEquals(0, patients.findById("9999").size());
+        assertEquals(0, patients.findByPatientId("9999").size());
 
-        Patient loadedPatient = patients.findById("12345678").get(0);
+        Patient loadedPatient = patients.findByPatientId("12345678").get(0);
         assertNotNull(loadedPatient);
         assertEquals("12345678", loadedPatient.getPatientId());
     }
@@ -62,27 +61,61 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldUpdatePatient() {
-        assertTrue(true);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("1234").build();
+        patients.add(patient);
+
+        String mobilePhoneNumber = "9986573310";
+        patient.setMobilePhoneNumber(mobilePhoneNumber);
+        patients.merge(patient);
+        markForDeletion(patient);
+
+        List<Patient> dbPatients = patients.findByPatientId("1234");
+        assertEquals(mobilePhoneNumber, dbPatients.get(0).getMobilePhoneNumber());
     }
 
     @Test
     public void shouldRemovePatient() {
-        assertTrue(true);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").build();
+        patients.add(patient);
+        markForDeletion(patient);
+
+        patients.remove(patient);
+        List<Patient> dbPatients = patients.findByPatientId("5678");
+        assertTrue(dbPatients.isEmpty());
     }
 
     @Test
     public void shouldActivatePatient() {
-        assertTrue(true);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("6666").build();
+        patients.add(patient);
+
+        patients.activate(patient.getId());
+        markForDeletion(patient);
+
+        List<Patient> dbPatients = patients.findByPatientId("6666");
+        assertTrue(dbPatients.get(0).isActive());
     }
 
     @Test
     public void shouldCheckIfActive() {
-        assertTrue(true);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("8888").withStatus(Patient.Status.Active).build();
+        patients.add(patient);
+        markForDeletion(patient);
+
+        assertTrue(patients.checkIfActive(patient));
     }
 
     @Test
     public void shouldFindClinicForPatient() {
-        assertTrue(true);
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        clinics.add(clinicForPatient);
+        markForDeletion(clinicForPatient);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).build();
+        patients.add(patient);
+        markForDeletion(patient);
+
+        assertEquals(clinicForPatient.getId(), patients.findClinicFor(patient));
     }
 
 }

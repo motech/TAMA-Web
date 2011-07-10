@@ -23,7 +23,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     }
 
     @GenerateView
-    public List<Patient> findById(String patientId) {
+    public List<Patient> findByPatientId(String patientId) {
         return queryView("by_patientId", patientId);
     }
 

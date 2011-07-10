@@ -1,13 +1,11 @@
 package org.motechproject.tama.web;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Patients;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.ui.Model;
@@ -67,7 +65,7 @@ public class PatientControllerTest {
         List<Patient> patientsFromDb = new ArrayList<Patient>();
         patientsFromDb.add(patientFromDb);
 
-        when(patients.findById(patientId)).thenReturn(patientsFromDb);
+        when(patients.findByPatientId(patientId)).thenReturn(patientsFromDb);
         when(patientFromDb.getId()).thenReturn("couchDbId");
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
@@ -81,7 +79,7 @@ public class PatientControllerTest {
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
         String previousPage = expectedPreviousPageUrl +"?patientIdNotFound=1_abcd";
 
-        when(patients.findById(patientId)).thenReturn(new ArrayList<Patient>());
+        when(patients.findByPatientId(patientId)).thenReturn(new ArrayList<Patient>());
         when(request.getHeader("Referer")).thenReturn(previousPage);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
@@ -96,7 +94,7 @@ public class PatientControllerTest {
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients?page=1";
         String previousPage = expectedPreviousPageUrl +"&patientIdNotFound=abc_8";
 
-        when(patients.findById(patientId)).thenReturn(new ArrayList<Patient>());
+        when(patients.findByPatientId(patientId)).thenReturn(new ArrayList<Patient>());
         when(request.getHeader("Referer")).thenReturn(previousPage);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
