@@ -42,18 +42,10 @@ public class PatientControllerTest {
 
     @Test
     public void shouldActivatePatientsByPost() {
-        PowerMockito.spy(Patient.class);
-
-        Patient dbPatient = mock(Patient.class);
         String id = "1234";
-        when(Patient.patients()).thenReturn(patients);
-        when(patients.get(id)).thenReturn(dbPatient);
-        when(dbPatient.activate()).thenReturn(dbPatient);
-
         String nextPage = controller.activate(id, request);
 
-        verify(dbPatient).activate();
-        verify(dbPatient).merge();
+        verify(patients).activate(id);
         assertTrue(nextPage.contains("redirect:/patients/"));
         assertTrue(nextPage.contains("1234"));
     }
@@ -61,17 +53,10 @@ public class PatientControllerTest {
 
     @Test
     public void shouldActivatePatientsByGet() {
-        PowerMockito.spy(Patient.class);
-        Patient dbPatient = mock(Patient.class);
         String id = "1234";
-        when(Patient.patients()).thenReturn(patients);
-        when(patients.get(id)).thenReturn(dbPatient);
-        when(dbPatient.activate()).thenReturn(dbPatient);
-
         String nextPage = controller.activate(id);
 
-        verify(dbPatient).activate();
-        verify(dbPatient).merge();
+        verify(patients).activate(id);
         assertEquals("redirect:/patients", nextPage);
     }
 
@@ -101,7 +86,7 @@ public class PatientControllerTest {
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
-        verify(uiModel).addAttribute(PatientController.PATIENT_ID_NOT_FOUND, patientId);
+        verify(uiModel).addAttribute(PatientController.PATIENT_ID_NOT_FOUND_ATTR, patientId);
         assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
     }
 
@@ -116,7 +101,7 @@ public class PatientControllerTest {
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
-        verify(uiModel).addAttribute(PatientController.PATIENT_ID_NOT_FOUND, patientId);
+        verify(uiModel).addAttribute(PatientController.PATIENT_ID_NOT_FOUND_ATTR, patientId);
         assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
     }
 
@@ -133,29 +118,9 @@ public class PatientControllerTest {
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-        verify(patientFromUI).persist();
+        verify(patients).addToClinic(patientFromUI);
         assertTrue(modelMap.isEmpty());
         assertEquals("redirect:/patients/123", createPage);
     }
 
-    @Test
-    @Ignore("needs to be fixed")
-    public void shouldCreateAPatientIfThereAreErrors() {
-//        PowerMockito.spy(Gender.class);
-        Patient patientFromUI = mock(Patient.class);
-        BindingResult bindingResult = mock(BindingResult.class);
-//        List<Gender> genders = new ArrayList<Gender>();
-//        genders.add(new Gender("Male"));
-
-        when(bindingResult.hasErrors()).thenReturn(true);
-//        when(Gender.findAllGenders()).thenReturn(genders);
-
-        String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
-
-        verify(uiModel).addAttribute("patient", patientFromUI);
-        verify(uiModel).addAttribute("patient_dateofbirth_date_format", "M/d/yy");
-//        verify(uiModel).addAttribute("genders", genders);
-        assertTrue(uiModel.containsAttribute("genders"));
-        assertEquals("patients/create", createPage);
-    }
 }

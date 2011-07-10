@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
-
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
 public class Patients extends CouchDbRepositorySupport<Patient> {
     private static Logger LOG = Logger.getLogger(Patients.class);

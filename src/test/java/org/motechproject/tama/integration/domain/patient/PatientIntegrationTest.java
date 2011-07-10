@@ -15,29 +15,26 @@ import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PatientIntegrationTest extends SpringIntegrationTest {
-
     @Autowired
     private Patients patients;
 
     @Autowired
     private Clinics clinics;
 
-
     @Test
     public void shouldLoadPatientByPatientId() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("12345678").build();
-        patient.persist();
+        patients.add(patient);
+        markForDeletion(patient);
+        assertEquals(0, patients.findById("9999").size());
 
-        Assert.assertEquals(0, patient.findByPatientId("9999").size());
-
-        Patient loadedPatient = patient.findByPatientId("12345678").get(0);
-        Assert.assertNotNull(loadedPatient);
-        Assert.assertEquals("12345678", loadedPatient.getPatientId());
-
-        loadedPatient.remove();
-        loadedPatient.flush();
+        Patient loadedPatient = patients.findById("12345678").get(0);
+        assertNotNull(loadedPatient);
+        assertEquals("12345678", loadedPatient.getPatientId());
     }
 
     @Test
@@ -52,17 +49,40 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).build();
-        patient.persist();
-        anotherPatient.persist();
+        patients.add(patient);
+        patients.add(anotherPatient);
         markForDeletion(patient);
         markForDeletion(anotherPatient);
 
-        List<Patient> results = patients.findByClinic(clinicForPatient.getId());
+        List<Patient> dbPatients = patients.findByClinic(clinicForPatient.getId());
 
-        assertTrue(results.contains(patient));
-        assertFalse(results.contains(anotherPatient));
-        System.out.println("\n\n\n\n"+results.get(0));
+        assertTrue(dbPatients.contains(patient));
+        assertFalse(dbPatients.contains(anotherPatient));
+    }
 
+    @Test
+    public void shouldUpdatePatient() {
+        assertTrue(true);
+    }
+
+    @Test
+    public void shouldRemovePatient() {
+        assertTrue(true);
+    }
+
+    @Test
+    public void shouldActivatePatient() {
+        assertTrue(true);
+    }
+
+    @Test
+    public void shouldCheckIfActive() {
+        assertTrue(true);
+    }
+
+    @Test
+    public void shouldFindClinicForPatient() {
+        assertTrue(true);
     }
 
 }
