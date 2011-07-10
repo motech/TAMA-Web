@@ -44,25 +44,25 @@
             <br/>
         </util:panel>
         <br />
-        <br />
-        <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
-        <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
-        <c:if test="${!patient.active}" >
-            <div class="update_patient">
-                <form action="activate" method="POST">
-                   <input type="hidden" name="id" value="${patient.id}"/>
-                   <div class='submit'>
-                     <input type="submit" id="activatePatient" value="Activate"/>
-                   </div>
-                </form>
-            </div>
-	        <br/>
-        </c:if>
-        <spring:url value="/treatmentadvices" var="clinic_visits_url">
-            <spring:param name="form" />
-            <spring:param name="patientId" value="${patient.patientId}" />
-          </spring:url>
-        <a href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
-
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Status" title="Patient's TAMA Status" openPane="true">
+            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
+            <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
+            <c:if test="${!patient.active}" >
+                <div class="update_patient">
+                    <form action="activate" method="POST">
+                       <input type="hidden" name="id" value="${patient.id}"/>
+                       <div class='submit'>
+                         <input type="submit" id="activatePatient" value="Activate"/>
+                       </div>
+                    </form>
+                </div>
+                <br/>
+            </c:if>
+            <spring:url value="/treatmentadvices" var="clinic_visits_url">
+                <spring:param name="form" />
+                <spring:param name="patientId" value="${patient.patientId}" />
+              </spring:url>
+            <a href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
+        </util:panel>
     </page:show>
 </div>

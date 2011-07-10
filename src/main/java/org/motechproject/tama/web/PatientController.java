@@ -13,7 +13,10 @@ import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -27,13 +30,17 @@ import java.util.List;
 @Controller
 public class PatientController {
     public static final String PATIENT_ID_NOT_FOUND = "patientIdNotFound";
-    public static final String REDIRECT_SHOW_PATIENT = "redirect:/patients/";
-    public static final String REDIRECT_LIST_PATIENTS = "redirect:/patients";
+    public static final String REDIRECT_SHOW_VIEW = "redirect:/patients/";
+    public static final String REDIRECT_LIST_VIEW = "redirect:/patients";
+    public static final String CREATE_VIEW = "patients/create";
+    public static final String SHOW_VIEW = "patients/show";
+    public static final String LIST_VIEW = "patients/list";
+    public static final String UPDATE_VIEW = "patients/update";
 
     @Autowired
-    Patients patients;
+    private Patients patients;
     @Autowired
-    Clinics clinics;
+    private Clinics clinics;
 
     public PatientController() {
     }
@@ -43,120 +50,111 @@ public class PatientController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
-    public String activate(@RequestParam String id, HttpServletRequest httpServletRequest) {
-        Patient.findPatient(id).activate().merge();
-        return REDIRECT_SHOW_PATIENT + encodeUrlPathSegment(id, httpServletRequest);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
-    public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        List<Patient> patientList = patients.findByPatientId(patientId);
-        if (patientList == null || patientList.isEmpty()) {
-            uiModel.addAttribute(PATIENT_ID_NOT_FOUND, patientId);
-            String referrer = httpServletRequest.getHeader("Referer");
-            referrer = referrer.replaceFirst("(\\?|&)" + PATIENT_ID_NOT_FOUND + "=[[0-9][^0-9]]*$", "");
-            return "redirect:" + referrer;
-        }
-        return REDIRECT_SHOW_PATIENT + encodeUrlPathSegment(patientList.get(0).getId(), httpServletRequest);
+    public String activate(@RequestParam String id, HttpServletRequest request) {
+        patients.activate(id);
+        return REDIRECT_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/activate/{id}")
     public String activate(@PathVariable String id) {
-        Patient.findPatient(id).activate().merge();
-        return REDIRECT_LIST_PATIENTS;
+        patients.activate(id);
+        return REDIRECT_LIST_VIEW;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
+    public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest request) {
+        List<Patient> patients = this.patients.findById(patientId);
+        if (patients == null || patients.isEmpty()) {
+            uiModel.addAttribute(PATIENT_ID_NOT_FOUND, patientId);
+            return "redirect:" + getReferrer(request);
+        }
+        return REDIRECT_SHOW_VIEW + encodeUrlPathSegment(patients.get(0).getId(), request);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String create(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("patient", patient);
             populateModel(uiModel);
-            addDateTimeFormatPatterns(uiModel);
-            return "patients/create";
+            addDateTimeFormat(uiModel);
+            return CREATE_VIEW;
         }
         uiModel.asMap().clear();
-        patient.persist();
-        return REDIRECT_SHOW_PATIENT + encodeUrlPathSegment(patient.getId().toString(), httpServletRequest);
+        patients.addToClinic(patient);
+        return REDIRECT_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
         uiModel.addAttribute("patient", new Patient());
         populateModel(uiModel);
-        addDateTimeFormatPatterns(uiModel);
-        return "patients/create";
+        addDateTimeFormat(uiModel);
+        return CREATE_VIEW;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel) {
-        addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("patient", Patient.findPatient(id));
+        addDateTimeFormat(uiModel);
+        uiModel.addAttribute("patient", patients.get(id));
         uiModel.addAttribute("itemId", id);
-        return "patients/show";
+        return SHOW_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-//        if (page != null || size != null) {
-//            int sizeNo = size == null ? 10 : size.intValue();
-//            uiModel.addAttribute("patients", Patient.findPatientEntries(page == null ? 0 : (page.intValue() - 1) * sizeNo, sizeNo));
-//            float nrOfPages = (float) Patient.countPatients() / sizeNo;
-//            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-//        } else {
-//            uiModel.addAttribute("patients", patients.getPatientsForClinician());
-//        }
-        uiModel.addAttribute("patients", patients.getPatientsForClinic());
-        addDateTimeFormatPatterns(uiModel);
-        return "patients/list";
+    public String list(@RequestParam(value = "page", required = false) Integer page,
+                       @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        uiModel.addAttribute("patients", patients.byClinic());
+        addDateTimeFormat(uiModel);
+        return LIST_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public String update(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String update(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("patient", patient);
             populateModel(uiModel);
-            addDateTimeFormatPatterns(uiModel);
-            return "patients/update";
+            addDateTimeFormat(uiModel);
+            return UPDATE_VIEW;
         }
         uiModel.asMap().clear();
-        if (Patient.findPatient(patient.getId()).isActive()) patient.activate();
-        patient.merge();
-        return REDIRECT_SHOW_PATIENT + encodeUrlPathSegment(patient.getId().toString(), httpServletRequest);
+        synchronise(patient);
+        patients.merge(patient);
+        return REDIRECT_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel) {
-        uiModel.addAttribute("patient", Patient.findPatient(id));
+        uiModel.addAttribute("patient", patients.get(id));
         populateModel(uiModel);
-        addDateTimeFormatPatterns(uiModel);
-        return "patients/update";
+        addDateTimeFormat(uiModel);
+        return UPDATE_VIEW;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        Patient.findPatient(id).remove();
+    public String delete(@PathVariable("id") String id,
+                         @RequestParam(value = "page", required = false) Integer page,
+                         @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        patients.remove(id);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        uiModel.addAttribute("patients", patients.getPatientsForClinic());
-        return REDIRECT_LIST_PATIENTS;
+        uiModel.addAttribute("patients", patients.byClinic());
+        return REDIRECT_LIST_VIEW;
     }
 
-    void addDateTimeFormatPatterns(Model uiModel) {
+    private String getReferrer(HttpServletRequest request) {
+        String referrer = request.getHeader("Referer");
+        referrer = referrer.replaceFirst("(\\?|&)" + PATIENT_ID_NOT_FOUND + "=[[0-9][^0-9]]*$", "");
+        return referrer;
+    }
+
+    private void synchronise(Patient patient) {
+        if (patients.checkIfActive(patient)) patient.activate();
+        patient.setClinic_id(patients.findClinicFor(patient));
+    }
+
+    private void addDateTimeFormat(Model uiModel) {
         uiModel.addAttribute("patient_dateofbirth_date_format", DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
-    }
-
-
-    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
-        String enc = httpServletRequest.getCharacterEncoding();
-        if (enc == null) {
-            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
-        }
-        try {
-            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {
-        }
-        return pathSegment;
     }
 
     private void populateModel(Model uiModel) {
@@ -166,6 +164,17 @@ public class PatientController {
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());
         uiModel.addAttribute("genders", Gender.findAllGenders());
+    }
+
+    private String encodeUrlPathSegment(String pathSegment, HttpServletRequest request) {
+        String enc = request.getCharacterEncoding();
+        if (enc == null) enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
+            throw new RuntimeException(uee);
+        }
+        return pathSegment;
     }
 
 }

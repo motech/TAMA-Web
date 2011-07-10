@@ -3,11 +3,11 @@
 
 package org.motechproject.tama.domain;
 
-import java.util.List;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 privileged aspect Patient_Roo_Entity {
 
@@ -21,7 +21,7 @@ privileged aspect Patient_Roo_Entity {
     private String Patient.clinic_id;
 
     public void Patient.persist() {
-        this.patients.add(this);
+        this.patients.addToClinic(this);
     }
 
     public void Patient.remove() {
@@ -56,7 +56,7 @@ privileged aspect Patient_Roo_Entity {
 
     public static List<Patient> Patient.findByPatientId(String patientId) {
         if (patientId == null) return null;
-        return patients().findByPatientId(patientId);
+        return patients().findById(patientId);
     }
 
     public static Patient Patient.findPatient(String id) {
