@@ -1,5 +1,7 @@
 package org.motechproject.tama.repository;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
@@ -23,9 +25,24 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
         initStandardDesignDocument();
     }
 
-    @GenerateView
+    @View(name = "find_by_patient_id", map = "function(doc) {if (doc.documentType =='Patient' && doc.patientId) {emit(doc.patientId, doc._id);}}")
     public List<Patient> findByPatientId(String patientId) {
-        return queryView("by_patientId", patientId);
+        ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
+        return db.queryView(q, Patient.class);
+    }
+
+    public List<Patient> findByPatientIdAndClinic(final String patientId) {
+        List<Patient> patients = byClinic();
+        if (patients != null) {
+            CollectionUtils.filter(patients, new Predicate() {
+                @Override
+                public boolean evaluate(Object o) {
+                    Patient patient = (Patient) o;
+                    return patientId.equals(patient.getPatientId());
+                }
+            });
+        }
+        return patients;
     }
 
     @View(name = "find_by_clinic", map = "function(doc) {if (doc.documentType =='Patient' && doc.clinic_id) {emit(doc.clinic_id, doc._id);}}")

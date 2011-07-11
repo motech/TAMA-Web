@@ -30,7 +30,7 @@ public class AdminSecurityGroupTest extends SecurityGroupTest{
         assertUsernameAndPassword("admin","password",authenticatedUser);
         assertEquals(AdminSecurityGroup.TAMA_ADMIN, authenticatedUser.marker());
         assertUserAccount(authenticatedUser);
-        assertUserAuthorities(authenticatedUser.getAuthorities(),Arrays.asList(Role.ADMIN,Role.CLINICIAN_DOCTOR, Role.CLINICIAN_STUDY_NURSE));
+        assertUserAuthorities(authenticatedUser.getAuthorities(),Arrays.asList(Role.ADMIN));
 
     }
 }

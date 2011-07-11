@@ -65,7 +65,7 @@ public class PatientControllerTest {
         List<Patient> patientsFromDb = new ArrayList<Patient>();
         patientsFromDb.add(patientFromDb);
 
-        when(patients.findByPatientId(patientId)).thenReturn(patientsFromDb);
+        when(patients.findByPatientIdAndClinic(patientId)).thenReturn(patientsFromDb);
         when(patientFromDb.getId()).thenReturn("couchDbId");
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
@@ -79,7 +79,7 @@ public class PatientControllerTest {
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
         String previousPage = expectedPreviousPageUrl +"?patientIdNotFound=1_abcd";
 
-        when(patients.findByPatientId(patientId)).thenReturn(new ArrayList<Patient>());
+        when(patients.findByPatientIdAndClinic(patientId)).thenReturn(new ArrayList<Patient>());
         when(request.getHeader("Referer")).thenReturn(previousPage);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
@@ -94,7 +94,7 @@ public class PatientControllerTest {
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients?page=1";
         String previousPage = expectedPreviousPageUrl +"&patientIdNotFound=abc_8";
 
-        when(patients.findByPatientId(patientId)).thenReturn(new ArrayList<Patient>());
+        when(patients.findByPatientIdAndClinic(patientId)).thenReturn(new ArrayList<Patient>());
         when(request.getHeader("Referer")).thenReturn(previousPage);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);

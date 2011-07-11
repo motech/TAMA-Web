@@ -28,7 +28,7 @@ public class Page {
             return PageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
-    public Page unsuccesfulSearchPatientBy(String id, Class<? extends Page> returnPage) {
+    public Page unsuccessfulSearchPatientBy(String id, Class<? extends Page> returnPage) {
         searchBox.sendKeys(id);
         searchButton.click();
         return PageFactory.initElements(webDriver, returnPage);

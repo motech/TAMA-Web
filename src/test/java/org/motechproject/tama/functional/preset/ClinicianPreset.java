@@ -8,11 +8,11 @@ import org.motechproject.tama.functional.page.LoginPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
-public class LoggedInClinicianPreset {
+public class ClinicianPreset {
 
     private WebDriver webDriver;
 
-    public LoggedInClinicianPreset(WebDriver webDriver) {
+    public ClinicianPreset(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
 

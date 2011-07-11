@@ -5,24 +5,58 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
-import java.util.Hashtable;
-
 public class WebDriverFactory {
 
-    public static final String TEST_DRIVER = "test.driver";
+    public static final String WEB_DRIVER = "test.driver";
     public static final String HTMLUNIT = "htmlunit";
-    public static final String FIREFOX = "firefox";
-    public static final String IE = "ie";
 
-    public static WebDriver getInstance() {
-        String name = System.getProperty(TEST_DRIVER, FIREFOX);
-        return createDrivers().get(name);
+    private enum Driver {
+
+        FIREFOX("firefox") {
+            @Override
+            WebDriver give() {
+                return new FirefoxDriver();
+            }
+        },
+
+        IE("ie") {
+            @Override
+            WebDriver give() {
+                return new InternetExplorerDriver();
+            }
+        },
+
+        HTML_UNIT("htmlunit") {
+            @Override
+            WebDriver give() {
+                return new HtmlUnitDriver(true);
+            }
+        };
+
+
+        private String name;
+
+        Driver(String name) {
+            this.name = name;
+        }
+
+        abstract WebDriver give();
+
+
+        public static Driver enumFor(String name) {
+            for (Driver driver : values()) {
+                if (driver.is(name)) return driver;
+            }
+            return null;
+        }
+
+        private boolean is(String name) {
+            return this.name.equalsIgnoreCase(name);
+        }
     }
 
-    private static Hashtable<String, WebDriver> createDrivers() {
-        Hashtable<String, WebDriver> drivers = new Hashtable<String, WebDriver>();
-        drivers.put(FIREFOX, new FirefoxDriver());
-        drivers.put(HTMLUNIT, new HtmlUnitDriver(true));
-        return drivers;
+    public static WebDriver getInstance() {
+        String name = System.getProperty(WEB_DRIVER, HTMLUNIT);
+        return Driver.enumFor(name).give();
     }
 }

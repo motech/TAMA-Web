@@ -12,7 +12,7 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowPatientPage;
-import org.motechproject.tama.functional.preset.LoggedInClinicianPreset;
+import org.motechproject.tama.functional.preset.ClinicianPreset;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class PatientRegistrationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientRegistration() {
-        Clinician clinician = new LoggedInClinicianPreset(webDriver).create();
+        Clinician clinician = new ClinicianPreset(webDriver).create();
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         ShowPatientPage showPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).

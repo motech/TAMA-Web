@@ -70,7 +70,7 @@ public class PatientController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
     public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest request) {
-        List<Patient> patients = this.patients.findByPatientId(patientId);
+        List<Patient> patients = this.patients.findByPatientIdAndClinic(patientId);
         if (patients == null || patients.isEmpty()) {
             uiModel.addAttribute(PATIENT_ID_NOT_FOUND_ATTR, patientId);
             return "redirect:" + getReferrer(request);

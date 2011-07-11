@@ -9,7 +9,7 @@ public class AdminSecurityGroup extends AbstractSecurityGroup {
     public static final String TAMA_ADMIN = "tama_admin";
 
     public AdminSecurityGroup() {
-        add(Role.ADMIN, Role.CLINICIAN_DOCTOR, Role.CLINICIAN_STUDY_NURSE);
+        add(Role.ADMIN);
     }
 
     @Override
