@@ -7,6 +7,7 @@ import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.BaseTest;
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.ListPatientsPage;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.Page;
@@ -27,7 +28,7 @@ public class SearchPatientByIdTest extends BaseTest {
     public void testSuccessfulPatientSearch() {
         Clinician clinician = new ClinicianPreset(webDriver).create();
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        ShowPatientPage showPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
+        ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient).
@@ -43,7 +44,7 @@ public class SearchPatientByIdTest extends BaseTest {
     public void testUnsuccessfulPatientSearch() {
         Clinician clinician = new ClinicianPreset(webDriver).create();
         String non_existing_id = "non_existing_id";
-        Page listPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
+        Page listPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToListPatientsPage().
                 unsuccessfulSearchPatientBy(non_existing_id, ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);

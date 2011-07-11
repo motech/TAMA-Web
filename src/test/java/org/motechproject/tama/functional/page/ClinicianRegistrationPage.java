@@ -3,6 +3,8 @@ package org.motechproject.tama.functional.page;
 import org.apache.log4j.Logger;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
+import org.motechproject.tama.functional.framework.MyPageFactory;
+import org.motechproject.tama.functional.framework.MyWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -37,6 +39,11 @@ public class ClinicianRegistrationPage extends Page {
         super(webDriver);
     }
 
+    @Override
+    public void postInitialize() {
+        clinicElement = new MyWebElement(clinicElement);
+    }
+
     public ShowClinicianPage registerClinician(Clinician clinician) {
         LOG.error("CLINICIAN: " + clinician);
         name.sendKeys(clinician.getName());
@@ -44,12 +51,11 @@ public class ClinicianRegistrationPage extends Page {
         contactNumber.sendKeys(clinician.getContactNumber());
         alternateContactNumber.sendKeys(clinician.getAlternateContactNumber());
         password.sendKeys(clinician.getPassword());
-        clinicElement.clear();
         Clinic clinic = clinician.getClinic();
         clinicElement.sendKeys(new StringBuilder().append(clinic.getName()).append(", ").append(clinic.getCity()).toString());
         registerClinicianLink.click();
         waitForElementWithIdToLoad(ShowClinicianPage.CLINICIAN_NAME_NAME_ID);
-        return PageFactory.initElements(webDriver, ShowClinicianPage.class);
+        return MyPageFactory.initElements(webDriver, ShowClinicianPage.class);
 
     }
 }

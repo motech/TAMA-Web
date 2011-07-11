@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.page;
 
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.framework.MyWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -47,7 +48,7 @@ public class LoginPage extends Page {
     private HomePage loginAndWait(String userName, String password) {
         login(userName, password);
         this.waitForElementWithXPATHToLoad(HomePage.PATIENT_REGISTRATION_LINK_XPATH);
-        return PageFactory.initElements(webDriver, HomePage.class);
+        return MyPageFactory.initElements(webDriver, HomePage.class);
     }
 
     private void login(String userName, String password) {

@@ -34,12 +34,12 @@ public class HomePage extends Page {
 
     public PatientRegistrationPage goToPatientRegistrationPage() {
         patientRegistrationLink.click();
-        return PageFactory.initElements(webDriver, PatientRegistrationPage.class);
+        return MyPageFactory.initElements(webDriver, PatientRegistrationPage.class);
     }
 
     public ListPatientsPage goToListPatientsPage() {
         listPatientsLink.click();
-        return PageFactory.initElements(webDriver, ListPatientsPage.class);
+        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
     public ClinicRegistrationPage goToClinicRegistrationPage() {
@@ -49,7 +49,7 @@ public class HomePage extends Page {
 
     public ClinicianRegistrationPage goToClinicianRegistrationPage() {
         clinicianRegistrationLink.click();
-        return PageFactory.initElements(webDriver, ClinicianRegistrationPage.class);
+        return MyPageFactory.initElements(webDriver, ClinicianRegistrationPage.class);
     }
 
     public String getWelcomeMessage() {

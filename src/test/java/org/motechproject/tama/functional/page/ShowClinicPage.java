@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.page;
 
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -46,6 +47,6 @@ public class ShowClinicPage extends Page {
 
     public HomePage goToHomePage() {
         homePageLink.click();
-        return PageFactory.initElements(webDriver, HomePage.class);
+        return MyPageFactory.initElements(webDriver, HomePage.class);
     }
 }

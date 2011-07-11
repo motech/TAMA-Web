@@ -10,6 +10,7 @@ import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.BaseTest;
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.motechproject.tama.functional.preset.ClinicianPreset;
@@ -24,7 +25,7 @@ public class PatientRegistrationTest extends BaseTest {
     public void testSuccessfulPatientRegistration() {
         Clinician clinician = new ClinicianPreset(webDriver).create();
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        ShowPatientPage showPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
+        ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);

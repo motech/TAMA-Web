@@ -7,6 +7,7 @@ import org.motechproject.tama.builder.ClinicianBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.functional.framework.BaseTest;
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowClinicianPage;
 import org.openqa.selenium.support.PageFactory;
@@ -22,7 +23,7 @@ public class RegisterClinicianTest extends BaseTest {
     public void testClinicianRegistration() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
         Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic).build();
-        ShowClinicianPage showClinicianPage = PageFactory.initElements(webDriver, LoginPage.class)
+        ShowClinicianPage showClinicianPage = MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicRegistrationPage()
                 .registerClinic(clinic)

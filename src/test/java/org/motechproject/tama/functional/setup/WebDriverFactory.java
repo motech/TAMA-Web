@@ -7,7 +7,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 
 public class WebDriverFactory {
 
-    public static final String WEB_DRIVER = "test.driver";
+    public static final String TEST_DRIVER = "test.driver";
     public static final String HTMLUNIT = "htmlunit";
 
     private enum Driver {
@@ -56,7 +56,7 @@ public class WebDriverFactory {
     }
 
     public static WebDriver getInstance() {
-        String name = System.getProperty(WEB_DRIVER, HTMLUNIT);
+        String name = System.getProperty(TEST_DRIVER, HTMLUNIT);
         return Driver.enumFor(name).give();
     }
 }

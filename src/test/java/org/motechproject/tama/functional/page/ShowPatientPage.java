@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.page;
 
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -57,11 +58,11 @@ public class ShowPatientPage extends Page {
                 return webDriver.findElement(By.id(PATIENT_ID_ID)) != null;
             }
         });
-        return PageFactory.initElements(webDriver, ShowPatientPage.class);
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
     public ListPatientsPage goToListPatientsPage() {
         listPatientsLink.click();
-        return PageFactory.initElements(webDriver, ListPatientsPage.class);
+        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 }

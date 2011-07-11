@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.page;
 
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,14 +32,14 @@ public class Page {
     public ShowPatientPage searchPatientBy(String id) {
         searchById(id);
         this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return PageFactory.initElements(webDriver, ShowPatientPage.class);
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
 
     public Page unsuccessfulSearchPatientBy(String id, Class<? extends Page> returnPageClass, String idOnTheReturnPage) {
         searchById(id);
         this.waitForElementWithIdToLoad(idOnTheReturnPage);
-        return PageFactory.initElements(webDriver, returnPageClass);
+        return MyPageFactory.initElements(webDriver, returnPageClass);
     }
 
     private void searchById(String id) {

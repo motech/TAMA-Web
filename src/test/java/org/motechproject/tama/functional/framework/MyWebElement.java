@@ -30,6 +30,7 @@ public class MyWebElement implements WebElement {
     @Override
     public void sendKeys(CharSequence... keysToSend) {
         click();
+        clear();
         webElement.sendKeys(keysToSend);
     }
 

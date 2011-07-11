@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.functional.framework.BaseTest;
+import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowClinicPage;
 import org.openqa.selenium.support.PageFactory;
@@ -19,7 +20,7 @@ public class RegisterClinicTest extends BaseTest {
     @Test
     public void testClinicRegistration() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        ShowClinicPage showClinicPage = PageFactory.initElements(webDriver, LoginPage.class)
+        ShowClinicPage showClinicPage = MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicRegistrationPage()
                 .registerClinic(clinic);
