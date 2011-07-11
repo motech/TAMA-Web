@@ -62,7 +62,7 @@ public class TreatmentAdviceController {
 	}
 
     @RequestMapping(method = RequestMethod.GET, value = "/drugDosagesFor")
-	public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, Model uiModel) {
+	public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice, Model uiModel) {
         Regimen regimen = Regimen.findRegimen(regimenId);
         RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);
 
@@ -72,9 +72,9 @@ public class TreatmentAdviceController {
             Drug drug = (Drug) CollectionUtils.get(drugs, i);
             drugDosage.setDrugId(((Drug) drug).getId());
             drugDosage.setDrugName(drug.getName());
-            uiModel.addAttribute(String.format("drugDosages[%d]", i), drugDosage);
+            drugDosage.setBrands(drug.getBrands());
+            treatmentAdvice.addDrugDosage(drugDosage);
         }
-        uiModel.addAttribute("drugs", drugs);
         return "treatmentadvices/drugdosages";
 	}
 

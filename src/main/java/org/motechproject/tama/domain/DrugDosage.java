@@ -10,6 +10,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Set;
 
 @RooJavaBean
 @RooEntity
@@ -20,6 +21,9 @@ public class DrugDosage {
 
     @JsonIgnore
     private String drugName;
+
+    @JsonIgnore
+    private Set<Brand> brands;
 
     @NotNull
     private String brandId;

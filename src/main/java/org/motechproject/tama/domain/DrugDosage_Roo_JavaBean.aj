@@ -4,6 +4,7 @@
 package org.motechproject.tama.domain;
 
 import java.util.Date;
+import java.util.Set;
 
 privileged aspect DrugDosage_Roo_JavaBean {
     
@@ -21,6 +22,14 @@ privileged aspect DrugDosage_Roo_JavaBean {
 
     public void DrugDosage.setDrugName(String drugName) {
         this.drugName = drugName;
+    }
+
+    public Set<Brand> DrugDosage.getBrands() {
+        return this.brands;
+    }
+
+    public void DrugDosage.setBrands(Set<Brand> brands) {
+        this.brands = brands;
     }
 
     public String DrugDosage.getBrandId() {

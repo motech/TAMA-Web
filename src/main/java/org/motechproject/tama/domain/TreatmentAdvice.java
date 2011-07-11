@@ -7,8 +7,8 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @RooJavaBean
 @RooEntity
@@ -25,5 +25,5 @@ public class TreatmentAdvice {
     private String regimenCompositionId;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<DrugDosage> drugDosages = new HashSet<DrugDosage>();
+    private List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
 }

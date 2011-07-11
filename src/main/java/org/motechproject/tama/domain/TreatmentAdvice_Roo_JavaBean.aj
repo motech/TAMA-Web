@@ -3,7 +3,7 @@
 
 package org.motechproject.tama.domain;
 
-import java.util.Set;
+import java.util.List;
 
 privileged aspect TreatmentAdvice_Roo_JavaBean {
     
@@ -31,11 +31,15 @@ privileged aspect TreatmentAdvice_Roo_JavaBean {
         this.regimenCompositionId = regimenCompositionId;
     }
     
-    public Set<DrugDosage> TreatmentAdvice.getDrugDosages() {
+    public List<DrugDosage> TreatmentAdvice.getDrugDosages() {
         return this.drugDosages;
     }
     
-    public void TreatmentAdvice.setDrugDosages(Set<DrugDosage> drugDosages) {
+    public void TreatmentAdvice.setDrugDosages(List<DrugDosage> drugDosages) {
         this.drugDosages = drugDosages;
+    }
+
+    public void TreatmentAdvice.addDrugDosage(DrugDosage drugDosage) {
+        this.drugDosages.add(drugDosage);
     }
 }
