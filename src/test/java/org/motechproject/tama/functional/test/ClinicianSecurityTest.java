@@ -38,7 +38,7 @@ public class ClinicianSecurityTest extends BaseTest {
         assertEquals(showPatientPage.getPatientId(), patient1.getPatientId());
 
         Page page = listPatientsPage.unsuccessfulSearchPatientBy(patient2.getPatientId(), ListPatientsPage.class);
-//        assertEquals(String.format("Patient with id: %s not found", patient2.getPatientId()),page.getPatientSearchErrorMessage());
+        assertEquals(String.format("Patient with id: %s not found", patient2.getPatientId()),page.getPatientSearchErrorMessage());
 
 
         listPatientsPage = PageFactory.initElements(webDriver, LoginPage.class).
@@ -48,19 +48,21 @@ public class ClinicianSecurityTest extends BaseTest {
         assertEquals(showPatientPage.getPatientId(), patient2.getPatientId());
 
         page = listPatientsPage.unsuccessfulSearchPatientBy(patient1.getPatientId(), ListPatientsPage.class);
-//        assertEquals(String.format("Patient with id: %s not found", patient1.getPatientId()),page.getPatientSearchErrorMessage());
+        assertEquals(String.format("Patient with id: %s not found", patient1.getPatientId()),page.getPatientSearchErrorMessage());
 
     }
 
     private Clinician createClinicAndClinicianWith(String clinicName, String clinicianName, String clinicianUsername, String clinicianPassword) {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withId(clinicName).withName(clinicianName).build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName(clinicName).build();
+        PageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithCorrectAdminUserNamePassword()
+                .goToClinicRegistrationPage()
+                .registerClinic(clinic);
+
         Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic).
                 withName(clinicianName).withUserName(clinicianUsername).withPassword(clinicianPassword).build();
         PageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
-                .goToClinicRegistrationPage()
-                .registerClinic(clinic)
-                .goToHomePage()
                 .goToClinicianRegistrationPage()
                 .registerClinician(clinician);
         return clinician;

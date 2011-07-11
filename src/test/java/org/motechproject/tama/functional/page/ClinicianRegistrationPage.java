@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.page;
 
+import org.apache.log4j.Logger;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
 public class ClinicianRegistrationPage extends Page {
+    private static Logger LOG = Logger.getLogger(ClinicianRegistrationPage.class);
 
     @FindBy(how = How.ID, using = "_name_id")
     private WebElement name;
@@ -28,16 +30,24 @@ public class ClinicianRegistrationPage extends Page {
     @FindBy(how = How.ID, using = "proceed")
     private WebElement registerClinicianLink;
 
+    @FindBy(how = How.ID, using = "_clinic_id")
+    private WebElement clinic;
+
     public ClinicianRegistrationPage(WebDriver webDriver) {
         super(webDriver);
     }
 
     public ShowClinicianPage registerClinician(Clinician clinician) {
+        LOG.error("CLINICIAN: " + clinician);
         name.sendKeys(clinician.getName());
         username.sendKeys(clinician.getUsername());
         contactNumber.sendKeys(clinician.getContactNumber());
         alternateContactNumber.sendKeys(clinician.getAlternateContactNumber());
         password.sendKeys(clinician.getPassword());
+        clinic.clear();
+        if (clinician.getClinic() != null) {
+            clinic.sendKeys(clinician.getClinic().getName());
+        }
         registerClinicianLink.click();
         return PageFactory.initElements(webDriver, ShowClinicianPage.class);
 
