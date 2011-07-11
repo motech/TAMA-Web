@@ -60,7 +60,7 @@
             </c:if>
             <spring:url value="/treatmentadvices" var="clinic_visits_url">
                 <spring:param name="form" />
-                <spring:param name="patientId" value="${patient.patientId}" />
+                <spring:param name="patientId" value="${patient.id}" />
               </spring:url>
             <a href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
         </util:panel>
