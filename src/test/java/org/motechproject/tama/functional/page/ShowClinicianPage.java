@@ -7,11 +7,13 @@ import org.openqa.selenium.support.How;
 
 public class ShowClinicianPage extends Page {
 
+    public static final String CLINICIAN_NAME_NAME_ID = "_s_org_motechproject_tama_domain_Clinician_name_name_id";
+
     public ShowClinicianPage(WebDriver webDriver) {
         super(webDriver);
     }
 
-    @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_Clinician_name_name_id")
+    @FindBy(how = How.ID, using = CLINICIAN_NAME_NAME_ID)
     private WebElement name;
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_Clinician_contactnumber_contactNumber_id")

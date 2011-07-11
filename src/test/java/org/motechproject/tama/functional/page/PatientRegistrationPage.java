@@ -48,6 +48,7 @@ public class PatientRegistrationPage extends Page {
         passcode.clear();
         passcode.sendKeys(String.valueOf(patient.getPasscode()));
         patientId.submit();
+        this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return PageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 

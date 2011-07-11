@@ -46,7 +46,7 @@ public class SearchPatientByIdTest extends BaseTest {
         Page listPatientPage = PageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToListPatientsPage().
-                unsuccessfulSearchPatientBy(non_existing_id, ListPatientsPage.class);
+                unsuccessfulSearchPatientBy(non_existing_id, ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
 
         assertEquals(listPatientPage.getPatientSearchErrorMessage(), String.format("Patient with id: %s not found", non_existing_id));
     }

@@ -10,8 +10,9 @@ import org.openqa.selenium.support.PageFactory;
 public class HomePage extends Page {
 
     public final static String WELCOME_MESSAGE = "Welcome to Tama";
+    public static final String PATIENT_REGISTRATION_LINK_XPATH = "//li[@id='i_patient_new']/a";
 
-    @FindBy(how = How.XPATH, using = "//li[@id='i_patient_new']/a")
+    @FindBy(how = How.XPATH, using = PATIENT_REGISTRATION_LINK_XPATH)
     private WebElement patientRegistrationLink;
 
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")

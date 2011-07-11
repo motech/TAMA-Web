@@ -35,19 +35,26 @@ public class LoginPage extends Page {
     }
 
     public LoginPage loginWithIncorrectAdminUserNamePassword() {
-        webDriver.get(LOGIN_URL);
-        userName.sendKeys(INCORRECT_USERNAME);
-        password.sendKeys(INCORRECT_PASSWORD);
-        userName.submit();
+        login(INCORRECT_USERNAME, INCORRECT_PASSWORD);
+        this.waitForElementWithIdToLoad(USERNAME_ID);
         return this;
     }
 
     public HomePage loginWithCorrectAdminUserNamePassword() {
-        webDriver.get(LOGIN_URL);
-        userName.sendKeys(CORRECT_USERNAME);
-        password.sendKeys(CORRECT_PASSWORD);
-        userName.submit();
+        return loginAndWait(CORRECT_USERNAME, CORRECT_PASSWORD);
+    }
+
+    private HomePage loginAndWait(String userName, String password) {
+        login(userName, password);
+        this.waitForElementWithXPATHToLoad(HomePage.PATIENT_REGISTRATION_LINK_XPATH);
         return PageFactory.initElements(webDriver, HomePage.class);
+    }
+
+    private void login(String userName, String password) {
+        webDriver.get(LOGIN_URL);
+        this.userName.sendKeys(userName);
+        this.password.sendKeys(password);
+        this.userName.submit();
     }
 
     public String errorMessage(){
@@ -55,10 +62,6 @@ public class LoginPage extends Page {
     }
 
     public HomePage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {
-        webDriver.get(LOGIN_URL);
-        userName.sendKeys(clinicianUsername);
-        password.sendKeys(clinicianPassword);
-        userName.submit();
-        return PageFactory.initElements(webDriver, HomePage.class);
+        return loginAndWait(clinicianUsername, clinicianPassword);
     }
 }

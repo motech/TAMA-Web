@@ -49,6 +49,7 @@ public class ClinicianRegistrationPage extends Page {
             clinic.sendKeys(clinician.getClinic().getName());
         }
         registerClinicianLink.click();
+        waitForElementWithIdToLoad(ShowClinicianPage.CLINICIAN_NAME_NAME_ID);
         return PageFactory.initElements(webDriver, ShowClinicianPage.class);
 
     }

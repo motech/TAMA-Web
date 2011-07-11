@@ -1,11 +1,13 @@
 package org.motechproject.tama.functional.page;
 
 import org.motechproject.tama.domain.Clinic;
+import org.motechproject.tama.functional.framework.MyPageFactory;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class ClinicRegistrationPage extends Page {
 
@@ -28,15 +30,14 @@ public class ClinicRegistrationPage extends Page {
         super(webDriver);
     }
 
-    public ShowClinicPage  registerClinic(Clinic clinic) {
+    public ShowClinicPage registerClinic(Clinic clinic) {
         name.sendKeys(clinic.getName());
         address.sendKeys(clinic.getAddress());
         phoneNumber.sendKeys(clinic.getPhone());
         city.clear();
         city.sendKeys(clinic.getCity().getName());
         registerClinicLink.click();
-        return PageFactory.initElements(webDriver, ShowClinicPage.class);
-
+        waitForElementWithIdToLoad(ShowClinicPage.CLINIC_NAME_NAME_ID);
+        return MyPageFactory.initElements(webDriver, ShowClinicPage.class);
     }
-
 }

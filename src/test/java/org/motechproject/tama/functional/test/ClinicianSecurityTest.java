@@ -37,9 +37,8 @@ public class ClinicianSecurityTest extends BaseTest {
         ShowPatientPage showPatientPage = listPatientsPage.searchPatientBy(patient1.getPatientId());
         assertEquals(showPatientPage.getPatientId(), patient1.getPatientId());
 
-        Page page = listPatientsPage.unsuccessfulSearchPatientBy(patient2.getPatientId(), ListPatientsPage.class);
+        Page page = listPatientsPage.unsuccessfulSearchPatientBy(patient2.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
         assertEquals(String.format("Patient with id: %s not found", patient2.getPatientId()),page.getPatientSearchErrorMessage());
-
 
         listPatientsPage = PageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician2.getUsername(), clinician2.getPassword())
@@ -47,9 +46,8 @@ public class ClinicianSecurityTest extends BaseTest {
         showPatientPage = listPatientsPage.searchPatientBy(patient2.getPatientId());
         assertEquals(showPatientPage.getPatientId(), patient2.getPatientId());
 
-        page = listPatientsPage.unsuccessfulSearchPatientBy(patient1.getPatientId(), ListPatientsPage.class);
+        page = listPatientsPage.unsuccessfulSearchPatientBy(patient1.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
         assertEquals(String.format("Patient with id: %s not found", patient1.getPatientId()),page.getPatientSearchErrorMessage());
-
     }
 
     private Clinician createClinicAndClinicianWith(String clinicName, String clinicianName, String clinicianUsername, String clinicianPassword) {
@@ -61,6 +59,7 @@ public class ClinicianSecurityTest extends BaseTest {
 
         Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic).
                 withName(clinicianName).withUserName(clinicianUsername).withPassword(clinicianPassword).build();
+
         PageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicianRegistrationPage()
