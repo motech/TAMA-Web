@@ -37,7 +37,7 @@ public class ClinicianSecurityTest extends BaseTest {
         ShowPatientPage showPatientPage = listPatientsPage.searchPatientBy(patient1.getPatientId());
         assertEquals(showPatientPage.getPatientId(), patient1.getPatientId());
 
-        Page page = listPatientsPage.unsuccessfulSearchPatientBy(patient2.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
+        Page page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patient2.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
         assertEquals(String.format("Patient with id: %s not found", patient2.getPatientId()),page.getPatientSearchErrorMessage());
 
         listPatientsPage = PageFactory.initElements(webDriver, LoginPage.class).
@@ -46,7 +46,7 @@ public class ClinicianSecurityTest extends BaseTest {
         showPatientPage = listPatientsPage.searchPatientBy(patient2.getPatientId());
         assertEquals(showPatientPage.getPatientId(), patient2.getPatientId());
 
-        page = listPatientsPage.unsuccessfulSearchPatientBy(patient1.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
+        page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patient1.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
         assertEquals(String.format("Patient with id: %s not found", patient1.getPatientId()),page.getPatientSearchErrorMessage());
     }
 

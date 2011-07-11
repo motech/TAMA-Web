@@ -31,7 +31,7 @@ public class ClinicianRegistrationPage extends Page {
     private WebElement registerClinicianLink;
 
     @FindBy(how = How.ID, using = "_clinic_id")
-    private WebElement clinic;
+    private WebElement clinicElement;
 
     public ClinicianRegistrationPage(WebDriver webDriver) {
         super(webDriver);
@@ -44,10 +44,9 @@ public class ClinicianRegistrationPage extends Page {
         contactNumber.sendKeys(clinician.getContactNumber());
         alternateContactNumber.sendKeys(clinician.getAlternateContactNumber());
         password.sendKeys(clinician.getPassword());
-        clinic.clear();
-        if (clinician.getClinic() != null) {
-            clinic.sendKeys(clinician.getClinic().getName());
-        }
+        clinicElement.clear();
+        Clinic clinic = clinician.getClinic();
+        clinicElement.sendKeys(new StringBuilder().append(clinic.getName()).append(", ").append(clinic.getCity()).toString());
         registerClinicianLink.click();
         waitForElementWithIdToLoad(ShowClinicianPage.CLINICIAN_NAME_NAME_ID);
         return PageFactory.initElements(webDriver, ShowClinicianPage.class);
