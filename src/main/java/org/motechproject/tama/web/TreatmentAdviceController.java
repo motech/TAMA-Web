@@ -21,9 +21,9 @@ import java.util.Set;
 public class TreatmentAdviceController {
 	
 	@ModelAttribute("regimens")
-	public Set<ComboBoxView> regimens() {
+	public List<ComboBoxView> regimens() {
         List<Regimen> allRegimens = Regimen.findAllRegimens();
-        Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
+        List<ComboBoxView> comboBoxViews = new ArrayList<ComboBoxView>();
         for (Regimen regimen : allRegimens) {
             comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getRegimenDisplayName()));
         }
@@ -43,11 +43,7 @@ public class TreatmentAdviceController {
 	@ModelAttribute("regimenCompositions")
 	public List<String> regimenCompositions() {
         ArrayList<String> regimenCompositions = new ArrayList<String>();
-        for(ComboBoxView regimen : regimens()) {
-            for (RegimenComposition composition : Regimen.findRegimen(regimen.getId()).getCompositions()) {
-                regimenCompositions.add(composition.getRegimenCompositionId());
-            }
-        }
+        regimenCompositions.add("regimenCompositions");
         return regimenCompositions;
 	}
 
