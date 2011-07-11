@@ -12,20 +12,20 @@
                     authentication-failure-url="/login?login_error=t"/>
         <logout logout-url="/resources/j_spring_security_logout" logout-success-url="/login"/>
 
-        <intercept-url pattern="/ivrlanguages/**" access="hasRole('ADMIN')"/>
-        <intercept-url pattern="/genders/**" access="hasRole('ADMIN')"/>
-        <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')"/>
-        <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')"/>
-	    <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" />
-        <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST"/>
-        <intercept-url pattern="/companys/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/brands/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/drugs/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/dosagetypes/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/regimens/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/mealadvicetypes/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/ivrlanguages/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/genders/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
+	    <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/companys/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/brands/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/drugs/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/dosagetypes/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/regimens/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/mealadvicetypes/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
     </http>
 
     <beans:bean name="authenticationProvider" class="org.motechproject.tama.security.AuthenticationProvider">
