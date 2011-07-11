@@ -89,4 +89,10 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     public String findClinicFor(Patient patient) {
         return get(patient.getId()).getClinic_id();
     }
+
+    @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
+    public Patient findByMobileNumber(String phoneNumber) {
+        ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
+        return db.queryView(q, Patient.class).get(0);
+    }
 }

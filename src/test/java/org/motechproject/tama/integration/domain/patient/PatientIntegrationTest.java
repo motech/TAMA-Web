@@ -118,4 +118,21 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
         assertEquals(clinicForPatient.getId(), patients.findClinicFor(patient));
     }
 
+    @Test
+    public void shouldGetPatientByMobileNumber() {
+        String mobileNumber = "9898982323";
+        String id = "12345678";
+        Patient patient = PatientBuilder.startRecording()
+                .withDefaults()
+                .withPatientId(id)
+                .withMobileNumber(mobileNumber)
+                .build();
+        patients.add(patient);
+
+        Patient loadedPatient = patients.findByMobileNumber(mobileNumber);
+        assertNotNull(loadedPatient);
+        assertEquals(id, loadedPatient.getPatientId());
+        assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());
+    }
+
 }

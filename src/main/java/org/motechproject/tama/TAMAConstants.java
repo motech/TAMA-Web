@@ -1,5 +1,7 @@
 package org.motechproject.tama;
 
+import org.springframework.scripting.support.StaticScriptSource;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,19 @@ public class TAMAConstants {
             ArrayList<Integer> items = new ArrayList<Integer>();
             for (int i = 0; i <= value; i++) items.add(i);
             return items;
+        }
+    }
+
+    public enum AUTH_STATUS {
+        AUTHENTICATED("Authenticated"), UNAUTHENTICATED("Unauthenticated");
+        private String value;
+
+        AUTH_STATUS(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 

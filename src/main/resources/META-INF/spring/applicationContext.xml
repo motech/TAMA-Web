@@ -17,6 +17,7 @@
     -->
     <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
     <util:properties id="couchdbProperties" location="classpath:/couchdb.properties"/>
+    <util:properties id="tamaProperties" location="classpath:/tama.properties"/>
 
     <!--
         Turn on AspectJ @Configurable support. As a result, any time you
