@@ -3,6 +3,9 @@
 
 package org.motechproject.tama.domain;
 
+import org.motechproject.tama.repository.TreatmentAdvices;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,7 +14,11 @@ privileged aspect TreatmentAdvice_Roo_Entity {
     
     declare parents : TreatmentAdvice extends CouchEntity;
     
+    @Autowired
+    transient TreatmentAdvices TreatmentAdvice.treatmentAdvices;
+
     public void TreatmentAdvice.persist() {
+        this.treatmentAdvices.add(this);
     }
     
     public void TreatmentAdvice.remove() {

@@ -23,17 +23,6 @@ import org.springframework.web.util.WebUtils;
 
 privileged aspect TreatmentAdviceController_Roo_Controller {
     
-    @RequestMapping(method = RequestMethod.POST)
-    public String TreatmentAdviceController.create(@Valid TreatmentAdvice treatmentAdvice, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
-            return "treatmentadvices/create";
-        }
-        uiModel.asMap().clear();
-        treatmentAdvice.persist();
-        return "redirect:/treatmentadvices/" + encodeUrlPathSegment(treatmentAdvice.getId().toString(), httpServletRequest);
-    }
-    
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String TreatmentAdviceController.createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();

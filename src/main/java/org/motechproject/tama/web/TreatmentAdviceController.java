@@ -5,8 +5,11 @@ import org.motechproject.tama.domain.*;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +21,13 @@ import java.util.Set;
 public class TreatmentAdviceController {
 	
 	@ModelAttribute("regimens")
-	public List<Regimen> regimens() {
-		return Regimen.findAllRegimens();
+	public Set<ComboBoxView> regimens() {
+        List<Regimen> allRegimens = Regimen.findAllRegimens();
+        Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
+        for (Regimen regimen : allRegimens) {
+            comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getRegimenDisplayName()));
+        }
+        return comboBoxViews;
 	}
 
 	@ModelAttribute("mealAdviceTypes")
@@ -35,8 +43,8 @@ public class TreatmentAdviceController {
 	@ModelAttribute("regimenCompositions")
 	public List<String> regimenCompositions() {
         ArrayList<String> regimenCompositions = new ArrayList<String>();
-        for(Regimen regimen : regimens()) {
-            for (RegimenComposition composition : regimen.getCompositions()) {
+        for(ComboBoxView regimen : regimens()) {
+            for (RegimenComposition composition : Regimen.findRegimen(regimen.getId()).getCompositions()) {
                 regimenCompositions.add(composition.getRegimenCompositionId());
             }
         }
@@ -69,5 +77,16 @@ public class TreatmentAdviceController {
         uiModel.addAttribute("drugs", drugs);
         return "treatmentadvices/drugdosages";
 	}
+
+    @RequestMapping(method = RequestMethod.POST)
+    public String create(@Valid TreatmentAdvice treatmentAdvice, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
+            return "treatmentadvices/create";
+        }
+        uiModel.asMap().clear();
+        treatmentAdvice.persist();
+        return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
+    }
 
 }

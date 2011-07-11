@@ -38,15 +38,4 @@ privileged aspect TreatmentAdvice_Roo_JavaBean {
     public void TreatmentAdvice.setDrugDosages(Set<DrugDosage> drugDosages) {
         this.drugDosages = drugDosages;
     }
-    
-    public Regimen TreatmentAdvice.getRegimen() {
-    	if(this.regimen != null) return this.regimen;
-    	if(this.regimenId !=null) return Regimen.findRegimen(this.regimenId);
-        return null;
-    }
-    
-    public void TreatmentAdvice.setRegimenId(Regimen regimen) {
-        this.regimen = regimen;
-        this.regimenId = regimen.getId();
-    }
 }

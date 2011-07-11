@@ -1,28 +1,26 @@
 package org.motechproject.tama.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.ektorp.support.TypeDiscriminator;
+import org.springframework.roo.addon.entity.RooEntity;
+import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
+import java.util.HashSet;
+import java.util.Set;
 
 @RooJavaBean
 @RooEntity
+@TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice {
 
     @NotNull
     private String patientId;
 
-    
+    @NotNull
     private String regimenId;
     
-    @NotNull
-    private Regimen regimen;
-
     @NotNull
     private String regimenCompositionId;
 

@@ -4,24 +4,20 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_domain_TreatmentAdvice" modelAttribute="treatmentAdvice" path="/treatmentadvices" render="${empty dependencies}" z="fHi3nZ2yXf8qzpuAArmXy4h8ghE=">
-    	<field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimen" items="${regimens}" itemValue="id" path="/regimens" />
-        <field:input field="patientId" id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" disabled="true"/>
+    	<field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimenId" items="${regimens}" itemValue="id" itemLabel="displayName" path="/regimens" />
+        <field:input field="patientId" id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" required="true"/>
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="regimenCompositionId" items="${regimenCompositions}" path="/regimenCompositions"/>
-        <div id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" />
+        <div>
+            <div id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" />
+        </div>
+        <br />
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
 
     <script type="text/javascript">
         dojo.addOnLoad(function() {
-            var populateRegimenCompositions = function() {
-                var regimenDropDown = dijit.byId('_regimen_id');
-                var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                var regimenCompositionsURL = "treatmentadvices/regimenCompositionsFor?regimenId=" + regimenDropDown;
-                populateComboBox(regimenCompositionsURL, regimenCompositionDropDown);
-            };
-
             var populateDrugDosages = function() {
-                var regimenDropDown = dijit.byId('_regimen_id');
+                var regimenDropDown = dijit.byId('_regimenId_id');
                 var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
                 var drugDosagesURL = "treatmentadvices/drugDosagesFor?regimenId=" + regimenDropDown + "&amp;regimenCompositionId=" + regimenCompositionDropDown;
                 dojo.xhrGet({
@@ -33,9 +29,15 @@
                 });
             };
 
+            var populateRegimenCompositions = function() {
+                var regimenDropDown = dijit.byId('_regimenId_id');
+                var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
+                var regimenCompositionsURL = "treatmentadvices/regimenCompositionsFor?regimenId=" + regimenDropDown;
+                populateComboBox(regimenCompositionsURL, regimenCompositionDropDown, populateDrugDosages);
+            };
+
             populateRegimenCompositions();
-            dojo.connect(dijit.byId('_regimen_id'), 'onChange', populateRegimenCompositions);
-            populateDrugDosages();
+            dojo.connect(dijit.byId('_regimenId_id'), 'onChange', populateRegimenCompositions);
             dojo.connect(dijit.byId('_regimenCompositionId_id'), 'onChange', populateDrugDosages);
         });
     </script>

@@ -67,6 +67,9 @@
     <bean id="genders" class="org.motechproject.tama.repository.Genders">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
+    <bean id="treatmentAdvices" class="org.motechproject.tama.repository.TreatmentAdvices">
+        <constructor-arg ref="couchDbConnector"/>
+    </bean>
     <bean id="ivrlanguages" class="org.motechproject.tama.repository.IVRLanguages">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
@@ -85,11 +88,9 @@
     <bean id="mealAdviceTypes" class="org.motechproject.tama.repository.MealAdviceTypes">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
-
     <bean id="clinics" class="org.motechproject.tama.repository.Clinics">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
-
     <bean id="cities" class="org.motechproject.tama.repository.Cities">
         <constructor-arg ref="couchDbConnector"/>
     </bean>
@@ -97,7 +98,6 @@
         <property name="algorithm" value="PBEWithMD5AndDES"/>
         <property name="password" value="jasypt"/>
     </bean>
-
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
             <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>

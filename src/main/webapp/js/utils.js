@@ -1,4 +1,4 @@
-var populateComboBox = function(urlToLoadFrom, target) {
+var populateComboBox = function(urlToLoadFrom, target, onComplete) {
     dojo.require("dojo.data.ItemFileWriteStore");
     dojo.xhrGet({
         url: urlToLoadFrom,
@@ -10,6 +10,7 @@ var populateComboBox = function(urlToLoadFrom, target) {
             }
             target.attr('store', options);
             target.attr('value', result[0].id);
+            onComplete();
         }
     });
 }

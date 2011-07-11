@@ -35,12 +35,10 @@ public class DrugDosage {
     @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
     private Date startDate;
 
-    @NotNull
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
     private Date endDate;
 
-    @NotNull
     private String advice;
 
     @NotNull
