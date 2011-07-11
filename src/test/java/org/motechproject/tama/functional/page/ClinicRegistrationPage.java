@@ -2,6 +2,7 @@ package org.motechproject.tama.functional.page;
 
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.functional.framework.MyPageFactory;
+import org.motechproject.tama.functional.framework.MyWebElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,6 +29,14 @@ public class ClinicRegistrationPage extends Page {
 
     public ClinicRegistrationPage(WebDriver webDriver) {
         super(webDriver);
+    }
+
+    @Override
+    public void postInitialize() {
+        name = new MyWebElement(name);
+        address = new MyWebElement(address);
+        phoneNumber = new MyWebElement(phoneNumber);
+        city = new MyWebElement(city);
     }
 
     public ShowClinicPage registerClinic(Clinic clinic) {
