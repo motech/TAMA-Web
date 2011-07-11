@@ -42,8 +42,6 @@ public class Clinic extends CouchEntity{
     @NotNull
     private String address;
 
-    @NotNull
-    @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String phone;
 
     @ManyToOne
