@@ -33,12 +33,12 @@
                 var regimenDropDown = dijit.byId('_regimenId_id');
                 var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
                 var regimenCompositionsURL = "treatmentadvices/regimenCompositionsFor?regimenId=" + regimenDropDown;
-                populateComboBox(regimenCompositionsURL, regimenCompositionDropDown, populateDrugDosages);
+                populateComboBox(regimenCompositionsURL, regimenCompositionDropDown);
             };
 
-            populateRegimenCompositions();
-            dojo.connect(dijit.byId('_regimenId_id'), 'onChange', populateRegimenCompositions);
             dojo.connect(dijit.byId('_regimenCompositionId_id'), 'onChange', populateDrugDosages);
+            dojo.connect(dijit.byId('_regimenId_id'), 'onChange', populateRegimenCompositions);
+            populateRegimenCompositions();
         });
     </script>
 </div>
