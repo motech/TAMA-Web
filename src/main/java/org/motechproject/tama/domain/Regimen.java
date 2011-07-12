@@ -24,7 +24,7 @@ public class Regimen extends CouchEntity {
     @NotNull
     private String regimenDisplayName;
 
-    protected Regimen() {
+    public Regimen() {
 	}
 
 	public Regimen(String name, String displayName) {

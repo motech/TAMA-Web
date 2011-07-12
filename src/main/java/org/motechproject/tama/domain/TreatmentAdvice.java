@@ -13,7 +13,7 @@ import java.util.List;
 @RooJavaBean
 @RooEntity
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
-public class TreatmentAdvice {
+public class TreatmentAdvice extends CouchEntity {
 
     @NotNull
     private String patientId;
@@ -26,4 +26,40 @@ public class TreatmentAdvice {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
+    
+    public String getPatientId() {
+        return this.patientId;
+    }
+    
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+    
+    public String getRegimenId() {
+        return this.regimenId;
+    }
+    
+    public void setRegimenId(String regimenId) {
+        this.regimenId = regimenId;
+    }
+    
+    public String getRegimenCompositionId() {
+        return this.regimenCompositionId;
+    }
+    
+    public void setRegimenCompositionId(String regimenCompositionId) {
+        this.regimenCompositionId = regimenCompositionId;
+    }
+    
+    public List<DrugDosage> getDrugDosages() {
+        return this.drugDosages;
+    }
+    
+    public void setDrugDosages(List<DrugDosage> drugDosages) {
+        this.drugDosages = drugDosages;
+    }
+
+    public void addDrugDosage(DrugDosage drugDosage) {
+        this.drugDosages.add(drugDosage);
+    }
 }

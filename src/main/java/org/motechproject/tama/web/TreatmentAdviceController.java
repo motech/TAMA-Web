@@ -2,10 +2,7 @@ package org.motechproject.tama.web;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.*;
-import org.motechproject.tama.repository.DosageTypes;
-import org.motechproject.tama.repository.Drugs;
-import org.motechproject.tama.repository.MealAdviceTypes;
-import org.motechproject.tama.repository.Regimens;
+import org.motechproject.tama.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -27,15 +24,25 @@ public class TreatmentAdviceController extends BaseController {
 
     @Autowired
     private MealAdviceTypes mealAdviceTypes;
-
     @Autowired
     private DosageTypes dosageTypes;
-
     @Autowired
     private Drugs drugs;
-
     @Autowired
     private Regimens regimens;
+    @Autowired
+    private TreatmentAdvices treatmentAdvices;
+
+    protected TreatmentAdviceController() {
+    }
+
+    public TreatmentAdviceController(MealAdviceTypes mealAdviceTypes, DosageTypes dosageTypes, Drugs drugs, Regimens regimens, TreatmentAdvices treatmentAdvices) {
+        this.mealAdviceTypes = mealAdviceTypes;
+        this.dosageTypes = dosageTypes;
+        this.drugs = drugs;
+        this.regimens = regimens;
+        this.treatmentAdvices = treatmentAdvices;
+    }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
@@ -52,7 +59,7 @@ public class TreatmentAdviceController extends BaseController {
             return "treatmentadvices/create";
         }
         uiModel.asMap().clear();
-        treatmentAdvice.persist();
+        treatmentAdvices.add(treatmentAdvice);
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 
@@ -69,7 +76,7 @@ public class TreatmentAdviceController extends BaseController {
 	}
 
     @RequestMapping(method = RequestMethod.GET, value = "/drugDosagesFor")
-	public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice, Model uiModel) {
+	public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
         Regimen regimen = regimens.get(regimenId);
         RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);
 
