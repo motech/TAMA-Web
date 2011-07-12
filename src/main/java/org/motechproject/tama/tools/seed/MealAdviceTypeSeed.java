@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MealAdviceTypeSeed extends Seed 
 {
-
 	@Autowired
 	private MealAdviceTypes mealAdviceTypes;
 	
@@ -15,5 +14,4 @@ public class MealAdviceTypeSeed extends Seed
 		mealAdviceTypes.add(new MealAdviceType("Before Meal"));
 		mealAdviceTypes.add(new MealAdviceType("After Meal"));
 	}
-	
 }

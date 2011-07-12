@@ -2,6 +2,8 @@ package org.motechproject.tama.web;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.repository.MealAdviceTypes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,9 @@ import java.util.Set;
 @RequestMapping("/treatmentadvices")
 @Controller
 public class TreatmentAdviceController {
+
+    @Autowired
+    private MealAdviceTypes mealAdviceTypes;
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
@@ -88,7 +93,7 @@ public class TreatmentAdviceController {
 
     @ModelAttribute("mealAdviceTypes")
     public List<MealAdviceType> mealAdviceTypes() {
-        return MealAdviceType.findAllMealAdviceTypes();
+        return mealAdviceTypes.getAll();
     }
 
     @ModelAttribute("dosageTypes")
