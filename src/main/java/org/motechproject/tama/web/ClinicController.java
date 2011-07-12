@@ -10,18 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriUtils;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
 @RooWebScaffold(path = "clinics", formBackingObject = Clinic.class)
 @RequestMapping("/clinics")
 @Controller
-public class ClinicController {
+public class ClinicController extends BaseController {
     @Autowired
     private Clinics clinics;
 
@@ -93,18 +90,4 @@ public class ClinicController {
     public Collection<Clinic> populateClinics() {
         return clinics.getAll();
     }
-
-    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
-        String enc = httpServletRequest.getCharacterEncoding();
-        if (enc == null) {
-            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
-        }
-        try {
-            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        }
-        catch (UnsupportedEncodingException uee) {}
-        return pathSegment;
-    }
-
-    
 }

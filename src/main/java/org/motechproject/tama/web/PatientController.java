@@ -17,18 +17,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.util.UriUtils;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RooWebScaffold(path = "patients", formBackingObject = Patient.class)
 @RequestMapping("/patients")
 @Controller
-public class PatientController {
+public class PatientController extends BaseController {
     public static final String CREATE_VIEW = "patients/create";
     public static final String SHOW_VIEW = "patients/show";
     public static final String LIST_VIEW = "patients/list";
@@ -172,16 +169,4 @@ public class PatientController {
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());
         uiModel.addAttribute("genders", Gender.findAllGenders());
     }
-
-    private String encodeUrlPathSegment(String pathSegment, HttpServletRequest request) {
-        String enc = request.getCharacterEncoding();
-        if (enc == null) enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
-        try {
-            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {
-            throw new RuntimeException(uee);
-        }
-        return pathSegment;
-    }
-
 }
