@@ -3,19 +3,6 @@
 
 package org.motechproject.tama.web;
 
-import java.lang.String;
-import org.motechproject.tama.domain.Brand;
-import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.domain.Company;
-import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.domain.Drug;
-import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.domain.IVRLanguage;
-import org.motechproject.tama.domain.MealAdviceType;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.Regimen;
-import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.domain.*;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -80,7 +67,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     static class org.motechproject.tama.web.ApplicationConversionServiceFactoryBean.DrugConverter implements Converter<Drug, String>  {
         public String convert(Drug drug) {
-            return new StringBuilder().append(drug.getName()).append(" ").append(drug.getRegimenCompositionId()).toString();
+            return new StringBuilder().append(drug.getName()).toString();
         }
         
     }

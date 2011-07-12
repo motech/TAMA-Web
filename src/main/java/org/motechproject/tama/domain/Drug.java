@@ -18,8 +18,6 @@ public class Drug extends CouchEntity {
     @NotNull
     private String name;
 
-    private String regimenCompositionId;
-
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Brand> brands = new HashSet<Brand>();
 

@@ -1,8 +1,10 @@
 package org.motechproject.tama.web;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.DosageTypes;
+import org.motechproject.tama.repository.Drugs;
 import org.motechproject.tama.repository.MealAdviceTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -32,6 +34,9 @@ public class TreatmentAdviceController {
     @Autowired
     private DosageTypes dosageTypes;
 
+    @Autowired
+    private Drugs drugs;
+
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
@@ -56,7 +61,9 @@ public class TreatmentAdviceController {
         Set<RegimenComposition> compositions = Regimen.findRegimen(regimenId).getCompositions();
         Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
         for (RegimenComposition regimenComposition : compositions) {
-            comboBoxViews.add(new ComboBoxView(regimenComposition.getRegimenCompositionId(), regimenComposition.getDisplayName()));
+            List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
+            String displayName = StringUtils.join(allDrugs.toArray(), " / ");
+            comboBoxViews.add(new ComboBoxView(regimenComposition.getRegimenCompositionId(), displayName));
         }
         return comboBoxViews;
 	}
@@ -66,11 +73,10 @@ public class TreatmentAdviceController {
         Regimen regimen = Regimen.findRegimen(regimenId);
         RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);
 
-        Set<Drug> drugs = regimenComposition.getDrugs();
-        for(int i=0; i< drugs.size(); i++) {
+        List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
+        for (Drug drug: allDrugs) {
             DrugDosage drugDosage = new DrugDosage();
-            Drug drug = (Drug) CollectionUtils.get(drugs, i);
-            drugDosage.setDrugId(((Drug) drug).getId());
+            drugDosage.setDrugId(drug.getId());
             drugDosage.setDrugName(drug.getName());
             drugDosage.setBrands(drug.getBrands());
             treatmentAdvice.addDrugDosage(drugDosage);
