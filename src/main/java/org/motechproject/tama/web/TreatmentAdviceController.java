@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.repository.DosageTypes;
 import org.motechproject.tama.repository.MealAdviceTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -27,6 +28,9 @@ public class TreatmentAdviceController {
 
     @Autowired
     private MealAdviceTypes mealAdviceTypes;
+
+    @Autowired
+    private DosageTypes dosageTypes;
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
@@ -98,7 +102,7 @@ public class TreatmentAdviceController {
 
     @ModelAttribute("dosageTypes")
     public List<DosageType> dosageTypes() {
-        return DosageType.findAllDosageTypes();
+        return dosageTypes.getAll();
     }
 
     private String encodeUrlPathSegment(String pathSegment, HttpServletRequest request) {
