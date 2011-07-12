@@ -1,13 +1,13 @@
 package org.motechproject.tama.domain;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 
+import javax.validation.constraints.NotNull;
+
 @RooJavaBean
 @RooEntity
-public class Brand {
+public class Brand extends BaseEntity {
 
     @NotNull
     private String name;
@@ -27,11 +27,26 @@ public class Brand {
     	this(name);
 		setCompany(company);
 	}
-    
 
 	private void setCompany(Company company) {
 		this.companyId = company.getId();
 	}
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCompanyId(){
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
 
 	@Override
 	public int hashCode() {
