@@ -35,6 +35,7 @@ public class RegisterClinicianTest extends BaseTest {
         assertEquals(clinician.getContactNumber(), showClinicianPage.getContactNumber());
         assertEquals(clinician.getAlternateContactNumber(), showClinicianPage.getAlternateContactNumber());
         assertEquals(clinician.getUsername(), showClinicianPage.getUsername());
+        showClinicianPage.logout();
     }
 
 }

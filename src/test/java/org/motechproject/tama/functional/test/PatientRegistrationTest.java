@@ -33,5 +33,6 @@ public class PatientRegistrationTest extends BaseTest {
         Assert.assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
         Assert.assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
         Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
+        showPatientPage.logout();
     }
 }

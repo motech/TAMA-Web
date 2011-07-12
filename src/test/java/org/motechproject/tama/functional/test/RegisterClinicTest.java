@@ -28,6 +28,7 @@ public class RegisterClinicTest extends BaseTest {
         assertEquals(clinic.getName(), showClinicPage.getName());
         assertEquals(clinic.getPhone(), showClinicPage.getPhone());
         assertEquals(clinic.getAddress(), showClinicPage.getAddress());
+        showClinicPage.logout();
     }
 
 

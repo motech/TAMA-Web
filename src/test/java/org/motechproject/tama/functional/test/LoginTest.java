@@ -23,6 +23,7 @@ public class LoginTest extends BaseTest {
     public void testLoginSuccess() {
         HomePage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
         Assert.assertEquals(HomePage.WELCOME_MESSAGE, homePage.getWelcomeMessage());
+        homePage.logout();
     }
 
 }

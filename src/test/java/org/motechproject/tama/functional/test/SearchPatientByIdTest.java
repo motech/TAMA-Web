@@ -38,6 +38,7 @@ public class SearchPatientByIdTest extends BaseTest {
         assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
         assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
         assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
+        showPatientPage.logout();
     }
 
     @Test
@@ -50,5 +51,6 @@ public class SearchPatientByIdTest extends BaseTest {
                 unsuccessfulSearchPatientBy(non_existing_id, ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
 
         assertEquals(listPatientPage.getPatientSearchErrorMessage(), String.format("Patient with id: %s not found", non_existing_id));
+       listPatientPage.logout();
     }
 }

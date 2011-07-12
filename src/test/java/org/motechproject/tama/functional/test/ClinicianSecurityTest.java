@@ -32,6 +32,7 @@ public class ClinicianSecurityTest extends BaseTest {
         Clinician clinician2 = createClinicAndClinicianWith("Clinic2", "Clinician2", "cl2", "cl2");
         Patient patient2 = createPatientWith(clinician2, "P2");
 
+
         ListPatientsPage listPatientsPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician1.getUsername(), clinician1.getPassword())
                 .goToListPatientsPage();
@@ -39,7 +40,10 @@ public class ClinicianSecurityTest extends BaseTest {
         assertEquals(showPatientPage.getPatientId(), patient1.getPatientId());
 
         Page page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patient2.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
-        assertEquals(String.format("Patient with id: %s not found", patient2.getPatientId()),page.getPatientSearchErrorMessage());
+        assertEquals(String.format("Patient with id: %s not found", patient2.getPatientId()), page.getPatientSearchErrorMessage());
+        page.logout();
+
+
 
         listPatientsPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician2.getUsername(), clinician2.getPassword())
@@ -48,7 +52,8 @@ public class ClinicianSecurityTest extends BaseTest {
         assertEquals(showPatientPage.getPatientId(), patient2.getPatientId());
 
         page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patient1.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
-        assertEquals(String.format("Patient with id: %s not found", patient1.getPatientId()),page.getPatientSearchErrorMessage());
+        assertEquals(String.format("Patient with id: %s not found", patient1.getPatientId()), page.getPatientSearchErrorMessage());
+        page.logout();
     }
 
     private Clinician createClinicAndClinicianWith(String clinicName, String clinicianName, String clinicianUsername, String clinicianPassword) {
@@ -56,7 +61,8 @@ public class ClinicianSecurityTest extends BaseTest {
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicRegistrationPage()
-                .registerClinic(clinic);
+                .registerClinic(clinic)
+                .logout();
 
         Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic).
                 withName(clinicianName).withUserName(clinicianUsername).withPassword(clinicianPassword).build();
@@ -64,16 +70,18 @@ public class ClinicianSecurityTest extends BaseTest {
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicianRegistrationPage()
-                .registerClinician(clinician);
+                .registerClinician(clinician)
+                .logout();
         return clinician;
     }
 
     private Patient createPatientWith(Clinician clinician, String patientId) {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
-        MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
-                goToPatientRegistrationPage().
-                registerNewPatient(patient);
+        MyPageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword())
+                .goToPatientRegistrationPage()
+                .registerNewPatient(patient)
+                .logout();
         return patient;
     }
 }

@@ -30,5 +30,6 @@ public class PatientActivationTest extends BaseTest {
 
         ShowPatientPage pageAfterActivation = showPatientPage.activatePatient();
         Assert.assertEquals(pageAfterActivation.getStatus().trim(), Patient.Status.Active.toString());
+        pageAfterActivation.logout();
     }
 }

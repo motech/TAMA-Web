@@ -29,6 +29,9 @@ public class Page {
     @FindBy(how = How.ID, using = "patientSearchError")
     private WebElement errorDiv;
 
+    @FindBy(how = How.LINK_TEXT, using = "Logout")
+    private WebElement logoutLink;
+
     public ShowPatientPage searchPatientBy(String id) {
         searchById(id);
         this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
@@ -54,6 +57,10 @@ public class Page {
     public void postInitialize() {
     }
 
+    public void logout() {
+        logoutLink.click();
+    }
+
     protected void waitForElementWithIdToLoad(final String id) {
         waitForElementToLoad(By.id(id));
     }
@@ -70,4 +77,5 @@ public class Page {
             }
         });
     }
+
 }

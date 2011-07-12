@@ -65,4 +65,8 @@ public class LoginPage extends Page {
     public HomePage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {
         return loginAndWait(clinicianUsername, clinicianPassword);
     }
+
+    @Override
+    public void logout() {
+    }
 }
