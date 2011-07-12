@@ -1,20 +1,17 @@
 package org.motechproject.tama.unit.domain.patient;
 
-import java.util.Calendar;
-import java.util.Set;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.domain.Patient;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
-import junit.framework.Assert;
-
-import org.hibernate.engine.Status;
-import org.junit.Before;
-import org.junit.Test;
-import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.Patient;
+import java.util.Calendar;
+import java.util.Set;
 
 public class PatientTest {
 
@@ -35,7 +32,6 @@ public class PatientTest {
         assertConstraintViolation(constraintViolations, "dateOfBirth", "may not be null");
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "may not be null");
         assertConstraintViolation(constraintViolations, "passcode", "may not be null");
-//        assertConstraintViolation(constraintViolations, "clinic", "may not be null");
     }
 
     @Test

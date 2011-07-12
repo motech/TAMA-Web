@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
@@ -101,6 +102,12 @@ public class DrugDosage extends BaseEntity {
     }
 
     public void setStartDate(Date startDate) {
+        if (endDate == null) {
+            Calendar instance = Calendar.getInstance();
+            instance.setTime(startDate);
+            instance.add(Calendar.YEAR, 1);
+            endDate = instance.getTime();
+        }
         this.startDate = startDate;
     }
 
