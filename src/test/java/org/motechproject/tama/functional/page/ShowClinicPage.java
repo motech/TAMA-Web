@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
 
 public class ShowClinicPage extends Page {
     public static final String CLINIC_NAME_NAME_ID = "_s_org_motechproject_tama_domain_Clinic_name_name_id";
@@ -45,8 +44,8 @@ public class ShowClinicPage extends Page {
         return city.getText();
     }
 
-    public HomePage goToHomePage() {
+    public ListPatientsPage goToHomePage() {
         homePageLink.click();
-        return MyPageFactory.initElements(webDriver, HomePage.class);
+        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 }

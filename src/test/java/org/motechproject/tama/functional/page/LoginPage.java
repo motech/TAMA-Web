@@ -6,7 +6,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
 
 public class LoginPage extends Page {
     public static final String LOGIN_URL = "http://localhost:"+System.getProperty("jetty.port","8080")+"/tama/login";
@@ -41,14 +40,14 @@ public class LoginPage extends Page {
         return this;
     }
 
-    public HomePage loginWithCorrectAdminUserNamePassword() {
+    public ListPatientsPage loginWithCorrectAdminUserNamePassword() {
         return loginAndWait(CORRECT_USERNAME, CORRECT_PASSWORD);
     }
 
-    private HomePage loginAndWait(String userName, String password) {
+    private ListPatientsPage loginAndWait(String userName, String password) {
         login(userName, password);
-        this.waitForElementWithXPATHToLoad(HomePage.PATIENT_REGISTRATION_LINK_XPATH);
-        return MyPageFactory.initElements(webDriver, HomePage.class);
+        this.waitForElementWithXPATHToLoad(ListPatientsPage.PATIENT_REGISTRATION_LINK_XPATH);
+        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
     private void login(String userName, String password) {
@@ -62,7 +61,7 @@ public class LoginPage extends Page {
       return errorMessage.getText();
     }
 
-    public HomePage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {
+    public ListPatientsPage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {
         return loginAndWait(clinicianUsername, clinicianPassword);
     }
 

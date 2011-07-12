@@ -10,11 +10,7 @@ import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
-import org.motechproject.tama.functional.page.ListPatientsPage;
-import org.motechproject.tama.functional.page.LoginPage;
-import org.motechproject.tama.functional.page.Page;
-import org.motechproject.tama.functional.page.ShowPatientPage;
-import org.openqa.selenium.support.PageFactory;
+import org.motechproject.tama.functional.page.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
