@@ -5,13 +5,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 
-import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @RooJavaBean
 @RooEntity
@@ -32,8 +29,8 @@ public class DrugDosage extends BaseEntity {
     @NotNull
     private String dosageTypeId;
 
-    @ManyToOne
-    private Dosage dosage;
+    @NotNull
+    private List<String> dosageSchedules = new ArrayList<String>();
 
     @NotNull
     @Temporal(TemporalType.DATE)
@@ -81,20 +78,20 @@ public class DrugDosage extends BaseEntity {
         this.brandId = brandId;
     }
 
-    public Dosage getDosage() {
-        return this.dosage;
-    }
-
-    public void setDosage(Dosage dosage) {
-        this.dosage = dosage;
-    }
-
     public String getDosageTypeId() {
         return this.dosageTypeId;
     }
 
     public void setDosageTypeId(String dosageTypeId) {
         this.dosageTypeId = dosageTypeId;
+    }
+
+    public List<String> getDosageSchedules() {
+        return dosageSchedules;
+    }
+
+    public void setDosageSchedules(List<String> dosageSchedules) {
+        this.dosageSchedules = dosageSchedules;
     }
 
     public Date getStartDate() {
