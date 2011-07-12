@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.ektorp.support.TypeDiscriminator;
 import org.springframework.roo.addon.entity.RooEntity;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 
@@ -11,17 +12,10 @@ import java.util.Set;
 
 @RooJavaBean
 @RooEntity
-public class Regimen {
+@TypeDiscriminator("doc.documentType == 'Regimen'")
+public class Regimen extends CouchEntity {
 	
-    protected Regimen() {
-	}
-
-	public Regimen(String name, String displayName) {
-		this.name = name;
-		this.regimenDisplayName = displayName;
-	}
-
-	@NotNull
+    @NotNull
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -29,6 +23,14 @@ public class Regimen {
 
     @NotNull
     private String regimenDisplayName;
+
+    protected Regimen() {
+	}
+
+	public Regimen(String name, String displayName) {
+		this.name = name;
+		this.regimenDisplayName = displayName;
+	}
 
 	public void addComposition(RegimenComposition regimenComposition) {
 		compositions.add(regimenComposition);
@@ -40,5 +42,29 @@ public class Regimen {
                 return regimenComposition;
         }
         return null;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<RegimenComposition> getCompositions() {
+        return this.compositions;
+    }
+
+    public void setCompositions(Set<RegimenComposition> compositions) {
+        this.compositions = compositions;
+    }
+
+    public String getRegimenDisplayName() {
+        return this.regimenDisplayName;
+    }
+
+    public void setRegimenDisplayName(String regimenDisplayName) {
+        this.regimenDisplayName = regimenDisplayName;
     }
 }

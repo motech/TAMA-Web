@@ -1,11 +1,11 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.DosageTypes;
 import org.motechproject.tama.repository.Drugs;
 import org.motechproject.tama.repository.MealAdviceTypes;
+import org.motechproject.tama.repository.Regimens;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -37,6 +37,9 @@ public class TreatmentAdviceController {
     @Autowired
     private Drugs drugs;
 
+    @Autowired
+    private Regimens regimens;
+
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
@@ -58,7 +61,7 @@ public class TreatmentAdviceController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/regimenCompositionsFor")
 	public @ResponseBody Set<ComboBoxView> regimenCompositionsFor(@RequestParam String regimenId) {
-        Set<RegimenComposition> compositions = Regimen.findRegimen(regimenId).getCompositions();
+        Set<RegimenComposition> compositions = regimens.get(regimenId).getCompositions();
         Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
         for (RegimenComposition regimenComposition : compositions) {
             List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
@@ -70,7 +73,7 @@ public class TreatmentAdviceController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/drugDosagesFor")
 	public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice, Model uiModel) {
-        Regimen regimen = Regimen.findRegimen(regimenId);
+        Regimen regimen = regimens.get(regimenId);
         RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);
 
         List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
@@ -86,7 +89,7 @@ public class TreatmentAdviceController {
 
     @ModelAttribute("regimens")
     public List<ComboBoxView> regimens() {
-        List<Regimen> allRegimens = Regimen.findAllRegimens();
+        List<Regimen> allRegimens = regimens.getAll();
         List<ComboBoxView> comboBoxViews = new ArrayList<ComboBoxView>();
         for (Regimen regimen : allRegimens) {
             comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getRegimenDisplayName()));
