@@ -77,6 +77,20 @@
                 <path refid="libs"/>
             </classpath>
         </java>
+        <path refid="dev.lib"/>
+    </target>
+
+    <path id="dev.lib">
+        <fileset dir="../target/tama-0.1.0.BUILD-SNAPSHOT/WEB-INF/lib" includes="**/*.jar"/>
+    </path>
+
+     <target name="dev.load.seed.data">
+        <java fork="true" classname="${seed.main.class}">
+            <classpath>
+                <path location="../target/classes"/>
+                <path refid="dev.lib"/>
+            </classpath>
+        </java>
     </target>
 
     <target name="drop.db">
