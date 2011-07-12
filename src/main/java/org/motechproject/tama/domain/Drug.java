@@ -13,8 +13,7 @@ import java.util.Set;
 @RooJavaBean
 @RooEntity
 @TypeDiscriminator("doc.documentType == 'Drug'")
-
-public class Drug {
+public class Drug extends CouchEntity {
 
     @NotNull
     private String name;
@@ -38,6 +37,22 @@ public class Drug {
 	public void removeBrand(Brand brand) {
 		brands.remove(brand);
 	}
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<Brand> getBrands() {
+        return this.brands;
+    }
+
+    public void setBrands(Set<Brand> brands) {
+        this.brands = brands;
+    }
 
     @Override
     public String toString() {
