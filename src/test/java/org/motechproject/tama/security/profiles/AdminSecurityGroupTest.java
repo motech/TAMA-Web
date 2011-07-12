@@ -2,35 +2,48 @@ package org.motechproject.tama.security.profiles;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.motechproject.tama.domain.Administrator;
+import org.motechproject.tama.repository.Administrators;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
-import org.springframework.security.core.GrantedAuthority;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-
-public class AdminSecurityGroupTest extends SecurityGroupTest{
-
+public class AdminSecurityGroupTest extends SecurityGroupTest {
     private AdminSecurityGroup group;
+    @Mock
+    private Administrators administrators;
 
     @Before
     public void setUp() {
-        group = new AdminSecurityGroup();
+        initMocks(this);
+        group = new AdminSecurityGroup(administrators);
     }
 
     @Test
     public void shouldAuthenticateBasedOnUsernameAndPassword() {
-        AuthenticatedUser authenticatedUser = group.getAuthenticatedUser("admin", "password");
-        assertUsernameAndPassword("admin","password",authenticatedUser);
-        assertEquals(AdminSecurityGroup.TAMA_ADMIN, authenticatedUser.marker());
+        String username = "username";
+        String password = "password";
+        String adminName = "adminName";
+        Administrator administrator = mock(Administrator.class);
+
+        when(administrator.getName()).thenReturn(adminName);
+        when(administrator.getUsername()).thenReturn(username);
+        when(administrator.getPassword()).thenReturn(password);
+
+        when(administrators.findByUserNameAndPassword(username, password)).thenReturn(administrator);
+
+        AuthenticatedUser authenticatedUser = group.getAuthenticatedUser(username, password);
+
+        assertUsernameAndPassword(username, password, authenticatedUser);
+        assertEquals(adminName, authenticatedUser.marker());
         assertUserAccount(authenticatedUser);
-        assertUserAuthorities(authenticatedUser.getAuthorities(),Arrays.asList(Role.ADMIN));
+        assertUserAuthorities(authenticatedUser.getAuthorities(), Arrays.asList(Role.ADMIN));
 
     }
 }

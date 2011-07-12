@@ -1,21 +1,37 @@
 package org.motechproject.tama.security;
 
+import org.motechproject.tama.domain.TAMAUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+import java.util.List;
 
-public class AuthenticatedUser extends User{
+public class AuthenticatedUser extends User {
     private String marker;
+    private TAMAUser tamaUser;
 
-    public AuthenticatedUser(String username, String password,
-                             boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked,
-                             Collection<? extends GrantedAuthority> authorities, String marker) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+    public AuthenticatedUser(List<GrantedAuthority> authorities, String marker, TAMAUser user) {
+        super(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
+        this.tamaUser = user;
         this.marker = marker;
     }
 
     public String marker() {
         return marker;
     }
+
+    public boolean isAdmin() {
+        return tamaUser.isAdmin();
+    }
+
+    public String getName() {
+        return tamaUser.getName();
+    }
+
+    public String getClinic() {
+        return tamaUser.getClinicName();
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.motechproject.tama.TAMAConstants;
@@ -16,7 +17,7 @@ import javax.validation.constraints.Pattern;
 @RooJavaBean
 @RooToString
 @TypeDiscriminator("doc.documentType == 'Clinician'")
-public class Clinician extends CouchEntity {
+public class Clinician extends CouchEntity implements TAMAUser {
 
     @Autowired
     private Clinics clinics;
@@ -26,33 +27,35 @@ public class Clinician extends CouchEntity {
 
     @NotNull
     private String name;
-
     @NotNull
     private String username;
-
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String contactNumber;
-
-    private String alternateContactNumber;
-
-    private String password;
-
     @ManyToOne
     private Clinic clinic;
+    private String alternateContactNumber;
+    private String password;
+    private String encryptedPassword;
+    private String clinicId;
+    private Role role;
 
     public Role getRole() {
         return role;
+    }
+
+    public boolean credentialsAre(String password) {
+        return getPassword().equals(password);
     }
 
     public void setRole(Role role) {
         this.role = role;
     }
 
-    private Role role;
-
-    public boolean credentialsAre(String password) {
-        return getPassword().equals(password);
+    @Override
+    @JsonIgnore
+    public boolean isAdmin() {
+        return false;
     }
 
     public enum Role {
@@ -67,8 +70,10 @@ public class Clinician extends CouchEntity {
         }
     }
 
-    private String encryptedPassword;
-
-    private String clinicId;
+    @Override
+    @JsonIgnore
+    public String getClinicName() {
+        return getClinic().getName();
+    }
 
 }

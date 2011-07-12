@@ -1,5 +1,6 @@
 package org.motechproject.tama.security.profiles;
 
+import org.motechproject.tama.domain.TAMAUser;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,15 +15,10 @@ public abstract class AbstractSecurityGroup implements SecurityGroup {
         for (Role role : roles) this.roles.add(role);
     }
 
-    protected List<GrantedAuthority> authorities() {
+    protected AuthenticatedUser createUser(TAMAUser tamaUser, String marker) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         for (Role role : roles) authorities.add(role.authority());
-        return authorities;
+        return new AuthenticatedUser(authorities, marker, tamaUser);
     }
-
-    protected AuthenticatedUser createUser(String username, String password, String marker) {
-        return new AuthenticatedUser(username, password, true, true, true, true, authorities(), marker);
-    }
-
 
 }

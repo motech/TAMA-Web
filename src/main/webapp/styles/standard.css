@@ -386,3 +386,10 @@ fieldset th {
 	height: 11px;
 	width: 16px;
 }
+
+.logged_in_clinic{
+    color: #666666;
+    font-size: 13px;
+    text-align: right;
+    margin-top: 5px;
+}
