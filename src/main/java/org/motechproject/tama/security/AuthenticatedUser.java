@@ -21,10 +21,6 @@ public class AuthenticatedUser extends User {
         return marker;
     }
 
-    public boolean isAdmin() {
-        return tamaUser.isAdmin();
-    }
-
     public String getName() {
         return tamaUser.getName();
     }

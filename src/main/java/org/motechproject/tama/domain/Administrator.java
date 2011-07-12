@@ -32,12 +32,6 @@ public class Administrator extends CouchEntity implements TAMAUser {
         setPassword(password);
     }
 
-    @JsonIgnore
-    @Override
-    public boolean isAdmin() {
-        return true;
-    }
-
     @Override
     public String getName() {
         return name;

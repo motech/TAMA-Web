@@ -52,12 +52,6 @@ public class Clinician extends CouchEntity implements TAMAUser {
         this.role = role;
     }
 
-    @Override
-    @JsonIgnore
-    public boolean isAdmin() {
-        return false;
-    }
-
     public enum Role {
         Doctor {
             public String toString() {
