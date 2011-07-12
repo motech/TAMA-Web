@@ -14,7 +14,7 @@ import java.util.Set;
 
 @RooJavaBean
 @RooEntity
-public class DrugDosage {
+public class DrugDosage extends BaseEntity {
 
     @NotNull
     private String drugId;
@@ -47,4 +47,84 @@ public class DrugDosage {
 
     @NotNull
     private String mealAdviceId;
+
+    public String getDrugId() {
+        return this.drugId;
+    }
+
+    public void setDrugId(String drugId) {
+        this.drugId = drugId;
+    }
+
+    public String getDrugName() {
+        return this.drugName;
+    }
+
+    public void setDrugName(String drugName) {
+        this.drugName = drugName;
+    }
+
+    public Set<Brand> getBrands() {
+        return this.brands;
+    }
+
+    public void setBrands(Set<Brand> brands) {
+        this.brands = brands;
+    }
+
+    public String getBrandId() {
+        return this.brandId;
+    }
+
+    public void setBrandId(String brandId) {
+        this.brandId = brandId;
+    }
+
+    public Dosage getDosage() {
+        return this.dosage;
+    }
+
+    public void setDosage(Dosage dosage) {
+        this.dosage = dosage;
+    }
+
+    public String getDosageTypeId() {
+        return this.dosageTypeId;
+    }
+
+    public void setDosageTypeId(String dosageTypeId) {
+        this.dosageTypeId = dosageTypeId;
+    }
+
+    public Date getStartDate() {
+        return this.startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return this.endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getAdvice() {
+        return this.advice;
+    }
+
+    public void setAdvice(String advice) {
+        this.advice = advice;
+    }
+
+    public String getMealAdviceId() {
+        return this.mealAdviceId;
+    }
+
+    public void setMealAdviceId(String mealAdviceId) {
+        this.mealAdviceId = mealAdviceId;
+    }
 }
