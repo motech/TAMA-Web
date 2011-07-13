@@ -2,10 +2,12 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_org_motechproject_tama_domain_TreatmentAdvice" items="${treatmentadvices}" z="hfxQ+VYnDsywcf9WEaYCtswMrsM=">
         <table:table data="${treatmentadvices}" id="l_org_motechproject_tama_domain_TreatmentAdvice" path="/treatmentadvices" z="MJPpgD40FdeI/U/XOaHwOYD6+9o=">
             <table:column id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" property="patientId" z="USFoJmb/Y47AyxqvhgnErue/ZGE="/>
             <table:column id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenId" property="regimenId" z="q7LpbbvMVKNyJmhziHFX+6uBuQk="/>
             <table:column id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenCompositionId" property="regimenCompositionId" z="Hpy9O7Uic7pE+qjjjDXkLtoW7Qk="/>
             <table:column id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" property="drugDosages" z="3b9YhTDYSGRl3bQ8TLplZX3JS1c="/>
         </table:table>
+    </page:list>
 </div>
