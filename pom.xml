@@ -8,7 +8,6 @@
     <version>0.1.0.BUILD-SNAPSHOT</version>
     <name>tama</name>
     <properties>
-
         <roo.version>1.1.4.RELEASE</roo.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <aspectj.version>1.6.11</aspectj.version>
@@ -583,6 +582,12 @@
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
             <version>1.7</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ozonetel.kookoo</groupId>
+            <artifactId>kookoo</artifactId>
+            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
