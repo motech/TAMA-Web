@@ -21,7 +21,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 privileged aspect IVRLanguageController_Roo_Controller {
-    
+
     @RequestMapping(method = RequestMethod.POST)
     public String IVRLanguageController.create(@Valid IVRLanguage IVRLanguage, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -32,33 +32,26 @@ privileged aspect IVRLanguageController_Roo_Controller {
         IVRLanguage.persist();
         return "redirect:/ivrlanguages/" + encodeUrlPathSegment(IVRLanguage.getId().toString(), httpServletRequest);
     }
-    
+
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String IVRLanguageController.createForm(Model uiModel) {
         uiModel.addAttribute("IVRLanguage", new IVRLanguage());
         return "ivrlanguages/create";
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String IVRLanguageController.show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("ivrlanguage", IVRLanguage.findIVRLanguage(id));
         uiModel.addAttribute("itemId", id);
         return "ivrlanguages/show";
     }
-    
+
     @RequestMapping(method = RequestMethod.GET)
     public String IVRLanguageController.list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            uiModel.addAttribute("ivrlanguages", IVRLanguage.findIVRLanguageEntries(page == null ? 0 : (page.intValue() - 1) * sizeNo, sizeNo));
-            float nrOfPages = (float) IVRLanguage.countIVRLanguages() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("ivrlanguages", IVRLanguage.findAllIVRLanguages());
-        }
+        uiModel.addAttribute("ivrlanguages", IVRLanguage.findAllIVRLanguages());
         return "ivrlanguages/list";
     }
-    
+
     @RequestMapping(method = RequestMethod.PUT)
     public String IVRLanguageController.update(@Valid IVRLanguage IVRLanguage, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -69,13 +62,13 @@ privileged aspect IVRLanguageController_Roo_Controller {
         IVRLanguage.merge();
         return "redirect:/ivrlanguages/" + encodeUrlPathSegment(IVRLanguage.getId().toString(), httpServletRequest);
     }
-    
+
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String IVRLanguageController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("IVRLanguage", IVRLanguage.findIVRLanguage(id));
         return "ivrlanguages/update";
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String IVRLanguageController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         IVRLanguage.findIVRLanguage(id).remove();
@@ -84,12 +77,12 @@ privileged aspect IVRLanguageController_Roo_Controller {
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/ivrlanguages";
     }
-    
+
     @ModelAttribute("ivrlanguages")
     public Collection<IVRLanguage> IVRLanguageController.populateIVRLanguages() {
         return IVRLanguage.findAllIVRLanguages();
     }
-    
+
     String IVRLanguageController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
@@ -97,9 +90,9 @@ privileged aspect IVRLanguageController_Roo_Controller {
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
         }
-        catch (UnsupportedEncodingException uee) {}
         return pathSegment;
     }
-    
+
 }

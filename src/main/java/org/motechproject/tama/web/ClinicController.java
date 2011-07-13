@@ -24,7 +24,7 @@ public class ClinicController extends BaseController {
 
     @Autowired
     private Cities cities;
-    
+
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid Clinic clinic, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -51,14 +51,7 @@ public class ClinicController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            uiModel.addAttribute("clinics", clinics.findClinicEntries(page == null ? 0 : (page.intValue() - 1) * sizeNo, sizeNo));
-            float nrOfPages = (float) clinics.getAll().size() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("clinics", clinics.getAll());
-        }
+        uiModel.addAttribute("clinics", clinics.getAll());
         return "clinics/list";
     }
 

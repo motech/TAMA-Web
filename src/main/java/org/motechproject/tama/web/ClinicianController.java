@@ -53,14 +53,7 @@ public class ClinicianController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            uiModel.addAttribute("clinicians", clinicians.getAll());
-            float nrOfPages = (float) clinicians.getAll().size() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("clinicians", clinicians.getAll());
-        }
+        uiModel.addAttribute("clinicians", clinicians.getAll());
         return "clinicians/list";
     }
 

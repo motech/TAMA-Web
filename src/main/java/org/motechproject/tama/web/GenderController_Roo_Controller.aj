@@ -21,7 +21,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 privileged aspect GenderController_Roo_Controller {
-    
+
     @RequestMapping(method = RequestMethod.POST)
     public String GenderController.create(@Valid Gender gender, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -32,33 +32,26 @@ privileged aspect GenderController_Roo_Controller {
         gender.persist();
         return "redirect:/genders/" + encodeUrlPathSegment(gender.getId().toString(), httpServletRequest);
     }
-    
+
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String GenderController.createForm(Model uiModel) {
         uiModel.addAttribute("gender", new Gender());
         return "genders/create";
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String GenderController.show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("gender", Gender.findGender(id));
         uiModel.addAttribute("itemId", id);
         return "genders/show";
     }
-    
+
     @RequestMapping(method = RequestMethod.GET)
     public String GenderController.list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            uiModel.addAttribute("genders", Gender.findGenderEntries(page == null ? 0 : (page.intValue() - 1) * sizeNo, sizeNo));
-            float nrOfPages = (float) Gender.countGenders() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("genders", Gender.findAllGenders());
-        }
+        uiModel.addAttribute("genders", Gender.findAllGenders());
         return "genders/list";
     }
-    
+
     @RequestMapping(method = RequestMethod.PUT)
     public String GenderController.update(@Valid Gender gender, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -69,13 +62,13 @@ privileged aspect GenderController_Roo_Controller {
         gender.merge();
         return "redirect:/genders/" + encodeUrlPathSegment(gender.getId().toString(), httpServletRequest);
     }
-    
+
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String GenderController.updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("gender", Gender.findGender(id));
         return "genders/update";
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String GenderController.delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         Gender.findGender(id).remove();
@@ -84,12 +77,12 @@ privileged aspect GenderController_Roo_Controller {
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/genders";
     }
-    
+
     @ModelAttribute("genders")
     public Collection<Gender> GenderController.populateGenders() {
         return Gender.findAllGenders();
     }
-    
+
     String GenderController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
@@ -97,9 +90,9 @@ privileged aspect GenderController_Roo_Controller {
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
         }
-        catch (UnsupportedEncodingException uee) {}
         return pathSegment;
     }
-    
+
 }
