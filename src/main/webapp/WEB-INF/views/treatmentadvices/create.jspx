@@ -4,7 +4,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_domain_TreatmentAdvice" modelAttribute="treatmentAdvice" path="/treatmentadvices" render="${empty dependencies}" z="fHi3nZ2yXf8qzpuAArmXy4h8ghE=">
-        <field:display object="patientIdentifier" field="" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
+        <field:display object="${patientIdentifier}" field="" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimenId" items="${regimens}" itemValue="id" itemLabel="displayName" path="/regimens" />
         <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}" />
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="regimenCompositionId" items="${regimenCompositions}" path="/regimenCompositions"/>

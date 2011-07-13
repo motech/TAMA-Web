@@ -38,7 +38,7 @@
         <tr>
             <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                     <td>
-                        <field:datetime dateTimePattern="dd/MM/yyyy" field="treatmentAdvice.drugDosages[${item.index}].startDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}" label="Start Date" required="true" />
+                        <field:datetime dateTimePattern="dd/MM/yyyy" field="treatmentAdvice.drugDosages[${item.index}].startDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}" label="Start Date *" />
                     </td>
             </c:forEach>
         </tr>
