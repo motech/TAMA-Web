@@ -24,6 +24,9 @@
                 dojo.xhrGet({
                     url: drugDosagesURL,
                     load: function(result) {
+                        if (dojo.byId('_treatmentAdvice.drugDosages[1].startDate_id') != null) {
+                          Spring.addDecoration(new Spring.ElementDecoration({elementId : '_treatmentAdvice.drugDosages[1].startDate_id', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {required : false}}));
+                        }
                         dojo.byId('c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages').innerHTML = result;
                         parseScript(result);
                     }
