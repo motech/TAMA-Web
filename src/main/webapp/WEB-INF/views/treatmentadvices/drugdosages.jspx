@@ -3,7 +3,7 @@
         <tr>
             <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                     <td>
-                        <field:input field="treatmentAdvice.drugDosages[${item.index}].drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name" disabled="true"/>
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name" />
                         <input type="hidden" name="drugDosages[${item.index}].drugId" value="${treatmentAdvice.drugDosages[item.index].drugId}" />
                     </td>
             </c:forEach>
@@ -19,8 +19,8 @@
             <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                     <td>
                         <field:select field="treatmentAdvice.drugDosages[${item.index}].dosageTypeId" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage" itemLabel="type" itemValue="id" items="${dosageTypes}" path="/dosageTypes"/>
-                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Time 1 (eg. 05:00am)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])[a,p]m$" required="true"/>
-                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Time 2 (eg. 05:00am)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])[a,p]m$" />
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Time 1 (e.g. 05:00am / 05:00pm) " validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])[a,p]m$" required="true"/>
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Time 2 (e.g. 05:00am / 05:00pm) " validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])[a,p]m$" />
                         <script type="text/javascript">
                             dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:none');
                             dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id'), 'onChange', function() {
