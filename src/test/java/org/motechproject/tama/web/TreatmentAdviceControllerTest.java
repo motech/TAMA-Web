@@ -4,13 +4,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.DrugBuilder;
+import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
-import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
-import org.motechproject.tama.web.model.TreatmentAdviceView;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -25,23 +24,23 @@ public class TreatmentAdviceControllerTest {
     private HttpServletRequest request;
     private Model uiModel;
 
-    private MealAdviceTypes mealAdviceTypes;
-    private DosageTypes dosageTypes;
-    private Drugs drugs;
-    private Regimens regimens;
     private TreatmentAdvices treatmentAdvices;
-    private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
+    private Patients patients;
+    private Regimens regimens;
+    private Drugs drugs;
+    private DosageTypes dosageTypes;
+    private MealAdviceTypes mealAdviceTypes;
 
     @Before
     public void setUp() {
-        mealAdviceTypes = mock(MealAdviceTypes.class);
-        dosageTypes = mock(DosageTypes.class);
-        drugs = mock(Drugs.class);
-        regimens = mock(Regimens.class);
         treatmentAdvices = mock(TreatmentAdvices.class);
-        treatmentAdviceViewMapper = mock(TreatmentAdviceViewMapper.class);
+        patients = mock(Patients.class);
+        regimens = mock(Regimens.class);
+        drugs = mock(Drugs.class);
+        dosageTypes = mock(DosageTypes.class);
+        mealAdviceTypes = mock(MealAdviceTypes.class);
 
-        controller = new TreatmentAdviceController(mealAdviceTypes, dosageTypes, drugs, regimens, treatmentAdvices, treatmentAdviceViewMapper);
+        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes);
         request = mock(HttpServletRequest.class);
         uiModel = mock(Model.class);
     }
@@ -50,7 +49,9 @@ public class TreatmentAdviceControllerTest {
     public void shouldCreateNewTreatmentAdviceFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = "patientId";
         TreatmentAdvice treatmentAdviceAttr = new TreatmentAdvice();
+        Patient patient = PatientBuilder.startRecording().withPatientId("patientId").build();
 
+        when(patients.get("patientId")).thenReturn(patient);
         when(treatmentAdvices.findByPatientId(patientId)).thenReturn(null);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
@@ -67,17 +68,6 @@ public class TreatmentAdviceControllerTest {
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("redirect:/treatmentadvices/treatmentAdviceId", redirectURL);
-    }
-
-    @Test
-    public void shouldShowTreatmentAdvice() {
-        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
-
-        when(treatmentAdviceViewMapper.map("treatmentAdviceId")).thenReturn(treatmentAdviceView);
-        String url = controller.show("treatmentAdviceId", uiModel);
-
-        junit.framework.Assert.assertEquals("treatmentadvices/show", url);
-        verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceView);
     }
 
     @Test

@@ -34,19 +34,19 @@ public class TreatmentAdviceController extends BaseController {
     private Regimens regimens;
     @Autowired
     private TreatmentAdvices treatmentAdvices;
-    private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
+    @Autowired
+    private Patients patients;
 
     protected TreatmentAdviceController() {
-        treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(regimens, treatmentAdvices, drugs);
     }
 
-    public TreatmentAdviceController(MealAdviceTypes mealAdviceTypes, DosageTypes dosageTypes, Drugs drugs, Regimens regimens, TreatmentAdvices treatmentAdvices, TreatmentAdviceViewMapper treatmentAdviceViewMapper) {
-        this.mealAdviceTypes = mealAdviceTypes;
-        this.dosageTypes = dosageTypes;
-        this.drugs = drugs;
-        this.regimens = regimens;
+    public TreatmentAdviceController(TreatmentAdvices treatmentAdvices, Patients patients, Regimens regimens, Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes) {
         this.treatmentAdvices = treatmentAdvices;
-        this.treatmentAdviceViewMapper = treatmentAdviceViewMapper;
+        this.patients = patients;
+        this.regimens = regimens;
+        this.drugs = drugs;
+        this.dosageTypes = dosageTypes;
+        this.mealAdviceTypes = mealAdviceTypes;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
@@ -57,8 +57,7 @@ public class TreatmentAdviceController extends BaseController {
         }
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
         treatmentAdvice.setPatientId(patientId);
-        uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
-        populateModel(uiModel);
+        populateModel(uiModel, treatmentAdvice);
         return "treatmentadvices/create";
     }
 
@@ -75,6 +74,7 @@ public class TreatmentAdviceController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel) {
+        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens, drugs);
         uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(id));
         uiModel.addAttribute("itemId", id);
         return "treatmentadvices/show";
@@ -133,7 +133,9 @@ public class TreatmentAdviceController extends BaseController {
         return dosageTypes.getAll();
     }
 
-    private void populateModel(Model uiModel) {
+    private void populateModel(Model uiModel, TreatmentAdvice treatmentAdvice) {
+        uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
+        uiModel.addAttribute("patientIdentifier", patients.get(treatmentAdvice.getPatientId()).getPatientId());
         uiModel.addAttribute("regimens", regimens());
         uiModel.addAttribute("regimenCompositions", regimenCompositions());
     }

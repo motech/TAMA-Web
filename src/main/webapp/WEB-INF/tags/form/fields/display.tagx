@@ -41,7 +41,14 @@
             </spring:escapeBody>
           </c:when>
           <c:otherwise>
-            <spring:eval expression="object[field]" />
+            <c:choose>
+              <c:when test="${empty field}">
+                  <spring:eval expression="${object}" />
+              </c:when>
+              <c:otherwise>
+                  <spring:eval expression="object[field]" />
+              </c:otherwise>
+            </c:choose>
           </c:otherwise>
         </c:choose>
       </div>
