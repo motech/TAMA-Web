@@ -1,12 +1,13 @@
 package org.motechproject.tama.tools.seed;
 
-import java.util.Map;
-
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.RegimenComposition;
 import org.motechproject.tama.repository.Regimens;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 public class RegimenSeed extends Seed {
 
@@ -58,6 +59,7 @@ public class RegimenSeed extends Seed {
 		for (String drugName : drugNames) {
 			regimenComposition.addDrug(drugs.get(drugName));	
 		}
+        regimenComposition.setDisplayName(StringUtils.join(drugNames, " / "));
 		return regimenComposition;
 	}
 }

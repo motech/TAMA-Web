@@ -105,7 +105,7 @@ public class TreatmentAdviceControllerTest {
 
         junit.framework.Assert.assertEquals(1, regimenCompositions.size());
         junit.framework.Assert.assertEquals("regimenCompositionId", regimenComposition.getId());
-        junit.framework.Assert.assertEquals("Drug1 / Drug2", regimenComposition.getDisplayName());
+        junit.framework.Assert.assertEquals("drugDisplayName", regimenComposition.getDisplayName());
     }
 
     @Test

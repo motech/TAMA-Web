@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
@@ -74,7 +73,7 @@ public class TreatmentAdviceController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel) {
-        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens, drugs);
+        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens);
         uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(id));
         uiModel.addAttribute("itemId", id);
         return "treatmentadvices/show";
@@ -85,9 +84,7 @@ public class TreatmentAdviceController extends BaseController {
         Set<RegimenComposition> compositions = regimens.get(regimenId).getCompositions();
         Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
         for (RegimenComposition regimenComposition : compositions) {
-            List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
-            String displayName = StringUtils.join(allDrugs.toArray(), " / ");
-            comboBoxViews.add(new ComboBoxView(regimenComposition.getRegimenCompositionId(), displayName));
+            comboBoxViews.add(new ComboBoxView(regimenComposition.getRegimenCompositionId(), regimenComposition.getDisplayName()));
         }
         return comboBoxViews;
 	}

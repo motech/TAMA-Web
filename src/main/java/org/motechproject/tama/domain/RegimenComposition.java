@@ -13,6 +13,8 @@ public class RegimenComposition extends BaseEntity {
 
     private Set<String> drugIds = new HashSet<String>();
 
+    private String displayName;
+
     public RegimenComposition() {
     	regimenCompositionId = UUIDUtil.newUUID();
 	}
@@ -35,5 +37,13 @@ public class RegimenComposition extends BaseEntity {
 
     public void setRegimenCompositionId(String regimenCompositionId) {
         this.regimenCompositionId = regimenCompositionId;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }
