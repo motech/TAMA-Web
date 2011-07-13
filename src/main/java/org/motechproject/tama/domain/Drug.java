@@ -10,8 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-@RooJavaBean
-@RooEntity
 @TypeDiscriminator("doc.documentType == 'Drug'")
 public class Drug extends CouchEntity {
 

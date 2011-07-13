@@ -1,24 +1,23 @@
 package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
-import org.springframework.roo.addon.entity.RooEntity;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.validation.constraints.NotNull;
 
-@RooJavaBean
-@RooToString
+@Configurable
 @TypeDiscriminator("doc.documentType == 'City'")
-public class City extends CouchEntity{
+public class City extends CouchEntity {
 
     @NotNull
     private String name;
 
-    protected City(){
+    protected City() {
     }
 
     public City(String id) {
-         super();
+        super();
         this.setId(id);
         this.name = name;
     }
@@ -28,9 +27,17 @@ public class City extends CouchEntity{
         return this.name;
     }
 
-    public static City newCity(String name){
+    public static City newCity(String name) {
         City city = new City();
         city.setName(name);
         return city;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -10,8 +10,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-@RooJavaBean
-@RooEntity
 public class DrugDosage extends BaseEntity {
 
     @NotNull
