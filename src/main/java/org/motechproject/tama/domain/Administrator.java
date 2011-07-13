@@ -50,17 +50,23 @@ public class Administrator extends CouchEntity implements TAMAUser {
         this.username = username;
     }
 
+    @Override
     @JsonIgnore
-    public String getPassword() {
-        if (this.password != null) return this.password;
-        if (this.encryptedPassword != null) return this.encryptor.decrypt(encryptedPassword);
-        return null;
+    public String getClinicId() {
+        return StringUtils.EMPTY;
     }
 
     @Override
     @JsonIgnore
     public String getClinicName() {
         return StringUtils.EMPTY;
+    }
+
+    @JsonIgnore
+    public String getPassword() {
+        if (this.password != null) return this.password;
+        if (this.encryptedPassword != null) return this.encryptor.decrypt(encryptedPassword);
+        return null;
     }
 
     public void setPassword(String password) {

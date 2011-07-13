@@ -30,18 +30,20 @@ public class AdminSecurityGroupTest extends SecurityGroupTest {
         String username = "username";
         String password = "password";
         String adminName = "adminName";
+        String clinicId = "dummy";
         Administrator administrator = mock(Administrator.class);
 
         when(administrator.getName()).thenReturn(adminName);
         when(administrator.getUsername()).thenReturn(username);
         when(administrator.getPassword()).thenReturn(password);
+        when(administrator.getClinicId()).thenReturn(clinicId);
 
         when(administrators.findByUserNameAndPassword(username, password)).thenReturn(administrator);
 
         AuthenticatedUser authenticatedUser = group.getAuthenticatedUser(username, password);
 
         assertUsernameAndPassword(username, password, authenticatedUser);
-        assertEquals(adminName, authenticatedUser.marker());
+        assertEquals(clinicId, authenticatedUser.getClinicId());
         assertUserAccount(authenticatedUser);
         assertUserAuthorities(authenticatedUser.getAuthorities(), Arrays.asList(Role.ADMIN));
 

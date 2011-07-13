@@ -18,15 +18,17 @@ public class AuthenticatedUserTest {
         String name = "name";
         String password = "password";
         String clinicName = "clinicName";
+        String clinicId = "clinicId";
         when(tamaUser.getUsername()).thenReturn(username);
         when(tamaUser.getPassword()).thenReturn(password);
         when(tamaUser.getName()).thenReturn(name);
         when(tamaUser.getClinicName()).thenReturn(clinicName);
+        when(tamaUser.getClinicId()).thenReturn(clinicId);
 
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser(Collections.EMPTY_LIST, "marker", tamaUser);
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(Collections.EMPTY_LIST, tamaUser);
 
-        assertEquals("marker", authenticatedUser.marker());
+        assertEquals(clinicId, authenticatedUser.getClinicId());
         assertEquals(name, authenticatedUser.getName());
-        assertEquals(clinicName, authenticatedUser.getClinic());
+        assertEquals(clinicName, authenticatedUser.getClinicName());
     }
 }

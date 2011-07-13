@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
@@ -18,7 +19,6 @@ import javax.validation.constraints.Pattern;
 @RooToString
 @TypeDiscriminator("doc.documentType == 'Clinician'")
 public class Clinician extends CouchEntity implements TAMAUser {
-
     @Autowired
     private Clinics clinics;
 
@@ -44,10 +44,6 @@ public class Clinician extends CouchEntity implements TAMAUser {
         return role;
     }
 
-    public boolean credentialsAre(String password) {
-        return getPassword().equals(password);
-    }
-
     public void setRole(Role role) {
         this.role = role;
     }
@@ -61,7 +57,10 @@ public class Clinician extends CouchEntity implements TAMAUser {
             public String toString() {
                 return "Study Nurse";
             }
-        }
+        };
+    }
+    public boolean credentialsAre(String password) {
+        return getPassword().equals(password);
     }
 
     @Override

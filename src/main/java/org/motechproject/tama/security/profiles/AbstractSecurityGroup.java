@@ -18,7 +18,7 @@ public abstract class AbstractSecurityGroup implements SecurityGroup {
     protected AuthenticatedUser createUser(TAMAUser tamaUser, String marker) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         for (Role role : roles) authorities.add(role.authority());
-        return new AuthenticatedUser(authorities, marker, tamaUser);
+        return new AuthenticatedUser(authorities, tamaUser);
     }
 
 }

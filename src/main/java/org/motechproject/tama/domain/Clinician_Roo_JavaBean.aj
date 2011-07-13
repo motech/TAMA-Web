@@ -3,13 +3,14 @@
 
 package org.motechproject.tama.domain;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 
 import java.lang.String;
 
 privileged aspect Clinician_Roo_JavaBean {
-
+    private static Logger LOG = Logger.getLogger(Clinician.class);
 
     public String Clinician.getName() {
         return this.name;

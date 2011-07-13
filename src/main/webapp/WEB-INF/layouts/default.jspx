@@ -51,7 +51,7 @@
                    </c:if>
                    <div class="logged_in_clinic">
                        <c:if test="${sessionScope.loggedInUser != null}">
-                              <span><c:out value="${sessionScope.loggedInUser.name} | ${sessionScope.loggedInUser.clinic}"/></span>
+                              <span><c:out value="${sessionScope.loggedInUser.name} | ${sessionScope.loggedInUser.clinicName}"/></span>
                        </c:if>
                    </div>
                </div>

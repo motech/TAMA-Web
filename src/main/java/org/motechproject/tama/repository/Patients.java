@@ -6,13 +6,8 @@ import org.apache.log4j.Logger;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.GenerateView;
 import org.ektorp.support.View;
-import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.security.AuthenticatedUser;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -31,8 +26,20 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
         return db.queryView(q, Patient.class);
     }
 
-    public List<Patient> findByPatientIdAndClinic(final String patientId) {
-        List<Patient> patients = byClinic();
+    @View(name = "find_by_clinic", map = "function(doc) {if (doc.documentType =='Patient' && doc.clinic_id) {emit(doc.clinic_id, doc._id);}}")
+    public List<Patient> findByClinic(String clinicId) {
+        ViewQuery q = createQuery("find_by_clinic").key(clinicId).includeDocs(true);
+        return db.queryView(q, Patient.class);
+    }
+
+    @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
+    public Patient findByMobileNumber(String phoneNumber) {
+        ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
+        return db.queryView(q, Patient.class).get(0);
+    }
+
+    public List<Patient> findByPatientIdAndClinicId(final String patientId, final String clinicId) {
+        List<Patient> patients = findByClinic(clinicId);
         if (patients != null) {
             CollectionUtils.filter(patients, new Predicate() {
                 @Override
@@ -45,19 +52,12 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
         return patients;
     }
 
-    @View(name = "find_by_clinic", map = "function(doc) {if (doc.documentType =='Patient' && doc.clinic_id) {emit(doc.clinic_id, doc._id);}}")
-    public List<Patient> findByClinic(String clinicId) {
-        ViewQuery q = createQuery("find_by_clinic").key(clinicId).includeDocs(true);
-        return db.queryView(q, Patient.class);
+    public String findClinicFor(Patient patient) {
+        return get(patient.getId()).getClinic_id();
     }
 
-    public List<Patient> byClinic() {
-        String clinicId = loggedInClinic();
-        return findByClinic(clinicId);
-    }
-
-    public void addToClinic(Patient patient) {
-        patient.setClinic_id(loggedInClinic());
+    public void addToClinic(Patient patient, String clinicId) {
+        patient.setClinic_id(clinicId);
         add(patient);
     }
 
@@ -72,27 +72,13 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     }
 
     public void merge(Patient patient) {
+        if (checkIfActive(patient)) patient.activate();
+        patient.setClinic_id(findClinicFor(patient));
         patient.setRevision(get(patient.getId()).getRevision());
         update(patient);
     }
 
     public void remove(String id) {
         remove(get(id));
-    }
-
-    private String loggedInClinic() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        AuthenticatedUser user = (AuthenticatedUser) securityContext.getAuthentication().getPrincipal();
-        return user.marker();
-    }
-
-    public String findClinicFor(Patient patient) {
-        return get(patient.getId()).getClinic_id();
-    }
-
-    @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
-    public Patient findByMobileNumber(String phoneNumber) {
-        ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
-        return db.queryView(q, Patient.class).get(0);
     }
 }

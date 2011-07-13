@@ -1,5 +1,6 @@
 package org.motechproject.tama.security.profiles;
 
+import org.apache.log4j.Logger;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.repository.Clinicians;
 import org.motechproject.tama.repository.Clinics;

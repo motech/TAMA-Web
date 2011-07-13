@@ -40,7 +40,7 @@ public class ClinicianSecurityGroupTest extends SecurityGroupTest{
 
         AuthenticatedUser authenticatedUser = group.getAuthenticatedUser(username, password);
 
-        assertEquals(marker, authenticatedUser.marker());
+        assertEquals(marker, authenticatedUser.getClinicId());
         assertUsernameAndPassword(username, password, authenticatedUser);
         assertUserAccount(authenticatedUser);
         assertUserAuthorities(authenticatedUser.getAuthorities(), Arrays.asList(Role.CLINICIAN_STUDY_NURSE, Role.CLINICIAN_DOCTOR));

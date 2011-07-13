@@ -6,12 +6,15 @@ import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,13 +32,17 @@ public class PatientControllerTest {
     private HttpServletRequest request;
     private Model uiModel;
     private Patients patients;
+    private AuthenticatedUser user;
+    private HttpSession session;
 
     @Before
     public void setUp() {
         patients = mock(Patients.class);
         controller = new PatientController(patients);
         request = mock(HttpServletRequest.class);
+        session = mock(HttpSession.class);
         uiModel = mock(Model.class);
+        user = mock(AuthenticatedUser.class);
     }
 
     @Test
@@ -47,7 +54,6 @@ public class PatientControllerTest {
         assertTrue(nextPage.contains("redirect:/patients/"));
         assertTrue(nextPage.contains("1234"));
     }
-
 
     @Test
     public void shouldActivatePatientsByGet() {
@@ -61,12 +67,16 @@ public class PatientControllerTest {
     @Test
     public void shouldReturnToTheShowPatientPageIfPatientIsFound() {
         String patientId = "123";
+        String clinicId = "456";
         Patient patientFromDb = mock(Patient.class);
         List<Patient> patientsFromDb = new ArrayList<Patient>();
         patientsFromDb.add(patientFromDb);
 
-        when(patients.findByPatientIdAndClinic(patientId)).thenReturn(patientsFromDb);
+        when(patients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(patientsFromDb);
         when(patientFromDb.getId()).thenReturn("couchDbId");
+        when(user.getClinicId()).thenReturn(clinicId);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
@@ -76,35 +86,44 @@ public class PatientControllerTest {
     @Test
     public void shouldReturnToTheSamePageIfPatientIsNotFound_WithOnlyOneQueryParameter() {
         String patientId = "123";
+        String clinicId = "456";
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
-        String previousPage = expectedPreviousPageUrl +"?patientIdNotFound=1_abcd";
+        String previousPage = expectedPreviousPageUrl + "?patientIdNotFound=1_abcd";
 
-        when(patients.findByPatientIdAndClinic(patientId)).thenReturn(new ArrayList<Patient>());
+        when(patients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(new ArrayList<Patient>());
         when(request.getHeader("Referer")).thenReturn(previousPage);
+        when(user.getClinicId()).thenReturn(clinicId);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
-        verify(uiModel).addAttribute(PatientController.PATIENT_ID_NOT_FOUND_ATTR, patientId);
+        verify(uiModel).addAttribute(PatientController.PATIENT_ID, patientId);
         assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
     }
 
     @Test
     public void shouldReturnToTheSamePageIfPatientIsNotFound_WithMultipleQueryParameters() {
         String patientId = "123";
+        String clinicId = "456";
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients?page=1";
-        String previousPage = expectedPreviousPageUrl +"&patientIdNotFound=abc_8";
+        String previousPage = expectedPreviousPageUrl + "&patientIdNotFound=abc_8";
 
-        when(patients.findByPatientIdAndClinic(patientId)).thenReturn(new ArrayList<Patient>());
+        when(patients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(null);
         when(request.getHeader("Referer")).thenReturn(previousPage);
+        when(user.getClinicId()).thenReturn(clinicId);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
-        verify(uiModel).addAttribute(PatientController.PATIENT_ID_NOT_FOUND_ATTR, patientId);
+        verify(uiModel).addAttribute(PatientController.PATIENT_ID, patientId);
         assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
     }
 
     @Test
     public void shouldCreateAPatientIfThereAreNoErrors() {
+        String clinicId = "456";
         Patient patientFromUI = mock(Patient.class);
         BindingResult bindingResult = mock(BindingResult.class);
         Map<String, Object> modelMap = new HashMap<String, Object>();
@@ -113,10 +132,14 @@ public class PatientControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(patientFromUI.getId()).thenReturn("123");
         when(uiModel.asMap()).thenReturn(modelMap);
+        when(user.getClinicId()).thenReturn(clinicId);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
+
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-        verify(patients).addToClinic(patientFromUI);
+        verify(patients).addToClinic(patientFromUI, clinicId);
         assertTrue(modelMap.isEmpty());
         assertEquals("redirect:/patients/123", createPage);
     }

@@ -12,8 +12,6 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
 public class ClinicianRegistrationPage extends Page {
-    private static Logger LOG = Logger.getLogger(ClinicianRegistrationPage.class);
-
     @FindBy(how = How.ID, using = "_name_id")
     private WebElement name;
 
@@ -45,7 +43,6 @@ public class ClinicianRegistrationPage extends Page {
     }
 
     public ShowClinicianPage registerClinician(Clinician clinician) {
-        LOG.error("CLINICIAN: " + clinician);
         name.sendKeys(clinician.getName());
         username.sendKeys(clinician.getUsername());
         contactNumber.sendKeys(clinician.getContactNumber());
