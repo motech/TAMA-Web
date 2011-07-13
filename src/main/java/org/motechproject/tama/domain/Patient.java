@@ -55,6 +55,10 @@ public class Patient extends CouchEntity {
         return this.status.equals(Status.Active);
     }
 
+    public boolean hasPasscode(String passcode) {
+        return this.passcode.equals(passcode);
+    }
+
     public enum ReminderCall {
         Daily, Weekly
     }
