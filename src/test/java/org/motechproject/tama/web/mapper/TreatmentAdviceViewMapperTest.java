@@ -41,11 +41,11 @@ public class TreatmentAdviceViewMapperTest {
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
         when(regimens.get("regimenId")).thenReturn(regimen);
 
-        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens).map("treatmentAdviceId");
+        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens, null, null, null).map("treatmentAdviceId");
 
         Assert.assertEquals("patientId", treatmentAdviceView.getPatientId());
         Assert.assertEquals("regimenName", treatmentAdviceView.getRegimenName());
         Assert.assertEquals("drugDisplayName", treatmentAdviceView.getRegimenCompositionName());
-        Assert.assertEquals(0, treatmentAdviceView.getDrugDosageViews().size());
+        Assert.assertEquals(0, treatmentAdviceView.getDrugDosages().size());
     }
 }

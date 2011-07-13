@@ -1,11 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:show id="ps_org_motechproject_tama_domain_TreatmentAdvice" object="${treatmentAdvice}" path="/treatmentadvices" list="false" create="false" update="false" delete="false">
         <field:display object="${treatmentAdvice}" field="patientId" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
         <field:display object="${treatmentAdvice}" field="regimenName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens"/>
         <field:display object="${treatmentAdvice}" field="regimenCompositionName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"/>
-        <!--<field:display field="drugDosages" id="s_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" object="${treatmentadvice}" z="wjZJ8WY11O3bz9zffqJrO/45ivo="/>-->
+        <table>
+            <tr>
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                        <td>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name" />
+                        </td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                        <td>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="brandName" id="c_org_motechproject_tama_domain_TreatmentAdvice_brandName${item.index}" label="Brand Name" />
+                        </td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                        <td>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="dosageType" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage" />
+                            <c:forEach items="${treatmentAdvice.drugDosages[item.index].dosageSchedules}" varStatus="scheduleItem" var="drugDosageSchedule">
+                                <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[scheduleItem.index]}">
+                                    <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[scheduleItem.index]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{scheduleItem.index}" label="Time ${scheduleItem.index + 1}" />
+                                </c:if>
+                            </c:forEach>
+                        </td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                        <td>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="startDate" date="true" dateTimePattern="dd/MM/yyyy" label="Start Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}"/>
+                        </td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                        <td>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="endDate" date="true" dateTimePattern="dd/MM/yyyy" label="End Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}"/>
+                        </td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                        <td>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice" />
+                        </td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                        <td>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="mealAdviceType" id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}" label="Meal Advice" />
+                        </td>
+                </c:forEach>
+            </tr>
+        </table>
     </page:show>
 </div>

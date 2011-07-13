@@ -28,6 +28,14 @@ public class Drug extends CouchEntity {
 		this.name = name;
 	}
 
+	public Brand getBrand(String brandId) {
+		for (Brand brand : brands) {
+            if (brand.getCompanyId().equals(brandId))
+                return brand;
+        }
+        return null;
+	}
+
 	public void addBrand(Brand brand) {
 		brands.add(brand);
 	}

@@ -1,6 +1,10 @@
 package org.motechproject.tama.builder;
 
+import org.motechproject.tama.domain.Brand;
 import org.motechproject.tama.domain.Drug;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class DrugBuilder {
 
@@ -16,6 +20,11 @@ public class DrugBuilder {
         return this;
     }
 
+    private DrugBuilder withBrands(Set<Brand> brands) {
+        this.drug.setBrands(brands);
+        return this;
+    }
+
     public Drug build() {
         return this.drug;
     }
@@ -25,6 +34,10 @@ public class DrugBuilder {
     }
 
     public DrugBuilder withDefaults(){
-        return this.withId("drugId").withName("drugName");
+        Set<Brand> brands = new HashSet<Brand>();
+        Brand brand = new Brand("brandName");
+        brand.setCompanyId("brandId");
+        brands.add(brand);
+        return this.withId("drugId").withName("drugName").withBrands(brands);
     }
 }

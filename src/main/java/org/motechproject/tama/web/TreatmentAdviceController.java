@@ -73,7 +73,7 @@ public class TreatmentAdviceController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel) {
-        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens);
+        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes);
         uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(id));
         uiModel.addAttribute("itemId", id);
         return "treatmentadvices/show";

@@ -4,6 +4,7 @@
             <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                     <td>
                         <field:input field="treatmentAdvice.drugDosages[${item.index}].drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name" disabled="true"/>
+                        <input type="hidden" name="drugDosages[${item.index}].drugId" value="${treatmentAdvice.drugDosages[item.index].drugId}" />
                     </td>
             </c:forEach>
         </tr>

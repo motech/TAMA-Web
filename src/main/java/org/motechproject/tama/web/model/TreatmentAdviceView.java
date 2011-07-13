@@ -11,7 +11,7 @@ public class TreatmentAdviceView {
 
     private String regimenCompositionName;
 
-    private List<DrugDosageView> drugDosageViews = new ArrayList<DrugDosageView>();
+    private List<DrugDosageView> drugDosages = new ArrayList<DrugDosageView>();
 
     public String getPatientId() {
         return patientId;
@@ -37,11 +37,15 @@ public class TreatmentAdviceView {
         this.regimenCompositionName = regimenCompositionName;
     }
 
-    public List<DrugDosageView> getDrugDosageViews() {
-        return drugDosageViews;
+    public void addDrugDosage(DrugDosageView drugDosage) {
+        drugDosages.add(drugDosage);
     }
 
-    public void setDrugDosageViews(List<DrugDosageView> drugDosageViews) {
-        this.drugDosageViews = drugDosageViews;
+    public List<DrugDosageView> getDrugDosages() {
+        return drugDosages;
+    }
+
+    public void setDrugDosages(List<DrugDosageView> drugDosages) {
+        this.drugDosages = drugDosages;
     }
 }
