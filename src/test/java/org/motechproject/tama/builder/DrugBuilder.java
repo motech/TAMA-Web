@@ -25,6 +25,6 @@ public class DrugBuilder {
     }
 
     public DrugBuilder withDefaults(){
-        return this.withId("9999999").withName("drugName");
+        return this.withId("drugId").withName("drugName");
     }
 }

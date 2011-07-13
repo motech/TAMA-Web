@@ -37,6 +37,6 @@ public class RegimenBuilder {
     public RegimenBuilder withDefaults(){
         HashSet<RegimenComposition> compositions = new HashSet<RegimenComposition>();
         compositions.add(RegimenCompositionBuilder.startRecording().withDefaults().build());
-        return this.withId("555555").withName("regimen").withRegimenCompositions(compositions);
+        return this.withId("regimenId").withName("regimenName").withRegimenCompositions(compositions);
     }
 }

@@ -2,10 +2,10 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_org_motechproject_tama_domain_TreatmentAdvice" object="${treatmentadvice}" path="/treatmentadvices" z="HQhFJ8+2kNpoy/oZvN5vh03duoo=">
-        <field:display field="patientId" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId" object="${treatmentadvice}" z="3TvJYBOayNmKXm7edkhRhV/6lTQ="/>
-        <field:display field="regimenId" id="s_org_motechproject_tama_domain_TreatmentAdvice_regimenId" object="${treatmentadvice}" z="nbq/1I6HlVvl86vSf/vep2PC+uE="/>
-        <field:display field="regimenCompositionId" id="s_org_motechproject_tama_domain_TreatmentAdvice_regimenCompositionId" object="${treatmentadvice}" z="SCOubqQvpruGUIDkohE0AvOeA2A="/>
-        <field:display field="drugDosages" id="s_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" object="${treatmentadvice}" z="wjZJ8WY11O3bz9zffqJrO/45ivo="/>
+    <page:show id="ps_org_motechproject_tama_domain_TreatmentAdvice" object="${treatmentAdvice}" path="/treatmentadvices" list="false" create="false" update="false" delete="false">
+        <field:display object="${treatmentAdvice}" field="patientId" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
+        <field:display object="${treatmentAdvice}" field="regimenName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens"/>
+        <field:display object="${treatmentAdvice}" field="regimenCompositionName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"/>
+        <!--<field:display field="drugDosages" id="s_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" object="${treatmentadvice}" z="wjZJ8WY11O3bz9zffqJrO/45ivo="/>-->
     </page:show>
 </div>

@@ -5,8 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
+import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
+import org.motechproject.tama.web.model.ComboBoxView;
+import org.motechproject.tama.web.model.TreatmentAdviceView;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -26,6 +30,7 @@ public class TreatmentAdviceControllerTest {
     private Drugs drugs;
     private Regimens regimens;
     private TreatmentAdvices treatmentAdvices;
+    private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
 
     @Before
     public void setUp() {
@@ -34,49 +39,73 @@ public class TreatmentAdviceControllerTest {
         drugs = mock(Drugs.class);
         regimens = mock(Regimens.class);
         treatmentAdvices = mock(TreatmentAdvices.class);
+        treatmentAdviceViewMapper = mock(TreatmentAdviceViewMapper.class);
 
-        controller = new TreatmentAdviceController(mealAdviceTypes, dosageTypes, drugs, regimens, treatmentAdvices);
+        controller = new TreatmentAdviceController(mealAdviceTypes, dosageTypes, drugs, regimens, treatmentAdvices, treatmentAdviceViewMapper);
         request = mock(HttpServletRequest.class);
         uiModel = mock(Model.class);
     }
 
     @Test
-    public void shouldCreateNewTreatmentAdviceFormGivenAPatientId() {
-        String patientId = "1234";
+    public void shouldCreateNewTreatmentAdviceFormGivenAPatientWithNoTreatmentAdvice() {
+        String patientId = "patientId";
         TreatmentAdvice treatmentAdviceAttr = new TreatmentAdvice();
 
-        String redirectURL = controller.createForm(patientId, uiModel);
+        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("treatmentadvices/create", redirectURL);
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
     }
 
     @Test
+    public void shouldRedirectToShowTreatmentAdvice_WhenPatientHasATreatmentAdvice() {
+        String patientId = "patientId";
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+
+        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        String redirectURL = controller.createForm(patientId, uiModel, request);
+
+        junit.framework.Assert.assertEquals("redirect:/treatmentadvices/treatmentAdviceId", redirectURL);
+    }
+
+    @Test
+    public void shouldShowTreatmentAdvice() {
+        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
+
+        when(treatmentAdviceViewMapper.map("treatmentAdviceId")).thenReturn(treatmentAdviceView);
+        String url = controller.show("treatmentAdviceId", uiModel);
+
+        junit.framework.Assert.assertEquals("treatmentadvices/show", url);
+        verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceView);
+    }
+
+    @Test
     public void shouldCreateNewTreatmentAdvice() {
         BindingResult bindingResult = mock(BindingResult.class);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
-        treatmentAdvice.setPatientId("1234");
+        treatmentAdvice.setPatientId("patientId");
 
         when(bindingResult.hasErrors()).thenReturn(false);
         when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
 
         String redirectURL = controller.create(treatmentAdvice, bindingResult, uiModel, request);
 
-        junit.framework.Assert.assertEquals("redirect:/patients/1234", redirectURL);
+        junit.framework.Assert.assertEquals("redirect:/patients/patientId", redirectURL);
         verify(treatmentAdvices).add(treatmentAdvice);
     }
 
     @Test
     public void shouldGetRegimenCompositionsForARegimen() {
-        String regimenId = "1234";
+        String regimenId = "patientId";
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
         HashSet<String> drugIds = new HashSet<String>();
-        drugIds.add("888");
-        drugIds.add("999");
+        drugIds.add("drugId1");
+        drugIds.add("drugId2");
 
         List<Drug> returnedDrugs = new ArrayList<Drug>();
-        returnedDrugs.add(DrugBuilder.startRecording().withId("888").withName("Drug1").build());
-        returnedDrugs.add(DrugBuilder.startRecording().withId("999").withName("Drug2").build());
+        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId1").withName("Drug1").build());
+        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId2").withName("Drug2").build());
 
         when(regimens.get(regimenId)).thenReturn(regimen);
         when(drugs.getDrugs(drugIds)).thenReturn(returnedDrugs);
@@ -85,24 +114,24 @@ public class TreatmentAdviceControllerTest {
         ComboBoxView regimenComposition = (ComboBoxView) CollectionUtils.get(regimenCompositions, 0);
 
         junit.framework.Assert.assertEquals(1, regimenCompositions.size());
-        junit.framework.Assert.assertEquals("9999999", regimenComposition.getId());
+        junit.framework.Assert.assertEquals("regimenCompositionId", regimenComposition.getId());
         junit.framework.Assert.assertEquals("Drug1 / Drug2", regimenComposition.getDisplayName());
     }
 
     @Test
     public void shouldGetDrugDosagesForARegimenComposition() {
-        String regimenId = "1234";
-        String regimenCompositionId = "9999999";
+        String regimenId = "patientId";
+        String regimenCompositionId = "regimenCompositionId";
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
 
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
         HashSet<String> drugIds = new HashSet<String>();
-        drugIds.add("888");
-        drugIds.add("999");
+        drugIds.add("drugId1");
+        drugIds.add("drugId2");
 
         List<Drug> returnedDrugs = new ArrayList<Drug>();
-        returnedDrugs.add(DrugBuilder.startRecording().withId("888").withName("Drug1").build());
-        returnedDrugs.add(DrugBuilder.startRecording().withId("999").withName("Drug2").build());
+        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId1").withName("Drug1").build());
+        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId2").withName("Drug2").build());
 
         when(regimens.get(regimenId)).thenReturn(regimen);
         when(drugs.getDrugs(drugIds)).thenReturn(returnedDrugs);
@@ -111,8 +140,8 @@ public class TreatmentAdviceControllerTest {
 
         junit.framework.Assert.assertEquals("treatmentadvices/drugdosages", redirectUrl);
         junit.framework.Assert.assertEquals(2, treatmentAdvice.getDrugDosages().size());
-        junit.framework.Assert.assertEquals("888", treatmentAdvice.getDrugDosages().get(0).getDrugId());
-        junit.framework.Assert.assertEquals("999", treatmentAdvice.getDrugDosages().get(1).getDrugId());
+        junit.framework.Assert.assertEquals("drugId1", treatmentAdvice.getDrugDosages().get(0).getDrugId());
+        junit.framework.Assert.assertEquals("drugId2", treatmentAdvice.getDrugDosages().get(1).getDrugId());
     }
 
     @Test
@@ -123,8 +152,8 @@ public class TreatmentAdviceControllerTest {
 
         List<ComboBoxView> viewRegimens = controller.regimens();
         junit.framework.Assert.assertEquals(1, viewRegimens.size());
-        junit.framework.Assert.assertEquals("555555", viewRegimens.get(0).getId());
-        junit.framework.Assert.assertEquals("regimen", viewRegimens.get(0).getDisplayName());
+        junit.framework.Assert.assertEquals("regimenId", viewRegimens.get(0).getId());
+        junit.framework.Assert.assertEquals("regimenName", viewRegimens.get(0).getDisplayName());
     }
 
     @Test

@@ -3,6 +3,8 @@ package org.motechproject.tama.web;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
+import org.motechproject.tama.web.model.ComboBoxView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -32,23 +34,31 @@ public class TreatmentAdviceController extends BaseController {
     private Regimens regimens;
     @Autowired
     private TreatmentAdvices treatmentAdvices;
+    private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
 
     protected TreatmentAdviceController() {
+        treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(regimens, treatmentAdvices, drugs);
     }
 
-    public TreatmentAdviceController(MealAdviceTypes mealAdviceTypes, DosageTypes dosageTypes, Drugs drugs, Regimens regimens, TreatmentAdvices treatmentAdvices) {
+    public TreatmentAdviceController(MealAdviceTypes mealAdviceTypes, DosageTypes dosageTypes, Drugs drugs, Regimens regimens, TreatmentAdvices treatmentAdvices, TreatmentAdviceViewMapper treatmentAdviceViewMapper) {
         this.mealAdviceTypes = mealAdviceTypes;
         this.dosageTypes = dosageTypes;
         this.drugs = drugs;
         this.regimens = regimens;
         this.treatmentAdvices = treatmentAdvices;
+        this.treatmentAdviceViewMapper = treatmentAdviceViewMapper;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
-    public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
+    public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
+        TreatmentAdvice adviceForPatient = treatmentAdvices.findByPatientId(patientId);
+        if (adviceForPatient != null) {
+            return "redirect:/treatmentadvices/" + encodeUrlPathSegment(adviceForPatient.getId(), httpServletRequest);
+        }
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
         treatmentAdvice.setPatientId(patientId);
         uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
+        populateModel(uiModel);
         return "treatmentadvices/create";
     }
 
@@ -61,6 +71,13 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.asMap().clear();
         treatmentAdvices.add(treatmentAdvice);
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public String show(@PathVariable("id") String id, Model uiModel) {
+        uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(id));
+        uiModel.addAttribute("itemId", id);
+        return "treatmentadvices/show";
     }
 
 	@RequestMapping(method = RequestMethod.GET, value = "/regimenCompositionsFor")
@@ -91,7 +108,6 @@ public class TreatmentAdviceController extends BaseController {
         return "treatmentadvices/drugdosages";
 	}
 
-    @ModelAttribute("regimens")
     public List<ComboBoxView> regimens() {
         List<Regimen> allRegimens = regimens.getAll();
         List<ComboBoxView> comboBoxViews = new ArrayList<ComboBoxView>();
@@ -101,7 +117,6 @@ public class TreatmentAdviceController extends BaseController {
         return comboBoxViews;
     }
 
-    @ModelAttribute("regimenCompositions")
     public List<String> regimenCompositions() {
         ArrayList<String> regimenCompositions = new ArrayList<String>();
         regimenCompositions.add("regimenCompositions");
@@ -116,5 +131,10 @@ public class TreatmentAdviceController extends BaseController {
     @ModelAttribute("dosageTypes")
     public List<DosageType> dosageTypes() {
         return dosageTypes.getAll();
+    }
+
+    private void populateModel(Model uiModel) {
+        uiModel.addAttribute("regimens", regimens());
+        uiModel.addAttribute("regimenCompositions", regimenCompositions());
     }
 }

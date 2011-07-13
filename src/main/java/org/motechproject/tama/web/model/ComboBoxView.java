@@ -1,4 +1,4 @@
-package org.motechproject.tama.domain;
+package org.motechproject.tama.web.model;
 
 public class ComboBoxView {
 

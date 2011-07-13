@@ -29,8 +29,8 @@ public class RegimenCompositionBuilder {
 
     public RegimenCompositionBuilder withDefaults(){
         HashSet<String> drugIds = new HashSet<String>();
-        drugIds.add("888");
-        drugIds.add("999");
-        return this.withId("9999999").withDrugIds(drugIds);
+        drugIds.add("drugId1");
+        drugIds.add("drugId2");
+        return this.withId("regimenCompositionId").withDrugIds(drugIds);
     }
 }
