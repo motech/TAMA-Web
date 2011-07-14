@@ -3,6 +3,7 @@ package org.motechproject.tama.functional.page;
 
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.MyPageFactory;
+import org.motechproject.tama.functional.framework.MyWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -36,11 +37,25 @@ public class PatientRegistrationPage extends Page {
     }
 
     @Override
+    public void postInitialize() {
+        patientId = new MyWebElement(patientId);
+        mobileNumber = new MyWebElement(mobileNumber);
+        dateOfBirth = new MyWebElement(dateOfBirth);
+        travelTimeInDays = new MyWebElement(travelTimeInDays);
+        travelTimeInHrs = new MyWebElement(travelTimeInHrs);
+        travelTimeInMins = new MyWebElement(travelTimeInMins);
+        gender = new MyWebElement(gender);
+        ivrLanguage = new MyWebElement(ivrLanguage);
+        passcode = new MyWebElement(passcode);
+
+    }
+
+    @Override
     protected void waitForPageToLoad() {
         waitForElementWithIdToLoad("_patientId_id");
     }
 
-    public ShowPatientPage registerNewPatient(Patient patient){
+    public ShowPatientPage registerNewPatient(Patient patient) {
         patientId.sendKeys(patient.getPatientId());
         mobileNumber.sendKeys(patient.getMobilePhoneNumber());
         dateOfBirth.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
