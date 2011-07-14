@@ -41,7 +41,7 @@ public class TreatmentAdviceViewBuilder {
     public TreatmentAdviceViewBuilder withDefaults(){
         List<DrugDosageView> drugDosages = new ArrayList<DrugDosageView>();
         drugDosages.add(DrugDosageViewBuilder.startRecording().withDefaults().build());
-        drugDosages.add(DrugDosageViewBuilder.startRecording().withDefaults().withBrandName("Viramune").build());
-        return this.withPatientId("1234").withRegimenName("TDF + 3TC / fTC + NVP").withRegimenCompositionName("TDF+FTC / NVP").withDrugDosages(drugDosages);
+        drugDosages.add(DrugDosageViewBuilder.startRecording().withDefaults().withBrandName("Combivir").build());
+        return this.withPatientId("1234").withRegimenName("AZT + 3TC + EFV").withRegimenCompositionName("AZT+3TC / EFV").withDrugDosages(drugDosages);
     }
 }

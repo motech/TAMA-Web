@@ -23,9 +23,6 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_regimenCompositionId_id")
     private WebElement regimenCompositionElement;
 
-    @FindBy(how = How.ID, using = DRUG1_BRAND_ID)
-    private WebElement drug1BrandElement;
-
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageTypeId_id")
     private WebElement drug1DosageTypeElement;
 
@@ -34,9 +31,6 @@ public class CreateARTRegimenPage extends Page {
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].mealAdviceId_id")
     private WebElement drug1MealAdviceTypeElement;
-
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].brandId_id")
-    private WebElement drug2BrandElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageTypeId_id")
     private WebElement drug2DosageTypeElement;
@@ -58,11 +52,9 @@ public class CreateARTRegimenPage extends Page {
     public void postInitialize() {
         regimenElement = new MyWebElement(regimenElement);
         regimenCompositionElement = new MyWebElement(regimenCompositionElement);
-        drug1BrandElement = new MyWebElement(drug1BrandElement);
         drug1DosageTypeElement = new MyWebElement(drug1DosageTypeElement);
         drug1DosageTimeElement = new MyWebElement(drug1DosageTimeElement);
         drug1MealAdviceTypeElement = new MyWebElement(drug1MealAdviceTypeElement);
-        drug2BrandElement = new MyWebElement(drug2BrandElement);
         drug2DosageTypeElement = new MyWebElement(drug2DosageTypeElement);
         drug2DosageTimeElement = new MyWebElement(drug2DosageTimeElement);
         drug2MealAdviceTypeElement = new MyWebElement(drug2MealAdviceTypeElement);
@@ -78,13 +70,11 @@ public class CreateARTRegimenPage extends Page {
         selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
 
         DrugDosageView drugDosage1 = treatmentAdvice.getDrugDosages().get(0);
-        drug1BrandElement.sendKeys(drugDosage1.getBrandName());
         drug1DosageTypeElement.sendKeys(drugDosage1.getDosageType());
         drug1DosageTimeElement.sendKeys(drugDosage1.getDosageSchedules().get(0));
         drug1MealAdviceTypeElement.sendKeys(drugDosage1.getMealAdviceType());
 
         DrugDosageView drugDosage2 = treatmentAdvice.getDrugDosages().get(1);
-        drug2BrandElement.sendKeys(drugDosage2.getBrandName());
         drug2DosageTypeElement.sendKeys(drugDosage2.getDosageType());
         drug2DosageTimeElement.sendKeys(drugDosage2.getDosageSchedules().get(0));
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.getMealAdviceType());

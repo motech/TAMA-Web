@@ -40,6 +40,6 @@ public class DrugDosageViewBuilder {
     public DrugDosageViewBuilder withDefaults(){
         List<String> dosageSchedules = new ArrayList<String>();
         dosageSchedules.add("10:00am");
-        return this.withBrandName("Tenvir-EM").withDosageType("Once Daily").withDosageSchedules(dosageSchedules).withMealAdviceType("After Meal");
+        return this.withBrandName("Efferven").withDosageType("Once Daily").withDosageSchedules(dosageSchedules).withMealAdviceType("After Meal");
     }
 }
