@@ -18,7 +18,7 @@ public class IVRLanguage extends CouchEntity {
     @NotNull
     private String name;
 
-    protected IVRLanguage() {
+    public IVRLanguage() {
     }
 
     public IVRLanguage(String name) {

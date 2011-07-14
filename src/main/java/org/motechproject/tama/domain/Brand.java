@@ -1,12 +1,7 @@
 package org.motechproject.tama.domain;
 
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-
 import javax.validation.constraints.NotNull;
 
-@RooJavaBean
-@RooEntity
 public class Brand extends BaseEntity {
 
     @NotNull

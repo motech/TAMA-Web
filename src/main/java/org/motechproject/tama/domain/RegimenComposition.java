@@ -1,12 +1,10 @@
 package org.motechproject.tama.domain;
 
 import org.motechproject.tama.util.UUIDUtil;
-import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@RooJavaBean
 public class RegimenComposition extends BaseEntity {
 	
 	private String regimenCompositionId;

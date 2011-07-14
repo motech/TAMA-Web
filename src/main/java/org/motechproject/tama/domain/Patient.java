@@ -5,8 +5,6 @@ import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -16,8 +14,6 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 
-@RooJavaBean
-@RooEntity
 @TypeDiscriminator("doc.documentType == 'Patient'")
 public class Patient extends CouchEntity {
     @NotNull

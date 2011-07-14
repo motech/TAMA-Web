@@ -6,8 +6,6 @@ import org.ektorp.support.TypeDiscriminator;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,6 @@ package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.validation.constraints.NotNull;
 
