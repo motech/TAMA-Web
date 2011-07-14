@@ -42,6 +42,7 @@ public class ClinicianRegistrationPage extends Page {
 
     @Override
     public void postInitialize() {
+        name = new MyWebElement(name);
         clinicElement = new MyWebElement(clinicElement);
     }
 
