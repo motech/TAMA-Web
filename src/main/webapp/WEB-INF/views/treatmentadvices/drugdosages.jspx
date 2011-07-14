@@ -49,6 +49,7 @@
                     <td>
                         <field:datetime dateTimePattern="dd/MM/yyyy" field="treatmentAdvice.drugDosages[${item.index}].endDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}" label="End Date" />
                         <script type="text/javascript">
+                            dijit.byId('_treatmentAdvice.drugDosages[${item.index}].endDate_id').constraints.min = dijit.byId('_treatmentAdvice.drugDosages[${item.index}].startDate_id').value;
                             dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[${item.index}].startDate_id'), 'onChange', function() {
                                 if (dijit.byId('_treatmentAdvice.drugDosages[${item.index}].startDate_id') != null) {
                                     dijit.byId('_treatmentAdvice.drugDosages[${item.index}].endDate_id').constraints.min = dijit.byId('_treatmentAdvice.drugDosages[${item.index}].startDate_id').value;
