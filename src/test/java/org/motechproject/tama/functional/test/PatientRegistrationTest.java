@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.test;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
@@ -19,6 +20,12 @@ import java.text.SimpleDateFormat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
 public class PatientRegistrationTest extends BaseTest {
+
+    @Before
+    public void setUp() {
+        super.setUp();
+    }
+
     @Test
     public void testSuccessfulPatientRegistration() {
         Clinician clinician = new ClinicianPreset(webDriver).create();

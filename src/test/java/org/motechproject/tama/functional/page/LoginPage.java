@@ -30,6 +30,7 @@ public class LoginPage extends Page {
     }
 
     public void postInitialize() {
+        this.waitForElementWithIdToLoad(USERNAME_ID);
         userName = new MyWebElement(userName);
         password = new MyWebElement(password);
     }
@@ -50,7 +51,6 @@ public class LoginPage extends Page {
     }
 
     private void login(String userName, String password) {
-        this.waitForElementWithIdToLoad(USERNAME_ID);
         this.userName.sendKeys(userName);
         this.password.sendKeys(password);
         this.userName.submit();

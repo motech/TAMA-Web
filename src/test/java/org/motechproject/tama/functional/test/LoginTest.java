@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.test;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.functional.framework.BaseTest;
@@ -16,6 +17,12 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
 public class LoginTest extends BaseTest {
+
+    @Before
+    public void setUp() {
+        super.setUp();
+    }
+
     @Test
     public void testLoginFailure() {
         LoginPage page = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithIncorrectAdminUserNamePassword();

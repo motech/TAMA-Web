@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.test;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.ClinicBuilder;
@@ -10,7 +11,10 @@ import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
-import org.motechproject.tama.functional.page.*;
+import org.motechproject.tama.functional.page.ListPatientsPage;
+import org.motechproject.tama.functional.page.LoginPage;
+import org.motechproject.tama.functional.page.Page;
+import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,6 +23,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
 public class ClinicianSecurityTest extends BaseTest {
+
+    @Override
+    @Before
+    public void setUp() {
+        super.setUp();
+    }
 
     @Test
     public void shouldVerifyIfCorrectPatientsAreSeenByLoggedInClinician() {
