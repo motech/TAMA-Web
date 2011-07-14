@@ -3,7 +3,7 @@
         <tr>
             <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                     <td>
-                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name" />
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name *" />
                         <input type="hidden" name="drugDosages[${item.index}].drugId" value="${treatmentAdvice.drugDosages[item.index].drugId}" />
                     </td>
             </c:forEach>
@@ -26,9 +26,11 @@
                             dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id'), 'onChange', function() {
                                 if (dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id')._lastDisplayedValue == 'Once Daily') {
                                     dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:none');
+                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', true);
                                 }
                                 else {
                                     dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:block');
+                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', false);
                                 }
                             });
                         </script>
