@@ -7,7 +7,6 @@ import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
 
 public class ClinicianPreset {
 
@@ -26,7 +25,8 @@ public class ClinicianPreset {
                 .registerClinic(clinic)
                 .goToHomePage()
                 .goToClinicianRegistrationPage()
-                .registerClinician(clinician);
+                .registerClinician(clinician)
+                .logout();
         return clinician;
     }
 }

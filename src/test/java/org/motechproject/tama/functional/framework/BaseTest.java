@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
 
@@ -21,6 +22,7 @@ public abstract class BaseTest {
     @Before
     public void setUp() {
         webDriver = WebDriverFactory.getInstance();
+        webDriver.get(LoginPage.LOGIN_URL);
     }
 
     @After

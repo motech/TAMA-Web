@@ -36,7 +36,6 @@ public class LoginPage extends Page {
 
     public LoginPage loginWithIncorrectAdminUserNamePassword() {
         login(INCORRECT_USERNAME, INCORRECT_PASSWORD);
-        this.waitForElementWithIdToLoad(USERNAME_ID);
         return this;
     }
 
@@ -51,7 +50,7 @@ public class LoginPage extends Page {
     }
 
     private void login(String userName, String password) {
-        webDriver.get(LOGIN_URL);
+        this.waitForElementWithIdToLoad(USERNAME_ID);
         this.userName.sendKeys(userName);
         this.password.sendKeys(password);
         this.userName.submit();

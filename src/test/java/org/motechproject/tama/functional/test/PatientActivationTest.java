@@ -11,7 +11,6 @@ import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.motechproject.tama.functional.preset.ClinicianPreset;
-import org.openqa.selenium.support.PageFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,6 +20,7 @@ public class PatientActivationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientActivation() {
         Clinician clinician = new ClinicianPreset(webDriver).create();
+
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
