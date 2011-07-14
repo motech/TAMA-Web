@@ -23,6 +23,9 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.ID, using = "activatePatient")
     private WebElement activationLink;
 
+    @FindBy(how = How.ID, using = "clinic_visits")
+    private WebElement clinicVisitsLink;
+
     @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_status_status_id")
     private WebElement status;
 
@@ -63,6 +66,28 @@ public class ShowPatientPage extends Page {
             }
         });
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public CreateARTRegimenPage goToCreateARTRegimenPage() {
+        this.clinicVisitsLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(By.id(CreateARTRegimenPage.REGIMEN_ID)) != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
+    }
+
+    public ViewARTRegimenPage goToViewARTRegimenPage() {
+        this.clinicVisitsLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(By.id(ViewARTRegimenPage.REGIMEN_TEXT_ID)) != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, ViewARTRegimenPage.class);
     }
 
     public ListPatientsPage goToListPatientsPage() {

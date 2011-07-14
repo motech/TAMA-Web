@@ -53,5 +53,10 @@
             dojo.connect(dijit.byId('_regimenId_id'), 'onChange', populateRegimenCompositions);
             populateRegimenCompositions();
         });
+        <![CDATA[
+           function encodePk(){
+               return true;
+           }
+        ]]>
     </script>
 </div>

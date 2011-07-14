@@ -53,7 +53,7 @@
                       <spring:param name="form" />
                       <spring:param name="patientId" value="${patient.id}" />
                     </spring:url>
-                  <a href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
+                  <a id="clinic_visits" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
               </c:when>
               <c:otherwise>
                   <div class="update_patient">

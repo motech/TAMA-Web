@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.setup;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -16,6 +17,13 @@ public class WebDriverFactory {
             @Override
             WebDriver give() {
                 return new FirefoxDriver();
+            }
+        },
+
+        CHROME("chrome") {
+            @Override
+            WebDriver give() {
+                return new ChromeDriver();
             }
         },
 
