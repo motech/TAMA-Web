@@ -1,13 +1,13 @@
 package org.motechproject.tama.tools.seed;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.motechproject.tama.domain.Brand;
 import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.repository.Drugs;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class DrugSeed extends Seed {
@@ -95,8 +95,6 @@ public class DrugSeed extends Seed {
 		drug10.addBrand(new Brand("Vonavir",companies.get("Emcure")));
 		drug10.addBrand(new Brand("Teevir",companies.get("Matrix")));
 		drugs.add(drug10);
-		
-		
 	}
 
 	public Map<String, Drug> loadAll() {

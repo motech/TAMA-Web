@@ -2,8 +2,6 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.roo.addon.entity.RooEntity;
-import org.springframework.roo.addon.javabean.RooJavaBean;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -93,6 +91,9 @@ public class DrugDosage extends BaseEntity {
     }
 
     public Date getStartDate() {
+        if (startDate == null) {
+            this.startDate = new Date();
+        }
         return this.startDate;
     }
 

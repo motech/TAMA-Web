@@ -11,7 +11,7 @@ public class MealAdviceTypeSeed extends Seed
 	
 	@Override
 	public void load() {
-		mealAdviceTypes.add(new MealAdviceType("Before Meal"));
 		mealAdviceTypes.add(new MealAdviceType("After Meal"));
+        mealAdviceTypes.add(new MealAdviceType("Before Meal"));
 	}
 }
