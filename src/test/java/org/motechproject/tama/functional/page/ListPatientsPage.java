@@ -35,6 +35,11 @@ public class ListPatientsPage extends Page {
         super(webDriver);
     }
 
+    @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithXPATHToLoad(PATIENT_REGISTRATION_LINK_XPATH);
+    }
+
     public PatientRegistrationPage goToPatientRegistrationPage() {
         patientRegistrationLink.click();
         return MyPageFactory.initElements(webDriver, PatientRegistrationPage.class);

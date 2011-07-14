@@ -29,8 +29,12 @@ public class LoginPage extends Page {
         super(webDriver);
     }
 
+    @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithIdToLoad(USERNAME_ID);
+    }
+
     public void postInitialize() {
-        this.waitForElementWithIdToLoad(USERNAME_ID);
         userName = new MyWebElement(userName);
         password = new MyWebElement(password);
     }
@@ -46,7 +50,6 @@ public class LoginPage extends Page {
 
     private ListPatientsPage loginAndWait(String userName, String password) {
         login(userName, password);
-        this.waitForElementWithXPATHToLoad(ListPatientsPage.PATIENT_REGISTRATION_LINK_XPATH);
         return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 

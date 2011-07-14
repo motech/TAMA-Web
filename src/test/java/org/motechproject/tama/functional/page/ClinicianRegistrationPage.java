@@ -1,6 +1,5 @@
 package org.motechproject.tama.functional.page;
 
-import org.apache.log4j.Logger;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.functional.framework.MyPageFactory;
@@ -9,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
 
 public class ClinicianRegistrationPage extends Page {
     @FindBy(how = How.ID, using = "_name_id")
@@ -38,6 +36,11 @@ public class ClinicianRegistrationPage extends Page {
     }
 
     @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithIdToLoad("_name_id");
+    }
+
+    @Override
     public void postInitialize() {
         clinicElement = new MyWebElement(clinicElement);
     }
@@ -51,7 +54,6 @@ public class ClinicianRegistrationPage extends Page {
         Clinic clinic = clinician.getClinic();
         clinicElement.sendKeys(new StringBuilder().append(clinic.getName()).append(", ").append(clinic.getCity()).toString());
         registerClinicianLink.click();
-        waitForElementWithIdToLoad(ShowClinicianPage.CLINICIAN_NAME_NAME_ID);
         return MyPageFactory.initElements(webDriver, ShowClinicianPage.class);
 
     }

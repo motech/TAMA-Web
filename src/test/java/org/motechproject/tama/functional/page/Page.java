@@ -9,7 +9,7 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class Page {
+public abstract class Page {
     protected WebDriver webDriver;
     private static final long MaxPageLoadTime = 60;
     protected WebDriverWait wait;
@@ -17,6 +17,7 @@ public class Page {
     public Page(WebDriver webDriver) {
         this.webDriver = webDriver;
         this.wait = new WebDriverWait(webDriver, MaxPageLoadTime);
+        this.waitForPageToLoad();
     }
 
     @FindBy(how = How.ID, using = "patientId")
@@ -37,12 +38,12 @@ public class Page {
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
-
     public Page unsuccessfulSearchPatientBy(String id, Class<? extends Page> returnPageClass, String idOnTheReturnPage) {
         searchById(id);
         this.waitForElementWithIdToLoad(idOnTheReturnPage);
         return MyPageFactory.initElements(webDriver, returnPageClass);
     }
+
 
     private void searchById(String id) {
         searchBox.sendKeys(id);
@@ -52,6 +53,8 @@ public class Page {
     public String getPatientSearchErrorMessage() {
         return errorDiv.getText();
     }
+
+    protected abstract void waitForPageToLoad();
 
     public void postInitialize() {
     }

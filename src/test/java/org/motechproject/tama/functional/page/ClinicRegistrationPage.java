@@ -3,12 +3,10 @@ package org.motechproject.tama.functional.page;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.framework.MyWebElement;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class ClinicRegistrationPage extends Page {
 
@@ -32,6 +30,11 @@ public class ClinicRegistrationPage extends Page {
     }
 
     @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithIdToLoad("_name_id");
+    }
+
+    @Override
     public void postInitialize() {
         name = new MyWebElement(name);
         address = new MyWebElement(address);
@@ -46,7 +49,6 @@ public class ClinicRegistrationPage extends Page {
         city.clear();
         city.sendKeys(clinic.getCity().getName());
         registerClinicLink.click();
-        waitForElementWithIdToLoad(ShowClinicPage.CLINIC_NAME_NAME_ID);
         return MyPageFactory.initElements(webDriver, ShowClinicPage.class);
     }
 }

@@ -1,15 +1,14 @@
 package org.motechproject.tama.functional.page;
 
 
-import java.text.SimpleDateFormat;
-
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
+
+import java.text.SimpleDateFormat;
 
 public class PatientRegistrationPage extends Page {
 
@@ -36,6 +35,11 @@ public class PatientRegistrationPage extends Page {
         super(webDriver);
     }
 
+    @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithIdToLoad("_patientId_id");
+    }
+
     public ShowPatientPage registerNewPatient(Patient patient){
         patientId.sendKeys(patient.getPatientId());
         mobileNumber.sendKeys(patient.getMobilePhoneNumber());
@@ -49,7 +53,6 @@ public class PatientRegistrationPage extends Page {
         passcode.clear();
         passcode.sendKeys(String.valueOf(patient.getPasscode()));
         patientId.submit();
-        this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 

@@ -28,6 +28,11 @@ public class ShowClinicPage extends Page {
         super(webDriver);
     }
 
+    @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithIdToLoad(CLINIC_NAME_NAME_ID);
+    }
+
     public String getName() {
         return this.name.getText();
 

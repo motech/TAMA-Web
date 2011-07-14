@@ -33,6 +33,11 @@ public class ShowPatientPage extends Page {
         super(webDriver);
     }
 
+    @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithIdToLoad(PATIENT_ID_ID);
+    }
+
     public String getPatientId() {
         return patientId.getText();
     }

@@ -16,6 +16,7 @@ public class ShowClinicianPage extends Page {
     @FindBy(how = How.ID, using = CLINICIAN_NAME_NAME_ID)
     private WebElement name;
 
+
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_Clinician_contactnumber_contactNumber_id")
     private WebElement contactNumber;
 
@@ -24,6 +25,11 @@ public class ShowClinicianPage extends Page {
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_Clinician_username_username_id")
     private WebElement username;
+
+    @Override
+    protected void waitForPageToLoad() {
+        waitForElementWithIdToLoad(CLINICIAN_NAME_NAME_ID);
+    }
 
     public String getName() {
         return name.getText();
