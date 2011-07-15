@@ -57,8 +57,8 @@
                                <c:out value=" | "/>
                             </c:if>
                             <span>
-                            <spring:url value="/security/changepassword" var="changepassword"/>
-                            <a href="${changepassword}">
+                            <spring:url value="/security/changePassword" var="changepassword"/>
+                            <a id="changePasswordLink" href="${changepassword}">
                                <spring:message code="security_change_password"/>
                             </a>
                             </span>

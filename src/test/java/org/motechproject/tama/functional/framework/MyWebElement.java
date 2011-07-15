@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.framework;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -82,6 +83,10 @@ public class MyWebElement implements WebElement {
 
     @Override
     public WebElement findElement(By by) {
-        return webElement.findElement(by);
+        try {
+            return webElement.findElement(by);
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 }

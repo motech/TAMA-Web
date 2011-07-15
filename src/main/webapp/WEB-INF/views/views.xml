@@ -27,4 +27,8 @@
         <put-attribute name="body" value="/WEB-INF/views/login.jspx"/>
     </definition>
 
+    <definition extends="default" name="changePassword">
+        <put-attribute name="body" value="/WEB-INF/views/changePassword.jspx"/>
+    </definition>
+
 </tiles-definitions>
