@@ -185,9 +185,7 @@ public class Patient extends CouchEntity {
 
     @JsonIgnore
     public Clinic getClinic() {
-        if (this.clinic != null) return this.clinic;
-        if (this.clinic_id != null) return new Clinic().allClinics().get(this.clinic_id);
-        return null;
+        return this.clinic;
     }
 
     public void setClinic(Clinic clinic) {

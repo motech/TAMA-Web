@@ -21,9 +21,12 @@
 
     <bean id="patients" class="org.motechproject.tama.repository.Patients">
         <constructor-arg ref="couchDbConnector"/>
+        <constructor-arg ref="clinics" />
     </bean>
     <bean id="clinicians" class="org.motechproject.tama.repository.Clinicians">
         <constructor-arg ref="couchDbConnector"/>
+        <constructor-arg ref="encryptor" />
+        <constructor-arg ref="clinics" />
     </bean>
     <bean id="genders" class="org.motechproject.tama.repository.Genders">
         <constructor-arg ref="couchDbConnector"/>
@@ -51,6 +54,7 @@
     </bean>
     <bean id="clinics" class="org.motechproject.tama.repository.Clinics">
         <constructor-arg ref="couchDbConnector"/>
+        <constructor-arg ref="cities" />
     </bean>
     <bean id="cities" class="org.motechproject.tama.repository.Cities">
         <constructor-arg ref="couchDbConnector"/>

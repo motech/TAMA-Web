@@ -1,13 +1,9 @@
 package org.motechproject.tama.domain;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
-import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
-import org.motechproject.tama.repository.Clinics;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.ManyToOne;
@@ -17,17 +13,12 @@ import javax.validation.constraints.Pattern;
 @Configurable
 @TypeDiscriminator("doc.documentType == 'Clinician'")
 public class Clinician extends CouchEntity implements TAMAUser {
-    @Autowired
-    private Clinics clinics;
-
-    @Autowired
-    private PBEStringEncryptor encryptor;
 
     @NotNull
     private String name;
     @NotNull
     private String username;
-    @NotNull
+    @NotNull                                                                                                       I needed an address proof, for getting a TATA Photon.
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String contactNumber;
     @ManyToOne
@@ -72,14 +63,11 @@ public class Clinician extends CouchEntity implements TAMAUser {
 
     @JsonIgnore
     public String getPassword() {
-        if(this.password != null) return this.password;
-        if(this.encryptedPassword != null) return this.encryptor.decrypt(encryptedPassword);
-        return null;
+        return this.password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-        this.encryptedPassword = this.encryptor.encrypt(password);
     }
 
     public String getClinicId() {
@@ -92,9 +80,7 @@ public class Clinician extends CouchEntity implements TAMAUser {
 
     @JsonIgnore
     public Clinic getClinic() {
-        if (this.clinic != null) return this.clinic;
-        if (this.clinicId != null) return clinics.get(this.clinicId);
-        return null;
+        return clinic;
     }
 
     public void setClinic(Clinic clinic) {
@@ -108,15 +94,6 @@ public class Clinician extends CouchEntity implements TAMAUser {
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
-    }
-
-    @JsonIgnore
-    public PBEStringEncryptor getEncryptor() {
-        return this.encryptor;
-    }
-
-    public void setEncryptor(PBEStringEncryptor encryptor) {
-        this.encryptor = encryptor;
     }
 
     public Role getRole() {
@@ -138,6 +115,7 @@ public class Clinician extends CouchEntity implements TAMAUser {
             }
         };
     }
+
     public boolean credentialsAre(String password) {
         return getPassword().equals(password);
     }

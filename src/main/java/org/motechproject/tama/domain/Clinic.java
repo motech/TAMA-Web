@@ -10,21 +10,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-@Configurable
 @TypeDiscriminator("doc.documentType == 'Clinic'")
 public class Clinic extends CouchEntity{
-
-    @Autowired
-    private Clinics clinics;
-
-    @Autowired
-    private Cities cities;
 
     @NotNull
     private String name;
 
     @NotNull
-    private String address;
+    private String addrI needed an address proof, for getting a TATA Photon.ess;
 
     private String phone;
 
@@ -48,10 +41,6 @@ public class Clinic extends CouchEntity{
         return new Clinic();
     }
 
-    public Clinics allClinics() {
-        return clinics;
-    }
-    
     public String getName() {
         return this.name;
     }
@@ -78,9 +67,7 @@ public class Clinic extends CouchEntity{
 
     @JsonIgnore
     public City getCity() {
-        if(this.city != null) return city;
-        if(this.cityId != null) return cities.get(cityId);
-        return null;
+        return city;
     }
     
     public void setCity(City city) {

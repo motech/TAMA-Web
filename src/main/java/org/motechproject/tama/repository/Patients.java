@@ -16,8 +16,11 @@ import java.util.List;
 public class Patients extends CouchDbRepositorySupport<Patient> {
     private static Logger LOG = Logger.getLogger(Patients.class);
 
-    public Patients(CouchDbConnector db) {
+    private Clinics clinics;
+
+    public Patients(CouchDbConnector db, Clinics clinics) {
         super(Patient.class, db);
+        this.clinics = clinics;
         initStandardDesignDocument();
     }
 

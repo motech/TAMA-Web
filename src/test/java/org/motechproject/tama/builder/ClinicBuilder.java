@@ -26,18 +26,18 @@ public class ClinicBuilder {
         return this;
     }
 
-    private ClinicBuilder withPhoneNumber(String phoneNumber) {
+    public ClinicBuilder withPhoneNumber(String phoneNumber) {
         this.clinic.setPhone(phoneNumber);
         return this;
     }
 
-    private ClinicBuilder withAddress(String address) {
+    public ClinicBuilder withAddress(String address) {
         this.clinic.setAddress(address);
         return this;
     }
 
-    private ClinicBuilder withCity(String city) {
-        this.clinic.setCity(City.newCity(city));
+    public ClinicBuilder withCity(City city) {
+        this.clinic.setCity(city);
         return this;
     }
 
@@ -45,7 +45,7 @@ public class ClinicBuilder {
         this.withName("DefaultName")
                 .withPhoneNumber("1234567890")
                 .withAddress("DefaultAddress")
-                .withCity("Pune");
+                .withCity(City.newCity("Pune"));
         return this;
     }
 }
