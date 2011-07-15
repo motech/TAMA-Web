@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.test;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,8 @@ import org.motechproject.tama.functional.page.Page;
 import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -90,4 +93,10 @@ public class ClinicianSecurityTest extends BaseTest {
                 .logout();
         return patient;
     }
+
+    @After
+    public void  tearDown() throws IOException {
+       super.tearDown();
+    }
+
 }

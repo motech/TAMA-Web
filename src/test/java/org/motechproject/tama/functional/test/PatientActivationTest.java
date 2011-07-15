@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.test;
 
 import junit.framework.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,8 @@ import org.motechproject.tama.web.model.TreatmentAdviceView;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
 public class PatientActivationTest extends BaseTest {
@@ -28,7 +31,7 @@ public class PatientActivationTest extends BaseTest {
     }
 
     @Test
-    public void testSuccessfulPatientActivationAndCapturingOfARTRegimen() {
+    public void testSuccessfulPatientActivation() {
         Clinician clinician = new ClinicianPreset(webDriver).create();
 
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
@@ -41,16 +44,12 @@ public class PatientActivationTest extends BaseTest {
         ShowPatientPage pageAfterActivation = showPatientPage.activatePatient();
         Assert.assertEquals(pageAfterActivation.getStatus().trim(), Patient.Status.Active.toString());
 
-        captureAndVerifyARTRegimenDetails(showPatientPage);
-
         pageAfterActivation.logout();
     }
 
-    private void captureAndVerifyARTRegimenDetails(ShowPatientPage showPatientPage) {
-        TreatmentAdviceView treatmentAdvice = TreatmentAdviceViewBuilder.startRecording().withDefaults().build();
-        ViewARTRegimenPage viewARTRegimenPage = showPatientPage.goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice).goToViewARTRegimenPage();
-        Assert.assertEquals(viewARTRegimenPage.getPatientId(), treatmentAdvice.getPatientId());
-        Assert.assertEquals(viewARTRegimenPage.getRegimenName(), treatmentAdvice.getRegimenName());
-        Assert.assertEquals(viewARTRegimenPage.getRegimenCompositionName(), treatmentAdvice.getRegimenCompositionName());
+    @After
+    public void  tearDown() throws IOException {
+       super.tearDown();
     }
+
 }

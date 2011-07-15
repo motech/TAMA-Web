@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.test;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,8 @@ import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowClinicianPage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -42,6 +45,11 @@ public class RegisterClinicianTest extends BaseTest {
         assertEquals(clinician.getAlternateContactNumber(), showClinicianPage.getAlternateContactNumber());
         assertEquals(clinician.getUsername(), showClinicianPage.getUsername());
         showClinicianPage.logout();
+    }
+
+    @After
+    public void  tearDown() throws IOException {
+       super.tearDown();
     }
 
 }

@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.test;
 
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.motechproject.tama.functional.preset.ClinicianPreset;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.assertEquals;
@@ -61,4 +63,10 @@ public class SearchPatientByIdTest extends BaseTest {
         assertEquals(listPatientPage.getPatientSearchErrorMessage(), String.format("Patient with id: %s not found", non_existing_id));
         listPatientPage.logout();
     }
+
+    @After
+    public void  tearDown() throws IOException {
+       super.tearDown();
+    }
+
 }
