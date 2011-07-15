@@ -1,5 +1,7 @@
 package org.motechproject.tama.ivr;
 
+import org.apache.commons.lang.StringUtils;
+
 public class IVRRequest {
     private String sid;
     private String cid;
@@ -53,6 +55,6 @@ public class IVRRequest {
     }
 
     public boolean hasNoData() {
-      return this.data == null;
+        return StringUtils.isBlank(this.data);
     }
 }
