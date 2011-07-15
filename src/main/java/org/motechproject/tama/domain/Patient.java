@@ -51,6 +51,11 @@ public class Patient extends CouchEntity {
         return this.status.equals(Status.Active);
     }
 
+    @JsonIgnore
+    public boolean isNotActive() {
+        return this.status.equals(Status.Inactive);
+    }
+
     public boolean hasPasscode(String passcode) {
         return this.passcode.equals(passcode);
     }

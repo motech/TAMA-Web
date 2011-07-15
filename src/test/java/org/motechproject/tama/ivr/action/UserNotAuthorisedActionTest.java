@@ -31,7 +31,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
         when(messages.get(IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_AUTHORISED)).thenReturn("Not authorised");
 
         String handle = userNotAuthorisedAction.handle(ivrRequest, request, response);
-        assertEquals("<response><playtext>Not authorised</playtext></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response><playtext>Not authorised</playtext><hangup/></response>", StringUtils.replace(handle, "\n", ""));
     }
 
 }

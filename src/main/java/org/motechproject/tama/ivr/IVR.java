@@ -49,5 +49,6 @@ public class IVR {
         public static final String TAMA_IVR_WELCOME_MESSAGE = "welcome.message";
         public static final String TAMA_IVR_REPORT_USER_NOT_FOUND = "report.user.not.found";
         public static final String TAMA_IVR_REPORT_USER_NOT_AUTHORISED = "report.user.not.authorised";
+        public static final String TAMA_IVR_REMIND_FOR_PIN = "remind.for.pin";
     }
 }

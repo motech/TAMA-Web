@@ -24,4 +24,10 @@ public abstract class BaseAction implements IVRAction {
         Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withCollectDtmf(collectDtmf).create();
         return ivrResponse.getXML();
     }
+
+    protected String hangUpResponseWith(IVRRequest ivrRequest, String key) {
+        String playText = messages.get(key);
+        Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withPlayText(playText).withHangUp().create();
+        return ivrResponse.getXML();
+    }
 }

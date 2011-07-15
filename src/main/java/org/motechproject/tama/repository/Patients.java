@@ -39,7 +39,8 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
     public Patient findByMobileNumber(String phoneNumber) {
         ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
-        return db.queryView(q, Patient.class).get(0);
+        List<Patient> patients = db.queryView(q, Patient.class);
+        return singleResult(patients);
     }
 
     public List<Patient> findByPatientIdAndClinicId(final String patientId, final String clinicId) {
@@ -65,7 +66,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
                 return id.equals(patient.getId());
             }
         });
-        return patients.isEmpty() ? null : patients.get(0);
+        return singleResult(patients);
     }
 
     public String findClinicFor(Patient patient) {
@@ -96,5 +97,9 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public void remove(String id) {
         remove(get(id));
+    }
+
+    private Patient singleResult(List<Patient> patients) {
+        return (patients == null || patients.isEmpty()) ? null : patients.get(0);
     }
 }

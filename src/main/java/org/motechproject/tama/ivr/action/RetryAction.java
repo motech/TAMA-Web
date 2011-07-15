@@ -36,7 +36,10 @@ public class RetryAction extends BaseAction {
             session.invalidate();
             return userNotAuthorisedAction.handle(ivrRequest, request, response);
         }
-        session.setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, attempt + 1);
+        if (ivrRequest.hasNoData())
+            return dtmfResponseWith(ivrRequest, IVR.MessageKey.TAMA_IVR_REMIND_FOR_PIN);
+
+        session.setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, ++attempt);
         return dtmfResponseWith(ivrRequest, IVR.MessageKey.TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE);
     }
 

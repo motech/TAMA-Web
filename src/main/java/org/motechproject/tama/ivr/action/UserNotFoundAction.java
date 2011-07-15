@@ -20,6 +20,6 @@ public class UserNotFoundAction extends BaseAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        return responseWith(ivrRequest, IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_FOUND);
+        return hangUpResponseWith(ivrRequest, IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_FOUND);
     }
 }

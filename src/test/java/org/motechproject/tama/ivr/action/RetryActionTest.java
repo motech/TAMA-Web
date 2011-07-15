@@ -27,7 +27,7 @@ public class RetryActionTest extends BaseActionTest {
 
     @Test
     public void shouldGoToUserNotAuthorisedActionIfItIsTheLastAttempt() {
-        IVRRequest ivrRequest = new IVRRequest();
+        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(new Integer(4));
         when(userNotAuthorisedAction.handle(ivrRequest, request, response)).thenReturn("OK");
@@ -40,8 +40,8 @@ public class RetryActionTest extends BaseActionTest {
     }
 
     @Test
-    public void shouldSendRequestForPinAgainIfItIsNotTheLastAttempt() {
-        IVRRequest ivrRequest = new IVRRequest();
+    public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndAlsoIncrementAttemptCount() {
+        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
         when(messages.get(IVR.MessageKey.TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE)).thenReturn("failed");
@@ -49,6 +49,19 @@ public class RetryActionTest extends BaseActionTest {
         String handle = retryAction.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, 1);
-        assertEquals("<response><collectdtmf><playtext>failed</playtext></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>failed</playtext></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
+    }
+
+    @Test
+    public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndNotIncrementAttemptCountWhenPassCodeIsNotSent() {
+        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", null);
+        when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
+        when(messages.get(IVR.MessageKey.TAMA_IVR_REMIND_FOR_PIN)).thenReturn("please enter you pin");
+
+        String handle = retryAction.handle(ivrRequest, request, response);
+
+        verify(session, never()).setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, 0);
+        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>please enter you pin</playtext></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
     }
 }

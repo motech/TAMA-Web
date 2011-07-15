@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr.action;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 @Service
 public class AuthenticateAction extends BaseAction {
+    public static final String POUND_SYMBOL = "%23";
     @Autowired
     private Patients patients;
     @Autowired
@@ -36,11 +38,11 @@ public class AuthenticateAction extends BaseAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
-        String passcode = ivrRequest.getData();
+        String passcode = StringUtils.remove(ivrRequest.getData(), POUND_SYMBOL);
         String mobileNumber = String.valueOf(session.getAttribute(IVR.Attributes.CALLER_ID));
         Patient patient = patients.findByMobileNumber(mobileNumber);
 
-        if (patient == null)
+        if (patient == null || patient.isNotActive())
             return userNotFoundAction.handle(ivrRequest, request, response);
 
         if (!patient.hasPasscode(passcode))

@@ -30,7 +30,7 @@ public class UserNotFoundActionTest extends BaseActionTest {
         when(messages.get(IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_FOUND)).thenReturn("Not found");
 
         String handle = userNotFoundAction.handle(ivrRequest, request, response);
-        assertEquals("<response><playtext>Not found</playtext></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response><playtext>Not found</playtext><hangup/></response>", StringUtils.replace(handle, "\n", ""));
 
     }
 

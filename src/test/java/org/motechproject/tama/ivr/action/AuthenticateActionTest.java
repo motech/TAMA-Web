@@ -56,9 +56,10 @@ public class AuthenticateActionTest extends BaseActionTest {
 
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVR.Attributes.CALLER_ID)).thenReturn(mobileNo);
-        when(patients.findByMobileNumber(mobileNo)).thenReturn(patient);
         when(retryAction.handle(ivrRequest, request, response)).thenReturn("OK");
+        when(patients.findByMobileNumber(mobileNo)).thenReturn(patient);
         when(patient.hasPasscode(passcode)).thenReturn(false);
+        when(patient.isActive()).thenReturn(true);
 
         String handle = authenticateAction.handle(ivrRequest, request, response);
 
@@ -82,6 +83,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(userContinueAction.handle(ivrRequest, request, response)).thenReturn("OK");
         when(patient.hasPasscode(passcode)).thenReturn(true);
         when(patient.getId()).thenReturn("P1");
+        when(patient.isActive()).thenReturn(true);
 
         String handle = authenticateAction.handle(ivrRequest, request, response);
 
