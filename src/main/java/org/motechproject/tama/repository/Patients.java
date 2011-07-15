@@ -2,12 +2,14 @@ package org.motechproject.tama.repository;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.Patient;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,29 +20,51 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     private Clinics clinics;
 
-    public Patients(CouchDbConnector db, Clinics clinics) {
+    private Genders genders;
+
+    private IVRLanguages ivrLanguages;
+
+    public Patients(CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages) {
         super(Patient.class, db);
         this.clinics = clinics;
+        this.genders = genders;
+        this.ivrLanguages = ivrLanguages;
         initStandardDesignDocument();
     }
 
     @View(name = "find_by_patient_id", map = "function(doc) {if (doc.documentType =='Patient' && doc.patientId) {emit(doc.patientId, doc._id);}}")
     public List<Patient> findByPatientId(String patientId) {
         ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
-        return db.queryView(q, Patient.class);
+        List<Patient> patients = db.queryView(q, Patient.class);
+        for (Patient patient : patients) {
+            loadPatientDependencies(patient);
+        }
+        return patients;
     }
 
     @View(name = "find_by_clinic", map = "function(doc) {if (doc.documentType =='Patient' && doc.clinic_id) {emit(doc.clinic_id, doc._id);}}")
     public List<Patient> findByClinic(String clinicId) {
         ViewQuery q = createQuery("find_by_clinic").key(clinicId).includeDocs(true);
-        return db.queryView(q, Patient.class);
+        List<Patient> patients = db.queryView(q, Patient.class);
+        for (Patient patient : patients) {
+            loadPatientDependencies(patient);
+        }
+        return patients;
     }
 
     @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
     public Patient findByMobileNumber(String phoneNumber) {
         ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
-        return singleResult(patients);
+        Patient patient = singleResult(patients);
+        loadPatientDependencies(patient);
+        return patient;
+    }
+
+    private void loadPatientDependencies(Patient patient) {
+       if(!StringUtils.isBlank(patient.getGenderId())) patient.setGender(genders.get(patient.getGenderId()));
+       if(!StringUtils.isBlank(patient.getIvrLanguageId())) patient.setIvrLanguage(ivrLanguages.get(patient.getIvrLanguageId()));
+       if(!StringUtils.isBlank(patient.getClinic_id())) patient.setClinic(clinics.get(patient.getClinic_id()));
     }
 
     public List<Patient> findByPatientIdAndClinicId(final String patientId, final String clinicId) {

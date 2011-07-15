@@ -22,6 +22,8 @@
     <bean id="patients" class="org.motechproject.tama.repository.Patients">
         <constructor-arg ref="couchDbConnector"/>
         <constructor-arg ref="clinics" />
+        <constructor-arg ref="genders" />
+        <constructor-arg ref="ivrlanguages" />
     </bean>
     <bean id="clinicians" class="org.motechproject.tama.repository.Clinicians">
         <constructor-arg ref="couchDbConnector"/>

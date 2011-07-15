@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.motechproject.tama.domain.Clinic;
+import org.motechproject.tama.domain.Gender;
+import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 
 public class PatientBuilder {
@@ -22,6 +24,16 @@ public class PatientBuilder {
 
     public PatientBuilder withDateOfBirth(Date dateOfBirth) {
         patient.setDateOfBirth(dateOfBirth);
+        return this;
+    }
+
+    public PatientBuilder withGender(Gender gender) {
+        patient.setGender(gender);
+        return this;
+    }
+
+    public PatientBuilder withIVRLanguage(IVRLanguage language) {
+        patient.setIvrLanguage(language);
         return this;
     }
 

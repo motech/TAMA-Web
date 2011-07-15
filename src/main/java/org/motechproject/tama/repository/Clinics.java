@@ -1,5 +1,6 @@
 package org.motechproject.tama.repository;
 
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.GenerateView;
 import org.motechproject.tama.domain.Clinic;
@@ -25,9 +26,20 @@ public class Clinics extends AbstractCouchRepository<Clinic> {
     }
 
     @Override
+    public List<Clinic> getAll() {
+        List<Clinic> clinicList = super.getAll();
+        for(Clinic clinic : clinicList) {
+            if (!StringUtils.isEmpty(clinic.getCityId()))
+                clinic.setCity(cities.get(clinic.getCityId()));
+        }
+        return clinicList;
+    }
+
+    @Override
     public Clinic get(String id) {
         Clinic clinic = super.get(id);
-        clinic.setCity(cities.get(clinic.getCityId()));
+        if (!StringUtils.isEmpty(clinic.getCityId()))
+            clinic.setCity(cities.get(clinic.getCityId()));
         return clinic;
     }
 }

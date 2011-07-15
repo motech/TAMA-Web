@@ -17,6 +17,6 @@ public class DrugDosageTest {
         DrugDosage drugDosage = new DrugDosage();
         drugDosage.setStartDate(startDate.getTime());
 
-        Assert.assertEquals(expectedEndDate.getTime(), drugDosage.getEndDate());
+        Assert.assertEquals(expectedEndDate.getTime().getTime(), drugDosage.getEndDate().getTime());
     }
 }

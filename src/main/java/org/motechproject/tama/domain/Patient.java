@@ -166,9 +166,7 @@ public class Patient extends CouchEntity {
 
     @JsonIgnore
     public Gender getGender() {
-        if (this.gender != null) return this.gender;
-        if (this.genderId != null) return Gender.findGender(genderId);
-        return null;
+        return this.gender;
     }
 
     public void setGender(Gender gender) {
@@ -178,9 +176,7 @@ public class Patient extends CouchEntity {
 
     @JsonIgnore
     public IVRLanguage getIvrLanguage() {
-        if (this.ivrLanguage != null) return this.ivrLanguage;
-        if (this.ivrLanguageId != null) return IVRLanguage.findIVRLanguage(ivrLanguageId);
-        return null;
+        return this.ivrLanguage;
     }
 
     public void setIvrLanguage(IVRLanguage ivrLanguage) {

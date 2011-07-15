@@ -6,6 +6,8 @@ import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.Genders;
+import org.motechproject.tama.repository.IVRLanguages;
 import org.motechproject.tama.repository.Patients;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -47,6 +49,10 @@ public class PatientController extends BaseController {
     private Patients patients;
     @Autowired
     private Clinics clinics;
+    @Autowired
+    private Genders genders;
+   @Autowired
+    private IVRLanguages ivrLanguages;
 
     public PatientController() {
     }
@@ -161,11 +167,11 @@ public class PatientController extends BaseController {
 
     private void populateModel(Model uiModel) {
         uiModel.addAttribute("clinics", clinics.getAll());
-        uiModel.addAttribute("ivrlanguages", IVRLanguage.findAllIVRLanguages());
+        uiModel.addAttribute("ivrlanguages", ivrLanguages.getAll());
         uiModel.addAttribute("daysInAMonth", TAMAConstants.Time.MAX_DAYS_IN_A_MONTH.list());
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());
-        uiModel.addAttribute("genders", Gender.findAllGenders());
+        uiModel.addAttribute("genders", genders.getAll());
     }
 
     private void addDateTimeFormat(Model uiModel) {

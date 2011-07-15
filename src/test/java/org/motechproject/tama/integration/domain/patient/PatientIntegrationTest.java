@@ -1,13 +1,18 @@
 package org.motechproject.tama.integration.domain.patient;
 
-import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinic;
+import org.motechproject.tama.domain.Gender;
+import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.integration.domain.SpringIntegrationTest;
 import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.Genders;
+import org.motechproject.tama.repository.IVRLanguages;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,9 +30,34 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
     @Autowired
     private Clinics clinics;
 
+    @Autowired
+    private Genders genders;
+
+    @Autowired
+    private IVRLanguages ivrLanguages;
+    private Gender gender;
+    private IVRLanguage ivrLanguage;
+
+    @Before
+    public void before() {
+        super.before();
+        gender = new Gender("someType");
+        genders.add(gender);
+        ivrLanguage = new IVRLanguage("english");
+        ivrLanguages.add(ivrLanguage);
+    }
+
+    @After
+    public void after() {
+        super.after();
+        markForDeletion(gender);
+        markForDeletion(ivrLanguage);
+    }
+
+
     @Test
     public void shouldLoadPatientByPatientId() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("12345678").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
         patients.add(patient);
         markForDeletion(patient);
         assertEquals(0, patients.findByPatientId("9999").size());
@@ -47,7 +77,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
         clinics.add(anotherClinic);
         markForDeletion(anotherClinic);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).build();
         patients.add(patient);
         patients.add(anotherPatient);
@@ -62,7 +92,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldUpdatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("1234").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("1234").withGender(gender).withIVRLanguage(ivrLanguage).build();
         patients.add(patient);
 
         String mobilePhoneNumber = "9986573310";
@@ -76,7 +106,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldRemovePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).build();
         patients.add(patient);
         markForDeletion(patient);
 
@@ -87,7 +117,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldActivatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("6666").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("6666").withGender(gender).withIVRLanguage(ivrLanguage).build();
         patients.add(patient);
 
         patients.activate(patient.getId());
@@ -99,7 +129,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
 
     @Test
     public void shouldCheckIfActive() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("8888").withStatus(Patient.Status.Active).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("8888").withStatus(Patient.Status.Active).withGender(gender).withIVRLanguage(ivrLanguage).build();
         patients.add(patient);
         markForDeletion(patient);
 
@@ -112,7 +142,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
         clinics.add(clinicForPatient);
         markForDeletion(clinicForPatient);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         patients.add(patient);
         markForDeletion(patient);
 
@@ -127,6 +157,7 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
                 .withDefaults()
                 .withPatientId(id)
                 .withMobileNumber(mobileNumber)
+                .withGender(gender).withIVRLanguage(ivrLanguage)
                 .build();
         patients.add(patient);
 
@@ -146,8 +177,8 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
         clinics.add(anotherClinic);
         markForDeletion(anotherClinic);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).build();
-        Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).withGender(gender).withIVRLanguage(ivrLanguage).build();
         patients.add(patient);
         patients.add(anotherPatient);
         markForDeletion(patient);
