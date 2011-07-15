@@ -54,6 +54,7 @@ public class LoginPage extends Page {
     }
 
     private void login(String userName, String password) {
+        this.userName.click();
         this.userName.sendKeys(userName);
         this.password.sendKeys(password);
         this.userName.submit();

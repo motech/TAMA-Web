@@ -7,7 +7,6 @@ import org.openqa.selenium.support.PageFactory;
 public class MyPageFactory {
     public static <T extends Page> T initElements(WebDriver driver, Class<T> pageClassToProxy) {
         T page = PageFactory.initElements(driver, pageClassToProxy);
-        PageFactory.initElements(new StaleStateAwareElementLocatorFactory(driver,60),page);
         page.postInitialize();
         return page;
     }
