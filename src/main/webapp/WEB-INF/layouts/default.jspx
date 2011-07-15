@@ -41,6 +41,7 @@
                      <spring:message code="button_home"/>
                    </a>
                    <c:if test="${pageContext['request'].userPrincipal != null}">
+
                      <c:out value=" | "/>
                      <span>
                        <spring:url value="/resources/j_spring_security_logout" var="logout"/>
@@ -51,7 +52,16 @@
                    </c:if>
                    <div class="logged_in_clinic">
                        <c:if test="${sessionScope.loggedInUser != null}">
-                              <span><c:out value="${sessionScope.loggedInUser.name} | ${sessionScope.loggedInUser.clinicName}"/></span>
+                            <span><c:out value="${sessionScope.loggedInUser.name} | ${sessionScope.loggedInUser.clinicName}"/></span>
+                            <c:if test="${sessionScope.loggedInUser.clinicName != ''}">
+                               <c:out value=" | "/>
+                            </c:if>
+                            <span>
+                            <spring:url value="/security/changepassword" var="changepassword"/>
+                            <a href="${changepassword}">
+                               <spring:message code="security_change_password"/>
+                            </a>
+                            </span>
                        </c:if>
                    </div>
                </div>
