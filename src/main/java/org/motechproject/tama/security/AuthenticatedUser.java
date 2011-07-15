@@ -18,6 +18,10 @@ public class AuthenticatedUser extends User {
         return tamaUser.getName();
     }
 
+    public TAMAUser getTAMAUser(){
+        return tamaUser;
+    }
+
     public String getClinicId() {
         return tamaUser.getClinicId();
     }
@@ -27,4 +31,7 @@ public class AuthenticatedUser extends User {
     }
 
 
+    public void setPassword(String newPassword) {
+        tamaUser.setPassword(newPassword);
+    }
 }

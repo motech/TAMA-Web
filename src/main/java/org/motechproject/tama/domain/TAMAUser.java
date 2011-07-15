@@ -6,4 +6,6 @@ public interface TAMAUser {
     String getPassword();
     String getClinicId();
     String getClinicName();
+
+    void setPassword(String newPassword);
 }
