@@ -17,7 +17,7 @@ public class Clinic extends CouchEntity{
     private String name;
 
     @NotNull
-    private String addrI needed an address proof, for getting a TATA Photon.ess;
+    private String address;
 
     private String phone;
 
