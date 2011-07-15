@@ -1,5 +1,6 @@
 package org.motechproject.tama.integration.domain.patient;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
@@ -133,6 +134,30 @@ public class PatientIntegrationTest extends SpringIntegrationTest {
         assertNotNull(loadedPatient);
         assertEquals(id, loadedPatient.getPatientId());
         assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());
+    }
+
+    @Test
+    public void shouldFindByIdAndClinicId() {
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        clinics.add(clinicForPatient);
+        markForDeletion(clinicForPatient);
+
+        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withName("anotherClinic").build();
+        clinics.add(anotherClinic);
+        markForDeletion(anotherClinic);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).build();
+        Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).build();
+        patients.add(patient);
+        patients.add(anotherPatient);
+        markForDeletion(patient);
+        markForDeletion(anotherPatient);
+
+        Patient dbPatient1 = patients.findByIdAndClinicId(patient.getId(), clinicForPatient.getId());
+        assertEquals(patient.getId(), dbPatient1.getId());
+
+        Patient dbPatient2 = patients.findByIdAndClinicId(anotherPatient.getId(), anotherClinic.getId());
+        assertEquals(anotherPatient.getId(), dbPatient2.getId());
     }
 
 }

@@ -1,12 +1,13 @@
 package org.motechproject.tama.ivr;
 
-import org.motechproject.tama.ivr.action.IVRAction;
-
 public class IVRRequest {
     private String sid;
     private String cid;
     private String event;
     private String data;
+
+    public IVRRequest() {
+    }
 
     public IVRRequest(String sid, String cid, String event, String data) {
         this.sid = sid;
@@ -47,9 +48,7 @@ public class IVRRequest {
         this.data = data;
     }
 
-    public IVRAction getAction() {
-        IVR.Event event = IVR.Event.valueOf(this.event);
-        return event.getAction();
+    public IVR.Event callEvent() {
+        return IVR.Event.keyOf(this.event);
     }
-
 }

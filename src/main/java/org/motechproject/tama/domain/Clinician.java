@@ -38,8 +38,6 @@ public class Clinician extends CouchEntity implements TAMAUser {
     private String clinicId;
     private Role role;
 
-    private static Logger LOG = Logger.getLogger(Clinician.class);
-
     public String getName() {
         return this.name;
     }

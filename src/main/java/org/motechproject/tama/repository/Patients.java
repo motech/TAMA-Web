@@ -9,6 +9,7 @@ import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.Patient;
 
+import java.util.Collections;
 import java.util.List;
 
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
@@ -40,16 +41,28 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public List<Patient> findByPatientIdAndClinicId(final String patientId, final String clinicId) {
         List<Patient> patients = findByClinic(clinicId);
-        if (patients != null) {
-            CollectionUtils.filter(patients, new Predicate() {
-                @Override
-                public boolean evaluate(Object o) {
-                    Patient patient = (Patient) o;
-                    return patientId.equals(patient.getPatientId());
-                }
-            });
-        }
+        if (patients == null) return patients;
+        CollectionUtils.filter(patients, new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                Patient patient = (Patient) o;
+                return patientId.equals(patient.getPatientId());
+            }
+        });
         return patients;
+    }
+
+    public Patient findByIdAndClinicId(final String id, String clinicId) {
+        List<Patient> patients = findByClinic(clinicId);
+        if (patients == null) return null;
+        CollectionUtils.filter(patients, new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                Patient patient = (Patient) o;
+                return id.equals(patient.getId());
+            }
+        });
+        return patients.isEmpty() ? null : patients.get(0);
     }
 
     public String findClinicFor(Patient patient) {

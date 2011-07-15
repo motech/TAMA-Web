@@ -12,8 +12,6 @@ import org.motechproject.tama.security.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -78,9 +76,9 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String show(@PathVariable("id") String id, Model uiModel) {
+    public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         addDateTimeFormat(uiModel);
-        uiModel.addAttribute(PATIENT, patients.get(id));
+        uiModel.addAttribute(PATIENT, patients.findByIdAndClinicId(id, loggedInClinic(request)));
         uiModel.addAttribute(ITEM_ID, id);
         return SHOW_VIEW;
     }
@@ -106,8 +104,8 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String updateForm(@PathVariable("id") String id, Model uiModel) {
-        uiModel.addAttribute(PATIENT, patients.get(id));
+    public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
+        uiModel.addAttribute(PATIENT, patients.findByIdAndClinicId(id, loggedInClinic(request)));
         populateModel(uiModel);
         addDateTimeFormat(uiModel);
         return UPDATE_VIEW;
