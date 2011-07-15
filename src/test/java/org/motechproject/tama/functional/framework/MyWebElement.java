@@ -31,6 +31,7 @@ public class MyWebElement implements WebElement {
     public void sendKeys(CharSequence... keysToSend) {
         click();
         clear();
+        click();
         webElement.sendKeys(keysToSend);
     }
 
