@@ -18,7 +18,7 @@ public class Clinician extends CouchEntity implements TAMAUser {
     private String name;
     @NotNull
     private String username;
-    @NotNull                                                                                                       I needed an address proof, for getting a TATA Photon.
+    @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     private String contactNumber;
     @ManyToOne
