@@ -43,9 +43,7 @@ public class IVR {
 
     public static class MessageKey {
         public static final String TAMA_SIGNATURE_MUSIC_URL = "signature.music.url";
-        public static final String TAMA_IVR_ASK_FOR_PIN = "ask.for.pin";
         public static final String TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE = "ask.for.pin.after.failure";
-        public static final String TAMA_IVR_RESPONSE_AFTER_AUTH = "ask.for.response.after.authorisation";
         public static final String TAMA_IVR_WELCOME_MESSAGE = "welcome.message";
         public static final String TAMA_IVR_REPORT_USER_NOT_FOUND = "report.user.not.found";
         public static final String TAMA_IVR_REPORT_USER_NOT_AUTHORISED = "report.user.not.authorised";

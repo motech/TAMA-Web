@@ -9,7 +9,6 @@ import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseAction implements IVRAction {
-    @Autowired
     protected IVRMessage messages;
 
     protected String responseWith(IVRRequest ivrRequest, String key) {

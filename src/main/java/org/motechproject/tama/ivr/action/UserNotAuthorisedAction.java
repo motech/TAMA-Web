@@ -3,6 +3,7 @@ package org.motechproject.tama.ivr.action;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class UserNotAuthorisedAction extends BaseAction {
 
-    public UserNotAuthorisedAction() {
-    }
-
+    @Autowired
     public UserNotAuthorisedAction(IVRMessage messages) {
         this.messages = messages;
     }

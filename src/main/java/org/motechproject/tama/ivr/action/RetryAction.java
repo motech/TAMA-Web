@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 public class RetryAction extends BaseAction {
     @Value("#{ivrProperties['max.number.of.attempts']}")
     private Integer maxNoOfAttempts;
-
     @Autowired
     private UserNotAuthorisedAction userNotAuthorisedAction;
 

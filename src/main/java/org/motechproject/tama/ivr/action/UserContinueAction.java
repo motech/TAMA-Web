@@ -1,27 +1,44 @@
 package org.motechproject.tama.ivr.action;
 
+import com.ozonetel.kookoo.Response;
+import org.apache.commons.lang.StringUtils;
+import org.motechproject.tama.domain.Clinic;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
+import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.Patients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Service
 public class UserContinueAction extends BaseAction {
+    private Patients patients;
+    private Clinics clinics;
 
-    public UserContinueAction() {
-    }
-
-    public UserContinueAction(IVRMessage messages) {
+    @Autowired
+    public UserContinueAction(IVRMessage messages, Patients patients, Clinics clinics) {
+        this.patients = patients;
+        this.clinics = clinics;
         this.messages = messages;
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        return responseWith(ivrRequest, IVR.MessageKey.TAMA_IVR_RESPONSE_AFTER_AUTH);
+        HttpSession session = request.getSession(false);
+        String id = (String) session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID);
+        Patient patient = patients.get(id);
+        Clinic clinic = clinics.get(patient.getClinic_id());
 
+        String playText = StringUtils.replace(messages.get(IVR.MessageKey.TAMA_IVR_WELCOME_MESSAGE), "{0}", clinic.getName());
+        Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withPlayText(playText).create();
+        return ivrResponse.getXML();
     }
 
 }

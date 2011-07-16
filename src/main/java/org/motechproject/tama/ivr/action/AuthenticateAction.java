@@ -16,18 +16,12 @@ import javax.servlet.http.HttpSession;
 @Service
 public class AuthenticateAction extends BaseAction {
     public static final String POUND_SYMBOL = "%23";
-    @Autowired
     private Patients patients;
-    @Autowired
     private RetryAction retryAction;
-    @Autowired
     private UserNotFoundAction userNotFoundAction;
-    @Autowired
     private UserContinueAction userContinueAction;
 
-    public AuthenticateAction() {
-    }
-
+    @Autowired
     public AuthenticateAction(Patients patients, RetryAction retryAction, UserNotFoundAction userNotFoundAction, UserContinueAction userContinueAction) {
         this.patients = patients;
         this.retryAction = retryAction;
