@@ -2,25 +2,23 @@ package org.motechproject.tama.tools.seed;
 
 import org.apache.log4j.Logger;
 
-public abstract class Seed
-{
-	
-	Logger LOGGER = Logger.getLogger(this.getClass());
-	
-	public void run() {
-		preLoad();
-		load();
-		postLoad();
-	}
-	
-	private void postLoad() {
-		LOGGER.info("Seed finished.");
-	}
+public abstract class Seed {
+    Logger LOG = Logger.getLogger(this.getClass());
 
-	private void preLoad() {
-		LOGGER.info("Seed started.");
-	}
+    public void run() {
+        preLoad();
+        load();
+        postLoad();
+    }
 
-	protected abstract void load();
-	
+    private void postLoad() {
+        LOG.info("Seed finished.");
+    }
+
+    private void preLoad() {
+        LOG.info("Seed started.");
+    }
+
+    protected abstract void load();
+
 }

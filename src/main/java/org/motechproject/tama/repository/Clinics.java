@@ -6,15 +6,16 @@ import org.ektorp.support.GenerateView;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Company;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class Clinics extends AbstractCouchRepository<Clinic> {
 
-    @Autowired
     private Cities cities;
 
-
+    @Autowired
     public Clinics(CouchDbConnector db, Cities cities) {
         super(Clinic.class, db);
         this.cities = cities;

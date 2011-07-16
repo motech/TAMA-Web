@@ -18,6 +18,12 @@ public abstract class BaseAction implements IVRAction {
         return ivrResponse.getXML();
     }
 
+    protected String hangUpResponseWith(IVRRequest ivrRequest, String key) {
+        String playText = messages.get(key);
+        Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withPlayText(playText).withHangUp().create();
+        return ivrResponse.getXML();
+    }
+
     protected String dtmfResponseWith(IVRRequest ivrRequest, String key) {
         String playText = messages.get(key);
         CollectDtmf collectDtmf = new IVRDtmfBuilder().withPlayText(playText).create();
@@ -25,9 +31,10 @@ public abstract class BaseAction implements IVRAction {
         return ivrResponse.getXML();
     }
 
-    protected String hangUpResponseWith(IVRRequest ivrRequest, String key) {
-        String playText = messages.get(key);
-        Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withPlayText(playText).withHangUp().create();
+    protected String dtmfResponseWithWav(IVRRequest ivrRequest, String key) {
+        String playAudio = messages.get(key);
+        CollectDtmf collectDtmf = new IVRDtmfBuilder().withPlayAudio(playAudio).create();
+        Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withCollectDtmf(collectDtmf).create();
         return ivrResponse.getXML();
     }
 }

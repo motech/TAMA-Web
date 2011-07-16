@@ -2,13 +2,17 @@ package org.motechproject.tama.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.motechproject.tama.domain.MealAdviceType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@Repository
 public class MealAdviceTypes extends AbstractCouchRepository<MealAdviceType>{
 
+    @Autowired
 	public MealAdviceTypes(CouchDbConnector db) {
 		super(MealAdviceType.class, db);
 	}

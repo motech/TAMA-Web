@@ -26,7 +26,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
     }
 
     @Test
-    public void shouldReturnUserProceedResponse() {
+    public void shouldReturnUserNptAuthorisedResponse() {
         IVRRequest ivrRequest = new IVRRequest();
         when(messages.get(IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_AUTHORISED)).thenReturn("Not authorised");
 

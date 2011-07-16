@@ -2,15 +2,20 @@ package org.motechproject.tama.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.motechproject.tama.domain.DosageType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@Repository
 public class DosageTypes extends AbstractCouchRepository<DosageType> {
-	protected DosageTypes(CouchDbConnector db) {
-		super(DosageType.class, db); 
-	}
+
+    @Autowired
+    protected DosageTypes(CouchDbConnector db) {
+        super(DosageType.class, db);
+    }
 
     @Override
     public List<DosageType> getAll() {

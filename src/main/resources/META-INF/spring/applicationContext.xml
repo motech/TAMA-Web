@@ -19,51 +19,6 @@
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
-    <bean id="patients" class="org.motechproject.tama.repository.Patients">
-        <constructor-arg ref="couchDbConnector"/>
-        <constructor-arg ref="clinics" />
-        <constructor-arg ref="genders" />
-        <constructor-arg ref="ivrlanguages" />
-    </bean>
-    <bean id="clinicians" class="org.motechproject.tama.repository.Clinicians">
-        <constructor-arg ref="couchDbConnector"/>
-        <constructor-arg ref="encryptor" />
-        <constructor-arg ref="clinics" />
-    </bean>
-    <bean id="genders" class="org.motechproject.tama.repository.Genders">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="treatmentAdvices" class="org.motechproject.tama.repository.TreatmentAdvices">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="ivrlanguages" class="org.motechproject.tama.repository.IVRLanguages">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="drugs" class="org.motechproject.tama.repository.Drugs">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="companies" class="org.motechproject.tama.repository.Companies">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="dosageTypes" class="org.motechproject.tama.repository.DosageTypes">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="regimens" class="org.motechproject.tama.repository.Regimens">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="mealAdviceTypes" class="org.motechproject.tama.repository.MealAdviceTypes">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="clinics" class="org.motechproject.tama.repository.Clinics">
-        <constructor-arg ref="couchDbConnector"/>
-        <constructor-arg ref="cities" />
-    </bean>
-    <bean id="cities" class="org.motechproject.tama.repository.Cities">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
-    <bean id="administrators" class="org.motechproject.tama.repository.Administrators">
-        <constructor-arg ref="couchDbConnector"/>
-    </bean>
     <bean class="org.motechproject.tama.domain.Administrator"/>
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">

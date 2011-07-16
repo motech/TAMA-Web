@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class NewCallEventActionTest extends BaseActionTest {
-    private IVRAction action;
+    private NewCallEventAction action;
 
     @Before
     public void setUp() {
@@ -37,10 +37,10 @@ public class NewCallEventActionTest extends BaseActionTest {
     public void shouldSendThePinRequestXMLResponse() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", "9898982323", IVR.Event.NEW_CALL.key(), "Data");
         when(request.getSession()).thenReturn(session);
-        when(messages.get(IVR.MessageKey.TAMA_IVR_ASK_FOR_PIN)).thenReturn("Please enter key");
+        when(messages.get(IVR.MessageKey.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://server/tama.wav");
 
         String handle = action.handle(ivrRequest, request, response);
-        assertEquals("<response sid=\"unique-call-id\"><collectdtmf><playtext>Please enter key</playtext></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"unique-call-id\"><collectdtmf><playaudio>http://server/tama.wav</playaudio></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
     }
 
 }

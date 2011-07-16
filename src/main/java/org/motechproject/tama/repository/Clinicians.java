@@ -6,18 +6,16 @@ import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class Clinicians extends AbstractCouchRepository<Clinician> {
-
-    @Autowired
     private Clinics clinics;
-
-    @Autowired
     private PBEStringEncryptor encryptor;
 
-
+    @Autowired
     public Clinicians(CouchDbConnector db, PBEStringEncryptor encryptor, Clinics clinics) {
         super(Clinician.class, db);
         this.clinics = clinics;

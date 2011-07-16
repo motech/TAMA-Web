@@ -5,12 +5,16 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.TreatmentAdvice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 @View( name="all", map = "function(doc) { if (doc.documentType == 'TreatmentAdvice') { emit(null, doc) } }")
 public class TreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvice> {
 
+    @Autowired
     public TreatmentAdvices(CouchDbConnector db) {
         super(TreatmentAdvice.class, db);
         initStandardDesignDocument();

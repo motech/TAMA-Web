@@ -10,20 +10,19 @@ import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
 
+@Repository
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
 public class Patients extends CouchDbRepositorySupport<Patient> {
-    private static Logger LOG = Logger.getLogger(Patients.class);
-
     private Clinics clinics;
-
     private Genders genders;
-
     private IVRLanguages ivrLanguages;
 
+    @Autowired
     public Patients(CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages) {
         super(Patient.class, db);
         this.clinics = clinics;
@@ -59,12 +58,6 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
         Patient patient = singleResult(patients);
         loadPatientDependencies(patient);
         return patient;
-    }
-
-    private void loadPatientDependencies(Patient patient) {
-       if(!StringUtils.isBlank(patient.getGenderId())) patient.setGender(genders.get(patient.getGenderId()));
-       if(!StringUtils.isBlank(patient.getIvrLanguageId())) patient.setIvrLanguage(ivrLanguages.get(patient.getIvrLanguageId()));
-       if(!StringUtils.isBlank(patient.getClinic_id())) patient.setClinic(clinics.get(patient.getClinic_id()));
     }
 
     public List<Patient> findByPatientIdAndClinicId(final String patientId, final String clinicId) {
@@ -121,6 +114,12 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public void remove(String id) {
         remove(get(id));
+    }
+
+    private void loadPatientDependencies(Patient patient) {
+        if(!StringUtils.isBlank(patient.getGenderId())) patient.setGender(genders.get(patient.getGenderId()));
+        if(!StringUtils.isBlank(patient.getIvrLanguageId())) patient.setIvrLanguage(ivrLanguages.get(patient.getIvrLanguageId()));
+        if(!StringUtils.isBlank(patient.getClinic_id())) patient.setClinic(clinics.get(patient.getClinic_id()));
     }
 
     private Patient singleResult(List<Patient> patients) {
