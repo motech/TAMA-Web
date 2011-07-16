@@ -7,9 +7,9 @@
 	<bean id="seedLoader" class="org.motechproject.tama.tools.seed.SeedLoader">
 		<constructor-arg>
 			<list>
-				<ref bean="mealAdviceSeed"/>
+				<ref bean="mealAdviceTypeSeed"/>
 				<ref bean="genderSeed"/>
-				<ref bean="ivrLanguageSeed"/>
+				<ref bean="IVRLanguageSeed"/>
 				<ref bean="dosageTypeSeed"/>
 				<ref bean="companySeed"/>
 				<ref bean="drugSeed"/>
@@ -19,16 +19,6 @@
 			</list>
 		</constructor-arg>
 	</bean>
-
-	<bean id="mealAdviceSeed" class="org.motechproject.tama.tools.seed.MealAdviceTypeSeed" />
-	<bean id="genderSeed" class="org.motechproject.tama.tools.seed.GenderSeed" />
-	<bean id="ivrLanguageSeed" class="org.motechproject.tama.tools.seed.IVRLanguageSeed" />
-	<bean id="dosageTypeSeed" class="org.motechproject.tama.tools.seed.DosageTypeSeed" />
-	<bean id="companySeed" class="org.motechproject.tama.tools.seed.CompanySeed" />
-	<bean id="drugSeed" class="org.motechproject.tama.tools.seed.DrugSeed" />
-	<bean id="regimenSeed" class="org.motechproject.tama.tools.seed.RegimenSeed" />
-	<bean id="citySeed" class="org.motechproject.tama.tools.seed.CitySeed" />
-	<bean id="administratorSeed" class="org.motechproject.tama.tools.seed.AdministratorSeed" />
 
     <bean id="couchDB" class="org.motechproject.tama.tools.CouchDB"/>
 </beans>

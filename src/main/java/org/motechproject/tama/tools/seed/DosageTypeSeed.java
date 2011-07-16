@@ -3,7 +3,9 @@ package org.motechproject.tama.tools.seed;
 import org.motechproject.tama.domain.DosageType;
 import org.motechproject.tama.repository.DosageTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DosageTypeSeed extends Seed {
 
 	@Autowired

@@ -7,7 +7,9 @@ import java.util.Map;
 import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.repository.Companies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CompanySeed extends Seed {
 
 	@Autowired

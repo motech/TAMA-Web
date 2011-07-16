@@ -5,11 +5,13 @@ import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.repository.Drugs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
+@Service
 public class DrugSeed extends Seed {
 
 	@Autowired

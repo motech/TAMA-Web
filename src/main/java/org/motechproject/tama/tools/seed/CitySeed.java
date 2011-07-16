@@ -3,7 +3,9 @@ package org.motechproject.tama.tools.seed;
 import org.motechproject.tama.domain.City;
 import org.motechproject.tama.repository.Cities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CitySeed extends Seed {
     @Autowired
     private Cities cities;
