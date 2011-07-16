@@ -5,7 +5,9 @@ import org.motechproject.tama.repository.Administrators;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AdminSecurityGroup extends AbstractSecurityGroup {
     @Autowired
     private Administrators administrators;

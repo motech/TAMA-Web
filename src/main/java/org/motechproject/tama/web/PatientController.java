@@ -2,8 +2,6 @@ package org.motechproject.tama.web;
 
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Clinics;
 import org.motechproject.tama.repository.Genders;
@@ -155,7 +153,7 @@ public class PatientController extends BaseController {
     }
 
     private String loggedInClinic(HttpServletRequest request) {
-        AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR);
+        AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
         return user.getClinicId();
     }
 

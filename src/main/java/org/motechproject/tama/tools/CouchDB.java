@@ -5,7 +5,6 @@ import org.ektorp.CouchDbInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class CouchDB {
-
     @Autowired
     private CouchDbInstance couchDbInstance;
     @Autowired

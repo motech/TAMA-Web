@@ -19,8 +19,6 @@
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
-    <bean class="org.motechproject.tama.domain.Administrator"/>
-
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
         <property name="algorithm" value="PBEWithMD5AndDES"/>
         <property name="password" value="jasypt"/>
@@ -34,7 +32,6 @@
         <constructor-arg value="tama-web"/>
         <constructor-arg ref="couchDbInstance"/>
     </bean>
-    
     <bean id="actions" class="org.motechproject.tama.ivr.action.Actions">
         <constructor-arg>
             <map>

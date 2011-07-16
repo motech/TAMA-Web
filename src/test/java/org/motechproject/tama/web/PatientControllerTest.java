@@ -76,7 +76,7 @@ public class PatientControllerTest {
         when(patientFromDb.getId()).thenReturn("couchDbId");
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
@@ -94,7 +94,7 @@ public class PatientControllerTest {
         when(request.getHeader("Referer")).thenReturn(previousPage);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
@@ -113,7 +113,7 @@ public class PatientControllerTest {
         when(request.getHeader("Referer")).thenReturn(previousPage);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
@@ -134,7 +134,7 @@ public class PatientControllerTest {
         when(uiModel.asMap()).thenReturn(modelMap);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER_ATTR)).thenReturn(user);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
 
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);

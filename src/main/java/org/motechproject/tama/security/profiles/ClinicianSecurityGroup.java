@@ -5,7 +5,9 @@ import org.motechproject.tama.repository.Clinicians;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ClinicianSecurityGroup extends AbstractSecurityGroup {
     @Autowired
     private Clinicians clinicians;
