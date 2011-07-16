@@ -12,16 +12,16 @@ public class AdministratorIntegrationTest extends SpringIntegrationTest {
     private Administrators administrators;
 
     @Test
-    public void shouldFetchTheAdministrator() {
+    public void shouldFetchTheAdministratorWithPasswordDecrypted() {
         Administrator administrator = new Administrator();
-        administrator.setUsername("admin");
+        administrator.setUsername("new_admin");
         administrator.setPassword("password");
 
         administrators.add(administrator);
         markForDeletion(administrator);
 
-        Administrator dbAdministrator = administrators.findByUserNameAndPassword("admin", "password");
-        assertEquals(dbAdministrator.getUsername(), "admin");
+        Administrator dbAdministrator = administrators.findByUserNameAndPassword("new_admin", "password");
+        assertEquals(dbAdministrator.getUsername(), "new_admin");
         assertEquals(dbAdministrator.getPassword(), "password");
     }
 

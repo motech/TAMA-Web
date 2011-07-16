@@ -23,6 +23,6 @@ public class AdminSecurityGroup extends AbstractSecurityGroup {
     public AuthenticatedUser getAuthenticatedUser(String username, String password) {
         Administrator administrator = administrators.findByUserNameAndPassword(username, password);
         if (administrator == null) return null;
-        return createUser(administrator, administrator.getName());
+        return userFor(administrator);
     }
 }

@@ -15,19 +15,14 @@ public class Administrator extends CouchEntity implements TAMAUser {
     private String username;
     private String password;
     private String encryptedPassword;
-    private StandardPBEStringEncryptor encryptor;
 
     public Administrator() {
-        encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword("jasypt");
-        encryptor.setAlgorithm("PBEWithMD5AndDES");
-    }
 
+    }
     public Administrator(String name, String username, String password) {
-        this();
         this.username = username;
         this.name = name;
-        setPassword(password);
+        this.password = password;
     }
 
     @Override
@@ -62,14 +57,11 @@ public class Administrator extends CouchEntity implements TAMAUser {
 
     @JsonIgnore
     public String getPassword() {
-        if (this.password != null) return this.password;
-        if (this.encryptedPassword != null) return this.encryptor.decrypt(encryptedPassword);
-        return null;
+        return this.password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-        this.encryptedPassword = this.encryptor.encrypt(password);
     }
 
     public String getEncryptedPassword() {
@@ -81,6 +73,6 @@ public class Administrator extends CouchEntity implements TAMAUser {
     }
 
     public boolean credentialsAre(String password) {
-        return getPassword().equals(password);
+        return this.password.equals(password);
     }
 }
