@@ -10,6 +10,7 @@ import org.motechproject.tama.repository.IVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseAction implements IVRAction {
+    @Autowired
     protected IVRMessage messages;
     protected IVRCallAudits audits;
 

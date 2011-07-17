@@ -45,11 +45,12 @@ public class RetryActionTest extends BaseActionTest {
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
         when(messages.get(IVR.MessageKey.TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE)).thenReturn("failed");
+        when(messages.get(IVR.MessageKey.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://music");
 
         String handle = retryAction.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, 1);
-        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>failed</playtext></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>failed</playtext><playaudio>http://music</playaudio></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
     }
 
     @Test

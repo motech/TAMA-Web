@@ -5,7 +5,7 @@ import org.ektorp.support.TypeDiscriminator;
 import java.util.Date;
 
 @TypeDiscriminator("doc.documentType == 'IVRCallAudit'")
-public class IVRCallAudit {
+public class IVRCallAudit extends CouchEntity {
     private String cid;
     private String sid;
     private String patientId;
