@@ -1,9 +1,9 @@
-package org.motechproject.tama.integration;
+package org.motechproject.tama.integration.repository;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.integration.domain.SpringIntegrationTest;
+import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.repository.TreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,18 +1,15 @@
-package org.motechproject.tama.integration;
+package org.motechproject.tama.integration.repository;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.domain.Drug;
-import org.motechproject.tama.integration.domain.SpringIntegrationTest;
+import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.repository.DosageTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
 import java.util.List;
 
-public class DosageTypesTest extends SpringIntegrationTest {
+public class DosagesTest extends SpringIntegrationTest {
 
     @Autowired
     DosageTypes dosageTypes;

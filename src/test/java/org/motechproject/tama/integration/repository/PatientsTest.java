@@ -1,4 +1,4 @@
-package org.motechproject.tama.integration.domain.patient;
+package org.motechproject.tama.integration.repository;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +9,7 @@ import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.integration.domain.SpringIntegrationTest;
+import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.repository.Clinics;
 import org.motechproject.tama.repository.Genders;
 import org.motechproject.tama.repository.IVRLanguages;
@@ -23,7 +23,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class PatientIntegrationTest extends SpringIntegrationTest {
+public class PatientsTest extends SpringIntegrationTest {
     @Autowired
     private Patients patients;
 

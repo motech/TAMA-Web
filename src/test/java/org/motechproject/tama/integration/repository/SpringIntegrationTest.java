@@ -1,4 +1,4 @@
-package org.motechproject.tama.integration.domain;
+package org.motechproject.tama.integration.repository;
 
 import java.util.ArrayList;
 

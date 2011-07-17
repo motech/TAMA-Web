@@ -6,10 +6,12 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.builder.IVRDtmfBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
+import org.motechproject.tama.repository.IVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseAction implements IVRAction {
     protected IVRMessage messages;
+    protected IVRCallAudits audits;
 
     protected String responseWith(IVRRequest ivrRequest, String key) {
         String playText = messages.get(key);

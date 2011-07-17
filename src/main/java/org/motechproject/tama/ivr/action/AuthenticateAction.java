@@ -39,9 +39,10 @@ public class AuthenticateAction extends BaseAction {
         if (patient == null || patient.isNotActive())
             return userNotFoundAction.handle(ivrRequest, request, response);
 
-        if (!patient.hasPasscode(passcode))
+        if (!patient.hasPasscode(passcode)) {
+            session.setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patient.getId());
             return retryAction.handle(ivrRequest, request, response);
-
+        }
         session.invalidate();
         session = request.getSession();
         session.setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patient.getId());

@@ -1,10 +1,10 @@
-package org.motechproject.tama.integration;
+package org.motechproject.tama.integration.repository;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.domain.Drug;
-import org.motechproject.tama.integration.domain.SpringIntegrationTest;
+import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.repository.Drugs;
 import org.springframework.beans.factory.annotation.Autowired;
 

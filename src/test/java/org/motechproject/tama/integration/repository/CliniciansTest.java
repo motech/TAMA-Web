@@ -1,7 +1,6 @@
-package org.motechproject.tama.integration.domain;
+package org.motechproject.tama.integration.repository;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.ClinicianBuilder;
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
-public class ClinicianIntegrationTest extends SpringIntegrationTest{
+public class CliniciansTest extends SpringIntegrationTest {
 
     @Autowired
     private Clinicians clinicians;
@@ -61,7 +60,7 @@ public class ClinicianIntegrationTest extends SpringIntegrationTest{
     }
 
     @Test
-    public void shouldFindByUserNameAndPassword(){
+    public void shouldFindByUserNameAndPassword() {
         City city = City.newCity("Test");
         cities.add(city);
         Clinic testClinic = ClinicBuilder.startRecording().withName("testClinic").withCity(city).build();
@@ -75,5 +74,20 @@ public class ClinicianIntegrationTest extends SpringIntegrationTest{
         markForDeletion(testClinician);
     }
 
+    @Test
+    public void shouldLoadCorrespondingClinicWhenQueryingClinician() {
+        City city = City.newCity("Test");
+        cities.add(city);
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
+        clinics.add(clinic);
+        Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withUserName("foo").build();
+        clinicians.add(clinician);
+        Clinician returnedClinician = clinicians.findByUsername("foo");
+        assertNotNull(returnedClinician);
+        assertNotNull(returnedClinician.getClinic());
+        assertNotNull(returnedClinician.getClinic().getName().equals(clinic.getName()));
 
+        markForDeletion(clinic);
+        markForDeletion(clinician);
+    }
 }

@@ -1,16 +1,11 @@
-package org.motechproject.tama.integration;
+package org.motechproject.tama.integration.repository;
 
 import org.junit.Test;
-import org.motechproject.tama.domain.City;
-import org.motechproject.tama.integration.domain.SpringIntegrationTest;
-import org.motechproject.tama.repository.Cities;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
+import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 
 import static junit.framework.Assert.assertEquals;
 
-public class CityIntegrationTest extends SpringIntegrationTest {
+public class CitysTest extends SpringIntegrationTest {
 //
 //    @Autowired
 //    private Cities cities;

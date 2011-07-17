@@ -1,5 +1,6 @@
-package org.motechproject.tama.integration.domain;
+package org.motechproject.tama.integration.repository;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
-public class ClinicIntegrationTest extends SpringIntegrationTest {
+public class ClinicsTest extends SpringIntegrationTest {
 
     @Autowired
     private Clinics clinics;
@@ -55,5 +56,18 @@ public class ClinicIntegrationTest extends SpringIntegrationTest {
         assertNotNull(clinic);
         assertEquals(newName, clinic.getName());
         markForDeletion(testClinic);
+    }
+
+
+    @Test
+    public void shouldLoadCorrespondingCityWhenQueryingClinic() {
+        City city = City.newCity("Pune");
+        cities.add(city);
+        Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
+        clinics.add(clinic);
+        Clinic returnedClinic = clinics.get(clinic.getId());
+        Assert.assertNotNull(returnedClinic);
+        Assert.assertNotNull(returnedClinic.getCity());
+        Assert.assertEquals("Pune", returnedClinic.getCity().getName());
     }
 }

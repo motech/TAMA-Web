@@ -1,13 +1,14 @@
-package org.motechproject.tama.repository;
+package org.motechproject.tama.integration.repository;
 
 import org.junit.Test;
 import org.motechproject.tama.domain.Administrator;
-import org.motechproject.tama.integration.domain.SpringIntegrationTest;
+import org.motechproject.tama.integration.repository.SpringIntegrationTest;
+import org.motechproject.tama.repository.Administrators;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.assertEquals;
 
-public class AdministratorIntegrationTest extends SpringIntegrationTest {
+public class AdministratorsTest extends SpringIntegrationTest {
     @Autowired
     private Administrators administrators;
 
