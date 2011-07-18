@@ -5,7 +5,9 @@ import org.motechproject.tama.domain.Administrator;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.TAMAUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class TAMAUsers {
 
     @Autowired
@@ -14,15 +16,12 @@ public class TAMAUsers {
     @Autowired
     Administrators administrators;
 
-    public TAMAUsers(){
-
-    }
-
-    public void put(TAMAUser user){
+    public void update(TAMAUser user){
        if(user instanceof Clinician){
            clinicians.update((Clinician)user);
        }else if(user instanceof Administrator){
            administrators.update((Administrator)user);
        }
+
     }
 }

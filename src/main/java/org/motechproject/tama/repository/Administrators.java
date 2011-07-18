@@ -30,6 +30,12 @@ public class Administrators extends CouchDbRepositorySupport<Administrator> {
         super.add(administrator);
     }
 
+    @Override
+    public void update(Administrator administrator) {
+        administrator.setEncryptedPassword(encryptor.encrypt(administrator.getPassword()));
+        super.update(administrator);
+    }
+
     public Administrator findByUserNameAndPassword(String username, String password) {
         Administrator administrator = findByUsername(username);
         if (administrator != null && administrator.credentialsAre(password)) return administrator;
