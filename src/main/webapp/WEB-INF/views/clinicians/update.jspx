@@ -9,5 +9,6 @@
         <field:input field="alternateContactNumber" id="c_org_motechproject_tama_domain_Clinician_alternateContactNumber" z="hHrY/N/BZnieD/xEE9pKvuGiu4g=" validationRegex="^[0-9]{10}$"/>
         <field:input field="password" id="c_org_motechproject_tama_domain_Clinician_password" z="Di5/oYS0+lZ7+inW++ojVVhZA5g=" render="false" disableFormBinding="false" disabled="true" />
         <field:select field="clinic" id="c_org_motechproject_tama_domain_Clinician_clinic" itemValue="id" items="${clinics}" path="/clinics" z="hNH07ivdEgsVTsaM5s/h5ALaRK8="/>
+        <field:select field="role" id="c_org_motechproject_tama_domain_Clinician_role"  items="${roles}" path="/role" required="true" z="hNH07ivdEgsVTsaM5s/h5ALaRK8=" label="Role"/>
     </form:update>
 </div>
