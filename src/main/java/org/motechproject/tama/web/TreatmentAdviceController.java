@@ -1,6 +1,8 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
@@ -36,17 +38,20 @@ public class TreatmentAdviceController extends BaseController {
     private TreatmentAdvices treatmentAdvices;
     @Autowired
     private Patients patients;
+    @Autowired
+    private PillReminderService pillReminderService;
 
     protected TreatmentAdviceController() {
     }
 
-    public TreatmentAdviceController(TreatmentAdvices treatmentAdvices, Patients patients, Regimens regimens, Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes) {
+    public TreatmentAdviceController(TreatmentAdvices treatmentAdvices, Patients patients, Regimens regimens, Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes, PillReminderService pillReminderService) {
         this.treatmentAdvices = treatmentAdvices;
         this.patients = patients;
         this.regimens = regimens;
         this.drugs = drugs;
         this.dosageTypes = dosageTypes;
         this.mealAdviceTypes = mealAdviceTypes;
+        this.pillReminderService = pillReminderService;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
@@ -69,6 +74,7 @@ public class TreatmentAdviceController extends BaseController {
         }
         uiModel.asMap().clear();
         treatmentAdvices.add(treatmentAdvice);
+        pillReminderService.createNew(new PillRegimenRequestMapper().map(treatmentAdvice));
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 

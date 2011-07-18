@@ -3,6 +3,8 @@ package org.motechproject.tama.web;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
@@ -30,6 +32,7 @@ public class TreatmentAdviceControllerTest {
     private Drugs drugs;
     private DosageTypes dosageTypes;
     private MealAdviceTypes mealAdviceTypes;
+    private PillReminderService pillReminderService;
 
     @Before
     public void setUp() {
@@ -39,10 +42,23 @@ public class TreatmentAdviceControllerTest {
         drugs = mock(Drugs.class);
         dosageTypes = mock(DosageTypes.class);
         mealAdviceTypes = mock(MealAdviceTypes.class);
+        pillReminderService = mock(PillReminderService.class);
 
-        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes);
+        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes, pillReminderService);
+
         request = mock(HttpServletRequest.class);
         uiModel = mock(Model.class);
+    }
+
+    @Test
+    public void shouldCreatePillRegimenRequest() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+        treatmentAdvice.setPatientId("1234");
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+
+        controller.create(treatmentAdvice, bindingResult, uiModel, httpServletRequest);
+        verify(pillReminderService).createNew(any(PillRegimenRequest.class));
     }
 
     @Test
