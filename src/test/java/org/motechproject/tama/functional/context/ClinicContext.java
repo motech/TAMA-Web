@@ -32,7 +32,7 @@ public class ClinicContext extends AbstractContext{
         return clinic.getName();
     }
 
-    protected Clinic getClinic() {
+    public Clinic getClinic() {
         return clinic;
     }
 }

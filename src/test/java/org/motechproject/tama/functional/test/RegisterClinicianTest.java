@@ -4,10 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.ClinicianBuilder;
-import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
+import org.motechproject.tama.functional.context.ClinicContext;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
@@ -30,13 +29,11 @@ public class RegisterClinicianTest extends BaseTest {
 
     @Test
     public void testClinicianRegistration() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic).build();
+        ClinicContext clinicContext = new ClinicContext();
+        buildContexts(clinicContext);
+        Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinicContext.getClinic()).build();
         ShowClinicianPage showClinicianPage = MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
-                .goToClinicRegistrationPage()
-                .registerClinic(clinic)
-                .goToHomePage()
                 .goToClinicianRegistrationPage()
                 .registerClinician(clinician);
 
