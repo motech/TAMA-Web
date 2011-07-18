@@ -10,8 +10,8 @@ public abstract class AbstractContext implements Context{
 
     private final List<Context> dependencies;
 
-    public AbstractContext(Context... preConditions){
-        this.dependencies = Arrays.asList(preConditions);
+    public AbstractContext(Context... dependencies){
+        this.dependencies = Arrays.asList(dependencies);
     }
 
     @Override

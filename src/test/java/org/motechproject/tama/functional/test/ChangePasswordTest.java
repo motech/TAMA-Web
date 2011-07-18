@@ -4,6 +4,7 @@ package org.motechproject.tama.functional.test;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.functional.context.ClinicContext;
 import org.motechproject.tama.functional.context.ClinicianContext;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
@@ -62,7 +63,8 @@ public class ChangePasswordTest extends BaseTest {
         String clinicianForPasswordChangeTest = "clinicianForPasswordChangeTest";
         String clinicianPassword = "clinicianPassword";
 
-        buildContexts(new ClinicianContext("clinicForPasswordChangeTest", clinicianForPasswordChangeTest, clinicianPassword));
+
+        buildContexts(new ClinicianContext(clinicianForPasswordChangeTest, clinicianPassword, new ClinicContext("clinicForPasswordChangeTest")));
 
         ChangePasswordPage changePasswordPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianForPasswordChangeTest, clinicianPassword).goToChangePasswordPage();

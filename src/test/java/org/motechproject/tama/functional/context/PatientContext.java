@@ -17,6 +17,11 @@ public class PatientContext extends AbstractContext {
         this.clinicianContext = clinicianContext;
     }
 
+    public PatientContext() {
+        this.patientId = new PatientBuilder().withDefaults().build().getPatientId();
+        this.clinicianContext = new ClinicianContext();
+    }
+
     @Override
     protected void create(WebDriver webDriver) {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
