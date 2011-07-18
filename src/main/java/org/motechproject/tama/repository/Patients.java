@@ -117,9 +117,11 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     }
 
     private void loadPatientDependencies(Patient patient) {
-        if(!StringUtils.isBlank(patient.getGenderId())) patient.setGender(genders.get(patient.getGenderId()));
-        if(!StringUtils.isBlank(patient.getIvrLanguageId())) patient.setIvrLanguage(ivrLanguages.get(patient.getIvrLanguageId()));
-        if(!StringUtils.isBlank(patient.getClinic_id())) patient.setClinic(clinics.get(patient.getClinic_id()));
+        if (patient == null) return;
+        if (!StringUtils.isBlank(patient.getGenderId())) patient.setGender(genders.get(patient.getGenderId()));
+        if (!StringUtils.isBlank(patient.getIvrLanguageId()))
+            patient.setIvrLanguage(ivrLanguages.get(patient.getIvrLanguageId()));
+        if (!StringUtils.isBlank(patient.getClinic_id())) patient.setClinic(clinics.get(patient.getClinic_id()));
     }
 
     private Patient singleResult(List<Patient> patients) {

@@ -1,5 +1,6 @@
 package org.motechproject.tama.functional.framework;
 
+import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 
@@ -9,6 +10,10 @@ public class MyWebClient {
 
     private WebClient webClient = new WebClient();
 
+    public MyWebClient() {
+        webClient.getCookieManager().setCookiesEnabled(true);
+    }
+
     public Page getPage(String url) {
         try {
             return webClient.getPage(url);
@@ -17,4 +22,8 @@ public class MyWebClient {
         }
     }
 
+    public void shutDown() {
+        webClient.getCookieManager().clearCookies();
+        webClient.closeAllWindows();
+    }
 }

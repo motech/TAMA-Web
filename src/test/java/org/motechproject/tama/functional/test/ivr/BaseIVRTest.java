@@ -2,10 +2,11 @@ package org.motechproject.tama.functional.test.ivr;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.tama.functional.framework.BaseTest;
 
 import static org.apache.commons.lang.StringUtils.replace;
 
-public abstract class BaseIVRTest {
+public abstract class BaseIVRTest extends BaseTest{
 
     protected String urlWith(String sid, String cid, String event) {
         String url = "http://localhost:" + System.getProperty("jetty.port", "8080") + "/tama/ivr/reply?sid={sid}&cid={cid}&event={event}";
