@@ -4,6 +4,7 @@ package org.motechproject.tama.functional.test;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.functional.context.ClinicianContext;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.framework.MyWebElement;
@@ -16,9 +17,7 @@ import org.openqa.selenium.WebElement;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
@@ -55,7 +54,21 @@ public class ChangePasswordTest extends BaseTest {
         PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput("password", "newPassword", "newPassword");
 
         assertNotNull(successPage.getSuccessMessageElement());
-        cleanUp("newPassword","password");
+        cleanUp("newPassword", "password");
+    }
+
+    @Test
+    public void testChangePasswordForClinician() {
+        String clinicianForPasswordChangeTest = "clinicianForPasswordChangeTest";
+        String clinicianPassword = "clinicianPassword";
+
+        buildContexts(new ClinicianContext("clinicForPasswordChangeTest", clinicianForPasswordChangeTest, clinicianPassword));
+
+        ChangePasswordPage changePasswordPage = MyPageFactory.initElements(webDriver, LoginPage.class).
+                loginWithClinicianUserNamePassword(clinicianForPasswordChangeTest, clinicianPassword).goToChangePasswordPage();
+
+        PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput(clinicianPassword, "newPassword", "newPassword");
+        assertNotNull(successPage.getSuccessMessageElement());
     }
 
     private void cleanUp(String oldPassword, String newPassword) {

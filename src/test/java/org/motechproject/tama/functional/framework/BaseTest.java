@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.motechproject.tama.functional.context.Context;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 public abstract class BaseTest {
     @Rule
@@ -23,6 +25,12 @@ public abstract class BaseTest {
     public void setUp() {
         webDriver = WebDriverFactory.getInstance();
         webDriver.get(LoginPage.LOGIN_URL);
+    }
+
+    protected void buildContexts(Context... contexts) {
+        for (Context context : Arrays.asList(contexts)) {
+            context.build(webDriver);
+        }
     }
 
     @After

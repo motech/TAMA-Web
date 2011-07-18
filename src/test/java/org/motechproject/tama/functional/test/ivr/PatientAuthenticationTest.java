@@ -1,28 +1,24 @@
 package org.motechproject.tama.functional.test.ivr;
 
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.functional.context.ClinicianContext;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.framework.MyWebClient;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.ShowPatientPage;
-import org.motechproject.tama.functional.preset.ClinicianPreset;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -56,10 +52,11 @@ public class PatientAuthenticationTest extends BaseIVRTest {
 
     @Test
     public void shouldTestConversationForActivatedAndWrongPasscode() {
-        Clinician clinician = new ClinicianPreset(webDriver).create();
+        ClinicianContext clinicianContext = new ClinicianContext();
+        buildContexts(clinicianContext);
         Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("9876543210").withPasscode("5678").build();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
+                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
         showPatientPage.activatePatient().logout();

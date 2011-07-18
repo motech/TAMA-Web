@@ -7,14 +7,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceViewBuilder;
-import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.functional.context.ClinicianContext;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
-import org.motechproject.tama.functional.page.ShowPatientPage;
 import org.motechproject.tama.functional.page.ViewARTRegimenPage;
-import org.motechproject.tama.functional.preset.ClinicianPreset;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,18 +31,19 @@ public class PatientARTRegimenTest  extends BaseTest {
 
     @Test
     public void testPatientARTRegimen() {
-        Clinician clinician = new ClinicianPreset(webDriver).create();
+        ClinicianContext clinicianContext = new ClinicianContext();
+        buildContexts(clinicianContext);
         TreatmentAdviceView treatmentAdvice = TreatmentAdviceViewBuilder.startRecording().withDefaults().build();
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
         ViewARTRegimenPage viewARTRegimenPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
+                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient)
                 .activatePatient()
                 .goToCreateARTRegimenPage()
                 .registerNewARTRegimen(treatmentAdvice)
-                .goToViewARTRegimenPage();;
+                .goToViewARTRegimenPage();
         Assert.assertEquals(viewARTRegimenPage.getPatientId(), treatmentAdvice.getPatientId());
         Assert.assertEquals(viewARTRegimenPage.getRegimenName(), treatmentAdvice.getRegimenName());
         Assert.assertEquals(viewARTRegimenPage.getRegimenCompositionName(), treatmentAdvice.getRegimenCompositionName());

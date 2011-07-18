@@ -6,15 +6,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.functional.context.ClinicianContext;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.ListPatientsPage;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.page.Page;
 import org.motechproject.tama.functional.page.ShowPatientPage;
-import org.motechproject.tama.functional.preset.ClinicianPreset;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,19 +26,20 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(locations = "/testApplicationContext.xml")
 public class SearchPatientByIdTest extends BaseTest {
 
-    private Clinician clinician;
+    private ClinicianContext clinicianContext;
 
     @Before
     public void setUp() {
         super.setUp();
-        clinician = new ClinicianPreset(webDriver).create();
+        clinicianContext = new ClinicianContext();
+        buildContexts(clinicianContext);
     }
 
     @Test
     public void testSuccessfulPatientSearch() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("xyz1234").build();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
+                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient).
                 goToListPatientsPage().
@@ -56,7 +56,7 @@ public class SearchPatientByIdTest extends BaseTest {
 
         String non_existing_id = "non_existing_id";
         Page listPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
+                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToListPatientsPage().
                 unsuccessfulSearchPatientBy(non_existing_id, ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
 

@@ -4,12 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.builder.ClinicBuilder;
-import org.motechproject.tama.builder.ClinicianBuilder;
-import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.functional.context.ClinicianContext;
+import org.motechproject.tama.functional.context.PatientContext;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.ListPatientsPage;
@@ -35,63 +31,35 @@ public class ClinicianSecurityTest extends BaseTest {
 
     @Test
     public void shouldVerifyIfCorrectPatientsAreSeenByLoggedInClinician() {
-        Clinician clinician1 = createClinicAndClinicianWith("Clinic1", "Clinician1", "cl1", "cl1");
-        Patient patient1 = createPatientWith(clinician1, "P1");
+        String clinicianUsername1 = "cl1";
+        String clinicianPassword1 = "cl1";
+        String clinicianUsername2 = "cl2";
+        String clinicianPassword2 = "cl2";
+        PatientContext patientContext1 = new PatientContext("P1", new ClinicianContext("Clinic1", clinicianUsername1, clinicianPassword1));
+        PatientContext patientContext2 = new PatientContext("P2", new ClinicianContext("Clinic2", clinicianUsername2, clinicianPassword2));
 
-        Clinician clinician2 = createClinicAndClinicianWith("Clinic2", "Clinician2", "cl2", "cl2");
-        Patient patient2 = createPatientWith(clinician2, "P2");
+        buildContexts(patientContext1,patientContext2);
 
-
-        ListPatientsPage listPatientsPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician1.getUsername(), clinician1.getPassword())
+        ListPatientsPage listPatientsPage = MyPageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithClinicianUserNamePassword(clinicianUsername1, clinicianPassword1)
                 .goToListPatientsPage();
-        ShowPatientPage showPatientPage = listPatientsPage.searchPatientBy(patient1.getPatientId());
-        assertEquals(showPatientPage.getPatientId(), patient1.getPatientId());
+        ShowPatientPage showPatientPage = listPatientsPage.searchPatientBy(patientContext1.getPatientId());
+        assertEquals(showPatientPage.getPatientId(), patientContext1.getPatientId());
 
-        Page page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patient2.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
-        assertEquals(String.format("Patient with id: %s not found", patient2.getPatientId()), page.getPatientSearchErrorMessage());
+        Page page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patientContext2.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
+        assertEquals(String.format("Patient with id: %s not found", patientContext2.getPatientId()), page.getPatientSearchErrorMessage());
         page.logout();
-
 
 
         listPatientsPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician2.getUsername(), clinician2.getPassword())
+                loginWithClinicianUserNamePassword(clinicianUsername2, clinicianPassword2)
                 .goToListPatientsPage();
-        showPatientPage = listPatientsPage.searchPatientBy(patient2.getPatientId());
-        assertEquals(showPatientPage.getPatientId(), patient2.getPatientId());
+        showPatientPage = listPatientsPage.searchPatientBy(patientContext2.getPatientId());
+        assertEquals(showPatientPage.getPatientId(), patientContext2.getPatientId());
 
-        page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patient1.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
-        assertEquals(String.format("Patient with id: %s not found", patient1.getPatientId()), page.getPatientSearchErrorMessage());
+        page = showPatientPage.goToListPatientsPage().unsuccessfulSearchPatientBy(patientContext1.getPatientId(), ListPatientsPage.class, ListPatientsPage.LIST_PATIENT_PANE_ID);
+        assertEquals(String.format("Patient with id: %s not found", patientContext1.getPatientId()), page.getPatientSearchErrorMessage());
         page.logout();
-    }
-
-    private Clinician createClinicAndClinicianWith(String clinicName, String clinicianName, String clinicianUsername, String clinicianPassword) {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName(clinicName).build();
-        MyPageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithCorrectAdminUserNamePassword()
-                .goToClinicRegistrationPage()
-                .registerClinic(clinic)
-                .logout();
-
-        Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic).
-                withName(clinicianName).withUserName(clinicianUsername).withPassword(clinicianPassword).build();
-
-        MyPageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithCorrectAdminUserNamePassword()
-                .goToClinicianRegistrationPage()
-                .registerClinician(clinician)
-                .logout();
-        return clinician;
-    }
-
-    private Patient createPatientWith(Clinician clinician, String patientId) {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
-        MyPageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword())
-                .goToPatientRegistrationPage()
-                .registerNewPatient(patient)
-                .logout();
-        return patient;
     }
 
     @After
