@@ -86,10 +86,7 @@ public class OutboundCallServiceTest {
         public boolean matches(Object o) {
             GetMethod getMethod = (GetMethod) o;
             try {
-                return "http://kookoo/outbound.php".equals(getMethod.getURI().getURI())
-                        && "KKbedce53758c2e0b0e9eed7191ec2a466".equals(getMethod.getParams().getParameter("api_key"))
-                        && "http://localhost/tama/ivr/reply".equals(getMethod.getParams().getParameter("url"))
-                        && "09876543210".equals(getMethod.getParams().getParameter("phone_no"));
+                return getMethod.getURI().getURI().equals("http://kookoo/outbound.php?api_key=KKbedce53758c2e0b0e9eed7191ec2a466&url=http://localhost/tama/ivr/reply&phone_no=09876543210");
             } catch (URIException e) {
                 return false;
             }

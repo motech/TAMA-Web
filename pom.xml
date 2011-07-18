@@ -101,6 +101,9 @@
                             <includes>
                                 <include>**/functional/**/*Test.java</include>
                             </includes>
+                            <excludes>
+                                <exclude>**/functional/**/OutboundPatientCallTest.java</exclude>
+                            </excludes>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
                         </configuration>
                     </plugin>

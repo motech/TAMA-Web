@@ -1,6 +1,7 @@
 package org.motechproject.tama.ivr.outbound;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Patients;
@@ -19,9 +20,10 @@ public class OutboundCallService {
     public static final String APPLICATION_URL = "application.url";
 
     @Autowired
-    private Patients patients;
     @Qualifier("ivrProperties")
     private Properties properties;
+    @Autowired
+    private Patients patients;
     private HttpClient client;
 
     public OutboundCallService() {
@@ -39,9 +41,11 @@ public class OutboundCallService {
         if (patient == null || patient.isNotActive()) return;
 
         GetMethod getMethod = new GetMethod(properties.get(KOOKOO_OUTBOUND_URL).toString());
-        getMethod.getParams().setParameter("api_key", properties.get(KOOKOO_API_KEY));
-        getMethod.getParams().setParameter("url", properties.get(APPLICATION_URL));
-        getMethod.getParams().setParameter("phone_no", patient.getIVRMobilePhoneNumber());
+        getMethod.setQueryString(new NameValuePair[]{
+                new NameValuePair("api_key", properties.get(KOOKOO_API_KEY).toString()),
+                new NameValuePair("url", properties.get(APPLICATION_URL).toString()),
+                new NameValuePair("phone_no", patient.getIVRMobilePhoneNumber())
+        });
         try {
             client.executeMethod(getMethod);
         } catch (IOException e) {
