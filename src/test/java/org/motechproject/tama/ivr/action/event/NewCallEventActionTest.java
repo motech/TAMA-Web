@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr.action.event;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.ivr.IVR;
