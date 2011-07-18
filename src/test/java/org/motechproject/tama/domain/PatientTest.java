@@ -83,6 +83,12 @@ public class PatientTest {
         Assert.assertTrue(patient.getStatus().equals(Patient.Status.Active));
     }
 
+    @Test
+    public void shouldGetIVRMobilePhoneNumber(){
+        Patient patient = PatientBuilder.startRecording().withMobileNumber("9876543210").build();
+        Assert.assertEquals("09876543210", patient.getIVRMobilePhoneNumber());
+    }
+
     private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {
 
         for (ConstraintViolation<Patient> patientViolation : constraintViolations) {

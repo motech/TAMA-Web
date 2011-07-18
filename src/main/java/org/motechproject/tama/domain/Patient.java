@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.TAMAConstants;
@@ -58,6 +59,11 @@ public class Patient extends CouchEntity {
 
     public boolean hasPasscode(String passcode) {
         return this.passcode.equals(passcode);
+    }
+
+    @JsonIgnore
+    public String getIVRMobilePhoneNumber() {
+        return String.format("0%s", mobilePhoneNumber);
     }
 
     public enum ReminderCall {
