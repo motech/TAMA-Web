@@ -53,7 +53,8 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
     public Patient findByMobileNumber(String phoneNumber) {
-        ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
+        String mobileNumber =  phoneNumber.length() > 10 ? phoneNumber.substring(1) : phoneNumber;
+        ViewQuery q = createQuery("find_by_mobile_number").key(mobileNumber).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
         Patient patient = singleResult(patients);
         loadPatientDependencies(patient);

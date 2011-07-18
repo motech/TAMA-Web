@@ -165,6 +165,28 @@ public class PatientsTest extends SpringIntegrationTest {
         assertNotNull(loadedPatient);
         assertEquals(id, loadedPatient.getPatientId());
         assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());
+
+        markForDeletion(patient);
+    }
+
+    @Test
+    public void shouldGetPatientByIVRMobileNumber() {
+        String mobileNumber = "9898982323";
+        String id = "12345678";
+        Patient patient = PatientBuilder.startRecording()
+                .withDefaults()
+                .withPatientId(id)
+                .withMobileNumber(mobileNumber)
+                .withGender(gender).withIVRLanguage(ivrLanguage)
+                .build();
+        patients.add(patient);
+
+        Patient loadedPatient = patients.findByMobileNumber(patient.getIVRMobilePhoneNumber());
+        assertNotNull(loadedPatient);
+        assertEquals(id, loadedPatient.getPatientId());
+        assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());
+
+        markForDeletion(patient);
     }
 
     @Test
