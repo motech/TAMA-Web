@@ -37,7 +37,7 @@ public class SearchPatientByIdTest extends BaseTest {
 
     @Test
     public void testSuccessfulPatientSearch() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("xyz1234").build();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToPatientRegistrationPage().
