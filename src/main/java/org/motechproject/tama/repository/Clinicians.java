@@ -1,5 +1,6 @@
 package org.motechproject.tama.repository;
 
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.GenerateView;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
@@ -34,8 +35,7 @@ public class Clinicians extends AbstractCouchRepository<Clinician> {
         List<Clinician> clinicians = queryView("by_username", username);
         if (clinicians != null && !clinicians.isEmpty()) {
             Clinician clinician = clinicians.get(0);
-            Clinic clinic = clinics.get(clinician.getClinicId());
-            clinician.setClinic(clinic);
+            loadDependencies(clinician);
             clinician.setPassword(encryptor.decrypt(clinician.getEncryptedPassword()));
             return clinician;
         }
@@ -55,8 +55,22 @@ public class Clinicians extends AbstractCouchRepository<Clinician> {
     }
 
     @Override
+    public List<Clinician> getAll() {
+        List<Clinician> clinicianList = super.getAll();
+        for(Clinician clinician : clinicianList) {
+            loadDependencies(clinician);
+        }
+        return clinicianList;
+    }
+
+    private void loadDependencies(Clinician clinician) {
+        if(!StringUtils.isEmpty(clinician.getClinicId())) clinician.setClinic(clinics.get(clinician.getClinicId()));
+    }
+
+    @Override
     public Clinician get(String id) {
         Clinician clinician = super.get(id);
+        loadDependencies(clinician);
         clinician.setPassword(encryptor.decrypt(clinician.getPassword()));
         return clinician;
     }

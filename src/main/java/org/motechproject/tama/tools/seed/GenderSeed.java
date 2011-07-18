@@ -13,7 +13,7 @@ public class GenderSeed extends Seed {
 	
 	@Override
 	public void load() {
-		genders.add(new Gender("Male"));
-		genders.add(new Gender("Female"));
+		genders.add(Gender.newGender("Male"));
+		genders.add(Gender.newGender("Female"));
 	}
 }

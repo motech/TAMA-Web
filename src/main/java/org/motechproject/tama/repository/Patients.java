@@ -116,6 +116,13 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
         remove(get(id));
     }
 
+    @Override
+    public Patient get(String id) {
+        Patient patient = super.get(id);
+        loadPatientDependencies(patient);
+        return patient;
+    }
+
     private void loadPatientDependencies(Patient patient) {
         if (patient == null) return;
         if (!StringUtils.isBlank(patient.getGenderId())) patient.setGender(genders.get(patient.getGenderId()));

@@ -15,9 +15,9 @@ public class Gender extends CouchEntity{
 
 	public Gender() {
 	}
-    
-	public Gender(String type) {
-		this.type = type;
+
+	public Gender(String id) {
+		this.setId(id);
 	}
 
      public String getType() {
@@ -26,5 +26,11 @@ public class Gender extends CouchEntity{
     
     public void setType(String type) {
         this.type = type;
+    }
+
+    public static Gender newGender(String type) {
+        Gender gender = new Gender();
+        gender.setType(type);
+        return gender;
     }
 }

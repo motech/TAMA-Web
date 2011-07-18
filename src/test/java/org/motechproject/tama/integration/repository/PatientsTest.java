@@ -41,17 +41,17 @@ public class PatientsTest extends SpringIntegrationTest {
     @Before
     public void before() {
         super.before();
-        gender = new Gender("someType");
+        gender = Gender.newGender("Male");
         genders.add(gender);
-        ivrLanguage = new IVRLanguage("english");
+        ivrLanguage = new IVRLanguage("English");
         ivrLanguages.add(ivrLanguage);
     }
 
     @After
     public void after() {
-        super.after();
         markForDeletion(gender);
         markForDeletion(ivrLanguage);
+        super.after();
     }
 
 
