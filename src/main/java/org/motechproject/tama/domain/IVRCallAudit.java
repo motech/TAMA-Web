@@ -1,6 +1,7 @@
 package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.util.DateUtility;
 
 import java.util.Date;
 
@@ -20,7 +21,7 @@ public class IVRCallAudit extends CouchEntity {
         this.sid = sid;
         this.patientId = patientId;
         this.state = state;
-        this.dateTime = new Date();
+        this.dateTime = DateUtility.now();
     }
 
     public String getCid() {

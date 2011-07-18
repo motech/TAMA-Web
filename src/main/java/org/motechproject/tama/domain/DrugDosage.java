@@ -1,6 +1,7 @@
 package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.tama.util.DateUtility;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
@@ -92,7 +93,7 @@ public class DrugDosage extends BaseEntity {
 
     public Date getStartDate() {
         if (startDate == null) {
-            this.startDate = new Date();
+            this.startDate = DateUtility.now();
         }
         return this.startDate;
     }

@@ -1,10 +1,10 @@
 package org.motechproject.tama.domain;
 
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
+import org.motechproject.tama.util.DateUtility;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.ManyToOne;
@@ -153,7 +153,7 @@ public class Patient extends CouchEntity {
 
     public Date getRegistrationDate() {
         if (this.registrationDate == null) {
-            this.registrationDate = new Date();
+            this.registrationDate = DateUtility.now();
         }
         return this.registrationDate;
     }
