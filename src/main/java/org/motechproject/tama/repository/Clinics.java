@@ -22,10 +22,6 @@ public class Clinics extends AbstractCouchRepository<Clinic> {
         initStandardDesignDocument();
     }
 
-    public List<Clinic> findClinicEntries(int i, int sizeNo) {
-        return getAll();
-    }
-
     @Override
     public List<Clinic> getAll() {
         List<Clinic> clinicList = super.getAll();
