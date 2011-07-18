@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
 public class PatientAuthenticationTest extends BaseIVRTest {
-    Logger LOG = Logger.getLogger(this.getClass());
     private MyWebClient webClient;
 
     @Before
@@ -63,7 +62,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
                 loginWithClinicianUserNamePassword(clinician.getUsername(), clinician.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
-        showPatientPage.logout();
+        showPatientPage.activatePatient().logout();
 
         Page page = webClient.getPage(urlWith("123", "9876543210", "NewCall", ""));
         WebResponse webResponse = page.getWebResponse();
@@ -73,9 +72,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
         page = webClient.getPage(urlWith("123", "9876543210", "GotDTMF","1234#"));
         webResponse = page.getWebResponse();
         response = print(webResponse.getContentAsString());
-        LOG.error(response);
-        assertEquals("<response sid=\"123\"><playtext>Your mobile number is not registered.</playtext><hangup/></response>", response);
-
+        assertTrue(StringUtils.contains(response,"<response sid=\"123\"><collectdtmf><playtext>Your passcode is incorrect. Please enter the correct passcode and press # sign.</playtext>"));
     }
 
     @After
