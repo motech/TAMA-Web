@@ -54,7 +54,7 @@ public abstract class Page {
         return errorDiv.getText();
     }
 
-    public WebElement getLinksDiv() {
+    public WebElement getNavigationLinks() {
         waitForElementWithIdToLoad("links");
         return webDriver.findElement(By.id("links"));
     }

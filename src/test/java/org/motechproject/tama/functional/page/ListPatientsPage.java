@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.page;
 
 import org.motechproject.tama.functional.framework.MyPageFactory;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -62,5 +63,11 @@ public class ListPatientsPage extends Page {
 
     public String getListPatientsPane() {
         return listPatientsPane.getText();
+    }
+
+    public ChangePasswordPage goToChangePasswordPage() {
+        WebElement changePasswordLink = getNavigationLinks().findElement(By.id("changePasswordLink"));
+        changePasswordLink.click();
+        return MyPageFactory.initElements(webDriver, ChangePasswordPage.class);
     }
 }

@@ -7,44 +7,60 @@ import org.junit.runner.RunWith;
 import org.motechproject.tama.functional.framework.BaseTest;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.framework.MyWebElement;
+import org.motechproject.tama.functional.page.ChangePasswordPage;
 import org.motechproject.tama.functional.page.ListPatientsPage;
 import org.motechproject.tama.functional.page.LoginPage;
+import org.motechproject.tama.functional.page.PasswordSuccessPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/testApplicationContext.xml")
-public class ChangePasswordTest extends BaseTest{
-
-    public static final String CHANGE_PASSWORD_URL = "http://localhost:"+System.getProperty("jetty.port","8080")+"/tama/changePassword";
+public class ChangePasswordTest extends BaseTest {
 
     @Before
-    public void setUp(){
+    public void setUp() {
         super.setUp();
     }
 
     @Test
-    public void changePasswordLinkShouldNotBeShownOnTheLoginPage() {
-        MyWebElement linksDiv = new MyWebElement(MyPageFactory.initElements(webDriver,LoginPage.class).getLinksDiv());
-        assertNull(linksDiv.findElement(By.id("changePasswordLink")));
+    public void testChangePasswordLinkShouldNotBeShownOnTheLoginPage() {
+        MyWebElement navigationLinks = new MyWebElement(MyPageFactory.initElements(webDriver, LoginPage.class).getNavigationLinks());
+        assertNull(navigationLinks.findElement(By.id("changePasswordLink")));
     }
 
     @Test
-    public void changePasswordLinkShouldBeInLinksDivSoThatItIsShownOnAllPages() {
+    public void testChangePasswordLinkShouldBeShownOnAllPages() {
         ListPatientsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
-        WebElement linksDiv = homePage.getLinksDiv();
-        assertNotNull(linksDiv.findElement(By.id("changePasswordLink")));
+        WebElement navigationLinks = homePage.getNavigationLinks();
+        assertNotNull(navigationLinks.findElement(By.id("changePasswordLink")));
     }
 
     @Test
-    public void shouldNotGoToChangePasswordPageWhenUserNotLoggedIn() {
-        webDriver.get(CHANGE_PASSWORD_URL);
-        MyWebElement links = new MyWebElement(webDriver.findElement(By.id("links")));
-        assertNull(links.findElement(By.id("changePasswordLink")));
+    public void testShouldNavigateToLoginPageWhenUserNotLoggedIn() {
+        webDriver.get(ChangePasswordPage.CHANGE_PASSWORD_URL);
+        assertEquals(LoginPage.LOGIN_URL, webDriver.getCurrentUrl());
+    }
+
+    @Test
+    public void testChangePasswordForAdministrator() {
+        ListPatientsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
+        ChangePasswordPage changePasswordPage = homePage.goToChangePasswordPage();
+        PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput("password", "newPassword", "newPassword");
+
+        assertNotNull(successPage.getSuccessMessageElement());
+        cleanUp("newPassword","password");
+    }
+
+    private void cleanUp(String oldPassword, String newPassword) {
+        webDriver.get(ChangePasswordPage.CHANGE_PASSWORD_URL);
+        ChangePasswordPage changePasswordPage = MyPageFactory.initElements(webDriver, ChangePasswordPage.class);
+        changePasswordPage.submitWithValidInput(oldPassword, newPassword, newPassword);
     }
 }

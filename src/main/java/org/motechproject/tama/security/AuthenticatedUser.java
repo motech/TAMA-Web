@@ -30,6 +30,10 @@ public class AuthenticatedUser extends User {
         return tamaUser.getClinicName();
     }
 
+    public String getPassword(){
+        return tamaUser.getPassword();
+    }
+
 
     public void setPassword(String newPassword) {
         tamaUser.setPassword(newPassword);
