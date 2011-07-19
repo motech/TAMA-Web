@@ -18,9 +18,9 @@ public class TAMAUsers {
 
     public void update(TAMAUser user){
        if(user instanceof Clinician){
-           clinicians.update((Clinician)user);
+           clinicians.updatePassword((Clinician)user);
        }else if(user instanceof Administrator){
-           administrators.update((Administrator)user);
+           administrators.updatePassword((Administrator)user);
        }
 
     }

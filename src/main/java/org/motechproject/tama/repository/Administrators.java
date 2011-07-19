@@ -30,8 +30,7 @@ public class Administrators extends CouchDbRepositorySupport<Administrator> {
         super.add(administrator);
     }
 
-    @Override
-    public void update(Administrator administrator) {
+    public void updatePassword(Administrator administrator) {
         administrator.setEncryptedPassword(encryptor.encrypt(administrator.getPassword()));
         super.update(administrator);
     }

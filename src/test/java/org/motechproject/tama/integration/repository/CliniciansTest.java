@@ -90,4 +90,24 @@ public class CliniciansTest extends SpringIntegrationTest {
         markForDeletion(clinic);
         markForDeletion(clinician);
     }
+
+    @Test
+    public void shouldUpdateClinicianPassword() {
+       City city = City.newCity("Test");
+        cities.add(city);
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
+        clinics.add(clinic);
+        Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withPassword("bar").withUserName("foo").build();
+        clinicians.add(clinician);
+        Clinician returnedClinician = clinicians.findByUsername("foo");
+        assertEquals("bar",returnedClinician.getPassword());
+
+        returnedClinician.setPassword("foobar");
+        clinicians.updatePassword(returnedClinician);
+        returnedClinician = clinicians.findByUsername("foo");
+        assertEquals("foobar",returnedClinician.getPassword());
+
+        markForDeletion(clinic);
+        markForDeletion(returnedClinician);
+    }
 }

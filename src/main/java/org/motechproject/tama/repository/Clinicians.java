@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.GenerateView;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
-import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -53,6 +52,13 @@ public class Clinicians extends AbstractCouchRepository<Clinician> {
         Clinician dbClinician = get(clinician.getId());
         clinician.setRevision(dbClinician.getRevision());
         clinician.setEncryptedPassword(dbClinician.getEncryptedPassword());
+        super.update(clinician);
+    }
+
+    public void updatePassword(Clinician clinician){
+        Clinician dbClinician = get(clinician.getId());
+        clinician.setRevision(dbClinician.getRevision());
+        clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
         super.update(clinician);
     }
 
