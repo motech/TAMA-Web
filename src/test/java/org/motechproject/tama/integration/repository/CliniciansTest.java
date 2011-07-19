@@ -8,6 +8,7 @@ import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.repository.Cities;
+import org.motechproject.tama.repository.ClinicianIds;
 import org.motechproject.tama.repository.Clinicians;
 import org.motechproject.tama.repository.Clinics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class CliniciansTest extends SpringIntegrationTest {
 
     @Autowired
     private Clinicians clinicians;
+
+    @Autowired
+    private ClinicianIds cliniciansIds;
 
     @Autowired
     private Clinics clinics;
@@ -33,20 +37,21 @@ public class CliniciansTest extends SpringIntegrationTest {
     @Test
     public void testShouldPersistClinician() {
         String name = "testName1";
-        Clinician testClinician = ClinicianBuilder.startRecording().withName(name).build();
+        Clinician testClinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
         clinicians.add(testClinician);
 
         Clinician clinician = clinicians.get(testClinician.getId());
 
         assertNotNull(clinician);
         markForDeletion(clinician);
+        markForDeletion(cliniciansIds.get(clinician));
     }
 
     @Test
     public void testShouldMergeClinic() {
         String testName = "testName2";
         String newName = "newName";
-        Clinician testClinician = ClinicianBuilder.startRecording().withName(testName).build();
+        Clinician testClinician = ClinicianBuilder.startRecording().withName(testName).withUserName(testName).build();
         clinicians.add(testClinician);
 
         testClinician.setName(newName);
@@ -57,6 +62,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         assertNotNull(clinician);
         assertEquals(newName, clinician.getName());
         markForDeletion(testClinician);
+        markForDeletion(cliniciansIds.get(clinician));
     }
 
     @Test
@@ -72,6 +78,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         Clinician byUserNameAndPassword = clinicians.findByUserNameAndPassword("jack", "samurai");
         assertNotNull(byUserNameAndPassword);
         markForDeletion(testClinician);
+        markForDeletion(cliniciansIds.get(testClinician));
     }
 
     @Test
@@ -89,6 +96,7 @@ public class CliniciansTest extends SpringIntegrationTest {
 
         markForDeletion(clinic);
         markForDeletion(clinician);
+        markForDeletion(cliniciansIds.get(clinician));
     }
 
     @Test

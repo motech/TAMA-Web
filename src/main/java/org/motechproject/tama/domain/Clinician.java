@@ -10,13 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@Configurable
 @TypeDiscriminator("doc.documentType == 'Clinician'")
 public class Clinician extends CouchEntity implements TAMAUser {
-
     @NotNull
     private String name;
-    @NotNull
     private String username;
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)

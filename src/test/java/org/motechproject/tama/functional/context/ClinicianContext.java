@@ -5,14 +5,15 @@ import org.motechproject.tama.builder.ClinicianBuilder;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.functional.framework.MyPageFactory;
 import org.motechproject.tama.functional.page.LoginPage;
+import org.motechproject.tama.repository.Clinicians;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ClinicianContext extends AbstractContext{
 
     private final String userName;
     private final String password;
     private final ClinicContext clinicContext;
-
 
     public ClinicianContext(){
         this.clinicContext = new ClinicContext();

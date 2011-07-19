@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.validation.constraints.NotNull;
 
-@Configurable
 @TypeDiscriminator("doc.documentType == 'City'")
 public class City extends CouchEntity {
 

@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.ektorp.UpdateConflictException;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tama.repository.Clinicians;
@@ -9,6 +10,7 @@ import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,11 @@ import java.util.Collection;
 @RequestMapping("/clinicians")
 @Controller
 public class ClinicianController extends BaseController {
+    public static final String CREATE_VIEW = "clinicians/create";
+    public static final String SHOW_VIEW = "clinicians/show";
+    public static final String LIST_VIEW = "clinicians/list";
+    public static final String UPDATE_VIEW = "clinicians/update";
+    public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/clinicians/";
 
     @Autowired
     private Clinicians clinicians;
@@ -31,47 +38,53 @@ public class ClinicianController extends BaseController {
     public String create(@Valid Clinician clinician, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("clinician", clinician);
-            return "clinicians/create";
+            return CREATE_VIEW;
         }
-        uiModel.asMap().clear();
-        clinicians.add(clinician);
-        return "redirect:/clinicians/" + encodeUrlPathSegment(clinician.getId(), httpServletRequest);
+        try {
+            clinicians.add(clinician);
+            uiModel.asMap().clear();
+        } catch (UpdateConflictException e) {
+            bindingResult.addError(new FieldError("Clinician", "username", "username provided is already in use."));
+            uiModel.addAttribute("clinician", clinician);
+            return CREATE_VIEW;
+        }
+        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(clinician.getId(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
         uiModel.addAttribute("clinician", new Clinician());
-        return "clinicians/create";
+        return CREATE_VIEW;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("clinician", clinicians.get(id));
         uiModel.addAttribute("itemId", id);
-        return "clinicians/show";
+        return SHOW_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         uiModel.addAttribute("clinicians", clinicians.getAll());
-        return "clinicians/list";
+        return LIST_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public String update(@Valid Clinician clinician, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("clinician", clinician);
-            return "clinicians/update";
+            return UPDATE_VIEW;
         }
         uiModel.asMap().clear();
         clinicians.update(clinician);
-        return "redirect:/clinicians/" + encodeUrlPathSegment(clinician.getId().toString(), httpServletRequest);
+        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(clinician.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("clinician", clinicians.get(id));
-        return "clinicians/update";
+        return UPDATE_VIEW;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -80,7 +93,7 @@ public class ClinicianController extends BaseController {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/clinicians";
+        return REDIRECT_TO_SHOW_VIEW;
     }
 
     @ModelAttribute("clinicians")

@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_org_motechproject_tama_domain_Clinician" modelAttribute="clinician" path="/clinicians" versionField="Version" z="YacYGXgZznNjBAAeNLlXypWHs8g=">
         <field:input field="name" id="c_org_motechproject_tama_domain_Clinician_name" required="true" z="AvKgGNDpGrxvljosSn0IJsYx5c8="/>
-        <field:input field="username" id="c_org_motechproject_tama_domain_Clinician_username" required="true" z="uFMeRour6JXh0F7h6tvVHMQQLPE="/>
+        <field:input field="username" id="c_org_motechproject_tama_domain_Clinician_username" z="uFMeRour6JXh0F7h6tvVHMQQLPE=" disabled="true"/>
         <field:input field="contactNumber" id="c_org_motechproject_tama_domain_Clinician_contactNumber" required="true" z="1uZfPqoYabi6aa+Ea6oh6JEI3TE="/>
         <field:input field="alternateContactNumber" id="c_org_motechproject_tama_domain_Clinician_alternateContactNumber" z="hHrY/N/BZnieD/xEE9pKvuGiu4g=" validationRegex="^[0-9]{10}$"/>
         <field:input field="password" id="c_org_motechproject_tama_domain_Clinician_password" z="Di5/oYS0+lZ7+inW++ojVVhZA5g=" render="false" disableFormBinding="false" disabled="true" />

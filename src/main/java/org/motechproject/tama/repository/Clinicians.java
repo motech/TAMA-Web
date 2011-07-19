@@ -13,13 +13,15 @@ import java.util.List;
 @Repository
 public class Clinicians extends AbstractCouchRepository<Clinician> {
     private Clinics clinics;
+    private ClinicianIds clinicianIds;
     private PBEStringEncryptor encryptor;
 
     @Autowired
-    public Clinicians(CouchDbConnector db, PBEStringEncryptor encryptor, Clinics clinics) {
+    public Clinicians(CouchDbConnector db, PBEStringEncryptor encryptor, Clinics clinics, ClinicianIds clinicinanIds) {
         super(Clinician.class, db);
         this.clinics = clinics;
         this.encryptor = encryptor;
+        this.clinicianIds = clinicinanIds;
         initStandardDesignDocument();
     }
 
@@ -42,14 +44,22 @@ public class Clinicians extends AbstractCouchRepository<Clinician> {
     }
 
     @Override
-    public void add(Clinician entity) {
-        entity.setEncryptedPassword(encryptor.encrypt(entity.getPassword()));
-        super.add(entity);
+    public void add(Clinician clinician) {
+        clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
+        clinicianIds.add(clinician);
+        super.add(clinician);
+    }
+
+    @Override
+    public void remove(Clinician clinician) {
+        super.remove(clinician);
+        clinicianIds.remove(clinician);
     }
 
     @Override
     public void update(Clinician clinician) {
         Clinician dbClinician = get(clinician.getId());
+        clinician.setUsername(dbClinician.getUsername());
         clinician.setRevision(dbClinician.getRevision());
         clinician.setEncryptedPassword(dbClinician.getEncryptedPassword());
         super.update(clinician);

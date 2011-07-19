@@ -3,6 +3,9 @@ package org.motechproject.tama.builder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class ClinicianBuilder {
 
     private Clinician clinician = new Clinician();
@@ -48,9 +51,10 @@ public class ClinicianBuilder {
     public ClinicianBuilder withDefaults() {
         String validContactNumber = "1234567890";
         String validAlternateContactNumber = "1234567890";
-        String username = "test";
+        Date time = Calendar.getInstance().getTime();
+        String username = "test"+ time.getTime();
         String password = "test";
-        String name = "testName";
+        String name = "testName"+ time.getTime();
         return ClinicianBuilder.startRecording().
                 withName(name).
                 withAlternateContactNumber(validAlternateContactNumber).
