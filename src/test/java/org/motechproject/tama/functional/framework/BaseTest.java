@@ -47,7 +47,7 @@ public abstract class BaseTest {
             e.printStackTrace();
         } finally {
             webDriver.manage().deleteAllCookies();
-            webDriver.quit();
+            webDriver.close();
             if (output != null)
                 output.close();
         }
