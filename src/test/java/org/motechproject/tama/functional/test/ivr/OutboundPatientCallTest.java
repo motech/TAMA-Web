@@ -12,6 +12,6 @@ public class OutboundPatientCallTest extends SpringIntegrationTest {
 
     @Test
     public void shouldCallPatient(){
-        outboundCallService.call("be5dae617e8b7fd8edced97a671be916");
+        outboundCallService.call("f7dba5f96baeacfb047e74cac903a291");
     }
 }

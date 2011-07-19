@@ -42,6 +42,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "patientId", IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
         verify(audits).add(argThat(matcher));
+        verify(session).invalidate();
         assertEquals("<response sid=\"sid\"><playtext>Not authorised</playtext><hangup/></response>", StringUtils.replace(handle, "\n", ""));
     }
 

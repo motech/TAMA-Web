@@ -35,10 +35,9 @@ public class RetryAction extends BaseAction {
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         Integer attempt = getAttempt(session);
-        if (isLast(attempt)) {
-            session.invalidate();
+        if (isLast(attempt))
             return userNotAuthorisedAction.handle(ivrRequest, request, response);
-        }
+
         if (ivrRequest.hasNoData())
             return dtmfResponseWith(ivrRequest, IVRMessage.TAMA_IVR_REMIND_FOR_PIN);
 

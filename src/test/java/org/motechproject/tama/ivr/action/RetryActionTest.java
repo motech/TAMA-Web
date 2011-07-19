@@ -34,8 +34,6 @@ public class RetryActionTest extends BaseActionTest {
         when(userNotAuthorisedAction.handle(ivrRequest, request, response)).thenReturn("OK");
 
         String handle = retryAction.handle(ivrRequest, request, response);
-
-        verify(session).invalidate();
         verify(userNotAuthorisedAction).handle(ivrRequest, request, response);
         assertEquals("OK", handle);
     }
