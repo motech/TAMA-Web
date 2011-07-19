@@ -25,6 +25,6 @@ public class UserNotFoundAction extends BaseAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         audits.add(new IVRCallAudit(ivrRequest.getCid(), ivrRequest.getSid(), StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND));
-        return hangUpResponseWith(ivrRequest, IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_FOUND);
+        return hangUpResponseWith(ivrRequest, IVRMessage.TAMA_IVR_REPORT_USER_NOT_FOUND);
     }
 }

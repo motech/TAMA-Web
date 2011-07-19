@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
 
@@ -44,8 +45,8 @@ public class RetryActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
-        when(messages.get(IVR.MessageKey.TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE)).thenReturn("failed");
-        when(messages.get(IVR.MessageKey.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://music");
+        when(messages.get(IVRMessage.TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE)).thenReturn("failed");
+        when(messages.get(IVRMessage.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://music");
 
         String handle = retryAction.handle(ivrRequest, request, response);
 
@@ -58,7 +59,7 @@ public class RetryActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", null);
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
-        when(messages.get(IVR.MessageKey.TAMA_IVR_REMIND_FOR_PIN)).thenReturn("please enter you pin");
+        when(messages.get(IVRMessage.TAMA_IVR_REMIND_FOR_PIN)).thenReturn("please enter you pin");
 
         String handle = retryAction.handle(ivrRequest, request, response);
 

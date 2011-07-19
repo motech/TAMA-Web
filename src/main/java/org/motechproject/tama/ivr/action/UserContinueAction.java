@@ -41,7 +41,7 @@ public class UserContinueAction extends BaseAction {
         Clinic clinic = clinics.get(patient.getClinic_id());
         audits.add(new IVRCallAudit(ivrRequest.getCid(), ivrRequest.getSid(), id, IVRCallAudit.State.USER_AUTHORISED));
 
-        String playText = StringUtils.replace(messages.get(IVR.MessageKey.TAMA_IVR_WELCOME_MESSAGE), "{0}", clinic.getName());
+        String playText = StringUtils.replace(messages.get(IVRMessage.TAMA_IVR_WELCOME_MESSAGE), "{0}", clinic.getName());
         Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withPlayText(playText).create();
         return ivrResponse.getXML();
     }

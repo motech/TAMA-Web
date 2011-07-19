@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.IVRAction;
 
@@ -37,7 +38,7 @@ public class NewCallEventActionTest extends BaseActionTest {
     public void shouldSendThePinRequestXMLResponse() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", "9898982323", IVR.Event.NEW_CALL.key(), "Data");
         when(request.getSession()).thenReturn(session);
-        when(messages.get(IVR.MessageKey.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://server/tama.wav");
+        when(messages.get(IVRMessage.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://server/tama.wav");
 
         String handle = action.handle(ivrRequest, request, response);
         assertEquals("<response sid=\"unique-call-id\"><collectdtmf><playaudio>http://server/tama.wav</playaudio></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));

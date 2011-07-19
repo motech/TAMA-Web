@@ -29,6 +29,6 @@ public class UserNotAuthorisedAction extends BaseAction {
         HttpSession session = request.getSession(false);
         String id = (String) session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID);
         audits.add(new IVRCallAudit(ivrRequest.getCid(), ivrRequest.getSid(), id, IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
-        return hangUpResponseWith(ivrRequest, IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_AUTHORISED);
+        return hangUpResponseWith(ivrRequest, IVRMessage.TAMA_IVR_REPORT_USER_NOT_AUTHORISED);
     }
 }

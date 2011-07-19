@@ -25,6 +25,6 @@ public class NewCallEventAction extends BaseAction {
         session.setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.COLLECT_PIN);
         session.setAttribute(IVR.Attributes.CALL_ID, ivrRequest.getSid());
         session.setAttribute(IVR.Attributes.CALLER_ID, ivrRequest.getCid());
-        return dtmfResponseWithWav(ivrRequest, IVR.MessageKey.TAMA_SIGNATURE_MUSIC_URL);
+        return dtmfResponseWithWav(ivrRequest, IVRMessage.TAMA_SIGNATURE_MUSIC_URL);
     }
 }

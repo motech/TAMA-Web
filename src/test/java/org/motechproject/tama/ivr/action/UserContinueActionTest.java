@@ -45,7 +45,7 @@ public class UserContinueActionTest extends BaseActionTest {
         when(patient.getClinic_id()).thenReturn("clinic_id");
         when(clinic.getName()).thenReturn("Mayo");
         when(request.getSession(false)).thenReturn(session);
-        when(messages.get(IVR.MessageKey.TAMA_IVR_WELCOME_MESSAGE)).thenReturn("Welcome. This is TAMA calling from {0} clinic");
+        when(messages.get(IVRMessage.TAMA_IVR_WELCOME_MESSAGE)).thenReturn("Welcome. This is TAMA calling from {0} clinic");
         when(session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID)).thenReturn("id");
         when(patients.get("id")).thenReturn(patient);
         when(clinics.get("clinic_id")).thenReturn(clinic);

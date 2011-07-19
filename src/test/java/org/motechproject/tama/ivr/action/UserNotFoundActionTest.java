@@ -33,7 +33,7 @@ public class UserNotFoundActionTest extends BaseActionTest {
     @Test
     public void shouldReturnUserNotFoundResponse() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
-        when(messages.get(IVR.MessageKey.TAMA_IVR_REPORT_USER_NOT_FOUND)).thenReturn("Not found");
+        when(messages.get(IVRMessage.TAMA_IVR_REPORT_USER_NOT_FOUND)).thenReturn("Not found");
 
         String handle = userNotFoundAction.handle(ivrRequest, request, response);
 
