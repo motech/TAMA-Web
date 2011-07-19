@@ -20,10 +20,6 @@ public class ClinicsTest extends SpringIntegrationTest {
     @Autowired
     private Cities cities;
 
-    @Before
-    public void setUp() {
-    }
-
     @Test
     public void testShouldPersistClinic() {
         City city = City.newCity("TestCity");

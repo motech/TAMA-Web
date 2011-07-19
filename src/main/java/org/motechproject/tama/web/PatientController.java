@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.ektorp.UpdateConflictException;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
@@ -15,6 +16,7 @@ import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -73,9 +75,7 @@ public class PatientController extends BaseController {
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
-        uiModel.addAttribute(PATIENT, new Patient());
-        populateModel(uiModel);
-        addDateTimeFormat(uiModel);
+        initUIModel(uiModel, new Patient());
         return CREATE_VIEW;
     }
 
@@ -97,34 +97,41 @@ public class PatientController extends BaseController {
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute(PATIENT, patient);
-            populateModel(uiModel);
-            addDateTimeFormat(uiModel);
+            initUIModel(uiModel, patient);
             return CREATE_VIEW;
         }
-        uiModel.asMap().clear();
-        patients.addToClinic(patient, loggedInClinic(request));
+        try {
+            patients.addToClinic(patient, loggedInClinic(request));
+            uiModel.asMap().clear();
+        } catch (UpdateConflictException e) {
+            bindingResult.addError(new FieldError("Patient", "patientId", "patient id provided is already in use."));
+            initUIModel(uiModel, patient);
+            return CREATE_VIEW;
+        }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
+    }
+
+    private void initUIModel(Model uiModel, Patient patient) {
+        uiModel.addAttribute(PATIENT, patient);
+        populateModel(uiModel);
+        addDateTimeFormat(uiModel);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-        uiModel.addAttribute(PATIENT, patients.findByIdAndClinicId(id, loggedInClinic(request)));
-        populateModel(uiModel);
-        addDateTimeFormat(uiModel);
+        initUIModel(uiModel, patients.findByIdAndClinicId(id, loggedInClinic(request)));
         return UPDATE_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public String update(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute(PATIENT, patient);
-            populateModel(uiModel);
-            addDateTimeFormat(uiModel);
+            initUIModel(uiModel, patient);
             return UPDATE_VIEW;
         }
         uiModel.asMap().clear();
         patients.merge(patient);
+
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 

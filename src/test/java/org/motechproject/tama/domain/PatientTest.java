@@ -4,7 +4,6 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.Patient;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -12,6 +11,10 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Calendar;
 import java.util.Set;
+
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 
 public class PatientTest {
 
@@ -27,8 +30,7 @@ public class PatientTest {
     public void testNotNullConstraintFieldsOnPatient() {
         Patient nullPatient = PatientBuilder.startRecording().build();
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(nullPatient);
-        Assert.assertEquals(4, constraintViolations.size());
-        assertConstraintViolation(constraintViolations, "patientId", "may not be null");
+        assertEquals(3, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "dateOfBirth", "may not be null");
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "may not be null");
         assertConstraintViolation(constraintViolations, "passcode", "may not be null");
@@ -39,7 +41,7 @@ public class PatientTest {
         String invalidPhoneNumber = "2222";
         Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber(invalidPhoneNumber).build();
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
-        Assert.assertEquals(1, constraintViolations.size());
+        assertEquals(1, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "Mobile Phone Number should be numeric and 10 digits long.");
     }
 
@@ -48,7 +50,7 @@ public class PatientTest {
         String invalidPasscode = "111";
         Patient patient = PatientBuilder.startRecording().withDefaults().withPasscode(invalidPasscode).build();
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
-        Assert.assertEquals(1, constraintViolations.size());
+        assertEquals(1, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "passcode", "Passcode should be numeric and 4-10 digits long.");
     }
 
@@ -58,7 +60,7 @@ public class PatientTest {
         futureDate.set(2020, 1, 20);
         Patient patient = PatientBuilder.startRecording().withDefaults().withDateOfBirth(futureDate.getTime()).build();
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
-        Assert.assertEquals(1, constraintViolations.size());
+        assertEquals(1, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "dateOfBirth", "Date Of Birth must be in the past.");
     }
 
@@ -80,13 +82,20 @@ public class PatientTest {
     public void shouldTestActivationOfPatient() {
         Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Inactive).build();
         patient.activate();
-        Assert.assertTrue(patient.getStatus().equals(Patient.Status.Active));
+        assertTrue(patient.getStatus().equals(Patient.Status.Active));
     }
 
     @Test
     public void shouldGetIVRMobilePhoneNumber(){
         Patient patient = PatientBuilder.startRecording().withMobileNumber("9876543210").build();
-        Assert.assertEquals("09876543210", patient.getIVRMobilePhoneNumber());
+        assertEquals("09876543210", patient.getIVRMobilePhoneNumber());
+    }
+
+    @Test
+    public void shouldReturnUniqueId(){
+        Clinic clinic = new Clinic("C1");
+        Patient patient = PatientBuilder.startRecording().withClinic(clinic).withPatientId("P1").build();
+        assertEquals("C1_P1",patient.uniqueId());
     }
 
     private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {

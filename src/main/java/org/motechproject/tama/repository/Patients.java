@@ -21,13 +21,15 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     private Clinics clinics;
     private Genders genders;
     private IVRLanguages ivrLanguages;
+    private PatientIds patientIds;
 
     @Autowired
-    public Patients(CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages) {
+    public Patients(CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, PatientIds patientIds) {
         super(Patient.class, db);
         this.clinics = clinics;
         this.genders = genders;
         this.ivrLanguages = ivrLanguages;
+        this.patientIds = patientIds;
         initStandardDesignDocument();
     }
 
@@ -93,6 +95,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public void addToClinic(Patient patient, String clinicId) {
         patient.setClinic_id(clinicId);
+        patientIds.add(patient);
         add(patient);
     }
 
@@ -115,6 +118,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public void remove(String id) {
         remove(get(id));
+        patientIds.remove(this.get(id));
     }
 
     @Override

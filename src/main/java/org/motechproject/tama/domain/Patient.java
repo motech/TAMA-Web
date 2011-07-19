@@ -17,7 +17,6 @@ import java.util.Date;
 
 @TypeDiscriminator("doc.documentType == 'Patient'")
 public class Patient extends CouchEntity {
-    @NotNull
     protected String patientId;
     @NotNull
     @Pattern(regexp = TAMAConstants.PASSCODE_REGEX, message = TAMAMessages.PASSCODE_REGEX_MESSAGE)
@@ -224,5 +223,7 @@ public class Patient extends CouchEntity {
         this.clinic_id = clinic_id;
     }
 
-
+    public String uniqueId() {
+        return this.getClinic_id() + '_' + this.getPatientId();
+    }
 }

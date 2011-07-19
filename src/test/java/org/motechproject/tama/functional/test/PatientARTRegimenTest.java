@@ -28,13 +28,12 @@ public class PatientARTRegimenTest  extends BaseTest {
         super.setUp();
     }
 
-
     @Test
     public void testPatientARTRegimen() {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
-        TreatmentAdviceView treatmentAdvice = TreatmentAdviceViewBuilder.startRecording().withDefaults().build();
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        TreatmentAdviceView treatmentAdvice = TreatmentAdviceViewBuilder.startRecording().withDefaults().withPatientId(patient.getPatientId()).build();
 
         ViewARTRegimenPage viewARTRegimenPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
