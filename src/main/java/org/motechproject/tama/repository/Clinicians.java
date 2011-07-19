@@ -49,9 +49,11 @@ public class Clinicians extends AbstractCouchRepository<Clinician> {
     }
 
     @Override
-    public void update(Clinician entity) {
-        entity.setEncryptedPassword(encryptor.encrypt(entity.getPassword()));
-        super.update(entity);
+    public void update(Clinician clinician) {
+        Clinician dbClinician = get(clinician.getId());
+        clinician.setRevision(dbClinician.getRevision());
+        clinician.setEncryptedPassword(dbClinician.getEncryptedPassword());
+        super.update(clinician);
     }
 
     @Override

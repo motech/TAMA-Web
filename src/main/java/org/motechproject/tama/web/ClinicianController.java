@@ -64,9 +64,6 @@ public class ClinicianController extends BaseController {
             return "clinicians/update";
         }
         uiModel.asMap().clear();
-        Clinician dbClinician = clinicians.get(clinician.getId());
-        clinician.setRevision(dbClinician.getRevision());
-        clinician.setEncryptedPassword(dbClinician.getEncryptedPassword());
         clinicians.update(clinician);
         return "redirect:/clinicians/" + encodeUrlPathSegment(clinician.getId().toString(), httpServletRequest);
     }
