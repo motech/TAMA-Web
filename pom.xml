@@ -565,11 +565,6 @@
             <version>2.5</version>
         </dependency>
         <dependency>
-            <groupId>de.saxsys.roo</groupId>
-            <artifactId>de.saxsys.roo.equals.annotations</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
