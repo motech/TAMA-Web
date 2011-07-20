@@ -7,8 +7,7 @@
       <div class="errors">
         <p>
           <spring:message code="security_login_unsuccessful" />
-          <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />
-          .
+          <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />.
         </p>
       </div>
     </c:if>
