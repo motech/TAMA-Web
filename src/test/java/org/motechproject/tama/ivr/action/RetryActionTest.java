@@ -46,10 +46,10 @@ public class RetryActionTest extends BaseActionTest {
         when(messages.get(IVRMessage.TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE)).thenReturn("failed");
         when(messages.get(IVRMessage.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://music");
 
-        String handle = retryAction.handle(ivrRequest, request, response);
+        String responseXML = retryAction.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, 1);
-        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>failed</playtext><playaudio>http://music</playaudio></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>failed</playtext><playaudio>http://music</playaudio></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 
     @Test
@@ -59,9 +59,9 @@ public class RetryActionTest extends BaseActionTest {
         when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
         when(messages.get(IVRMessage.TAMA_IVR_REMIND_FOR_PIN)).thenReturn("please enter you pin");
 
-        String handle = retryAction.handle(ivrRequest, request, response);
+        String responseXML = retryAction.handle(ivrRequest, request, response);
 
         verify(session, never()).setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, 0);
-        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>please enter you pin</playtext></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"sid\"><collectdtmf><playtext>please enter you pin</playtext></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 }

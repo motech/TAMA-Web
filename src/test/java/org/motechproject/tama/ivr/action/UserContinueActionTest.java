@@ -50,11 +50,11 @@ public class UserContinueActionTest extends BaseActionTest {
         when(patients.get("id")).thenReturn(patient);
         when(clinics.get("clinic_id")).thenReturn(clinic);
 
-        String handle = userContinueAction.handle(ivrRequest, request, response);
+        String responseXML = userContinueAction.handle(ivrRequest, request, response);
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "id", IVRCallAudit.State.USER_AUTHORISED);
         verify(audits).add(argThat(matcher));
-        assertEquals("<response sid=\"sid\"><playtext>Welcome. This is TAMA calling from Mayo clinic</playtext></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"sid\"><playtext>Welcome. This is TAMA calling from Mayo clinic</playtext></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 
 }

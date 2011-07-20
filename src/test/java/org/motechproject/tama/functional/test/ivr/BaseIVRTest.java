@@ -21,6 +21,6 @@ public abstract class BaseIVRTest extends BaseTest{
     }
 
     protected String print(String response){
-       return StringUtils.replace(response, "\n", "");
+       return StringUtils.replace(response, System.getProperty("line.separator"), "");
     }
 }

@@ -40,8 +40,8 @@ public class NewCallEventActionTest extends BaseActionTest {
         when(request.getSession()).thenReturn(session);
         when(messages.get(IVRMessage.TAMA_SIGNATURE_MUSIC_URL)).thenReturn("http://server/tama.wav");
 
-        String handle = action.handle(ivrRequest, request, response);
-        assertEquals("<response sid=\"unique-call-id\"><collectdtmf><playaudio>http://server/tama.wav</playaudio></collectdtmf></response>", StringUtils.replace(handle, "\n", ""));
+        String responseXML = action.handle(ivrRequest, request, response);
+        assertEquals("<response sid=\"unique-call-id\"><collectdtmf><playaudio>http://server/tama.wav</playaudio></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 
 }

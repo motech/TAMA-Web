@@ -35,11 +35,11 @@ public class UserNotFoundActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
         when(messages.get(IVRMessage.TAMA_IVR_REPORT_USER_NOT_FOUND)).thenReturn("Not found");
 
-        String handle = userNotFoundAction.handle(ivrRequest, request, response);
+        String responseXML = userNotFoundAction.handle(ivrRequest, request, response);
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND);
         verify(audits).add(argThat(matcher));
-        assertEquals("<response sid=\"sid\"><playtext>Not found</playtext><hangup/></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"sid\"><playtext>Not found</playtext><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 }
 

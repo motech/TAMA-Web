@@ -38,12 +38,12 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
         when(messages.get(IVRMessage.TAMA_IVR_REPORT_USER_NOT_AUTHORISED)).thenReturn("Not authorised");
         when(session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID)).thenReturn("patientId");
 
-        String handle = userNotAuthorisedAction.handle(ivrRequest, request, response);
+        String responseXML = userNotAuthorisedAction.handle(ivrRequest, request, response);
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "patientId", IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
         verify(audits).add(argThat(matcher));
         verify(session).invalidate();
-        assertEquals("<response sid=\"sid\"><playtext>Not authorised</playtext><hangup/></response>", StringUtils.replace(handle, "\n", ""));
+        assertEquals("<response sid=\"sid\"><playtext>Not authorised</playtext><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 
 }
