@@ -4,10 +4,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.functional.context.Context;
 import org.motechproject.tama.functional.page.LoginPage;
 import org.motechproject.tama.functional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,6 +22,9 @@ public abstract class BaseTest {
     public TestName testName = new TestName();
 
     protected WebDriver webDriver;
+
+    @Autowired
+    protected PillReminderService pillReminderService;
 
     @Before
     public void setUp() {

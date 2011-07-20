@@ -3,16 +3,15 @@ package org.motechproject.tama.repository;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -24,7 +23,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     private PatientIds patientIds;
 
     @Autowired
-    public Patients(CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, PatientIds patientIds) {
+    public Patients(@Qualifier("tamaDbConnector")CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, PatientIds patientIds) {
         super(Patient.class, db);
         this.clinics = clinics;
         this.genders = genders;

@@ -5,6 +5,7 @@ import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public class IVRLanguages extends CouchDbRepositorySupport<IVRLanguage> {
 
     @Autowired
-    public IVRLanguages(CouchDbConnector db) {
+    public IVRLanguages(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(IVRLanguage.class, db);
         initStandardDesignDocument();
     }

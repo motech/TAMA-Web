@@ -1,22 +1,25 @@
 package org.motechproject.tama.integration.repository;
 
-import java.util.ArrayList;
-
 import org.ektorp.BulkDeleteDocument;
 import org.ektorp.CouchDbConnector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:testApplicationContext.xml")
 public abstract class SpringIntegrationTest {
 
-	@Autowired
-	protected CouchDbConnector couchDbConnector;
+    @Qualifier("tamaDbConnector")
+    @Autowired
+	protected CouchDbConnector tamaDbConnector;
+
 	protected ArrayList<BulkDeleteDocument> toDelete;
 
 	@Before
@@ -26,7 +29,7 @@ public abstract class SpringIntegrationTest {
 
 	@After
 	public void after() {
-		couchDbConnector.executeBulk(toDelete);
+		tamaDbConnector.executeBulk(toDelete);
 	}
 	
 	protected void markForDeletion(Object document) {

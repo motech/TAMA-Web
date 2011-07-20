@@ -2,10 +2,9 @@ package org.motechproject.tama.repository;
 
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
-import org.ektorp.support.GenerateView;
 import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.Company;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class Clinics extends AbstractCouchRepository<Clinic> {
     private Cities cities;
 
     @Autowired
-    public Clinics(CouchDbConnector db, Cities cities) {
+    public Clinics(@Qualifier("tamaDbConnector") CouchDbConnector db, Cities cities) {
         super(Clinic.class, db);
         this.cities = cities;
         initStandardDesignDocument();

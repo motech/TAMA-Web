@@ -5,6 +5,7 @@ import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.Regimen;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -16,7 +17,7 @@ import java.util.List;
 public class Regimens extends CouchDbRepositorySupport<Regimen> {
 
     @Autowired
-    public Regimens(CouchDbConnector db) {
+    public Regimens(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(Regimen.class, db);
         initStandardDesignDocument();
     }

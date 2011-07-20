@@ -6,6 +6,7 @@ import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class TreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvice> {
 
     @Autowired
-    public TreatmentAdvices(CouchDbConnector db) {
+    public TreatmentAdvices(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(TreatmentAdvice.class, db);
         initStandardDesignDocument();
     }

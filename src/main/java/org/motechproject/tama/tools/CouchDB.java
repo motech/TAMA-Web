@@ -8,10 +8,10 @@ public class CouchDB {
     @Autowired
     private CouchDbInstance couchDbInstance;
     @Autowired
-    private CouchDbConnector couchDbConnector;
+    private CouchDbConnector tamaDbConnector;
 
     public void recreate() {
-        String dbName = couchDbConnector.getDatabaseName();
+        String dbName = tamaDbConnector.getDatabaseName();
         couchDbInstance.deleteDatabase(dbName);
         couchDbInstance.createDatabase(dbName);
     }

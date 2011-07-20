@@ -3,6 +3,7 @@ package org.motechproject.tama.repository;
 import org.ektorp.CouchDbConnector;
 import org.motechproject.tama.domain.City;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public class Cities extends AbstractCouchRepository<City> {
 
     @Autowired
-    public Cities(CouchDbConnector db) {
+    public Cities(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(City.class, db);
         initStandardDesignDocument();
     }

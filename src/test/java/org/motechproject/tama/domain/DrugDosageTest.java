@@ -3,6 +3,7 @@ package org.motechproject.tama.domain;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class DrugDosageTest {
@@ -16,7 +17,8 @@ public class DrugDosageTest {
 
         DrugDosage drugDosage = new DrugDosage();
         drugDosage.setStartDate(startDate.getTime());
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yy");
 
-        Assert.assertEquals(expectedEndDate.getTime().getTime(), drugDosage.getEndDate().getTime());
+        Assert.assertEquals(dateFormatter.format(expectedEndDate.getTime()), dateFormatter.format(drugDosage.getEndDate()));
     }
 }

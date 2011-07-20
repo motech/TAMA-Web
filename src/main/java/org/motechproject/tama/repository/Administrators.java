@@ -7,6 +7,7 @@ import org.ektorp.support.View;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.motechproject.tama.domain.Administrator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class Administrators extends CouchDbRepositorySupport<Administrator> {
     private PBEStringEncryptor encryptor;
 
     @Autowired
-    public Administrators(CouchDbConnector db, PBEStringEncryptor encryptor) {
+    public Administrators(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor) {
         super(Administrator.class, db);
         initStandardDesignDocument();
         this.encryptor = encryptor;
