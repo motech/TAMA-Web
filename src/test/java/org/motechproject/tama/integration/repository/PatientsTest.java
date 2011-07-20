@@ -1,5 +1,6 @@
 package org.motechproject.tama.integration.repository;
 
+import org.ektorp.UpdateConflictException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.motechproject.tama.repository.Genders;
 import org.motechproject.tama.repository.IVRLanguages;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.ExpectedException;
 
 import java.util.List;
 
@@ -64,6 +66,29 @@ public class PatientsTest extends SpringIntegrationTest {
         Patient loadedPatient = patients.findByPatientId("12345678").get(0);
         assertNotNull(loadedPatient);
         assertEquals("12345678", loadedPatient.getPatientId());
+    }
+
+    @Test
+    @ExpectedException(UpdateConflictException.class)
+    public void shouldNotAddPatientWithNonUniqueCombinationOfPatientIdAndClinicId() {
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        clinics.add(clinic);
+        markForDeletion(clinic);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().
+                withGender(gender).
+                withIVRLanguage(ivrLanguage).
+                withPatientId("12345678").
+                withClinic(clinic).build();
+        patients.addToClinic(patient, clinic.getId());
+        markForDeletion(patient);
+
+        Patient similarPatient = PatientBuilder.startRecording().withDefaults().
+                withGender(gender).
+                withIVRLanguage(ivrLanguage).
+                withPatientId("12345678").
+                withClinic(clinic).build();
+        patients.addToClinic(similarPatient, clinic.getId());
     }
 
     @Test

@@ -1,5 +1,6 @@
 package org.motechproject.tama.integration.repository;
 
+import org.ektorp.UpdateConflictException;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
@@ -12,6 +13,7 @@ import org.motechproject.tama.repository.ClinicianIds;
 import org.motechproject.tama.repository.Clinicians;
 import org.motechproject.tama.repository.Clinics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.ExpectedException;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -46,6 +48,22 @@ public class CliniciansTest extends SpringIntegrationTest {
         markForDeletion(clinician);
         markForDeletion(cliniciansIds.get(clinician));
     }
+
+    @Test
+    @ExpectedException(UpdateConflictException.class)
+    public void testNotShouldPersistClinicianWithNonUniqueUserName() {
+        String name = "testName1";
+        Clinician clinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
+        clinicians.add(clinician);
+
+        Clinician dbClinician = clinicians.get(clinician.getId());
+        markForDeletion(dbClinician);
+        markForDeletion(cliniciansIds.get(dbClinician));
+
+        Clinician clinicianWithSameName = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
+        clinicians.add(clinicianWithSameName);
+    }
+
 
     @Test
     public void testShouldMergeClinic() {

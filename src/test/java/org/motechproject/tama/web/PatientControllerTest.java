@@ -1,10 +1,14 @@
 package org.motechproject.tama.web;
 
+import org.ektorp.UpdateConflictException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.Genders;
+import org.motechproject.tama.repository.IVRLanguages;
 import org.motechproject.tama.repository.Patients;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -12,6 +16,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,18 +36,24 @@ public class PatientControllerTest {
     private PatientController controller;
     private HttpServletRequest request;
     private Model uiModel;
-    private Patients patients;
     private AuthenticatedUser user;
     private HttpSession session;
+    private Patients patients;
+    private Clinics clinics;
+    private Genders genders;
+    private IVRLanguages ivrLanguages;
 
     @Before
     public void setUp() {
         patients = mock(Patients.class);
-        controller = new PatientController(patients);
         request = mock(HttpServletRequest.class);
         session = mock(HttpSession.class);
         uiModel = mock(Model.class);
         user = mock(AuthenticatedUser.class);
+        clinics = mock(Clinics.class);
+        genders = mock(Genders.class);
+        ivrLanguages = mock(IVRLanguages.class);
+        controller = new PatientController(patients, clinics, genders, ivrLanguages);
     }
 
     @Test
@@ -142,6 +153,26 @@ public class PatientControllerTest {
         verify(patients).addToClinic(patientFromUI, clinicId);
         assertTrue(modelMap.isEmpty());
         assertEquals("redirect:/patients/123", createPage);
+    }
+
+    @Test
+    public void shouldNotCreateAPatientIfThePatientIdIsNotUniqueWithTheClinic() {
+        Patient patientFromUI = mock(Patient.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+        Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put("dummyKey", "dummyValue");
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(patientFromUI.getId()).thenReturn("123");
+        when(uiModel.asMap()).thenReturn(modelMap);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+        when(user.getClinicId()).thenThrow(new UpdateConflictException());
+
+        String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
+
+        verify(bindingResult).addError(new FieldError("Patient", "patientId", "patient id provided is already in use."));
+        assertEquals("patients/create", createPage);
     }
 
 }

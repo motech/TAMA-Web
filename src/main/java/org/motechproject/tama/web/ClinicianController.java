@@ -28,11 +28,14 @@ public class ClinicianController extends BaseController {
     public static final String UPDATE_VIEW = "clinicians/update";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/clinicians/";
 
-    @Autowired
     private Clinicians clinicians;
+    private Clinics clinics;
 
     @Autowired
-    private Clinics clinics;
+    public ClinicianController(Clinicians clinicians, Clinics clinics) {
+        this.clinicians = clinicians;
+        this.clinics = clinics;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid Clinician clinician, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {

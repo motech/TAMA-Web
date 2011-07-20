@@ -45,20 +45,17 @@ public class PatientController extends BaseController {
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
 
-    @Autowired
     private Patients patients;
-    @Autowired
     private Clinics clinics;
-    @Autowired
     private Genders genders;
-   @Autowired
     private IVRLanguages ivrLanguages;
 
-    public PatientController() {
-    }
-
-    public PatientController(Patients patients) {
+    @Autowired
+    public PatientController(Patients patients, Clinics clinics, Genders genders, IVRLanguages ivrLanguages) {
         this.patients = patients;
+        this.clinics = clinics;
+        this.genders = genders;
+        this.ivrLanguages = ivrLanguages;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
