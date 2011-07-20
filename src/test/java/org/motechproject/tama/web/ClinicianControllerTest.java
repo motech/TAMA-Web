@@ -44,7 +44,8 @@ public class ClinicianControllerTest {
 
         String page = controller.create(clinician, bindingResult, uiModel, request);
 
-        verify(bindingResult).addError(new FieldError("Clinician", "username", "username provided is already in use."));
+        verify(bindingResult).addError(new FieldError("Clinician", "username", clinician.getUsername(), false,
+                    new String[]{"clinician_username_not_unique"}, new Object[]{}, ClinicianController.USERNAME_ALREADY_IN_USE));
         verify(uiModel).addAttribute("clinician", clinician);
         assertEquals("clinicians/create", page);
     }

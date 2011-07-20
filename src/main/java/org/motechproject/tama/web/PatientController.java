@@ -44,6 +44,7 @@ public class PatientController extends BaseController {
     public static final String SIZE = "size";
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
+    public static final String PATIENT_ID_ALREADY_IN_USE = "sorry, patient-id already in use";
 
     private Patients patients;
     private Clinics clinics;
@@ -101,7 +102,8 @@ public class PatientController extends BaseController {
             patients.addToClinic(patient, loggedInClinic(request));
             uiModel.asMap().clear();
         } catch (UpdateConflictException e) {
-            bindingResult.addError(new FieldError("Patient", "patientId", "patient id provided is already in use."));
+            bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
+                    new String[]{"patient_id_not_unique"}, new Object[]{}, PATIENT_ID_ALREADY_IN_USE));
             initUIModel(uiModel, patient);
             return CREATE_VIEW;
         }

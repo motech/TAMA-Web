@@ -171,7 +171,8 @@ public class PatientControllerTest {
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-        verify(bindingResult).addError(new FieldError("Patient", "patientId", "patient id provided is already in use."));
+        verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
+                    new String[]{"patient_id_not_unique"}, new Object[]{}, PatientController.PATIENT_ID_ALREADY_IN_USE));
         assertEquals("patients/create", createPage);
     }
 

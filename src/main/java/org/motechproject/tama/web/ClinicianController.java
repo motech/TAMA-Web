@@ -27,7 +27,7 @@ public class ClinicianController extends BaseController {
     public static final String LIST_VIEW = "clinicians/list";
     public static final String UPDATE_VIEW = "clinicians/update";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/clinicians/";
-
+    public static final String USERNAME_ALREADY_IN_USE = "sorry, username already in use.";
     private Clinicians clinicians;
     private Clinics clinics;
 
@@ -47,7 +47,8 @@ public class ClinicianController extends BaseController {
             clinicians.add(clinician);
             uiModel.asMap().clear();
         } catch (UpdateConflictException e) {
-            bindingResult.addError(new FieldError("Clinician", "username", "username provided is already in use."));
+            bindingResult.addError(new FieldError("Clinician", "username", clinician.getUsername(), false,
+                    new String[]{"clinician_username_not_unique"}, new Object[]{}, USERNAME_ALREADY_IN_USE));
             uiModel.addAttribute("clinician", clinician);
             return CREATE_VIEW;
         }
