@@ -26,29 +26,46 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.1.1</version>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
                         <executions>
                             <execution>
-                                <id>recreate-DB</id>
+                                <id>recreate-Db</id>
                                 <phase>test-compile</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
                                 <configuration>
-                                    <mainClass>org.motechproject.tama.tools.RecreateDB</mainClass>
+                                    <target>
+                                        <echo message="Recreating DB: START"/>
+                                        <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                        <java classname="org.motechproject.tama.tools.RecreateDB">
+                                            <classpath>
+                                                <pathelement path="${compile_classpath}"/>
+                                            </classpath>
+                                        </java>
+                                        <echo message="Recreating DB: END"/>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                             <execution>
-                                <id>setup-seed-data</id>
+                                <id>load-seed-data-in-Db</id>
                                 <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
                                 <configuration>
-                                    <mainClass>org.motechproject.tama.tools.seed.SetupSeedData</mainClass>
+                                    <target>
+                                        <echo message="Seed data loading: START"/>
+                                        <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                        <java classname="org.motechproject.tama.tools.seed.SetupSeedData">
+                                            <classpath>
+                                                <pathelement path="${compile_classpath}"/>
+                                            </classpath>
+                                        </java>
+                                        <echo message="Seed data loading: END"/>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
