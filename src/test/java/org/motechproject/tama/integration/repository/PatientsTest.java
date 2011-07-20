@@ -152,15 +152,6 @@ public class PatientsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldCheckIfActive() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("8888").withStatus(Patient.Status.Active).withGender(gender).withIVRLanguage(ivrLanguage).build();
-        patients.add(patient);
-        markForDeletion(patient);
-
-        assertTrue(patients.checkIfActive(patient));
-    }
-
-    @Test
     public void shouldFindClinicForPatient() {
         Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         clinics.add(clinicForPatient);

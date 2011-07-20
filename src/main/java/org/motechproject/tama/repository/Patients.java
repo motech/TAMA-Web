@@ -55,7 +55,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
     public Patient findByMobileNumber(String phoneNumber) {
-        String mobileNumber =  phoneNumber.length() > 10 ? phoneNumber.substring(1) : phoneNumber;
+        String mobileNumber = phoneNumber.length() > 10 ? phoneNumber.substring(1) : phoneNumber;
         ViewQuery q = createQuery("find_by_mobile_number").key(mobileNumber).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
         Patient patient = singleResult(patients);
@@ -105,14 +105,12 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
         merge(patient);
     }
 
-    public boolean checkIfActive(Patient patient) {
-        return get(patient.getId()).isActive();
-    }
-
     public void merge(Patient patient) {
-        if (checkIfActive(patient)) patient.activate();
-        patient.setClinic_id(findClinicFor(patient));
-        patient.setRevision(get(patient.getId()).getRevision());
+        Patient dbPatient = get(patient.getId());
+        patient.setPatientId(dbPatient.getPatientId());
+        patient.setClinic_id(dbPatient.getClinic_id());
+        patient.setRevision(dbPatient.getRevision());
+        if (dbPatient.isActive()) patient.activate();
         update(patient);
     }
 
