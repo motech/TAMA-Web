@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @RooWebScaffold(path = "treatmentadvices", formBackingObject = TreatmentAdvice.class)
 @RequestMapping("/treatmentadvices")
@@ -79,7 +80,7 @@ public class TreatmentAdviceController extends BaseController {
         return "treatmentadvices/show";
     }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/regimenCompositionsFor")
+	@RequestMapping(method = RequestMethod.GET, value = "/ajax/regimenCompositionsFor")
 	public @ResponseBody Set<ComboBoxView> regimenCompositionsFor(@RequestParam String regimenId) {
         Set<RegimenComposition> compositions = regimens.get(regimenId).getCompositions();
         Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
@@ -89,7 +90,7 @@ public class TreatmentAdviceController extends BaseController {
         return comboBoxViews;
 	}
 
-    @RequestMapping(method = RequestMethod.GET, value = "/drugDosagesFor")
+    @RequestMapping(method = RequestMethod.GET, value = "/ajax/drugDosagesFor")
 	public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
         Regimen regimen = regimens.get(regimenId);
         RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);

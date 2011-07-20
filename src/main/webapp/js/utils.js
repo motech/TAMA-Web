@@ -10,6 +10,11 @@ var populateComboBox = function(urlToLoadFrom, target) {
             }
             target.attr('store', options);
             target.attr('value', result[0].id);
+        },
+        error: function(result, args){
+           if(result.status===601){
+            window.location.reload();
+           }
         }
     });
 }

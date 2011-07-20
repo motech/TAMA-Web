@@ -31,13 +31,18 @@
             var populateDrugDosages = function() {
                 var regimenDropDown = dijit.byId('_regimenId_id');
                 var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                var drugDosagesURL = "treatmentadvices/drugDosagesFor?regimenId=" + regimenDropDown + "&amp;regimenCompositionId=" + regimenCompositionDropDown;
+                var drugDosagesURL = "treatmentadvices/ajax/drugDosagesFor?regimenId=" + regimenDropDown + "&amp;regimenCompositionId=" + regimenCompositionDropDown;
                 dojo.xhrGet({
                     url: drugDosagesURL,
                     load: function(result) {
                         clearRequiredDojoValidationsFromTheExistingForm();
                         dojo.byId('c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages').innerHTML = result;
                         parseScript(result);
+                    },
+                    error: function(result, args){
+                       if(result.status===601){
+                        window.location.reload();
+                       }
                     }
                 });
             };
@@ -45,7 +50,7 @@
             var populateRegimenCompositions = function() {
                 var regimenDropDown = dijit.byId('_regimenId_id');
                 var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                var regimenCompositionsURL = "treatmentadvices/regimenCompositionsFor?regimenId=" + regimenDropDown;
+                var regimenCompositionsURL = "treatmentadvices/ajax/regimenCompositionsFor?regimenId=" + regimenDropDown;
                 populateComboBox(regimenCompositionsURL, regimenCompositionDropDown);
             };
 
