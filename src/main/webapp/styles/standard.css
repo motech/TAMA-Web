@@ -190,10 +190,15 @@ h4 {
 	margin-left: 154px;
 }
 
-.error {
+.error, .error-inline {
 	color: red;
 	font-weight: bold;
 	display: block;
+}
+
+.error-inline {
+    margin-left: 8px;
+    display: inline;
 }
 
 a {
