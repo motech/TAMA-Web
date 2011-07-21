@@ -19,6 +19,8 @@
             <id>smoke</id>
             <build>
                 <plugins>
+
+                    <!--PROPERTIES READ-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
@@ -37,6 +39,8 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!--DATA SETUP-->
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.6</version>
@@ -81,6 +85,8 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!--MYSQL-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>sql-maven-plugin</artifactId>
@@ -112,6 +118,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!--SELENIUM-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>selenium-maven-plugin</artifactId>
@@ -638,7 +645,7 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder-api</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
