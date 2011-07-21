@@ -10,7 +10,6 @@
     <properties>
         <roo.version>1.1.4.RELEASE</roo.version>
         <spring.version>3.0.5.RELEASE</spring.version>
-        <!--<aspectj.version>1.6.11</aspectj.version>-->
         <slf4j.version>1.6.1</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-security.version>3.0.5.RELEASE</spring-security.version>
@@ -18,13 +17,26 @@
     <profiles>
         <profile>
             <id>smoke</id>
-            <properties>
-                <jetty.port>9887</jetty.port>
-                <test.driver>htmlunit</test.driver>
-                <!--firefox, ie, htmlunit-->
-            </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0-alpha-2</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${project.basedir}/build/maven.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.6</version>
@@ -65,6 +77,37 @@
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <configuration>
+                            <driver>com.mysql.jdbc.Driver</driver>
+                            <url>jdbc:mysql://${mysql.server}:3306/${mysql.db}</url>
+                            <username>${mysql.user}</username>
+                            <password>${mysql.password}</password>
+                            <autocommit>true</autocommit>
+                            <onError>continue</onError>
+                            <srcFiles>
+                                <srcFile>${project.basedir}/db/quartz/tables_mysql_innodb.sql</srcFile>
+                            </srcFiles>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>5.1.13</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>setup-quartz-datastore</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -165,9 +208,16 @@
     </profiles>
     <repositories>
         <repository>
+            <id>central</id>
+            <url>http://repo1.maven.org/maven2</url>
+            <name>Repository for dependencies</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>spring-maven-release</id>
-            <name>Spring Maven Release Repository
-            </name>
+            <name>Spring Maven Release Repository</name>
             <url>http://maven.springframework.org/release</url>
         </repository>
         <repository>
@@ -185,14 +235,6 @@
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
             <name>JBoss Repo</name>
         </repository>
-        <repository>
-            <id>central</id>
-            <url>http://repo1.maven.org/maven2</url>
-            <name>Repository for dependencies</name>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -209,6 +251,11 @@
             <id>spring-roo-repository</id>
             <name>Spring Roo Repository</name>
             <url>http://spring-roo-repository.springsource.org/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>maven-repo</id>
+            <name>Maven repository</name>
+            <url>http://mvnrepository.com</url>
         </pluginRepository>
     </pluginRepositories>
     <dependencies>
@@ -256,16 +303,6 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.aspectj</groupId>-->
-        <!--<artifactId>aspectjrt</artifactId>-->
-        <!--<version>${aspectj.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.aspectj</groupId>-->
-        <!--<artifactId>aspectjweaver</artifactId>-->
-        <!--<version>${aspectj.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -596,14 +633,22 @@
             <groupId>com.ozonetel.kookoo</groupId>
             <artifactId>kookoo</artifactId>
             <version>1.0</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/lib/kookoo.jar</systemPath>-->
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.12</version>
         </dependency>
     </dependencies>
     <build>
@@ -612,7 +657,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1.1</version>
-                <!-- <configuration> <webXml>target/web.xml</webXml> </configuration> -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -624,44 +668,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.codehaus.mojo</groupId>-->
-            <!--<artifactId>aspectj-maven-plugin</artifactId>-->
-            <!--<version>1.2</version>-->
-            <!--&lt;!&ndash; NB: do use 1.3 or 1.3.x due to MASPECTJ-90 - wait for 1.4 &ndash;&gt;-->
-            <!--<dependencies>-->
-            <!--&lt;!&ndash; NB: You must use Maven 2.0.9 or above or these are ignored (see MNG-2972) &ndash;&gt;-->
-            <!--<dependency>-->
-            <!--<groupId>org.aspectj</groupId>-->
-            <!--<artifactId>aspectjrt</artifactId>-->
-            <!--<version>${aspectj.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--<groupId>org.aspectj</groupId>-->
-            <!--<artifactId>aspectjtools</artifactId>-->
-            <!--<version>${aspectj.version}</version>-->
-            <!--</dependency>-->
-            <!--</dependencies>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<goals>-->
-            <!--<goal>compile</goal>-->
-            <!--<goal>test-compile</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--<configuration>-->
-            <!--<outxml>true</outxml>-->
-            <!--<aspectLibraries>-->
-            <!--<aspectLibrary>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-aspects</artifactId>-->
-            <!--</aspectLibrary>-->
-            <!--</aspectLibraries>-->
-            <!--<source>1.6</source>-->
-            <!--<target>1.6</target>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -698,12 +704,10 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.5</version>
             </plugin>
-            <!-- IDE -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.7</version>
-                <!-- Note 2.8 does not work with AspectJ aspect path -->
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>false</downloadJavadocs>
