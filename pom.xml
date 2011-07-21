@@ -38,7 +38,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
                     <!--DATA SETUP-->
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -82,41 +81,40 @@
                                     <goal>run</goal>
                                 </goals>
                             </execution>
-                        </executions>
-                    </plugin>
-
-                    <!--MYSQL-->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>sql-maven-plugin</artifactId>
-                        <configuration>
-                            <driver>com.mysql.jdbc.Driver</driver>
-                            <url>jdbc:mysql://${mysql.server}:3306/${mysql.db}</url>
-                            <username>${mysql.user}</username>
-                            <password>${mysql.password}</password>
-                            <autocommit>true</autocommit>
-                            <onError>continue</onError>
-                            <srcFiles>
-                                <srcFile>${project.basedir}/db/quartz/tables_mysql_innodb.sql</srcFile>
-                            </srcFiles>
-                        </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>mysql</groupId>
-                                <artifactId>mysql-connector-java</artifactId>
-                                <version>5.1.13</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
                             <execution>
-                                <id>setup-quartz-datastore</id>
+                                <id>setup-quartz-schema</id>
                                 <phase>process-resources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo message="Quartz schema loading: START"/>
+                                        <path id="dependencies">
+                                            <fileset
+                                                    file="${project.basedir}/build/lib/mysql-connector-java-5.1.13.jar"/>
+                                        </path>
+                                        <sql driver="${mysql.driver}"
+                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
+                                             userid="${mysql.user}"
+                                             classpathref="dependencies"
+                                             password="${mysql.password}">
+                                            drop database ${mysql.db};
+                                            create database ${mysql.db};
+                                        </sql>
+                                        <sql driver="${mysql.driver}"
+                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
+                                             userid="${mysql.user}"
+                                             classpathref="dependencies"
+                                             password="${mysql.password}"
+                                             src="${project.basedir}/build/sql/tables_mysql_innodb.sql"/>
+                                        <echo message="Quartz schema loading: END"/>
+                                    </target>
+                                </configuration>
                                 <goals>
-                                    <goal>execute</goal>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
                     </plugin>
+
                     <!--SELENIUM-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -205,6 +203,26 @@
                                 <phase>post-integration-test</phase>
                                 <goals>
                                     <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--ACTIVE MQ-->
+                    <plugin>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <executions>
+                            <execution>
+                                <id>Start ActiveMQ</id>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <executable>${activemq.home}/bin/activemq</executable>
+                                    <arguments>
+                                        <argument>start</argument>
+                                    </arguments>
+                                </configuration>
+                                <goals>
+                                    <goal>exec</goal>
                                 </goals>
                             </execution>
                         </executions>
