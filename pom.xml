@@ -100,6 +100,13 @@
                                 <srcFile>${project.basedir}/db/quartz/tables_mysql_innodb.sql</srcFile>
                             </srcFiles>
                         </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>5.1.13</version>
+                            </dependency>
+                        </dependencies>
                         <executions>
                             <execution>
                                 <id>setup-quartz-datastore</id>
