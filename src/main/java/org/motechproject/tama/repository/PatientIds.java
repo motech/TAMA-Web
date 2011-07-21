@@ -4,13 +4,14 @@ import org.ektorp.CouchDbConnector;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class PatientIds extends AbstractCouchRepository<PatientId> {
 
     @Autowired
-    public PatientIds(CouchDbConnector db) {
+    public PatientIds(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(PatientId.class, db);
         initStandardDesignDocument();
     }

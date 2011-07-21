@@ -1,11 +1,11 @@
 package org.motechproject.tama.ivr.action.event;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.action.IVRAction;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
