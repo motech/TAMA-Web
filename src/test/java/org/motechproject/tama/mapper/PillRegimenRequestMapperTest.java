@@ -1,20 +1,35 @@
 package org.motechproject.tama.mapper;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
 import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
+import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.repository.Drugs;
 
 import java.util.*;
 
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 public class PillRegimenRequestMapperTest {
+
+    @Mock
+    private Drugs drugs;
+
+    @Before
+    public void setup() {
+        initMocks(this);
+    }
 
     @Test
     public void shouldMapTreatmentAdvicesToPillRegimenRequest() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper();
+        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(drugs);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
         treatmentAdvice.setPatientId("123");
 
@@ -24,8 +39,10 @@ public class PillRegimenRequestMapperTest {
         Date startDateForDrug2 = calendar(2011, 02, 10).getTime();
         Date endDateForDrug2 = calendar(2011, 06, 10).getTime();
 
-        drugDosages.add(drugDosage("Drug1", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
-        drugDosages.add(drugDosage("Drug2", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
+        when(drugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withName("Drug1").build());
+        when(drugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withName("Drug2").build());
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
+        drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
         treatmentAdvice.setDrugDosages(drugDosages);
 
         PillRegimenRequest pillRegimenRequest = pillRegimenRequestMapper.map(treatmentAdvice);
@@ -81,9 +98,9 @@ public class PillRegimenRequestMapperTest {
         return date;
     }
 
-    private DrugDosage drugDosage(String drugName, Date startDate, Date endDate, List<String> dosageSchedules) {
+    private DrugDosage drugDosage(String drugId, Date startDate, Date endDate, List<String> dosageSchedules) {
         DrugDosage drugDosage = new DrugDosage();
-        drugDosage.setDrugName(drugName);
+        drugDosage.setDrugId(drugId);
         drugDosage.setStartDate(startDate);
         drugDosage.setEndDate(endDate);
         drugDosage.setDosageSchedules(dosageSchedules);

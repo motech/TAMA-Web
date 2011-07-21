@@ -5,14 +5,21 @@ import org.motechproject.server.pillreminder.contract.MedicineRequest;
 import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.repository.Drugs;
 import org.motechproject.tama.util.TimeUtil;
 
 import java.util.*;
 
 public class PillRegimenRequestMapper {
 
+    private Drugs drugs;
+
+    public PillRegimenRequestMapper(Drugs drugs) {
+        this.drugs = drugs;
+    }
+
     public PillRegimenRequest map(TreatmentAdvice treatmentAdvice) {
-        return new PillRegimenRequest(treatmentAdvice.getPatientId(), 30, 30, mapDosageRequests(treatmentAdvice));
+        return new PillRegimenRequest(treatmentAdvice.getPatientId(), 2, 15, mapDosageRequests(treatmentAdvice));
     }
 
     private ArrayList<DosageRequest> mapDosageRequests(TreatmentAdvice treatmentAdvice) {
@@ -57,7 +64,7 @@ public class PillRegimenRequestMapper {
     private ArrayList<MedicineRequest> createMedicineRequests(List<DrugDosage> drugDosages) {
         ArrayList<MedicineRequest> medicineRequests = new ArrayList<MedicineRequest>();
         for (DrugDosage drugDosage : drugDosages) {
-            MedicineRequest medicineRequest = new MedicineRequest(drugDosage.getDrugName(), drugDosage.getStartDate(), drugDosage.getEndDate());
+            MedicineRequest medicineRequest = new MedicineRequest(drugs.get(drugDosage.getDrugId()).getName(), drugDosage.getStartDate(), drugDosage.getEndDate());
             medicineRequests.add(medicineRequest);
         }
         return medicineRequests;

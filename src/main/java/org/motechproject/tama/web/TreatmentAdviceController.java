@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 @RooWebScaffold(path = "treatmentadvices", formBackingObject = TreatmentAdvice.class)
 @RequestMapping("/treatmentadvices")
@@ -74,7 +73,7 @@ public class TreatmentAdviceController extends BaseController {
         }
         uiModel.asMap().clear();
         treatmentAdvices.add(treatmentAdvice);
-        pillReminderService.createNew(new PillRegimenRequestMapper().map(treatmentAdvice));
+        pillReminderService.createNew(new PillRegimenRequestMapper(drugs).map(treatmentAdvice));
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 

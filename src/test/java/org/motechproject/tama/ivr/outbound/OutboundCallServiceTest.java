@@ -3,26 +3,22 @@ package org.motechproject.tama.ivr.outbound;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.lang.StringUtils;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
+import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Patients;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OutboundCallServiceTest {
@@ -31,10 +27,15 @@ public class OutboundCallServiceTest {
     @Mock
     private HttpClient client;
     private Properties properties;
+    private String patientId = "1234";
+    private MotechEvent motechEvent;
 
     @Before
     public void setUp() {
         initMocks(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("ExternalID", patientId);
+        motechEvent = new MotechEvent("pill-reminder", params);
         properties = new Properties();
         properties.setProperty(OutboundCallService.KOOKOO_OUTBOUND_URL, "http://kookoo/outbound.php");
         properties.setProperty(OutboundCallService.KOOKOO_API_KEY, "KKbedce53758c2e0b0e9eed7191ec2a466");
@@ -43,13 +44,12 @@ public class OutboundCallServiceTest {
 
     @Test
     public void shouldMakeAnOutgoingCallGivenAPatientId() throws IOException {
-        String patientId = "1234";
         final String mobileNumber = "9876543210";
         Patient patient = PatientBuilder.startRecording().withMobileNumber(mobileNumber).withStatus(Patient.Status.Active).build();
         when(patients.get(patientId)).thenReturn(patient);
 
         OutboundCallService outboundCallService = new OutboundCallService(patients, client, properties);
-        outboundCallService.call(patientId);
+        outboundCallService.handlePillReminderEvent(motechEvent);
 
         verify(patients).get(patientId);
         verify(client).executeMethod(argThat(new GetMethodMatcher()));
@@ -57,13 +57,12 @@ public class OutboundCallServiceTest {
 
     @Test
     public void shouldNotMakeAnOutgoingCallForAnInactivePatient() throws IOException {
-        String patientId = "1234";
         final String mobileNumber = "9876543210";
         Patient patient = PatientBuilder.startRecording().withMobileNumber(mobileNumber).withStatus(Patient.Status.Inactive).build();
         when(patients.get(patientId)).thenReturn(patient);
 
         OutboundCallService outboundCallService = new OutboundCallService(patients, client, properties);
-        outboundCallService.call(patientId);
+        outboundCallService.handlePillReminderEvent(motechEvent);
 
         verify(patients).get(patientId);
         verify(client, never()).executeMethod(any(GetMethod.class));
@@ -71,11 +70,10 @@ public class OutboundCallServiceTest {
 
     @Test
     public void shouldNotMakeAnOutgoingCallWhenNoPatientIsFound() throws IOException {
-        String patientId = "1234";
         when(patients.get(patientId)).thenReturn(null);
 
         OutboundCallService outboundCallService = new OutboundCallService(patients, client, properties);
-        outboundCallService.call(patientId);
+        outboundCallService.handlePillReminderEvent(motechEvent);
 
         verify(patients).get(patientId);
         verify(client, never()).executeMethod(any(GetMethod.class));

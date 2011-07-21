@@ -23,6 +23,7 @@
                         <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Time 2 (e.g. 05:00am / 05:00pm) *" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])[a,p,A,P][m,M]$" />
                         <script type="text/javascript">
                             dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:none');
+                            dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', true);
                             dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id'), 'onChange', function() {
                                 if (dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id')._lastDisplayedValue == 'Once Daily') {
                                     dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:none');
