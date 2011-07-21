@@ -178,7 +178,10 @@
                           <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" multiple="${multiple}" itemValue="${fn:escapeXml(itemValue)}" />
                         </c:when>
                         <c:otherwise>
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" itemValue="${fn:escapeXml(itemValue)}" />
+                          <form:select id="_${sec_field}_id" path="${sec_field}" disabled="${disabled}" >
+                              <form:option value=""/>
+                              <form:options items="${items}" itemValue="${fn:escapeXml(itemValue)}"/>
+                          </form:select>
                         </c:otherwise>
                       </c:choose>
                     </c:when>
