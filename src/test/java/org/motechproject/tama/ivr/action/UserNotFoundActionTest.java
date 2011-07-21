@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.IVRCallAudit;
-import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
@@ -15,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserNotFoundActionTest extends BaseActionTest {
     private UserNotFoundAction userNotFoundAction;
@@ -26,20 +24,18 @@ public class UserNotFoundActionTest extends BaseActionTest {
 
     @Before
     public void setUp() {
-        initMocks(this);
+        super.setUp();
         userNotFoundAction = new UserNotFoundAction(messages, audits);
     }
 
     @Test
     public void shouldReturnUserNotFoundResponse() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
-        when(messages.get(IVRMessage.TAMA_IVR_REPORT_USER_NOT_FOUND)).thenReturn("Not found");
-
         String responseXML = userNotFoundAction.handle(ivrRequest, request, response);
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND);
         verify(audits).add(argThat(matcher));
-        assertEquals("<response sid=\"sid\"><playtext>Not found</playtext><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
+        assertEquals("<response sid=\"sid\"><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 }
 

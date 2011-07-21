@@ -11,7 +11,6 @@ import org.motechproject.tama.repository.Patients;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 
 public class AuthenticateActionTest extends BaseActionTest {
@@ -24,42 +23,29 @@ public class AuthenticateActionTest extends BaseActionTest {
     private UserNotFoundAction userNotFoundAction;
     @Mock
     private UserContinueAction userContinueAction;
+    @Mock
+    private Patient patient;
+
+    private static final String PATIENT_ID = "12345";
+    public static final String MOBILE_NO = "9876543210";
+    public static final String PASSCODE = "1234";
 
     @Before
     public void setUp() {
-        initMocks(this);
+        super.setUp();
+        when(patients.get(PATIENT_ID)).thenReturn(patient);
+        when(patient.getId()).thenReturn(PATIENT_ID);
+        when(session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID)).thenReturn(PATIENT_ID);
         authenticateAction = new AuthenticateAction(patients, retryAction, userNotFoundAction, userContinueAction);
     }
 
     @Test
-    public void shouldGoToUserNotFoundActionIfPatientNotFoundByMobileNumber() {
-        String mobileNo = "9876543210";
-        IVRRequest ivrRequest = new IVRRequest();
-
-        when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.CALLER_ID)).thenReturn(mobileNo);
-        when(patients.findByMobileNumber(mobileNo)).thenReturn(null);
-        when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("OK");
-
-        String handle = authenticateAction.handle(ivrRequest, request, response);
-
-        verify(userNotFoundAction).handle(ivrRequest, request, response);
-        assertEquals("OK", handle);
-    }
-
-    @Test
     public void shouldGoToRetryActionIfPatientPassCodeIsNotValid() {
-        String mobileNo = "9876543210";
-        String passcode = "1234";
-        Patient patient = mock(Patient.class);
-        IVRRequest ivrRequest = new IVRRequest("sid", mobileNo, IVR.Event.GOT_DTMF.key(), passcode);
+        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVR.Event.GOT_DTMF.key(), PASSCODE);
 
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.CALLER_ID)).thenReturn(mobileNo);
         when(retryAction.handle(ivrRequest, request, response)).thenReturn("OK");
-        when(patients.findByMobileNumber(mobileNo)).thenReturn(patient);
-        when(patient.hasPasscode(passcode)).thenReturn(false);
-        when(patient.isActive()).thenReturn(true);
+        when(patient.authenticateForIVRWith(PASSCODE)).thenReturn(false);
 
         String handle = authenticateAction.handle(ivrRequest, request, response);
 
@@ -67,30 +53,21 @@ public class AuthenticateActionTest extends BaseActionTest {
         assertEquals("OK", handle);
     }
 
-
     @Test
     public void shouldGoToUserContinueActionIfPatientPassCodeIsValid() {
-        String mobileNo = "9876543210";
-        String passcode = "1234";
-        Patient patient = mock(Patient.class);
-
-        IVRRequest ivrRequest = new IVRRequest("sid", mobileNo, IVR.Event.GOT_DTMF.key(), passcode);
+        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVR.Event.GOT_DTMF.key(), PASSCODE);
 
         when(request.getSession(false)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.CALLER_ID)).thenReturn(mobileNo);
-        when(patients.findByMobileNumber(mobileNo)).thenReturn(patient);
         when(userContinueAction.handle(ivrRequest, request, response)).thenReturn("OK");
-        when(patient.hasPasscode(passcode)).thenReturn(true);
-        when(patient.getId()).thenReturn("P1");
-        when(patient.isActive()).thenReturn(true);
+        when(patient.authenticateForIVRWith(PASSCODE)).thenReturn(true);
 
         String handle = authenticateAction.handle(ivrRequest, request, response);
 
         verify(userContinueAction).handle(ivrRequest, request, response);
         verify(session).invalidate();
-        verify(session).setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patient.getId());
         verify(session).setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.AUTH_SUCCESS);
+        verify(session).setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, PATIENT_ID);
 
         assertEquals("OK", handle);
     }

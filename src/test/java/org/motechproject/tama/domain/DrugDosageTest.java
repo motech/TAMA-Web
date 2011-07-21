@@ -11,9 +11,11 @@ public class DrugDosageTest {
     @Test
     public void shouldSetDefaultEndDate() {
         Calendar startDate = Calendar.getInstance();
-        startDate.set(2010, 10, 10);
+        startDate.clear(Calendar.MILLISECOND);
+        startDate.set(2010, 10, 10, 0, 0, 0);
         Calendar expectedEndDate = Calendar.getInstance();
-        expectedEndDate.set(2011, 10, 10);
+        expectedEndDate.set(2011, 10, 10, 0, 0, 0);
+        expectedEndDate.clear(Calendar.MILLISECOND);
 
         DrugDosage drugDosage = new DrugDosage();
         drugDosage.setStartDate(startDate.getTime());

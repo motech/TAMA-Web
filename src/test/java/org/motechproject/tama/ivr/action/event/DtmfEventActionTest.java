@@ -9,8 +9,8 @@ import org.motechproject.tama.ivr.action.AuthenticateAction;
 import org.motechproject.tama.ivr.action.UserContinueAction;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class DtmfEventActionTest extends BaseActionTest {
     private DtmfEventAction eventAction;
@@ -21,7 +21,7 @@ public class DtmfEventActionTest extends BaseActionTest {
 
     @Before
     public void setUp() {
-        initMocks(this);
+        super.setUp();
         eventAction = new DtmfEventAction(authenticateAction, userContinueAction);
     }
 

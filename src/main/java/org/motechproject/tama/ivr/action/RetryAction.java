@@ -39,15 +39,10 @@ public class RetryAction extends BaseAction {
             return userNotAuthorisedAction.handle(ivrRequest, request, response);
 
         if (ivrRequest.hasNoData())
-            return dtmfResponseWith(ivrRequest, IVRMessage.TAMA_IVR_REMIND_FOR_PIN);
+            return dtmfResponseWithWav(ivrRequest, IVRMessage.TAMA_SIGNATURE_MUSIC_URL);
 
         session.setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, ++attempt);
-
-        String playText = messages.get(IVRMessage.TAMA_IVR_ASK_FOR_PIN_AFTER_FAILURE);
-        String playAudio = messages.get(IVRMessage.TAMA_SIGNATURE_MUSIC_URL);
-        CollectDtmf collectDtmf = new IVRDtmfBuilder().withPlayText(playText).withPlayAudio(playAudio).create();
-        Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withCollectDtmf(collectDtmf).create();
-        return ivrResponse.getXML();
+        return dtmfResponseWithWav(ivrRequest, IVRMessage.TAMA_SIGNATURE_MUSIC_URL);
     }
 
     private Integer getAttempt(HttpSession session) {

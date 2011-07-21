@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserNotAuthorisedActionTest extends BaseActionTest {
     private UserNotAuthorisedAction userNotAuthorisedAction;
@@ -26,7 +25,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
 
     @Before
     public void setUp() {
-        initMocks(this);
+        super.setUp();
         userNotAuthorisedAction = new UserNotAuthorisedAction(messages, audits);
     }
 
@@ -35,7 +34,6 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
 
         when(request.getSession(false)).thenReturn(session);
-        when(messages.get(IVRMessage.TAMA_IVR_REPORT_USER_NOT_AUTHORISED)).thenReturn("Not authorised");
         when(session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID)).thenReturn("patientId");
 
         String responseXML = userNotAuthorisedAction.handle(ivrRequest, request, response);
@@ -43,7 +41,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "patientId", IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
         verify(audits).add(argThat(matcher));
         verify(session).invalidate();
-        assertEquals("<response sid=\"sid\"><playtext>Not authorised</playtext><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
+        assertEquals("<response sid=\"sid\"><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 
 }

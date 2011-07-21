@@ -17,7 +17,6 @@ import org.motechproject.tama.repository.Patients;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserContinueActionTest extends BaseActionTest {
     private UserContinueAction userContinueAction;
@@ -32,7 +31,7 @@ public class UserContinueActionTest extends BaseActionTest {
 
     @Before
     public void setUp() {
-        initMocks(this);
+        super.setUp();
         userContinueAction = new UserContinueAction(messages, patients, clinics, audits);
     }
 

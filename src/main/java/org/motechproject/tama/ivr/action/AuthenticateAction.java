@@ -2,8 +2,8 @@ package org.motechproject.tama.ivr.action;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientId;
 import org.motechproject.tama.ivr.IVR;
-import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +33,22 @@ public class AuthenticateAction extends BaseAction {
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         String passcode = StringUtils.remove(ivrRequest.getData(), POUND_SYMBOL);
-        String mobileNumber = String.valueOf(session.getAttribute(IVR.Attributes.CALLER_ID));
-        Patient patient = patients.findByMobileNumber(mobileNumber);
 
-        if (patient == null || patient.isNotActive())
-            return userNotFoundAction.handle(ivrRequest, request, response);
-
-        if (!patient.hasPasscode(passcode)) {
-            session.setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patient.getId());
+        Patient patient = patients.get((String) session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID));
+        if (!patient.authenticateForIVRWith(passcode)) {
             return retryAction.handle(ivrRequest, request, response);
         }
-        session.invalidate();
-        session = request.getSession();
-        session.setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patient.getId());
+
+        session = recreateSession(request, session);
         session.setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.AUTH_SUCCESS);
         return userContinueAction.handle(ivrRequest, request, response);
+    }
+
+    private HttpSession recreateSession(HttpServletRequest request, HttpSession session) {
+        String patientId = (String) session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID);
+        session.invalidate();
+        session = request.getSession();
+        session.setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patientId);
+        return session;
     }
 }
