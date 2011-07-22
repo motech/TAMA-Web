@@ -5,6 +5,6 @@ import org.motechproject.tama.ivr.IVRRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public interface IVRAction {
+public interface IVRIncomingAction {
     String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response);
 }

@@ -2,7 +2,6 @@ package org.motechproject.tama.ivr.action;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientId;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.repository.Patients;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Service
-public class AuthenticateAction extends BaseAction {
+public class AuthenticateAction extends BaseIncomingAction {
     public static final String POUND_SYMBOL = "%23";
     private Patients patients;
     private RetryAction retryAction;

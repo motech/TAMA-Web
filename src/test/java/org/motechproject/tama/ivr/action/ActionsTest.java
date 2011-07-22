@@ -14,7 +14,7 @@ public class ActionsTest {
 
     @Test
     public void shouldReturnActionBasedOnKey() {
-        Map<String, IVRAction> map = new HashMap<String, IVRAction>();
+        Map<String, IVRIncomingAction> map = new HashMap<String, IVRIncomingAction>();
         map.put("newcall", new NewCallEventAction(null, null, null));
         map.put("hangup", new HangupEventAction());
 

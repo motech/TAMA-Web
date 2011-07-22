@@ -2,7 +2,7 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
-import org.motechproject.tama.ivr.action.IVRAction;
+import org.motechproject.tama.ivr.action.IVRIncomingAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,7 +29,7 @@ public class IVRController {
     @RequestMapping(value = "reply", method = RequestMethod.GET)
     @ResponseBody
     public String reply(@ModelAttribute IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        IVRAction action = actions.findFor(ivrRequest.callEvent());
+        IVRIncomingAction action = actions.findFor(ivrRequest.callEvent());
         return action.handle(ivrRequest, request, response);
     }
 

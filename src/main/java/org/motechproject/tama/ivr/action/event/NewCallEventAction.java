@@ -4,7 +4,7 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.action.BaseAction;
+import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Service
-public class NewCallEventAction extends BaseAction {
+public class NewCallEventAction extends BaseIncomingAction {
 
     private Patients patients;
     private UserNotFoundAction userNotFoundAction;

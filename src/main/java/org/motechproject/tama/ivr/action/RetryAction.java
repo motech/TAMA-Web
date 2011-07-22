@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Service
-public class RetryAction extends BaseAction {
+public class RetryAction extends BaseIncomingAction {
     @Value("#{ivrProperties['max.number.of.attempts']}")
     private Integer maxNoOfAttempts;
     @Autowired

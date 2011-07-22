@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class UserNotFoundAction extends BaseAction {
+public class UserNotFoundAction extends BaseIncomingAction {
 
     @Autowired
     public UserNotFoundAction(IVRMessage messages, IVRCallAudits audits) {

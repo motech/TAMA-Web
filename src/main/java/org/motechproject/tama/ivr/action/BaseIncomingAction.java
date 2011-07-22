@@ -9,7 +9,7 @@ import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.repository.IVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class BaseAction implements IVRAction {
+public abstract class BaseIncomingAction implements IVRIncomingAction {
     @Autowired
     protected IVRMessage messages;
     protected IVRCallAudits audits;

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Service
-public class UserContinueAction extends BaseAction {
+public class UserContinueAction extends BaseIncomingAction {
     private Patients patients;
     private Clinics clinics;
 

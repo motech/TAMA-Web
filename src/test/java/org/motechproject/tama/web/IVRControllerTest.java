@@ -6,8 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
-import org.motechproject.tama.ivr.action.IVRAction;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.motechproject.tama.ivr.action.IVRIncomingAction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ public class IVRControllerTest {
     @Mock
     private Actions actions;
     @Mock
-    private IVRAction action;
+    private IVRIncomingAction action;
 
     @Before
     public void setUp() {
