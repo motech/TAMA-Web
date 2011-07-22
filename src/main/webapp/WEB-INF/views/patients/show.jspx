@@ -14,7 +14,7 @@
     <spring:url value="/resources/styles/show-patient.css" var="show_patient_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
 
-    <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=">
+    <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=" delete="false">
         <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="Basic Information" openPane="true">
             <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
             <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
