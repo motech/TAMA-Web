@@ -1,12 +1,8 @@
 package org.motechproject.tama.ivr.action;
 
-import com.ozonetel.kookoo.CollectDtmf;
-import com.ozonetel.kookoo.Response;
 import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.builder.IVRDtmfBuilder;
-import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
