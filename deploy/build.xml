@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tama" basedir=".">
 
-    <property file="${basedir}\build.properties"/>
+    <property file="${basedir}\deploy.properties"/>
     <condition property="script.interpreter" value="bash" else="cmd">
         <os family="unix"/>
     </condition>
@@ -71,7 +71,7 @@
     </path>
 
     <target name="load.seed.data">
-        <java fork="true" classname="${seed.main.class}">
+        <java fork="false" classname="${seed.main.class}">
             <classpath>
                 <path location="${tomcat.home}/webapps/${app_name}/WEB-INF/classes"/>
                 <path refid="libs"/>
@@ -85,7 +85,7 @@
     </path>
 
      <target name="dev.load.seed.data">
-        <java fork="true" classname="${seed.main.class}">
+        <java fork="false" classname="${seed.main.class}">
             <classpath>
                 <path location="../target/classes"/>
                 <path refid="dev.lib"/>
