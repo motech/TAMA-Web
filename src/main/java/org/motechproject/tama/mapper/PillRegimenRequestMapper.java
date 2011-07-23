@@ -22,13 +22,13 @@ public class PillRegimenRequestMapper {
         return new PillRegimenRequest(treatmentAdvice.getPatientId(), 2, 15, mapDosageRequests(treatmentAdvice));
     }
 
-    private ArrayList<DosageRequest> mapDosageRequests(TreatmentAdvice treatmentAdvice) {
+    private List<DosageRequest> mapDosageRequests(TreatmentAdvice treatmentAdvice) {
         Map<String, List<DrugDosage>> drugDosagesMap = createDosageMap(treatmentAdvice);
         return createDosageRequests(drugDosagesMap);
     }
 
-    private ArrayList<DosageRequest> createDosageRequests(Map<String, List<DrugDosage>> drugDosagesMap) {
-        ArrayList<DosageRequest> dosageRequests = new ArrayList<DosageRequest>();
+    private List<DosageRequest> createDosageRequests(Map<String, List<DrugDosage>> drugDosagesMap) {
+        List<DosageRequest> dosageRequests = new ArrayList<DosageRequest>();
         for (Iterator<String> it = drugDosagesMap.keySet().iterator(); it.hasNext(); ) {
             String schedule = it.next();
             List<DrugDosage> drugDosages = drugDosagesMap.get(schedule);
@@ -57,12 +57,12 @@ public class PillRegimenRequestMapper {
 
     private DosageRequest createDosageRequest(String schedule, List<DrugDosage> drugDosages) {
         TimeUtil timeUtil = new TimeUtil(schedule);
-        ArrayList<MedicineRequest> medicineRequests = createMedicineRequests(drugDosages);
+        List<MedicineRequest> medicineRequests = createMedicineRequests(drugDosages);
         return new DosageRequest(timeUtil.getHours(), timeUtil.getMinutes(), medicineRequests);
     }
 
-    private ArrayList<MedicineRequest> createMedicineRequests(List<DrugDosage> drugDosages) {
-        ArrayList<MedicineRequest> medicineRequests = new ArrayList<MedicineRequest>();
+    private List<MedicineRequest> createMedicineRequests(List<DrugDosage> drugDosages) {
+        List<MedicineRequest> medicineRequests = new ArrayList<MedicineRequest>();
         for (DrugDosage drugDosage : drugDosages) {
             MedicineRequest medicineRequest = new MedicineRequest(drugs.get(drugDosage.getDrugId()).getName(), drugDosage.getStartDate(), drugDosage.getEndDate());
             medicineRequests.add(medicineRequest);
