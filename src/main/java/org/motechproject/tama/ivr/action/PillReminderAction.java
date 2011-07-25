@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.action;
 
 import com.ozonetel.kookoo.Response;
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.IVRCallAudit;
 import org.motechproject.tama.domain.Patient;
@@ -23,11 +24,13 @@ import javax.servlet.http.HttpSession;
 public class PillReminderAction extends BaseIncomingAction {
     private Patients patients;
     private Clinics clinics;
+    private PillReminderService service;
 
     @Autowired
-    public PillReminderAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits) {
+    public PillReminderAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits, PillReminderService service) {
         this.patients = patients;
         this.clinics = clinics;
+        this.service = service;
         this.messages = messages;
         this.audits = audits;
     }

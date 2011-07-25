@@ -33,23 +33,18 @@ public class CallService {
     }
 
     public void call(String phoneNumber, Map<String, String> params) {
+        JSONObject json = new JSONObject(params);
+        String applicationUrl = properties.get(APPLICATION_URL) + "?tamaData=" + json.toString();
+
+        GetMethod getMethod = new GetMethod(properties.get(KOOKOO_OUTBOUND_URL).toString());
+        getMethod.setQueryString(new NameValuePair[]{
+                new NameValuePair("api_key", properties.get(KOOKOO_API_KEY).toString()),
+                new NameValuePair("url", applicationUrl),
+                new NameValuePair("phone_no", phoneNumber)
+        });
         try {
-            GetMethod getMethod = new GetMethod(properties.get(KOOKOO_OUTBOUND_URL).toString());
-
-            JSONObject json = new JSONObject();
-            for (String key : params.keySet()) json.put(key, params.get(key));
-            String applicationUrl = properties.get(APPLICATION_URL) + "?tamaData=" + json.toString();
-
-            getMethod.setQueryString(new NameValuePair[]{
-                    new NameValuePair("api_key", properties.get(KOOKOO_API_KEY).toString()),
-                    new NameValuePair("url", applicationUrl),
-                    new NameValuePair("phone_no", phoneNumber)
-            });
-
             httpClient.executeMethod(getMethod);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }

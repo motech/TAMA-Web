@@ -1,6 +1,12 @@
 package org.motechproject.tama.ivr;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class IVRRequest {
     private String sid;
@@ -65,5 +71,20 @@ public class IVRRequest {
 
     public void setTamaData(String tamaData) {
         this.tamaData = tamaData;
+    }
+
+    public Map getTamaParams() {
+        Map params = new HashMap();
+        try {
+            JSONObject json = new JSONObject(tamaData);
+            Iterator keys = json.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                params.put(key, json.get(key));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return params;
     }
 }
