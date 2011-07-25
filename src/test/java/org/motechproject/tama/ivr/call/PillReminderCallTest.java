@@ -1,7 +1,5 @@
 package org.motechproject.tama.ivr.call;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -10,24 +8,22 @@ import org.mockito.Mock;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Patients;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PillReminderCallTest {
-
+    private PillReminderCall pillReminderCall;
     @Mock
     private Patients patients;
     @Mock
     private CallService callService;
 
-    private PillReminderCall pillReminderCall;
-
-    private static final String PATIENT_DOC_ID = "123456";
     private String PHONE_NUMBER = "1234567890";
-    private static final String DOSAGE_ID = "123345";
+    private static final String PATIENT_DOC_ID = "P_1";
+    private static final String REGIMEN_ID = "R_1";
+    private static final String DOSAGE_ID = "D_1";
 
     @Before
     public void setUp() {
@@ -39,7 +35,7 @@ public class PillReminderCallTest {
     public void shouldNotMakeACallForANonExistentPatient() {
         when(patients.get(PATIENT_DOC_ID)).thenReturn(null);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID);
+        pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
 
         verify(callService, never()).call(anyString(), Matchers.<Map<String, String>>any());
     }
@@ -50,7 +46,7 @@ public class PillReminderCallTest {
         when(patient.isNotActive()).thenReturn(true);
         when(patients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID);
+        pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
 
         verify(callService, never()).call(anyString(), Matchers.<Map<String, String>>any());
     }
@@ -62,7 +58,7 @@ public class PillReminderCallTest {
         when(patient.getIVRMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
         when(patients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID);
+        pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
 
         verify(callService).call(eq(PHONE_NUMBER), argThat(new MapMatcher()));
     }
@@ -71,7 +67,7 @@ public class PillReminderCallTest {
         @Override
         public boolean matches(Object o) {
             Map map = (Map) o;
-            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID);
+            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID) && map.get(PillReminderCall.REGIMEN_ID).equals(REGIMEN_ID);
         }
     }
 

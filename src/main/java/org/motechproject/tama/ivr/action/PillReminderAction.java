@@ -47,8 +47,7 @@ public class PillReminderAction extends BaseIncomingAction {
         String playText = StringUtils.replace(messages.get(IVRMessage.TAMA_IVR_WELCOME_MESSAGE), "{0}", clinic.getName());
         Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withPlayText(playText).create();
 
-
-
+//        service.medicinesFor(regimenId, dosageId);
 
         return ivrResponse.getXML();
     }

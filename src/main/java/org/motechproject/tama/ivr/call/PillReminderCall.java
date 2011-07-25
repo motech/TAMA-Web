@@ -11,6 +11,7 @@ import java.util.Map;
 @Component
 public class PillReminderCall {
     public static final String DOSAGE_ID = "dosage_id";
+    public static final String REGIMEN_ID = "regimen_id";
     private Patients patients;
     private CallService callService;
 
@@ -20,13 +21,13 @@ public class PillReminderCall {
         this.patients = patients;
     }
 
-    public void execute(String patientDocId, String dosageId) {
+    public void execute(String patientDocId, String regimenId, String dosageId) {
         Patient patient = patients.get(patientDocId);
         if (patient == null || patient.isNotActive()) return;
 
         Map<String, String> params = new HashMap<String, String>();
+        params.put(REGIMEN_ID, regimenId);
         params.put(DOSAGE_ID, dosageId);
-
         callService.call(patient.getIVRMobilePhoneNumber(), params);
     }
 

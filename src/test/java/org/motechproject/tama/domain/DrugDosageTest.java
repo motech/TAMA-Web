@@ -1,9 +1,7 @@
 package org.motechproject.tama.domain;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static junit.framework.Assert.assertEquals;

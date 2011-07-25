@@ -7,6 +7,8 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class PillReminderListener {
     private PillReminderCall call;
@@ -18,8 +20,10 @@ public class PillReminderListener {
 
     @MotechListener(subjects = "org.motechproject.server.pillreminder.scheduler-reminder")
     public void handlePillReminderEvent(MotechEvent motechEvent) {
-        String patientDocId = (String) motechEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY);
-        String dosageId = (String) motechEvent.getParameters().get(EventKeys.DOSAGE_ID_KEY);
-        call.execute(patientDocId, dosageId);
+        Map<String,Object> parameters = motechEvent.getParameters();
+        String patientDocId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
+        String regimenId = (String) parameters.get(EventKeys.PILLREMINDER_ID_KEY);
+        String dosageId = (String) parameters.get(EventKeys.DOSAGE_ID_KEY);
+        call.execute(patientDocId, regimenId, dosageId);
     }
 }
