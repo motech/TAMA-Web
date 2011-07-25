@@ -22,7 +22,7 @@ public class AuthenticateActionTest extends BaseActionTest {
     @Mock
     private UserNotFoundAction userNotFoundAction;
     @Mock
-    private UserContinueAction userContinueAction;
+    private PillReminderAction userContinueAction;
     @Mock
     private Patient patient;
 

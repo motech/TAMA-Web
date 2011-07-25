@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class UserContinueActionTest extends BaseActionTest {
-    private UserContinueAction userContinueAction;
+    private PillReminderAction userContinueAction;
     @Mock
     private IVRMessage messages;
     @Mock
@@ -32,7 +32,7 @@ public class UserContinueActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
-        userContinueAction = new UserContinueAction(messages, patients, clinics, audits);
+        userContinueAction = new PillReminderAction(messages, patients, clinics, audits);
     }
 
     @Test

@@ -20,12 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Service
-public class UserContinueAction extends BaseIncomingAction {
+public class PillReminderAction extends BaseIncomingAction {
     private Patients patients;
     private Clinics clinics;
 
     @Autowired
-    public UserContinueAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits) {
+    public PillReminderAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits) {
         this.patients = patients;
         this.clinics = clinics;
         this.messages = messages;
@@ -43,6 +43,10 @@ public class UserContinueAction extends BaseIncomingAction {
 
         String playText = StringUtils.replace(messages.get(IVRMessage.TAMA_IVR_WELCOME_MESSAGE), "{0}", clinic.getName());
         Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withPlayText(playText).create();
+
+
+
+
         return ivrResponse.getXML();
     }
 

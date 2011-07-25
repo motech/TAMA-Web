@@ -2,21 +2,24 @@ package org.motechproject.tama.listener;
 
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PillReminderEventHandler {
+public class PillReminderListener {
+    private PillReminderCall call;
 
-    private PillReminderCall action;
     @Autowired
-    public PillReminderEventHandler(PillReminderCall action) {
-      this.action = action;
+    public PillReminderListener(PillReminderCall call) {
+        this.call = call;
     }
 
     @MotechListener(subjects = "org.motechproject.server.pillreminder.scheduler-reminder")
     public void handlePillReminderEvent(MotechEvent motechEvent) {
-        action.execute((String) motechEvent.getParameters().get("ExternalID"));
+        String patientDocId = (String) motechEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY);
+        String dosageId = (String) motechEvent.getParameters().get(EventKeys.DOSAGE_ID_KEY);
+        call.execute(patientDocId, dosageId);
     }
 }

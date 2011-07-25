@@ -18,10 +18,10 @@ public class AuthenticateAction extends BaseIncomingAction {
     private Patients patients;
     private RetryAction retryAction;
     private UserNotFoundAction userNotFoundAction;
-    private UserContinueAction userContinueAction;
+    private PillReminderAction userContinueAction;
 
     @Autowired
-    public AuthenticateAction(Patients patients, RetryAction retryAction, UserNotFoundAction userNotFoundAction, UserContinueAction userContinueAction) {
+    public AuthenticateAction(Patients patients, RetryAction retryAction, UserNotFoundAction userNotFoundAction, PillReminderAction userContinueAction) {
         this.patients = patients;
         this.retryAction = retryAction;
         this.userNotFoundAction = userNotFoundAction;

@@ -7,6 +7,7 @@ public class IVRRequest {
     private String cid;
     private String event;
     private String data;
+    private String tamaData;
 
     public IVRRequest() {
     }
@@ -56,5 +57,13 @@ public class IVRRequest {
 
     public boolean hasNoData() {
         return StringUtils.isBlank(this.data);
+    }
+
+    public String getTamaData() {
+        return tamaData;
+    }
+
+    public void setTamaData(String tamaData) {
+        this.tamaData = tamaData;
     }
 }
