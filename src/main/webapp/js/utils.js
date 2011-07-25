@@ -83,3 +83,8 @@ var closePanel = function(_panelWidgetArray) {
             _panelWidget.toggle();
     }
 }
+
+function formHasErrors() {
+    return dojo.query('.errors').length > 0;
+}
+

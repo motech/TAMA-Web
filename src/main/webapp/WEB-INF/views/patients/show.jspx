@@ -14,8 +14,9 @@
     <spring:url value="/resources/styles/show-patient.css" var="show_patient_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
 
-    <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=" delete="false">
-        <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="Basic Information" openPane="true">
+    <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=" delete="false" update="false">
+        <spring:message code="label_org_motechproject_tama_domain_patient_basic_information" var="basic_information" htmlEscape="false" />
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="${basic_information}" openPane="true" update="true">
             <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
             <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
             <br/>
@@ -33,7 +34,8 @@
             <br/>
         </util:panel>
         <br />
-        <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
+        <spring:message code="label_org_motechproject_tama_domain_patient_tama_preferences" var="tama_preferences" htmlEscape="false" />
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="${tama_preferences}" openPane="true" update="true">
             <field:display field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" object="${patient}" />
             <br/>
             <field:display field="ivrLanguage" id="s_org_motechproject_tama_domain_patient_ivrLanguage" object="${patient}" />
@@ -44,7 +46,8 @@
             <br/>
         </util:panel>
         <br />
-        <util:panel id="fc_org_motechproject_tama_domain_patient_Status" title="Patient's TAMA Status" openPane="true">
+        <spring:message code="label_org_motechproject_tama_domain_patient_tama_status" var="tama_status" htmlEscape="false" />
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Status" title="${tama_status}" openPane="true">
             <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
             <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
             <c:choose>

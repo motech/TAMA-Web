@@ -146,6 +146,10 @@ div {
 	text-align: left;
 }
 
+div.text_right_align {
+    text-align: right;
+}
+
 div .box {
 	display:block;
 	margin-left:105px;
