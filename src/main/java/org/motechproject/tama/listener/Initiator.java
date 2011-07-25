@@ -1,7 +1,6 @@
 package org.motechproject.tama.listener;
 
 import org.motechproject.server.event.annotations.EventAnnotationBeanPostProcessor;
-import org.motechproject.tama.ivr.outbound.OutboundCallService;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -24,7 +23,7 @@ public class Initiator implements ServletContextListener{
     private HashMap<String, Object> getListeners(ServletContext servletContext) {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
         HashMap<String, Object> beans = new HashMap<String, Object>();
-        beans.put(OutboundCallService.class.getName(), webApplicationContext.getBean(OutboundCallService.class));
+        beans.put(PillReminderEventHandler.class.getName(), webApplicationContext.getBean(PillReminderEventHandler.class));
         return beans;
     }
 

@@ -1,17 +1,17 @@
-package org.motechproject.tama.ivr.outbound;
+package org.motechproject.tama.listener;
 
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
-import org.motechproject.tama.ivr.action.PillReminderAction;
+import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OutboundCallService {
+public class PillReminderEventHandler {
 
-    private PillReminderAction action;
+    private PillReminderCall action;
     @Autowired
-    public OutboundCallService(PillReminderAction action) {
+    public PillReminderEventHandler(PillReminderCall action) {
       this.action = action;
     }
 

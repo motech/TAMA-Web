@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.action;
+package org.motechproject.tama.ivr.call;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;

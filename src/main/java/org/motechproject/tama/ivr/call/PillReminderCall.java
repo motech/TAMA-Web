@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.action;
+package org.motechproject.tama.ivr.call;
 
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.Patients;
@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PillReminderAction {
+public class PillReminderCall {
     private Patients patients;
-
     private IVROutgoingCall outgoingCall;
 
     @Autowired
-    public PillReminderAction(IVROutgoingCall outgoingCall, Patients patients) {
+    public PillReminderCall(IVROutgoingCall outgoingCall, Patients patients) {
         this.outgoingCall = outgoingCall;
         this.patients = patients;
     }
