@@ -167,7 +167,6 @@
                                 <include>**/functional/**/*Test.java</include>
                             </includes>
                             <excludes>
-                                <exclude>**/functional/**/PatientARTRegimenTest.java</exclude>
                             </excludes>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
                         </configuration>
