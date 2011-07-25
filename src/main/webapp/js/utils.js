@@ -55,3 +55,31 @@ var parseScript = function(_source) {
     // Return the cleaned source
     return source;
 }
+
+var showElement = function(_elementArray) {
+    for (var i = 0; i < _elementArray.length; i++){
+        _elementArray[i].setAttribute('style', 'display:block');
+    }
+}
+
+var hideElement = function(_elementArray) {
+    for (var i = 0; i < _elementArray.length; i++){
+        _elementArray[i].setAttribute('style', 'display:none');
+    }
+}
+
+var openPanel = function(_panelWidgetArray) {
+    for (var i = 0; i < _panelWidgetArray.length; i++){
+        var _panelWidget = _panelWidgetArray[i];
+        if (_panelWidget.open == false)
+            _panelWidget.toggle();
+    }
+}
+
+var closePanel = function(_panelWidgetArray) {
+    for (var i = 0; i < _panelWidgetArray.length; i++){
+        var _panelWidget = _panelWidgetArray[i];
+        if (_panelWidget.open == true)
+            _panelWidget.toggle();
+    }
+}

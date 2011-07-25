@@ -13,6 +13,11 @@
             In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />
             In minute(s) <springform:select path="travelTimeToClinicInMinutes" id="_travelTimeToClinicInMinutes_id" items="${minutesInAnHour}" />
         </util:panel>
+        <span class="submit" id="nextToPatientPreferencesSpan">
+            <br />
+            <spring:message code="button_next" var="next_button" htmlEscape="false" />
+            <input id="nextToPatientPreferences" type="button" value="${next_button}" onClick="showPatientPreferences();"/>
+        </span>
         <br />
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="Patient's TAMA Preferences" openPane="true">
             <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" />
@@ -26,13 +31,44 @@
             </table>
         </util:panel>
         <br />
-        <script type="text/javascript">
-            <![CDATA[
-               function encodePk(){
-                   return true;
-               }
-            ]]>
-        </script>
     </form:create>
+    <script type="text/javascript">
+        function openAllPanels() {
+            openPanel([basicInformationPanelWidget, preferencesPanelWidget]);
+        }
+
+        function showPatientPreferences() {
+            closePanel([basicInformationPanelWidget]);
+            hideElement([nextToPatientPreferencesButton]);
+            showElement([preferencesPanel, submitButtonDiv]);
+        }
+
+        function formHasErrors() {
+            return dojo.query('.errors').length > 0;
+        }
+
+        dojo.addOnLoad(function() {
+            basicInformationPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
+            preferencesPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
+            basicInformationPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
+            preferencesPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
+            nextToPatientPreferencesButton = dojo.byId('nextToPatientPreferencesSpan');
+            submitButtonDiv = dojo.byId('fc_org_motechproject_tama_domain_patient_submit');
+
+            if (formHasErrors()) {
+                hideElement([nextToPatientPreferencesButton]);
+                openAllPanels();
+            }
+            else {
+                hideElement([preferencesPanel, submitButtonDiv]);
+            }
+            dojo.connect(dojo.byId('proceed'), 'onclick', openAllPanels);
+        });
+        <![CDATA[
+            function encodePk(){
+                return true;
+            }
+        ]]>
+    </script>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_patient" render="${not empty dependencies}" z="T7kM5bLklANd4sGT5ihnrXA5ODk="/>
 </div>
