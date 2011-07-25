@@ -9,6 +9,8 @@
 			<list>
 				<ref bean="mealAdviceTypeSeed"/>
 				<ref bean="genderSeed"/>
+				<ref bean="modeOfTransmissionSeed"/>
+				<ref bean="HIVTestReasonSeed"/>
 				<ref bean="IVRLanguageSeed"/>
 				<ref bean="dosageTypeSeed"/>
 				<ref bean="companySeed"/>
