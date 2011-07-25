@@ -24,6 +24,8 @@ public class CallService {
     private Properties properties;
     private HttpClient httpClient = new HttpClient();
 
+    public CallService() {
+    }
 
     public CallService(Properties properties, HttpClient httpClient) {
         this.properties = properties;
