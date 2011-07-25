@@ -31,6 +31,8 @@ public class PatientRegistrationPage extends Page {
     private WebElement ivrLanguage;
     @FindBy(how = How.ID, using = "_passcode_id")
     private WebElement passcode;
+    @FindBy(how = How.ID, using = "nextToPatientPreferences")
+    private WebElement nextToPatientPreferences;
 
     public PatientRegistrationPage(WebDriver webDriver) {
         super(webDriver);
@@ -47,7 +49,7 @@ public class PatientRegistrationPage extends Page {
         gender = new MyWebElement(gender);
         ivrLanguage = new MyWebElement(ivrLanguage);
         passcode = new MyWebElement(passcode);
-
+        nextToPatientPreferences = new MyWebElement(nextToPatientPreferences);
     }
 
     @Override
@@ -65,6 +67,7 @@ public class PatientRegistrationPage extends Page {
         travelTimeInHrs.sendKeys(String.valueOf(patient.getTravelTimeToClinicInHours()));
         travelTimeInMins.clear();
         travelTimeInMins.sendKeys(String.valueOf(patient.getTravelTimeToClinicInMinutes()));
+        nextToPatientPreferences.click();
         passcode.clear();
         passcode.sendKeys(String.valueOf(patient.getPasscode()));
         patientId.submit();
