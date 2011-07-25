@@ -19,6 +19,12 @@ var populateComboBox = function(urlToLoadFrom, target) {
     });
 }
 
+function addDays(date, days){
+    date.setDate(date.getDate()+days);
+    return date;
+}
+
+
 var parseScript = function(_source) {
     var source = _source;
     var scripts = new Array();
