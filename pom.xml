@@ -237,26 +237,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!--ACTIVE MQ-->
-                    <!--<plugin>-->
-                        <!--<artifactId>exec-maven-plugin</artifactId>-->
-                        <!--<groupId>org.codehaus.mojo</groupId>-->
-                        <!--<executions>-->
-                            <!--<execution>-->
-                                <!--<id>Start ActiveMQ</id>-->
-                                <!--<phase>initialize</phase>-->
-                                <!--<configuration>-->
-                                    <!--<executable>${activemq.linux.home}/bin/activemq</executable>-->
-                                    <!--<arguments>-->
-                                        <!--<argument>start</argument>-->
-                                    <!--</arguments>-->
-                                <!--</configuration>-->
-                                <!--<goals>-->
-                                    <!--<goal>exec</goal>-->
-                                <!--</goals>-->
-                            <!--</execution>-->
-                        <!--</executions>-->
-                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>

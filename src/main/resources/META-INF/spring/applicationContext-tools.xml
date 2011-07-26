@@ -18,6 +18,7 @@
 				<ref bean="regimenSeed"/>
 				<ref bean="citySeed"/>
 				<ref bean="administratorSeed"/>
+				<ref bean="clinicsAndClinicianSeed"/>
 			</list>
 		</constructor-arg>
 	</bean>
