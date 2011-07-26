@@ -15,12 +15,12 @@ import javax.servlet.http.HttpSession;
 @Service
 public class DtmfEventAction extends BaseIncomingAction {
     private AuthenticateAction authenticateAction;
-    private PillReminderAction userContinueAction;
+    private PillReminderAction pillReminderAction;
 
     @Autowired
-    public DtmfEventAction(AuthenticateAction authenticateAction, PillReminderAction userContinueAction) {
+    public DtmfEventAction(AuthenticateAction authenticateAction, PillReminderAction pillReminderAction) {
         this.authenticateAction = authenticateAction;
-        this.userContinueAction = userContinueAction;
+        this.pillReminderAction = pillReminderAction;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class DtmfEventAction extends BaseIncomingAction {
         IVR.CallState callState = (IVR.CallState) session.getAttribute(IVR.Attributes.CALL_STATE);
         return callState.isCollectPin() ?
                 authenticateAction.handle(ivrRequest, request, response) :
-                userContinueAction.handle(ivrRequest, request, response);
+                pillReminderAction.handle(ivrRequest, request, response);
     }
 
 }

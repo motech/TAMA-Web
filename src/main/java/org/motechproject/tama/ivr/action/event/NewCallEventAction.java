@@ -35,8 +35,8 @@ public class NewCallEventAction extends BaseIncomingAction {
 
         HttpSession session = request.getSession();
         session.setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.COLLECT_PIN);
-        session.setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patient.getId());
-        return dtmfResponseWithWav(ivrRequest, IVRMessage.TAMA_SIGNATURE_MUSIC_URL);
+        session.setAttribute(IVR.Attributes.PATIENT_DOC_ID, patient.getId());
+        return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 
     private boolean isValidCaller(Patient patient) {

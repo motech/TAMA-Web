@@ -33,21 +33,20 @@ public class AuthenticateAction extends BaseIncomingAction {
         HttpSession session = request.getSession(false);
         String passcode = StringUtils.remove(ivrRequest.getData(), POUND_SYMBOL);
 
-        Patient patient = patients.get((String) session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID));
+        Patient patient = patients.get((String) session.getAttribute(IVR.Attributes.PATIENT_DOC_ID));
         if (!patient.authenticateForIVRWith(passcode)) {
             return retryAction.handle(ivrRequest, request, response);
         }
-
         session = recreateSession(request, session);
         session.setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.AUTH_SUCCESS);
         return userContinueAction.handle(ivrRequest, request, response);
     }
 
     private HttpSession recreateSession(HttpServletRequest request, HttpSession session) {
-        String patientId = (String) session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID);
+        String patientId = (String) session.getAttribute(IVR.Attributes.PATIENT_DOC_ID);
         session.invalidate();
         session = request.getSession();
-        session.setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, patientId);
+        session.setAttribute(IVR.Attributes.PATIENT_DOC_ID, patientId);
         return session;
     }
 }

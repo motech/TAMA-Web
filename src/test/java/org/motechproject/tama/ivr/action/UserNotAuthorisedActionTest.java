@@ -34,7 +34,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
 
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID)).thenReturn("patientId");
+        when(session.getAttribute(IVR.Attributes.PATIENT_DOC_ID)).thenReturn("patientId");
 
         String responseXML = userNotAuthorisedAction.handle(ivrRequest, request, response);
 

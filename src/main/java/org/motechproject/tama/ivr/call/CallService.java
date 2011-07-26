@@ -32,7 +32,7 @@ public class CallService {
         this.httpClient = httpClient;
     }
 
-    public void call(String phoneNumber, Map<String, String> params) {
+    public void dial(String phoneNumber, Map<String, String> params) {
         JSONObject json = new JSONObject(params);
         String applicationUrl = properties.get(APPLICATION_URL) + "?tamaData=" + json.toString();
 

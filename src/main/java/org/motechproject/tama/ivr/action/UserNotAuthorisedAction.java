@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 
 @Service
 public class UserNotAuthorisedAction extends BaseIncomingAction {
-
     @Autowired
     public UserNotAuthorisedAction(IVRMessage messages, IVRCallAudits audits) {
         this.messages = messages;
@@ -24,8 +23,8 @@ public class UserNotAuthorisedAction extends BaseIncomingAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
-        String id = (String) session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID);
-        audits.add(new IVRCallAudit(ivrRequest.getCid(), ivrRequest.getSid(), id, IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
+        String id = (String) session.getAttribute(IVR.Attributes.PATIENT_DOC_ID);
+        audit(ivrRequest, id, IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
         session.invalidate();
         return hangUpResponseWith(ivrRequest);
     }

@@ -37,7 +37,7 @@ public class PillReminderCallTest {
 
         pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
 
-        verify(callService, never()).call(anyString(), Matchers.<Map<String, String>>any());
+        verify(callService, never()).dial(anyString(), Matchers.<Map<String, String>>any());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class PillReminderCallTest {
 
         pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
 
-        verify(callService, never()).call(anyString(), Matchers.<Map<String, String>>any());
+        verify(callService, never()).dial(anyString(), Matchers.<Map<String, String>>any());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class PillReminderCallTest {
 
         pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
 
-        verify(callService).call(eq(PHONE_NUMBER), argThat(new MapMatcher()));
+        verify(callService).dial(eq(PHONE_NUMBER), argThat(new MapMatcher()));
     }
 
     public class MapMatcher extends ArgumentMatcher<Map> {

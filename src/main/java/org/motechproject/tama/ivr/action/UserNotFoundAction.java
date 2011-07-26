@@ -22,7 +22,7 @@ public class UserNotFoundAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        audits.add(new IVRCallAudit(ivrRequest.getCid(), ivrRequest.getSid(), StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND));
+        audit(ivrRequest, StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND);
         return hangUpResponseWith(ivrRequest);
     }
 }

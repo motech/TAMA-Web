@@ -35,7 +35,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         super.setUp();
         when(patients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
-        when(session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID)).thenReturn(PATIENT_ID);
+        when(session.getAttribute(IVR.Attributes.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         authenticateAction = new AuthenticateAction(patients, retryAction, userNotFoundAction, userContinueAction);
     }
 
@@ -67,7 +67,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         verify(userContinueAction).handle(ivrRequest, request, response);
         verify(session).invalidate();
         verify(session).setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.AUTH_SUCCESS);
-        verify(session).setAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID, PATIENT_ID);
+        verify(session).setAttribute(IVR.Attributes.PATIENT_DOC_ID, PATIENT_ID);
 
         assertEquals("OK", handle);
     }

@@ -35,10 +35,10 @@ public class RetryAction extends BaseIncomingAction {
             return userNotAuthorisedAction.handle(ivrRequest, request, response);
 
         if (ivrRequest.hasNoData())
-            return dtmfResponseWithWav(ivrRequest, IVRMessage.TAMA_SIGNATURE_MUSIC_URL);
+            return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
 
         session.setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, ++attempt);
-        return dtmfResponseWithWav(ivrRequest, IVRMessage.TAMA_SIGNATURE_MUSIC_URL);
+        return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 
     private Integer getAttempt(HttpSession session) {

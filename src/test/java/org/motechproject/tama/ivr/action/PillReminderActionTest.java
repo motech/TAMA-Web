@@ -12,14 +12,22 @@ import org.motechproject.tama.ivr.IVR;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
+import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.Clinics;
 import org.motechproject.tama.repository.IVRCallAudits;
 import org.motechproject.tama.repository.Patients;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class PillReminderActionTest extends BaseActionTest {
+    public static final String PATIENT_ID = "patientId";
+    public static final String REGIMEN_ID = "regimenId";
+    public static final String DOSAGE_ID = "dosageId";
     private PillReminderAction action;
     @Mock
     private IVRMessage messages;
@@ -40,23 +48,43 @@ public class PillReminderActionTest extends BaseActionTest {
 
     @Test
     public void shouldReturnUserProceedResponse() {
-        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
+        IVRRequest ivrRequest = mock(IVRRequest.class);
         Patient patient = mock(Patient.class);
         Clinic clinic = mock(Clinic.class);
 
-        when(patient.getClinic_id()).thenReturn("clinic_id");
-        when(clinic.getName()).thenReturn("Mayo");
+        Map params = new HashMap();
+        params.put(PillReminderCall.REGIMEN_ID, REGIMEN_ID);
+        params.put(PillReminderCall.DOSAGE_ID, DOSAGE_ID);
+
+        when(ivrRequest.getTamaParams()).thenReturn(params);
+        when(ivrRequest.getCid()).thenReturn("cid");
+        when(ivrRequest.getSid()).thenReturn("sid");
+        when(clinic.getName()).thenReturn("mayo");
+        when(patient.getClinic_id()).thenReturn("clinicId");
+
         when(request.getSession(false)).thenReturn(session);
-        when(messages.get(IVRMessage.TAMA_IVR_WELCOME_MESSAGE)).thenReturn("Welcome. This is TAMA calling from {0} clinic");
-        when(session.getAttribute(IVR.Attributes.PATIENT_DOCUMENT_ID)).thenReturn("id");
-        when(patients.get("id")).thenReturn(patient);
-        when(clinics.get("clinic_id")).thenReturn(clinic);
+        when(session.getAttribute(IVR.Attributes.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
+        when(patients.get("patientId")).thenReturn(patient);
+        when(clinics.get("clinicId")).thenReturn(clinic);
+
+        when(messages.getWav(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE)).thenReturn("supposed_to_take.wav");
+        when(messages.getWav("mayo")).thenReturn("mayo.wav");
+        when(messages.getWav("m1")).thenReturn("m1.wav");
+        when(messages.getWav("m2")).thenReturn("m2.wav");
+        when(messages.getWav(IVRMessage.PILL_REMINDER_RESPONSE_MENU)).thenReturn("menu.wav");
+        when(service.medicinesFor(REGIMEN_ID, DOSAGE_ID)).thenReturn(Arrays.asList("m1", "m2"));
 
         String responseXML = action.handle(ivrRequest, request, response);
 
-        IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "id", IVRCallAudit.State.USER_AUTHORISED);
+        IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "patientId", IVRCallAudit.State.USER_AUTHORISED);
         verify(audits).add(argThat(matcher));
-        assertEquals("<response sid=\"sid\"><playtext>Welcome. This is TAMA calling from Mayo clinic</playtext></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
+
+        assertEquals("<response sid=\"sid\">" +
+                "<playaudio>mayo.wav</playaudio>" +
+                "<playaudio>supposed_to_take.wav</playaudio><playaudio>m1.wav</playaudio>" +
+                "<playaudio>supposed_to_take.wav</playaudio><playaudio>m2.wav</playaudio>" +
+                "<collectdtmf><playaudio>menu.wav</playaudio></collectdtmf>" +
+                "</response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 
 }

@@ -1,6 +1,8 @@
 package org.motechproject.tama.domain;
 
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.support.TypeDiscriminator;
+
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
@@ -16,28 +18,28 @@ public class Drug extends CouchEntity {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Brand> brands = new HashSet<Brand>();
 
-	public Drug() {
-	}
+    public Drug() {
+    }
 
-	public Drug(String name) {
-		this.name = name;
-	}
+    public Drug(String name) {
+        this.name = name;
+    }
 
-	public Brand getBrand(String brandId) {
-		for (Brand brand : brands) {
+    public Brand getBrand(String brandId) {
+        for (Brand brand : brands) {
             if (brand.getCompanyId().equals(brandId))
                 return brand;
         }
         return null;
-	}
+    }
 
-	public void addBrand(Brand brand) {
-		brands.add(brand);
-	}
+    public void addBrand(Brand brand) {
+        brands.add(brand);
+    }
 
-	public void removeBrand(Brand brand) {
-		brands.remove(brand);
-	}
+    public void removeBrand(Brand brand) {
+        brands.remove(brand);
+    }
 
     public String getName() {
         return this.name;
@@ -58,5 +60,11 @@ public class Drug extends CouchEntity {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    public String fullName(String brandId) {
+        Brand brand = this.getBrand(brandId);
+        String brandName = StringUtils.remove(brand.getName(),"+");
+        return brandName + "_" + this.name;
     }
 }

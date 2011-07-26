@@ -12,6 +12,7 @@ import java.util.Map;
 public class PillReminderCall {
     public static final String DOSAGE_ID = "dosage_id";
     public static final String REGIMEN_ID = "regimen_id";
+
     private Patients patients;
     private CallService callService;
 
@@ -28,7 +29,7 @@ public class PillReminderCall {
         Map<String, String> params = new HashMap<String, String>();
         params.put(REGIMEN_ID, regimenId);
         params.put(DOSAGE_ID, dosageId);
-        callService.call(patient.getIVRMobilePhoneNumber(), params);
+        callService.dial(patient.getIVRMobilePhoneNumber(), params);
     }
 
 }

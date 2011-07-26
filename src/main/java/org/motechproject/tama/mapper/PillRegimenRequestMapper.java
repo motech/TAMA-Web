@@ -64,7 +64,7 @@ public class PillRegimenRequestMapper {
     private List<MedicineRequest> createMedicineRequests(List<DrugDosage> drugDosages) {
         List<MedicineRequest> medicineRequests = new ArrayList<MedicineRequest>();
         for (DrugDosage drugDosage : drugDosages) {
-            MedicineRequest medicineRequest = new MedicineRequest(drugs.get(drugDosage.getDrugId()).getName(), drugDosage.getStartDate(), drugDosage.getEndDate());
+                MedicineRequest medicineRequest = new MedicineRequest(drugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), drugDosage.getStartDate(), drugDosage.getEndDate());
             medicineRequests.add(medicineRequest);
         }
         return medicineRequests;

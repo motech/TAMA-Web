@@ -38,7 +38,7 @@ public class CallServiceTest {
     @Test
     public void shouldMakeACallWithThePhoneNumberAndEmptyTamaDataParamsProvided() throws IOException {
         Map<String, String> params = new HashMap<String, String>();
-        callService.call(phoneNumber, params);
+        callService.dial(phoneNumber, params);
         verify(httpClient).executeMethod(argThat(new GetMethodMatcher("http://kookoo/outbound.php?api_key=KKbedce53758c2e0b0e9eed7191ec2a466&url=http://localhost/tama/ivr/reply?tamaData={}&phone_no=9876543211")));
     }
 
@@ -46,7 +46,7 @@ public class CallServiceTest {
     public void shouldMakeACallWithPhoneNumberAndSomeTamaDataParams() throws IOException {
         Map<String, String> params = new HashMap<String, String>();
         params.put("hero", "batman");
-        callService.call(phoneNumber, params);
+        callService.dial(phoneNumber, params);
         verify(httpClient).executeMethod(argThat(new GetMethodMatcher("http://kookoo/outbound.php?api_key=KKbedce53758c2e0b0e9eed7191ec2a466&url=http://localhost/tama/ivr/reply?tamaData={\"hero\":\"batman\"}&phone_no=9876543211")));
     }
 

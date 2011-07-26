@@ -74,13 +74,13 @@ public class IVRRequest {
     }
 
     public Map getTamaParams() {
-        Map params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
         try {
             JSONObject json = new JSONObject(tamaData);
             Iterator keys = json.keys();
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                params.put(key, json.get(key));
+                params.put(key, json.get(key).toString());
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);

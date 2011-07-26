@@ -13,31 +13,41 @@ import java.util.Arrays;
 @PrepareForTest(Drug.class)
 public class DrugTest {
 
-	@Test
-	public void addBrands() {
-		Drug drug = new Drug();
-		Brand brandOne = new Brand("one");
-		Brand brandTwo = new Brand("two");
-		drug.addBrand(brandOne);
-		drug.addBrand(brandTwo);
-		
-		Assert.assertEquals(2, drug.getBrands().size());
-		Assert.assertTrue(drug.getBrands().containsAll(Arrays.asList(brandOne, brandTwo)));
-	}
-	
-	@Test
-	public void removeBrands() {
-		Drug drug = new Drug();
-		Brand brandOne = new Brand("brand one");
-		
-		Brand brandTwo = new Brand("brand two");
-		drug.addBrand(brandOne);
-		drug.addBrand(brandTwo);
-		
-		Assert.assertEquals(2, drug.getBrands().size());
-		drug.removeBrand(brandTwo);
+    @Test
+    public void addBrands() {
+        Drug drug = new Drug();
+        Brand brandOne = new Brand("one");
+        Brand brandTwo = new Brand("two");
+        drug.addBrand(brandOne);
+        drug.addBrand(brandTwo);
 
-		Assert.assertEquals(1, drug.getBrands().size());
-		Assert.assertEquals(brandOne.getName(), ((Brand)CollectionUtils.get(drug.getBrands(), 0)).getName());
-	}
+        Assert.assertEquals(2, drug.getBrands().size());
+        Assert.assertTrue(drug.getBrands().containsAll(Arrays.asList(brandOne, brandTwo)));
+    }
+
+    @Test
+    public void removeBrands() {
+        Drug drug = new Drug();
+        Brand brandOne = new Brand("brand one");
+        Brand brandTwo = new Brand("brand two");
+        drug.addBrand(brandOne);
+        drug.addBrand(brandTwo);
+
+        Assert.assertEquals(2, drug.getBrands().size());
+        drug.removeBrand(brandTwo);
+
+        Assert.assertEquals(1, drug.getBrands().size());
+        Assert.assertEquals(brandOne.getName(), ((Brand) CollectionUtils.get(drug.getBrands(), 0)).getName());
+    }
+
+    @Test
+    public void shouldReturnBrandAndDrugCombinationAsFullName() {
+        Drug drug = new Drug("drug");
+        Company company = new Company();
+        company.setId("C1");
+        Brand brandOne = new Brand("B1+B2+", company);
+        drug.addBrand(brandOne);
+
+        Assert.assertEquals("B1B2_drug", drug.fullName(brandOne.getCompanyId()));
+    }
 }
