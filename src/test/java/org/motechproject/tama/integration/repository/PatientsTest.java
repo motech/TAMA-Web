@@ -2,19 +2,14 @@ package org.motechproject.tama.integration.repository;
 
 import org.ektorp.UpdateConflictException;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
+import org.motechproject.tama.builder.MedicalHistoryBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.domain.IVRLanguage;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.repository.Clinics;
-import org.motechproject.tama.repository.Genders;
-import org.motechproject.tama.repository.IVRLanguages;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.domain.*;
+import org.motechproject.tama.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 
@@ -36,7 +31,14 @@ public class PatientsTest extends SpringIntegrationTest {
     private Genders genders;
 
     @Autowired
+    private HIVTestReasons hivTestReasons;
+
+    @Autowired
+    private ModesOfTransmission modesOfTransmission;
+
+    @Autowired
     private IVRLanguages ivrLanguages;
+
     private Gender gender;
     private IVRLanguage ivrLanguage;
 
@@ -226,6 +228,26 @@ public class PatientsTest extends SpringIntegrationTest {
 
         Patient dbPatient2 = patients.findByIdAndClinicId(anotherPatient.getId(), anotherClinic.getId());
         assertEquals(anotherPatient.getId(), dbPatient2.getId());
+    }
+
+    @Test
+    public void shouldLoadMedicalHistoryForAPatientWhenLoadedByPatientId() {
+        MedicalHistory medicalHistory = MedicalHistoryBuilder.startRecording().withDefaults().build();
+        HIVTestReason testReason = medicalHistory.getHivMedicalHistory().getTestReason();
+        ModeOfTransmission modeOfTransmission = medicalHistory.getHivMedicalHistory().getModeOfTransmission();
+
+        hivTestReasons.add(testReason);
+        modesOfTransmission.add(modeOfTransmission);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withHIVTestReason(testReason).withModeOfTransmission(modeOfTransmission).build();
+        patients.add(patient);
+
+        Patient loadedPatient = patients.findByPatientId(patient.getPatientId()).get(0);
+        Assert.assertEquals("Vertical", loadedPatient.getMedicalHistory().getHivMedicalHistory().getModeOfTransmission().getType());
+        Assert.assertEquals("STDs", loadedPatient.getMedicalHistory().getHivMedicalHistory().getTestReason().getName());
+
+        markForDeletion(patient);
+        markForDeletion(testReason);
+        markForDeletion(modeOfTransmission);
     }
 
 }

@@ -1,12 +1,9 @@
 package org.motechproject.tama.builder;
 
+import org.motechproject.tama.domain.*;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.domain.IVRLanguage;
-import org.motechproject.tama.domain.Patient;
 
 public class PatientBuilder {
 
@@ -57,6 +54,21 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withHIVTestReason(HIVTestReason hivTestReason) {
+        patient.getMedicalHistory().getHivMedicalHistory().setTestReason(hivTestReason);
+        return this;
+    }
+
+    public PatientBuilder withModeOfTransmission(ModeOfTransmission modeOfTransmission) {
+        patient.getMedicalHistory().getHivMedicalHistory().setModeOfTransmission(modeOfTransmission);
+        return this;
+    }
+
+    public PatientBuilder withMedicalHistory(MedicalHistory medicalHistory) {
+        patient.setMedicalHistory(medicalHistory);
+        return this;
+    }
+
     public PatientBuilder withId(String id) {
         patient.setId(id);
         return this;
@@ -98,6 +110,7 @@ public class PatientBuilder {
                 withClinic(Clinic.newClinic()).
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
-                withTravelTimeToClinicInHours(3);
+                withTravelTimeToClinicInHours(3).
+                withMedicalHistory(MedicalHistoryBuilder.startRecording().withDefaults().build());
     }
 }

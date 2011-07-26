@@ -6,6 +6,13 @@ public class ModeOfTransmission extends CouchEntity{
 	@NotNull
     private String type;
 
+    public ModeOfTransmission() {
+    }
+
+    public ModeOfTransmission(String type) {
+        this.type = type;
+    }
+
     public String getType() {
         return this.type;
     }

@@ -7,6 +7,7 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
+import org.motechproject.tama.domain.HIVMedicalHistory;
 import org.motechproject.tama.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,14 +22,18 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     private Genders genders;
     private IVRLanguages ivrLanguages;
     private PatientIds patientIds;
+    private HIVTestReasons hivTestReasons;
+    private ModesOfTransmission modesOfTransmission;
 
     @Autowired
-    public Patients(@Qualifier("tamaDbConnector")CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, PatientIds patientIds) {
+    public Patients(@Qualifier("tamaDbConnector")CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, PatientIds patientIds, HIVTestReasons hivTestReasons, ModesOfTransmission modesOfTransmission) {
         super(Patient.class, db);
         this.clinics = clinics;
         this.genders = genders;
         this.ivrLanguages = ivrLanguages;
         this.patientIds = patientIds;
+        this.hivTestReasons = hivTestReasons;
+        this.modesOfTransmission = modesOfTransmission;
         initStandardDesignDocument();
     }
 
@@ -127,10 +132,17 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     private void loadPatientDependencies(Patient patient) {
         if (patient == null) return;
-        if (!StringUtils.isBlank(patient.getGenderId())) patient.setGender(genders.get(patient.getGenderId()));
+        if (!StringUtils.isBlank(patient.getGenderId()))
+            patient.setGender(genders.get(patient.getGenderId()));
         if (!StringUtils.isBlank(patient.getIvrLanguageId()))
             patient.setIvrLanguage(ivrLanguages.get(patient.getIvrLanguageId()));
-        if (!StringUtils.isBlank(patient.getClinic_id())) patient.setClinic(clinics.get(patient.getClinic_id()));
+        if (!StringUtils.isBlank(patient.getClinic_id()))
+            patient.setClinic(clinics.get(patient.getClinic_id()));
+        HIVMedicalHistory hivMedicalHistory = patient.getMedicalHistory().getHivMedicalHistory();
+        if (!StringUtils.isBlank(hivMedicalHistory.getTestReasonId()))
+            hivMedicalHistory.setTestReason(hivTestReasons.get(hivMedicalHistory.getTestReasonId()));
+        if (!StringUtils.isBlank(hivMedicalHistory.getModeOfTransmissionId()))
+            hivMedicalHistory.setModeOfTransmission(modesOfTransmission.get(hivMedicalHistory.getModeOfTransmissionId()));
     }
 
     private Patient singleResult(List<Patient> patients) {
