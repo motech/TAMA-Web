@@ -35,10 +35,6 @@
         </beans:constructor-arg>
     </beans:bean>
 
-    <!--<beans:bean id="clinicianGroup" class="org.motechproject.tama.security.profiles.ClinicianSecurityGroup"/>-->
-    <!--<beans:bean id="adminGroup" class="org.motechproject.tama.security.profiles.AdminSecurityGroup"/>-->
-    <!--<beans:bean id="loginSuccessHandler" class="org.motechproject.tama.security.LoginSuccessHandler"/>-->
-
     <authentication-manager alias="authenticationManager">
         <authentication-provider ref="authenticationProvider"/>
     </authentication-manager>
