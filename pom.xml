@@ -112,6 +112,37 @@
                                     <goal>run</goal>
                                 </goals>
                             </execution>
+                            <execution>
+                                <id>start-activemq</id>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <target name="start.activemq">
+                                        <condition property="script.interpreter" value="bash" else="cmd">
+                                            <os family="unix"/>
+                                        </condition>
+                                        <condition property="script.switch" value="/c" else="">
+                                            <not>
+                                                <os family="unix"/>
+                                            </not>
+                                        </condition>
+                                        <condition property="script.suffix" value="sh" else="bat">
+                                            <os family="unix"/>
+                                        </condition>
+                                        <condition property="activemq.home" value="${activemq.unix.home}"
+                                                   else="${activemq.windows.home}">
+                                            <os family="unix"/>
+                                        </condition>
+
+                                        <echo message="Waiting for ActiveMQ to start on ${os.name}"/>
+                                        <exec executable="${script.interpreter}" dir="${activemq.home}" spawn="true">
+                                            <arg line="${script.switch} ${activemq.home}/bin/activemq.${script.suffix}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
                         </executions>
                     </plugin>
 
@@ -207,25 +238,25 @@
                         </executions>
                     </plugin>
                     <!--ACTIVE MQ-->
-                    <plugin>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <executions>
-                            <execution>
-                                <id>Start ActiveMQ</id>
-                                <phase>initialize</phase>
-                                <configuration>
-                                    <executable>${activemq.home}/bin/activemq</executable>
-                                    <arguments>
-                                        <argument>start</argument>
-                                    </arguments>
-                                </configuration>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+                    <!--<plugin>-->
+                        <!--<artifactId>exec-maven-plugin</artifactId>-->
+                        <!--<groupId>org.codehaus.mojo</groupId>-->
+                        <!--<executions>-->
+                            <!--<execution>-->
+                                <!--<id>Start ActiveMQ</id>-->
+                                <!--<phase>initialize</phase>-->
+                                <!--<configuration>-->
+                                    <!--<executable>${activemq.linux.home}/bin/activemq</executable>-->
+                                    <!--<arguments>-->
+                                        <!--<argument>start</argument>-->
+                                    <!--</arguments>-->
+                                <!--</configuration>-->
+                                <!--<goals>-->
+                                    <!--<goal>exec</goal>-->
+                                <!--</goals>-->
+                            <!--</execution>-->
+                        <!--</executions>-->
+                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>
