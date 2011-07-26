@@ -28,8 +28,6 @@ public abstract class BaseActionTest {
     }
 
     protected void mockIVRMessage() {
-        // all IVRMessages must be mocked to achieve correct failing tests
-        when(messages.get(IVRMessage.SIGNATURE_MUSIC_URL)).thenReturn("http://music");
-        when(messages.get(IVRMessage.WELCOME_MSG)).thenReturn("welcome");
+        when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL)).thenReturn("http://music");
     }
 }

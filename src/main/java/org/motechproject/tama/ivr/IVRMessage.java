@@ -8,10 +8,9 @@ import java.util.Properties;
 
 @Component
 public class IVRMessage {
-    public static final String SIGNATURE_MUSIC_URL = "signature.music";
-    public static final String WELCOME_MSG = "clinic.welcome.message";
+    public static final String SIGNATURE_MUSIC_URL = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
-    public static final String PILL_REMINDER_RESPONSE_MENU = "menu.pill.reminder.response";
+    public static final String PILL_REMINDER_RESPONSE_MENU = "pill_reminder_menu";
     public static final String YOU_ARE_SUPPOSED_TO_TAKE = "you_are_supposed_to_take";
     public static final String WAV = ".wav";
     private Properties properties;

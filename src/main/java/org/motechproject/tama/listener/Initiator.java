@@ -25,7 +25,6 @@ public class Initiator implements ServletContextListener{
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
         HashMap<String, Object> beans = new HashMap<String, Object>();
         beans.put(PillReminderListener.class.getName(), webApplicationContext.getBean(PillReminderListener.class));
-        beans.put(PillReminderServiceImpl.class.getName(), webApplicationContext.getBean(PillReminderServiceImpl.class));
         return beans;
     }
 

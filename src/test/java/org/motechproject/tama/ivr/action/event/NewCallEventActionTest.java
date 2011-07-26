@@ -69,7 +69,7 @@ public class NewCallEventActionTest extends BaseActionTest {
         when(request.getSession()).thenReturn(session);
         when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
-        when(messages.get(IVRMessage.SIGNATURE_MUSIC_URL)).thenReturn("http://server/tama.wav");
+        when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL)).thenReturn("http://server/tama.wav");
 
         String responseXML = action.handle(ivrRequest, request, response);
         assertEquals("<response sid=\"unique-call-id\"><collectdtmf><playaudio>http://server/tama.wav</playaudio></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));

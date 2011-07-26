@@ -56,7 +56,6 @@ public class PillReminderAction extends BaseIncomingAction {
             builder.addPlayAudio(messages.getWav(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE));
             builder.addPlayAudio(messages.getWav(medicine));
         }
-
         String playMenu = messages.getWav(IVRMessage.PILL_REMINDER_RESPONSE_MENU);
         builder.withCollectDtmf(new IVRDtmfBuilder().withPlayAudio(playMenu).create());
         return builder.create().getXML();

@@ -21,7 +21,7 @@ public abstract class BaseIncomingAction implements IVRIncomingAction {
     }
 
     protected String dtmfResponseWithWav(IVRRequest ivrRequest, String key) {
-        String playAudio = messages.get(key);
+        String playAudio = messages.getWav(key);
         CollectDtmf collectDtmf = new IVRDtmfBuilder().withPlayAudio(playAudio).create();
         Response ivrResponse = new IVRResponseBuilder().withSid(ivrRequest.getSid()).withCollectDtmf(collectDtmf).create();
         return ivrResponse.getXML();
