@@ -1,6 +1,7 @@
 package org.motechproject.tama.listener;
 
 import org.motechproject.server.event.annotations.EventAnnotationBeanPostProcessor;
+import org.motechproject.server.pillreminder.ReminderEventHandler;
 import org.motechproject.server.pillreminder.service.PillReminderServiceImpl;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -25,6 +26,7 @@ public class Initiator implements ServletContextListener{
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
         HashMap<String, Object> beans = new HashMap<String, Object>();
         beans.put(PillReminderListener.class.getName(), webApplicationContext.getBean(PillReminderListener.class));
+        beans.put(ReminderEventHandler.class.getName(), webApplicationContext.getBean(ReminderEventHandler.class));
         return beans;
     }
 
