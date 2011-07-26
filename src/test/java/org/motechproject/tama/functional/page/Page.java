@@ -1,6 +1,7 @@
 package org.motechproject.tama.functional.page;
 
 import org.motechproject.tama.functional.framework.MyPageFactory;
+import org.motechproject.tama.functional.framework.MyWebElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -44,8 +45,8 @@ public abstract class Page {
         return MyPageFactory.initElements(webDriver, returnPageClass);
     }
 
-
     private void searchById(String id) {
+        searchBox = new MyWebElement(searchBox);
         searchBox.sendKeys(id);
         searchButton.click();
     }
