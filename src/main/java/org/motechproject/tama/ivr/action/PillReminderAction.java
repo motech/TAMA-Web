@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr.action;
 
-import com.ozonetel.kookoo.CollectDtmf;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.IVRCallAudit;
