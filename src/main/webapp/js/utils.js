@@ -58,13 +58,15 @@ var parseScript = function(_source) {
 
 var showElement = function(_elementArray) {
     for (var i = 0; i < _elementArray.length; i++){
-        _elementArray[i].setAttribute('style', 'display:block');
+        if (_elementArray[i] != null)
+            _elementArray[i].setAttribute('style', 'display:block');
     }
 }
 
 var hideElement = function(_elementArray) {
     for (var i = 0; i < _elementArray.length; i++){
-        _elementArray[i].setAttribute('style', 'display:none');
+        if (_elementArray[i] != null)
+            _elementArray[i].setAttribute('style', 'display:none');
     }
 }
 

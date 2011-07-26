@@ -179,6 +179,8 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("genders", genders.getAll());
         uiModel.addAttribute("testReasons", testReasons.getAll());
         uiModel.addAttribute("modesOfTransmission", modesOfTransmission.getAll());
+        uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
+        uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
     }
 
     private void addDateTimeFormat(Model uiModel) {

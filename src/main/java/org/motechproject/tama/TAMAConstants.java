@@ -1,7 +1,5 @@
 package org.motechproject.tama;
 
-import org.springframework.scripting.support.StaticScriptSource;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,4 +37,33 @@ public class TAMAConstants {
         }
     }
 
+    public enum DrugAllergy {
+        Sulfonamide("Sulfonamide allergy"), ARV("ARV Allergy"), Other("Other");
+        private String value;
+
+        DrugAllergy(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum NNRTIRash {
+        DRD("Delavirdine / Rescriptor / DLV"),
+        ESSE("Efavirenz / Sustiva / Stocrin / EFV"),
+        NVN("Nevirapine / Viramune / NVP"),
+        EIT("Etravirine / Intelence / TMC125");
+
+        private String value;
+
+        NNRTIRash(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 }

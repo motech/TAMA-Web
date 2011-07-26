@@ -4,50 +4,9 @@
     <jsp:output omit-xml-declaration="yes"/>
     <script type="text/javascript" src="js/utils.js" />
     <form:create id="fc_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" render="${empty dependencies}" z="HkT/39qeIawAHTgF7FpZDeoTr94=">
-        <spring:message code="label_org_motechproject_tama_domain_patient_basic_information" var="basic_information" htmlEscape="false" />
-        <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="${basic_information}" openPane="true">
-            <field:input field="patientId" id="c_org_motechproject_tama_domain_patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
-            <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
-            <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8=" />
-            <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true" />
-            <label for="_travelTimeToClinic_id">Travel Time To Clinic* :</label>
-            In day(s) <springform:select path="travelTimeToClinicInDays" id="_travelTimeToClinicInDays_id" items="${daysInAMonth}" />
-            In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />
-            In minute(s) <springform:select path="travelTimeToClinicInMinutes" id="_travelTimeToClinicInMinutes_id" items="${minutesInAnHour}" />
-        </util:panel>
-        <span class="submit" id="nextToMedicalHistorySpan">
-            <br />
-            <spring:message code="button_next" var="next_button" htmlEscape="false" />
-            <input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>
-        </span>
-        <br />
-        <spring:message code="label_org_motechproject_tama_domain_patient_medical_history" var="medical_history" htmlEscape="false" />
-        <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="true">
-            <util:panel id="fc_org_motechproject_tama_domain_patient_HIV_Medical_History" title="HIV Related Medical History" openPane="true">
-                <field:select field="medicalHistory.hivMedicalHistory.testReasonId" id="c_org_motechproject_tama_domain_patient_test_reason" itemValue="id" itemLabel="name" items="${testReasons}" path="/testReasons" required="true" />
-                <field:select field="medicalHistory.hivMedicalHistory.modeOfTransmissionId" id="c_org_motechproject_tama_domain_patient_mode_of_transmission" itemValue="id" itemLabel="type" items="${modesOfTransmission}" path="/modesOfTransmission" required="true" />
-            </util:panel>
-            <br/>
-        </util:panel>
-        <span class="submit" id="nextToPatientPreferencesSpan">
-            <br />
-            <spring:message code="button_next" var="next_button" htmlEscape="false" />
-            <input id="nextToPatientPreferences" type="button" value="${next_button}" onClick="showPatientPreferences();"/>
-        </span>
-        <br />
-        <spring:message code="label_org_motechproject_tama_domain_patient_tama_preferences" var="tama_preferences" htmlEscape="false" />
-        <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="${tama_preferences}" openPane="true">
-            <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" />
-            <field:select field="ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed" required="true"/>
-            <table>
-                <tr>
-                    <td>Medicine Adherence Report Calls* :</td>
-                    <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_daily_reminderCall" path="reminderCall" value="Daily" label="Activate Daily Pill Reminder Call"/></td></tr>
-                    <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_weekly_reminderCall" path="reminderCall" value="Weekly" label="Activate Weekly Adherence Calls" disabled="true"/></td></tr>
-                </tr>
-            </table>
-        </util:panel>
-        <br />
+        <jsp:include page="createBasicInformation.jspx" />
+        <jsp:include page="createMedicalHistory.jspx" />
+        <jsp:include page="createPatientPreferences.jspx" />
     </form:create>
     <script type="text/javascript">
         function openAllPanels() {

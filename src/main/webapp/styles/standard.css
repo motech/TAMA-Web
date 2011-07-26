@@ -402,3 +402,13 @@ fieldset th {
     text-align: right;
     margin-top: 5px;
 }
+
+.drug_history { overflow : hidden; }
+.drug_history_allergy { margin-bottom:30px; }
+.drug_history span input { float:left; }
+.drug_history span label { margin-top:5px;  }
+.drug_history_label { display:block; font-weight:bold; }
+.drug_history_option { clear:both; }
+.drug_history_checkbox { display:block; clear:both; height:25px; }
+.drug_history_checkbox label { width:300px; }
+.drug_history_allergy .drug_history_checkbox label { width:150px; }
