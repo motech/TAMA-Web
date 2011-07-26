@@ -36,6 +36,8 @@ public class Patient extends CouchEntity {
     @ManyToOne
     private IVRLanguage ivrLanguage;
 
+    private MedicalHistory medicalHistory;
+
     private ReminderCall reminderCall = ReminderCall.Daily;
     private Status status = Status.Inactive;
     private int travelTimeToClinicInDays;
@@ -148,6 +150,14 @@ public class Patient extends CouchEntity {
 
     public void setTravelTimeToClinicInMinutes(int travelTimeToClinicInMinutes) {
         this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
+    }
+
+    public MedicalHistory getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(MedicalHistory medicalHistory) {
+        this.medicalHistory = medicalHistory;
     }
 
     public Date getRegistrationDate() {

@@ -4,10 +4,7 @@ import org.ektorp.UpdateConflictException;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.repository.Clinics;
-import org.motechproject.tama.repository.Genders;
-import org.motechproject.tama.repository.IVRLanguages;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +47,17 @@ public class PatientController extends BaseController {
     private Clinics clinics;
     private Genders genders;
     private IVRLanguages ivrLanguages;
+    private HIVTestReasons testReasons;
+    private ModesOfTransmission modesOfTransmission;
 
     @Autowired
-    public PatientController(Patients patients, Clinics clinics, Genders genders, IVRLanguages ivrLanguages) {
+    public PatientController(Patients patients, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, HIVTestReasons testReasons, ModesOfTransmission modesOfTransmission) {
         this.patients = patients;
         this.clinics = clinics;
         this.genders = genders;
         this.ivrLanguages = ivrLanguages;
+        this.testReasons = testReasons;
+        this.modesOfTransmission = modesOfTransmission;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -176,6 +177,8 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());
         uiModel.addAttribute("genders", genders.getAll());
+        uiModel.addAttribute("testReasons", testReasons.getAll());
+        uiModel.addAttribute("modesOfTransmission", modesOfTransmission.getAll());
     }
 
     private void addDateTimeFormat(Model uiModel) {

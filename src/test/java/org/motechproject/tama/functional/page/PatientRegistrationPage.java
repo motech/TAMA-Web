@@ -31,6 +31,8 @@ public class PatientRegistrationPage extends Page {
     private WebElement ivrLanguage;
     @FindBy(how = How.ID, using = "_passcode_id")
     private WebElement passcode;
+    @FindBy(how = How.ID, using = "nextToMedicalHistory")
+    private WebElement nextToMedicalHistory;
     @FindBy(how = How.ID, using = "nextToPatientPreferences")
     private WebElement nextToPatientPreferences;
 
@@ -67,6 +69,7 @@ public class PatientRegistrationPage extends Page {
         travelTimeInHrs.sendKeys(String.valueOf(patient.getTravelTimeToClinicInHours()));
         travelTimeInMins.clear();
         travelTimeInMins.sendKeys(String.valueOf(patient.getTravelTimeToClinicInMinutes()));
+        nextToMedicalHistory.click();
         nextToPatientPreferences.click();
         passcode.clear();
         passcode.sendKeys(String.valueOf(patient.getPasscode()));

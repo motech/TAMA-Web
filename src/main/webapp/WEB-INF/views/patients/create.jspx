@@ -15,6 +15,20 @@
             In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />
             In minute(s) <springform:select path="travelTimeToClinicInMinutes" id="_travelTimeToClinicInMinutes_id" items="${minutesInAnHour}" />
         </util:panel>
+        <span class="submit" id="nextToMedicalHistorySpan">
+            <br />
+            <spring:message code="button_next" var="next_button" htmlEscape="false" />
+            <input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>
+        </span>
+        <br />
+        <spring:message code="label_org_motechproject_tama_domain_patient_medical_history" var="medical_history" htmlEscape="false" />
+        <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="true">
+            <util:panel id="fc_org_motechproject_tama_domain_patient_HIV_Medical_History" title="HIV Related Medical History" openPane="true">
+                <field:select field="medicalHistory.hivMedicalHistory.testReasonId" id="c_org_motechproject_tama_domain_patient_test_reason" itemValue="id" itemLabel="name" items="${testReasons}" path="/testReasons" required="true" />
+                <field:select field="medicalHistory.hivMedicalHistory.modeOfTransmissionId" id="c_org_motechproject_tama_domain_patient_mode_of_transmission" itemValue="id" itemLabel="type" items="${modesOfTransmission}" path="/modesOfTransmission" required="true" />
+            </util:panel>
+            <br/>
+        </util:panel>
         <span class="submit" id="nextToPatientPreferencesSpan">
             <br />
             <spring:message code="button_next" var="next_button" htmlEscape="false" />
@@ -37,29 +51,38 @@
     </form:create>
     <script type="text/javascript">
         function openAllPanels() {
-            openPanel([basicInformationPanelWidget, preferencesPanelWidget]);
+            openPanel([basicInformationPanelWidget, medicalHistoryPanelWidget, preferencesPanelWidget]);
+        }
+
+        function showMedicalHistory() {
+            closePanel([basicInformationPanelWidget]);
+            hideElement([nextToMedicalHistoryButton]);
+            showElement([medicalHistoryPanel, nextToPatientPreferencesButton]);
         }
 
         function showPatientPreferences() {
-            closePanel([basicInformationPanelWidget]);
+            closePanel([medicalHistoryPanelWidget]);
             hideElement([nextToPatientPreferencesButton]);
             showElement([preferencesPanel, submitButtonDiv]);
         }
 
         dojo.addOnLoad(function() {
             basicInformationPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
+            medicalHistoryPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
             preferencesPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
             basicInformationPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
             preferencesPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
+            medicalHistoryPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
+            nextToMedicalHistoryButton = dojo.byId('nextToMedicalHistorySpan');
             nextToPatientPreferencesButton = dojo.byId('nextToPatientPreferencesSpan');
             submitButtonDiv = dojo.byId('fc_org_motechproject_tama_domain_patient_submit');
 
             if (formHasErrors()) {
-                hideElement([nextToPatientPreferencesButton]);
+                hideElement([nextToMedicalHistoryButton, nextToPatientPreferencesButton]);
                 openAllPanels();
             }
             else {
-                hideElement([preferencesPanel, submitButtonDiv]);
+                hideElement([medicalHistoryPanel, preferencesPanel, nextToPatientPreferencesButton, submitButtonDiv]);
             }
             dojo.connect(dojo.byId('proceed'), 'onclick', openAllPanels);
         });

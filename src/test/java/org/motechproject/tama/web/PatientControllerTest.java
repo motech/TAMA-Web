@@ -4,12 +4,10 @@ import org.ektorp.UpdateConflictException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.repository.Clinics;
-import org.motechproject.tama.repository.Genders;
-import org.motechproject.tama.repository.IVRLanguages;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -28,32 +26,38 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Patient.class, Gender.class})
 public class PatientControllerTest {
 
     private PatientController controller;
-    private HttpServletRequest request;
+    @Mock
     private Model uiModel;
+    @Mock
     private AuthenticatedUser user;
+    @Mock
     private HttpSession session;
+    @Mock
     private Patients patients;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
     private Clinics clinics;
+    @Mock
     private Genders genders;
+    @Mock
     private IVRLanguages ivrLanguages;
+    @Mock
+    private HIVTestReasons testReasons;
+    @Mock
+    private ModesOfTransmission modesOfTransmission;
 
     @Before
     public void setUp() {
-        patients = mock(Patients.class);
-        request = mock(HttpServletRequest.class);
-        session = mock(HttpSession.class);
-        uiModel = mock(Model.class);
-        user = mock(AuthenticatedUser.class);
-        clinics = mock(Clinics.class);
-        genders = mock(Genders.class);
-        ivrLanguages = mock(IVRLanguages.class);
-        controller = new PatientController(patients, clinics, genders, ivrLanguages);
+        initMocks(this);
+        controller = new PatientController(patients, clinics, genders, ivrLanguages, testReasons, modesOfTransmission);
     }
 
     @Test
