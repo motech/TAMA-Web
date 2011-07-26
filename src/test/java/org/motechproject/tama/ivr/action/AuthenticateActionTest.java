@@ -4,9 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRCallAttribute;
+import org.motechproject.tama.ivr.IVRCallState;
+import org.motechproject.tama.ivr.IVREvent;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
+import org.motechproject.tama.ivr.action.pillreminder.PillReminderAction;
 import org.motechproject.tama.repository.Patients;
 
 import static org.junit.Assert.assertEquals;
@@ -35,17 +38,17 @@ public class AuthenticateActionTest extends BaseActionTest {
         super.setUp();
         when(patients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
-        when(session.getAttribute(IVR.Attributes.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
+        when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         authenticateAction = new AuthenticateAction(patients, retryAction, userNotFoundAction, userContinueAction);
     }
 
     @Test
     public void shouldGoToRetryActionIfPatientPassCodeIsNotValid() {
-        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVR.Event.GOT_DTMF.key(), PASSCODE);
+        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
 
         when(request.getSession(false)).thenReturn(session);
         when(retryAction.handle(ivrRequest, request, response)).thenReturn("OK");
-        when(patient.authenticateForIVRWith(PASSCODE)).thenReturn(false);
+        when(patient.authenticatedWith(PASSCODE)).thenReturn(false);
 
         String handle = authenticateAction.handle(ivrRequest, request, response);
 
@@ -55,19 +58,19 @@ public class AuthenticateActionTest extends BaseActionTest {
 
     @Test
     public void shouldGoToUserContinueActionIfPatientPassCodeIsValid() {
-        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVR.Event.GOT_DTMF.key(), PASSCODE);
+        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
 
         when(request.getSession(false)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
         when(userContinueAction.handle(ivrRequest, request, response)).thenReturn("OK");
-        when(patient.authenticateForIVRWith(PASSCODE)).thenReturn(true);
+        when(patient.authenticatedWith(PASSCODE)).thenReturn(true);
 
         String handle = authenticateAction.handle(ivrRequest, request, response);
 
         verify(userContinueAction).handle(ivrRequest, request, response);
         verify(session).invalidate();
-        verify(session).setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.AUTH_SUCCESS);
-        verify(session).setAttribute(IVR.Attributes.PATIENT_DOC_ID, PATIENT_ID);
+        verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.AUTH_SUCCESS);
+        verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, PATIENT_ID);
 
         assertEquals("OK", handle);
     }

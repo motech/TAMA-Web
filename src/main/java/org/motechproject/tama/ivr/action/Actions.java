@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr.action;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVREvent;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ public class Actions {
         this.map = map;
     }
 
-    public IVRIncomingAction findFor(IVR.Event event) {
+    public IVRIncomingAction findFor(IVREvent event) {
         String key = StringUtils.lowerCase(event.key());
         return map.get(key);
     }

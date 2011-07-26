@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
 
@@ -29,7 +29,7 @@ public class RetryActionTest extends BaseActionTest {
     public void shouldGoToUserNotAuthorisedActionIfItIsTheLastAttempt() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(new Integer(4));
+        when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(4);
         when(userNotAuthorisedAction.handle(ivrRequest, request, response)).thenReturn("OK");
 
         String handle = retryAction.handle(ivrRequest, request, response);
@@ -41,11 +41,11 @@ public class RetryActionTest extends BaseActionTest {
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndAlsoIncrementAttemptCount() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
+        when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
 
         String responseXML = retryAction.handle(ivrRequest, request, response);
 
-        verify(session).setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, 1);
+        verify(session).setAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS, 1);
         assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 
@@ -53,11 +53,11 @@ public class RetryActionTest extends BaseActionTest {
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndNotIncrementAttemptCountWhenPassCodeIsNotSent() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", null);
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS)).thenReturn(null);
+        when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
 
         String responseXML = retryAction.handle(ivrRequest, request, response);
 
-        verify(session, never()).setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, 0);
+        verify(session, never()).setAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS, 0);
         assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
     }
 }

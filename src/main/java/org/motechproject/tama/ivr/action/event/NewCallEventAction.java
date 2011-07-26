@@ -1,9 +1,7 @@
 package org.motechproject.tama.ivr.action.event;
 
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVR;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
 import org.motechproject.tama.repository.Patients;
@@ -12,11 +10,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 @Service
 public class NewCallEventAction extends BaseIncomingAction {
-
     private Patients patients;
     private UserNotFoundAction userNotFoundAction;
 
@@ -29,13 +25,13 @@ public class NewCallEventAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
+        IVRSession ivrSession = createIVRSession(request);
         Patient patient = patients.findByMobileNumber(ivrRequest.getCid());
-        if (!isValidCaller(patient))
+        if (!isValidCaller(patient)) {
             return userNotFoundAction.handle(ivrRequest, request, response);
-
-        HttpSession session = request.getSession();
-        session.setAttribute(IVR.Attributes.CALL_STATE, IVR.CallState.COLLECT_PIN);
-        session.setAttribute(IVR.Attributes.PATIENT_DOC_ID, patient.getId());
+        }
+        ivrSession.setState(IVRCallState.COLLECT_PIN);
+        ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patient.getId());
         return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 

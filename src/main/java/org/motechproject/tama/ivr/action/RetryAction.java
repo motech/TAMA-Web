@@ -1,15 +1,15 @@
 package org.motechproject.tama.ivr.action;
 
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 @Service
 public class RetryAction extends BaseIncomingAction {
@@ -29,20 +29,20 @@ public class RetryAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-        Integer attempt = getAttempt(session);
+        IVRSession ivrSession = getIVRSession(request);
+        Integer attempt = getAttempt(ivrSession);
         if (isLast(attempt))
             return userNotAuthorisedAction.handle(ivrRequest, request, response);
 
         if (ivrRequest.hasNoData())
             return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
 
-        session.setAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS, ++attempt);
+        ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
         return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 
-    private Integer getAttempt(HttpSession session) {
-        Object attempts = session.getAttribute(IVR.Attributes.NUMBER_OF_ATTEMPTS);
+    private Integer getAttempt(IVRSession ivrSession) {
+        Object attempts = ivrSession.getInt(IVRCallAttribute.NUMBER_OF_ATTEMPTS);
         return attempts == null ? 0 : (Integer) attempts;
     }
 

@@ -3,7 +3,7 @@ package org.motechproject.tama.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVREvent;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
 import org.motechproject.tama.ivr.action.IVRIncomingAction;
@@ -37,8 +37,8 @@ public class IVRControllerTest {
 
     @Test
     public void shouldDelegateToActionsToHandleTheRequest() {
-        when(ivrRequest.callEvent()).thenReturn(IVR.Event.HANGUP);
-        when(actions.findFor(IVR.Event.HANGUP)).thenReturn(action);
+        when(ivrRequest.callEvent()).thenReturn(IVREvent.HANGUP);
+        when(actions.findFor(IVREvent.HANGUP)).thenReturn(action);
         when(action.handle(ivrRequest, request, response)).thenReturn("reply");
 
         String reply = controller.reply(ivrRequest, request, response);

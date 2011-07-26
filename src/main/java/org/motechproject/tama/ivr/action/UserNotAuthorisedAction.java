@@ -1,9 +1,10 @@
 package org.motechproject.tama.ivr.action;
 
 import org.motechproject.tama.domain.IVRCallAudit;
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.repository.IVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,10 @@ public class UserNotAuthorisedAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-        String id = (String) session.getAttribute(IVR.Attributes.PATIENT_DOC_ID);
+        IVRSession ivrSession = getIVRSession(request);
+        String id = ivrSession.get(IVRCallAttribute.PATIENT_DOC_ID);
         audit(ivrRequest, id, IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
-        session.invalidate();
+        ivrSession.renew(request);
         return hangUpResponseWith(ivrRequest);
     }
 }

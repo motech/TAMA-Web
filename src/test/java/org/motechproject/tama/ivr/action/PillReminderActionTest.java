@@ -8,10 +8,11 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.IVRCallAudit;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
+import org.motechproject.tama.ivr.action.pillreminder.PillReminderAction;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.Clinics;
 import org.motechproject.tama.repository.IVRCallAudits;
@@ -63,7 +64,7 @@ public class PillReminderActionTest extends BaseActionTest {
         when(patient.getClinic_id()).thenReturn("clinicId");
 
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
+        when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         when(patients.get("patientId")).thenReturn(patient);
         when(clinics.get("clinicId")).thenReturn(clinic);
 

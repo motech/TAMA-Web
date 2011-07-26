@@ -57,8 +57,8 @@ public class IVRRequest {
         this.data = data;
     }
 
-    public IVR.Event callEvent() {
-        return IVR.Event.keyOf(this.event);
+    public IVREvent callEvent() {
+        return IVREvent.keyOf(this.event);
     }
 
     public boolean hasNoData() {

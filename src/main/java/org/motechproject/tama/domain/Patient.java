@@ -58,7 +58,7 @@ public class Patient extends CouchEntity {
         return this.status.equals(Status.Inactive);
     }
 
-    public boolean authenticateForIVRWith(String passcode) {
+    public boolean authenticatedWith(String passcode) {
         return this.passcode.equals(passcode);
     }
 

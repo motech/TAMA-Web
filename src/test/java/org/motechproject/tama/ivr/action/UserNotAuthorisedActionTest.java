@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.IVRCallAudit;
-import org.motechproject.tama.ivr.IVR;
+import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
@@ -34,7 +34,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
 
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVR.Attributes.PATIENT_DOC_ID)).thenReturn("patientId");
+        when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn("patientId");
 
         String responseXML = userNotAuthorisedAction.handle(ivrRequest, request, response);
 
