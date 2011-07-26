@@ -18,7 +18,7 @@ public class PillReminderListener {
         this.call = call;
     }
 
-    @MotechListener(subjects = "org.motechproject.server.pillreminder.scheduler-reminder")
+    @MotechListener(subjects = EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT)
     public void handlePillReminderEvent(MotechEvent motechEvent) {
         Map<String,Object> parameters = motechEvent.getParameters();
         String patientDocId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
