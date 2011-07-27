@@ -8,7 +8,7 @@
         <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="${basic_information}" openPane="${param.section == basic_information}">
             <field:input field="patientId" id="c_org_motechproject_tama_domain_patient_patientId" required="true" disabled="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
             <input type="hidden" name="patientId" value="${patient.patientId}" />
-            <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww="/>
+            <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" max="10"/>
             <field:input field="status" id="c_org_motechproject_tama_domain_Patient_status" disabled="true"/>
             <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>
             <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true"/>
@@ -29,7 +29,7 @@
         <br />
         <spring:message code="label_org_motechproject_tama_domain_patient_tama_preferences" var="tama_preferences" htmlEscape="false" />
         <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="${tama_preferences}" openPane="${param.section == tama_preferences}">
-            <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" />
+            <field:input field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" max="10"/>
             <field:select field="ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed" required="true"/>
             <table>
                 <tr>

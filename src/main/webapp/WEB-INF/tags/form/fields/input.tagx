@@ -24,7 +24,11 @@
     <c:if test="${empty type}">
       <c:set value="text" var="type" />
     </c:if>
-    
+
+    <c:if test="${empty max}">
+      <c:set value="100" var="max" />
+    </c:if>
+
     <c:if test="${empty disabled}">
       <c:set value="false" var="disabled" />
     </c:if>
@@ -71,7 +75,7 @@
               <form:password id="_${sec_field}_id" path="${sec_field}" disabled="${disabled}" />
             </c:when>
             <c:otherwise>
-              <form:input id="_${sec_field}_id" path="${sec_field}" disabled="${disabled}" />
+              <form:input id="_${sec_field}_id" path="${sec_field}" disabled="${disabled}" maxlength="${fn:escapeXml(max)}"/>
             </c:otherwise>
           </c:choose>
           <br />
