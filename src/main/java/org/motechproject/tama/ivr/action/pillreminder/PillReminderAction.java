@@ -22,7 +22,7 @@ public class PillReminderAction extends BaseIncomingAction {
     private Patients patients;
     private Clinics clinics;
     private PillReminderService service;
-    private Map<String, IVRIncomingAction> transitions = new HashMap<String, IVRIncomingAction>();
+    private Map<String, IVRIncomingAction> actions = new HashMap<String, IVRIncomingAction>();
 
     @Autowired
     public PillReminderAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits, PillReminderService service,
@@ -33,18 +33,18 @@ public class PillReminderAction extends BaseIncomingAction {
         this.service = service;
         this.audits = audits;
         this.messages = messages;
-        this.transitions.put(DoseRemindAction.KEY, doseRemindAction);
-        this.transitions.put(DoseTakenAction.KEY, doseTakenAction);
-        this.transitions.put(DoseWillBeTakenAction.KEY, doseWillBeTakenAction);
-        this.transitions.put(DoseNotTakenAction.KEY, doseNotTakenAction);
+        this.actions.put(DoseRemindAction.KEY, doseRemindAction);
+        this.actions.put(DoseTakenAction.KEY, doseTakenAction);
+        this.actions.put(DoseWillBeTakenAction.KEY, doseWillBeTakenAction);
+        this.actions.put(DoseNotTakenAction.KEY, doseNotTakenAction);
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
         if (ivrSession.isDoseResponse())
-            return transitions.get(getIVRData(ivrRequest)).handle(ivrRequest, request, response);
-        return transitions.get(DoseRemindAction.KEY).handle(ivrRequest, request, response);
+            return actions.get(getIVRData(ivrRequest)).handle(ivrRequest, request, response);
+        return actions.get(DoseRemindAction.KEY).handle(ivrRequest, request, response);
     }
 
 }

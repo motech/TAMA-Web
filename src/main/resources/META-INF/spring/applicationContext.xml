@@ -18,7 +18,7 @@
 
     <context:component-scan base-package="org.motechproject.tama">
         <context:exclude-filter expression=".*_Roo_.*" type="regex"/>
-        <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+        <!--<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>-->
     </context:component-scan>
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
