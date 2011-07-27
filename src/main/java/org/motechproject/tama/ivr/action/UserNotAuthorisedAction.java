@@ -24,7 +24,7 @@ public class UserNotAuthorisedAction extends BaseIncomingAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
-        String id = ivrSession.get(IVRCallAttribute.PATIENT_DOC_ID);
+        String id = ivrSession.getPatientId();
         audit(ivrRequest, id, IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
         ivrSession.renew(request);
         return hangUpResponseWith(ivrRequest);

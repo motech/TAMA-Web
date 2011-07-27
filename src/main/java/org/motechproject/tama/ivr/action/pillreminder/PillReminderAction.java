@@ -1,17 +1,11 @@
 package org.motechproject.tama.ivr.action.pillreminder;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.IVRCallAudit;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
-import org.motechproject.tama.ivr.builder.IVRDtmfBuilder;
-import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
-import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.ivr.action.IVRIncomingAction;
 import org.motechproject.tama.repository.Clinics;
 import org.motechproject.tama.repository.IVRCallAudits;
 import org.motechproject.tama.repository.Patients;
@@ -20,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -28,45 +21,29 @@ public class PillReminderAction extends BaseIncomingAction {
     private Patients patients;
     private Clinics clinics;
     private PillReminderService service;
+    private Map<String, IVRIncomingAction> transitions;
 
     @Autowired
-    public PillReminderAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits, PillReminderService service) {
+    public PillReminderAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits, PillReminderService service,
+                              DoseNotTakenAction doseNotTakenAction, DoseTakenAction doseTakenAction,
+                              DoseWillBeTakenAction doseWillBeTakenAction, DoseRemindAction doseRemindAction) {
         this.patients = patients;
         this.clinics = clinics;
         this.service = service;
-        this.messages = messages;
         this.audits = audits;
+        this.messages = messages;
+        this.transitions.put(DoseRemindAction.KEY, doseRemindAction);
+        this.transitions.put(DoseTakenAction.KEY, doseTakenAction);
+        this.transitions.put(DoseWillBeTakenAction.KEY, doseWillBeTakenAction);
+        this.transitions.put(DoseNotTakenAction.KEY, doseNotTakenAction);
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
-        String id = ivrSession.get(IVRCallAttribute.PATIENT_DOC_ID);
-        Patient patient = patients.get(id);
-
-        Clinic clinic = clinics.get(patient.getClinic_id());
-        audit(ivrRequest, id, IVRCallAudit.State.USER_AUTHORISED);
-        return medicinesAndMenu(ivrRequest, clinic);
-    }
-
-    private String medicinesAndMenu(IVRRequest ivrRequest, Clinic clinic) {
-        IVRResponseBuilder builder = new IVRResponseBuilder();
-        builder.withSid(ivrRequest.getSid()).addPlayAudio(messages.getWav(clinic.getName()));
-
-        for (String medicine : medicines(ivrRequest)) {
-            builder.addPlayAudio(messages.getWav(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE));
-            builder.addPlayAudio(messages.getWav(medicine));
-        }
-        String playMenu = messages.getWav(IVRMessage.PILL_REMINDER_RESPONSE_MENU);
-        builder.withCollectDtmf(new IVRDtmfBuilder().withPlayAudio(playMenu).create());
-        return builder.create().getXML();
-    }
-
-    private List<String> medicines(IVRRequest ivrRequest) {
-        Map<String, String> params = ivrRequest.getTamaParams();
-        String regimen = params.get(PillReminderCall.REGIMEN_ID);
-        String dosage = params.get(PillReminderCall.DOSAGE_ID);
-        return service.medicinesFor(regimen, dosage);
+        if (ivrSession.isDoseResponse())
+            return transitions.get(getIVRData(ivrRequest)).handle(ivrRequest, request, response);
+        return transitions.get(DoseRemindAction.KEY).handle(ivrRequest, request, response);
     }
 
 }

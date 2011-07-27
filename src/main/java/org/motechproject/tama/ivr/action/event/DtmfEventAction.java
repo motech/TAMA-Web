@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr.action.event;
 
-import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.AuthenticateAction;
@@ -26,8 +25,7 @@ public class DtmfEventAction extends BaseIncomingAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
-        IVRCallState callState = ivrSession.getState();
-        return callState.isCollectPin() ?
+        return ivrSession.isAuthentication()?
                 authenticateAction.handle(ivrRequest, request, response) :
                 pillReminderAction.handle(ivrRequest, request, response);
     }

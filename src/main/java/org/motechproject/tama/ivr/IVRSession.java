@@ -26,6 +26,10 @@ public class IVRSession {
         return (Integer) session.getAttribute(name);
     }
 
+    public String getPatientId() {
+        return (String) session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID);
+    }
+
     public void set(String key, Object value) {
         session.setAttribute(key, value);
     }
@@ -34,4 +38,14 @@ public class IVRSession {
         session.invalidate();
         session = request.getSession();
     }
+
+    public boolean isAuthentication() {
+        return getState().isCollectPin();
+    }
+
+    public boolean isDoseResponse() {
+        return getState().isCollectDoseResponse();
+    }
+
+
 }

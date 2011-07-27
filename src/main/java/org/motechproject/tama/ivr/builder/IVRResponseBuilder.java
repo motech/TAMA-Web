@@ -19,13 +19,15 @@ public class IVRResponseBuilder {
         return this;
     }
 
-    public IVRResponseBuilder addPlayText(String playText) {
-        this.playTexts.add(playText);
+    public IVRResponseBuilder addPlayText(String... playTexts) {
+        for (String playText : playTexts)
+            this.playTexts.add(playText);
         return this;
     }
 
-    public IVRResponseBuilder addPlayAudio(String playAudio) {
-        this.playAudios.add(playAudio);
+    public IVRResponseBuilder addPlayAudio(String... playAudios) {
+        for (String playAudio : playAudios)
+            this.playAudios.add(playAudio);
         return this;
     }
 

@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr.action.event;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.motechproject.tama.ivr.IVRMessage;
@@ -29,5 +30,9 @@ public abstract class BaseActionTest {
 
     protected void mockIVRMessage() {
         when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL)).thenReturn("http://music");
+    }
+
+    protected String sanitize(String responseXML) {
+        return StringUtils.replace(responseXML, System.getProperty("line.separator"), "");
     }
 }

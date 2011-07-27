@@ -32,7 +32,7 @@ public class AuthenticateAction extends BaseIncomingAction {
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = getIVRData(ivrRequest);
-        String id = ivrSession.get(IVRCallAttribute.PATIENT_DOC_ID);
+        String id = ivrSession.getPatientId();
         Patient patient = patients.get(id);
 
         if (!patient.authenticatedWith(passcode)) {
