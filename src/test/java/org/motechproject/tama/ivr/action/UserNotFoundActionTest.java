@@ -17,10 +17,6 @@ import static org.mockito.Mockito.when;
 
 public class UserNotFoundActionTest extends BaseActionTest {
     private UserNotFoundAction userNotFoundAction;
-    @Mock
-    private IVRMessage messages;
-    @Mock
-    private IVRCallAudits audits;
 
     @Before
     public void setUp() {
@@ -35,7 +31,7 @@ public class UserNotFoundActionTest extends BaseActionTest {
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND);
         verify(audits).add(argThat(matcher));
-        assertEquals("<response sid=\"sid\"><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
+        assertEquals("<response sid=\"sid\"><hangup/></response>", sanitize(responseXML));
     }
 }
 

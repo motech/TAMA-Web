@@ -33,13 +33,9 @@ public class DoseRemindActionTest extends BaseActionTest {
 
     private DoseRemindAction action;
     @Mock
-    private IVRMessage messages;
-    @Mock
     private Patients patients;
     @Mock
     private Clinics clinics;
-    @Mock
-    private IVRCallAudits audits;
     @Mock
     private PillReminderService service;
 

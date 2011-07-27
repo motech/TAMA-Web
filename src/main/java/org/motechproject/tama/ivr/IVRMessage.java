@@ -8,11 +8,16 @@ import java.util.Properties;
 
 @Component
 public class IVRMessage {
+    public static final String WAV = ".wav";
+    public static final String PILL_REMINDER_RETRY_INTERVAL = "15";
     public static final String SIGNATURE_MUSIC_URL = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
     public static final String PILL_REMINDER_RESPONSE_MENU = "pill_reminder_menu";
     public static final String YOU_ARE_SUPPOSED_TO_TAKE = "you_are_supposed_to_take";
-    public static final String WAV = ".wav";
+    public static final String PLEASE_TAKE_DOSE = "please_take_dose";
+    public static final String DOSE_TAKEN = "dose_taken";
+    public static final String MINUTES = "minutes";
+
     private Properties properties;
 
     @Autowired

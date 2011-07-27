@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr.action;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -46,7 +45,7 @@ public class RetryActionTest extends BaseActionTest {
         String responseXML = retryAction.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS, 1);
-        assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
+        assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", sanitize(responseXML));
     }
 
     @Test
@@ -58,6 +57,6 @@ public class RetryActionTest extends BaseActionTest {
         String responseXML = retryAction.handle(ivrRequest, request, response);
 
         verify(session, never()).setAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS, 0);
-        assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
+        assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", sanitize(responseXML));
     }
 }

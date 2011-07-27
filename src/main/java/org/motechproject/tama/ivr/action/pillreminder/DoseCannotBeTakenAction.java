@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class DoseNotTakenAction extends BaseIncomingAction{
+public class DoseCannotBeTakenAction extends BaseIncomingAction{
     public static final String KEY = "3";
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }

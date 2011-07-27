@@ -18,10 +18,6 @@ import static org.mockito.Mockito.when;
 
 public class UserNotAuthorisedActionTest extends BaseActionTest {
     private UserNotAuthorisedAction userNotAuthorisedAction;
-    @Mock
-    private IVRMessage messages;
-    @Mock
-    private IVRCallAudits audits;
 
     @Before
     public void setUp() {
@@ -41,7 +37,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "patientId", IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
         verify(audits).add(argThat(matcher));
         verify(session).invalidate();
-        assertEquals("<response sid=\"sid\"><hangup/></response>", StringUtils.replace(responseXML, System.getProperty("line.separator"), ""));
+        assertEquals("<response sid=\"sid\"><hangup/></response>", sanitize(responseXML));
     }
 
 }

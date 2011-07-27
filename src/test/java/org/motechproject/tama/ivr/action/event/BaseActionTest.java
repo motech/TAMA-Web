@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.repository.IVRCallAudits;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,8 @@ public abstract class BaseActionTest {
     protected HttpSession session;
     @Mock
     protected IVRMessage messages;
+    @Mock
+    protected IVRCallAudits audits;
 
     @Before
     public void setUp() {

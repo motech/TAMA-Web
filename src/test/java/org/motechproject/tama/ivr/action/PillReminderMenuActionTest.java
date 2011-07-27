@@ -11,26 +11,21 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
 import org.motechproject.tama.ivr.action.pillreminder.*;
 import org.motechproject.tama.repository.Clinics;
-import org.motechproject.tama.repository.IVRCallAudits;
 import org.motechproject.tama.repository.Patients;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class PillReminderActionTest extends BaseActionTest {
-
-    private PillReminderAction action;
-    @Mock
-    private IVRMessage messages;
+public class PillReminderMenuActionTest extends BaseActionTest {
+    private PillReminderMenuAction action;
     @Mock
     private Patients patients;
     @Mock
     private Clinics clinics;
     @Mock
-    private IVRCallAudits audits;
-    @Mock
     private PillReminderService service;
     @Mock
-    private DoseNotTakenAction doseNotTakenAction;
+    private DoseCannotBeTakenAction doseNotTakenAction;
     @Mock
     private DoseTakenAction doseTakenAction;
     @Mock
@@ -41,7 +36,7 @@ public class PillReminderActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
-        action = new PillReminderAction(messages, patients, clinics, audits, service,
+        action = new PillReminderMenuAction(messages, patients, clinics, audits, service,
                 doseNotTakenAction, doseTakenAction, doseWillBeTakenAction, doseRemindAction);
     }
 
@@ -67,6 +62,19 @@ public class PillReminderActionTest extends BaseActionTest {
         action.handle(ivrRequest, request, response);
 
         verify(doseTakenAction).handle(ivrRequest, request, response);
+    }
+
+    @Test
+    public void shouldAskDoseTakenActionToHandleIfCallStateIsDoseResponseIsUnknown() {
+        IVRRequest ivrRequest = mock(IVRRequest.class);
+
+        when(ivrRequest.getData()).thenReturn("99%23");
+        when(request.getSession(false)).thenReturn(session);
+        when(messages.getWav(IVRMessage.PILL_REMINDER_RESPONSE_MENU)).thenReturn("menu");
+        when(session.getAttribute(IVRCallAttribute.CALL_STATE)).thenReturn(IVRCallState.COLLECT_DOSE_RESPONSE);
+
+        String responseXML = action.handle(ivrRequest, request, response);
+        assertEquals("<response><collectdtmf><playaudio>menu</playaudio></collectdtmf></response>", sanitize(responseXML));
     }
 
 }
