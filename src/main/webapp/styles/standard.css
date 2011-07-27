@@ -403,6 +403,7 @@ fieldset th {
     margin-top: 5px;
 }
 
+/* create medical history */
 .drug_history { overflow : hidden; }
 .drug_history_allergy { margin-bottom:30px; }
 .drug_history span input { float:left; }
@@ -412,3 +413,9 @@ fieldset th {
 .drug_history_checkbox { display:block; clear:both; height:25px; }
 .drug_history_checkbox label { width:300px; }
 .drug_history_allergy .drug_history_checkbox label { width:150px; }
+
+/* view medical history */
+.drug_allergy_text { display:block; margin-top:5px; }
+.drug_rash_text { display:block; margin-top:5px; }
+.drug_allergy_view_label { display:block; font-weight:bold; }
+.drug_rash_view_label { display:block; font-weight:bold; margin-top:30px; }
