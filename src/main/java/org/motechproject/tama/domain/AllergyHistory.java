@@ -5,6 +5,7 @@ import org.motechproject.tama.TAMAConstants;
 public class AllergyHistory extends BaseEntity {
 
     private TAMAConstants.DrugAllergy drugAllergy;
+    private boolean specified;
     private String description;
 
     public TAMAConstants.DrugAllergy getDrugAllergy() {
@@ -21,5 +22,13 @@ public class AllergyHistory extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isSpecified() {
+        return specified;
+    }
+
+    public void setSpecified(boolean specified) {
+        this.specified = specified;
     }
 }
