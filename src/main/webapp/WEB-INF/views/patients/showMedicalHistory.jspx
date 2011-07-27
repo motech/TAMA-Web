@@ -3,9 +3,9 @@
     <spring:message code="label_org_motechproject_tama_domain_patient_medical_history" var="medical_history" htmlEscape="false" />
     <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="true" update="true">
         <util:panel id="fc_org_motechproject_tama_domain_patient_HIV_Medical_History" title="HIV Related Medical History" openPane="true">
-            <field:display field="name" id="c_org_motechproject_tama_domain_patient_test_reason" object="${patient.medicalHistory.hivMedicalHistory.testReason}"/>
+            <field:display field="name" id="s_org_motechproject_tama_domain_patient_test_reason" object="${patient.medicalHistory.hivMedicalHistory.testReason}"/>
             <br/>
-            <field:display field="type" id="c_org_motechproject_tama_domain_patient_mode_of_transmission" object="${patient.medicalHistory.hivMedicalHistory.modeOfTransmission}"/>
+            <field:display field="type" id="s_org_motechproject_tama_domain_patient_mode_of_transmission" object="${patient.medicalHistory.hivMedicalHistory.modeOfTransmission}"/>
             <br/>
         </util:panel>
         <br/>

@@ -20,6 +20,18 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_dateOfBirth_dateOfBirth_id")
     private WebElement dateOfBirth;
 
+    @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_test_reason_name_id")
+    private WebElement hivTestReason;
+
+    @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_mode_of_transmission_type_id")
+    private WebElement modeOfTransmission;
+
+    @FindBy(how = How.CLASS_NAME, using = "drug_allergy_text")
+    private WebElement allergy;
+
+    @FindBy(how = How.CLASS_NAME, using = "drug_rash_text")
+    private WebElement rash;
+
     @FindBy(how = How.ID, using = "activatePatient")
     private WebElement activationLink;
 
@@ -51,6 +63,22 @@ public class ShowPatientPage extends Page {
 
     public String getDateOfBirth() {
         return dateOfBirth.getText();
+    }
+
+    public String getHIVTestReason() {
+        return hivTestReason.getText();
+    }
+
+    public String getModeOfTransmission() {
+        return modeOfTransmission.getText();
+    }
+
+    public String getAllergyText() {
+        return allergy.getText();
+    }
+
+    public String getRashText() {
+        return rash.getText();
     }
 
     public String getStatus() {

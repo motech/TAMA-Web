@@ -5,7 +5,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.domain.HIVMedicalHistory;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.functional.context.ClinicianContext;
 import org.motechproject.tama.functional.framework.BaseTest;
@@ -33,6 +35,7 @@ public class PatientRegistrationTest extends BaseTest {
         buildContexts(clinicianContext);
 
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        HIVMedicalHistory hivMedicalHistory = patient.getMedicalHistory().getHivMedicalHistory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().
@@ -41,6 +44,10 @@ public class PatientRegistrationTest extends BaseTest {
         Assert.assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
         Assert.assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
         Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
+        Assert.assertEquals(showPatientPage.getHIVTestReason(), hivMedicalHistory.getTestReason().getName());
+        Assert.assertEquals(showPatientPage.getModeOfTransmission(), hivMedicalHistory.getModeOfTransmission().getType());
+        Assert.assertEquals(showPatientPage.getAllergyText(), "ARV Allergy : arvAllergyDescription");
+        Assert.assertEquals(showPatientPage.getRashText(), TAMAConstants.NNRTIRash.DRD.getValue());
         showPatientPage.logout();
     }
 
