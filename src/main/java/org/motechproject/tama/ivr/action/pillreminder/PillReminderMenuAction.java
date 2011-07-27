@@ -4,6 +4,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.tama.ivr.action.ActionMenu;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.action.IVRIncomingAction;
 import org.motechproject.tama.ivr.builder.IVRDtmfBuilder;
@@ -16,15 +17,13 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class PillReminderMenuAction extends BaseIncomingAction {
     private Patients patients;
     private Clinics clinics;
     private PillReminderService service;
-    private Map<String, IVRIncomingAction> menuActions = new HashMap<String, IVRIncomingAction>();
+    private ActionMenu menu = new ActionMenu();
 
     @Autowired
     public PillReminderMenuAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits, PillReminderService service,
@@ -35,19 +34,17 @@ public class PillReminderMenuAction extends BaseIncomingAction {
         this.service = service;
         this.audits = audits;
         this.messages = messages;
-        this.menuActions.put(DoseRemindAction.KEY, doseRemindAction);
-        this.menuActions.put(DoseTakenAction.KEY, doseTakenAction);
-        this.menuActions.put(DoseWillBeTakenAction.KEY, doseWillBeTakenAction);
-        this.menuActions.put(DoseCannotBeTakenAction.KEY, doseNotTakenAction);
+        this.menu.add(doseRemindAction, doseNotTakenAction, doseTakenAction, doseWillBeTakenAction);
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
         if (!ivrSession.isDoseResponse())
-            return menuActions.get(DoseRemindAction.KEY).handle(ivrRequest, request, response);
+            return menu.get(DoseRemindAction.KEY).handle(ivrRequest, request, response);
 
-        IVRIncomingAction action = menuActions.get(getIVRData(ivrRequest));
+        String ivrData = getIVRData(ivrRequest);
+        IVRIncomingAction action = menu.get(ivrData);
         if (action != null)
             return action.handle(ivrRequest, request, response);
 

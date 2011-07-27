@@ -7,4 +7,5 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface IVRIncomingAction {
     String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response);
+    String getKey();
 }

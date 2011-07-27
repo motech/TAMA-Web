@@ -48,4 +48,9 @@ public abstract class BaseIncomingAction implements IVRIncomingAction {
     protected String getIVRData(IVRRequest ivrRequest) {
         return StringUtils.remove(ivrRequest.getData(), POUND_SYMBOL);
     }
+
+    @Override
+    public String getKey() {
+        return StringUtils.EMPTY;
+    }
 }

@@ -36,6 +36,10 @@ public class PillReminderMenuActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
+        when(doseRemindAction.getKey()).thenReturn("0");
+        when(doseTakenAction.getKey()).thenReturn("1");
+        when(doseWillBeTakenAction.getKey()).thenReturn("2");
+        when(doseNotTakenAction.getKey()).thenReturn("3");
         action = new PillReminderMenuAction(messages, patients, clinics, audits, service,
                 doseNotTakenAction, doseTakenAction, doseWillBeTakenAction, doseRemindAction);
     }

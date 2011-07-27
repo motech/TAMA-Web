@@ -65,6 +65,11 @@ public class DoseRemindAction extends BaseIncomingAction {
         return service.medicinesFor(regimen, dosage);
     }
 
+    @Override
+    public String getKey() {
+        return KEY;
+    }
+
 }
 
 

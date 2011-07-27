@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class DoseWillBeTakenAction extends BaseIncomingAction {
+
     public static final String KEY = "2";
 
     @Autowired
@@ -34,4 +35,10 @@ public class DoseWillBeTakenAction extends BaseIncomingAction {
                 .create();
         return ivrResponse.getXML();
     }
+
+    @Override
+    public String getKey() {
+        return KEY;
+    }
+
 }
