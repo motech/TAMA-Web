@@ -8,6 +8,7 @@ import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.IVRCallAudits;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,13 @@ import java.util.Map;
 
 @Service
 public class DoseTakenAction extends BaseIncomingAction {
-
     public static final String KEY = "1";
 
     private PillReminderService service;
     private IVRCallAudits audits;
     private IVRMessage messages;
 
+    @Autowired
     public DoseTakenAction(PillReminderService service, IVRCallAudits audits, IVRMessage messages) {
         this.service = service;
         this.audits = audits;
