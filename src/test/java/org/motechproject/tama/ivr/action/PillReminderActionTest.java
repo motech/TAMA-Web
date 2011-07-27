@@ -44,7 +44,6 @@ public class PillReminderActionTest extends BaseActionTest {
 
     @Test
     public void shouldReturnUserProceedResponse() {
-        assertTrue(true);
 
     }
 

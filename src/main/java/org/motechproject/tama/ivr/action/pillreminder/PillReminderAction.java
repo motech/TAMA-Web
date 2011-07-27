@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -21,7 +22,7 @@ public class PillReminderAction extends BaseIncomingAction {
     private Patients patients;
     private Clinics clinics;
     private PillReminderService service;
-    private Map<String, IVRIncomingAction> transitions;
+    private Map<String, IVRIncomingAction> transitions = new HashMap<String, IVRIncomingAction>();
 
     @Autowired
     public PillReminderAction(IVRMessage messages, Patients patients, Clinics clinics, IVRCallAudits audits, PillReminderService service,

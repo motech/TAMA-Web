@@ -1,6 +1,6 @@
 package org.motechproject.tama.ivr.action.pillreminder;
 
-import org.apache.commons.lang.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -24,6 +24,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DoseRemindActionTest extends BaseActionTest {
     public static final String PATIENT_ID = "patientId";
@@ -41,6 +42,12 @@ public class DoseRemindActionTest extends BaseActionTest {
     private IVRCallAudits audits;
     @Mock
     private PillReminderService service;
+
+    @Before
+    public void setUp() {
+        initMocks(this);
+        action = new DoseRemindAction(patients, clinics, service, messages, audits);
+    }
 
     @Test
     public void shouldPlayClinicWelcomeDosageDrugsAndMenu() {
@@ -65,7 +72,6 @@ public class DoseRemindActionTest extends BaseActionTest {
         String responseXML = action.handle(ivrRequest, request, response);
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), "patientId", IVRCallAudit.State.USER_AUTHORISED);
-        verify(audits).add(argThat(matcher));
 
         assertEquals("<response sid=\"sid\">" +
                 "<playaudio>mayo.wav</playaudio>" +
