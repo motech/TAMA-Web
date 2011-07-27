@@ -56,6 +56,11 @@ var parseScript = function(_source) {
     return source;
 }
 
+var clearElement = function(_elementWidget) {
+    if (_elementWidget != null)
+        _elementWidget.setValue('');
+}
+
 var showElement = function(_elementArray) {
     for (var i = 0; i < _elementArray.length; i++){
         if (_elementArray[i] != null)

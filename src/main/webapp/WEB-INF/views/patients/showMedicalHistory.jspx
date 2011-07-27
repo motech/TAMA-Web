@@ -21,10 +21,20 @@
                     </span>
                 </c:if>
             </c:forEach>
+            <c:if test="${empty patient.medicalHistory.nonHivMedicalHistory.specifiedAllergies}">
+                <span class="drug_allergy_text">
+                    <c:out value="None" />
+                </span>
+            </c:if>
             <span class="drug_rash_view_label"><c:out value="History of rash while receiving NNRTIs" /></span>
             <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.rashes}" varStatus="item" var="rash">
                 <span class="drug_rash_text"><c:out value="${rash.value}" /></span>
             </c:forEach>
+            <c:if test="${empty patient.medicalHistory.nonHivMedicalHistory.rashes}">
+                <span class="drug_allergy_text">
+                    <c:out value="None" />
+                </span>
+            </c:if>
         </util:panel>
     </util:panel>
     <br />

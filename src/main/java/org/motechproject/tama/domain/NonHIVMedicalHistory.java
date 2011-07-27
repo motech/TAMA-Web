@@ -26,4 +26,13 @@ public class NonHIVMedicalHistory extends BaseEntity {
     public void setRashes(List<TAMAConstants.NNRTIRash> rashes) {
         this.rashes = rashes;
     }
+
+    public List<AllergyHistory> getSpecifiedAllergies() {
+        ArrayList<AllergyHistory> specifiedAllergies = new ArrayList<AllergyHistory>();
+        for (AllergyHistory allergyHistory : allergiesHistory) {
+            if (allergyHistory.isSpecified())
+                specifiedAllergies.add(allergyHistory);
+        }
+        return specifiedAllergies;
+    }
 }
