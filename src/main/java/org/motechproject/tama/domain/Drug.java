@@ -64,7 +64,6 @@ public class Drug extends CouchEntity {
 
     public String fullName(String brandId) {
         Brand brand = this.getBrand(brandId);
-        String brandName = StringUtils.remove(brand.getName(),"+");
-        return brandName + "_" + this.name;
+        return StringUtils.remove(this.name, "+") + "_" + brand.getName();
     }
 }

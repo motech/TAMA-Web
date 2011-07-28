@@ -57,18 +57,18 @@ public class PillRegimenRequestMapperTest {
         DosageRequest dosageRequest1 = getByStartHour(17, pillRegimenRequest.getDosageRequests());
         assertDosageRequest(dosageRequest1, 17, 45);
         Assert.assertEquals(1, dosageRequest1.getMedicineRequests().size());
-        assertMedicineRequest(dosageRequest1.getMedicineRequests().get(0), "brandName_Drug2", startDateForDrug2, endDateForDrug2);
+        assertMedicineRequest(dosageRequest1.getMedicineRequests().get(0), "Drug2_brandName", startDateForDrug2, endDateForDrug2);
 
         DosageRequest dosageRequest2 = getByStartHour(20, pillRegimenRequest.getDosageRequests());
         assertDosageRequest(dosageRequest2, 20, 30);
         Assert.assertEquals(1, dosageRequest2.getMedicineRequests().size());
-        assertMedicineRequest(dosageRequest2.getMedicineRequests().get(0), "brandName_Drug1", startDateForDrug1, endDateForDrug1);
+        assertMedicineRequest(dosageRequest2.getMedicineRequests().get(0), "Drug1_brandName", startDateForDrug1, endDateForDrug1);
 
         DosageRequest dosageRequest3 = getByStartHour(9, pillRegimenRequest.getDosageRequests());
         assertDosageRequest(dosageRequest3, 9, 0);
         Assert.assertEquals(2, dosageRequest3.getMedicineRequests().size());
-        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(0), "brandName_Drug1", startDateForDrug1, endDateForDrug1);
-        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(1), "brandName_Drug2", startDateForDrug2, endDateForDrug2);
+        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(0), "Drug1_brandName", startDateForDrug1, endDateForDrug1);
+        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(1), "Drug2_brandName", startDateForDrug2, endDateForDrug2);
     }
 
     private DosageRequest getByStartHour(int startHour, List<DosageRequest> dosageRequests) {

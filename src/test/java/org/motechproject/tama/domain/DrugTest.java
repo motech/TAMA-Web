@@ -42,12 +42,12 @@ public class DrugTest {
 
     @Test
     public void shouldReturnBrandAndDrugCombinationAsFullName() {
-        Drug drug = new Drug("drug");
+        Drug drug = new Drug("D1+D2");
         Company company = new Company();
         company.setId("C1");
-        Brand brandOne = new Brand("B1+B2+", company);
+        Brand brandOne = new Brand("B1", company);
         drug.addBrand(brandOne);
 
-        Assert.assertEquals("B1B2_drug", drug.fullName(brandOne.getCompanyId()));
+        Assert.assertEquals("D1D2_B1", drug.fullName(brandOne.getCompanyId()));
     }
 }

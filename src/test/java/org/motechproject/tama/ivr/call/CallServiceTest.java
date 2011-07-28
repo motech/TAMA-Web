@@ -39,7 +39,7 @@ public class CallServiceTest {
     public void shouldMakeACallWithThePhoneNumberAndEmptyTamaDataParamsProvided() throws IOException {
         Map<String, String> params = new HashMap<String, String>();
         callService.dial(phoneNumber, params);
-        verify(httpClient).executeMethod(argThat(new GetMethodMatcher("http://kookoo/outbound.php?api_key=KKbedce53758c2e0b0e9eed7191ec2a466&url=http://localhost/tama/ivr/reply?tamaData={}&phone_no=9876543211")));
+        verify(httpClient).executeMethod(argThat(new GetMethodMatcher("http://kookoo/outbound.php?api_key=KKbedce53758c2e0b0e9eed7191ec2a466&url=http%3A%2F%2Flocalhost%2Ftama%2Fivr%2Freply%3FtamaData%3D%7B%7D&phone_no=9876543211")));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class CallServiceTest {
         Map<String, String> params = new HashMap<String, String>();
         params.put("hero", "batman");
         callService.dial(phoneNumber, params);
-        verify(httpClient).executeMethod(argThat(new GetMethodMatcher("http://kookoo/outbound.php?api_key=KKbedce53758c2e0b0e9eed7191ec2a466&url=http://localhost/tama/ivr/reply?tamaData={\"hero\":\"batman\"}&phone_no=9876543211")));
+        verify(httpClient).executeMethod(argThat(new GetMethodMatcher("http://kookoo/outbound.php?api_key=KKbedce53758c2e0b0e9eed7191ec2a466&url=http%3A%2F%2Flocalhost%2Ftama%2Fivr%2Freply%3FtamaData%3D%7B%22hero%22%3A%22batman%22%7D&phone_no=9876543211")));
     }
 
 

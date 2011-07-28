@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Properties;
 
@@ -33,16 +34,17 @@ public class CallService {
     }
 
     public void dial(String phoneNumber, Map<String, String> params) {
-        JSONObject json = new JSONObject(params);
-        String applicationUrl = properties.get(APPLICATION_URL) + "?tamaData=" + json.toString();
-
-        GetMethod getMethod = new GetMethod(properties.get(KOOKOO_OUTBOUND_URL).toString());
-        getMethod.setQueryString(new NameValuePair[]{
-                new NameValuePair("api_key", properties.get(KOOKOO_API_KEY).toString()),
-                new NameValuePair("url", applicationUrl),
-                new NameValuePair("phone_no", phoneNumber)
-        });
         try {
+            JSONObject json = new JSONObject(params);
+            String applicationUrl = properties.get(APPLICATION_URL) + "?tamaData=" + json.toString();
+            applicationUrl = URLEncoder.encode(applicationUrl, "UTF-8");
+
+            GetMethod getMethod = new GetMethod(properties.get(KOOKOO_OUTBOUND_URL).toString());
+            getMethod.setQueryString(new NameValuePair[]{
+                    new NameValuePair("api_key", properties.get(KOOKOO_API_KEY).toString()),
+                    new NameValuePair("url", applicationUrl),
+                    new NameValuePair("phone_no", phoneNumber)
+            });
             httpClient.executeMethod(getMethod);
         } catch (IOException e) {
             throw new RuntimeException(e);
