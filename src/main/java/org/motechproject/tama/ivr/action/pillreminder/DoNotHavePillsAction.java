@@ -31,11 +31,11 @@ public class DoNotHavePillsAction extends BaseIncomingAction {
         IVRSession ivrSession = getIVRSession(request);
         ivrSession.setState(IVRCallState.COLLECT_PREVIOUS_DOSE_RESPONSE);
 
-        Response ivrResponse = new IVRResponseBuilder()
-                .withSid(ivrRequest.getSid())
-                .addPlayAudio(messages.getWav(IVRMessage.PLEASE_CARRY_SMALL_BOX))
+        Response ivrResponse = new IVRResponseBuilder(ivrRequest.getSid())
+                .withPlayAudios(IVRMessage.PLEASE_CARRY_SMALL_BOX)
                 .withPreviousDosageReminder(ivrRequest, service, messages)
-                .create();
+                .withHangUp()
+                .create(messages);
         return ivrResponse.getXML();
     }
 

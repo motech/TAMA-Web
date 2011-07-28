@@ -22,17 +22,19 @@ public class PreviousDosageBuilder {
         String dosageId = (String) ivrRequest.getTamaParams().get(PillReminderCall.DOSAGE_ID);
         String previousDosageId = service.getPreviousDosage(regimenId, dosageId);
         if (previousDosageId == "hasnotbeentaken") {
-            return ivrResponseBuilder.addPlayAudio(
-                        messages.getWav(IVRMessage.YOUR),
-                        messages.getWav(IVRMessage.YESTERDAYS),
-                        messages.getWav(IVRMessage.EVENING),
-                        messages.getWav(IVRMessage.DOSE_NOT_RECORDED),
-                        messages.getWav(IVRMessage.YESTERDAY),
-                        messages.getWav(IVRMessage.IN_THE_EVENING),
-                        messages.getWav(IVRMessage.YOU_WERE_SUPPOSED_TO_TAKE),
-                        messages.getWav(IVRMessage.FROM_THE_BOTTLE)
-                    ).
-                    withCollectDtmf(new IVRDtmfBuilder().withPlayAudio(messages.getWav(IVRMessage.PREVIOUS_DOSE_MENU)).create());
+            return ivrResponseBuilder
+                    .collectDtmf()
+                    .withPlayAudios(
+                        IVRMessage.YOUR,
+                        IVRMessage.YESTERDAYS,
+                        IVRMessage.EVENING,
+                        IVRMessage.DOSE_NOT_RECORDED,
+                        IVRMessage.YESTERDAY,
+                        IVRMessage.IN_THE_EVENING,
+                        IVRMessage.YOU_WERE_SUPPOSED_TO_TAKE,
+                        IVRMessage.FROM_THE_BOTTLE,
+                        IVRMessage.PREVIOUS_DOSE_MENU
+                    );
         }
         return ivrResponseBuilder.withHangUp();
     }

@@ -7,7 +7,6 @@ import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.ActionMenu;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.action.IVRIncomingAction;
-import org.motechproject.tama.ivr.builder.IVRDtmfBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,9 +34,9 @@ public class DoseCannotBeTakenAction extends BaseIncomingAction {
         if (action != null)
             return action.handle(ivrRequest, request, response);
 
-        IVRResponseBuilder builder = new IVRResponseBuilder().withSid(ivrRequest.getSid());
-        builder.withCollectDtmf(new IVRDtmfBuilder().withPlayAudio(messages.getWav(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU)).create());
-        return builder.create().getXML();
+        IVRResponseBuilder builder = new IVRResponseBuilder(ivrRequest.getSid());
+        builder.collectDtmf().withPlayAudios(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU);
+        return builder.create(messages).getXML();
     }
 
     @Override

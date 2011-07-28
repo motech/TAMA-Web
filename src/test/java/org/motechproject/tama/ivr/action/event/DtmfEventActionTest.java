@@ -23,7 +23,7 @@ public class DtmfEventActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
-        eventAction = new DtmfEventAction(authenticateAction, userContinueAction);
+        eventAction = new DtmfEventAction(authenticateAction, null);
     }
 
     @Test
@@ -37,18 +37,5 @@ public class DtmfEventActionTest extends BaseActionTest {
 
         assertEquals("OK", handle);
         verify(authenticateAction).handle(ivrRequest, request, response);
-    }
-
-    @Test
-    public void shouldDelegateToUserContinueActionIfAlreadyAuthorised() {
-        IVRRequest ivrRequest = new IVRRequest();
-        when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(IVRCallAttribute.CALL_STATE)).thenReturn(IVRCallState.AUTH_SUCCESS);
-        when(userContinueAction.handle(ivrRequest, request, response)).thenReturn("OK");
-
-        String handle = eventAction.handle(ivrRequest, request, response);
-
-        assertEquals("OK", handle);
-        verify(userContinueAction).handle(ivrRequest, request, response);
     }
 }

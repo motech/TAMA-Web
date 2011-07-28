@@ -33,14 +33,11 @@ public class DoseWillBeTakenAction extends BaseIncomingAction {
         IVRSession ivrSession = getIVRSession(request);
         ivrSession.setState(IVRCallState.COLLECT_PREVIOUS_DOSE_RESPONSE);
 
-        Response ivrResponse = new IVRResponseBuilder()
-                .withSid(ivrRequest.getSid())
-                .addPlayAudio(
-                        messages.getWav(IVRMessage.PLEASE_TAKE_DOSE),
-                        messages.getWav(IVRMessage.PILL_REMINDER_RETRY_INTERVAL),
-                        messages.getWav(IVRMessage.MINUTES))
+        Response ivrResponse = new IVRResponseBuilder(ivrRequest.getSid())
+                .withPlayAudios(IVRMessage.PLEASE_TAKE_DOSE, IVRMessage.PILL_REMINDER_RETRY_INTERVAL, IVRMessage.MINUTES)
                 .withPreviousDosageReminder(ivrRequest, service, messages)
-                .create();
+                .withHangUp()
+                .create(messages);
         return ivrResponse.getXML();
     }
 

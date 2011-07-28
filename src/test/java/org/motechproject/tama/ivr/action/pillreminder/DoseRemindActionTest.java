@@ -19,7 +19,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+<<<<<<< HEAD
 import static org.mockito.Mockito.*;
+=======
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+>>>>>>> #219 | implemented entire IVR call flow using DecisionTree <Vivek|Prateek>
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DoseRemindActionTest extends BaseActionTest {
@@ -82,11 +87,17 @@ public class DoseRemindActionTest extends BaseActionTest {
         verify(messages, times(1)).getWav(IVRMessage.LAST_CALL_FOR_DOSAGE);
 
         assertEquals("<response sid=\"sid\">" +
+                "<collectdtmf>" +
                 "<playaudio>mayo.wav</playaudio>" +
                 "<playaudio>supposed_to_take.wav</playaudio><playaudio>m1.wav</playaudio>" +
                 "<playaudio>supposed_to_take.wav</playaudio><playaudio>m2.wav</playaudio>" +
+<<<<<<< HEAD
                 "<playaudio>last_call.wav</playaudio>"+
                 "<collectdtmf><playaudio>menu.wav</playaudio></collectdtmf>" +
+=======
+                "<playaudio>menu.wav</playaudio>" +
+                "</collectdtmf>" +
+>>>>>>> #219 | implemented entire IVR call flow using DecisionTree <Vivek|Prateek>
                 "</response>", sanitize(responseXML));
     }
 

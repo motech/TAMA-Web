@@ -58,4 +58,13 @@ public class IVRSession {
     public void close() {
         if (session != null) session.invalidate();
     }
+
+    public String currentDecisionTreePath() {
+        String currentDecisionTreePosition = get(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION);
+        return currentDecisionTreePosition == null ? "" : currentDecisionTreePosition;
+    }
+
+    public void currentDecisionTreePath(String nextCurrentPosition) {
+        set(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION, nextCurrentPosition);
+    }
 }

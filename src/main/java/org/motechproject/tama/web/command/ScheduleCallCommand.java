@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduleCallCommand implements ITreeCommand{
     @Override
-    public void execute() {
-
+    public String execute(Object obj) {
+        return null;
     }
 }

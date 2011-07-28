@@ -8,7 +8,6 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
-import org.motechproject.tama.ivr.builder.IVRDtmfBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.Clinics;
@@ -46,20 +45,18 @@ public class DoseRemindAction extends BaseIncomingAction {
         Patient patient = patients.get(ivrSession.getPatientId());
         Clinic clinic = clinics.get(patient.getClinic_id());
 
-        IVRResponseBuilder builder = new IVRResponseBuilder().withSid(ivrRequest.getSid());
-        builder.addPlayAudio(messages.getWav(clinic.getName()));
+        IVRResponseBuilder builder = new IVRResponseBuilder(ivrRequest.getSid());
+        builder.withPlayAudios(clinic.getName());
 
         for (String medicine : getMedicines(ivrRequest))
-            builder.addPlayAudio(
-                    messages.getWav(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE),
-                    messages.getWav(medicine));
+            builder.withPlayAudios(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE, medicine);
 
         if(ivrRequest.getTamaParams().get(PillReminderCall.LAST_CALL).equals("true")){
-            builder.addPlayAudio(messages.getWav(IVRMessage.LAST_CALL_FOR_DOSAGE));
+            builder.withPlayAudios(IVRMessage.LAST_CALL_FOR_DOSAGE);
         }
 
-        builder.withCollectDtmf(new IVRDtmfBuilder().withPlayAudio(messages.getWav(IVRMessage.PILL_REMINDER_RESPONSE_MENU)).create());
-        return builder.create().getXML();
+        builder.collectDtmf().withPlayAudios(IVRMessage.PILL_REMINDER_RESPONSE_MENU);
+        return builder.create(messages).getXML();
     }
 
     private List<String> getMedicines(IVRRequest ivrRequest) {
