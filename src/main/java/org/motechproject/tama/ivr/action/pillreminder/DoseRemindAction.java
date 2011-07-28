@@ -54,6 +54,10 @@ public class DoseRemindAction extends BaseIncomingAction {
                     messages.getWav(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE),
                     messages.getWav(medicine));
 
+        if(ivrRequest.getTamaParams().get(PillReminderCall.LAST_CALL).equals("true")){
+            builder.addPlayAudio(messages.getWav(IVRMessage.LAST_CALL_FOR_DOSAGE));
+        }
+
         builder.withCollectDtmf(new IVRDtmfBuilder().withPlayAudio(messages.getWav(IVRMessage.PILL_REMINDER_RESPONSE_MENU)).create());
         return builder.create().getXML();
     }

@@ -52,7 +52,7 @@ public class PillReminderCallTest {
     }
 
     @Test
-    public void shouldNotMakeACallForActivePatient() {
+    public void shouldMakeACallForActivePatient() {
         Patient patient = mock(Patient.class);
         when(patient.isNotActive()).thenReturn(false);
         when(patient.getIVRMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
@@ -60,14 +60,38 @@ public class PillReminderCallTest {
 
         pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
 
-        verify(callService).dial(eq(PHONE_NUMBER), argThat(new MapMatcher()));
+        verify(callService).dial(eq(PHONE_NUMBER), argThat(new IntermediateCallParametersMatcher()));
     }
 
-    public class MapMatcher extends ArgumentMatcher<Map> {
+    @Test
+    public void shouldMakeLastCallForActivePatient() {
+        Patient patient = mock(Patient.class);
+        when(patient.isNotActive()).thenReturn(false);
+        when(patient.getIVRMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
+        when(patients.get(PATIENT_DOC_ID)).thenReturn(patient);
+
+        pillReminderCall.executeLastCall(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID);
+
+        verify(callService).dial(eq(PHONE_NUMBER), argThat(new LastCallParametersMatcher()));
+    }
+
+    public class IntermediateCallParametersMatcher extends ArgumentMatcher<Map> {
         @Override
         public boolean matches(Object o) {
             Map map = (Map) o;
-            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID) && map.get(PillReminderCall.REGIMEN_ID).equals(REGIMEN_ID);
+            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID)
+                   && map.get(PillReminderCall.REGIMEN_ID).equals(REGIMEN_ID)
+                   && map.get(PillReminderCall.LAST_CALL).equals("false");
+        }
+    }
+
+    public class LastCallParametersMatcher extends ArgumentMatcher<Map> {
+        @Override
+        public boolean matches(Object o) {
+            Map map = (Map) o;
+            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID)
+                   && map.get(PillReminderCall.REGIMEN_ID).equals(REGIMEN_ID)
+                   && map.get(PillReminderCall.LAST_CALL).equals("true");
         }
     }
 

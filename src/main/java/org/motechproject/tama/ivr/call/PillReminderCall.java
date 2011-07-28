@@ -12,6 +12,7 @@ import java.util.Map;
 public class PillReminderCall {
     public static final String DOSAGE_ID = "dosage_id";
     public static final String REGIMEN_ID = "regimen_id";
+    public static final String LAST_CALL = "last_call";
 
     private Patients patients;
     private CallService callService;
@@ -22,14 +23,29 @@ public class PillReminderCall {
         this.patients = patients;
     }
 
-    public void execute(String patientDocId, String regimenId, String dosageId) {
-        Patient patient = patients.get(patientDocId);
-        if (patient == null || patient.isNotActive()) return;
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(REGIMEN_ID, regimenId);
-        params.put(DOSAGE_ID, dosageId);
-        callService.dial(patient.getIVRMobilePhoneNumber(), params);
+    public void execute(String patientId, final String regimenId, final String dosageId) {
+        Map<String, String> params = new HashMap<String, String>() {{
+            put(REGIMEN_ID, regimenId);
+            put(DOSAGE_ID, dosageId);
+            put(LAST_CALL,"false");
+        }};
+        makeCall(patientId, params);
     }
 
+    public void executeLastCall(String patientId, final String regimenId, final String dosageId) {
+        Map<String, String> params = new HashMap<String, String>() {{
+            put(REGIMEN_ID, regimenId);
+            put(DOSAGE_ID, dosageId);
+            put(LAST_CALL,"true");
+        }};
+        makeCall(patientId, params);
+    }
+
+    private void makeCall(String patientId, Map<String, String> params) {
+        Patient patient = patients.get(patientId);
+        if (patient == null || patient.isNotActive()) return;
+
+        callService.dial(patient.getIVRMobilePhoneNumber(), params);
+
+    }
 }
