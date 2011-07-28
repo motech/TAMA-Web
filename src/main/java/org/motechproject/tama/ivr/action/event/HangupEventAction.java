@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 public class HangupEventAction extends BaseIncomingAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
+        getIVRSession(request).close();
         return null;
     }
 }

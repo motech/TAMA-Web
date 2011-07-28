@@ -47,5 +47,11 @@ public class IVRSession {
         return getState().isCollectDoseResponse();
     }
 
+    public boolean isDoseCannotBeTaken() {
+        return getState().isCollectDoseCannotBeTakenResponse();
+    }
 
+    public void close() {
+        if (session != null) session.invalidate();
+    }
 }

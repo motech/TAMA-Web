@@ -1,7 +1,10 @@
 package org.motechproject.tama.ivr;
 
 public enum IVRCallState {
-    COLLECT_PIN, AUTH_SUCCESS, COLLECT_DOSE_RESPONSE;
+    AUTH_SUCCESS,
+    COLLECT_PIN,
+    COLLECT_DOSE_RESPONSE,
+    COLLECT_DOSE_CANNOT_BE_TAKEN;
 
     public boolean isCollectPin() {
         return this.equals(COLLECT_PIN);
@@ -9,5 +12,9 @@ public enum IVRCallState {
 
     public boolean isCollectDoseResponse() {
         return this.equals(COLLECT_DOSE_RESPONSE);
+    }
+
+    public boolean isCollectDoseCannotBeTakenResponse() {
+        return this.equals(COLLECT_DOSE_CANNOT_BE_TAKEN);
     }
 }

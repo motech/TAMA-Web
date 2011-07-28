@@ -40,6 +40,10 @@ public class PillReminderMenuAction extends BaseIncomingAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
+
+        if (ivrSession.isDoseCannotBeTaken())
+            return menu.get(DoseCannotBeTakenAction.KEY).handle(ivrRequest, request, response);
+
         if (!ivrSession.isDoseResponse())
             return menu.get(DoseRemindAction.KEY).handle(ivrRequest, request, response);
 

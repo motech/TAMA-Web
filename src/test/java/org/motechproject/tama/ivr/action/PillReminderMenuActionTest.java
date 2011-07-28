@@ -25,7 +25,7 @@ public class PillReminderMenuActionTest extends BaseActionTest {
     @Mock
     private PillReminderService service;
     @Mock
-    private DoseCannotBeTakenAction doseNotTakenAction;
+    private DoseCannotBeTakenAction doseCannotBeTakenAction;
     @Mock
     private DoseTakenAction doseTakenAction;
     @Mock
@@ -39,9 +39,9 @@ public class PillReminderMenuActionTest extends BaseActionTest {
         when(doseRemindAction.getKey()).thenReturn("0");
         when(doseTakenAction.getKey()).thenReturn("1");
         when(doseWillBeTakenAction.getKey()).thenReturn("2");
-        when(doseNotTakenAction.getKey()).thenReturn("3");
+        when(doseCannotBeTakenAction.getKey()).thenReturn("3");
         action = new PillReminderMenuAction(messages, patients, clinics, audits, service,
-                doseNotTakenAction, doseTakenAction, doseWillBeTakenAction, doseRemindAction);
+                doseCannotBeTakenAction, doseTakenAction, doseWillBeTakenAction, doseRemindAction);
     }
 
     @Test
@@ -79,6 +79,22 @@ public class PillReminderMenuActionTest extends BaseActionTest {
 
         String responseXML = action.handle(ivrRequest, request, response);
         assertEquals("<response><collectdtmf><playaudio>menu</playaudio></collectdtmf></response>", sanitize(responseXML));
+    }
+
+
+    @Test
+    public void shouldAskDoseCannotBeTakenActionToHandleIfStateIsCollectDoseCannotBeTaken() {
+        IVRRequest ivrRequest = mock(IVRRequest.class);
+
+        when(ivrRequest.getData()).thenReturn("99%23");
+        when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(IVRCallAttribute.CALL_STATE)).thenReturn(IVRCallState.COLLECT_DOSE_CANNOT_BE_TAKEN);
+        when(doseCannotBeTakenAction.handle(ivrRequest, request, response)).thenReturn("<response></response>");
+
+        String responseXML = action.handle(ivrRequest, request, response);
+
+        verify(doseCannotBeTakenAction).handle(ivrRequest, request, response);
+        assertEquals("<response></response>",responseXML);
     }
 
 }
