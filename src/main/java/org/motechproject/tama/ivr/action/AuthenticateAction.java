@@ -31,7 +31,7 @@ public class AuthenticateAction extends BaseIncomingAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
-        String passcode = getIVRData(ivrRequest);
+        String passcode = getInput(ivrRequest);
         String id = ivrSession.getPatientId();
         Patient patient = patients.get(id);
 

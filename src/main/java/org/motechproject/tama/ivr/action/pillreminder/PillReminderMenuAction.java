@@ -43,8 +43,7 @@ public class PillReminderMenuAction extends BaseIncomingAction {
         if (!ivrSession.isDoseResponse())
             return menu.get(DoseRemindAction.KEY).handle(ivrRequest, request, response);
 
-        String ivrData = getIVRData(ivrRequest);
-        IVRIncomingAction action = menu.get(ivrData);
+        IVRIncomingAction action = menu.get(getInput(ivrRequest));
         if (action != null)
             return action.handle(ivrRequest, request, response);
 

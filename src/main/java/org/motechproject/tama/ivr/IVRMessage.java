@@ -18,7 +18,7 @@ public class IVRMessage {
     public static final String PLEASE_TAKE_DOSE = "please_take_dose";
     public static final String DOSE_TAKEN = "dose_taken";
     public static final String PLEASE_CARRY_SMALL_BOX = "please_carry_small_box";
-    public static final String DOSE_CANNOT_BE_TAKEN_MENU = "dose_cannot_be_taken";
+    public static final String DOSE_CANNOT_BE_TAKEN_MENU = "dose_cannot_be_taken_menu";
 
     private Properties properties;
 

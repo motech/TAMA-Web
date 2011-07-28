@@ -15,12 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class DoseCannotBeTakenAction extends BaseIncomingAction {
-
     public static final String KEY = "3";
-
     private ActionMenu menu = new ActionMenu();
-
-    private DoNotHavePillsAction doNotHavePillsAction;
 
     @Autowired
     public DoseCannotBeTakenAction(IVRMessage messages, DoNotHavePillsAction doNotHavePillsAction) {
@@ -30,7 +26,7 @@ public class DoseCannotBeTakenAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        String ivrData = getIVRData(ivrRequest);
+        String ivrData = getInput(ivrRequest);
         IVRIncomingAction action = menu.get(ivrData);
         if (action != null)
             return action.handle(ivrRequest, request, response);
