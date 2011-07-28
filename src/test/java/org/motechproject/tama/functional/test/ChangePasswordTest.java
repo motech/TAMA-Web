@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static junit.framework.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class ChangePasswordTest extends BaseTest {
 
     @Before

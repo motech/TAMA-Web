@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class PatientAuthenticationTest extends BaseIVRTest {
     private MyWebClient webClient;
 

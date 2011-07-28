@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
@@ -7,19 +7,18 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="classpath:applicationPillReminderAPI.xml"/>
-    <import resource="classpath:inboundEventChannelAdapter.xml"/>
-
     <util:properties id="couchdbProperties" location="classpath:/couchdb.properties"/>
     <util:properties id="ivrProperties" location="classpath:/ivr.properties"/>
 
     <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
+    <context:annotation-config/>
     <context:spring-configured/>
+    <context:component-scan base-package="org.motechproject.tama"/>
 
-    <context:component-scan base-package="org.motechproject.tama">
-        <context:exclude-filter expression=".*_Roo_.*" type="regex"/>
-        <!--<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>-->
-    </context:component-scan>
+    <import resource="classpath:applicationPillReminderAPI.xml"/>
+    <import resource="classpath:inboundEventChannelAdapter.xml"/>
+    <import resource="classpath:applicationDecisionTree.xml"/>
+
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
         <property name="algorithm" value="PBEWithMD5AndDES"/>
@@ -45,5 +44,4 @@
             </map>
         </constructor-arg>
     </bean>
-
 </beans>

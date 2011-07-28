@@ -21,7 +21,7 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class ClinicianSecurityTest extends BaseTest {
 
     @Override

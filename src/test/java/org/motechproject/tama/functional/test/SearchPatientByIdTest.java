@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class SearchPatientByIdTest extends BaseTest {
 
     private ClinicianContext clinicianContext;

@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class LoginTest extends BaseTest {
 
     @Before

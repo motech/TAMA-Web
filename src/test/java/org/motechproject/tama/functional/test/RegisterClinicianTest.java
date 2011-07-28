@@ -19,7 +19,7 @@ import java.io.IOException;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class RegisterClinicianTest extends BaseTest {
 
     @Before

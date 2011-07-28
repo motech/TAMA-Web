@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class PatientRegistrationTest extends BaseTest {
 
     @Before
