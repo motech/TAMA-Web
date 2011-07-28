@@ -2,6 +2,8 @@ package org.motechproject.tama.ivr.action.pillreminder;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
@@ -14,11 +16,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class DoNotHavePillsActionTest extends BaseActionTest {
 
     private DoNotHavePillsAction action;
+    @Mock
+    private PillReminderService service;
 
     @Before
     public void setUp() {
         initMocks(this);
-        action = new DoNotHavePillsAction(messages);
+        action = new DoNotHavePillsAction(service, messages);
     }
 
     @Test

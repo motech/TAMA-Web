@@ -40,7 +40,7 @@ public class DoseTakenAction extends BaseIncomingAction {
         Response ivrResponse = new IVRResponseBuilder()
                 .withSid(ivrRequest.getSid())
                 .addPlayAudio(messages.getWav(IVRMessage.DOSE_TAKEN))
-                .withHangUp()
+                .withPreviousDosageReminder(ivrRequest, service, messages)
                 .create();
         return ivrResponse.getXML();
     }

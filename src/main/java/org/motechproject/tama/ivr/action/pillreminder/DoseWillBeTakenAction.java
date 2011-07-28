@@ -1,6 +1,7 @@
 package org.motechproject.tama.ivr.action.pillreminder;
 
 import com.ozonetel.kookoo.Response;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
@@ -16,9 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 public class DoseWillBeTakenAction extends BaseIncomingAction {
 
     public static final String KEY = "2";
+    private PillReminderService service;
 
     @Autowired
-    public DoseWillBeTakenAction(IVRMessage messages, IVRCallAudits audits) {
+    public DoseWillBeTakenAction(PillReminderService service, IVRMessage messages, IVRCallAudits audits) {
+        this.service = service;
         this.messages = messages;
         this.audits = audits;
     }
@@ -31,7 +34,7 @@ public class DoseWillBeTakenAction extends BaseIncomingAction {
                         messages.getWav(IVRMessage.PLEASE_TAKE_DOSE),
                         messages.getWav(IVRMessage.PILL_REMINDER_RETRY_INTERVAL),
                         messages.getWav(IVRMessage.MINUTES))
-                .withHangUp()
+                .withPreviousDosageReminder(ivrRequest, service, messages)
                 .create();
         return ivrResponse.getXML();
     }

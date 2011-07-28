@@ -20,6 +20,25 @@ public class IVRMessage {
     public static final String PLEASE_CARRY_SMALL_BOX = "please_carry_small_box";
     public static final String DOSE_CANNOT_BE_TAKEN_MENU = "dose_cannot_be_taken_menu";
     public static final String LAST_CALL_FOR_DOSAGE = "last_call_for_dosage";
+
+    /* -------- PreviousDosage ----------- */
+    public static final String YOUR = "your";
+    public static final String YESTERDAYS = "yesterdays";
+    public static final String MORNING = "morning";
+    public static final String EVENING = "evening";
+    public static final String DOSE_NOT_RECORDED = "dose_not_recorded";
+    public static final String YESTERDAY = "yesterday";
+    public static final String IN_THE_MORNING = "in_the_morning";
+    public static final String IN_THE_EVENING = "in_the_evening";
+    public static final String YOU_WERE_SUPPOSED_TO_TAKE = "you_were_supposed_to_take";
+    public static final String FROM_THE_BOTTLE = "from_the_bottle";
+    public static final String PREVIOUS_DOSE_MENU = "previous_dose_menu";
+    public static final String YOU_SAID_YOU_TOOK = "you_said_you_took";
+    public static final String YOU_SAID_YOU_DID_NOT_TAKE = "you_said_you_did_not_take";
+    public static final String DOSE = "dose";
+    public static final String TRY_NOT_TO_MISS = "try_not_to_miss";
+    /* -------- PreviousDosage ----------- */
+
     private Properties properties;
 
     @Autowired

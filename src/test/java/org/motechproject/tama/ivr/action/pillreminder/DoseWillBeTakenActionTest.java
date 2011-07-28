@@ -2,6 +2,8 @@ package org.motechproject.tama.ivr.action.pillreminder;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
@@ -13,11 +15,13 @@ import static org.mockito.Mockito.when;
 public class DoseWillBeTakenActionTest extends BaseActionTest {
 
     private DoseWillBeTakenAction action;
+    @Mock
+    private PillReminderService service;
 
     @Before
     public void setUp() {
         super.setUp();
-        action = new DoseWillBeTakenAction(messages, audits);
+        action = new DoseWillBeTakenAction(service, messages, audits);
     }
 
     @Test
