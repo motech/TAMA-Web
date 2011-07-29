@@ -2,7 +2,7 @@ package org.motechproject.tama.web.command;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,10 +19,10 @@ public class PillTakenCommand implements ITreeCommand {
     }
 
     @Override
-    public String execute(Object obj) {
-        IVRRequest ivrRequest = (IVRRequest) obj;
+    public String[] execute(Object obj) {
+        IVRContext ivrContext = (IVRContext) obj;
 
-        Map tamaParams = ivrRequest.getTamaParams();
+        Map tamaParams = ivrContext.ivrRequest().getTamaParams();
         String regimenId = (String) tamaParams.get(PillReminderCall.REGIMEN_ID);
         String dosageId = (String) tamaParams.get(PillReminderCall.DOSAGE_ID);
         pillReminderService.updateDosageTaken(regimenId, dosageId);

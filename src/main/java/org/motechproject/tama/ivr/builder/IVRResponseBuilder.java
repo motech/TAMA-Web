@@ -65,4 +65,20 @@ public class IVRResponseBuilder {
         if (isHangUp) response.addHangup();
         return response;
     }
+
+    public boolean isHangUp() {
+        return isHangUp;
+    }
+
+    public boolean isCollectDtmf() {
+        return collectDtmf;
+    }
+
+    public List<String> getPlayTexts() {
+        return playTexts;
+    }
+
+    public List<String> getPlayAudios() {
+        return playAudios;
+    }
 }

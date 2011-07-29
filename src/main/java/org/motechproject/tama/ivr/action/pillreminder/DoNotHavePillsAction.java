@@ -34,7 +34,6 @@ public class DoNotHavePillsAction extends BaseIncomingAction {
         Response ivrResponse = new IVRResponseBuilder(ivrRequest.getSid())
                 .withPlayAudios(IVRMessage.PLEASE_CARRY_SMALL_BOX)
                 .withPreviousDosageReminder(ivrRequest, service, messages)
-                .withHangUp()
                 .create(messages);
         return ivrResponse.getXML();
     }

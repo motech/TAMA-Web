@@ -1,37 +1,42 @@
 package org.motechproject.tama.ivr.builder;
 
-import com.ozonetel.kookoo.Response;
-import org.motechproject.decisiontree.model.*;
-import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.ITreeCommand;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.tama.ivr.IVRContext;
 
 import java.util.List;
 
 public class DecisionTreeBasedResponseBuilder {
-    private IVRResponseBuilder ivrResponseBuilder;
-    private IVRMessage ivrMessage;
-
-    public DecisionTreeBasedResponseBuilder(IVRResponseBuilder ivrResponseBuilder, IVRMessage ivrMessage) {
-        this.ivrResponseBuilder = ivrResponseBuilder;
-        this.ivrMessage = ivrMessage;
-    }
-
-    public String nextResponse(Node node) {
+    public IVRResponseBuilder ivrResponse(String sid, Node node, IVRContext ivrContext) {
+        IVRResponseBuilder ivrResponseBuilder = new IVRResponseBuilder(sid);
         List<Prompt> prompts = node.getPrompts();
         boolean hasTransitions = node.hasTransitions();
         for (Prompt prompt : prompts) {
             String promptName = prompt.getName();
             ITreeCommand command = prompt.getCommand();
-            if (command != null) promptName = command.execute(null);
-
-            if (prompt instanceof AudioPrompt) ivrResponseBuilder.withPlayAudios(promptName);
-            else if (prompt instanceof TextToSpeechPrompt) ivrResponseBuilder.withPlayTexts(promptName);
+            boolean isAudioPrompt = prompt instanceof AudioPrompt;
+            if (command == null) {
+                buildPrompts(ivrResponseBuilder, promptName, isAudioPrompt);
+            }
+            else {
+                String[] promptsFromCommand = command.execute(ivrContext);
+                for (String promptFromCommand : promptsFromCommand) {
+                    buildPrompts(ivrResponseBuilder, promptFromCommand, isAudioPrompt);
+                }
+            }
         }
         if (hasTransitions) {
             ivrResponseBuilder.collectDtmf();
         } else {
             ivrResponseBuilder.withHangUp();
         }
-        Response response = ivrResponseBuilder.create(ivrMessage);
-        return response.getXML();
+        return ivrResponseBuilder;
+    }
+
+    private void buildPrompts(IVRResponseBuilder ivrResponseBuilder, String promptName, boolean isAudioPrompt) {
+        if (isAudioPrompt) ivrResponseBuilder.withPlayAudios(promptName);
+        else ivrResponseBuilder.withPlayTexts(promptName);
     }
 }

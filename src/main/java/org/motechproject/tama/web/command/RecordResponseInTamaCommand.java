@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RecordResponseInTamaCommand implements ITreeCommand {
     @Override
-    public String execute(Object obj) {
+    public String[] execute(Object obj) {
         return null;
     }
 }

@@ -5,9 +5,9 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MessageOnPillTakenCommand implements ITreeCommand {
+public class MessageOnPillTaken implements ITreeCommand {
     @Override
-    public String execute(Object obj) {
-        return IVRMessage.DOSE_TAKEN;
+    public String[] execute(Object obj) {
+        return new String[]{IVRMessage.DOSE_TAKEN};
     }
 }
