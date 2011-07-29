@@ -10,6 +10,7 @@ import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.model.ComboBoxView;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ public class TreatmentAdviceControllerTest {
     private DosageTypes dosageTypes;
     private MealAdviceTypes mealAdviceTypes;
     private PillReminderService pillReminderService;
+    private PillRegimenRequestMapper requestMapper;
 
     @Before
     public void setUp() {
@@ -43,8 +45,9 @@ public class TreatmentAdviceControllerTest {
         dosageTypes = mock(DosageTypes.class);
         mealAdviceTypes = mock(MealAdviceTypes.class);
         pillReminderService = mock(PillReminderService.class);
+        requestMapper = mock(PillRegimenRequestMapper.class);
 
-        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes, pillReminderService);
+        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes, pillReminderService, requestMapper);
 
         request = mock(HttpServletRequest.class);
         uiModel = mock(Model.class);
@@ -58,6 +61,7 @@ public class TreatmentAdviceControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         controller.create(treatmentAdvice, bindingResult, uiModel, httpServletRequest);
+        verify(requestMapper).map(treatmentAdvice);
         verify(pillReminderService).createNew(any(PillRegimenRequest.class));
     }
 

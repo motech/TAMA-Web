@@ -6,6 +6,9 @@ import java.util.List;
 public class TAMAConstants {
     public static final String MOBILE_NUMBER_REGEX = "^\\d{10}$";
     public static final String PASSCODE_REGEX = "^\\d{4,10}$";
+    public static final String RETRY_INTERVAL = "retry.interval.mins";
+    public static final String PILL_WINDOW = "pill.window.hrs";
+    public static final String REMINDER_LAG = "reminder.lag.mins";
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),

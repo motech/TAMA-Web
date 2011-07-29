@@ -3,23 +3,45 @@ package org.motechproject.tama.mapper;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
 import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.Drugs;
 import org.motechproject.tama.util.TimeUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class PillRegimenRequestMapper {
 
+    @Autowired
     private Drugs drugs;
+
+    @Autowired
+    @Qualifier("ivrProperties")
+    private Properties properties;
 
     public PillRegimenRequestMapper(Drugs drugs) {
         this.drugs = drugs;
     }
 
+    public PillRegimenRequestMapper(Drugs drugs, Properties properties) {
+        this.drugs = drugs;
+        this.properties = properties;
+    }
+
+    public PillRegimenRequestMapper() {
+        super();
+    }
+
     public PillRegimenRequest map(TreatmentAdvice treatmentAdvice) {
-        return new PillRegimenRequest(treatmentAdvice.getPatientId(), 2, 15, mapDosageRequests(treatmentAdvice));
+        return new PillRegimenRequest(treatmentAdvice.getPatientId(),
+                Integer.valueOf(properties.getProperty(TAMAConstants.PILL_WINDOW)),
+                Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL)),
+                mapDosageRequests(treatmentAdvice));
     }
 
     private List<DosageRequest> mapDosageRequests(TreatmentAdvice treatmentAdvice) {
@@ -56,7 +78,8 @@ public class PillRegimenRequestMapper {
     }
 
     private DosageRequest createDosageRequest(String schedule, List<DrugDosage> drugDosages) {
-        TimeUtil timeUtil = new TimeUtil(schedule);
+        int reminderLagTime = Integer.valueOf(properties.getProperty(TAMAConstants.REMINDER_LAG));
+        TimeUtil timeUtil = new TimeUtil(schedule).withReminderLagTime(reminderLagTime);
         List<MedicineRequest> medicineRequests = createMedicineRequests(drugDosages);
         return new DosageRequest(timeUtil.getHours(), timeUtil.getMinutes(), medicineRequests);
     }
@@ -64,7 +87,9 @@ public class PillRegimenRequestMapper {
     private List<MedicineRequest> createMedicineRequests(List<DrugDosage> drugDosages) {
         List<MedicineRequest> medicineRequests = new ArrayList<MedicineRequest>();
         for (DrugDosage drugDosage : drugDosages) {
-                MedicineRequest medicineRequest = new MedicineRequest(drugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), drugDosage.getStartDate(), drugDosage.getEndDate());
+            MedicineRequest medicineRequest = new MedicineRequest(drugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
+                    drugDosage.getStartDate(),
+                    drugDosage.getEndDate());
             medicineRequests.add(medicineRequest);
         }
         return medicineRequests;

@@ -39,11 +39,13 @@ public class TreatmentAdviceController extends BaseController {
     private Patients patients;
     @Autowired
     private PillReminderService pillReminderService;
+    @Autowired
+    private PillRegimenRequestMapper pillRegimenRequestMapper;
 
     protected TreatmentAdviceController() {
     }
 
-    public TreatmentAdviceController(TreatmentAdvices treatmentAdvices, Patients patients, Regimens regimens, Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes, PillReminderService pillReminderService) {
+    public TreatmentAdviceController(TreatmentAdvices treatmentAdvices, Patients patients, Regimens regimens, Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper) {
         this.treatmentAdvices = treatmentAdvices;
         this.patients = patients;
         this.regimens = regimens;
@@ -51,6 +53,7 @@ public class TreatmentAdviceController extends BaseController {
         this.dosageTypes = dosageTypes;
         this.mealAdviceTypes = mealAdviceTypes;
         this.pillReminderService = pillReminderService;
+        this.pillRegimenRequestMapper = requestMapper;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
@@ -73,7 +76,7 @@ public class TreatmentAdviceController extends BaseController {
         }
         uiModel.asMap().clear();
         treatmentAdvices.add(treatmentAdvice);
-        pillReminderService.createNew(new PillRegimenRequestMapper(drugs).map(treatmentAdvice));
+        pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 

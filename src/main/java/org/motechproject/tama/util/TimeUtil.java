@@ -1,5 +1,7 @@
 package org.motechproject.tama.util;
 
+import org.joda.time.DateTime;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +22,21 @@ public class TimeUtil {
         }
     }
 
+    public TimeUtil withReminderLagTime(int reminderLag) {
+        DateTime dateTime = new DateTime().
+                withHourOfDay(withHours())
+                .withMinuteOfHour(getMinutes())
+                .plusMinutes(reminderLag);
+        this.hours = dateTime.getHourOfDay();
+        this.minutes = dateTime.getMinuteOfHour();
+        return this;
+    }
+
     public int getHours() {
+        return hours;
+    }
+
+    private int withHours() {
         return ampm.equals("am") ? hours : hours + 12;
     }
 
