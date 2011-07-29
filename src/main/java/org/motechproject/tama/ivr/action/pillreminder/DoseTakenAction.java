@@ -2,8 +2,10 @@ package org.motechproject.tama.ivr.action.pillreminder;
 
 import com.ozonetel.kookoo.Response;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
@@ -36,6 +38,9 @@ public class DoseTakenAction extends BaseIncomingAction {
         String regimenId = (String) tamaParams.get(PillReminderCall.REGIMEN_ID);
         String dosageId = (String) tamaParams.get(PillReminderCall.DOSAGE_ID);
         service.updateDosageTaken(regimenId, dosageId);
+
+        IVRSession ivrSession = getIVRSession(request);
+        ivrSession.setState(IVRCallState.COLLECT_PREVIOUS_DOSE_RESPONSE);
 
         Response ivrResponse = new IVRResponseBuilder()
                 .withSid(ivrRequest.getSid())

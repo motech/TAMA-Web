@@ -47,6 +47,10 @@ public class IVRSession {
         return getState().isCollectDoseResponse();
     }
 
+    public boolean isPreviousDoseResponse() {
+        return getState().isCollectPreviousDoseResponse();
+    }
+
     public boolean isDoseCannotBeTaken() {
         return getState().isCollectDoseCannotBeTakenResponse();
     }

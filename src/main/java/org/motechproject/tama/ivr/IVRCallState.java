@@ -4,6 +4,7 @@ public enum IVRCallState {
     AUTH_SUCCESS,
     COLLECT_PIN,
     COLLECT_DOSE_RESPONSE,
+    COLLECT_PREVIOUS_DOSE_RESPONSE,
     COLLECT_DOSE_CANNOT_BE_TAKEN;
 
     public boolean isCollectPin() {
@@ -12,6 +13,10 @@ public enum IVRCallState {
 
     public boolean isCollectDoseResponse() {
         return this.equals(COLLECT_DOSE_RESPONSE);
+    }
+
+    public boolean isCollectPreviousDoseResponse() {
+        return this.equals(COLLECT_PREVIOUS_DOSE_RESPONSE);
     }
 
     public boolean isCollectDoseCannotBeTakenResponse() {

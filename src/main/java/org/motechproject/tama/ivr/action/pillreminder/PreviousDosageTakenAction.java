@@ -2,44 +2,50 @@ package org.motechproject.tama.ivr.action.pillreminder;
 
 import com.ozonetel.kookoo.Response;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
+import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.IVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Service
-public class DoseWillBeTakenAction extends BaseIncomingAction {
+public class PreviousDosageTakenAction extends BaseIncomingAction {
+    public static final String KEY = "1";
 
-    public static final String KEY = "2";
     private PillReminderService service;
+    private IVRCallAudits audits;
+    private IVRMessage messages;
 
     @Autowired
-    public DoseWillBeTakenAction(PillReminderService service, IVRMessage messages, IVRCallAudits audits) {
+    public PreviousDosageTakenAction(PillReminderService service, IVRMessage messages, IVRCallAudits audits) {
         this.service = service;
-        this.messages = messages;
         this.audits = audits;
+        this.messages = messages;
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        IVRSession ivrSession = getIVRSession(request);
-        ivrSession.setState(IVRCallState.COLLECT_PREVIOUS_DOSE_RESPONSE);
+        Map tamaParams = ivrRequest.getTamaParams();
+        String regimenId = (String) tamaParams.get(PillReminderCall.REGIMEN_ID);
+        String dosageId = (String) tamaParams.get(PillReminderCall.DOSAGE_ID);
+        service.updateDosageTaken(regimenId, dosageId);
 
         Response ivrResponse = new IVRResponseBuilder()
                 .withSid(ivrRequest.getSid())
                 .addPlayAudio(
-                        messages.getWav(IVRMessage.PLEASE_TAKE_DOSE),
-                        messages.getWav(IVRMessage.PILL_REMINDER_RETRY_INTERVAL),
-                        messages.getWav(IVRMessage.MINUTES))
-                .withPreviousDosageReminder(ivrRequest, service, messages)
+                                messages.getWav(IVRMessage.YOU_SAID_YOU_TOOK),
+                                messages.getWav(IVRMessage.YESTERDAYS),
+                                messages.getWav(IVRMessage.EVENING),
+                                messages.getWav(IVRMessage.DOSE)
+                            )
+                .withHangUp()
                 .create();
         return ivrResponse.getXML();
     }
@@ -48,5 +54,4 @@ public class DoseWillBeTakenAction extends BaseIncomingAction {
     public String getKey() {
         return KEY;
     }
-
 }

@@ -27,6 +27,7 @@ public class DoNotHavePillsActionTest extends BaseActionTest {
 
     @Test
     public void shouldPlayAdviceForPatientNotCarryingPills() {
+        when(request.getSession(false)).thenReturn(session);
         when(messages.getWav(IVRMessage.PLEASE_CARRY_SMALL_BOX)).thenReturn("carry_box");
         IVRRequest ivrRequest = mock(IVRRequest.class);
 

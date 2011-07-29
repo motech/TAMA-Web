@@ -4,7 +4,7 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.AuthenticateAction;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
-import org.motechproject.tama.ivr.action.pillreminder.PillReminderMenuAction;
+import org.motechproject.tama.ivr.action.pillreminder.DosageMenuAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class DtmfEventAction extends BaseIncomingAction {
     private AuthenticateAction authenticateAction;
-    private PillReminderMenuAction pillReminderAction;
+    private DosageMenuAction pillReminderAction;
 
     @Autowired
-    public DtmfEventAction(AuthenticateAction authenticateAction, PillReminderMenuAction pillReminderAction) {
+    public DtmfEventAction(AuthenticateAction authenticateAction, DosageMenuAction pillReminderAction) {
         this.authenticateAction = authenticateAction;
         this.pillReminderAction = pillReminderAction;
     }

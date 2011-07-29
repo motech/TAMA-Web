@@ -9,7 +9,7 @@ import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVREvent;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
-import org.motechproject.tama.ivr.action.pillreminder.PillReminderMenuAction;
+import org.motechproject.tama.ivr.action.pillreminder.DosageMenuAction;
 import org.motechproject.tama.repository.Patients;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +25,7 @@ public class AuthenticateActionTest extends BaseActionTest {
     @Mock
     private UserNotFoundAction userNotFoundAction;
     @Mock
-    private PillReminderMenuAction userContinueAction;
+    private DosageMenuAction userContinueAction;
     @Mock
     private Patient patient;
 

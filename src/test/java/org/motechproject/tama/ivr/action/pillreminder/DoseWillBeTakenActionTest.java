@@ -27,6 +27,7 @@ public class DoseWillBeTakenActionTest extends BaseActionTest {
     @Test
     public void shouldPlayPleaseTakeYourDrugAudio() {
         IVRRequest ivrRequest = mock(IVRRequest.class);
+        when(request.getSession(false)).thenReturn(session);
         when(messages.getWav(IVRMessage.PLEASE_TAKE_DOSE)).thenReturn("please_take_dose");
         when(messages.getWav(IVRMessage.MINUTES)).thenReturn("minutes");
         when(messages.getWav(IVRMessage.PILL_REMINDER_RETRY_INTERVAL)).thenReturn("15");

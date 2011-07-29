@@ -3,27 +3,18 @@ package org.motechproject.tama.ivr.action;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
 import org.motechproject.tama.ivr.action.pillreminder.*;
-import org.motechproject.tama.repository.Clinics;
-import org.motechproject.tama.repository.Patients;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class PillReminderMenuActionTest extends BaseActionTest {
-    private PillReminderMenuAction action;
-    @Mock
-    private Patients patients;
-    @Mock
-    private Clinics clinics;
-    @Mock
-    private PillReminderService service;
+public class CurrentDosageMenuActionTest extends BaseActionTest {
+    private CurrentDosageMenuAction action;
     @Mock
     private DoseCannotBeTakenAction doseCannotBeTakenAction;
     @Mock
@@ -40,8 +31,7 @@ public class PillReminderMenuActionTest extends BaseActionTest {
         when(doseTakenAction.getKey()).thenReturn("1");
         when(doseWillBeTakenAction.getKey()).thenReturn("2");
         when(doseCannotBeTakenAction.getKey()).thenReturn("3");
-        action = new PillReminderMenuAction(messages, patients, clinics, audits, service,
-                doseCannotBeTakenAction, doseTakenAction, doseWillBeTakenAction, doseRemindAction);
+        action = new CurrentDosageMenuAction(messages, audits, doseCannotBeTakenAction, doseTakenAction, doseWillBeTakenAction, doseRemindAction);
     }
 
     @Test

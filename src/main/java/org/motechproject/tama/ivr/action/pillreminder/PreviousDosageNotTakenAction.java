@@ -1,11 +1,8 @@
 package org.motechproject.tama.ivr.action.pillreminder;
 
 import com.ozonetel.kookoo.Response;
-import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.repository.IVRCallAudits;
@@ -16,30 +13,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class DoseWillBeTakenAction extends BaseIncomingAction {
+public class PreviousDosageNotTakenAction extends BaseIncomingAction {
 
-    public static final String KEY = "2";
-    private PillReminderService service;
+    public static final String KEY = "3";
 
     @Autowired
-    public DoseWillBeTakenAction(PillReminderService service, IVRMessage messages, IVRCallAudits audits) {
-        this.service = service;
+    public PreviousDosageNotTakenAction(IVRMessage messages, IVRCallAudits audits) {
         this.messages = messages;
         this.audits = audits;
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        IVRSession ivrSession = getIVRSession(request);
-        ivrSession.setState(IVRCallState.COLLECT_PREVIOUS_DOSE_RESPONSE);
-
         Response ivrResponse = new IVRResponseBuilder()
                 .withSid(ivrRequest.getSid())
                 .addPlayAudio(
-                        messages.getWav(IVRMessage.PLEASE_TAKE_DOSE),
-                        messages.getWav(IVRMessage.PILL_REMINDER_RETRY_INTERVAL),
-                        messages.getWav(IVRMessage.MINUTES))
-                .withPreviousDosageReminder(ivrRequest, service, messages)
+                        messages.getWav(IVRMessage.YOU_SAID_YOU_DID_NOT_TAKE),
+                        messages.getWav(IVRMessage.YESTERDAYS),
+                        messages.getWav(IVRMessage.EVENING),
+                        messages.getWav(IVRMessage.DOSE),
+                        messages.getWav(IVRMessage.TRY_NOT_TO_MISS)
+                )
+                .withHangUp()
                 .create();
         return ivrResponse.getXML();
     }
@@ -48,5 +43,4 @@ public class DoseWillBeTakenAction extends BaseIncomingAction {
     public String getKey() {
         return KEY;
     }
-
 }

@@ -7,7 +7,7 @@ import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.AuthenticateAction;
-import org.motechproject.tama.ivr.action.pillreminder.PillReminderMenuAction;
+import org.motechproject.tama.ivr.action.pillreminder.DosageMenuAction;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -18,7 +18,7 @@ public class DtmfEventActionTest extends BaseActionTest {
     @Mock
     private AuthenticateAction authenticateAction;
     @Mock
-    private PillReminderMenuAction userContinueAction;
+    private DosageMenuAction userContinueAction;
 
     @Before
     public void setUp() {

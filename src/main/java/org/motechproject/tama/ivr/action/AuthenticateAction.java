@@ -5,7 +5,7 @@ import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
-import org.motechproject.tama.ivr.action.pillreminder.PillReminderMenuAction;
+import org.motechproject.tama.ivr.action.pillreminder.DosageMenuAction;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,10 @@ public class AuthenticateAction extends BaseIncomingAction {
     private Patients patients;
     private RetryAction retryAction;
     private UserNotFoundAction userNotFoundAction;
-    private PillReminderMenuAction pillReminderAction;
+    private DosageMenuAction pillReminderAction;
 
     @Autowired
-    public AuthenticateAction(Patients patients, RetryAction retryAction, UserNotFoundAction userNotFoundAction, PillReminderMenuAction pillReminderAction) {
+    public AuthenticateAction(Patients patients, RetryAction retryAction, UserNotFoundAction userNotFoundAction, DosageMenuAction pillReminderAction) {
         this.patients = patients;
         this.retryAction = retryAction;
         this.userNotFoundAction = userNotFoundAction;
