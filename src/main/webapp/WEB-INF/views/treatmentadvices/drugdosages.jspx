@@ -28,10 +28,12 @@
                                 if (dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id')._lastDisplayedValue == 'Once Daily') {
                                     dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:none');
                                     dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', true);
+                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('required', false);
                                 }
                                 else {
                                     dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:block');
                                     dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', false);
+                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('required', true);
                                 }
                             });
                         </script>

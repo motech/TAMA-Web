@@ -21,11 +21,13 @@
         <![CDATA[
         dojo.addOnLoad(function() {
             var clearRequiredDojoValidationsFromTheExistingForm = function() {
+
                 var startDateOfSecondDrug = '_treatmentAdvice.drugDosages[1].startDate_id';
-                var firstDosageTimeOfSecondDrug = '_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id';
                 if (dojo.byId(startDateOfSecondDrug) != null) {
                   Spring.addDecoration(new Spring.ElementDecoration({elementId : startDateOfSecondDrug, widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {required : false}}));
                 }
+
+                var firstDosageTimeOfSecondDrug = '_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id';
                 if (dojo.byId(firstDosageTimeOfSecondDrug) != null) {
                   Spring.addDecoration(new Spring.ElementDecoration({elementId : firstDosageTimeOfSecondDrug, widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {required : false}}));
                 }
