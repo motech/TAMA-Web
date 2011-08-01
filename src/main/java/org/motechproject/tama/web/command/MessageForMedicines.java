@@ -47,7 +47,8 @@ public class MessageForMedicines implements ITreeCommand {
             messages.add(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE);
             messages.add(medicine);
         }
-        return (String[]) messages.toArray();
+
+        return messages.toArray(new String[messages.size()]);
     }
 
     private List<String> getMedicines(IVRRequest ivrRequest) {

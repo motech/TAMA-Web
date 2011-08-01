@@ -45,6 +45,7 @@ public class AuthenticateAction extends BaseIncomingAction {
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patientId);
+        ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }
 }
