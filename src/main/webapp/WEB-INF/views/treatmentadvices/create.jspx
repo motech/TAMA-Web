@@ -8,13 +8,17 @@
         <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}" />
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="regimenCompositionId" items="${regimenCompositions}" path="/regimenCompositions" label="Drug Composition *"/>
         <div>
+            <div>
+                <div id="dosage_times_error" class="error"/>
+            </div>
             <div id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" />
         </div>
         <br />
     </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
 
+    <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
     <script type="text/javascript">
+        <![CDATA[
         dojo.addOnLoad(function() {
             var clearRequiredDojoValidationsFromTheExistingForm = function() {
                 var startDateOfSecondDrug = '_treatmentAdvice.drugDosages[1].startDate_id';
@@ -30,7 +34,7 @@
             var populateDrugDosages = function() {
                 var regimenDropDown = dijit.byId('_regimenId_id');
                 var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                var drugDosagesURL = "treatmentadvices/ajax/drugDosagesFor?regimenId=" + regimenDropDown + "&amp;regimenCompositionId=" + regimenCompositionDropDown;
+                var drugDosagesURL = "treatmentadvices/ajax/drugDosagesFor?regimenId=" + regimenDropDown + "&regimenCompositionId=" + regimenCompositionDropDown;
                 dojo.xhrGet({
                     url: drugDosagesURL,
                     load: function(result) {
@@ -56,8 +60,62 @@
             dojo.connect(dijit.byId('_regimenCompositionId_id'), 'onChange', populateDrugDosages);
             dojo.connect(dijit.byId('_regimenId_id'), 'onChange', populateRegimenCompositions);
             populateRegimenCompositions();
+
+            var validateDosageTimes = function() {
+
+                var drug1DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
+                var drug1DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
+                var drug2DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
+                var drug2DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
+                var dosageTimeElements = dojo.filter([drug1DosageTime1, drug1DosageTime2, drug2DosageTime1, drug2DosageTime2], function(item) {
+                    return (item != null && item != undefined);
+                });
+
+                var amTimes = {}, pmTimes = {};
+                var getProperties = function(object) {
+                    var result = [];
+                    for (key in object)
+                        result.push(key);
+                    return result;
+                };
+
+                dojo.forEach(dosageTimeElements, function(element, i) {
+                    if (element.value.indexOf("am") != -1)
+                        amTimes[element.value] = "dummy";
+                    else if (element.value.indexOf("pm") != -1)
+                        pmTimes[element.value] = "dummy";
+                });
+
+                var conditions = [
+                {
+                    execute: function(){ return getProperties(amTimes).length > 1 && getProperties(pmTimes).length > 1; },
+                    message : "You have entered different times for morning and evening doses. Please change the times to the same time for both dosages."
+                },
+                {
+                    execute: function(){ return getProperties(amTimes).length > 1; },
+                    message : "You have entered different times for morning dose. Please change the times to the same time for both dosages."
+                },
+                {
+                    execute: function(){ return getProperties(pmTimes).length > 1; },
+                    message : "You have entered different times for evening dose. Please change the times to the same time for both dosages."
+                }];
+
+                for(var i = 0; i < conditions.length; i++){
+                    if(conditions[i].execute())
+                        return conditions[i].message;
+                }
+                return null;
+            };
+
+            dojo.connect(dojo.byId("treatmentAdvice"), "onsubmit", function(evt) {
+                if (validateDosageTimes() != null) {
+                    var error = dojo.byId("dosage_times_error");
+                    dojo.html.set(error, validateDosageTimes());
+                    evt.preventDefault();
+                }
+            });
+
         });
-        <![CDATA[
            function encodePk(){
                return true;
            }
