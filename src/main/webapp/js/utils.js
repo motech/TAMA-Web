@@ -61,6 +61,11 @@ var clearElement = function(_elementWidget) {
         _elementWidget.setValue('');
 }
 
+var setRequiredForElement = function(_elementWidget, requiredValue) {
+    if (_elementWidget != null)
+        _elementWidget.set('required', requiredValue);
+}
+
 var showElement = function(_elementArray) {
     for (var i = 0; i < _elementArray.length; i++){
         if (_elementArray[i] != null)
