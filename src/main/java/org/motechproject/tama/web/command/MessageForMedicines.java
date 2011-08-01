@@ -7,7 +7,6 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.Clinics;
 import org.motechproject.tama.repository.Patients;
@@ -40,8 +39,7 @@ public class MessageForMedicines implements ITreeCommand {
         Patient patient = patients.get(ivrContext.ivrSession().getPatientId());
         Clinic clinic = clinics.get(patient.getClinic_id());
 
-        IVRResponseBuilder builder = new IVRResponseBuilder(ivrContext.ivrRequest().getSid());
-        builder.withPlayAudios(clinic.getName());
+        messages.add(clinic.getName());
 
         for (String medicine : getMedicines(ivrContext.ivrRequest())) {
             messages.add(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE);
