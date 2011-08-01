@@ -4,7 +4,7 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.AuthenticateAction;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
-import org.motechproject.tama.ivr.action.pillreminder.TAMAIVRAction;
+import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class DtmfEventAction extends BaseIncomingAction {
         if (ivrSession.isAuthentication()) {
             return authenticateAction.handle(ivrRequest, request, response);
         } else {
-            return new TAMAIVRAction(currentDosageReminderTree, messages).handle(ivrRequest, ivrSession);
+            return new IVRAction(currentDosageReminderTree, messages).handle(ivrRequest, ivrSession);
         }
     }
 }

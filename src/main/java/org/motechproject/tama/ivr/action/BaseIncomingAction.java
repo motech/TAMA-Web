@@ -11,8 +11,9 @@ import org.motechproject.tama.repository.IVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public abstract class BaseIncomingAction implements IVRIncomingAction {
+public abstract class BaseIncomingAction {
     @Autowired
     protected IVRMessage messages;
     protected IVRCallAudits audits;
@@ -45,7 +46,8 @@ public abstract class BaseIncomingAction implements IVRIncomingAction {
         return StringUtils.remove(ivrRequest.getData(), POUND_SYMBOL);
     }
 
-    @Override
+    abstract public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response);
+
     public String getKey() {
         return StringUtils.EMPTY;
     }

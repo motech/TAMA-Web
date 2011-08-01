@@ -3,7 +3,6 @@ package org.motechproject.tama.ivr.action.pillreminder;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
-import org.motechproject.tama.ivr.action.IVRIncomingAction;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.repository.IVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class PreviousDosageMenuAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        IVRIncomingAction action = menu.get(getInput(ivrRequest));
+        BaseIncomingAction action = menu.get(getInput(ivrRequest));
         if (action != null)
             return action.handle(ivrRequest, request, response);
 

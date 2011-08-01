@@ -5,7 +5,7 @@ import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
-import org.motechproject.tama.ivr.action.pillreminder.TAMAIVRAction;
+import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +29,10 @@ public class AuthenticateAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        return handle(ivrRequest, request, response, new TAMAIVRAction(currentDosageReminderTree, messages));
+        return handle(ivrRequest, request, response, new IVRAction(currentDosageReminderTree, messages));
     }
 
-    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, TAMAIVRAction tamaIvrAction) {
+    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IVRAction tamaIvrAction) {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = getInput(ivrRequest);
         String id = ivrSession.getPatientId();

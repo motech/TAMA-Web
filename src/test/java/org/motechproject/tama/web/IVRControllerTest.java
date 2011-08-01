@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.ivr.IVREvent;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
-import org.motechproject.tama.ivr.action.IVRIncomingAction;
+import org.motechproject.tama.ivr.action.BaseIncomingAction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ public class IVRControllerTest {
     @Mock
     private Actions actions;
     @Mock
-    private IVRIncomingAction action;
+    private BaseIncomingAction action;
 
     @Before
     public void setUp() {
