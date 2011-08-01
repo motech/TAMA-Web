@@ -37,16 +37,15 @@ public class PreviousDosageTakenAction extends BaseIncomingAction {
         String dosageId = (String) tamaParams.get(PillReminderCall.DOSAGE_ID);
         service.updateDosageTaken(regimenId, dosageId);
 
-        Response ivrResponse = new IVRResponseBuilder()
-                .withSid(ivrRequest.getSid())
-                .addPlayAudio(
-                                messages.getWav(IVRMessage.YOU_SAID_YOU_TOOK),
-                                messages.getWav(IVRMessage.YESTERDAYS),
-                                messages.getWav(IVRMessage.EVENING),
-                                messages.getWav(IVRMessage.DOSE)
+        Response ivrResponse = new IVRResponseBuilder(ivrRequest.getSid())
+                .withPlayAudios(
+                                IVRMessage.YOU_SAID_YOU_TOOK,
+                                IVRMessage.YESTERDAYS,
+                                IVRMessage.EVENING,
+                                IVRMessage.DOSE
                             )
                 .withHangUp()
-                .create();
+                .create(messages);
         return ivrResponse.getXML();
     }
 

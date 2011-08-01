@@ -3,6 +3,7 @@ package org.motechproject.tama.web;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.NullTreeCommand;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.server.decisiontree.service.DecisionTreeService;
 import org.motechproject.tama.ivr.IVRMessage;
@@ -16,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:**/applicationContext.xml"})
@@ -33,7 +33,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(3, prompts.size());
         assertEquals(IVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(2).getName());
-        assertNull(nextNode.getTreeCommand());
+        assertEquals(NullTreeCommand.class, nextNode.getTreeCommand().getClass());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(1, prompts.size());
         assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(0).getName());
-        assertNull(nextNode.getTreeCommand());
+        assertEquals(NullTreeCommand.class, nextNode.getTreeCommand().getClass());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals(IVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
-        assertNull(nextNode.getTreeCommand());
+        assertEquals(NullTreeCommand.class, nextNode.getTreeCommand().getClass());
     }
 
     @Test

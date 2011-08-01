@@ -25,17 +25,16 @@ public class PreviousDosageNotTakenAction extends BaseIncomingAction {
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        Response ivrResponse = new IVRResponseBuilder()
-                .withSid(ivrRequest.getSid())
-                .addPlayAudio(
-                        messages.getWav(IVRMessage.YOU_SAID_YOU_DID_NOT_TAKE),
-                        messages.getWav(IVRMessage.YESTERDAYS),
-                        messages.getWav(IVRMessage.EVENING),
-                        messages.getWav(IVRMessage.DOSE),
-                        messages.getWav(IVRMessage.TRY_NOT_TO_MISS)
+        Response ivrResponse = new IVRResponseBuilder(ivrRequest.getSid())
+                .withPlayAudios(
+                        IVRMessage.YOU_SAID_YOU_DID_NOT_TAKE,
+                        IVRMessage.YESTERDAYS,
+                        IVRMessage.EVENING,
+                        IVRMessage.DOSE,
+                        IVRMessage.TRY_NOT_TO_MISS
                 )
                 .withHangUp()
-                .create();
+                .create(messages);
         return ivrResponse.getXML();
     }
 

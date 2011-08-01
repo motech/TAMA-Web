@@ -28,19 +28,19 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
-public class TamaIvrActionTest {
+public class TamaIVRActionTest {
     @Mock
     private HttpSession httpSession;
     @Autowired
     private IVRMessage ivrMessage;
 
-    private TamaIvrAction tamaIvrAction;
-    private TamaIvrActionTest.CommandForTamaIvrActionTest commandForTamaIvrActionTest;
+    private TamaIVRAction tamaIvrAction;
+    private TamaIVRActionTest.CommandForTamaIvrActionTest commandForTamaIvrActionTest;
 
     @Before
     public void setup() {
         initMocks(this);
-        tamaIvrAction = new TamaIvrAction(new TestTreeForTamaIvrActionTest(), ivrMessage);
+        tamaIvrAction = new TamaIVRAction(new TestTreeForTamaIvrActionTest(), ivrMessage);
         commandForTamaIvrActionTest = new CommandForTamaIvrActionTest();
     }
 
