@@ -4,6 +4,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     private RecordResponseInTamaCommand recordResponseInTamaCommand;
     @Autowired
     private PillTakenCommand pillTakenCommand;
-
     @Autowired
     private PreviousDosageTree previousDosageTree;
 
@@ -54,7 +54,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                         Node.newBuilder()
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setName(IVRMessage.PLEASE_TAKE_DOSE),
-                                                        new AudioPrompt().setName(IVRMessage.PILL_REMINDER_RETRY_INTERVAL),
+                                                        new AudioPrompt().setName(TAMAConstants.RETRY_INTERVAL),
                                                         new AudioPrompt().setName(IVRMessage.MINUTES)))
                                                 .setTransitions(jumpToPreviousDosageTree())
                                                 .build())

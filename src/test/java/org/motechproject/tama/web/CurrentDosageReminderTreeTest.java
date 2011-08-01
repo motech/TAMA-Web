@@ -63,7 +63,7 @@ public class CurrentDosageReminderTreeTest {
 
     @Test
     public void shouldGetPromptForCarryingExtraPills() {
-        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "1");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "2");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals(IVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
@@ -72,7 +72,7 @@ public class CurrentDosageReminderTreeTest {
 
     @Test
     public void shouldGetRecordResponseInTamaCommandIfPatientHasNotTakenThePillForUnknownReason() {
-        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "2");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "3");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(0, prompts.size());
         assertEquals(RecordResponseInTamaCommand.class, nextNode.getTreeCommand().getClass());
