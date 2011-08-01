@@ -13,11 +13,11 @@ import org.motechproject.tama.ivr.builder.DecisionTreeBasedResponseBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
 
-public class TamaIVRAction {
+public class TAMAIVRAction {
     private TAMADecisionTree tamaDecisionTree;
     private IVRMessage ivrMessage;
 
-    public TamaIVRAction(TAMADecisionTree tamaDecisionTree, IVRMessage ivrMessage) {
+    public TAMAIVRAction(TAMADecisionTree tamaDecisionTree, IVRMessage ivrMessage) {
         this.tamaDecisionTree = tamaDecisionTree;
         this.ivrMessage = ivrMessage;
     }

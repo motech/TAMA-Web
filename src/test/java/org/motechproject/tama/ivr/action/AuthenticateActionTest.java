@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
-import org.motechproject.tama.ivr.action.pillreminder.TamaIVRAction;
+import org.motechproject.tama.ivr.action.pillreminder.TAMAIVRAction;
 import org.motechproject.tama.repository.Patients;
 
 import static org.junit.Assert.assertEquals;
@@ -26,7 +26,7 @@ public class AuthenticateActionTest extends BaseActionTest {
     @Mock
     private Patient patient;
     @Mock
-    private TamaIVRAction tamaIvrAction;
+    private TAMAIVRAction tamaIvrAction;
 
     private static final String PATIENT_ID = "12345";
     public static final String MOBILE_NO = "9876543210";
