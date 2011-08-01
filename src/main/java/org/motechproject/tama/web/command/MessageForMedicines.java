@@ -40,12 +40,11 @@ public class MessageForMedicines implements ITreeCommand {
         Clinic clinic = clinics.get(patient.getClinic_id());
 
         messages.add(clinic.getName());
-
+        messages.add(IVRMessage.ITS_TIME_FOR_THE_PILL);
         for (String medicine : getMedicines(ivrContext.ivrRequest())) {
-            messages.add(IVRMessage.YOU_ARE_SUPPOSED_TO_TAKE);
             messages.add(medicine);
         }
-
+        messages.add(IVRMessage.PILL_FROM_THE_BOTTLE);
         return messages.toArray(new String[messages.size()]);
     }
 

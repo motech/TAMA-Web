@@ -65,7 +65,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                         Node.newBuilder()
                                                 .setPrompts(Arrays.<Prompt>asList(new AudioPrompt().setName(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU)))
                                                 .setTransitions(new Object[][]{
-                                                        {"1", Transition.newBuilder()
+                                                        {"2", Transition.newBuilder()
                                                                 .setDestinationNode(Node.newBuilder()
                                                                         .setPrompts(Arrays.asList(
                                                                                 new AudioPrompt().setName(IVRMessage.PLEASE_CARRY_SMALL_BOX),
@@ -75,7 +75,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                                                         .build())
                                                                 .build()
                                                         },
-                                                        {"2", Transition.newBuilder()
+                                                        {"3", Transition.newBuilder()
                                                                 .setDestinationNode(Node.newBuilder()
                                                                         .setTreeCommand(recordResponseInTamaCommand)
                                                                         .build())

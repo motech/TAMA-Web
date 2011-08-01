@@ -15,6 +15,8 @@ public class IVRMessage {
     public static final String CONTENT_LOCATION_URL = "content.location.url";
     public static final String PILL_REMINDER_RESPONSE_MENU = "pill_reminder_menu";
     public static final String YOU_ARE_SUPPOSED_TO_TAKE = "you_are_supposed_to_take";
+    public static final String ITS_TIME_FOR_THE_PILL = "its_time_for_the_pill";
+    public static final String PILL_FROM_THE_BOTTLE = "pill_from_the_bottle";
     public static final String PLEASE_TAKE_DOSE = "please_take_dose";
     public static final String DOSE_TAKEN = "dose_taken";
     public static final String PLEASE_CARRY_SMALL_BOX = "please_carry_small_box";
