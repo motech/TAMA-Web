@@ -22,6 +22,14 @@ public class TimeUtilTest {
     }
 
     @Test
+    public void shouldReturnHourswhenTimeIsNoon() {
+        String timeString = "12:03pm";
+
+        TimeUtil timeUtil = new TimeUtil(timeString).withReminderLagTime(0);
+        Assert.assertEquals(12, timeUtil.getHours());
+    }
+
+    @Test
     public void shouldReturnHoursIn24HourFormatWithLagTime() {
         String timeString = "05:50pm";
 
@@ -29,6 +37,7 @@ public class TimeUtilTest {
         Assert.assertEquals(18, timeUtil.getHours());
         Assert.assertEquals(2, timeUtil.getMinutes());
     }
+
     @Test
     public void shouldReturnHoursIn24HourFormatWithLagTimeWhenDayLimitCrosses() {
         String timeString = "11:54pm";

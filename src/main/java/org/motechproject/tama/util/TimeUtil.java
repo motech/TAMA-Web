@@ -12,7 +12,7 @@ public class TimeUtil {
 
     public TimeUtil(String timeString) {
 
-        Pattern pattern = Pattern.compile("([0][0-9]|[1][0-2]):([0-5][0-9])([a,p]m)");
+        Pattern pattern = Pattern.compile("([0][0-9]|[1][0-2]):([0-5][0-9])([a,p,A,P][m,M])");
         Matcher matcher = pattern.matcher(timeString);
         boolean found = matcher.find();
         if (found) {
@@ -37,7 +37,7 @@ public class TimeUtil {
     }
 
     private int withHours() {
-        return ampm.equals("am") ? hours : hours + 12;
+        return ampm.equals("am") || hours == 12 ? hours : hours + 12;
     }
 
     public int getMinutes() {
