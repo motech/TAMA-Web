@@ -38,7 +38,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                         {"1", Transition.newBuilder()
                                 .setDestinationNode(
                                         Node.newBuilder()
-                                                .setTreeCommands(pillTakenCommand)
+                                                .setTreeCommands(pillTakenCommand, updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
@@ -50,6 +50,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                         {"2", Transition.newBuilder()
                                 .setDestinationNode(
                                         Node.newBuilder()
+                                                .setTreeCommands(updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(pillsDelayWarning),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage))                                                        )
@@ -60,6 +61,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                         {"3", Transition.newBuilder()
                                 .setDestinationNode(
                                         Node.newBuilder()
+                                                .setTreeCommands(updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(new MenuAudioPrompt().setName(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU)))
                                                 .setTransitions(new Object[][]{
                                                         {"2", Transition.newBuilder()

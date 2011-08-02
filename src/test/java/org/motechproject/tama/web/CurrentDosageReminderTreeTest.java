@@ -8,10 +8,7 @@ import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.server.decisiontree.service.DecisionTreeService;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
-import org.motechproject.tama.web.command.MessageFromPreviousDosage;
-import org.motechproject.tama.web.command.PillsDelayWarning;
-import org.motechproject.tama.web.command.PillTakenCommand;
-import org.motechproject.tama.web.command.RecordResponseInTamaCommand;
+import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -61,7 +58,7 @@ public class CurrentDosageReminderTreeTest {
         assertEquals(1, prompts.size());
         assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(0).getName());
         assertEquals(MenuAudioPrompt.class, prompts.get(0).getClass());
-        assertTrue(nextNode.getTreeCommands().isEmpty());
+        assertEquals(UpdateAdherenceCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 
     @Test

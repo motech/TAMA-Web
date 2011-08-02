@@ -5,13 +5,13 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.View;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -30,7 +30,7 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
     }
 
     @View(name = "find_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageDate], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesTotalCount(String dosageId, Date fromDate, Date toDate) {
+    public int findScheduledDosagesTotalCount(String dosageId, LocalDate fromDate, LocalDate toDate) {
         ComplexKey startkey = ComplexKey.of(dosageId, fromDate);
         ComplexKey endkey = ComplexKey.of(dosageId, toDate);
         ViewQuery q = createQuery("find_log_count_for_a_given_date_range").startKey(startkey).endKey(endkey);
@@ -39,7 +39,7 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
     }
 
     @View(name = "find_success_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesSuccessCount(String dosageId, Date fromDate, Date toDate) {
+    public int findScheduledDosagesSuccessCount(String dosageId, LocalDate fromDate, LocalDate toDate) {
         ComplexKey startDosageDatekey = ComplexKey.of(dosageId, DosageStatus.TAKEN, fromDate);
         ComplexKey endDosageDatekey = ComplexKey.of(dosageId, DosageStatus.TAKEN, toDate);
         ViewQuery q = createQuery("find_success_log_count_for_a_given_date_range").startKey(startDosageDatekey).endKey(endDosageDatekey);
@@ -53,5 +53,13 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
         ViewQuery q = createQuery("find_failure_log_count").key(key);
         ViewResult viewResult = db.queryView(q);
         return rowCount(viewResult);
+    }
+
+    @View(name = "find_by_dosage_id_and_dosageDate", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.dosageId && doc.dosageDate) {emit([doc.dosageId, doc.dosageDate], doc._id);}}")
+    public DosageAdherenceLog findByDosageIdAndDate(String dosageId, LocalDate dosageDate) {
+        ViewQuery q = createQuery("find_by_dosage_id_and_dosageDate").key(ComplexKey.of(dosageId, dosageDate)).includeDocs(true);
+        List<DosageAdherenceLog> adherenceLogs = db.queryView(q, DosageAdherenceLog.class);
+        if(adherenceLogs != null && !adherenceLogs.isEmpty()) return adherenceLogs.get(0);
+        return null;
     }
 }

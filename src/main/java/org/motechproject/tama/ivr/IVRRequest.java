@@ -15,6 +15,8 @@ public class IVRRequest {
     private String data;
     private String tamaData;
 
+    public static final String POUND_SYMBOL = "%23";
+
     public IVRRequest() {
     }
 
@@ -86,5 +88,9 @@ public class IVRRequest {
             throw new RuntimeException(e);
         }
         return params;
+    }
+
+    public String getInput() {
+        return StringUtils.remove(getData(), POUND_SYMBOL);
     }
 }

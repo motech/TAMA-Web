@@ -15,4 +15,11 @@ public class IVRRequestTest {
         assertEquals("batman", tamaParams.get("hero"));
         assertEquals("joker", tamaParams.get("villain"));
     }
+
+    @Test
+    public void shouldGetInputWithoutPoundSymbol() {
+        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "someEvent", "4%23");
+
+        assertEquals("4", ivrRequest.getInput());
+    }
 }

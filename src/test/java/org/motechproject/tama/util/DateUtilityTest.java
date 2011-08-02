@@ -26,7 +26,7 @@ public class DateUtilityTest {
     @Test
     public void shouldAddDate(){
         Date date = DateUtility.newDate(2011, Calendar.APRIL, 21);
-        Date newDate =  DateUtility.addDate(date,2);
+        Date newDate =  DateUtility.addDaysToDate(date, 2);
         Assert.assertEquals(23,wrapDate(newDate).get(Calendar.DATE));
     }
 }

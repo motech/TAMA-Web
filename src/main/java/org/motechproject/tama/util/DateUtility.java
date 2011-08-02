@@ -2,6 +2,7 @@ package org.motechproject.tama.util;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,22 +13,9 @@ public class DateUtility {
 
     private static DateTime dateTime;
 
-    public static Date now() {
-        Calendar calendar = getCalendar();
-        return calendar.getTime();
-    }
-
-    public static Date today() {
-        return getDateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).toDate();
-    }
-
     public static DateTime getDateTime() {
         String timeZone = ResourceBundle.getBundle("date").getString("timezone");
         return new DateTime(DateTimeZone.forTimeZone(TimeZone.getTimeZone(timeZone)));
-    }
-
-    public static Date newDate(int year, int month, int date) {
-        return getDateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(date).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).toDate();
     }
 
     private static Calendar getCalendar() {
@@ -35,10 +23,53 @@ public class DateUtility {
         return Calendar.getInstance(TimeZone.getTimeZone(timeZone));
     }
 
-    public static Date addDate(Date date, int days) {
+    public static Date now() {
+        Calendar calendar = getCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        calendar.getTime();
+        return calendar.getTime();
+    }
+
+    public static LocalDate today() {
+        return new LocalDate(DateTimeZone.UTC);
+    }
+
+    public static DateTime todayWithTime() {
+        return getDateTime();
+    }
+
+
+    public static Date newDate(int year, int month, int date) {
+        return getDateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(date).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).toDate();
+    }
+
+    public static LocalDate newLocalDate(int year, int month, int date) {
+        return new LocalDate(year, month, date);
+    }
+
+    public static DateTime newDateWithTime(int year, int month, int date) {
+        return getDateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(date);
+    }
+
+
+    public static Date addDaysToDate(Date date, int days) {
         Calendar calendar = getCalendar();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, days);
         return calendar.getTime();
     }
+
+
+    public static LocalDate addDaysToLocalDate(LocalDate date, int days) {
+        return date.plusDays(days);
+    }
+
+    public static DateTime addDaysToDateTime(LocalDate date, int days) {
+        return getDateTime().plus(days);
+    }
+
+
 }

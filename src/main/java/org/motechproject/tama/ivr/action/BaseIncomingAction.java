@@ -42,10 +42,6 @@ public abstract class BaseIncomingAction {
         return new IVRSession(request.getSession());
     }
 
-    protected String getInput(IVRRequest ivrRequest) {
-        return StringUtils.remove(ivrRequest.getData(), POUND_SYMBOL);
-    }
-
     abstract public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response);
 
     public String getKey() {
