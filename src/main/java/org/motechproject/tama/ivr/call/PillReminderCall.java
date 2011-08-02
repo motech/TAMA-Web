@@ -12,7 +12,8 @@ import java.util.Map;
 public class PillReminderCall {
     public static final String DOSAGE_ID = "dosage_id";
     public static final String REGIMEN_ID = "regimen_id";
-    public static final String LAST_CALL = "last_call";
+    public static final String TIMES_SENT = "times_sent";
+    public static final String TOTAL_TIMES_TO_SEND = "total_times_to_send";
 
     private Patients patients;
     private CallService callService;
@@ -23,20 +24,12 @@ public class PillReminderCall {
         this.patients = patients;
     }
 
-    public void execute(String patientId, final String regimenId, final String dosageId) {
+    public void execute(String patientId, final String regimenId, final String dosageId, final int timesSent, final int totalTimesToSend) {
         Map<String, String> params = new HashMap<String, String>() {{
             put(REGIMEN_ID, regimenId);
             put(DOSAGE_ID, dosageId);
-            put(LAST_CALL,"false");
-        }};
-        makeCall(patientId, params);
-    }
-
-    public void executeLastCall(String patientId, final String regimenId, final String dosageId) {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put(REGIMEN_ID, regimenId);
-            put(DOSAGE_ID, dosageId);
-            put(LAST_CALL,"true");
+            put(TIMES_SENT, String.valueOf(timesSent));
+            put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
         }};
         makeCall(patientId, params);
     }
@@ -46,6 +39,5 @@ public class PillReminderCall {
         if (patient == null || patient.isNotActive()) return;
 
         callService.dial(patient.getIVRMobilePhoneNumber(), params);
-
     }
 }

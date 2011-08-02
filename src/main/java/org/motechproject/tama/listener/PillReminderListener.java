@@ -17,27 +17,16 @@ public class PillReminderListener {
     public PillReminderListener(PillReminderCall call) {
         this.call = call;
     }
-//08040649551
+
+    //08040649551
     @MotechListener(subjects = EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT)
     public void handlePillReminderEvent(MotechEvent motechEvent) {
         Map<String, Object> parameters = motechEvent.getParameters();
         String patientDocId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
         String regimenId = (String) parameters.get(EventKeys.PILLREMINDER_ID_KEY);
         String dosageId = (String) parameters.get(EventKeys.DOSAGE_ID_KEY);
-        if (isNotLastCall(parameters)) {
-            call.execute(patientDocId, regimenId, dosageId);
-        } else {
-            call.executeLastCall(patientDocId, regimenId, dosageId);
-        }
-    }
-
-    private boolean isNotLastCall(Map<String, Object> parameters) {
-        return !isLastCall(parameters);
-    }
-
-    private boolean isLastCall(Map<String, Object> parameters) {
         int timesAlreadyCalled = (Integer) parameters.get(EventKeys.PILLREMINDER_TIMES_SENT);
         int totalCallsToBeMade = (Integer) parameters.get(EventKeys.PILLREMINDER_TOTAL_TIMES_TO_SEND);
-        return totalCallsToBeMade == (timesAlreadyCalled + 1);
+        call.execute(patientDocId, regimenId, dosageId, timesAlreadyCalled, totalCallsToBeMade);
     }
 }
