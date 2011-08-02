@@ -26,6 +26,6 @@ public class PillTakenCommand implements ITreeCommand {
         String regimenId = (String) tamaParams.get(PillReminderCall.REGIMEN_ID);
         String dosageId = (String) tamaParams.get(PillReminderCall.DOSAGE_ID);
         pillReminderService.updateDosageTaken(regimenId, dosageId);
-        return null;
+        return new String[0];
     }
 }

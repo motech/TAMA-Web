@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 public class MessageIfLastCall implements ITreeCommand{
     @Override
     public String[] execute(Object o) {
-        return null;
+        return new String[0];
     }
 }

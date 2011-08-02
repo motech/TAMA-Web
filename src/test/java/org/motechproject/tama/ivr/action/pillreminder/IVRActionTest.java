@@ -72,7 +72,7 @@ public class IVRActionTest {
         protected Node createRootNode() {
             Node rootNode = Node.newBuilder()
                 .setPrompts(Arrays.asList(new AudioPrompt().setName("foo")))
-                    .setTreeCommand(commandForTamaIvrActionTest)
+                    .setTreeCommands(commandForTamaIvrActionTest)
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()
                                 .setDestinationNode(Node.newBuilder()

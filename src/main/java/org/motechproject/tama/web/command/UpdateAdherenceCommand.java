@@ -4,9 +4,9 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RecordResponseInTamaCommand implements ITreeCommand {
+public class UpdateAdherenceCommand implements ITreeCommand {
     @Override
-    public String[] execute(Object obj) {
+    public String[] execute(Object o) {
         return new String[0];
     }
 }

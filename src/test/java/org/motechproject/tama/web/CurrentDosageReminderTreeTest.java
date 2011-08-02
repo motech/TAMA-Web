@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +34,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(3, prompts.size());
         assertEquals(IVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(2).getName());
-        assertEquals(NullTreeCommand.class, nextNode.getTreeCommand().getClass());
+        assertTrue(nextNode.getTreeCommands().isEmpty());
     }
 
     @Test
@@ -41,7 +42,7 @@ public class CurrentDosageReminderTreeTest {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "1");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
-        assertEquals(PillTakenCommand.class, nextNode.getTreeCommand().getClass());
+        assertEquals(PillTakenCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 
     @Test
@@ -58,7 +59,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(1, prompts.size());
         assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(0).getName());
-        assertEquals(NullTreeCommand.class, nextNode.getTreeCommand().getClass());
+        assertTrue(nextNode.getTreeCommands().isEmpty());
     }
 
     @Test
@@ -67,7 +68,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals(IVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
-        assertEquals(NullTreeCommand.class, nextNode.getTreeCommand().getClass());
+        assertTrue(nextNode.getTreeCommands().isEmpty());
     }
 
     @Test
@@ -75,6 +76,6 @@ public class CurrentDosageReminderTreeTest {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "3");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(0, prompts.size());
-        assertEquals(RecordResponseInTamaCommand.class, nextNode.getTreeCommand().getClass());
+        assertEquals(RecordResponseInTamaCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 }

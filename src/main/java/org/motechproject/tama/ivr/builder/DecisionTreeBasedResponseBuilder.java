@@ -22,7 +22,6 @@ public class DecisionTreeBasedResponseBuilder {
             }
             else {
                 String[] promptsFromCommand = command.execute(ivrContext);
-                if (promptsFromCommand == null) continue;
                 for (String promptFromCommand : promptsFromCommand) {
                     buildPrompts(ivrResponseBuilder, promptFromCommand, isAudioPrompt);
                 }

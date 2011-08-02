@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.action.pillreminder;
 
 import com.ozonetel.kookoo.Response;
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.NodeInfo;
 import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.tama.ivr.IVRContext;
@@ -12,6 +13,8 @@ import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.DecisionTreeBasedResponseBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
+
+import java.util.List;
 
 public class IVRAction {
     private TAMADecisionTree tamaDecisionTree;
@@ -33,7 +36,10 @@ public class IVRAction {
         if (nodeInfo.node() == null) {
             nodeInfo = tree.currentNodeInfo(currentPosition);
         } else {
-            nodeInfo.node().getTreeCommand().execute(ivrContext);
+            List<ITreeCommand> treeCommands = nodeInfo.node().getTreeCommands();
+            for(ITreeCommand command : treeCommands) {
+                command.execute(ivrContext);
+            }
         }
 
         ivrSession.currentDecisionTreePath(nodeInfo.path());

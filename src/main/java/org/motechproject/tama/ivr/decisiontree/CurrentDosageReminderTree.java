@@ -1,9 +1,6 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.web.command.*;
@@ -28,6 +25,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private PillTakenCommand pillTakenCommand;
     @Autowired
+    private UpdateAdherenceCommand updateAdherenceCommand;
+    @Autowired
     private PreviousDosageTree previousDosageTree;
 
     protected Node createRootNode() {
@@ -40,7 +39,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                         {"1", Transition.newBuilder()
                                 .setDestinationNode(
                                         Node.newBuilder()
-                                                .setTreeCommand(pillTakenCommand)
+                                                .setTreeCommands(pillTakenCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
                                                         new AudioPrompt().setCommand(messageFromPreviousDosage))
@@ -77,7 +76,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                                         },
                                                         {"3", Transition.newBuilder()
                                                                 .setDestinationNode(Node.newBuilder()
-                                                                        .setTreeCommand(recordResponseInTamaCommand)
+                                                                        .setTreeCommands(recordResponseInTamaCommand)
                                                                         .build())
                                                                 .build()
                                                         }
@@ -92,4 +91,5 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     private Map<String, Transition> jumpToPreviousDosageTree() {
         return previousDosageTree.getTree().getRootNode().getTransitions();
     }
+
 }
