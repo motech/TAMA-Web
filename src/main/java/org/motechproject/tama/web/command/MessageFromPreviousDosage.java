@@ -24,7 +24,7 @@ public class MessageFromPreviousDosage implements ITreeCommand {
         String regimenId = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.REGIMEN_ID);
         String currentDosageId = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID);
         String previousDosageId = service.getPreviousDosage(regimenId, currentDosageId);
-        if ("hasnotbeentaken".equals(previousDosageId)) {
+        if ("previousDosageId".equals(previousDosageId)) {
             return new String[] {
                             IVRMessage.YOUR,
                             IVRMessage.YESTERDAYS,
