@@ -3,7 +3,6 @@ package org.motechproject.tama.web;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.NullTreeCommand;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.server.decisiontree.service.DecisionTreeService;
 import org.motechproject.tama.ivr.IVRMessage;
@@ -16,8 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:**/applicationContext.xml"})
@@ -49,7 +48,7 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPillGettingLateCommandAndPrompt() {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "2");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(3, prompts.size());
+        assertEquals(4, prompts.size());
         assertEquals(IVRMessage.PLEASE_TAKE_DOSE, prompts.get(0).getName());
     }
 

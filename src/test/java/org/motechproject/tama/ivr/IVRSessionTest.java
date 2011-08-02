@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -35,14 +34,6 @@ public class IVRSessionTest {
 
         verify(session).getAttribute(IVRCallAttribute.CALL_STATE);
         assertEquals(expectedState, state);
-    }
-
-    @Test
-    public void shouldReturnPreviousDoseResponseFromState() {
-        IVRCallState expectedState = IVRCallState.COLLECT_PREVIOUS_DOSE_RESPONSE;
-        when(session.getAttribute(IVRCallAttribute.CALL_STATE)).thenReturn(expectedState);
-
-        assertTrue(ivrSession.isPreviousDoseResponse());
     }
 
     @Test

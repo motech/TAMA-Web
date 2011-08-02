@@ -3,10 +3,7 @@ package org.motechproject.tama.ivr.builder;
 import com.ozonetel.kookoo.CollectDtmf;
 import com.ozonetel.kookoo.Response;
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +39,6 @@ public class IVRResponseBuilder {
     public IVRResponseBuilder withHangUp() {
         this.isHangUp = true;
         return this;
-    }
-
-    public IVRResponseBuilder withPreviousDosageReminder(IVRRequest ivrRequest, PillReminderService service, IVRMessage messages) {
-        return new PreviousDosageBuilder(ivrRequest, service, messages).build(this);
     }
 
     public Response create(IVRMessage ivrMessage) {

@@ -19,8 +19,6 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private MessageIfLastCall messageIfLastCall;
     @Autowired
-    private MessageFromPreviousDosage messageFromPreviousDosage;
-    @Autowired
     private RecordResponseInTamaCommand recordResponseInTamaCommand;
     @Autowired
     private PillTakenCommand pillTakenCommand;
@@ -28,6 +26,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     private UpdateAdherenceCommand updateAdherenceCommand;
     @Autowired
     private PreviousDosageTree previousDosageTree;
+    @Autowired
+    private MessageFromPreviousDosage messageFromPreviousDosage;
 
     protected Node createRootNode() {
         return Node.newBuilder()
@@ -54,7 +54,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setName(IVRMessage.PLEASE_TAKE_DOSE),
                                                         new AudioPrompt().setName(TAMAConstants.RETRY_INTERVAL),
-                                                        new AudioPrompt().setName(IVRMessage.MINUTES)))
+                                                        new AudioPrompt().setName(IVRMessage.MINUTES),
+                                                        new AudioPrompt().setCommand(messageFromPreviousDosage))                                                        )
                                                 .setTransitions(jumpToPreviousDosageTree())
                                                 .build())
                                 .build()

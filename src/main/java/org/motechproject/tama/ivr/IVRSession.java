@@ -43,18 +43,6 @@ public class IVRSession {
         return getState().isCollectPin();
     }
 
-    public boolean isDoseResponse() {
-        return getState().isCollectDoseResponse();
-    }
-
-    public boolean isPreviousDoseResponse() {
-        return getState().isCollectPreviousDoseResponse();
-    }
-
-    public boolean isDoseCannotBeTaken() {
-        return getState().isCollectDoseCannotBeTakenResponse();
-    }
-
     public void close() {
         if (session != null) session.invalidate();
     }
