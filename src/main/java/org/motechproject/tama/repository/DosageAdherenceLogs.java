@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-@View(name = "all", map = "function(doc) { if (doc.documentType == 'DosageAdherenceLog') { emit(null, doc) } }")
 public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherenceLog> {
 
     @Autowired

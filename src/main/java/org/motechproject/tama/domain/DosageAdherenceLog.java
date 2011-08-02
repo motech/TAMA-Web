@@ -1,7 +1,10 @@
 package org.motechproject.tama.domain;
 
+import org.ektorp.support.TypeDiscriminator;
+
 import java.util.Date;
 
+@TypeDiscriminator("doc.documentType == 'DosageAdherenceLog'")
 public class DosageAdherenceLog extends CouchEntity{
 
     private String patientId;
