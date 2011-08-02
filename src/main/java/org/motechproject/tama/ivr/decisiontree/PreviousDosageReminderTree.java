@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-public class PreviousDosageTree extends TAMADecisionTree {
+public class PreviousDosageReminderTree extends TAMADecisionTree {
 
     @Autowired
     private PillTakenCommand pillTakenCommand;

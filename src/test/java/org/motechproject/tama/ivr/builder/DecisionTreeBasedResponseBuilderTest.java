@@ -2,10 +2,7 @@ package org.motechproject.tama.ivr.builder;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.IVRContext;
 
 import java.util.Arrays;
@@ -33,14 +30,14 @@ public class DecisionTreeBasedResponseBuilderTest {
                                 .setDestinationNode(Node.newBuilder()
                                                 .setPrompts(Arrays.asList(new AudioPrompt().setName("baz"))).build()).build()
                         }}).build();
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode);
+        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertTrue(responseBuilder.isCollectDtmf());
         assertEquals(1, responseBuilder.getPlayAudios().size());
         assertEquals(0, responseBuilder.getPlayTexts().size());
     }
 
-    private IVRResponseBuilder nextResponse(Node rootNode) {
-        return treeBasedResponseBuilder.ivrResponse("foo", rootNode, new IVRContext(null, null));
+    private IVRResponseBuilder nextResponse(Node rootNode, boolean retryOnIncorrectUserAction) {
+        return treeBasedResponseBuilder.ivrResponse("foo", rootNode, new IVRContext(null, null), retryOnIncorrectUserAction);
     }
 
     @Test
@@ -48,7 +45,7 @@ public class DecisionTreeBasedResponseBuilderTest {
         Node rootNode = Node.newBuilder()
                 .setPrompts(Arrays.asList(new AudioPrompt().setName("foo")))
                 .build();
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode);
+        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertFalse(responseBuilder.isCollectDtmf());
         assertTrue(responseBuilder.isHangUp());
         assertEquals(1, responseBuilder.getPlayAudios().size());
@@ -60,7 +57,7 @@ public class DecisionTreeBasedResponseBuilderTest {
         Node rootNode = Node.newBuilder()
                 .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnEmptyCommand())))
                 .build();
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode);
+        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertEquals(0, responseBuilder.getPlayAudios().size());
     }
 
@@ -69,8 +66,18 @@ public class DecisionTreeBasedResponseBuilderTest {
         Node rootNode = Node.newBuilder()
                 .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnMultiplePromptCommand())))
                 .build();
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode);
+        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertEquals(2, responseBuilder.getPlayAudios().size());
+    }
+
+    @Test
+    public void shouldAddOnlyMenuAudioPromptsToReplayOnIncorrectUserResponse() {
+        Node rootNode = Node.newBuilder()
+                .setPrompts(Arrays.asList(new AudioPrompt().setName("hello"), new MenuAudioPrompt().setName("menu")))
+                .build();
+        IVRResponseBuilder responseBuilder = nextResponse(rootNode, true);
+        assertEquals(1, responseBuilder.getPlayAudios().size());
+        assertEquals("menu", responseBuilder.getPlayAudios().get(0));
     }
 
     class ReturnEmptyCommand implements ITreeCommand{

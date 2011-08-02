@@ -10,7 +10,7 @@ public class DateUtilityTest {
 
     @Test
     public void testShouldGetDate(){
-        Date date = DateUtility.newDate(2011, Calendar.APRIL, 21);
+        Date date = DateUtility.newDate(2011, 4, 21);
         Calendar calendar = wrapDate(date);
         Assert.assertEquals(2011, calendar.get(Calendar.YEAR));
         Assert.assertEquals(Calendar.APRIL, calendar.get(Calendar.MONTH));

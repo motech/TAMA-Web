@@ -1,24 +1,21 @@
 package org.motechproject.tama.ivr.builder;
 
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.IVRContext;
 
 import java.util.List;
 
 public class DecisionTreeBasedResponseBuilder {
-    public IVRResponseBuilder ivrResponse(String sid, Node node, IVRContext ivrContext) {
+    public IVRResponseBuilder ivrResponse(String sid, Node node, IVRContext ivrContext, boolean retryOnIncorrectUserAction) {
         IVRResponseBuilder ivrResponseBuilder = new IVRResponseBuilder(sid);
         List<Prompt> prompts = node.getPrompts();
         boolean hasTransitions = node.hasTransitions();
         for (Prompt prompt : prompts) {
-            String promptName = prompt.getName();
+            if (retryOnIncorrectUserAction && !(prompt instanceof MenuAudioPrompt)) continue;
             ITreeCommand command = prompt.getCommand();
             boolean isAudioPrompt = prompt instanceof AudioPrompt;
             if (command == null) {
-                buildPrompts(ivrResponseBuilder, promptName, isAudioPrompt);
+                buildPrompts(ivrResponseBuilder, prompt.getName(), isAudioPrompt);
             }
             else {
                 String[] promptsFromCommand = command.execute(ivrContext);

@@ -33,8 +33,10 @@ public class IVRAction {
         IVRContext ivrContext = new IVRContext(ivrRequest, ivrSession);
 
         NodeInfo nodeInfo = tree.nextNodeInfo(currentPosition, userInput);
+        boolean retryOnIncorrectUserAction = StringUtils.isNotEmpty(currentPosition) && StringUtils.isEmpty(userInput);
         if (nodeInfo.node() == null) {
             nodeInfo = tree.currentNodeInfo(currentPosition);
+            retryOnIncorrectUserAction = true;
         } else {
             List<ITreeCommand> treeCommands = nodeInfo.node().getTreeCommands();
             for(ITreeCommand command : treeCommands) {
@@ -43,7 +45,7 @@ public class IVRAction {
         }
 
         ivrSession.currentDecisionTreePath(nodeInfo.path());
-        IVRResponseBuilder ivrResponseBuilder = responseBuilder.ivrResponse(ivrRequest.getSid(), nodeInfo.node(), ivrContext);
+        IVRResponseBuilder ivrResponseBuilder = responseBuilder.ivrResponse(ivrRequest.getSid(), nodeInfo.node(), ivrContext, retryOnIncorrectUserAction);
         Response ivrResponse = ivrResponseBuilder.create(ivrMessage);
         return ivrResponse.getXML();
     }

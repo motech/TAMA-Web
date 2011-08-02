@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.server.decisiontree.service.DecisionTreeService;
@@ -26,15 +27,13 @@ public class CurrentDosageReminderTreeTest {
     @Autowired
     private CurrentDosageReminderTree currentDosageReminderTree;
 
-    @Autowired
-    private DecisionTreeService decisionTreeService;
-
     @Test
     public void shouldGetCurrentDosageMessagePrompt() {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(3, prompts.size());
         assertEquals(IVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(2).getName());
+        assertEquals(MenuAudioPrompt.class, prompts.get(2).getClass());
         assertTrue(nextNode.getTreeCommands().isEmpty());
     }
 
@@ -61,6 +60,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(1, prompts.size());
         assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(0).getName());
+        assertEquals(MenuAudioPrompt.class, prompts.get(0).getClass());
         assertTrue(nextNode.getTreeCommands().isEmpty());
     }
 
