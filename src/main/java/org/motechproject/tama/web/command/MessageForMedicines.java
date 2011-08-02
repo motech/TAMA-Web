@@ -19,7 +19,6 @@ import java.util.Map;
 
 @Component
 public class MessageForMedicines implements ITreeCommand {
-    public static final String KEY = "0";
     private Patients patients;
     private Clinics clinics;
     private PillReminderService service;
