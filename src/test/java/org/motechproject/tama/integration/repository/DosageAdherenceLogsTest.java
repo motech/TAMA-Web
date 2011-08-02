@@ -79,19 +79,18 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
         dosageAdherenceLogs.add(log4);
         dosageAdherenceLogs.add(log5);
 
-//        int count = dosageAdherenceLogs.findNumberOfScheduledDosages("123", DateUtility.addDate(now, -28), now);
-        int count = dosageAdherenceLogs.sample("123", DateUtility.addDate(now, -28), now);
+        int count = dosageAdherenceLogs.findScheduledDosagesTotalCount("123", DateUtility.addDate(now, -28), now);
 
         Assert.assertEquals(3, count);
     }
 
 
     @Test
-    public void shouldGetTotalCountOfScheduledDosagesForLastFourWeeks_SuccessCount() {
+    public void shouldGetSuccessCountOfScheduledDosagesForLastFourWeeks() {
         Date now = DateUtility.now();
         DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(now).withDosageStatus(DosageStatus.TAKEN).build();
         DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -1)).withDosageStatus(DosageStatus.TAKEN).build();
-        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -10)).withDosageStatus(DosageStatus.LATER).build();
+        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -10)).withDosageStatus(DosageStatus.WILL_TAKE_LATER).build();
         DosageAdherenceLog log3 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("222").withDosageDate(DateUtility.addDate(now, -20)).withDosageStatus(DosageStatus.TAKEN).build();
         DosageAdherenceLog log4 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -50)).withDosageStatus(DosageStatus.NOT_TAKEN).build();
         DosageAdherenceLog log5 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -60)).withDosageStatus(DosageStatus.TAKEN).build();
@@ -102,9 +101,30 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
         dosageAdherenceLogs.add(log4);
         dosageAdherenceLogs.add(log5);
 
-//        int count = dosageAdherenceLogs.findNumberOfScheduledDosages("123", DateUtility.addDate(now, -28), now);
-        int count = dosageAdherenceLogs.sample1("123");
+        int count = dosageAdherenceLogs.findScheduledDosagesSuccessCount("123", DateUtility.addDate(now, -28), now);
 
-        Assert.assertEquals(3, count);
+        Assert.assertEquals(2, count);
     }
+
+    @Test
+    public void shouldGetDosageNotTakenCount() {
+        Date now = DateUtility.now();
+        DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(now).withDosageStatus(DosageStatus.NOT_TAKEN).build();
+        DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -1)).withDosageStatus(DosageStatus.TAKEN).build();
+        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -10)).withDosageStatus(DosageStatus.WILL_TAKE_LATER).build();
+        DosageAdherenceLog log3 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("222").withDosageDate(DateUtility.addDate(now, -20)).withDosageStatus(DosageStatus.NOT_TAKEN).build();
+        DosageAdherenceLog log4 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -50)).withDosageStatus(DosageStatus.NOT_TAKEN).build();
+        DosageAdherenceLog log5 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtility.addDate(now, -60)).withDosageStatus(DosageStatus.TAKEN).build();
+        dosageAdherenceLogs.add(log0);
+        dosageAdherenceLogs.add(log1);
+        dosageAdherenceLogs.add(log2);
+        dosageAdherenceLogs.add(log3);
+        dosageAdherenceLogs.add(log4);
+        dosageAdherenceLogs.add(log5);
+
+        int count = dosageAdherenceLogs.findScheduledDosagesFailureCount("123");
+
+        Assert.assertEquals(2, count);
+    }
+
 }

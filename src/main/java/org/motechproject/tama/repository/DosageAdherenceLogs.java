@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,33 +29,29 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
         return adherenceLogs;
     }
 
-    @View(name = "find_logs_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.dosageId) {emit([doc.dosageId, doc.dosageDate], doc._id);}}")
-    public int sample(String dosageId, Date fromDate, Date toDate) {
+    @View(name = "find_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageDate], doc._id);}}", reduce = "_count")
+    public int findScheduledDosagesTotalCount(String dosageId, Date fromDate, Date toDate) {
         ComplexKey startkey = ComplexKey.of(dosageId, fromDate);
         ComplexKey endkey = ComplexKey.of(dosageId, toDate);
-        ViewQuery q = createQuery("find_logs_for_a_given_date_range").startKey(startkey).endKey(endkey).includeDocs(true);
-        List<DosageAdherenceLog> adherenceLogs = db.queryView(q, DosageAdherenceLog.class);
-        return adherenceLogs.size();
-    }
-
-    @View(name = "find_by_dosage_id_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.dosageId) {emit([doc.dosageId, doc.dosageStatus], doc._id);}}", reduce = "_count")
-    public int sample1(String dosageId) {
-        ComplexKey startkey = ComplexKey.of(dosageId, DosageStatus.TAKEN);
-        ViewQuery q = createQuery("find_by_dosage_id_count").key(startkey);
+        ViewQuery q = createQuery("find_log_count_for_a_given_date_range").startKey(startkey).endKey(endkey);
         ViewResult viewResult = db.queryView(q);
-        return viewResult.getRows().get(0).getValueAsInt();
+        return rowCount(viewResult);
     }
 
-    public int findNumberOfScheduledDosages(String dosageId, Date fromDate, Date toDate) {
-        List<DosageAdherenceLog> dosageIdLogs = findByDosageId(dosageId);
-        List<DosageAdherenceLog> dosageAdherenceLogs = new ArrayList<DosageAdherenceLog>();
+    @View(name = "find_success_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
+    public int findScheduledDosagesSuccessCount(String dosageId, Date fromDate, Date toDate) {
+        ComplexKey startDosageDatekey = ComplexKey.of(dosageId, DosageStatus.TAKEN, fromDate);
+        ComplexKey endDosageDatekey = ComplexKey.of(dosageId, DosageStatus.TAKEN, toDate);
+        ViewQuery q = createQuery("find_success_log_count_for_a_given_date_range").startKey(startDosageDatekey).endKey(endDosageDatekey);
+        ViewResult viewResult = db.queryView(q);
+        return rowCount(viewResult);
+    }
 
-        for (DosageAdherenceLog log : dosageIdLogs) {
-            if ((log.getDosageDate().compareTo(fromDate) >= 0) && (log.getDosageDate().compareTo(toDate) <= 0)) {
-                dosageAdherenceLogs.add(log);
-            }
-        }
-
-        return dosageAdherenceLogs.size();
+    @View(name = "find_failure_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageStatus], doc._id);}}", reduce = "_count")
+    public int findScheduledDosagesFailureCount(String dosageId) {
+        ComplexKey key = ComplexKey.of(dosageId, DosageStatus.NOT_TAKEN);
+        ViewQuery q = createQuery("find_failure_log_count").key(key);
+        ViewResult viewResult = db.queryView(q);
+        return rowCount(viewResult);
     }
 }

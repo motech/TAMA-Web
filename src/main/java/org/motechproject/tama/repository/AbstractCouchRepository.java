@@ -1,6 +1,7 @@
 package org.motechproject.tama.repository;
 
 import org.ektorp.CouchDbConnector;
+import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.GenerateView;
 
@@ -18,4 +19,8 @@ public abstract class AbstractCouchRepository<T> extends CouchDbRepositorySuppor
 	public List<T> getAll() {
 		return super.getAll();
 	}
+
+    protected int rowCount(ViewResult viewResult) {
+        return viewResult.getRows().get(0).getValueAsInt();
+    }
 }
