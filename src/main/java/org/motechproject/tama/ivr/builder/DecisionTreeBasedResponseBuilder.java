@@ -13,7 +13,6 @@ public class DecisionTreeBasedResponseBuilder {
         IVRResponseBuilder ivrResponseBuilder = new IVRResponseBuilder(sid);
         List<Prompt> prompts = node.getPrompts();
         boolean hasTransitions = node.hasTransitions();
-        boolean playPromptTotheUser = !prompts.isEmpty();
         for (Prompt prompt : prompts) {
             String promptName = prompt.getName();
             ITreeCommand command = prompt.getCommand();
@@ -28,10 +27,9 @@ public class DecisionTreeBasedResponseBuilder {
                 }
             }
         }
-        if (playPromptTotheUser && hasTransitions) {
+        if (hasTransitions) {
             ivrResponseBuilder.collectDtmf();
-        }
-        else {
+        } else {
             ivrResponseBuilder.withHangUp();
         }
         return ivrResponseBuilder;
