@@ -1,7 +1,9 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.*;
-import org.motechproject.tama.TAMAConstants;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private MessageForMedicines messageForMedicines;
     @Autowired
-    private MessageIfLastCall messageIfLastCall;
+    private PillsDelayWarning pillsDelayWarning;
     @Autowired
     private RecordResponseInTamaCommand recordResponseInTamaCommand;
     @Autowired
@@ -33,7 +35,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
         return Node.newBuilder()
                 .setPrompts(Arrays.asList(
                         new AudioPrompt().setCommand(messageForMedicines),
-                        new AudioPrompt().setCommand(messageIfLastCall),
+                        new AudioPrompt().setCommand(pillsDelayWarning),
                         new AudioPrompt().setName(IVRMessage.PILL_REMINDER_RESPONSE_MENU)))
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()
@@ -52,10 +54,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                 .setDestinationNode(
                                         Node.newBuilder()
                                                 .setPrompts(Arrays.<Prompt>asList(
-                                                        new AudioPrompt().setName(IVRMessage.PLEASE_TAKE_DOSE),
-                                                        new AudioPrompt().setName(TAMAConstants.RETRY_INTERVAL),
-                                                        new AudioPrompt().setName(IVRMessage.MINUTES),
-                                                        new AudioPrompt().setCommand(messageFromPreviousDosage))                                                        )
+                                                        new AudioPrompt().setCommand(pillsDelayWarning),
+                                                        new AudioPrompt().setCommand(messageFromPreviousDosage)))
                                                 .setTransitions(jumpToPreviousDosageTree())
                                                 .build())
                                 .build()

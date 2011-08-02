@@ -7,6 +7,8 @@ import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.server.decisiontree.service.DecisionTreeService;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
+import org.motechproject.tama.web.command.MessageFromPreviousDosage;
+import org.motechproject.tama.web.command.PillsDelayWarning;
 import org.motechproject.tama.web.command.PillTakenCommand;
 import org.motechproject.tama.web.command.RecordResponseInTamaCommand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +50,9 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPillGettingLateCommandAndPrompt() {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "2");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(4, prompts.size());
-        assertEquals(IVRMessage.PLEASE_TAKE_DOSE, prompts.get(0).getName());
+        assertEquals(2, prompts.size());
+        assertEquals(PillsDelayWarning.class, prompts.get(0).getCommand().getClass());
+        assertEquals(MessageFromPreviousDosage.class, prompts.get(1).getCommand().getClass());
     }
 
     @Test

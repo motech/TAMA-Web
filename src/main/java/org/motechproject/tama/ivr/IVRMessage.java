@@ -20,6 +20,7 @@ public class IVRMessage {
     public static final String PLEASE_CARRY_SMALL_BOX = "please_carry_small_box";
     public static final String DOSE_CANNOT_BE_TAKEN_MENU = "dose_cannot_be_taken_menu";
     public static final String LAST_CALL_FOR_DOSAGE = "last_call_for_dosage";
+    public static final String LAST_REMINDER_WARNING = "last_reminder_warning";
 
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "your";
@@ -39,6 +40,9 @@ public class IVRMessage {
     public static final String TRY_NOT_TO_MISS = "try_not_to_miss";
     /* -------- PreviousDosage ----------- */
 
+    public static final String TODAY = "today";
+    public static final String TOMORROW = "tomorrow";
+
     private Properties properties;
 
     @Autowired
@@ -54,5 +58,4 @@ public class IVRMessage {
         String file = get(key) != null ? get(key) : key.toLowerCase();
         return properties.get(CONTENT_LOCATION_URL) + file + WAV;
     }
-
 }
