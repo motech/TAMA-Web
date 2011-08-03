@@ -29,4 +29,6 @@ public abstract class BaseTreeCommand implements ITreeCommand{
     protected int getTotalTimesToSend(IVRContext ivrContext) {
         return Integer.parseInt(ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.TOTAL_TIMES_TO_SEND).toString());
     }
+
+
 }

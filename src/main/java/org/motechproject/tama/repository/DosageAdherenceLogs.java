@@ -29,27 +29,27 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
         return adherenceLogs;
     }
 
-    @View(name = "find_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageDate], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesTotalCount(String dosageId, LocalDate fromDate, LocalDate toDate) {
-        ComplexKey startkey = ComplexKey.of(dosageId, fromDate);
-        ComplexKey endkey = ComplexKey.of(dosageId, toDate);
+    @View(name = "find_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageDate], doc._id);}}", reduce = "_count")
+    public int findScheduledDosagesTotalCount(String regimenId, LocalDate fromDate, LocalDate toDate) {
+        ComplexKey startkey = ComplexKey.of(regimenId, fromDate);
+        ComplexKey endkey = ComplexKey.of(regimenId, toDate);
         ViewQuery q = createQuery("find_log_count_for_a_given_date_range").startKey(startkey).endKey(endkey);
         ViewResult viewResult = db.queryView(q);
         return rowCount(viewResult);
     }
 
-    @View(name = "find_success_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesSuccessCount(String dosageId, LocalDate fromDate, LocalDate toDate) {
-        ComplexKey startDosageDatekey = ComplexKey.of(dosageId, DosageStatus.TAKEN, fromDate);
-        ComplexKey endDosageDatekey = ComplexKey.of(dosageId, DosageStatus.TAKEN, toDate);
+    @View(name = "find_success_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
+    public int findScheduledDosagesSuccessCount(String regimenId, LocalDate fromDate, LocalDate toDate) {
+        ComplexKey startDosageDatekey = ComplexKey.of(regimenId, DosageStatus.TAKEN, fromDate);
+        ComplexKey endDosageDatekey = ComplexKey.of(regimenId, DosageStatus.TAKEN, toDate);
         ViewQuery q = createQuery("find_success_log_count_for_a_given_date_range").startKey(startDosageDatekey).endKey(endDosageDatekey);
         ViewResult viewResult = db.queryView(q);
         return rowCount(viewResult);
     }
 
-    @View(name = "find_failure_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageId, doc.dosageStatus], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesFailureCount(String dosageId) {
-        ComplexKey key = ComplexKey.of(dosageId, DosageStatus.NOT_TAKEN);
+    @View(name = "find_failure_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus], doc._id);}}", reduce = "_count")
+    public int findScheduledDosagesFailureCount(String regimenId) {
+        ComplexKey key = ComplexKey.of(regimenId, DosageStatus.NOT_TAKEN);
         ViewQuery q = createQuery("find_failure_log_count").key(key);
         ViewResult viewResult = db.queryView(q);
         return rowCount(viewResult);

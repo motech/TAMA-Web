@@ -57,9 +57,11 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPromptForRecordingReasonForNotTakingPill() {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "3");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(1, prompts.size());
-        assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(0).getName());
-        assertEquals(MenuAudioPrompt.class, prompts.get(0).getClass());
+        assertEquals(3, prompts.size());
+        assertTrue(prompts.get(0).getCommand() instanceof MessageForMissedPillFeedbackCommand);
+        assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(1).getName());
+        assertEquals(MenuAudioPrompt.class, prompts.get(1).getClass());
+        assertTrue(prompts.get(2).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
         assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(UpdateAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
     }
