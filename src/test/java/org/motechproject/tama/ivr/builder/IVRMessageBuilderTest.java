@@ -30,6 +30,7 @@ public class IVRMessageBuilderTest {
     public void setup() {
         initMocks(this);
         when(messages.getWav("10")).thenReturn("10.wav");
+        when(messages.getWav("7")).thenReturn("7.wav");
         when(messages.getWav("20")).thenReturn("20.wav");
         when(messages.getWav(IVRMessage.IN_THE_MORNING)).thenReturn("in_the_morning.wav");
         when(messages.getWav(IVRMessage.IN_THE_EVENING)).thenReturn("in_the_evening.wav");
@@ -62,7 +63,7 @@ public class IVRMessageBuilderTest {
         when(DateUtility.getDateTime()).thenReturn(now);
 
         List<String> wavs = ivrMessageBuilder.getWavs(time);
-        assertEquals("10.wav", wavs.get(0));
+        assertEquals("7.wav", wavs.get(0));
         assertEquals("20.wav", wavs.get(1));
         assertEquals("in_the_evening.wav", wavs.get(2));
         assertEquals("tomorrow.wav", wavs.get(3));
@@ -77,7 +78,7 @@ public class IVRMessageBuilderTest {
         when(DateUtility.getDateTime()).thenReturn(now);
 
         List<String> wavs = ivrMessageBuilder.getWavs(time);
-        assertEquals("10.wav", wavs.get(0));
+        assertEquals("7.wav", wavs.get(0));
         assertEquals("20.wav", wavs.get(1));
         assertEquals("in_the_evening.wav", wavs.get(2));
         assertEquals("today.wav", wavs.get(3));

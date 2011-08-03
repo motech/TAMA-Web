@@ -22,10 +22,10 @@ public class IVRMessageBuilder {
     public List<String> getWavs(DateTime time) {
         DateTime now = DateUtility.getDateTime();
         List<String> wavs = new ArrayList<String>();
-        wavs.add(ivrMessage.getWav(String.valueOf(now.getHourOfDay())));
-        wavs.add(ivrMessage.getWav(String.valueOf(now.getMinuteOfHour())));
-        wavs.add(ivrMessage.getWav(time.getHourOfDay() < 12? IVRMessage.IN_THE_MORNING : IVRMessage.IN_THE_EVENING));
-        wavs.add(ivrMessage.getWav(time.getDayOfMonth() == now.getDayOfMonth()? IVRMessage.TODAY : IVRMessage.TOMORROW));
+        wavs.add(ivrMessage.getWav(String.valueOf(time.getHourOfDay() % 12)));
+        wavs.add(ivrMessage.getWav(String.valueOf(time.getMinuteOfHour())));
+        wavs.add(ivrMessage.getWav(time.getHourOfDay() < 12 ? IVRMessage.IN_THE_MORNING : IVRMessage.IN_THE_EVENING));
+        wavs.add(ivrMessage.getWav(time.getDayOfMonth() == now.getDayOfMonth() ? IVRMessage.TODAY : IVRMessage.TOMORROW));
         return wavs;
     }
 }
