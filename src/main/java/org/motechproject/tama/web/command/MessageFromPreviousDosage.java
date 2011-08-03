@@ -5,7 +5,6 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class MessageFromPreviousDosage implements ITreeCommand {
+public class MessageFromPreviousDosage extends BasePreviousDosageCommand {
     private PillReminderService service;
 
     @Autowired
@@ -24,10 +23,7 @@ public class MessageFromPreviousDosage implements ITreeCommand {
     @Override
     public String[] execute(Object o) {
         IVRContext ivrContext = (IVRContext) o;
-
-        String regimenId = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.REGIMEN_ID);
-        String currentDosageId = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID);
-        DosageResponse previousDosage = service.getPreviousDosage(regimenId, currentDosageId);
+        DosageResponse previousDosage = service.getPreviousDosage(getRegimenIdFrom(ivrContext), getDosageIdFrom(ivrContext));
 
         List<String> messages = new ArrayList<String>();
         if ("previousDosageId".equals(previousDosage.getDosageId())) {
@@ -44,4 +40,5 @@ public class MessageFromPreviousDosage implements ITreeCommand {
         }
         return messages.toArray(new String[]{});
     }
+
 }

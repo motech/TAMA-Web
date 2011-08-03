@@ -28,6 +28,9 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private MessageFromPreviousDosage messageFromPreviousDosage;
 
+    @Autowired
+    private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
+
     protected Node createRootNode() {
         return Node.newBuilder()
                 .setPrompts(Arrays.asList(
@@ -41,7 +44,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                                 .setTreeCommands(pillTakenCommand, updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
-                                                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
+                                                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage),
+                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand))
                                                 )
                                                 .setTransitions(jumpToPreviousDosageTree())
                                                 .build())

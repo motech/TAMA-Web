@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.server.decisiontree.service.DecisionTreeService;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.tama.web.command.*;
@@ -35,10 +34,13 @@ public class CurrentDosageReminderTreeTest {
     }
 
     @Test
-    public void shouldGetFirstTimeReminderCommand() {
+    public void shouldGetPillTakenCommand() {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "1");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(2, prompts.size());
+        assertEquals(3, prompts.size());
+        assertTrue(prompts.get(0).getCommand() instanceof MessageOnPillTaken);
+        assertTrue(prompts.get(1).getCommand() instanceof MessageFromPreviousDosage);
+        assertTrue(prompts.get(2).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
         assertEquals(PillTakenCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 

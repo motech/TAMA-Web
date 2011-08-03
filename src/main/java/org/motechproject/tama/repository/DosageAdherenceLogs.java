@@ -62,4 +62,8 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
         if(adherenceLogs != null && !adherenceLogs.isEmpty()) return adherenceLogs.get(0);
         return null;
     }
+
+    public boolean isPreviousDosageTaken(String previousDosageId) {
+        return true;
+    }
 }

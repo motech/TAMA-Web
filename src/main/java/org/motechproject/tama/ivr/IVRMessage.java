@@ -43,6 +43,10 @@ public class IVRMessage {
     public static final String TODAY = "today";
     public static final String TOMORROW = "tomorrow";
 
+    /* -------- Adherence Feedback ----------- */
+    public static final String ADHERENCE_PERCENT_MESSAGE = "your adherence is %d percent.";
+    /* -------- Adherence Feedback ----------- */
+
     private Properties properties;
 
     @Autowired
