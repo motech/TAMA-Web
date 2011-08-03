@@ -1,12 +1,13 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.web.command.MessageOnPreviousPillNotTaken;
 import org.motechproject.tama.web.command.MessageOnPreviousPillTaken;
 import org.motechproject.tama.web.command.PreviousPillTakenCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 @Component
 public class PreviousDosageReminderTree extends TAMADecisionTree {
@@ -24,14 +25,15 @@ public class PreviousDosageReminderTree extends TAMADecisionTree {
                 {"1", Transition.newBuilder()
                         .setDestinationNode(
                                 Node.newBuilder()
-                                        .setTreeCommands(pillTakenCommand, messageOnPreviousPillTaken)
+                                        .setTreeCommands(pillTakenCommand)
+                                        .setPrompts(Arrays.<Prompt>asList(new AudioPrompt().setCommand(messageOnPreviousPillTaken)))
                                         .build())
                         .build()
                 },
                 {"3", Transition.newBuilder()
                         .setDestinationNode(
                                 Node.newBuilder()
-                                        .setTreeCommands(messageOnPreviousPillNotTaken)
+                                        .setPrompts(Arrays.<Prompt>asList(new AudioPrompt().setCommand(messageOnPreviousPillNotTaken)))
                                         .build())
                         .build()
                 }

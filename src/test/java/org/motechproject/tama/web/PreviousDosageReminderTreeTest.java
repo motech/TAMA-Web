@@ -23,12 +23,12 @@ public class PreviousDosageReminderTreeTest {
     public void shouldGetCommandsToExecuteOnTakingPreviousPill() {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "1");
         assertEquals(PreviousPillTakenCommand.class, nextNode.getTreeCommands().get(0).getClass());
-        assertEquals(MessageOnPreviousPillTaken.class, nextNode.getTreeCommands().get(1).getClass());
+        assertEquals(MessageOnPreviousPillTaken.class, nextNode.getPrompts().get(0).getCommand().getClass());
     }
 
     @Test
     public void shouldGetCommandsToExecuteOnNotTakingPreviousPill() {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "3");
-        assertEquals(MessageOnPreviousPillNotTaken.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(MessageOnPreviousPillNotTaken.class, nextNode.getPrompts().get(0).getCommand().getClass());
     }
 }
