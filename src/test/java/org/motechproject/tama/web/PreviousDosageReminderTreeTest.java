@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.tama.ivr.decisiontree.PreviousDosageReminderTree;
-import org.motechproject.tama.web.command.PillTakenCommand;
+import org.motechproject.tama.web.command.PreviousPillTakenCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,7 +25,7 @@ public class PreviousDosageReminderTreeTest {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "1");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(4, prompts.size());
-        assertEquals(PillTakenCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(PreviousPillTakenCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 
     @Test

@@ -11,6 +11,7 @@ import java.util.Map;
 @Component
 public class PillReminderCall {
     public static final String DOSAGE_ID = "dosage_id";
+    public static final String PREVIOUS_DOSAGE_ID = "previous_dosage_id";
     public static final String REGIMEN_ID = "regimen_id";
     public static final String TIMES_SENT = "times_sent";
     public static final String TOTAL_TIMES_TO_SEND = "total_times_to_send";

@@ -17,7 +17,11 @@ public class PillTakenCommand extends BaseTreeCommand {
     @Override
     public String[] execute(Object obj) {
         IVRContext ivrContext = (IVRContext) obj;
-        pillReminderService.updateDosageTaken(getRegimenIdFrom(ivrContext), getDosageIdFrom(ivrContext));
+        pillReminderService.updateDosageTaken(getRegimenIdFrom(ivrContext), getDosageId(ivrContext));
         return new String[0];
+    }
+
+    protected String getDosageId(IVRContext ivrContext) {
+        return getDosageIdFrom(ivrContext);
     }
 }

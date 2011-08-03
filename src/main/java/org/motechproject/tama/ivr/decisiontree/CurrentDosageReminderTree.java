@@ -27,7 +27,6 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     private PreviousDosageReminderTree previousDosageReminderTree;
     @Autowired
     private MessageFromPreviousDosage messageFromPreviousDosage;
-
     @Autowired
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
 

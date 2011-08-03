@@ -24,10 +24,12 @@ public class MessageFromPreviousDosage extends BaseTreeCommand {
     public String[] execute(Object o) {
         IVRContext ivrContext = (IVRContext) o;
         DosageResponse previousDosage = service.getPreviousDosage(getRegimenIdFrom(ivrContext), getDosageIdFrom(ivrContext));
+        String previousDosageId = previousDosage.getDosageId();
 
         List<String> messages = new ArrayList<String>();
-        if ("previousDosageId".equals(previousDosage.getDosageId())) {
-            IVRDayMessageBuilder ivrDayMessageBuilder = new IVRDayMessageBuilder(getDosageIdFrom(ivrContext), previousDosage.getDosageId(), previousDosage.getStartHour());
+        if ("previousDosageId".equals(previousDosageId)) {
+            putPreviousDosageId(ivrContext, previousDosageId);
+            IVRDayMessageBuilder ivrDayMessageBuilder = new IVRDayMessageBuilder(getDosageIdFrom(ivrContext), previousDosageId, previousDosage.getStartHour());
             messages.add(IVRMessage.YOUR);
             messages.addAll(ivrDayMessageBuilder.getMessages(IVRMessage.YESTERDAYS, IVRMessage.MORNING, IVRMessage.EVENING));
             messages.add(IVRMessage.DOSE_NOT_RECORDED);

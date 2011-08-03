@@ -32,6 +32,7 @@ public class MessageFromPreviousDosageTest {
     @Mock
     private PillReminderService pillReminderService;
     private MessageFromPreviousDosage messageFromPreviousDosage;
+    private Map params = new HashMap<String, String>();;
 
     @Before
     public void setup() {
@@ -40,10 +41,20 @@ public class MessageFromPreviousDosageTest {
         messageFromPreviousDosage = new MessageFromPreviousDosage(pillReminderService);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(context.ivrRequest()).thenReturn(ivrRequest);
-        Map params = new HashMap<String, String>();
         params.put(PillReminderCall.REGIMEN_ID, "regimenId");
         params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(params);
+    }
+
+    @Test
+    public void shouldAddPreviousDosageIdToRequestParams() {
+        DosageResponse previousDosageResponse = new DosageResponse(10, 05, "previousDosageId", Arrays.asList("medicine1", "medicine2"));
+        when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
+
+        messageFromPreviousDosage.execute(context);
+
+        assertTrue(params.containsKey(PillReminderCall.PREVIOUS_DOSAGE_ID));
+        assertEquals("previousDosageId", params.get(PillReminderCall.PREVIOUS_DOSAGE_ID));
     }
 
     @Test

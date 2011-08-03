@@ -5,7 +5,7 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.web.command.PillTakenCommand;
+import org.motechproject.tama.web.command.PreviousPillTakenCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class PreviousDosageReminderTree extends TAMADecisionTree {
 
     @Autowired
-    private PillTakenCommand pillTakenCommand;
+    private PreviousPillTakenCommand pillTakenCommand;
 
     @Override
     protected Node createRootNode() {
