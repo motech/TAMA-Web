@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PreviousPillTakenCommand extends PillTakenCommand {
+public class PreviousPillTakenCommand extends StopTodaysRemindersCommand {
     private PillReminderService pillReminderService;
 
     @Autowired

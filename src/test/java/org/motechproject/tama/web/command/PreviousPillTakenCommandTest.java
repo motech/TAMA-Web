@@ -48,6 +48,6 @@ public class PreviousPillTakenCommandTest {
 
         previousPillTakenCommand.execute(context);
 
-        verify(pillReminderService).updateDosageTaken("regimenId", "previousDosageId");
+        verify(pillReminderService).stopTodaysReminders("regimenId", "previousDosageId");
     }
 }

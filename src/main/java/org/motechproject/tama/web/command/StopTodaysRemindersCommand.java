@@ -6,18 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PillTakenCommand extends BaseTreeCommand {
+public class StopTodaysRemindersCommand extends BaseTreeCommand {
     private PillReminderService pillReminderService;
 
     @Autowired
-    public PillTakenCommand(PillReminderService pillReminderService) {
+    public StopTodaysRemindersCommand(PillReminderService pillReminderService) {
         this.pillReminderService = pillReminderService;
     }
 
     @Override
     public String[] execute(Object obj) {
         IVRContext ivrContext = (IVRContext) obj;
-        pillReminderService.updateDosageTaken(getRegimenIdFrom(ivrContext), getDosageId(ivrContext));
+        pillReminderService.stopTodaysReminders(getRegimenIdFrom(ivrContext), getDosageId(ivrContext));
+
         return new String[0];
     }
 

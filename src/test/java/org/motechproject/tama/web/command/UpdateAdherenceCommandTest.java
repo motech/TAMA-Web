@@ -1,8 +1,13 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.server.pillreminder.domain.PillReminder;
 import org.motechproject.tama.domain.DosageAdherenceLog;
+import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
@@ -14,30 +19,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UpdateAdherenceCommandTest {
-    @Test
-    public void shouldCreateAnAdherenceLogWithIVRParams() {
-        String pillRegimenId = "pillRegimenId";
-        String dosageId = "dosageId";
-        String patientId = "test";
-        String userInput = "1";
-        Map<String, String> params = new HashMap<String, String>();
+
+    private String pillRegimenId;
+    private String dosageId;
+    private String patientId;
+    private String userInput;
+    private Map<String,String> params;
+    private IVRContext context;
+    private DosageAdherenceLog log;
+
+    @Mock
+    private DosageAdherenceLogs logs;
+    @Mock
+    private IVRRequest req;
+    @Mock
+    private IVRSession session;
+
+    @Before
+    public void setup() {
+        initMocks(this);
+
+        pillRegimenId = "pillRegimenId";
+        dosageId = "dosageId";
+        patientId = "test";
+        userInput = "1";
+        params = new HashMap<String, String>();
         params.put(PillReminderCall.REGIMEN_ID, pillRegimenId);
         params.put(PillReminderCall.DOSAGE_ID, dosageId);
+        context = new IVRContext(req, session);
 
-        DosageAdherenceLogs logs = mock(DosageAdherenceLogs.class);
-        IVRContext context = mock(IVRContext.class);
-        IVRRequest req = mock(IVRRequest.class);
-        IVRSession session = mock(IVRSession.class);
-
-        when(context.ivrRequest()).thenReturn(req);
-        when(context.ivrSession()).thenReturn(session);
+        when(req.getTamaParams()).thenReturn(params);
         when(session.get(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(patientId);
         when(req.getInput()).thenReturn(userInput);
+    }
+
+    @Test
+    public void shouldCreateAnAdherenceLogIfThereIsNoLogFound() {
+        when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(null);
 
         UpdateAdherenceCommand command = new UpdateAdherenceCommand(logs);
         command.execute(context);
@@ -46,28 +68,33 @@ public class UpdateAdherenceCommandTest {
     }
 
     @Test
-    public void shouldCreateAnAdherenceLogIfThereIsNoneForTheCurrentDate() {
-        String pillRegimenId = "pillRegimenId";
-        String dosageId = "dosageId";
-        String patientId = "test";
-        String userInput = "1";
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(PillReminderCall.REGIMEN_ID, pillRegimenId);
-        params.put(PillReminderCall.DOSAGE_ID, dosageId);
+    public void shouldUpdateAnAdherenceLogIfThereIsAlreadyOneForTheCurrentDate() {
+        log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN);
 
-        DosageAdherenceLogs logs = mock(DosageAdherenceLogs.class);
-        IVRContext context = mock(IVRContext.class);
-        IVRRequest req = mock(IVRRequest.class);
-        IVRSession session = mock(IVRSession.class);
-
-        when(context.ivrRequest()).thenReturn(req);
-        when(context.ivrSession()).thenReturn(session);
-        when(session.get(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(patientId);
-        when(req.getInput()).thenReturn(userInput);
+        when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(log);
 
         UpdateAdherenceCommand command = new UpdateAdherenceCommand(logs);
         command.execute(context);
 
-        verify(logs).add(any(DosageAdherenceLog.class));
+        verify(logs, never()).add(any(DosageAdherenceLog.class));
+        verify(logs).update(log);
     }
+
+    @Test
+    public void shouldNotUpdateOrCreateIfThereAreNotAnyChanges() {
+        userInput = "3";
+        when(req.getInput()).thenReturn(userInput);
+
+        log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN);
+
+        when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(log);
+
+        UpdateAdherenceCommand command = new UpdateAdherenceCommand(logs);
+        command.execute(context);
+
+        verify(logs, never()).add(any(DosageAdherenceLog.class));
+        verify(logs, never()).update(log);
+    }
+
+
 }

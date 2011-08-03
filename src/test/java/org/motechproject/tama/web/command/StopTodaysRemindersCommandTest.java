@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PillTakenCommandTest {
+public class StopTodaysRemindersCommandTest {
 
     @Mock
     private IVRContext context;
@@ -26,13 +26,13 @@ public class PillTakenCommandTest {
     private IVRSession ivrSession;
     @Mock
     private PillReminderService pillReminderService;
-    private PillTakenCommand pillTakenCommand;
+    private StopTodaysRemindersCommand stopTodaysRemindersCommand;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        pillTakenCommand = new PillTakenCommand(pillReminderService);
+        stopTodaysRemindersCommand = new StopTodaysRemindersCommand(pillReminderService);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(context.ivrRequest()).thenReturn(ivrRequest);
     }
@@ -45,8 +45,8 @@ public class PillTakenCommandTest {
         params.put(PillReminderCall.DOSAGE_ID, "dosageId");
         when(ivrRequest.getTamaParams()).thenReturn(params);
 
-        pillTakenCommand.execute(context);
+        stopTodaysRemindersCommand.execute(context);
 
-        verify(pillReminderService).updateDosageTaken("regimenId", "dosageId");
+        verify(pillReminderService).stopTodaysReminders("regimenId", "dosageId");
     }
 }

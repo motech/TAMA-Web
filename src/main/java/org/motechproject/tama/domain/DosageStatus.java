@@ -1,7 +1,5 @@
 package org.motechproject.tama.domain;
 
-import java.security.PublicKey;
-
 public enum DosageStatus {
     TAKEN,
     NOT_TAKEN,
@@ -10,8 +8,8 @@ public enum DosageStatus {
     public static DosageStatus from(String input) {
         switch(Integer.valueOf(input)){
             case 1: return TAKEN;
-            case 2: return NOT_TAKEN;
-            case 3: return WILL_TAKE_LATER;
+            case 2: return WILL_TAKE_LATER;
+            case 3: return NOT_TAKEN;
             default:return null;
         }
     }

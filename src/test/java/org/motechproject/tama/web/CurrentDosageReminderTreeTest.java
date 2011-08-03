@@ -41,7 +41,7 @@ public class CurrentDosageReminderTreeTest {
         assertTrue(prompts.get(0).getCommand() instanceof MessageOnPillTaken);
         assertTrue(prompts.get(1).getCommand() instanceof MessageFromPreviousDosage);
         assertTrue(prompts.get(2).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
-        assertEquals(PillTakenCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 
     @Test
@@ -60,7 +60,8 @@ public class CurrentDosageReminderTreeTest {
         assertEquals(1, prompts.size());
         assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(0).getName());
         assertEquals(MenuAudioPrompt.class, prompts.get(0).getClass());
-        assertEquals(UpdateAdherenceCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(UpdateAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
     }
 
     @Test
@@ -69,7 +70,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals(IVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
-        assertTrue(nextNode.getTreeCommands().isEmpty());
+        assertEquals(RecordDeclinedDosageReasonCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 
     @Test
@@ -77,6 +78,6 @@ public class CurrentDosageReminderTreeTest {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "3");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(0, prompts.size());
-        assertEquals(RecordResponseInTamaCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(RecordDeclinedDosageReasonCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 }
