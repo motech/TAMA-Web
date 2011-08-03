@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends BasePreviousDosageCommand {
+public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends BaseTreeCommand {
 
     @Autowired
     private PillReminderService pillReminderService;

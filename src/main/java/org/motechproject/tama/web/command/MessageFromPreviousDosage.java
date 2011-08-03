@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class MessageFromPreviousDosage extends BasePreviousDosageCommand {
+public class MessageFromPreviousDosage extends BaseTreeCommand {
     private PillReminderService service;
 
     @Autowired
