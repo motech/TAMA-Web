@@ -3,14 +3,13 @@ package org.motechproject.tama.web;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.tama.ivr.decisiontree.PreviousDosageReminderTree;
+import org.motechproject.tama.web.command.MessageOnPreviousPillNotTaken;
+import org.motechproject.tama.web.command.MessageOnPreviousPillTaken;
 import org.motechproject.tama.web.command.PreviousPillTakenCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,18 +20,15 @@ public class PreviousDosageReminderTreeTest {
     private PreviousDosageReminderTree previousDosageReminderTree;
 
     @Test
-    public void shouldGetOnPillTakenCommand() {
+    public void shouldGetCommandsToExecuteOnTakingPreviousPill() {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "1");
-        List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(4, prompts.size());
         assertEquals(PreviousPillTakenCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(MessageOnPreviousPillTaken.class, nextNode.getTreeCommands().get(1).getClass());
     }
 
     @Test
-    public void shouldGetPromptsOnNotTakingPreviousPill() {
+    public void shouldGetCommandsToExecuteOnNotTakingPreviousPill() {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "3");
-        List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(5, prompts.size());
-        assertEquals(0, nextNode.getTreeCommands().size());
+        assertEquals(MessageOnPreviousPillNotTaken.class, nextNode.getTreeCommands().get(0).getClass());
     }
 }
