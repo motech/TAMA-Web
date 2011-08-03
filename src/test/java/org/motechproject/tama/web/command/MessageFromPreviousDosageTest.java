@@ -3,16 +3,19 @@ package org.motechproject.tama.web.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -43,16 +46,20 @@ public class MessageFromPreviousDosageTest {
 
     @Test
     public void shouldReturnMessagesWhenPreviousDosageHasNotBeenTaken() {
-        when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn("previousDosageId");
+        DosageResponse previousDosageResponse = new DosageResponse(10, 05, "previousDosageId", Arrays.asList("medicine1", "medicine2"));
+        when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
 
         String[] messages = messageFromPreviousDosage.execute(context);
 
-        assertEquals(9, messages.length);
+        assertEquals(11, messages.length);
+        assertTrue(Arrays.asList(messages).contains("medicine1"));
+        assertTrue(Arrays.asList(messages).contains("medicine2"));
     }
 
     @Test
     public void shouldReturnNoMessagesWhenPreviousDosageHasBeenTaken() {
-        when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn("");
+        DosageResponse previousDosageResponse = new DosageResponse(10, 05, "currentDosageId", Arrays.asList("medicine1", "medicine2"));
+        when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
 
         String[] messages = messageFromPreviousDosage.execute(context);
 

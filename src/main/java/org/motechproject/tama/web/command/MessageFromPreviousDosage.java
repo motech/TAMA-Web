@@ -1,12 +1,16 @@
 package org.motechproject.tama.web.command;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
+import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class MessageFromPreviousDosage implements ITreeCommand {
@@ -23,20 +27,21 @@ public class MessageFromPreviousDosage implements ITreeCommand {
 
         String regimenId = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.REGIMEN_ID);
         String currentDosageId = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID);
-        String previousDosageId = service.getPreviousDosage(regimenId, currentDosageId);
-        if ("previousDosageId".equals(previousDosageId)) {
-            return new String[] {
-                            IVRMessage.YOUR,
-                            IVRMessage.YESTERDAYS,
-                            IVRMessage.EVENING,
-                            IVRMessage.DOSE_NOT_RECORDED,
-                            IVRMessage.YESTERDAY,
-                            IVRMessage.IN_THE_EVENING,
-                            IVRMessage.YOU_WERE_SUPPOSED_TO_TAKE,
-                            IVRMessage.FROM_THE_BOTTLE,
-                            IVRMessage.PREVIOUS_DOSE_MENU
-            };
+        DosageResponse previousDosage = service.getPreviousDosage(regimenId, currentDosageId);
+
+        List<String> messages = new ArrayList<String>();
+        if ("previousDosageId".equals(previousDosage.getDosageId())) {
+            messages.add(IVRMessage.YOUR);
+            messages.add(IVRMessage.YESTERDAYS);
+            messages.add(IVRMessage.EVENING);
+            messages.add(IVRMessage.DOSE_NOT_RECORDED);
+            messages.add(IVRMessage.YESTERDAY);
+            messages.add(IVRMessage.IN_THE_EVENING);
+            messages.add(IVRMessage.YOU_WERE_SUPPOSED_TO_TAKE);
+            messages.addAll(previousDosage.getMedicines());
+            messages.add(IVRMessage.FROM_THE_BOTTLE);
+            messages.add(IVRMessage.PREVIOUS_DOSE_MENU);
         }
-        return new String[0];
+        return messages.toArray(new String[]{});
     }
 }
