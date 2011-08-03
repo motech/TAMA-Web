@@ -1,10 +1,10 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +27,11 @@ public class MessageFromPreviousDosage extends BasePreviousDosageCommand {
 
         List<String> messages = new ArrayList<String>();
         if ("previousDosageId".equals(previousDosage.getDosageId())) {
+            IVRDayMessageBuilder ivrDayMessageBuilder = new IVRDayMessageBuilder(getDosageIdFrom(ivrContext), previousDosage.getDosageId(), previousDosage.getStartHour());
             messages.add(IVRMessage.YOUR);
-            messages.add(IVRMessage.YESTERDAYS);
-            messages.add(IVRMessage.EVENING);
+            messages.addAll(ivrDayMessageBuilder.getMessages(IVRMessage.YESTERDAYS, IVRMessage.MORNING, IVRMessage.EVENING));
             messages.add(IVRMessage.DOSE_NOT_RECORDED);
-            messages.add(IVRMessage.YESTERDAY);
-            messages.add(IVRMessage.IN_THE_EVENING);
+            messages.addAll(ivrDayMessageBuilder.getMessages(IVRMessage.YESTERDAY, IVRMessage.IN_THE_MORNING, IVRMessage.IN_THE_EVENING));
             messages.add(IVRMessage.YOU_WERE_SUPPOSED_TO_TAKE);
             messages.addAll(previousDosage.getMedicines());
             messages.add(IVRMessage.FROM_THE_BOTTLE);

@@ -6,12 +6,14 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
@@ -49,11 +51,11 @@ public class MessageFromPreviousDosageTest {
         DosageResponse previousDosageResponse = new DosageResponse(10, 05, "previousDosageId", Arrays.asList("medicine1", "medicine2"));
         when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
 
-        String[] messages = messageFromPreviousDosage.execute(context);
-
-        assertEquals(11, messages.length);
-        assertTrue(Arrays.asList(messages).contains("medicine1"));
-        assertTrue(Arrays.asList(messages).contains("medicine2"));
+        List<String> messages = Arrays.asList(messageFromPreviousDosage.execute(context));
+        assertTrue(messages.contains(IVRMessage.MORNING));
+        assertTrue(messages.contains(IVRMessage.IN_THE_MORNING));
+        assertTrue(messages.contains("medicine1"));
+        assertTrue(messages.contains("medicine2"));
     }
 
     @Test
