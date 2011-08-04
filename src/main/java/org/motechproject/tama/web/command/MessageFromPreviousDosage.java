@@ -1,7 +1,7 @@
 package org.motechproject.tama.web.command;
 
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.tama.ivr.DosageInfo;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
@@ -15,8 +15,8 @@ public class MessageFromPreviousDosage extends BaseTreeCommand {
     @Override
     public String[] execute(Object o) {
         IVRContext ivrContext = (IVRContext) o;
-        DosageInfo dosageInfo = new DosageInfo(ivrContext);
-        DosageResponse previousDosage = dosageInfo.getPreviousDosage();
+        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+        DosageResponse previousDosage = pillRegimenSnapshot.getPreviousDosage();
 
         List<String> messages = new ArrayList<String>();
         if ("previousDosageId".equals(previousDosage.getDosageId())) {
@@ -26,7 +26,7 @@ public class MessageFromPreviousDosage extends BaseTreeCommand {
             messages.add(IVRMessage.DOSE_NOT_RECORDED);
             messages.addAll(ivrDayMessageBuilder.getMessages(IVRMessage.YESTERDAY, IVRMessage.IN_THE_MORNING, IVRMessage.IN_THE_EVENING));
             messages.add(IVRMessage.YOU_WERE_SUPPOSED_TO_TAKE);
-            messages.addAll(dosageInfo.medicinesForPreviousDosage());
+            messages.addAll(pillRegimenSnapshot.medicinesForPreviousDosage());
             messages.add(IVRMessage.FROM_THE_BOTTLE);
             messages.add(IVRMessage.PREVIOUS_DOSE_MENU);
         }

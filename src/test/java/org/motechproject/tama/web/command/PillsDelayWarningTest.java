@@ -4,11 +4,12 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.builder.IVRMessageBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 
@@ -19,28 +20,30 @@ import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PillsDelayWarningTest {
 
-    IVRContext context;
-    IVRRequest request;
-    PillsDelayWarning pillsDelayWarning;
-
     @Mock
-    private PillReminderService pillReminderService;
+    private IVRContext context;
+    @Mock
+    private IVRRequest request;
+    @Mock
+    private IVRSession ivrSession;
     @Mock
     private IVRMessageBuilder ivrMessageBuilder;
+
+    private PillsDelayWarning pillsDelayWarning;
 
     @Before
     public void setup() {
         initMocks(this);
-        pillsDelayWarning = new PillsDelayWarning(pillReminderService, ivrMessageBuilder);
-        context = mock(IVRContext.class);
-        request = mock(IVRRequest.class);
+        pillsDelayWarning = new PillsDelayWarning(ivrMessageBuilder);
         when(context.ivrRequest()).thenReturn(request);
+        when(context.ivrSession()).thenReturn(ivrSession);
+        when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
     }
 
     @Test
@@ -59,18 +62,15 @@ public class PillsDelayWarningTest {
     @Test
     public void shouldReturnLastReminderWarningMessageNonLastReminder() {
         Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.REGIMEN_ID, "regimen_id");
-        params.put(PillReminderCall.DOSAGE_ID, "dosage_id");
+        params.put(PillReminderCall.REGIMEN_ID, "regimenId");
+        params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         params.put(PillReminderCall.TIMES_SENT, "0");
         params.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "1");
         when(request.getTamaParams()).thenReturn(params);
 
-        DateTime time = new DateTime(2011, 1, 1, 10, 20, 0, 0);
-        when(pillReminderService.getNextDosageTime("regimen_id", "dosage_id")).thenReturn(time);
-
         List<String> timeMessages = new ArrayList<String>();
         timeMessages.add("time");
-        when(ivrMessageBuilder.getWavs(time)).thenReturn(timeMessages);
+        when(ivrMessageBuilder.getWavs(any(DateTime.class))).thenReturn(timeMessages);
 
         String[] messages = pillsDelayWarning.execute(context);
         assertEquals(IVRMessage.LAST_REMINDER_WARNING, messages[0]);

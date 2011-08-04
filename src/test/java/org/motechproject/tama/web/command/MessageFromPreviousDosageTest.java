@@ -60,7 +60,7 @@ public class MessageFromPreviousDosageTest {
     @Test
     public void shouldReturnNoMessagesWhenPreviousDosageHasBeenTaken() {
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        pillRegimenResponse.getDosages().remove(1);
+        pillRegimenResponse.getDosages().remove(0);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
         String[] messages = messageFromPreviousDosage.execute(context);

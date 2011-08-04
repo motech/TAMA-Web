@@ -1,8 +1,11 @@
 package org.motechproject.tama.ivr;
 
+import org.joda.time.DateTime;
+import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.util.Util;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.springframework.util.CollectionUtils;
 
@@ -11,11 +14,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class DosageInfo {
+public class PillRegimenSnapshot {
     private IVRContext ivrContext;
     private PillRegimenResponse pillRegimen;
 
-    public DosageInfo(IVRContext ivrContext) {
+    public PillRegimenSnapshot(IVRContext ivrContext) {
         this.ivrContext = ivrContext;
         this.pillRegimen = ivrContext.ivrSession().getPillRegimen();
     }
@@ -35,11 +38,16 @@ public class DosageInfo {
         return currentDosageIndex == 0 ? allDosages.get(allDosages.size() - 1) : allDosages.get(currentDosageIndex - 1);
     }
 
-    private DosageResponse getNextDosage() {
+    public DosageResponse getNextDosage() {
         List<DosageResponse> allDosages = getSortedDosages();
         if (allDosages == null) return null;
         int currentDosageIndex = allDosages.indexOf(getCurrentDosage());
         return currentDosageIndex == allDosages.size() - 1 ? allDosages.get(0) : allDosages.get(currentDosageIndex + 1);
+    }
+
+    public DateTime getNextDosageTime() {
+        DosageResponse nextDosage = getNextDosage();
+        return nextDosage == null ? null : new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(Util.currentDateTime());
     }
 
     private List<DosageResponse> getSortedDosages() {

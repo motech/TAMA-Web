@@ -1,7 +1,7 @@
 package org.motechproject.tama.web.command;
 
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.tama.ivr.DosageInfo;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
@@ -15,7 +15,7 @@ public class MessageOnPreviousPillTaken extends BaseTreeCommand {
     public String[] execute(Object context) {
 
         IVRContext ivrContext = (IVRContext) context;
-        DosageResponse previousDosage = new DosageInfo(ivrContext).getPreviousDosage();
+        DosageResponse previousDosage = new PillRegimenSnapshot(ivrContext).getPreviousDosage();
         IVRDayMessageBuilder ivrDayMessageBuilder = new IVRDayMessageBuilder(getDosageIdFrom(ivrContext), previousDosage.getDosageId(), previousDosage.getDosageHour());
 
         ArrayList<String> messages = new ArrayList<String>();

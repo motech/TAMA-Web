@@ -2,7 +2,7 @@ package org.motechproject.tama.web.command;
 
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.DosageInfo;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.repository.Clinics;
@@ -42,6 +42,6 @@ public class MessageForMedicines extends BaseTreeCommand {
     }
 
     private List<String> getMedicines(IVRContext ivrContext) {
-        return new DosageInfo(ivrContext).medicinesForCurrentDosage();
+        return new PillRegimenSnapshot(ivrContext).medicinesForCurrentDosage();
     }
 }

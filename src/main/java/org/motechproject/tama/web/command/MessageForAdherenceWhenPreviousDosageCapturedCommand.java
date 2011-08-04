@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.tama.ivr.DosageInfo;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
@@ -20,7 +20,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends Dosage
         IVRContext ivrContext = (IVRContext) o;
 
         String regimenId = getRegimenIdFrom(ivrContext);
-        String previousDosageId = new DosageInfo(ivrContext).getPreviousDosage().getDosageId();
+        String previousDosageId = new PillRegimenSnapshot(ivrContext).getPreviousDosage().getDosageId();
         if (dosageAdherenceLogs.isPreviousDosageTaken(previousDosageId)) {
             return new String[]{String.format(IVRMessage.ADHERENCE_PERCENT_MESSAGE, getAdherencePercentage(regimenId))};
         }

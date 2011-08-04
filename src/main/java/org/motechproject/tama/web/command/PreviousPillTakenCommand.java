@@ -1,7 +1,7 @@
 package org.motechproject.tama.web.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.ivr.DosageInfo;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.IVRContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,6 @@ public class PreviousPillTakenCommand extends StopTodaysRemindersCommand {
 
     @Override
     protected String getDosageId(IVRContext ivrContext) {
-        return new DosageInfo(ivrContext).getPreviousDosage().getDosageId();
+        return new PillRegimenSnapshot(ivrContext).getPreviousDosage().getDosageId();
     }
 }
