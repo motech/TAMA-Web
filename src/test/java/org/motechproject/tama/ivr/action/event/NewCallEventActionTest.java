@@ -1,31 +1,36 @@
 package org.motechproject.tama.ivr.action.event;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
 import org.motechproject.tama.repository.Patients;
+import sun.misc.resources.Messages;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class NewCallEventActionTest extends BaseActionTest {
-    public static final String PHONE_NUMBER = "9898982323";
-    private NewCallEventAction action;
     @Mock
     private Patients patients;
     @Mock
     private UserNotFoundAction userNotFoundAction;
     @Mock
     private Patient patient;
+    @Mock
+    private PillReminderService pillReminderService;
+    private NewCallEventAction action;
+    public static final String PHONE_NUMBER = "9898982323";
 
     @Before
     public void setUp() {
         super.setUp();
-        action = new NewCallEventAction(messages, patients, userNotFoundAction);
+        action = new NewCallEventAction(pillReminderService, messages, patients, userNotFoundAction);
     }
 
     @Test
@@ -54,11 +59,14 @@ public class NewCallEventActionTest extends BaseActionTest {
         when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
         when(patient.getId()).thenReturn("patientId");
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(null, "patientId", 2, 5, null);
+        when(pillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimenResponse);
 
         action.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.COLLECT_PIN);
         verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, "patientId");
+        verify(session).setAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
     }
 
     @Test

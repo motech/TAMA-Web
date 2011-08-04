@@ -18,8 +18,8 @@ public class IVRSession {
         session.setAttribute(IVRCallAttribute.CALL_STATE, callState);
     }
 
-    public String get(String name) {
-        return (String) session.getAttribute(name);
+    public Object get(String name) {
+        return session.getAttribute(name);
     }
 
     public Integer getInt(String name) {
@@ -48,7 +48,7 @@ public class IVRSession {
     }
 
     public String currentDecisionTreePath() {
-        String currentDecisionTreePosition = get(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION);
+        String currentDecisionTreePosition = (String) get(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION);
         return currentDecisionTreePosition == null ? "" : currentDecisionTreePosition;
     }
 

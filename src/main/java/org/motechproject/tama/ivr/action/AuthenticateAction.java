@@ -41,7 +41,7 @@ public class AuthenticateAction extends BaseIncomingAction {
         if (!patient.authenticatedWith(passcode)) {
             return retryAction.handle(ivrRequest, request, response);
         }
-        String patientId = ivrSession.get(IVRCallAttribute.PATIENT_DOC_ID);
+        String patientId = ivrSession.getPatientId();
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patientId);

@@ -42,8 +42,8 @@ public class RetryAction extends BaseIncomingAction {
     }
 
     private Integer getAttempt(IVRSession ivrSession) {
-        Object attempts = ivrSession.getInt(IVRCallAttribute.NUMBER_OF_ATTEMPTS);
-        return attempts == null ? 0 : (Integer) attempts;
+        Integer attempts = ivrSession.getInt(IVRCallAttribute.NUMBER_OF_ATTEMPTS);
+        return attempts == null ? 0 : attempts;
     }
 
     private boolean isLast(Integer attempts) {
