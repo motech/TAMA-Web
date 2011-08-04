@@ -36,7 +36,6 @@ public class DateUtility {
         return getDateTime();
     }
 
-
     public static Date newDate(int year, int month, int date) {
         return getDateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(date).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).toDate();
     }

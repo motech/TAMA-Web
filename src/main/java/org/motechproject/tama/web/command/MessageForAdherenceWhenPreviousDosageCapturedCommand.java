@@ -20,11 +20,9 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends Dosage
         IVRContext ivrContext = (IVRContext) o;
 
         String regimenId = getRegimenIdFrom(ivrContext);
-        String previousDosageId = new PillRegimenSnapshot(ivrContext).getPreviousDosage().getDosageId();
-        if (dosageAdherenceLogs.isPreviousDosageTaken(previousDosageId)) {
+        if (new PillRegimenSnapshot(ivrContext).isPreviousDosageTaken()) {
             return new String[]{String.format(IVRMessage.ADHERENCE_PERCENT_MESSAGE, getAdherencePercentage(regimenId))};
         }
-
         return new String[0];
     }
 }

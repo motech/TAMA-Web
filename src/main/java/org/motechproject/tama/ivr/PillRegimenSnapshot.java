@@ -7,6 +7,7 @@ import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.util.Util;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.util.DateUtility;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -29,6 +30,12 @@ public class PillRegimenSnapshot {
 
     public List<String> medicinesForPreviousDosage() {
         return medicinesFor(getPreviousDosage());
+    }
+
+    public boolean isPreviousDosageTaken() {
+        DosageResponse previousDosage = getPreviousDosage();
+        if (previousDosage == null || previousDosage.getLastTakenDate() == null) return true;
+        return DateUtility.todayWithTime().minusDays(1).isBefore(previousDosage.getLastTakenDate().getTime());
     }
 
     public DosageResponse getPreviousDosage() {

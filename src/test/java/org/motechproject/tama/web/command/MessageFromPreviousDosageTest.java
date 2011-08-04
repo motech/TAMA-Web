@@ -1,11 +1,13 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.model.Time;
+import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
@@ -49,19 +51,27 @@ public class MessageFromPreviousDosageTest {
 
     @Test
     public void shouldReturnMessagesWhenPreviousDosageHasNotBeenTaken() {
-        when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+        DateTime dosageLastTakenDate = new DateTime().minusDays(2);
+        ArrayList<MedicineResponse> medicines = new ArrayList<MedicineResponse>();
+        medicines.add(new MedicineResponse("medicine1", null, null));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, dosageLastTakenDate.toDate(), medicines));
+
+        when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
         List<String> messages = Arrays.asList(messageFromPreviousDosage.execute(context));
         assertTrue(messages.contains(IVRMessage.MORNING));
         assertTrue(messages.contains(IVRMessage.IN_THE_MORNING));
-        assertTrue(messages.contains("medicine3"));
+        assertTrue(messages.contains("medicine1"));
     }
 
     @Test
     public void shouldReturnNoMessagesWhenPreviousDosageHasBeenTaken() {
-        PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        pillRegimenResponse.getDosages().remove(0);
-        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+        Date lastTakenDate = null;
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, lastTakenDate, new ArrayList<MedicineResponse>()));
+
+        when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
         String[] messages = messageFromPreviousDosage.execute(context);
 
