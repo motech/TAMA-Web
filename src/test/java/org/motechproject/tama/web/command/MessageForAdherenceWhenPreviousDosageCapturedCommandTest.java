@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
@@ -45,7 +46,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     @Test
     public void shouldReturnAdherenceMessageWhenPreviousDosageInformationCaptured() {
-        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse(0, 0, "pd1", null) );
+        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse("pd1", new Time(0, 0), null, null, null, null) );
         Mockito.when(dosageAdherenceLogs.isPreviousDosageTaken("pd1")).thenReturn(true);
         LocalDate now = DateUtility.today();
         Mockito.when(dosageAdherenceLogs.findScheduledDosagesTotalCount("r1", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(100);
@@ -60,7 +61,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     @Test
     public void shouldNotReturnAnyMessageWhenPreviousDosageInformationNotCaptured() {
-        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse(0, 0, "pd1", null));
+        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse("pd1", new Time(0, 0), null, null, null, null));
         Mockito.when(dosageAdherenceLogs.isPreviousDosageTaken("pd1")).thenReturn(false);
 
         String[] message = command.execute(new IVRContext(ivrRequest, new IVRSession(httpSession)));
@@ -72,7 +73,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     @Test
     public void shouldReturnAdherencePercentMessageIfPreviousDosageNotPresent() {
-        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse(0, 0, null, null));
+        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse(null, new Time(0, 0), null, null, null, null));
         LocalDate now = DateUtility.today();
         Mockito.when(dosageAdherenceLogs.findScheduledDosagesTotalCount("r1", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(100);
         Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount("r1", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(60);

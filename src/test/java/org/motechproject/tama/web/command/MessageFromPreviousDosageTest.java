@@ -3,7 +3,9 @@ package org.motechproject.tama.web.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
@@ -11,10 +13,7 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +31,8 @@ public class MessageFromPreviousDosageTest {
     @Mock
     private PillReminderService pillReminderService;
     private MessageFromPreviousDosage messageFromPreviousDosage;
-    private Map params = new HashMap<String, String>();;
+    private Map params = new HashMap<String, String>();
+    private ArrayList<MedicineResponse> medicineResponses;
 
     @Before
     public void setup() {
@@ -44,11 +44,15 @@ public class MessageFromPreviousDosageTest {
         params.put(PillReminderCall.REGIMEN_ID, "regimenId");
         params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(params);
+
+        medicineResponses = new ArrayList<MedicineResponse>();
+        medicineResponses.add(new MedicineResponse("medicine1", null, null));
+        medicineResponses.add(new MedicineResponse("medicine2", null, null));
     }
 
     @Test
     public void shouldAddPreviousDosageIdToRequestParams() {
-        DosageResponse previousDosageResponse = new DosageResponse(10, 05, "previousDosageId", Arrays.asList("medicine1", "medicine2"));
+        DosageResponse previousDosageResponse = new DosageResponse("previousDosageId", new Time(10, 05), null, null, null, medicineResponses);
         when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
 
         messageFromPreviousDosage.execute(context);
@@ -59,7 +63,7 @@ public class MessageFromPreviousDosageTest {
 
     @Test
     public void shouldReturnMessagesWhenPreviousDosageHasNotBeenTaken() {
-        DosageResponse previousDosageResponse = new DosageResponse(10, 05, "previousDosageId", Arrays.asList("medicine1", "medicine2"));
+        DosageResponse previousDosageResponse = new DosageResponse("previousDosageId", new Time(10, 05), null, null, null, medicineResponses);
         when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
 
         List<String> messages = Arrays.asList(messageFromPreviousDosage.execute(context));
@@ -71,7 +75,7 @@ public class MessageFromPreviousDosageTest {
 
     @Test
     public void shouldReturnNoMessagesWhenPreviousDosageHasBeenTaken() {
-        DosageResponse previousDosageResponse = new DosageResponse(10, 05, "currentDosageId", Arrays.asList("medicine1", "medicine2"));
+        DosageResponse previousDosageResponse = new DosageResponse("currentDosageId", new Time(10, 05), null, null, null, medicineResponses);
         when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
 
         String[] messages = messageFromPreviousDosage.execute(context);

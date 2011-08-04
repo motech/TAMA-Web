@@ -24,7 +24,7 @@ public class MessageOnPreviousPillNotTaken extends BaseTreeCommand {
 
         IVRContext ivrContext = (IVRContext) context;
         DosageResponse previousDosage = service.getPreviousDosage(getRegimenIdFrom(ivrContext), getDosageIdFrom(ivrContext));
-        IVRDayMessageBuilder ivrDayMessageBuilder = new IVRDayMessageBuilder(getDosageIdFrom(ivrContext), previousDosage.getDosageId(), previousDosage.getStartHour());
+        IVRDayMessageBuilder ivrDayMessageBuilder = new IVRDayMessageBuilder(getDosageIdFrom(ivrContext), previousDosage.getDosageId(), previousDosage.getDosageHour());
 
         ArrayList<String> messages = new ArrayList<String>();
         messages.add(IVRMessage.YOU_SAID_YOU_DID_NOT_TAKE);
