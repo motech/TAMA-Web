@@ -104,10 +104,8 @@ public class TreatmentAdviceController extends BaseController {
     public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
         Regimen regimen = regimens.get(regimenId);
         RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);
-        RegimenComposition regimenComposition1 = regimen.getCompositionsFor("d9cd3d7167034eb5a085ddfc08580ffd");
 
         List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
-        allDrugs.addAll(this.drugs.getDrugs(regimenComposition1.getDrugIds()));
 
         for (Drug drug : allDrugs) {
             DrugDosage drugDosage = new DrugDosage();
