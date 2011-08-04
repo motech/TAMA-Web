@@ -88,31 +88,37 @@ public class TreatmentAdviceController extends BaseController {
         return "treatmentadvices/show";
     }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/ajax/regimenCompositionsFor")
-	public @ResponseBody Set<ComboBoxView> regimenCompositionsFor(@RequestParam String regimenId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimenCompositionsFor")
+    public
+    @ResponseBody
+    Set<ComboBoxView> regimenCompositionsFor(@RequestParam String regimenId) {
         Set<RegimenComposition> compositions = regimens.get(regimenId).getCompositions();
         Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
         for (RegimenComposition regimenComposition : compositions) {
             comboBoxViews.add(new ComboBoxView(regimenComposition.getRegimenCompositionId(), regimenComposition.getDisplayName()));
         }
         return comboBoxViews;
-	}
+    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/drugDosagesFor")
-	public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
+    public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
         Regimen regimen = regimens.get(regimenId);
         RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);
+        RegimenComposition regimenComposition1 = regimen.getCompositionsFor("d9cd3d7167034eb5a085ddfc08580ffd");
 
         List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
-        for (Drug drug: allDrugs) {
+        allDrugs.addAll(this.drugs.getDrugs(regimenComposition1.getDrugIds()));
+
+        for (Drug drug : allDrugs) {
             DrugDosage drugDosage = new DrugDosage();
             drugDosage.setDrugId(drug.getId());
             drugDosage.setDrugName(drug.getName());
             drugDosage.setBrands(drug.getBrands());
             treatmentAdvice.addDrugDosage(drugDosage);
         }
+
         return "treatmentadvices/drugdosages";
-	}
+    }
 
     public List<ComboBoxView> regimens() {
         List<Regimen> allRegimens = regimens.getAll();

@@ -5,6 +5,7 @@ import org.ektorp.support.TypeDiscriminator;
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,8 +29,8 @@ public class Regimen extends CouchEntity {
 		this.regimenDisplayName = displayName;
 	}
 
-	public void addComposition(RegimenComposition regimenComposition) {
-		compositions.add(regimenComposition);
+	public void addComposition(RegimenComposition...regimenCompositions) {
+		compositions.addAll(Arrays.asList(regimenCompositions));
 	}
 
     public RegimenComposition getCompositionsFor(String regimenCompositionId) {
