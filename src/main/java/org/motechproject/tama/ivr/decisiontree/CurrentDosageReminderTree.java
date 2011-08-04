@@ -4,6 +4,7 @@ import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     private PillsDelayWarning pillsDelayWarning;
     @Autowired
     private RecordDeclinedDosageReasonCommand recordDeclinedDosageReasonCommand;
+    @Qualifier("stopTodaysRemindersCommand")
     @Autowired
     private StopTodaysRemindersCommand stopTodaysRemindersCommand;
     @Autowired
