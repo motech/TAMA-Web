@@ -91,6 +91,7 @@ public class PatientsTest extends SpringIntegrationTest {
                 withPatientId("12345678").
                 withClinic(clinic).build();
         patients.addToClinic(similarPatient, clinic.getId());
+        markForDeletion(similarPatient);
     }
 
     @Test

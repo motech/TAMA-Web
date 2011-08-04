@@ -27,9 +27,9 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetCurrentDosageMessagePrompt() {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(3, prompts.size());
-        assertEquals(IVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(2).getName());
-        assertEquals(MenuAudioPrompt.class, prompts.get(2).getClass());
+        assertEquals(2, prompts.size());
+        assertEquals(IVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(1).getName());
+        assertEquals(MenuAudioPrompt.class, prompts.get(1).getClass());
         assertTrue(nextNode.getTreeCommands().isEmpty());
     }
 

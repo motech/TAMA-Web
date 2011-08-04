@@ -62,6 +62,7 @@ public class CliniciansTest extends SpringIntegrationTest {
 
         Clinician clinicianWithSameName = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
         clinicians.add(clinicianWithSameName);
+        markForDeletion(clinicianWithSameName);
     }
 
 
@@ -95,6 +96,8 @@ public class CliniciansTest extends SpringIntegrationTest {
 
         Clinician byUserNameAndPassword = clinicians.findByUserNameAndPassword("jack", "samurai");
         assertNotNull(byUserNameAndPassword);
+        markForDeletion(city);
+        markForDeletion(testClinic);
         markForDeletion(testClinician);
         markForDeletion(cliniciansIds.get(testClinician));
     }
@@ -112,6 +115,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         assertNotNull(returnedClinician.getClinic());
         assertNotNull(returnedClinician.getClinic().getName().equals(clinic.getName()));
 
+        markForDeletion(city);
         markForDeletion(clinic);
         markForDeletion(clinician);
         markForDeletion(cliniciansIds.get(clinician));
@@ -133,6 +137,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         returnedClinician = clinicians.findByUsername("foo");
         assertEquals("foobar",returnedClinician.getPassword());
 
+        markForDeletion(city);
         markForDeletion(clinic);
         markForDeletion(returnedClinician);
     }
