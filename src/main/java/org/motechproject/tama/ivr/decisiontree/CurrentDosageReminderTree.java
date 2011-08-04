@@ -38,7 +38,6 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
         return Node.newBuilder()
                 .setPrompts(Arrays.asList(
                         new AudioPrompt().setCommand(messageForMedicines),
-                        new AudioPrompt().setCommand(pillsDelayWarning),
                         new MenuAudioPrompt().setName(IVRMessage.PILL_REMINDER_RESPONSE_MENU)))
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()

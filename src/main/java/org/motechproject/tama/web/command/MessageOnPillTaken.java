@@ -10,6 +10,6 @@ public class MessageOnPillTaken extends BaseTreeCommand {
     public String[] execute(Object context) {
         IVRContext ivrContext = (IVRContext) context;
         int timesSent = getTimesSent(ivrContext);
-        return new String[]{ timesSent == 0? IVRMessage.DOSE_TAKEN : "" };
+        return timesSent == 0 ? new String[]{ IVRMessage.DOSE_TAKEN } : new String[0];
     }
 }

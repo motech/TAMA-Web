@@ -31,7 +31,7 @@ public class MessageOnPillTakenTest {
     @Test
     public void shouldReturnDoseTakenMessageForTheFirstReminder() {
         Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.TIMES_SENT, 0);
+        params.put(PillReminderCall.TIMES_SENT, 1);
         when(request.getTamaParams()).thenReturn(params);
         assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN}, messageOnPillTaken.execute(context));
     }
@@ -39,8 +39,8 @@ public class MessageOnPillTakenTest {
     @Test
     public void shouldNotReturnDoseTakenMessageForSubsequentReminders() {
         Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.TIMES_SENT, 1);
+        params.put(PillReminderCall.TIMES_SENT, 2);
         when(request.getTamaParams()).thenReturn(params);
-        assertArrayEquals(new String[]{""}, messageOnPillTaken.execute(context));
+        assertArrayEquals(new String[0], messageOnPillTaken.execute(context));
     }
 }
