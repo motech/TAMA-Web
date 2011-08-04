@@ -29,15 +29,6 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
         return adherenceLogs;
     }
 
-    @View(name = "find_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageDate], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesTotalCount(String regimenId, LocalDate fromDate, LocalDate toDate) {
-        ComplexKey startkey = ComplexKey.of(regimenId, fromDate);
-        ComplexKey endkey = ComplexKey.of(regimenId, toDate);
-        ViewQuery q = createQuery("find_log_count_for_a_given_date_range").startKey(startkey).endKey(endkey);
-        ViewResult viewResult = db.queryView(q);
-        return rowCount(viewResult);
-    }
-
     @View(name = "find_success_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
     public int findScheduledDosagesSuccessCount(String regimenId, LocalDate fromDate, LocalDate toDate) {
         ComplexKey startDosageDatekey = ComplexKey.of(regimenId, DosageStatus.TAKEN, fromDate);

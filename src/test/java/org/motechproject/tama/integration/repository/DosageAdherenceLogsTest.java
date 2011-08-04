@@ -35,7 +35,6 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldSaveDosageAdherenceLogRecord() {
-
         DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLogBuilder().withDefaults().build();
         dosageAdherenceLogs.add(dosageAdherenceLog);
 
@@ -72,30 +71,6 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
         DosageAdherenceLog log = dosageAdherenceLogs.findByDosageIdAndDate("123", dosageDate);
         assertNotNull(log);
     }
-
-    @Test
-    public void shouldGetTotalCountOfScheduledDosagesForARegimenForLastFourWeeks() {
-        LocalDate now = DateUtility.today();
-        DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(now).build();
-        DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("234").withDosageDate(now).build();
-        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(DateUtility.addDaysToLocalDate(now, -1)).build();
-        DosageAdherenceLog log3 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("234").withDosageDate(DateUtility.addDaysToLocalDate(now, -1)).build();
-        DosageAdherenceLog log4 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r2").withDosageId("222").withDosageDate(DateUtility.addDaysToLocalDate(now, -20)).build();
-        DosageAdherenceLog log5 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(DateUtility.addDaysToLocalDate(now, -50)).build();
-        DosageAdherenceLog log6 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("234").withDosageDate(DateUtility.addDaysToLocalDate(now, -50)).build();
-        dosageAdherenceLogs.add(log0);
-        dosageAdherenceLogs.add(log1);
-        dosageAdherenceLogs.add(log2);
-        dosageAdherenceLogs.add(log3);
-        dosageAdherenceLogs.add(log4);
-        dosageAdherenceLogs.add(log5);
-        dosageAdherenceLogs.add(log6);
-
-        int count = dosageAdherenceLogs.findScheduledDosagesTotalCount("r1", DateUtility.addDaysToLocalDate(now, -28), now);
-
-        Assert.assertEquals(4, count);
-    }
-
 
     @Test
     public void shouldGetSuccessCountOfScheduledDosagesForLastFourWeeks() {

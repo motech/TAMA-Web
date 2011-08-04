@@ -1,18 +1,23 @@
 package org.motechproject.tama.ivr;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-
+import org.motechproject.tama.util.DateUtility;
 import java.util.*;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,10 +28,9 @@ public class PillRegimenSnapshotTest {
     @Mock
     private IVRSession ivrSession;
     @Mock
-    private IVRContext ivrContext;
-    @Mock
     private IVRRequest ivrRequest;
 
+    private IVRContext ivrContext;
     private PillRegimenResponse pillRegimen;
     private PillRegimenSnapshot pillRegimenSnapshot;
 
@@ -34,8 +38,10 @@ public class PillRegimenSnapshotTest {
     public void setUp() {
         initMocks(this);
 
-        when(ivrContext.ivrSession()).thenReturn(ivrSession);
-        when(ivrContext.ivrRequest()).thenReturn(ivrRequest);
+        pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
+        ivrContext = new IVRContext(ivrRequest, ivrSession);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         Map<String, String> map = new HashMap();
         map.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(map);
@@ -165,5 +171,34 @@ public class PillRegimenSnapshotTest {
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         assertTrue(pillRegimenSnapshot.isPreviousDosageTaken());
+    }
+
+    @Test
+    public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksLessThanFour() {
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
+        LocalDate toDate = DateUtility.newLocalDate(2011, 8, 1); // TotalCount = 32 + 23 = 28 + 23 = 51
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
+
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
+        assertEquals(51, totalCount);
+    }
+
+    @Test
+    public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksGreaterThanFour() {
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
+        LocalDate toDate = DateUtility.newLocalDate(2011, 10, 1); // TotalCount = 93 + 89 = 182; capped to 56
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
+
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
+        assertEquals(56, totalCount);
+    }
+
+    private PillRegimenResponse getPillRegimenResponse() {
+        ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
+        ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
+        medicineResponses.add(new MedicineResponse("med1", null, null));
+        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), DateUtility.now(), medicineResponses));
+        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), DateUtility.newDate(2011, 7, 10), DateUtility.newDate(2012, 7, 10), DateUtility.now(), medicineResponses));
+        return new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
     }
 }

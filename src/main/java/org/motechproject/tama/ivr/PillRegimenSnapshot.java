@@ -1,11 +1,14 @@
 package org.motechproject.tama.ivr;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.util.Util;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.util.DateUtility;
 import org.springframework.util.CollectionUtils;
@@ -69,7 +72,7 @@ public class PillRegimenSnapshot {
         return sortedDosages;
     }
 
-    private List<String> medicinesFor(DosageResponse dosage){
+    private List<String> medicinesFor(DosageResponse dosage) {
         if (dosage == null) return new ArrayList<String>();
         List<String> medicines = new ArrayList<String>();
         for (MedicineResponse medicine : dosage.getMedicines())
@@ -81,11 +84,21 @@ public class PillRegimenSnapshot {
         return getDosage((String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID));
     }
 
-    private DosageResponse getDosage(String dosageId){
+    private DosageResponse getDosage(String dosageId) {
         if (pillRegimen == null) return null;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
             if (dosageResponse.getDosageId().equals(dosageId)) return dosageResponse;
         }
         return null;
+    }
+
+    public int getScheduledDosagesTotalCount(LocalDate toDate) {
+        int totalCount = 0;
+        for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
+            Days days = Days.daysBetween(new DateTime(dosageResponse.getStartDate()), toDate.toDateTimeAtCurrentTime());
+            int dayCount = days.getDays() + 1;
+            totalCount += Math.min(dayCount, TAMAConstants.DAYS_IN_FOUR_WEEKS);
+        }
+        return totalCount;
     }
 }

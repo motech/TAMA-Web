@@ -9,6 +9,7 @@ public class TAMAConstants {
     public static final String RETRY_INTERVAL = "retry.interval.mins";
     public static final String PILL_WINDOW = "pill.window.hrs";
     public static final String REMINDER_LAG = "reminder.lag.mins";
+    public static final int DAYS_IN_FOUR_WEEKS = 28;
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),

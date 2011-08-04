@@ -43,7 +43,7 @@ public class IVRMessage {
     public static final String TOMORROW = "tomorrow";
 
     /* -------- Adherence Feedback ----------- */
-    public static final String ADHERENCE_PERCENT_MESSAGE = "your adherence is %d percent.";
+    public static final String ADHERENCE_PERCENT_MESSAGE = "your adherence is percent.";
     public static final String MISSED_PILL_FEEDBACK_FIRST_TIME = "You missed dosage for the first time.";
     public static final String MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME = "Try to take every single dosage on time.";
     public static final String MISSED_PILL_FEEDBACK_MORE_THAN_90 = "adherence has been good generaly";
