@@ -1,5 +1,7 @@
 package org.motechproject.tama.ivr;
 
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -28,6 +30,10 @@ public class IVRSession {
 
     public String getPatientId() {
         return (String) session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID);
+    }
+
+    public PillRegimenResponse getPillRegimen() {
+        return (PillRegimenResponse) session.getAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT);
     }
 
     public void set(String key, Object value) {

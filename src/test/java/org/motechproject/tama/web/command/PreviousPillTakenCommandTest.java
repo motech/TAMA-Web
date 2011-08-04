@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
@@ -35,6 +36,7 @@ public class PreviousPillTakenCommandTest {
         previousPillTakenCommand = new PreviousPillTakenCommand(pillReminderService);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(context.ivrRequest()).thenReturn(ivrRequest);
+        when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
     }
 
     @Test
@@ -42,8 +44,7 @@ public class PreviousPillTakenCommandTest {
 
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.REGIMEN_ID, "regimenId");
-        params.put(PillReminderCall.DOSAGE_ID, "dosageId");
-        params.put(PillReminderCall.PREVIOUS_DOSAGE_ID, "previousDosageId");
+        params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(params);
 
         previousPillTakenCommand.execute(context);

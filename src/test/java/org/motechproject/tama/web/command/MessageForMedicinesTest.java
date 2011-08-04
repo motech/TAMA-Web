@@ -3,8 +3,8 @@ package org.motechproject.tama.web.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.ClinicBuilder;
+import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.IVRContext;
@@ -14,7 +14,6 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.Clinics;
 import org.motechproject.tama.repository.Patients;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +27,6 @@ public class MessageForMedicinesTest {
     private Patients patients;
     @Mock
     private Clinics clinics;
-    @Mock
-    private PillReminderService pillReminderService;
     @Mock
     private IVRContext context;
     @Mock
@@ -45,20 +42,21 @@ public class MessageForMedicinesTest {
         patient.setClinic_id("clinicId");
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
 
-        messageForMedicines = new MessageForMedicines(patients, clinics, pillReminderService);
+        messageForMedicines = new MessageForMedicines(patients, clinics);
+
         when(context.ivrSession()).thenReturn(ivrSession);
+        when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
         when(context.ivrRequest()).thenReturn(ivrRequest);
         when(ivrSession.getPatientId()).thenReturn("patientId");
         when(patients.get("patientId")).thenReturn(patient);
         when(clinics.get("clinicId")).thenReturn(clinic);
-        when(pillReminderService.medicinesFor("regimenId", "dosageId")).thenReturn(Arrays.asList("medicine1", "medicine2"));
     }
 
     @Test
     public void shouldReturnMessagesWithAListOfMedicinestoBeTaken() {
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.REGIMEN_ID, "regimenId");
-        params.put(PillReminderCall.DOSAGE_ID, "dosageId");
+        params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(params);
 
         String[] messages = messageForMedicines.execute(context);

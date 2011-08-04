@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.DosageInfo;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.repository.Clinics;
@@ -17,13 +17,11 @@ import java.util.List;
 public class MessageForMedicines extends BaseTreeCommand {
     private Patients patients;
     private Clinics clinics;
-    private PillReminderService service;
 
     @Autowired
-    public MessageForMedicines(Patients patients, Clinics clinics, PillReminderService service) {
+    public MessageForMedicines(Patients patients, Clinics clinics) {
         this.patients = patients;
         this.clinics = clinics;
-        this.service = service;
     }
 
     @Override
@@ -44,6 +42,6 @@ public class MessageForMedicines extends BaseTreeCommand {
     }
 
     private List<String> getMedicines(IVRContext ivrContext) {
-        return service.medicinesFor(getRegimenIdFrom(ivrContext), getDosageIdFrom(ivrContext));
+        return new DosageInfo(ivrContext).medicinesForCurrentDosage();
     }
 }

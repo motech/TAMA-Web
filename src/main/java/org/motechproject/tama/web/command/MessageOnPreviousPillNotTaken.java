@@ -1,29 +1,21 @@
 package org.motechproject.tama.web.command;
 
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.ivr.DosageInfo;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
 @Component
 public class MessageOnPreviousPillNotTaken extends BaseTreeCommand {
-    private PillReminderService service;
-
-    @Autowired
-    public MessageOnPreviousPillNotTaken(PillReminderService service) {
-        this.service = service;
-    }
-
     @Override
     public String[] execute(Object context) {
 
         IVRContext ivrContext = (IVRContext) context;
-        DosageResponse previousDosage = service.getPreviousDosage(getRegimenIdFrom(ivrContext), getDosageIdFrom(ivrContext));
+        DosageResponse previousDosage = new DosageInfo(ivrContext).getPreviousDosage();
         IVRDayMessageBuilder ivrDayMessageBuilder = new IVRDayMessageBuilder(getDosageIdFrom(ivrContext), previousDosage.getDosageId(), previousDosage.getDosageHour());
 
         ArrayList<String> messages = new ArrayList<String>();

@@ -3,16 +3,13 @@ package org.motechproject.tama.web.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.contract.MedicineResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,15 +21,15 @@ public class MessageOnPreviousPillNotTakenTest {
     @Mock
     private IVRContext context;
     @Mock
-    private IVRRequest request;
+    private IVRSession ivrSession;
     @Mock
-    private PillReminderService pillReminderService;
+    private IVRRequest request;
     private MessageOnPreviousPillNotTaken messageOnPreviousPillNotTaken;
 
     @Before
     public void setup() {
         initMocks(this);
-        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken(pillReminderService);
+        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken();
         when(context.ivrRequest()).thenReturn(request);
     }
 
@@ -41,14 +38,10 @@ public class MessageOnPreviousPillNotTakenTest {
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.REGIMEN_ID, "regimenId");
         params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
-        params.put(PillReminderCall.PREVIOUS_DOSAGE_ID, "previousDosageId");
-        ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
-        medicineResponses.add(new MedicineResponse("medicine1", null, null));
-        medicineResponses.add(new MedicineResponse("medicine2", null, null));
-        DosageResponse previousDosageResponse = new DosageResponse("previousDosageId", new Time(10, 05), null, null, null, medicineResponses);
 
         when(request.getTamaParams()).thenReturn(params);
-        when(pillReminderService.getPreviousDosage("regimenId", "currentDosageId")).thenReturn(previousDosageResponse);
+        when(context.ivrSession()).thenReturn(ivrSession);
+        when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
 
         String[] messages = messageOnPreviousPillNotTaken.execute(context);
         assertEquals(4, messages.length);

@@ -4,11 +4,8 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.motechproject.server.pillreminder.domain.PillReminder;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
-import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
@@ -53,7 +50,7 @@ public class UpdateAdherenceCommandTest {
         context = new IVRContext(req, session);
 
         when(req.getTamaParams()).thenReturn(params);
-        when(session.get(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(patientId);
+        when(session.getPatientId()).thenReturn(patientId);
         when(req.getInput()).thenReturn(userInput);
     }
 

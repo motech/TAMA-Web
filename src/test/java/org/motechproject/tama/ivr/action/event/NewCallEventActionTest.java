@@ -9,7 +9,6 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
 import org.motechproject.tama.repository.Patients;
-import sun.misc.resources.Messages;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;

@@ -6,9 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
@@ -25,10 +23,8 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     @Mock
     HttpSession httpSession;
-
     @Mock
-    PillReminderService pillReminderService;
-
+    IVRSession ivrSession;
     @Mock
     DosageAdherenceLogs dosageAdherenceLogs;
 
@@ -39,46 +35,33 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(pillReminderService, dosageAdherenceLogs);
+        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs);
         ivrRequest = new IVRRequest();
-        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\",\"%s\":\"%s\"}", PillReminderCall.REGIMEN_ID, "r1", PillReminderCall.DOSAGE_ID, "d1"));
+        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\",\"%s\":\"%s\"}", PillReminderCall.REGIMEN_ID, "regimenId", PillReminderCall.DOSAGE_ID, "currentDosageId"));
     }
 
     @Test
     public void shouldReturnAdherenceMessageWhenPreviousDosageInformationCaptured() {
-        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse("pd1", new Time(0, 0), null, null, null, null) );
-        Mockito.when(dosageAdherenceLogs.isPreviousDosageTaken("pd1")).thenReturn(true);
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        Mockito.when(dosageAdherenceLogs.isPreviousDosageTaken("previousDosageId")).thenReturn(true);
         LocalDate now = DateUtility.today();
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesTotalCount("r1", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(100);
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount("r1", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(75);
+        Mockito.when(dosageAdherenceLogs.findScheduledDosagesTotalCount("regimenId", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(100);
+        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount("regimenId", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(75);
 
-        String[] message = command.execute(new IVRContext(ivrRequest, new IVRSession(httpSession)));
+        String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         assertEquals(String.format(IVRMessage.ADHERENCE_PERCENT_MESSAGE, 75), message[0]);
 
-        Mockito.verify(pillReminderService).getPreviousDosage("r1", "d1");
-        Mockito.verify(dosageAdherenceLogs).isPreviousDosageTaken("pd1");
+        Mockito.verify(dosageAdherenceLogs).isPreviousDosageTaken("previousDosageId");
     }
 
     @Test
     public void shouldNotReturnAnyMessageWhenPreviousDosageInformationNotCaptured() {
-        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse("pd1", new Time(0, 0), null, null, null, null));
-        Mockito.when(dosageAdherenceLogs.isPreviousDosageTaken("pd1")).thenReturn(false);
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        Mockito.when(dosageAdherenceLogs.isPreviousDosageTaken("previousDosageId")).thenReturn(false);
 
-        String[] message = command.execute(new IVRContext(ivrRequest, new IVRSession(httpSession)));
+        String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         assertEquals(0, message.length);
 
-        Mockito.verify(pillReminderService).getPreviousDosage("r1", "d1");
-        Mockito.verify(dosageAdherenceLogs).isPreviousDosageTaken("pd1");
-    }
-
-    @Test
-    public void shouldReturnAdherencePercentMessageIfPreviousDosageNotPresent() {
-        Mockito.when(pillReminderService.getPreviousDosage("r1", "d1")).thenReturn(new DosageResponse(null, new Time(0, 0), null, null, null, null));
-        LocalDate now = DateUtility.today();
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesTotalCount("r1", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(100);
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount("r1", now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(60);
-
-        String[] message = command.execute(new IVRContext(ivrRequest, new IVRSession(httpSession)));
-        assertEquals(String.format(IVRMessage.ADHERENCE_PERCENT_MESSAGE, 60), message[0]);
+        Mockito.verify(dosageAdherenceLogs).isPreviousDosageTaken("previousDosageId");
     }
 }

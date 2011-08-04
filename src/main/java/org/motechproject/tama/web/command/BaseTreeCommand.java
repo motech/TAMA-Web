@@ -10,14 +10,6 @@ public abstract class BaseTreeCommand implements ITreeCommand{
         return (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID);
     }
 
-    protected String getPreviousDosageIdFrom(IVRContext ivrContext) {
-        return (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.PREVIOUS_DOSAGE_ID);
-    }
-
-    protected void putPreviousDosageId(IVRContext ivrContext, String previousDosageId) {
-        ivrContext.ivrRequest().getTamaParams().put(PillReminderCall.PREVIOUS_DOSAGE_ID, previousDosageId);
-    }
-
     protected String getRegimenIdFrom(IVRContext ivrContext) {
         return (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.REGIMEN_ID);
     }
@@ -29,6 +21,4 @@ public abstract class BaseTreeCommand implements ITreeCommand{
     protected int getTotalTimesToSend(IVRContext ivrContext) {
         return Integer.parseInt(ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.TOTAL_TIMES_TO_SEND).toString());
     }
-
-
 }
