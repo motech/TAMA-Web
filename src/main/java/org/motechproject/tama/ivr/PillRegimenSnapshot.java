@@ -35,9 +35,16 @@ public class PillRegimenSnapshot {
         return medicinesFor(getPreviousDosage());
     }
 
-    public boolean isPreviousDosageTaken() {
+    public boolean isPreviousDosageCaptured() {
         DosageResponse previousDosage = getPreviousDosage();
-        if (previousDosage == null || previousDosage.getLastTakenDate() == null) return true;
+        return isFirstDosage(previousDosage) || wasPreviousDosageCapturedYesterday(previousDosage);
+    }
+
+    private boolean isFirstDosage(DosageResponse previousDosage) {
+        return previousDosage == null || previousDosage.getLastTakenDate() == null;
+    }
+
+    private boolean wasPreviousDosageCapturedYesterday(DosageResponse previousDosage) {
         return DateUtility.todayWithTime().minusDays(1).isBefore(previousDosage.getLastTakenDate().getTime());
     }
 

@@ -8,15 +8,14 @@ import org.motechproject.tama.util.DateUtility;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends DosageAdherenceCommand {
-
+public class MessageForAdherenceWhenPreviousDosageNotCapturedCommand extends DosageAdherenceCommand {
     private LocalDate toDate;
 
-    public MessageForAdherenceWhenPreviousDosageCapturedCommand() {
+    public MessageForAdherenceWhenPreviousDosageNotCapturedCommand() {
         toDate = DateUtility.today();
     }
 
-    public MessageForAdherenceWhenPreviousDosageCapturedCommand(DosageAdherenceLogs dosageAdherenceLogs, LocalDate toDate) {
+    public MessageForAdherenceWhenPreviousDosageNotCapturedCommand(DosageAdherenceLogs dosageAdherenceLogs, LocalDate toDate) {
         super(dosageAdherenceLogs);
         this.toDate = toDate;
     }
@@ -27,10 +26,6 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends Dosage
 
         String regimenId = getRegimenIdFrom(ivrContext);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        if (pillRegimenSnapshot.isPreviousDosageCaptured()) {
-            return getAdherenceMessage(regimenId, pillRegimenSnapshot, toDate);
-        }
-        return new String[0];
+        return getAdherenceMessage(regimenId, pillRegimenSnapshot, toDate);
     }
-
 }

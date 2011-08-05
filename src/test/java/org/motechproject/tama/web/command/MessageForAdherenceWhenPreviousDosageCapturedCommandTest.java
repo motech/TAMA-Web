@@ -11,7 +11,6 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
@@ -19,6 +18,7 @@ import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
 import org.motechproject.tama.util.DateUtility;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,6 +35,8 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     private IVRRequest ivrRequest;
 
     private final String REGIMEN_ID = "regimenId";
+    private DosageResponse currentDosage;
+    private DosageResponse previousDosage;
 
     @Before
     public void setup() {
@@ -46,8 +48,10 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("med1", null, null));
-        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), DateUtility.now(), medicineResponses));
-        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), DateUtility.newDate(2011, 7, 5), DateUtility.newDate(2012, 7, 5), DateUtility.now(), medicineResponses));
+        currentDosage = new DosageResponse("currentDosageId", new Time(9, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), DateUtility.now(), medicineResponses);
+        dosageResponses.add(currentDosage);
+        previousDosage = new DosageResponse("previousDosageId", new Time(15, 5), DateUtility.newDate(2011, 7, 5), DateUtility.newDate(2012, 7, 5), DateUtility.now(), medicineResponses);
+        dosageResponses.add(previousDosage);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
@@ -57,23 +61,36 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     @Test
     public void shouldReturnAdherenceMessageWhenPreviousDosageInformationCaptured() {
-        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        Date lastTakenDate = null;
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, lastTakenDate, new ArrayList<MedicineResponse>()));
-
-        Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
-        LocalDate now = DateUtility.today();
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID, now, DateUtility.addDaysToLocalDate(now, -28))).thenReturn(75);
+        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(56);
 
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
+        assertEquals(2, message.length);
         assertEquals(IVRMessage.ADHERENCE_PERCENT_MESSAGE, message[0]);
+        assertEquals("100", message[1]);
     }
 
     @Test
-    public void shouldNotReturnAnyMessageWhenPreviousDosageInformationNotCaptured() {
+    public void shouldReturnAdherenceMessageForFirstDosage() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        DateTime dosageLastTakenDate = new DateTime().minusDays(2);
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, dosageLastTakenDate.toDate(), new ArrayList<MedicineResponse>()));
+        Date lastTakenDate = null;
+        currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), lastTakenDate, new ArrayList<MedicineResponse>());
+        dosages.add(currentDosage);
+
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
+        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(28);
+
+        String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
+        assertEquals(2, message.length);
+        assertEquals(IVRMessage.ADHERENCE_PERCENT_MESSAGE, message[0]);
+        assertEquals("100", message[1]);
+    }
+
+    @Test
+    public void shouldNotReturnAnyMessageWhenPreviousDosageInformationNotCapturedYesterday() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+        Date lastTakenDate = new DateTime().minusDays(2).toDate();
+        currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), lastTakenDate, new ArrayList<MedicineResponse>());
+        dosages.add(currentDosage);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 

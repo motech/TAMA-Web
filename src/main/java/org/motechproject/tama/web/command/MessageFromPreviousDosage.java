@@ -17,7 +17,7 @@ public class MessageFromPreviousDosage extends BaseTreeCommand {
         IVRContext ivrContext = (IVRContext) o;
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
 
-        if (pillRegimenSnapshot.isPreviousDosageTaken()) {
+        if (pillRegimenSnapshot.isPreviousDosageCaptured()) {
             return new String[0];
         }
         List<String> messages = new ArrayList<String>();

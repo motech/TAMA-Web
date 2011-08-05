@@ -27,13 +27,13 @@ public class PreviousPillTakenCommandTest {
     private IVRSession ivrSession;
     @Mock
     private PillReminderService pillReminderService;
-    private PreviousPillTakenCommand previousPillTakenCommand;
+    private StopPreviousPillReminderCommand previousPillTakenCommand;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        previousPillTakenCommand = new PreviousPillTakenCommand(pillReminderService);
+        previousPillTakenCommand = new StopPreviousPillReminderCommand(pillReminderService);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(context.ivrRequest()).thenReturn(ivrRequest);
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());

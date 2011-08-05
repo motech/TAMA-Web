@@ -124,7 +124,7 @@ public class PillRegimenSnapshotTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        assertTrue(pillRegimenSnapshot.isPreviousDosageTaken());
+        assertTrue(pillRegimenSnapshot.isPreviousDosageCaptured());
     }
 
     @Test
@@ -138,7 +138,7 @@ public class PillRegimenSnapshotTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        assertFalse(pillRegimenSnapshot.isPreviousDosageTaken());
+        assertFalse(pillRegimenSnapshot.isPreviousDosageCaptured());
     }
 
     @Test
@@ -154,7 +154,7 @@ public class PillRegimenSnapshotTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        assertFalse(pillRegimenSnapshot.isPreviousDosageTaken());
+        assertFalse(pillRegimenSnapshot.isPreviousDosageCaptured());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class PillRegimenSnapshotTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        assertTrue(pillRegimenSnapshot.isPreviousDosageTaken());
+        assertTrue(pillRegimenSnapshot.isPreviousDosageCaptured());
     }
 
     @Test
