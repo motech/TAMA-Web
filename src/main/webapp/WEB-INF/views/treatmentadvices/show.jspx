@@ -5,7 +5,7 @@
     <page:show id="ps_org_motechproject_tama_domain_TreatmentAdvice" object="${treatmentAdvice}" path="/treatmentadvices" list="false" create="false" update="false" delete="false">
         <field:display object="${treatmentAdvice}" field="patientId" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
         <field:display object="${treatmentAdvice}" field="regimenName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens"/>
-        <field:display object="${treatmentAdvice}" field="regimenCompositionName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"/>
+        <field:display object="${treatmentAdvice}" field="drugCompositionName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"/>
         <table>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
@@ -27,7 +27,7 @@
                             <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="dosageType" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage" />
                             <c:forEach items="${treatmentAdvice.drugDosages[item.index].dosageSchedules}" varStatus="scheduleItem" var="drugDosageSchedule">
                                 <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[scheduleItem.index]}">
-                                    <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[scheduleItem.index]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{scheduleItem.index}" label="Time ${scheduleItem.index + 1}" />
+                                    <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[scheduleItem.index]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{scheduleItem.index}" label="Time" />
                                 </c:if>
                             </c:forEach>
                         </td>

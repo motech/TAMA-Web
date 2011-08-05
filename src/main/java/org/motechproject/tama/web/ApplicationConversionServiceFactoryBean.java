@@ -111,7 +111,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
     
     static class RegimenConverter implements Converter<Regimen, String>  {
         public String convert(Regimen regimen) {
-            return new StringBuilder().append(regimen.getName()).append(" ").append(regimen.getRegimenDisplayName()).toString();
+            return new StringBuilder().append(regimen.getName()).append(" ").append(regimen.getDisplayName()).toString();
         }
         
     }

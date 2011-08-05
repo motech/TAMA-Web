@@ -5,21 +5,21 @@ import org.motechproject.tama.domain.DrugComposition;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RegimenCompositionBuilder {
+public class DrugCompositionBuilder {
 
     private DrugComposition drugComposition = new DrugComposition();
 
-    public RegimenCompositionBuilder withId(String id){
-        this.drugComposition.setDrugCompositionId(id);
+    public DrugCompositionBuilder withId(String id){
+        this.drugComposition.setId(id);
         return this;
     }
 
-    public RegimenCompositionBuilder withDrugIds(Set<String> drugIds){
+    public DrugCompositionBuilder withDrugIds(Set<String> drugIds){
         this.drugComposition.setDrugIds(drugIds);
         return this;
     }
 
-    public RegimenCompositionBuilder withDisplayName(String displayName){
+    public DrugCompositionBuilder withDisplayName(String displayName){
         this.drugComposition.setDisplayName(displayName);
         return this;
     }
@@ -28,11 +28,11 @@ public class RegimenCompositionBuilder {
         return this.drugComposition;
     }
 
-    public static RegimenCompositionBuilder startRecording() {
-        return new RegimenCompositionBuilder();
+    public static DrugCompositionBuilder startRecording() {
+        return new DrugCompositionBuilder();
     }
 
-    public RegimenCompositionBuilder withDefaults(){
+    public DrugCompositionBuilder withDefaults(){
         HashSet<String> drugIds = new HashSet<String>();
         drugIds.add("drugId1");
         drugIds.add("drugId2");

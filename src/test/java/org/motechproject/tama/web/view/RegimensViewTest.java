@@ -37,8 +37,8 @@ public class RegimensViewTest {
                 add(new RegimenBuilder().withDefaults().withName("regimen1").build());
             }
         });
-        assertEquals("regimen1", regimensView.getAll().get(0).getRegimenDisplayName());
-        assertEquals("regimen2", regimensView.getAll().get(1).getRegimenDisplayName());
+        assertEquals("regimen1", regimensView.getAll().get(0).getDisplayName());
+        assertEquals("regimen2", regimensView.getAll().get(1).getDisplayName());
     }
 
     @Test
@@ -50,8 +50,8 @@ public class RegimensViewTest {
                 add(new RegimenBuilder().withDefaults().withName("regimen1").build());
             }
         });
-        assertEquals("regimen1", regimensView.getAll().get(0).getRegimenDisplayName());
-        assertEquals("Regimen2", regimensView.getAll().get(1).getRegimenDisplayName());
+        assertEquals("regimen1", regimensView.getAll().get(0).getDisplayName());
+        assertEquals("Regimen2", regimensView.getAll().get(1).getDisplayName());
     }
 
 }

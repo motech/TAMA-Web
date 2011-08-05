@@ -17,15 +17,18 @@ public class DosagesTest extends SpringIntegrationTest {
     @Test
     public void testGetAllShouldSortAndReturnTheList() {
         DosageType twice = new DosageType("Twice Daily");
-        DosageType once = new DosageType("Once Daily");
+        DosageType morning = new DosageType("Morning Daily");
+        DosageType evening = new DosageType("Evening Daily");
         dosageTypes.add(twice);
-        dosageTypes.add(once);
+        dosageTypes.add(morning);
+        dosageTypes.add(evening);
 
         List<DosageType> all = dosageTypes.getAll();
-        Assert.assertEquals("Once Daily", all.get(0).getType());
+        Assert.assertEquals("Evening Daily", all.get(0).getType());
         Assert.assertEquals("Twice Daily", all.get(all.size() -1).getType());
 
-        markForDeletion(once);
+        markForDeletion(evening);
+        markForDeletion(morning);
         markForDeletion(twice);
     }
 }

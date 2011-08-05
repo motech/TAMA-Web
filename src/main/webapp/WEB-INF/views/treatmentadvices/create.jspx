@@ -1,149 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <script src="/tama/js/treatmentadvice.js" type="text/javascript"/>
+
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
     <form:create id="fc_org_motechproject_tama_domain_TreatmentAdvice" modelAttribute="treatmentAdvice" path="/treatmentadvices" render="${empty dependencies}" z="fHi3nZ2yXf8qzpuAArmXy4h8ghE=">
+        <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}" />
         <field:display object="${patientIdentifier}" field="" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimenId" items="${regimens}" itemValue="id" itemLabel="displayName" path="/regimens" label="Regimen *"/>
-        <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}" />
-        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="drugCompositionId" items="${drugCompositions}" path="/drugCompositions" label="Drug Composition *"/>
+        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositiongroups" field="drugCompositionGroupId" items="${drugCompositionGroups}" path="/drugCompositionGroups" label="Drug Composition Group*"/>
         <div>
             <div>
                 <div id="dosage_times_error" class="error"/>
             </div>
-            <div id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" />
+            <div id="dosages" >
+                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
+                    <div class="dosage">
+
+                        <c:choose>
+                            <c:when test="${item.index == 0}">
+                                <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="drugCompositionId" items="${drugCompositions}" path="/drugCompositions" label="Drug Name *"/>
+                            </c:when>
+                            <c:otherwise>
+                                <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name *" />
+                            </c:otherwise>
+                        </c:choose>
+
+                        <input type="hidden" id="drugDosages[${item.index}].drugId" name="drugDosages[${item.index}].drugId" />
+
+                        <field:select field="drugDosages[${item.index}].brandId" id="c_org_motechproject_tama_domain_TreatmentAdvice_brand${item.index}" label="Brand Name *" items="${drugCompositionGroups}" path="/dummy" />
+                        <field:select field="drugDosages[${item.index}].dosageTypeId" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}" path="/dosageTypes"  />
+                        <field:input field="drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Morning Time" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
+                        <field:input field="drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Evening Time" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
+                        <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].startDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}" label="Start Date" required="true" />
+                        <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].endDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}" label="End Date"/>
+                        <field:input field="drugDosages[${item.index}].advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice"/>
+                        <field:select field="drugDosages[${item.index}].mealAdviceId" id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}" label="Meal Advice *" itemLabel="type" itemValue="id" items="${mealAdviceTypes}" path="/dosageTypes"/>
+                    </div>
+                </c:forEach>
+            </div>
         </div>
         <br />
     </form:create>
-
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
-    <script type="text/javascript">
-        <![CDATA[
-        dojo.addOnLoad(function() {
-            var clearRequiredDojoValidationsFromTheExistingForm = function() {
-
-                var startDateOfSecondDrug = '_treatmentAdvice.drugDosages[1].startDate_id';
-                if (dojo.byId(startDateOfSecondDrug) != null) {
-                  Spring.addDecoration(new Spring.ElementDecoration({elementId : startDateOfSecondDrug, widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {required : false}}));
-                }
-
-                var firstDosageTimeOfSecondDrug = '_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id';
-                if (dojo.byId(firstDosageTimeOfSecondDrug) != null) {
-                  Spring.addDecoration(new Spring.ElementDecoration({elementId : firstDosageTimeOfSecondDrug, widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {required : false}}));
-                }
-            }
-
-            var populateDrugDosages = function() {
-                var regimenDropDown = dijit.byId('_regimenId_id');
-                var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                var drugDosagesURL = "treatmentadvices/ajax/drugDosagesFor?regimenId=" + regimenDropDown + "&drugCompositionId=" + regimenCompositionDropDown;
-                dojo.xhrGet({
-                    url: drugDosagesURL,
-                    load: function(result) {
-                        clearRequiredDojoValidationsFromTheExistingForm();
-                        dojo.byId('c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages').innerHTML = result;
-                        parseScript(result);
-                    },
-                    error: function(result, args){
-                       if(result.status===601){
-                        window.location.reload();
-                       }
-                    }
-                });
-            };
-
-            var populateRegimenCompositions = function() {
-                var regimenDropDown = dijit.byId('_regimenId_id');
-                var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                var regimenCompositionsURL = "treatmentadvices/ajax/regimenCompositionsFor?regimenId=" + regimenDropDown;
-                populateComboBox(regimenCompositionsURL, regimenCompositionDropDown);
-            };
-
-            dojo.connect(dijit.byId('_regimenCompositionId_id'), 'onChange', populateDrugDosages);
-            dojo.connect(dijit.byId('_regimenId_id'), 'onChange', populateRegimenCompositions);
-            populateRegimenCompositions();
-
-            var validateDosageTimes = function() {
-            var drug1DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
-            var drug1DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
-            var drug2DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
-            var drug2DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
-            var amTimesArray = [drug1DosageTime1, drug2DosageTime1];
-            var pmTimesArray = [drug1DosageTime2, drug2DosageTime2];
-
-
-                var amTimes = {}, pmTimes = {};
-                dojo.forEach(amTimesArray, function(item) {
-                        if(item != null && item != undefined) {
-                            amTimes[item.value] = "dummy";
-                        }
-                });
-                dojo.forEach(pmTimesArray, function(item) {
-                        if(item != null && item != undefined) {
-                            pmTimes[item.value] = "dummy";
-
-                        }
-                });
-
-                var getProperties = function(object) {
-                    var result = [];
-                    for (key in object)
-                        result.push(key);
-                    return result;
-                };
-
-                var conditions = [
-                {
-                    execute: function(){ return getProperties(amTimes).length > 1 && getProperties(pmTimes).length > 1; },
-                    message : "You have entered different times for morning and evening doses. Please change the times to the same time for both dosages."
-                },
-                {
-                    execute: function(){ return getProperties(amTimes).length > 1; },
-                    message : "You have entered different times for morning dose. Please change the times to the same time for both dosages."
-                },
-                {
-                    execute: function(){ return getProperties(pmTimes).length > 1; },
-                    message : "You have entered different times for evening dose. Please change the times to the same time for both dosages."
-                }];
-
-                for(var i = 0; i < conditions.length; i++){
-                    if(conditions[i].execute())
-                        return conditions[i].message;
-                }
-                return null;
-            };
-
-            dojo.connect(dojo.byId("treatmentAdvice"), "onsubmit", function(evt) {
-
-                if (validateDosageTimes() != null) {
-                    var error = dojo.byId("dosage_times_error");
-                    dojo.html.set(error, validateDosageTimes());
-                    evt.preventDefault();
-                } else {
-                var drug1DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
-                var drug1DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
-                var drug2DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
-                var drug2DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
-                var amTimesArray = [drug1DosageTime1, drug2DosageTime1];
-                var pmTimesArray = [drug1DosageTime2, drug2DosageTime2];
-                    dojo.forEach(amTimesArray, function(item) {
-                        if(item != null && item != undefined) {
-                            item.value = item.value + 'am';
-                        }
-                    });
-                    dojo.forEach(pmTimesArray, function(item) {
-                        if(item != null && item != undefined) {
-                            item.value = item.value + 'pm';
-                        }
-                    });
-
-                }
-            });
-
-        });
-       function encodePk(){
-           return true;
-       }
-        ]]>
-    </script>
 </div>

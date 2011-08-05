@@ -1,5 +1,8 @@
 package org.motechproject.tama.mapper;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
 import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
@@ -13,6 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+
+import static org.apache.commons.collections.CollectionUtils.*;
 
 @Component
 public class PillRegimenRequestMapper {
@@ -63,7 +68,15 @@ public class PillRegimenRequestMapper {
     private Map<String, List<DrugDosage>> createDosageMap(TreatmentAdvice treatmentAdvice) {
         Map<String, List<DrugDosage>> drugDosagesMap = new HashMap<String, List<DrugDosage>>();
         for (DrugDosage drug : treatmentAdvice.getDrugDosages()) {
-            for (String dosageSchedule : drug.getDosageSchedules()) {
+            List<String> dosageSchedules = drug.getDosageSchedules();
+            filter(dosageSchedules, new Predicate() {
+                @Override
+                public boolean evaluate(Object o) {
+                    String dosageSchedule = (String) o;
+                    return StringUtils.isNotBlank(dosageSchedule);
+                }
+            });
+            for (String dosageSchedule : dosageSchedules) {
                 List<DrugDosage> drugList = getExistingDrugsForDosageSchedule(drugDosagesMap, dosageSchedule);
                 drugList.add(drug);
                 drugDosagesMap.put(dosageSchedule, drugList);

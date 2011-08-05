@@ -20,35 +20,43 @@
                     <td>
                         <field:select field="treatmentAdvice.drugDosages[${item.index}].dosageTypeId" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}" path="/dosageTypes"/>
                         <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Morning Time" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true"/>
-                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Evening Time" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" />
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Evening Time" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true"/>
                         <script type="text/javascript">
-                            dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:none');
-                            dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', true);
-                            dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id'), 'onChange', function() {
-                                if (dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id')._lastDisplayedValue == 'Morning Daily') {
-                                    dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:none');
-                                    dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0_id').setAttribute('style', 'display:block');
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', true);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('required', false);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]_id').set('disabled', false);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]_id').set('required', true);
+                            var morningEveningTime = function() {
+
+                                var morning_label = dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0_id');
+                                var morning_time = dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]_id');
+                                var evening_time = dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id');
+                                var evening_label = dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id');
+
+                                var schedule = dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id');
+
+                                if (schedule._lastDisplayedValue == 'Morning Daily') {
+                                    morning_label.setAttribute('style', 'display:block');
+                                    morning_time.set('disabled', false);
+                                    morning_time.set('required', true);
+                                    evening_label.setAttribute('style', 'display:none');
+                                    evening_time.set('disabled', true);
+                                    evening_time.set('required', false);
                                 }
-                                else if (dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id')._lastDisplayedValue == 'Evening Daily'){
-                                    dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:block');
-                                    dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0_id').setAttribute('style', 'display:none');
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]_id').set('disabled', false);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]_id').set('required', false);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', false);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('required', true);
+                                else if (schedule._lastDisplayedValue == 'Evening Daily'){
+                                    evening_label.setAttribute('style', 'display:block');
+                                    evening_time.set('disabled', false);
+                                    evening_time.set('required', true);
+                                    morning_label.setAttribute('style', 'display:none');
+                                    morning_time.set('disabled', true);
+                                    morning_time.set('required', false);
                                 } else {
-                                    dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1_id').setAttribute('style', 'display:block');
-                                    dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0_id').setAttribute('style', 'display:block');
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]_id').set('disabled', false);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]_id').set('required', true);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('disabled', false);
-                                    dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]_id').set('required', true);
+                                    morning_label.setAttribute('style', 'display:block');
+                                    morning_time.set('disabled', false);
+                                    morning_time.set('required', true);
+                                    evening_label.setAttribute('style', 'display:block');
+                                    evening_time.set('disabled', false);
+                                    evening_time.set('required', true);
                                 }
-                            });
+                            };
+                            morningEveningTime();
+                            dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[${item.index}].dosageTypeId_id'), 'onChange', morningEveningTime);
                         </script>
                     </td>
             </c:forEach>

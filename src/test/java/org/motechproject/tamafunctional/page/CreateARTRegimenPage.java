@@ -95,7 +95,7 @@ public class CreateARTRegimenPage extends Page {
     }
 
     private void selectDrugCompositionAndWaitTillTheDrugDosagesShow(TreatmentAdviceView treatmentAdvice) {
-        regimenCompositionElement.sendKeys(treatmentAdvice.getRegimenCompositionName());
+        regimenCompositionElement.sendKeys(treatmentAdvice.getDrugCompositionName());
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {

@@ -1,6 +1,6 @@
 package org.motechproject.tama.builder;
 
-import org.motechproject.tama.domain.DrugComposition;
+import org.motechproject.tama.domain.DrugCompositionGroup;
 import org.motechproject.tama.domain.Regimen;
 
 import java.util.HashSet;
@@ -15,14 +15,14 @@ public class RegimenBuilder {
         return this;
     }
 
-    public RegimenBuilder withRegimenCompositions(Set<DrugComposition> compositions){
-        this.regimen.setDrugCompositions(compositions);
+    public RegimenBuilder withDrugCompositionGroups(Set<DrugCompositionGroup> compositions){
+        this.regimen.setDrugCompositionGroups(compositions);
         return this;
     }
 
     public RegimenBuilder withName(String name){
         this.regimen.setName(name);
-        this.regimen.setRegimenDisplayName(name);
+        this.regimen.setDisplayName(name);
         return this;
     }
 
@@ -35,8 +35,8 @@ public class RegimenBuilder {
     }
 
     public RegimenBuilder withDefaults(){
-        HashSet<DrugComposition> compositions = new HashSet<DrugComposition>();
-        compositions.add(RegimenCompositionBuilder.startRecording().withDefaults().build());
-        return this.withId("regimenId").withName("regimenName").withRegimenCompositions(compositions);
+        HashSet<DrugCompositionGroup> compositions = new HashSet<DrugCompositionGroup>();
+        compositions.add(DrugCompositionGroupBuilder.startRecording().withDefaults().build());
+        return this.withId("regimenId").withName("regimenName").withDrugCompositionGroups(compositions);
     }
 }

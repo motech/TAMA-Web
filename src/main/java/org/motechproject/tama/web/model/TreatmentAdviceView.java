@@ -9,7 +9,7 @@ public class TreatmentAdviceView {
 
     private String regimenName;
 
-    private String regimenCompositionName;
+    private String drugCompositionName;
 
     private List<DrugDosageView> drugDosages = new ArrayList<DrugDosageView>();
 
@@ -29,12 +29,12 @@ public class TreatmentAdviceView {
         this.regimenName = regimenName;
     }
 
-    public String getRegimenCompositionName() {
-        return regimenCompositionName;
+    public String getDrugCompositionName() {
+        return drugCompositionName;
     }
 
-    public void setRegimenCompositionName(String regimenCompositionName) {
-        this.regimenCompositionName = regimenCompositionName;
+    public void setDrugCompositionName(String drugCompositionName) {
+        this.drugCompositionName = drugCompositionName;
     }
 
     public void addDrugDosage(DrugDosageView drugDosage) {

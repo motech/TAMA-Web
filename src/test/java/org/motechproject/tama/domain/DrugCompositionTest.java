@@ -12,7 +12,7 @@ public class DrugCompositionTest {
 		Drug drug = new Drug("AZT");
 		drug.setId("did");
 		
-		drugComposition.addDrug(drug);
+		drugComposition.addDrugId(drug);
 		
 		Assert.assertEquals(1, drugComposition.getDrugIds().size());
 		Assert.assertEquals(drug.getId(), CollectionUtils.get(drugComposition.getDrugIds(), 0));
@@ -21,6 +21,6 @@ public class DrugCompositionTest {
 	@Test
 	public void shouldGenerateRegimenCompositionId() {
 		DrugComposition drugComposition = new DrugComposition();
-		Assert.assertNotNull(drugComposition.getDrugCompositionId());
+		Assert.assertNotNull(drugComposition.getId());
 	}
 }

@@ -419,3 +419,18 @@ fieldset th {
 .drug_rash_text { display:block; margin-top:5px; }
 .drug_allergy_view_label { display:block; font-weight:bold; }
 .drug_rash_view_label { display:block; font-weight:bold; margin-top:30px; }
+
+#dosages {
+    overflow: auto;
+    border-top: 1px solid grey;
+    padding-top: 12px;
+}
+
+.dosage {
+    float: left;
+    margin-right: 80px;
+}
+
+#_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_id {
+    height: 22px;
+}

@@ -106,7 +106,7 @@ public class TreatmentAdviceControllerTest {
     }
 
     @Test
-    public void shouldGetRegimenCompositionsForARegimen() {
+    public void shouldGetDrugCompositionsForARegimen() {
         String regimenId = "patientId";
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
         HashSet<String> drugIds = new HashSet<String>();
@@ -120,10 +120,10 @@ public class TreatmentAdviceControllerTest {
         when(regimens.get(regimenId)).thenReturn(regimen);
         when(drugs.getDrugs(drugIds)).thenReturn(returnedDrugs);
 
-        Set<ComboBoxView> regimenCompositions = controller.regimenCompositionsFor(regimenId);
-        ComboBoxView regimenComposition = (ComboBoxView) CollectionUtils.get(regimenCompositions, 0);
+        Set<ComboBoxView> drugCompositions = controller.drugCompositionsFor(regimenId);
+        ComboBoxView regimenComposition = (ComboBoxView) CollectionUtils.get(drugCompositions, 0);
 
-        junit.framework.Assert.assertEquals(1, regimenCompositions.size());
+        junit.framework.Assert.assertEquals(1, drugCompositions.size());
         junit.framework.Assert.assertEquals("regimenCompositionId", regimenComposition.getId());
         junit.framework.Assert.assertEquals("drugDisplayName", regimenComposition.getDisplayName());
     }
@@ -168,7 +168,7 @@ public class TreatmentAdviceControllerTest {
 
     @Test
     public void shouldGetAllRegimenCompositions() {
-        List<String> viewRegimenCompositions = controller.regimenCompositions();
+        List<String> viewRegimenCompositions = controller.drugCompositions();
         junit.framework.Assert.assertEquals(1, viewRegimenCompositions.size());
     }
 

@@ -45,7 +45,7 @@ public class TreatmentAdviceViewMapperTest {
 
         Assert.assertEquals("patientId", treatmentAdviceView.getPatientId());
         Assert.assertEquals("regimenName", treatmentAdviceView.getRegimenName());
-        Assert.assertEquals("drugDisplayName", treatmentAdviceView.getRegimenCompositionName());
+        Assert.assertEquals("drugDisplayName", treatmentAdviceView.getDrugCompositionName());
         Assert.assertEquals(0, treatmentAdviceView.getDrugDosages().size());
     }
 }

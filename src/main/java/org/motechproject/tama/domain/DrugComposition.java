@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.util.UUIDUtil;
 
 import java.util.HashSet;
@@ -7,17 +8,19 @@ import java.util.Set;
 
 public class DrugComposition extends BaseEntity {
 
-    private String drugCompositionId;
+    private String id;
 
     private Set<String> drugIds = new HashSet<String>();
+
+    private Set<Drug> drugs = new HashSet<Drug>();
 
     private String displayName;
 
     public DrugComposition() {
-        drugCompositionId = UUIDUtil.newUUID();
+        id = UUIDUtil.newUUID();
     }
 
-    public void addDrug(Drug drug) {
+    public void addDrugId(Drug drug) {
         drugIds.add(drug.getId());
     }
 
@@ -29,12 +32,12 @@ public class DrugComposition extends BaseEntity {
         this.drugIds = drugIds;
     }
 
-    public String getDrugCompositionId() {
-        return drugCompositionId;
+    public String getId() {
+        return id;
     }
 
-    public void setDrugCompositionId(String drugCompositionId) {
-        this.drugCompositionId = drugCompositionId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDisplayName() {
@@ -43,5 +46,13 @@ public class DrugComposition extends BaseEntity {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public Set<Drug> getDrugs() {
+        return drugs;
+    }
+
+    public void setDrugs(Set<Drug> drugs) {
+        this.drugs = drugs;
     }
 }

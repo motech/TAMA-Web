@@ -21,7 +21,7 @@ public class RegimensView {
         Collections.sort(allRegimens, new Comparator<Regimen>() {
             @Override
             public int compare(Regimen regimen, Regimen otherRegimen) {
-                return regimen.getRegimenDisplayName().toLowerCase().compareTo(otherRegimen.getRegimenDisplayName().toLowerCase());
+                return regimen.getDisplayName().toLowerCase().compareTo(otherRegimen.getDisplayName().toLowerCase());
             }
         });
         return allRegimens;

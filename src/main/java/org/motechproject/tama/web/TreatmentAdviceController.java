@@ -65,9 +65,11 @@ public class TreatmentAdviceController extends BaseController {
         if (adviceForPatient != null) {
             return "redirect:/treatmentadvices/" + encodeUrlPathSegment(adviceForPatient.getId(), httpServletRequest);
         }
-        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+        TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
         treatmentAdvice.setPatientId(patientId);
+        treatmentAdvice.setDrugCompositionGroupId("");
         populateModel(uiModel, treatmentAdvice);
+
         return "treatmentadvices/create";
     }
 
@@ -91,22 +93,22 @@ public class TreatmentAdviceController extends BaseController {
         return "treatmentadvices/show";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimenCompositionsFor")
+    @RequestMapping(method = RequestMethod.GET, value = "/ajax/drugCompositionsFor")
     public
     @ResponseBody
-    Set<ComboBoxView> regimenCompositionsFor(@RequestParam String regimenId) {
+    Set<ComboBoxView> drugCompositionsFor(@RequestParam String regimenId) {
         Set<DrugComposition> compositions = regimens.get(regimenId).getDrugCompositions();
         Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
         for (DrugComposition drugComposition : compositions) {
-            comboBoxViews.add(new ComboBoxView(drugComposition.getDrugCompositionId(), drugComposition.getDisplayName()));
+            comboBoxViews.add(new ComboBoxView(drugComposition.getId(), drugComposition.getDisplayName()));
         }
         return comboBoxViews;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/drugDosagesFor")
-    public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
+    public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String drugCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
         Regimen regimen = regimens.get(regimenId);
-        DrugComposition drugComposition = regimen.getCompositionsFor(regimenCompositionId);
+        DrugComposition drugComposition = regimen.getDrugCompositionFor(drugCompositionId);
 
         List<Drug> allDrugs = this.drugs.getDrugs(drugComposition.getDrugIds());
 
@@ -121,19 +123,32 @@ public class TreatmentAdviceController extends BaseController {
         return "treatmentadvices/drugdosages";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
+    public @ResponseBody List<Regimen> allRegimens() {
+        List<Regimen> allRegimens = regimens.getAll();
+        return allRegimens;
+    }
+
+
     public List<ComboBoxView> regimens() {
         List<Regimen> allRegimens = new RegimensView(regimens).getAll();
         List<ComboBoxView> comboBoxViews = new ArrayList<ComboBoxView>();
         for (Regimen regimen : allRegimens) {
-            comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getRegimenDisplayName()));
+            comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getDisplayName()));
         }
         return comboBoxViews;
     }
 
-    public List<String> regimenCompositions() {
-        ArrayList<String> regimenCompositions = new ArrayList<String>();
-        regimenCompositions.add("regimenCompositions");
-        return regimenCompositions;
+    public List<String> drugCompositionGroups() {
+        ArrayList<String> drugCompositionGroups = new ArrayList<String>();
+        drugCompositionGroups.add("drugCompositionGroups");
+        return drugCompositionGroups;
+    }
+
+    public List<String> drugCompositions() {
+        ArrayList<String> drugCompositions = new ArrayList<String>();
+        drugCompositions.add("drugCompositions");
+        return drugCompositions;
     }
 
     @ModelAttribute("mealAdviceTypes")
@@ -150,6 +165,9 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
         uiModel.addAttribute("patientIdentifier", patients.get(treatmentAdvice.getPatientId()).getPatientId());
         uiModel.addAttribute("regimens", regimens());
-        uiModel.addAttribute("regimenCompositions", regimenCompositions());
+        uiModel.addAttribute("drugCompositions", drugCompositions());
+        uiModel.addAttribute("drugCompositionGroups", drugCompositionGroups());
+        uiModel.addAttribute("dosageTypes", dosageTypes());
+        uiModel.addAttribute("mealAdviceTypes", mealAdviceTypes());
     }
 }

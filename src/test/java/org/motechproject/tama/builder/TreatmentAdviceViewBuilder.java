@@ -16,7 +16,7 @@ public class TreatmentAdviceViewBuilder {
     }
 
     public TreatmentAdviceViewBuilder withRegimenCompositionName(String regimenCompositionName){
-        this.treatmentAdvice.setRegimenCompositionName(regimenCompositionName);
+        this.treatmentAdvice.setDrugCompositionName(regimenCompositionName);
         return this;
     }
 
