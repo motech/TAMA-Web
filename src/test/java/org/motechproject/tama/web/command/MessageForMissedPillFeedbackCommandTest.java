@@ -17,7 +17,7 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
-import org.motechproject.tama.util.DateUtility;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -42,8 +42,8 @@ public class MessageForMissedPillFeedbackCommandTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("med1", null, null));
-        dosageResponses.add(new DosageResponse("d1", new Time(9, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), DateUtility.now(), medicineResponses));
-        dosageResponses.add(new DosageResponse("d2", new Time(15, 5), DateUtility.newDate(2011, 7, 5), DateUtility.newDate(2012, 7, 5), DateUtility.now(), medicineResponses));
+        dosageResponses.add(new DosageResponse("d1", new Time(9, 5), DateUtil.newDate(2011, 7, 1), DateUtil.newDate(2012, 7, 1), DateUtil.today(), medicineResponses));
+        dosageResponses.add(new DosageResponse("d2", new Time(15, 5), DateUtil.newDate(2011, 7, 5), DateUtil.newDate(2012, 7, 5), DateUtil.today(), medicineResponses));
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         ivrRequest = new IVRRequest();
@@ -51,7 +51,7 @@ public class MessageForMissedPillFeedbackCommandTest {
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
-        command = new MessageForMissedPillFeedbackCommand(dosageAdherenceLogs, DateUtility.newLocalDate(2011, 8, 4));
+        command = new MessageForMissedPillFeedbackCommand(dosageAdherenceLogs, DateUtil.newDate(2011, 8, 4));
     }
 
     @Test
@@ -92,8 +92,8 @@ public class MessageForMissedPillFeedbackCommandTest {
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceLessThan70() {
         when(dosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
-        LocalDate today = DateUtility.today();
-        when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID, today, DateUtility.addDaysToLocalDate(today, -28))).thenReturn(TOTAL_DOSAGE_COUNT * 69 / 100);
+        LocalDate today = DateUtil.today();
+        when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID, today, today.minusDays(28))).thenReturn(TOTAL_DOSAGE_COUNT * 69 / 100);
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(IVRMessage.MISSED_PILL_FEEDBACK_LESS_THAN_70, message[0]);

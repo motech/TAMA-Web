@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.command;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,6 +13,7 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.util.DateUtil;
 
 import java.util.*;
 
@@ -52,10 +53,10 @@ public class MessageFromPreviousDosageTest {
     @Test
     public void shouldReturnMessagesWhenPreviousDosageHasNotBeenTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        DateTime dosageLastTakenDate = new DateTime().minusDays(2);
+        LocalDate dosageLastTakenDate = DateUtil.today().minusDays(2);
         ArrayList<MedicineResponse> medicines = new ArrayList<MedicineResponse>();
         medicines.add(new MedicineResponse("medicine1", null, null));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, dosageLastTakenDate.toDate(), medicines));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, dosageLastTakenDate, medicines));
 
         when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
@@ -68,7 +69,7 @@ public class MessageFromPreviousDosageTest {
     @Test
     public void shouldReturnNoMessagesWhenPreviousDosageHasBeenTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        Date lastTakenDate = null;
+        LocalDate lastTakenDate = null;
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, lastTakenDate, new ArrayList<MedicineResponse>()));
 
         when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));

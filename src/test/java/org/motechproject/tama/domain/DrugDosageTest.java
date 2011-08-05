@@ -1,8 +1,8 @@
 package org.motechproject.tama.domain;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
-
-import java.util.Calendar;
+import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -10,12 +10,10 @@ public class DrugDosageTest {
 
     @Test
     public void shouldNotSetDefaultEndDate() {
-        Calendar startDate = Calendar.getInstance();
-        startDate.clear(Calendar.MILLISECOND);
-        startDate.set(2010, 10, 10, 0, 0, 0);
+        LocalDate startDate = DateUtil.newDate(2010, 10, 10);
 
         DrugDosage drugDosage = new DrugDosage();
-        drugDosage.setStartDate(startDate.getTime());
+        drugDosage.setStartDate(startDate);
 
         assertEquals(null, drugDosage.getEndDate());
     }

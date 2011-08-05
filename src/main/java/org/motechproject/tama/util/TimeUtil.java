@@ -1,6 +1,7 @@
 package org.motechproject.tama.util;
 
 import org.joda.time.DateTime;
+import org.motechproject.util.DateUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +24,7 @@ public class TimeUtil {
     }
 
     public TimeUtil withReminderLagTime(int reminderLag) {
-        DateTime dateTime = new DateTime().
+        DateTime dateTime = DateUtil.now().
                 withHourOfDay(withHours())
                 .withMinuteOfHour(getMinutes())
                 .plusMinutes(reminderLag);

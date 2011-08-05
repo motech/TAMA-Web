@@ -1,6 +1,8 @@
 package org.motechproject.tama.integration.repository;
 
 import org.ektorp.UpdateConflictException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 
 import java.util.List;
+import java.util.TimeZone;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -250,5 +253,4 @@ public class PatientsTest extends SpringIntegrationTest {
         markForDeletion(testReason);
         markForDeletion(modeOfTransmission);
     }
-
 }

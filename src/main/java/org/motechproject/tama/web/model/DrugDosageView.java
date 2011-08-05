@@ -1,10 +1,13 @@
 package org.motechproject.tama.web.model;
 
+import org.joda.time.LocalDate;
+import org.motechproject.util.DateUtil;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DrugDosageView {
+public class DrugDosageView extends TamaView {
 
     private String drugName;
 
@@ -14,9 +17,9 @@ public class DrugDosageView {
 
     private List<String> dosageSchedules = new ArrayList<String>();
 
-    private Date startDate;
+    private Date startDateAsDate;
 
-    private Date endDate;
+    private Date endDateAsDate;
 
     private String advice;
 
@@ -54,20 +57,36 @@ public class DrugDosageView {
         this.dosageSchedules = dosageSchedules;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public LocalDate getStartDate() {
+        return DateUtil.newDate(startDateAsDate);
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDateAsDate = toDate(startDate);
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public Date getStartDateAsDate() {
+        return startDateAsDate;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setStartDateAsDate(Date startDate) {
+        this.startDateAsDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return DateUtil.newDate(endDateAsDate);
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDateAsDate = toDate(endDate);
+    }
+
+    public Date getEndDateAsDate() {
+        return endDateAsDate;
+    }
+
+    public void setEndDateAsDate(Date endDate) {
+        this.endDateAsDate = endDate;
     }
 
     public String getAdvice() {

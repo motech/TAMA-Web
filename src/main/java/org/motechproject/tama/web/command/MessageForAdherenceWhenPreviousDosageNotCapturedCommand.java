@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
-import org.motechproject.tama.util.DateUtility;
+import org.motechproject.util.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +12,7 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommand extends Dos
     private LocalDate toDate;
 
     public MessageForAdherenceWhenPreviousDosageNotCapturedCommand() {
-        toDate = DateUtility.today();
+        toDate = DateUtil.today();
     }
 
     public MessageForAdherenceWhenPreviousDosageNotCapturedCommand(DosageAdherenceLogs dosageAdherenceLogs, LocalDate toDate) {

@@ -36,14 +36,14 @@
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                         <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="startDate" date="true" dateTimePattern="dd/MM/yyyy" label="Start Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}"/>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="startDateAsDate" date="true" dateTimePattern="dd/MM/yyyy" label="Start Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}"/>
                         </td>
                 </c:forEach>
             </tr>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                         <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="endDate" date="true" dateTimePattern="dd/MM/yyyy" label="End Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}"/>
+                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="endDateAsDate" date="true" dateTimePattern="dd/MM/yyyy" label="End Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}"/>
                         </td>
                 </c:forEach>
             </tr>

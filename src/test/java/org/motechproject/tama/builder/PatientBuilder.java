@@ -1,9 +1,8 @@
 package org.motechproject.tama.builder;
 
+import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.*;
-
-import java.util.Calendar;
-import java.util.Date;
+import org.motechproject.util.DateUtil;
 
 public class PatientBuilder {
 
@@ -19,7 +18,7 @@ public class PatientBuilder {
         return this;
     }
 
-    public PatientBuilder withDateOfBirth(Date dateOfBirth) {
+    public PatientBuilder withDateOfBirth(LocalDate dateOfBirth) {
         patient.setDateOfBirth(dateOfBirth);
         return this;
     }
@@ -100,11 +99,8 @@ public class PatientBuilder {
 
     public PatientBuilder withDefaults() {
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1990, 5, 21);
-        Date dob = calendar.getTime();
-        return this.withPatientId("1234_" + dob.getTime()).
-                withDateOfBirth(dob).
+        return this.withPatientId("1234_" + DateUtil.now().getMillis()).
+                withDateOfBirth(DateUtil.newDate(1990, 5, 21)).
                 withMobileNumber("9765456789").
                 withPasscode("123456").
                 withClinic(Clinic.newClinic()).

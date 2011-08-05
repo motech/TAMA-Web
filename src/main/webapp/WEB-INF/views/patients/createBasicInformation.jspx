@@ -4,7 +4,7 @@
     <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="${basic_information}" openPane="true">
         <field:input field="patientId" id="c_org_motechproject_tama_domain_patient_patientId" required="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
         <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" max="10"/>
-        <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8=" />
+        <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirthAsDate" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8=" />
         <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true" />
         <label for="_travelTimeToClinic_id">Travel Time To Clinic* :</label>
         In day(s) <springform:select path="travelTimeToClinicInDays" id="_travelTimeToClinicInDays_id" items="${daysInAMonth}" />

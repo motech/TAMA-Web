@@ -12,12 +12,13 @@ import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.util.DateUtility;
-import java.util.*;
+import org.motechproject.util.DateUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -117,7 +118,7 @@ public class PillRegimenSnapshotTest {
     public void previousDosageIsTakenWhenTheCurrentDosageIsTheVeryFirstDosageOfTheRegimen() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        Date lastTakenDate = null;
+        LocalDate lastTakenDate = null;
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, lastTakenDate, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
@@ -130,9 +131,9 @@ public class PillRegimenSnapshotTest {
     @Test
     public void previousDosageIsNotTakenWhenNotTakenThePreviousDay() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        DateTime dosageLastTakenDate = new DateTime().minusDays(2);
+        LocalDate dosageLastTakenDate = DateUtil.today().minusDays(2);
 
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, dosageLastTakenDate.toDate(), new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, dosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
@@ -144,11 +145,11 @@ public class PillRegimenSnapshotTest {
     @Test
     public void previousDosageIsNotTakenWhenNotTakenTheLastNightDoseWasNotTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        DateTime currentDosageLastTakenDate = new DateTime();
-        DateTime previousDosageLastTakenDate = currentDosageLastTakenDate.minusDays(2);
+        LocalDate currentDosageLastTakenDate = DateUtil.today();
+        LocalDate previousDosageLastTakenDate = currentDosageLastTakenDate.minusDays(2);
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, previousDosageLastTakenDate.toDate(), new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, currentDosageLastTakenDate.toDate(), new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
@@ -160,11 +161,11 @@ public class PillRegimenSnapshotTest {
     @Test
     public void previousDosageIsTakenWhenTheLastNightDoseWasTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        DateTime currentDosageLastTakenDate = new DateTime();
-        DateTime previousDosageLastTakenDate = currentDosageLastTakenDate.minusDays(1).withHourOfDay(22).withMinuteOfHour(05);
+        LocalDate currentDosageLastTakenDate = DateUtil.today();
+        LocalDate previousDosageLastTakenDate = currentDosageLastTakenDate.minusDays(1);
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, previousDosageLastTakenDate.toDate(), new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, currentDosageLastTakenDate.toDate(), new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
@@ -176,7 +177,7 @@ public class PillRegimenSnapshotTest {
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksLessThanFour() {
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        LocalDate toDate = DateUtility.newLocalDate(2011, 8, 1); // TotalCount = 32 + 23 = 28 + 23 = 51
+        LocalDate toDate = DateUtil.newDate(2011, 8, 1); // TotalCount = 32 + 23 = 28 + 23 = 51
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
@@ -186,7 +187,7 @@ public class PillRegimenSnapshotTest {
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksGreaterThanFour() {
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        LocalDate toDate = DateUtility.newLocalDate(2011, 10, 1); // TotalCount = 93 + 89 = 182; capped to 56
+        LocalDate toDate = DateUtil.newDate(2011, 10, 1); // TotalCount = 93 + 89 = 182; capped to 56
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
@@ -197,8 +198,8 @@ public class PillRegimenSnapshotTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("med1", null, null));
-        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), DateUtility.now(), medicineResponses));
-        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), DateUtility.newDate(2011, 7, 10), DateUtility.newDate(2012, 7, 10), DateUtility.now(), medicineResponses));
+        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), DateUtil.newDate(2012, 7, 1), DateUtil.today(), medicineResponses));
+        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 10), DateUtil.newDate(2012, 7, 10), DateUtil.today(), medicineResponses));
         return new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
     }
 }

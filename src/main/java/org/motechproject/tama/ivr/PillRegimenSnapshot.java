@@ -7,10 +7,9 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.pillreminder.util.Util;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.util.DateUtility;
+import org.motechproject.util.DateUtil;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class PillRegimenSnapshot {
     }
 
     private boolean wasPreviousDosageCapturedYesterday(DosageResponse previousDosage) {
-        return DateUtility.todayWithTime().minusDays(1).isBefore(previousDosage.getLastTakenDate().getTime());
+        return !DateUtil.today().minusDays(1).isAfter(previousDosage.getLastTakenDate());
     }
 
     public DosageResponse getPreviousDosage() {
@@ -64,7 +63,7 @@ public class PillRegimenSnapshot {
 
     public DateTime getNextDosageTime() {
         DosageResponse nextDosage = getNextDosage();
-        return nextDosage == null ? null : new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(Util.currentDateTime());
+        return nextDosage == null ? null : new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(DateUtil.now());
     }
 
     private List<DosageResponse> getSortedDosages() {
@@ -102,7 +101,7 @@ public class PillRegimenSnapshot {
     public int getScheduledDosagesTotalCount(LocalDate toDate) {
         int totalCount = 0;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
-            Days days = Days.daysBetween(new DateTime(dosageResponse.getStartDate()), toDate.toDateTimeAtCurrentTime());
+            Days days = Days.daysBetween(dosageResponse.getStartDate(), toDate);
             int dayCount = days.getDays() + 1;
             totalCount += Math.min(dayCount, TAMAConstants.DAYS_IN_FOUR_WEEKS);
         }

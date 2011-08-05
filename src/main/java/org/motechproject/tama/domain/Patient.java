@@ -2,9 +2,10 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
-import org.motechproject.tama.util.DateUtility;
+import org.motechproject.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.ManyToOne;
@@ -24,11 +25,13 @@ public class Patient extends CouchEntity {
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     protected String mobilePhoneNumber;
+
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
     @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
     @NotNull
-    protected Date dateOfBirth;
+    protected Date dateOfBirthAsDate;
+
     @ManyToOne
     private Gender gender;
     @ManyToOne
@@ -43,7 +46,7 @@ public class Patient extends CouchEntity {
     private int travelTimeToClinicInDays;
     private int travelTimeToClinicInHours;
     private int travelTimeToClinicInMinutes;
-    private Date registrationDate;
+    private Date registrationDateAsDate;
     private String genderId;
     private String ivrLanguageId;
     private String clinic_id;
@@ -120,12 +123,21 @@ public class Patient extends CouchEntity {
         this.mobilePhoneNumber = mobilePhoneNumber;
     }
 
-    public Date getDateOfBirth() {
-        return this.dateOfBirth;
+    public LocalDate getDateOfBirth() {
+        return DateUtil.newDate(dateOfBirthAsDate);
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirthAsDate = toDate(dateOfBirth);
+    }
+
+    @JsonIgnore
+    public Date getDateOfBirthAsDate() {
+        return dateOfBirthAsDate;
+    }
+
+    public void setDateOfBirthAsDate(Date dateOfBirth) {
+        this.dateOfBirthAsDate = dateOfBirth;
     }
 
     public int getTravelTimeToClinicInDays() {
@@ -160,17 +172,22 @@ public class Patient extends CouchEntity {
         this.medicalHistory = medicalHistory;
     }
 
-    public Date getRegistrationDate() {
-        if (this.registrationDate == null) {
-            this.registrationDate = DateUtility.now();
+    public LocalDate getRegistrationDate() {
+        if (registrationDateAsDate == null) {
+            this.registrationDateAsDate = toDate(DateUtil.today());
         }
-        return this.registrationDate;
+        return DateUtil.newDate(registrationDateAsDate);
     }
 
-    public void setRegistrationDate(Date registrationDate) {
+    public void setRegistrationDate(LocalDate registrationDate) {
         if (registrationDate != null) {
-            this.registrationDate = registrationDate;
+            this.registrationDateAsDate = toDate(registrationDate);
         }
+    }
+
+    @JsonIgnore
+    public Date getRegistrationDateAsDate() {
+        return registrationDateAsDate;
     }
 
     @JsonIgnore

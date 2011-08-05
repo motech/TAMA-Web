@@ -1,12 +1,13 @@
 package org.motechproject.tama.builder;
 
+import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class PillRegimenResponseBuilder {
 
@@ -25,7 +26,7 @@ public class PillRegimenResponseBuilder {
         ArrayList<MedicineResponse> currentDosagesMedicines = new ArrayList<MedicineResponse>();
         ArrayList<MedicineResponse> previousDosagesMedicines = new ArrayList<MedicineResponse>();
         ArrayList<MedicineResponse> nextDosagesMedicines = new ArrayList<MedicineResponse>();
-        Date date = new Date();
+        LocalDate date = DateUtil.today();
 
         previousDosagesMedicines.add(new MedicineResponse("medicine3", date, date));
         currentDosagesMedicines.add(new MedicineResponse("medicine1", date, date));

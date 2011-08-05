@@ -1,6 +1,7 @@
 package org.motechproject.tama.mapper;
 
 import junit.framework.Assert;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -14,10 +15,10 @@ import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.Drugs;
+import org.motechproject.util.DateUtil;
 
 import java.util.*;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -50,10 +51,10 @@ public class PillRegimenRequestMapperTest {
 
 
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
-        Date startDateForDrug1 = calendar(2010, 10, 10).getTime();
-        Date endDateForDrug1 = calendar(2010, 12, 10).getTime();
-        Date startDateForDrug2 = calendar(2011, 02, 10).getTime();
-        Date endDateForDrug2 = calendar(2011, 06, 10).getTime();
+        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
+        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 02, 10);
+        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 06, 10);
         drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
         drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
         treatmentAdvice.setDrugDosages(drugDosages);
@@ -80,10 +81,10 @@ public class PillRegimenRequestMapperTest {
 
 
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
-        Date startDateForDrug1 = calendar(2010, 10, 10).getTime();
-        Date endDateForDrug1 = calendar(2010, 12, 10).getTime();
-        Date startDateForDrug2 = calendar(2011, 02, 10).getTime();
-        Date endDateForDrug2 = calendar(2011, 06, 10).getTime();
+        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
+        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 02, 10);
+        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 06, 10);
         drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
         drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
         treatmentAdvice.setDrugDosages(drugDosages);
@@ -107,10 +108,10 @@ public class PillRegimenRequestMapperTest {
         treatmentAdvice.setPatientId("123");
 
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
-        Date startDateForDrug1 = calendar(2010, 10, 10).getTime();
-        Date endDateForDrug1 = calendar(2010, 12, 10).getTime();
-        Date startDateForDrug2 = calendar(2011, 02, 10).getTime();
-        Date endDateForDrug2 = calendar(2011, 06, 10).getTime();
+        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
+        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 02, 10);
+        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 06, 10);
 
         when(drugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
         when(drugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
@@ -161,19 +162,13 @@ public class PillRegimenRequestMapperTest {
         Assert.assertEquals(startMinute, dosageRequest.getStartMinute());
     }
 
-    private void assertMedicineRequest(MedicineRequest medicineRequest, String name, Date startDate, Date endDate) {
+    private void assertMedicineRequest(MedicineRequest medicineRequest, String name, LocalDate startDate, LocalDate endDate) {
         Assert.assertEquals(name, medicineRequest.getName());
         Assert.assertEquals(startDate, medicineRequest.getStartDate());
         Assert.assertEquals(endDate, medicineRequest.getEndDate());
     }
 
-    private Calendar calendar(int year, int month, int day) {
-        Calendar date = Calendar.getInstance();
-        date.set(year, month, day);
-        return date;
-    }
-
-    private DrugDosage drugDosage(String drugId, Date startDate, Date endDate, List<String> dosageSchedules) {
+    private DrugDosage drugDosage(String drugId, LocalDate startDate, LocalDate endDate, List<String> dosageSchedules) {
         DrugDosage drugDosage = new DrugDosage();
         drugDosage.setDrugId(drugId);
         drugDosage.setBrandId("brandId");

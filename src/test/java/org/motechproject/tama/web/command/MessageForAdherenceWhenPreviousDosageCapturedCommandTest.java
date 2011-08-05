@@ -1,6 +1,5 @@
 package org.motechproject.tama.web.command;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,10 +16,8 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
-import org.motechproject.tama.util.DateUtility;
-
+import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -48,15 +45,15 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("med1", null, null));
-        currentDosage = new DosageResponse("currentDosageId", new Time(9, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), DateUtility.now(), medicineResponses);
+        currentDosage = new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), DateUtil.newDate(2012, 7, 1), DateUtil.today(), medicineResponses);
         dosageResponses.add(currentDosage);
-        previousDosage = new DosageResponse("previousDosageId", new Time(15, 5), DateUtility.newDate(2011, 7, 5), DateUtility.newDate(2012, 7, 5), DateUtility.now(), medicineResponses);
+        previousDosage = new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 5), DateUtil.newDate(2012, 7, 5), DateUtil.today(), medicineResponses);
         dosageResponses.add(previousDosage);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
-        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs, DateUtility.newLocalDate(2011, 8, 4));
+        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs, DateUtil.newDate(2011, 8, 4));
     }
 
     @Test
@@ -72,8 +69,8 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     @Test
     public void shouldReturnAdherenceMessageForFirstDosage() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        Date lastTakenDate = null;
-        currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), lastTakenDate, new ArrayList<MedicineResponse>());
+        LocalDate lastTakenDate = null;
+        currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.newDate(2011, 7, 1), DateUtil.newDate(2012, 7, 1), lastTakenDate, new ArrayList<MedicineResponse>());
         dosages.add(currentDosage);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
@@ -88,8 +85,8 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     @Test
     public void shouldNotReturnAnyMessageWhenPreviousDosageInformationNotCapturedYesterday() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        Date lastTakenDate = new DateTime().minusDays(2).toDate();
-        currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtility.newDate(2011, 7, 1), DateUtility.newDate(2012, 7, 1), lastTakenDate, new ArrayList<MedicineResponse>());
+        LocalDate lastTakenDate = DateUtil.today().minusDays(2);
+        currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.newDate(2011, 7, 1), DateUtil.newDate(2012, 7, 1), lastTakenDate, new ArrayList<MedicineResponse>());
         dosages.add(currentDosage);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
@@ -102,7 +99,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     public void shouldCalculateAdherencePercentage() {
         Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(45);
 
-        int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, DateUtility.today(), 56);
+        int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, DateUtil.today(), 56);
         assertEquals(80, adherencePercentage);
     }
 

@@ -6,8 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.util.DateUtility;
-import org.powermock.api.mockito.PowerMockito;
+import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -18,7 +17,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtility.class)
+@PrepareForTest(DateUtil.class)
 public class IVRMessageBuilderTest {
 
     @Mock
@@ -41,11 +40,7 @@ public class IVRMessageBuilderTest {
 
     @Test
     public void shouldReturnWavFilesForTomorrowMorning() {
-        DateTime now = new DateTime(2011, 1, 1, 10, 20, 0, 0);
-        DateTime time = new DateTime(2011, 1, 2, 10, 20, 0, 0);
-
-        PowerMockito.mockStatic(DateUtility.class);
-        when(DateUtility.getDateTime()).thenReturn(now);
+        DateTime time = DateUtil.now().plusDays(1).withHourOfDay(10).withMinuteOfHour(20);
 
         List<String> wavs = ivrMessageBuilder.getWavs(time);
         assertEquals("10.wav", wavs.get(0));
@@ -56,11 +51,7 @@ public class IVRMessageBuilderTest {
 
     @Test
     public void shouldReturnWavFilesForTomorrowEvening() {
-        DateTime now = new DateTime(2011, 1, 1, 10, 20, 0, 0);
-        DateTime time = new DateTime(2011, 1, 2, 19, 20, 0, 0);
-
-        PowerMockito.mockStatic(DateUtility.class);
-        when(DateUtility.getDateTime()).thenReturn(now);
+        DateTime time = DateUtil.now().plusDays(1).withHourOfDay(19).withMinuteOfHour(20);
 
         List<String> wavs = ivrMessageBuilder.getWavs(time);
         assertEquals("7.wav", wavs.get(0));
@@ -71,11 +62,7 @@ public class IVRMessageBuilderTest {
 
     @Test
     public void shouldReturnWavFilesForTodayEvening() {
-        DateTime now = new DateTime(2011, 1, 1, 10, 20, 0, 0);
-        DateTime time = new DateTime(2011, 1, 1, 19, 20, 0, 0);
-
-        PowerMockito.mockStatic(DateUtility.class);
-        when(DateUtility.getDateTime()).thenReturn(now);
+        DateTime time = DateUtil.now().withHourOfDay(19).withMinuteOfHour(20);
 
         List<String> wavs = ivrMessageBuilder.getWavs(time);
         assertEquals("7.wav", wavs.get(0));

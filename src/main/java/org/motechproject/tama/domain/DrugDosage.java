@@ -1,13 +1,17 @@
 package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.motechproject.tama.util.DateUtility;
+import org.joda.time.LocalDate;
+import org.motechproject.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class DrugDosage extends BaseEntity {
 
@@ -32,11 +36,11 @@ public class DrugDosage extends BaseEntity {
     @NotNull
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
-    private Date startDate;
+    private Date startDateAsDate;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
-    private Date endDate;
+    private Date endDateAsDate;
 
     private String advice;
 
@@ -91,23 +95,41 @@ public class DrugDosage extends BaseEntity {
         this.dosageSchedules = dosageSchedules;
     }
 
-    public Date getStartDate() {
-        if (startDate == null) {
-            this.startDate = DateUtility.now();
+    public LocalDate getStartDate() {
+        return DateUtil.newDate(startDateAsDate);
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDateAsDate = toDate(startDate);
+    }
+
+    @JsonIgnore
+    public Date getStartDateAsDate() {
+        if (startDateAsDate == null) {
+            this.startDateAsDate = toDate(DateUtil.today());
         }
-        return this.startDate;
+        return startDateAsDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setStartDateAsDate(Date startDate) {
+        this.startDateAsDate = startDate;
     }
 
-    public Date getEndDate() {
-        return this.endDate;
+    public LocalDate getEndDate() {
+        return DateUtil.newDate(endDateAsDate);
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setEndDate(LocalDate endDate) {
+        this.endDateAsDate = toDate(endDate);
+    }
+
+    @JsonIgnore
+    public Date getEndDateAsDate() {
+        return endDateAsDate;
+    }
+
+    public void setEndDateAsDate(Date endDate) {
+        this.endDateAsDate = endDate;
     }
 
     public String getAdvice() {

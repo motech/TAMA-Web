@@ -3,7 +3,7 @@ package org.motechproject.tama.builder;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
-import org.motechproject.tama.util.DateUtility;
+import org.motechproject.util.DateUtil;
 
 public class DosageAdherenceLogBuilder {
 
@@ -18,7 +18,7 @@ public class DosageAdherenceLogBuilder {
                 .withPatientId("12345")
                 .withRegimenId("56789")
                 .withDosageId("123")
-                .withDosageDate(DateUtility.newLocalDate(2001, 1, 1))
+                .withDosageDate(DateUtil.newDate(2001, 1, 1))
                 .withDosageStatus(DosageStatus.TAKEN);
         return this;
     }

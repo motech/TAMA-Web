@@ -1,9 +1,8 @@
 package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tama.util.DateUtility;
-
-import java.util.Date;
+import org.joda.time.DateTime;
+import org.motechproject.util.DateUtil;
 
 @TypeDiscriminator("doc.documentType == 'IVRCallAudit'")
 public class IVRCallAudit extends CouchEntity {
@@ -11,7 +10,7 @@ public class IVRCallAudit extends CouchEntity {
     private String sid;
     private String patientId;
     private State state;
-    private Date dateTime;
+    private DateTime dateTime;
 
     public IVRCallAudit() {
     }
@@ -21,7 +20,7 @@ public class IVRCallAudit extends CouchEntity {
         this.sid = sid;
         this.patientId = patientId;
         this.state = state;
-        this.dateTime = DateUtility.now();
+        this.dateTime = DateUtil.now();
     }
 
     public String getCid() {
@@ -56,11 +55,11 @@ public class IVRCallAudit extends CouchEntity {
         this.state = state;
     }
 
-    public Date getDateTime() {
+    public DateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Date dateTime) {
+    public void setDateTime(DateTime dateTime) {
         this.dateTime = dateTime;
     }
 

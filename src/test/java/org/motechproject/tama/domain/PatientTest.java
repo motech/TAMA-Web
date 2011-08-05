@@ -4,12 +4,12 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.util.DateUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.Calendar;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
@@ -31,7 +31,7 @@ public class PatientTest {
         Patient nullPatient = PatientBuilder.startRecording().build();
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(nullPatient);
         assertEquals(3, constraintViolations.size());
-        assertConstraintViolation(constraintViolations, "dateOfBirth", "may not be null");
+        assertConstraintViolation(constraintViolations, "dateOfBirthAsDate", "may not be null");
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "may not be null");
         assertConstraintViolation(constraintViolations, "passcode", "may not be null");
     }
@@ -56,12 +56,10 @@ public class PatientTest {
 
     @Test
     public void testDateOfBirthToBeAPastDate() {
-        Calendar futureDate = Calendar.getInstance();
-        futureDate.set(2020, 1, 20);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withDateOfBirth(futureDate.getTime()).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withDateOfBirth(DateUtil.newDate(2020, 1, 20)).build();
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
         assertEquals(1, constraintViolations.size());
-        assertConstraintViolation(constraintViolations, "dateOfBirth", "Date Of Birth must be in the past.");
+        assertConstraintViolation(constraintViolations, "dateOfBirthAsDate", "Date Of Birth must be in the past.");
     }
 
     @Test

@@ -5,7 +5,7 @@ import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
-import org.motechproject.tama.util.DateUtility;
+import org.motechproject.util.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +13,7 @@ public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand 
     private LocalDate toDate;
 
     public MessageForMissedPillFeedbackCommand() {
-        toDate = DateUtility.today();
+        toDate = DateUtil.today();
     }
 
     public MessageForMissedPillFeedbackCommand(DosageAdherenceLogs dosageAdherenceLogs, LocalDate toDate) {

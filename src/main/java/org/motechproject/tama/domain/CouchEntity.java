@@ -4,6 +4,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.CouchDbDocument;
+import org.joda.time.LocalDate;
+
+import java.util.Date;
 
 
 public abstract class CouchEntity extends CouchDbDocument {
@@ -55,4 +58,9 @@ public abstract class CouchEntity extends CouchDbDocument {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
+
+    protected Date toDate(LocalDate date) {
+        if (date == null) return null;
+        return date.toDate();
+    }
 }
