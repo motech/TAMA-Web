@@ -29,7 +29,7 @@ public class ClinicianContext extends AbstractContext{
 
     @Override
     protected void create(WebDriver webDriver) {
-
+        clinicContext.create(webDriver);
         Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinicContext.getClinic()).
                 withName(userName).withUserName(userName).withPassword(password).build();
 

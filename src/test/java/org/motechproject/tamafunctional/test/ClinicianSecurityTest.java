@@ -13,6 +13,7 @@ import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.Page;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,10 +33,11 @@ public class ClinicianSecurityTest extends BaseTest {
 
     @Test
     public void shouldVerifyIfCorrectPatientsAreSeenByLoggedInClinician() {
-        String clinicianUsername1 = "cl1";
+        String clinicianUsername1 = "cl1" + DateUtil.now().getMillis();
         String clinicianPassword1 = "cl1";
-        String clinicianUsername2 = "cl2";
+        String clinicianUsername2 = "cl2" + DateUtil.now().getMillis();
         String clinicianPassword2 = "cl2";
+
         PatientContext patientContext1 = new PatientContext("P1", new ClinicianContext(clinicianUsername1, clinicianPassword1, new ClinicContext("Clinic1")));
         PatientContext patientContext2 = new PatientContext("P2", new ClinicianContext(clinicianUsername2, clinicianPassword2, new ClinicContext("Clinic2")));
 
