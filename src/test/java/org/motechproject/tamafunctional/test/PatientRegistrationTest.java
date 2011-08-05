@@ -43,7 +43,7 @@ public class PatientRegistrationTest extends BaseTest {
 
         Assert.assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
         Assert.assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
-        Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
+        Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirthAsDate()));
         Assert.assertEquals(showPatientPage.getHIVTestReason(), hivMedicalHistory.getTestReason().getName());
         Assert.assertEquals(showPatientPage.getModeOfTransmission(), hivMedicalHistory.getModeOfTransmission().getType());
         Assert.assertEquals(showPatientPage.getAllergyText(), "ARV Allergy : arvAllergyDescription");

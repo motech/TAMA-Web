@@ -15,7 +15,7 @@ public class CreateBasicPatientInformationSection {
     private WebElement patientId;
     @FindBy(how = How.ID, using = "_mobilePhoneNumber_id")
     private WebElement mobileNumber;
-    @FindBy(how = How.ID, using = "_dateOfBirth_id")
+    @FindBy(how = How.ID, using = "_dateOfBirthAsDate_id")
     private WebElement dateOfBirth;
     @FindBy(how = How.ID, using = "_travelTimeToClinicInDays_id")
     private WebElement travelTimeInDays;
@@ -41,7 +41,7 @@ public class CreateBasicPatientInformationSection {
     public void enterDetails(Patient patient) {
         patientId.sendKeys(patient.getPatientId());
         mobileNumber.sendKeys(patient.getMobilePhoneNumber());
-        dateOfBirth.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
+        dateOfBirth.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirthAsDate()));
         travelTimeInDays.clear();
         travelTimeInDays.sendKeys(String.valueOf(patient.getTravelTimeToClinicInDays()));
         travelTimeInHrs.clear();

@@ -104,7 +104,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
     
     static class PatientConverter implements Converter<Patient, String>  {
         public String convert(Patient patient) {
-            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getPasscode()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirth()).toString();
+            return new StringBuilder().append(patient.getPatientId()).append(" ").append(patient.getPasscode()).append(" ").append(patient.getMobilePhoneNumber()).append(" ").append(patient.getDateOfBirthAsDate()).toString();
         }
         
     }

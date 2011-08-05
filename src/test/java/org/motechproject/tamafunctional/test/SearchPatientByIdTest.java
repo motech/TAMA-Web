@@ -47,7 +47,7 @@ public class SearchPatientByIdTest extends BaseTest {
 
         assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
         assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
-        assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirth()));
+        assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirthAsDate()));
         showPatientPage.logout();
     }
 
