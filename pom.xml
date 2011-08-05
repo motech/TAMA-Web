@@ -195,7 +195,7 @@
                                 </property>
                             </systemProperties>
                             <includes>
-                                <include>**/functional/**/*Test.java</include>
+                                <include>**/tamafunctional/**/*Test.java</include>
                             </includes>
                             <excludes>
                             </excludes>
@@ -708,7 +708,7 @@
                     <printSummary>true</printSummary>
                     <excludes>
                         <exclude>**/*_Roo_*</exclude>
-                        <exclude>**/functional/**/*.java</exclude>
+                        <exclude>**/tamafunctional/**/*.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
