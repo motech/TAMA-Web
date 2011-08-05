@@ -21,15 +21,13 @@ public class NewCallEventActionTest extends BaseActionTest {
     private UserNotFoundAction userNotFoundAction;
     @Mock
     private Patient patient;
-    @Mock
-    private PillReminderService pillReminderService;
     private NewCallEventAction action;
     public static final String PHONE_NUMBER = "9898982323";
 
     @Before
     public void setUp() {
         super.setUp();
-        action = new NewCallEventAction(pillReminderService, messages, patients, userNotFoundAction);
+        action = new NewCallEventAction(messages, patients, userNotFoundAction);
     }
 
     @Test
@@ -58,14 +56,11 @@ public class NewCallEventActionTest extends BaseActionTest {
         when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
         when(patient.getId()).thenReturn("patientId");
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(null, "patientId", 2, 5, null);
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimenResponse);
 
         action.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.COLLECT_PIN);
         verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, "patientId");
-        verify(session).setAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
     }
 
     @Test

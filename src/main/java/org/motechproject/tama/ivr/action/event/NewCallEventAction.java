@@ -1,7 +1,5 @@
 package org.motechproject.tama.ivr.action.event;
 
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
@@ -15,13 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class NewCallEventAction extends BaseIncomingAction {
-    private PillReminderService pillReminderService;
     private Patients patients;
     private UserNotFoundAction userNotFoundAction;
 
     @Autowired
-    public NewCallEventAction(PillReminderService pillReminderService, IVRMessage messages, Patients patients, UserNotFoundAction userNotFoundAction) {
-        this.pillReminderService = pillReminderService;
+    public NewCallEventAction(IVRMessage messages, Patients patients, UserNotFoundAction userNotFoundAction) {
         this.messages = messages;
         this.patients = patients;
         this.userNotFoundAction = userNotFoundAction;
@@ -36,8 +32,6 @@ public class NewCallEventAction extends BaseIncomingAction {
         }
         ivrSession.setState(IVRCallState.COLLECT_PIN);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patient.getId());
-        PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
-        ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
         return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 

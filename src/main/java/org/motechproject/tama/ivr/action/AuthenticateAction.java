@@ -1,5 +1,7 @@
 package org.motechproject.tama.ivr.action;
 
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRCallState;
@@ -16,12 +18,14 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class AuthenticateAction extends BaseIncomingAction {
+    private PillReminderService pillReminderService;
     private Patients patients;
     private RetryAction retryAction;
     private CurrentDosageReminderTree currentDosageReminderTree;
 
     @Autowired
-    public AuthenticateAction(Patients patients, RetryAction retryAction, CurrentDosageReminderTree currentDosageReminderTree) {
+    public AuthenticateAction(PillReminderService pillReminderService, Patients patients, RetryAction retryAction, CurrentDosageReminderTree currentDosageReminderTree) {
+        this.pillReminderService = pillReminderService;
         this.patients = patients;
         this.retryAction = retryAction;
         this.currentDosageReminderTree = currentDosageReminderTree;
@@ -45,6 +49,8 @@ public class AuthenticateAction extends BaseIncomingAction {
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patientId);
+        PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
+        ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
         ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }

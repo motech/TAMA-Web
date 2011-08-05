@@ -3,6 +3,8 @@ package org.motechproject.tama.ivr.action;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
@@ -27,6 +29,8 @@ public class AuthenticateActionTest extends BaseActionTest {
     private Patient patient;
     @Mock
     private IVRAction tamaIvrAction;
+    @Mock
+    private PillReminderService pillReminderService;
 
     private static final String PATIENT_ID = "12345";
     public static final String MOBILE_NO = "9876543210";
@@ -38,7 +42,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(patients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
         when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
-        authenticateAction = new AuthenticateAction(patients, retryAction, null);
+        authenticateAction = new AuthenticateAction(pillReminderService, patients, retryAction, null);
     }
 
     @Test
@@ -62,13 +66,15 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(request.getSession(false)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
         when(patient.authenticatedWith(PASSCODE)).thenReturn(true);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(null, PATIENT_ID, 2, 5, null);
+        when(pillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(pillRegimenResponse);
 
-        String handle = authenticateAction.handle(ivrRequest, request, response, tamaIvrAction);
+        authenticateAction.handle(ivrRequest, request, response, tamaIvrAction);
 
         verify(session).invalidate();
         verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.AUTH_SUCCESS);
         verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, PATIENT_ID);
+        verify(session).setAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
         verify(tamaIvrAction).handle(any(IVRRequest.class), any(IVRSession.class));
     }
-
 }
