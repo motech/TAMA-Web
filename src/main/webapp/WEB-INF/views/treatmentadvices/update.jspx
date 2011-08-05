@@ -5,7 +5,7 @@
     <form:update id="fu_org_motechproject_tama_domain_TreatmentAdvice" modelAttribute="treatmentAdvice" path="/treatmentadvices" versionField="Version" z="j8M94EQEIlByrCVZZOCC+TZD21M=">
         <field:input field="patientId" id="c_org_motechproject_tama_domain_TreatmentAdvice_patientId" required="true" z="8+OQi7Ordem6EqER6AqqloC4FfY="/>
         <field:input field="regimenId" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenId" required="true" z="PuavmBdA0OmJPx2n9RG4rsz9HKY="/>
-        <field:input field="regimenCompositionId" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenCompositionId" required="true" z="+nDMmuf9MrboCUrECP9UK9dQ0Sg="/>
+        <field:input field="drugCompositionId" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimenCompositionId" required="true" z="+nDMmuf9MrboCUrECP9UK9dQ0Sg="/>
         <field:select field="drugDosages" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugDosages" itemValue="id" items="${drugdosages}" multiple="true" path="/drugdosages" z="Hzh8H6BubuDUgPyMKWPB1PsUjNw="/>
     </form:update>
 </div>

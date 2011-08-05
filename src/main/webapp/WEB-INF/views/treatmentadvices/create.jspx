@@ -6,7 +6,7 @@
         <field:display object="${patientIdentifier}" field="" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimenId" items="${regimens}" itemValue="id" itemLabel="displayName" path="/regimens" label="Regimen *"/>
         <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}" />
-        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="regimenCompositionId" items="${regimenCompositions}" path="/regimenCompositions" label="Drug Composition *"/>
+        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="drugCompositionId" items="${drugCompositions}" path="/drugCompositions" label="Drug Composition *"/>
         <div>
             <div>
                 <div id="dosage_times_error" class="error"/>
@@ -36,7 +36,7 @@
             var populateDrugDosages = function() {
                 var regimenDropDown = dijit.byId('_regimenId_id');
                 var regimenCompositionDropDown = dijit.byId('_regimenCompositionId_id');
-                var drugDosagesURL = "treatmentadvices/ajax/drugDosagesFor?regimenId=" + regimenDropDown + "&regimenCompositionId=" + regimenCompositionDropDown;
+                var drugDosagesURL = "treatmentadvices/ajax/drugDosagesFor?regimenId=" + regimenDropDown + "&drugCompositionId=" + regimenCompositionDropDown;
                 dojo.xhrGet({
                     url: drugDosagesURL,
                     load: function(result) {
@@ -64,29 +64,33 @@
             populateRegimenCompositions();
 
             var validateDosageTimes = function() {
+            var drug1DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
+            var drug1DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
+            var drug2DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
+            var drug2DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
+            var amTimesArray = [drug1DosageTime1, drug2DosageTime1];
+            var pmTimesArray = [drug1DosageTime2, drug2DosageTime2];
 
-                var drug1DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
-                var drug1DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
-                var drug2DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
-                var drug2DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
-                var dosageTimeElements = dojo.filter([drug1DosageTime1, drug1DosageTime2, drug2DosageTime1, drug2DosageTime2], function(item) {
-                    return (item != null && item != undefined);
-                });
 
                 var amTimes = {}, pmTimes = {};
+                dojo.forEach(amTimesArray, function(item) {
+                        if(item != null && item != undefined) {
+                            amTimes[item.value] = "dummy";
+                        }
+                });
+                dojo.forEach(pmTimesArray, function(item) {
+                        if(item != null && item != undefined) {
+                            pmTimes[item.value] = "dummy";
+
+                        }
+                });
+
                 var getProperties = function(object) {
                     var result = [];
                     for (key in object)
                         result.push(key);
                     return result;
                 };
-
-                dojo.forEach(dosageTimeElements, function(element, i) {
-                    if (element.value.indexOf("am") != -1)
-                        amTimes[element.value] = "dummy";
-                    else if (element.value.indexOf("pm") != -1)
-                        pmTimes[element.value] = "dummy";
-                });
 
                 var conditions = [
                 {
@@ -110,17 +114,36 @@
             };
 
             dojo.connect(dojo.byId("treatmentAdvice"), "onsubmit", function(evt) {
+
                 if (validateDosageTimes() != null) {
                     var error = dojo.byId("dosage_times_error");
                     dojo.html.set(error, validateDosageTimes());
                     evt.preventDefault();
+                } else {
+                var drug1DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
+                var drug1DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
+                var drug2DosageTime1 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
+                var drug2DosageTime2 = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
+                var amTimesArray = [drug1DosageTime1, drug2DosageTime1];
+                var pmTimesArray = [drug1DosageTime2, drug2DosageTime2];
+                    dojo.forEach(amTimesArray, function(item) {
+                        if(item != null && item != undefined) {
+                            item.value = item.value + 'am';
+                        }
+                    });
+                    dojo.forEach(pmTimesArray, function(item) {
+                        if(item != null && item != undefined) {
+                            item.value = item.value + 'pm';
+                        }
+                    });
+
                 }
             });
 
         });
-           function encodePk(){
-               return true;
-           }
+       function encodePk(){
+           return true;
+       }
         ]]>
     </script>
 </div>

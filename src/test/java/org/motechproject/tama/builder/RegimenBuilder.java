@@ -1,7 +1,7 @@
 package org.motechproject.tama.builder;
 
+import org.motechproject.tama.domain.DrugComposition;
 import org.motechproject.tama.domain.Regimen;
-import org.motechproject.tama.domain.RegimenComposition;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +15,8 @@ public class RegimenBuilder {
         return this;
     }
 
-    public RegimenBuilder withRegimenCompositions(Set<RegimenComposition> compositions){
-        this.regimen.setCompositions(compositions);
+    public RegimenBuilder withRegimenCompositions(Set<DrugComposition> compositions){
+        this.regimen.setDrugCompositions(compositions);
         return this;
     }
 
@@ -35,7 +35,7 @@ public class RegimenBuilder {
     }
 
     public RegimenBuilder withDefaults(){
-        HashSet<RegimenComposition> compositions = new HashSet<RegimenComposition>();
+        HashSet<DrugComposition> compositions = new HashSet<DrugComposition>();
         compositions.add(RegimenCompositionBuilder.startRecording().withDefaults().build());
         return this.withId("regimenId").withName("regimenName").withRegimenCompositions(compositions);
     }

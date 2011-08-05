@@ -1,32 +1,31 @@
 package org.motechproject.tama.builder;
 
-import org.apache.commons.lang.StringUtils;
-import org.motechproject.tama.domain.RegimenComposition;
+import org.motechproject.tama.domain.DrugComposition;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class RegimenCompositionBuilder {
 
-    private RegimenComposition regimenComposition = new RegimenComposition();
+    private DrugComposition drugComposition = new DrugComposition();
 
     public RegimenCompositionBuilder withId(String id){
-        this.regimenComposition.setRegimenCompositionId(id);
+        this.drugComposition.setDrugCompositionId(id);
         return this;
     }
 
     public RegimenCompositionBuilder withDrugIds(Set<String> drugIds){
-        this.regimenComposition.setDrugIds(drugIds);
+        this.drugComposition.setDrugIds(drugIds);
         return this;
     }
 
     public RegimenCompositionBuilder withDisplayName(String displayName){
-        this.regimenComposition.setDisplayName(displayName);
+        this.drugComposition.setDisplayName(displayName);
         return this;
     }
 
-    public RegimenComposition build() {
-        return this.regimenComposition;
+    public DrugComposition build() {
+        return this.drugComposition;
     }
 
     public static RegimenCompositionBuilder startRecording() {

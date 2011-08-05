@@ -12,7 +12,7 @@ public class TreatmentAdviceBuilder {
     }
 
     public TreatmentAdviceBuilder withRegimenCompositionId(String regimenCompositionId){
-        this.treatmentAdvice.setRegimenCompositionId(regimenCompositionId);
+        this.treatmentAdvice.setDrugCompositionId(regimenCompositionId);
         return this;
     }
 

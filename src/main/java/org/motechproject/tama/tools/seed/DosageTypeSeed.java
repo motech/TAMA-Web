@@ -13,7 +13,8 @@ public class DosageTypeSeed extends Seed {
 	
 	@Override
 	public void load() {
-		dosageTypes.add(new DosageType("Once Daily"));
+		dosageTypes.add(new DosageType("Morning Daily"));
+		dosageTypes.add(new DosageType("Evening Daily"));
 		dosageTypes.add(new DosageType("Twice Daily"));
 	}
 }

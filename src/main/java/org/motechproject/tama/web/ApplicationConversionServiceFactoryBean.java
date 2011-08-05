@@ -118,7 +118,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
     
     static class TreatmentAdviceConverter implements Converter<TreatmentAdvice, String>  {
         public String convert(TreatmentAdvice treatmentAdvice) {
-            return new StringBuilder().append(treatmentAdvice.getPatientId()).append(" ").append(treatmentAdvice.getRegimenId()).append(" ").append(treatmentAdvice.getRegimenCompositionId()).toString();
+            return new StringBuilder().append(treatmentAdvice.getPatientId()).append(" ").append(treatmentAdvice.getRegimenId()).append(" ").append(treatmentAdvice.getDrugCompositionId()).toString();
         }
         
     }

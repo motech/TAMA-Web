@@ -18,7 +18,7 @@ public class TreatmentAdvice extends CouchEntity {
     private String regimenId;
     
     @NotNull
-    private String regimenCompositionId;
+    private String drugCompositionId;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
@@ -39,12 +39,12 @@ public class TreatmentAdvice extends CouchEntity {
         this.regimenId = regimenId;
     }
     
-    public String getRegimenCompositionId() {
-        return this.regimenCompositionId;
+    public String getDrugCompositionId() {
+        return this.drugCompositionId;
     }
     
-    public void setRegimenCompositionId(String regimenCompositionId) {
-        this.regimenCompositionId = regimenCompositionId;
+    public void setDrugCompositionId(String drugCompositionId) {
+        this.drugCompositionId = drugCompositionId;
     }
     
     public List<DrugDosage> getDrugDosages() {

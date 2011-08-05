@@ -16,7 +16,9 @@ public class Regimen extends CouchEntity {
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<RegimenComposition> compositions = new HashSet<RegimenComposition>();
+    private Set<DrugComposition> drugCompositions = new HashSet<DrugComposition>();
+
+    private Set<DrugComposition> drugCompositionGroups = new HashSet<DrugComposition>();
 
     @NotNull
     private String regimenDisplayName;
@@ -29,14 +31,14 @@ public class Regimen extends CouchEntity {
 		this.regimenDisplayName = displayName;
 	}
 
-	public void addComposition(RegimenComposition...regimenCompositions) {
-		compositions.addAll(Arrays.asList(regimenCompositions));
+	public void addComposition(DrugComposition... drugCompositions) {
+		this.drugCompositions.addAll(Arrays.asList(drugCompositions));
 	}
 
-    public RegimenComposition getCompositionsFor(String regimenCompositionId) {
-        for (RegimenComposition regimenComposition : compositions) {
-            if (regimenComposition.getRegimenCompositionId().equals(regimenCompositionId))
-                return regimenComposition;
+    public DrugComposition getCompositionsFor(String regimenCompositionId) {
+        for (DrugComposition drugComposition : drugCompositions) {
+            if (drugComposition.getDrugCompositionId().equals(regimenCompositionId))
+                return drugComposition;
         }
         return null;
     }
@@ -49,12 +51,12 @@ public class Regimen extends CouchEntity {
         this.name = name;
     }
 
-    public Set<RegimenComposition> getCompositions() {
-        return this.compositions;
+    public Set<DrugComposition> getDrugCompositions() {
+        return this.drugCompositions;
     }
 
-    public void setCompositions(Set<RegimenComposition> compositions) {
-        this.compositions = compositions;
+    public void setDrugCompositions(Set<DrugComposition> drugCompositions) {
+        this.drugCompositions = drugCompositions;
     }
 
     public String getRegimenDisplayName() {

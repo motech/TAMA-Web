@@ -26,12 +26,12 @@ public class TreatmentAdviceViewMapper {
         TreatmentAdvice treatmentAdvice = treatmentAdvices.get(treatmentAdviceId);
         Patient patient = patients.get(treatmentAdvice.getPatientId());
         Regimen regimen = regimens.get(treatmentAdvice.getRegimenId());
-        RegimenComposition regimenComposition = regimen.getCompositionsFor(treatmentAdvice.getRegimenCompositionId());
+        DrugComposition drugComposition = regimen.getCompositionsFor(treatmentAdvice.getDrugCompositionId());
 
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
         treatmentAdviceView.setPatientId(patient.getPatientId());
         treatmentAdviceView.setRegimenName(regimen.getRegimenDisplayName());
-        treatmentAdviceView.setRegimenCompositionName(regimenComposition.getDisplayName());
+        treatmentAdviceView.setRegimenCompositionName(drugComposition.getDisplayName());
 
         DrugDosageViewMapper drugDosageViewMapper = new DrugDosageViewMapper(drugs, dosageTypes, mealAdviceTypes);
         for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {

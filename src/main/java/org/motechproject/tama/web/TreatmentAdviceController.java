@@ -95,10 +95,10 @@ public class TreatmentAdviceController extends BaseController {
     public
     @ResponseBody
     Set<ComboBoxView> regimenCompositionsFor(@RequestParam String regimenId) {
-        Set<RegimenComposition> compositions = regimens.get(regimenId).getCompositions();
+        Set<DrugComposition> compositions = regimens.get(regimenId).getDrugCompositions();
         Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
-        for (RegimenComposition regimenComposition : compositions) {
-            comboBoxViews.add(new ComboBoxView(regimenComposition.getRegimenCompositionId(), regimenComposition.getDisplayName()));
+        for (DrugComposition drugComposition : compositions) {
+            comboBoxViews.add(new ComboBoxView(drugComposition.getDrugCompositionId(), drugComposition.getDisplayName()));
         }
         return comboBoxViews;
     }
@@ -106,9 +106,9 @@ public class TreatmentAdviceController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/drugDosagesFor")
     public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String regimenCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
         Regimen regimen = regimens.get(regimenId);
-        RegimenComposition regimenComposition = regimen.getCompositionsFor(regimenCompositionId);
+        DrugComposition drugComposition = regimen.getCompositionsFor(regimenCompositionId);
 
-        List<Drug> allDrugs = this.drugs.getDrugs(regimenComposition.getDrugIds());
+        List<Drug> allDrugs = this.drugs.getDrugs(drugComposition.getDrugIds());
 
         for (Drug drug : allDrugs) {
             DrugDosage drugDosage = new DrugDosage();
