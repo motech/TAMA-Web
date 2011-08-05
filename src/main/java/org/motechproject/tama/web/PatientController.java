@@ -7,6 +7,10 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
+import org.motechproject.tama.web.view.ClinicsView;
+import org.motechproject.tama.web.view.HIVTestReasonsView;
+import org.motechproject.tama.web.view.IvrLanguagesView;
+import org.motechproject.tama.web.view.ModesOfTransmissionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -171,14 +175,14 @@ public class PatientController extends BaseController {
     }
 
     private void populateModel(Model uiModel) {
-        uiModel.addAttribute("clinics", clinics.getAll());
-        uiModel.addAttribute("ivrlanguages", ivrLanguages.getAll());
+        uiModel.addAttribute("clinics", new ClinicsView(clinics).getAll());
+        uiModel.addAttribute("ivrlanguages", new IvrLanguagesView(ivrLanguages).getAll());
         uiModel.addAttribute("daysInAMonth", TAMAConstants.Time.MAX_DAYS_IN_A_MONTH.list());
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());
         uiModel.addAttribute("genders", genders.getAll());
-        uiModel.addAttribute("testReasons", testReasons.getAll());
-        uiModel.addAttribute("modesOfTransmission", modesOfTransmission.getAll());
+        uiModel.addAttribute("testReasons", new HIVTestReasonsView(testReasons).getAll());
+        uiModel.addAttribute("modesOfTransmission", new ModesOfTransmissionView(modesOfTransmission).getAll());
         uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
         uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
     }

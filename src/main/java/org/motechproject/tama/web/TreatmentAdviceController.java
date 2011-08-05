@@ -6,6 +6,9 @@ import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
+import org.motechproject.tama.web.view.DosageTypesView;
+import org.motechproject.tama.web.view.MealAdviceTypesView;
+import org.motechproject.tama.web.view.RegimensView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -119,7 +122,7 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     public List<ComboBoxView> regimens() {
-        List<Regimen> allRegimens = regimens.getAll();
+        List<Regimen> allRegimens = new RegimensView(regimens).getAll();
         List<ComboBoxView> comboBoxViews = new ArrayList<ComboBoxView>();
         for (Regimen regimen : allRegimens) {
             comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getRegimenDisplayName()));
@@ -135,12 +138,12 @@ public class TreatmentAdviceController extends BaseController {
 
     @ModelAttribute("mealAdviceTypes")
     public List<MealAdviceType> mealAdviceTypes() {
-        return mealAdviceTypes.getAll();
+        return new MealAdviceTypesView(mealAdviceTypes).getAll();
     }
 
     @ModelAttribute("dosageTypes")
     public List<DosageType> dosageTypes() {
-        return dosageTypes.getAll();
+        return new DosageTypesView(dosageTypes).getAll();
     }
 
     private void populateModel(Model uiModel, TreatmentAdvice treatmentAdvice) {

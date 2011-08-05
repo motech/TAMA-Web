@@ -4,6 +4,7 @@ import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.repository.Cities;
 import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.web.view.ClinicsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -51,7 +52,7 @@ public class ClinicController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        uiModel.addAttribute("clinics", clinics.getAll());
+        uiModel.addAttribute("clinics", new ClinicsView(clinics).getAll());
         return "clinics/list";
     }
 
