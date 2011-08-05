@@ -25,8 +25,9 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
 
     protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot, LocalDate toDate) {
         return new String[]{
-                IVRMessage.ADHERENCE_PERCENT_MESSAGE,
-                String.valueOf(getAdherencePercentage(regimenId, toDate, pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate)))
+                IVRMessage.YOUR_ADHERENCE_IS_NOW,
+                String.valueOf(getAdherencePercentage(regimenId, toDate, pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate))),
+                IVRMessage.PERCENT
         };
     }
 }

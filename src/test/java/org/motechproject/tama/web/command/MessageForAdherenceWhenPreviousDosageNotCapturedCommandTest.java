@@ -58,8 +58,9 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
         when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(56);
 
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
-        assertEquals(2, message.length);
-        assertEquals(IVRMessage.ADHERENCE_PERCENT_MESSAGE, message[0]);
+        assertEquals(3, message.length);
+        assertEquals(IVRMessage.YOUR_ADHERENCE_IS_NOW, message[0]);
         assertEquals("100", message[1]);
+        assertEquals(IVRMessage.PERCENT, message[2]);
     }
 }

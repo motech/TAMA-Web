@@ -44,4 +44,10 @@
             </map>
         </constructor-arg>
     </bean>
+
+    <bean id="threadlocalTargetSource" class="org.springframework.aop.target.ThreadLocalTargetSource">
+        <property name="targetBeanName" value="myContext"/>
+    </bean>
+    <bean id="myContext" class="org.motechproject.tama.ivr.MyContext">
+    </bean>
 </beans>

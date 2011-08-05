@@ -43,12 +43,13 @@ public class IVRMessage {
     public static final String TOMORROW = "tomorrow";
 
     /* -------- Adherence Feedback ----------- */
-    public static final String ADHERENCE_PERCENT_MESSAGE = "your adherence is percent.";
-    public static final String MISSED_PILL_FEEDBACK_FIRST_TIME = "You missed dosage for the first time.";
-    public static final String MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME = "Try to take every single dosage on time.";
-    public static final String MISSED_PILL_FEEDBACK_MORE_THAN_90 = "adherence has been good generaly";
-    public static final String MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90 = "You should improve";
-    public static final String MISSED_PILL_FEEDBACK_LESS_THAN_70 = "You should really improve.";
+    public static final String YOUR_ADHERENCE_IS_NOW = "YourAdherenceNow"; // 001_06_01_YourAdherenceNow.wav
+    public static final String PERCENT = "HasBecomePercent"; // 001_06_03_HasBecomePercent.wav
+    public static final String MISSED_PILL_FEEDBACK_FIRST_TIME = "missedPillFeedback_FirstTime"; // F01_01_doctorMissedPillFeedback.wav
+    public static final String MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME = "missedPillFeedback_2ndTo4thTime"; // F02_01_doctorMissedPillFeedback.wav
+    public static final String MISSED_PILL_FEEDBACK_MORE_THAN_90 = "missedPillFeedback_MoreThan90"; // F03_01_doctorMissedPillFeedback.wav
+    public static final String MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90 = "missedPillFeedback_Between70And90"; // F04_01_doctorMissedPillFeedback.wav
+    public static final String MISSED_PILL_FEEDBACK_LESS_THAN_70 = "missedPillFeedback_LessThan70"; // F05_01_doctorMissedPillFeedback.wav
     /* -------- Adherence Feedback ----------- */
 
     private Properties properties;
