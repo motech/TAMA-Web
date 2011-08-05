@@ -40,6 +40,7 @@ public class PreviousDosageReminderTree extends TAMADecisionTree {
                 {"3", Transition.newBuilder()
                         .setDestinationNode(
                                 Node.newBuilder()
+                                        .setTreeCommands(stopPreviousPillReminderCommand)
                                         .setPrompts(Arrays.<Prompt>asList(
                                                 new AudioPrompt().setCommand(messageOnPreviousPillNotTaken),
                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand)))

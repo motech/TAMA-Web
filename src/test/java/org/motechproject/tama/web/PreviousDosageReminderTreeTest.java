@@ -32,6 +32,7 @@ public class PreviousDosageReminderTreeTest {
     @Test
     public void shouldGetCommandsToExecuteOnNotTakingPreviousPill() {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "3");
+        assertEquals(StopPreviousPillReminderCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(2, nextNode.getPrompts().size());
         assertEquals(MessageOnPreviousPillNotTaken.class, nextNode.getPrompts().get(0).getCommand().getClass());
         assertEquals(MessageForAdherenceWhenPreviousDosageNotCapturedCommand.class, nextNode.getPrompts().get(1).getCommand().getClass());
