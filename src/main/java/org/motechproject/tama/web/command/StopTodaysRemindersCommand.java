@@ -2,6 +2,7 @@ package org.motechproject.tama.web.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,3 +27,5 @@ public class StopTodaysRemindersCommand extends BaseTreeCommand {
         return getDosageIdFrom(ivrContext);
     }
 }
+
+

@@ -4,7 +4,7 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Tree;
 
 public abstract class TAMADecisionTree {
-    private Tree tree;
+    protected Tree tree;
 
     public Tree getTree() {
         if (tree != null) return tree;

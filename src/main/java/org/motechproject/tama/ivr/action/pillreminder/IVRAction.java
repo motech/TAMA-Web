@@ -5,21 +5,18 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.NodeInfo;
 import org.motechproject.decisiontree.model.Tree;
-import org.motechproject.tama.ivr.*;
+import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.DecisionTreeBasedResponseBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
-import org.springframework.aop.target.ThreadLocalTargetSource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class IVRAction {
-
-    @Autowired
-    ThreadLocalTargetSource threadLocalTargetSource;
-
     private TAMADecisionTree tamaDecisionTree;
     private IVRMessage ivrMessage;
 
@@ -30,8 +27,6 @@ public class IVRAction {
 
     public String handle(IVRRequest ivrRequest, IVRSession ivrSession) {
         IVRContext ivrContext = new IVRContext(ivrRequest, ivrSession);
-        MyContext myContext = (MyContext) threadLocalTargetSource.getTarget();
-        myContext.setIvrContext(ivrContext);
 
         Tree tree = tamaDecisionTree.getTree();
         String userInput = StringUtils.remove(ivrRequest.getData(), BaseIncomingAction.POUND_SYMBOL);

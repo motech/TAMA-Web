@@ -13,6 +13,7 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
+import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,6 +35,8 @@ public class IVRActionTest {
     private HttpSession httpSession;
     @Autowired
     private IVRMessage ivrMessage;
+    @Autowired
+    private ThreadLocalTargetSource threadLocalTargetSource;
 
     private IVRAction tamaIvrAction;
     private IVRActionTest.CommandForTamaIvrActionTest commandForTamaIvrActionTest;
@@ -43,6 +47,13 @@ public class IVRActionTest {
         tamaIvrAction = new IVRAction(new TestTreeForTamaIvrActionTest(), ivrMessage);
         commandForTamaIvrActionTest = new CommandForTamaIvrActionTest();
     }
+
+    @Test
+    public void foo() {
+        assertNotNull(threadLocalTargetSource);
+        Object target = threadLocalTargetSource.getTarget();
+    }
+
 
     @Test
     public void shouldExecuteCommandIfNextNodeIsNotNull() {

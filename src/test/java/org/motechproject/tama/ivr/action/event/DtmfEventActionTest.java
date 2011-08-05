@@ -20,7 +20,7 @@ public class DtmfEventActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
-        eventAction = new DtmfEventAction(authenticateAction, null);
+        eventAction = new DtmfEventAction(authenticateAction, null, null);
     }
 
     @Test

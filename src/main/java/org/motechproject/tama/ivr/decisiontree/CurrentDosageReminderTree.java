@@ -37,7 +37,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private MessageForMissedPillFeedbackCommand messageForMissedPillFeedbackCommand;
     @Autowired
-    ThreadLocalTargetSource threadLocalTargetSource;
+    private ThreadLocalTargetSource threadLocalTargetSource;
 
     protected Node createRootNode() {
         return Node.newBuilder()

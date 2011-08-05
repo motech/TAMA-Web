@@ -45,9 +45,8 @@
         </constructor-arg>
     </bean>
 
-    <bean id="threadlocalTargetSource" class="org.springframework.aop.target.ThreadLocalTargetSource">
+    <bean id="threadLocalTargetSource" class="org.springframework.aop.target.ThreadLocalTargetSource" destroy-method="destroy">
         <property name="targetBeanName" value="myContext"/>
     </bean>
-    <bean id="myContext" class="org.motechproject.tama.ivr.MyContext">
-    </bean>
+    <bean id="myContext" class="org.motechproject.tama.ivr.MyContext" scope="prototype"></bean>
 </beans>
