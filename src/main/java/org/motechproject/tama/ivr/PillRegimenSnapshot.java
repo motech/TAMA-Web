@@ -40,11 +40,11 @@ public class PillRegimenSnapshot {
     }
 
     private boolean isFirstDosage(DosageResponse previousDosage) {
-        return previousDosage == null || previousDosage.getLastTakenDate() == null;
+        return previousDosage == null || previousDosage.getResponseLastCapturedDate() == null;
     }
 
     private boolean wasPreviousDosageCapturedYesterday(DosageResponse previousDosage) {
-        return !DateUtil.today().minusDays(1).isAfter(previousDosage.getLastTakenDate());
+        return !DateUtil.today().minusDays(1).isAfter(previousDosage.getResponseLastCapturedDate());
     }
 
     public DosageResponse getPreviousDosage() {
