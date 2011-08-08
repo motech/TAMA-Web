@@ -1,6 +1,6 @@
 package org.motechproject.tama.ivr;
 
-public class MyContext {
+public class ThreadLocalContext {
     private IVRContext ivrContext;
 
     public IVRContext getIvrContext() {

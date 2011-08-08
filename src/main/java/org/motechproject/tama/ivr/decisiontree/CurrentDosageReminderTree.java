@@ -2,7 +2,7 @@ package org.motechproject.tama.ivr.decisiontree;
 
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.MyContext;
+import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.web.command.*;
 import org.springframework.aop.target.ThreadLocalTargetSource;
@@ -104,8 +104,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     }
 
     private Map<String, Transition> jumpToPreviousDosageTree() {
-        MyContext myContext = (MyContext) threadLocalTargetSource.getTarget();
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(myContext.getIvrContext());
+        ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
+        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(threadLocalContext.getIvrContext());
         if (pillRegimenSnapshot.isPreviousDosageCaptured()) return null;
 
         return previousDosageReminderTree.getTree().getRootNode().getTransitions();

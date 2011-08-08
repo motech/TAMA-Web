@@ -3,7 +3,7 @@ package org.motechproject.tama.ivr.action.event;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
-import org.motechproject.tama.ivr.MyContext;
+import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.ivr.action.AuthenticateAction;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
@@ -35,8 +35,8 @@ public class DtmfEventAction extends BaseIncomingAction {
         if (ivrSession.isAuthentication()) {
             return authenticateAction.handle(ivrRequest, request, response);
         } else {
-            MyContext myContext = (MyContext) threadLocalTargetSource.getTarget();
-            myContext.setIvrContext(new IVRContext(ivrRequest,  ivrSession));
+            ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
+            threadLocalContext.setIvrContext(new IVRContext(ivrRequest,  ivrSession));
             return new IVRAction(currentDosageReminderTree, messages).handle(ivrRequest, ivrSession);
         }
     }
