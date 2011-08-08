@@ -26,6 +26,7 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Qualifier("stopTodaysRemindersCommand")
     @Autowired
     private StopTodaysRemindersCommand stopTodaysRemindersCommand;
+    @Qualifier("updateAdherenceCommand")
     @Autowired
     private UpdateAdherenceCommand updateAdherenceCommand;
     @Autowired
