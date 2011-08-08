@@ -34,6 +34,12 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
+    public void getEmptyLogCount() {
+        int count = dosageAdherenceLogs.findScheduledDosagesSuccessCount("random", DateUtil.today(), DateUtil.today().plusDays(10));
+        assertEquals(0, count);
+    }
+
+    @Test
     public void shouldSaveDosageAdherenceLogRecord() {
         DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLogBuilder().withDefaults().build();
         dosageAdherenceLogs.add(dosageAdherenceLog);
