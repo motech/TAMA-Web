@@ -61,9 +61,22 @@ public class PillRegimenSnapshot {
         return currentDosageIndex == allDosages.size() - 1 ? allDosages.get(0) : allDosages.get(currentDosageIndex + 1);
     }
 
-    public DateTime getNextDosageTime() {
+    public DateTime getPrevDosageTime(Integer pillWindowInHours) {
+        DosageResponse prevDosage = getNextDosage();
+        if (prevDosage == null) return null;
+        if (DateUtil.now().getHourOfDay() - pillWindowInHours < prevDosage.getDosageHour())
+            return new Time(prevDosage.getDosageHour(), prevDosage.getDosageMinute()).getDateTime(DateUtil.now().minusDays(1));
+        else
+            return new Time(prevDosage.getDosageHour(), prevDosage.getDosageMinute()).getDateTime(DateUtil.now());
+    }
+
+    public DateTime getNextDosageTime(Integer pillWindowInHours) {
         DosageResponse nextDosage = getNextDosage();
-        return nextDosage == null ? null : new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(DateUtil.now());
+        if (nextDosage == null) return null;
+        if (DateUtil.now().getHourOfDay() + pillWindowInHours > nextDosage.getDosageHour())
+            return new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(DateUtil.now().plusDays(1));
+        else
+            return new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(DateUtil.now());
     }
 
     private List<DosageResponse> getSortedDosages() {

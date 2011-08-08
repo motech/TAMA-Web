@@ -8,23 +8,29 @@ import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.builder.IVRMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Properties;
 
 @Component
 public class PillsDelayWarning extends BaseTreeCommand {
 
     private IVRMessageBuilder ivrMessageBuilder;
+    private Properties properties;
 
     @Autowired
-    PillsDelayWarning(IVRMessageBuilder ivrMessageBuilder) {
+    PillsDelayWarning(IVRMessageBuilder ivrMessageBuilder, @Qualifier("ivrProperties") Properties properties) {
         this.ivrMessageBuilder = ivrMessageBuilder;
+        this.properties = properties;
     }
 
     @Override
     public String[] execute(Object context) {
         IVRContext ivrContext = (IVRContext) context;
         if (isLastReminder(ivrContext)) {
-            DateTime nextDosageTime = new PillRegimenSnapshot(ivrContext).getNextDosageTime();
+            Integer pillWindowInHours = Integer.valueOf(properties.getProperty(TAMAConstants.PILL_WINDOW));
+            DateTime nextDosageTime = new PillRegimenSnapshot(ivrContext).getNextDosageTime(pillWindowInHours);
             return (String[]) ArrayUtils.addAll(
                     new String[]{
                             IVRMessage.LAST_REMINDER_WARNING
