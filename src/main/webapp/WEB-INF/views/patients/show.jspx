@@ -11,7 +11,7 @@
 
     <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=" delete="false" update="false">
         <jsp:include page="showBasicInformation.jspx" />
-        <jsp:include page="showMedicalHistory.jspx" />
+        <!--<jsp:include page="showMedicalHistory.jspx" />-->
         <jsp:include page="showPatientPreferences.jspx" />
         <jsp:include page="showTAMAStatus.jspx" />
     </page:show>

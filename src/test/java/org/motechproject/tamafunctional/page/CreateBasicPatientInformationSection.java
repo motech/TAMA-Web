@@ -25,8 +25,11 @@ public class CreateBasicPatientInformationSection {
     private WebElement travelTimeInMins;
     @FindBy(how = How.ID, using = "_gender_id")
     private WebElement gender;
-    @FindBy(how = How.ID, using = "nextToMedicalHistory")
-    private WebElement nextToMedicalHistory;
+    @FindBy(how = How.ID, using = "nextToPatientPreferences")
+    private WebElement nextToPatientPreferences;
+
+//    @FindBy(how = How.ID, using = "nextToMedicalHistory")
+//    private WebElement nextToMedicalHistory;
 
     public void postInitialize() {
         patientId = new MyWebElement(patientId);
@@ -49,6 +52,6 @@ public class CreateBasicPatientInformationSection {
         travelTimeInMins.clear();
         travelTimeInMins.sendKeys(String.valueOf(patient.getTravelTimeToClinicInMinutes()));
 
-        nextToMedicalHistory.click();
+        nextToPatientPreferences.click();
     }
 }
