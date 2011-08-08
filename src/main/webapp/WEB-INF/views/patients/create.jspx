@@ -6,6 +6,7 @@
         <jsp:include page="createBasicInformation.jspx" />
         <!-- #252 -->
         <!--<jsp:include page="createMedicalHistory.jspx" />-->
+        <br/>
         <jsp:include page="createPatientPreferences.jspx" />
     </form:create>
     <script type="text/javascript">
