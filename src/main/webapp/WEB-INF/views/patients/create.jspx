@@ -4,6 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" render="${empty dependencies}" z="HkT/39qeIawAHTgF7FpZDeoTr94=">
         <jsp:include page="createBasicInformation.jspx" />
+        <!-- #252 -->
         <!--<jsp:include page="createMedicalHistory.jspx" />-->
         <jsp:include page="createPatientPreferences.jspx" />
     </form:create>
@@ -30,8 +31,8 @@
             preferencesPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
             basicInformationPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
             preferencesPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
-//            medicalHistoryPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
-//            nextToMedicalHistoryButton = dojo.byId('nextToMedicalHistorySpan');
+//  #252          medicalHistoryPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
+//  #252          nextToMedicalHistoryButton = dojo.byId('nextToMedicalHistorySpan');
             nextToPatientPreferencesButton = dojo.byId('nextToPatientPreferencesSpan');
             submitButtonDiv = dojo.byId('fc_org_motechproject_tama_domain_patient_submit');
 
@@ -40,7 +41,8 @@
                 openAllPanels();
             }
             else {
-                hideElement([preferencesPanel, nextToPatientPreferencesButton, submitButtonDiv]);
+                hideElement([preferencesPanel, submitButtonDiv]);
+//  #252              hideElement([preferencesPanel, nextToPatientPreferencesButton, submitButtonDiv]);
             }
             dojo.connect(dojo.byId('proceed'), 'onclick', openAllPanels);
         });

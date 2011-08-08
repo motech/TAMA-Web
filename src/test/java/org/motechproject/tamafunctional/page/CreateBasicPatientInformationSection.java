@@ -28,6 +28,7 @@ public class CreateBasicPatientInformationSection {
     @FindBy(how = How.ID, using = "nextToPatientPreferences")
     private WebElement nextToPatientPreferences;
 
+//    #252
 //    @FindBy(how = How.ID, using = "nextToMedicalHistory")
 //    private WebElement nextToMedicalHistory;
 

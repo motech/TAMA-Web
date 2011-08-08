@@ -15,12 +15,14 @@ public class PatientRegistrationPage extends Page {
     @FindBy(how = How.ID, using = "_patientId_id")
     private WebElement patientId;
     private CreateBasicPatientInformationSection createBasicPatientInformationSection;
+//    #252
 //    private CreatePatientMedicalHistorySection createPatientMedicalHistorySection;
     private CreatePatientPreferencesSection createPatientPreferencesSection;
 
     public PatientRegistrationPage(WebDriver webDriver) {
         super(webDriver);
         createBasicPatientInformationSection = PageFactory.initElements(webDriver, CreateBasicPatientInformationSection.class);
+//    #252
 //        createPatientMedicalHistorySection = PageFactory.initElements(webDriver, CreatePatientMedicalHistorySection.class);
         createPatientPreferencesSection = PageFactory.initElements(webDriver, CreatePatientPreferencesSection.class);
     }
@@ -29,6 +31,7 @@ public class PatientRegistrationPage extends Page {
     public void postInitialize() {
         patientId = new MyWebElement(patientId);
         createBasicPatientInformationSection.postInitialize();
+//    #252
 //        createPatientMedicalHistorySection.postInitialize();
         createPatientPreferencesSection.postInitialize();
     }
@@ -40,6 +43,7 @@ public class PatientRegistrationPage extends Page {
 
     public ShowPatientPage registerNewPatient(Patient patient) {
         createBasicPatientInformationSection.enterDetails(patient);
+//    #252
 //        createPatientMedicalHistorySection.enterDetails(patient);
         createPatientPreferencesSection.enterDetails(patient);
         patientId.submit();

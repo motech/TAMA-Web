@@ -11,10 +11,18 @@
         In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />
         In minute(s) <springform:select path="travelTimeToClinicInMinutes" id="_travelTimeToClinicInMinutes_id" items="${minutesInAnHour}" />
     </util:panel>
-    <span class="submit" id="nextToMedicalHistorySpan">
+    <!--  #252
+    <span class="submit" id="nextToMedicalHistorySpan">-->
+        <!--<br />-->
+        <!--<spring:message code="button_next" var="next_button" htmlEscape="false" />-->
+        <!--<input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>-->
+    <!--</span>-->
+
+    <span class="submit" id="nextToPatientPreferencesSpan">
         <br />
         <spring:message code="button_next" var="next_button" htmlEscape="false" />
         <input id="nextToPatientPreferences" type="button" value="${next_button}" onClick="showPatientPreferences();"/>
+        <br />
     </span>
-    <br />
+
 </div>

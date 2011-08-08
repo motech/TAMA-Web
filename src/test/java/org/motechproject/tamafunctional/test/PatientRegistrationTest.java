@@ -33,6 +33,8 @@ public class PatientRegistrationTest extends BaseTest {
         buildContexts(clinicianContext);
 
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
+
+//    #252
 //        HIVMedicalHistory hivMedicalHistory = patient.getMedicalHistory().getHivMedicalHistory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
@@ -42,6 +44,8 @@ public class PatientRegistrationTest extends BaseTest {
         Assert.assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
         Assert.assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
         Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirthAsDate()));
+
+//    #252
 //        Assert.assertEquals(showPatientPage.getHIVTestReason(), hivMedicalHistory.getTestReason().getName());
 //        Assert.assertEquals(showPatientPage.getModeOfTransmission(), hivMedicalHistory.getModeOfTransmission().getType());
 //        Assert.assertEquals(showPatientPage.getAllergyText(), "ARV Allergy : arvAllergyDescription");
