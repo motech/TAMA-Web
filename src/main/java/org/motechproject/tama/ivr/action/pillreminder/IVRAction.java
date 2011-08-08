@@ -12,6 +12,7 @@ import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.DecisionTreeBasedResponseBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
+import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class IVRAction {
     public String handle(IVRRequest ivrRequest, IVRSession ivrSession) {
         IVRContext ivrContext = new IVRContext(ivrRequest, ivrSession);
 
-        Tree tree = tamaDecisionTree.getTree();
+        Tree tree = getCurrentDecisionTree(ivrContext);
         String userInput = StringUtils.remove(ivrRequest.getData(), BaseIncomingAction.POUND_SYMBOL);
         String currentPosition = ivrSession.currentDecisionTreePath();
         DecisionTreeBasedResponseBuilder responseBuilder = new DecisionTreeBasedResponseBuilder();
@@ -49,5 +50,13 @@ public class IVRAction {
         IVRResponseBuilder ivrResponseBuilder = responseBuilder.ivrResponse(ivrRequest.getSid(), nodeInfo.node(), ivrContext, retryOnIncorrectUserAction);
         Response ivrResponse = ivrResponseBuilder.create(ivrMessage);
         return ivrResponse.getXML();
+    }
+
+    private Tree getCurrentDecisionTree(IVRContext ivrContext) {
+        if (tamaDecisionTree instanceof CurrentDosageReminderTree) {
+            CurrentDosageReminderTree currentDosageReminderTree = (CurrentDosageReminderTree) tamaDecisionTree;
+            currentDosageReminderTree.setIvrContext(ivrContext);
+        }
+        return tamaDecisionTree.getTree();
     }
 }
