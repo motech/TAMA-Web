@@ -1,28 +1,46 @@
 package org.motechproject.tama.ivr.builder;
 
+import org.joda.time.DateTime;
+import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.util.DateUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class IVRDayMessageBuilder {
 
-    private String currentDosageId;
-    private String previousDosageId;
-    private int previousDosageStartHour;
-
-    public IVRDayMessageBuilder(String currentDosageId, String previousDosageId, int previousDosageStartHour) {
-        this.currentDosageId = currentDosageId;
-        this.previousDosageId = previousDosageId;
-        this.previousDosageStartHour = previousDosageStartHour;
+    public List<String> getMessageForNextDosage(DateTime nextDosageDateTime) {
+        List<String> messages = new ArrayList<String>();
+        messages.add(String.valueOf(nextDosageDateTime.getHourOfDay() % 12));
+        messages.add(String.valueOf(nextDosageDateTime.getMinuteOfHour()));
+        messages.add(nextDosageDateTime.getHourOfDay() < 12 ? IVRMessage.IN_THE_MORNING : IVRMessage.IN_THE_EVENING);
+        messages.add(nextDosageDateTime.toLocalDate().equals(DateUtil.today()) ? IVRMessage.TODAY : IVRMessage.TOMORROW);
+        return messages;
     }
 
-    public List<String> getMessages(String yesterday, String morning, String evening) {
+    public List<String> getMessageForPreviousDosage_YESTERDAYS_MORNING(DateTime previousDosageDateTime) {
+        return getMessageForPreviousDosage(previousDosageDateTime, IVRMessage.YESTERDAYS, IVRMessage.MORNING, IVRMessage.AFTERNOON, IVRMessage.EVENING);
+    }
+
+    public List<String> getMessageForPreviousDosage_YESTERDAY_IN_THE_MORNING(DateTime previousDosageDateTime) {
+        return getMessageForPreviousDosage(previousDosageDateTime, IVRMessage.YESTERDAY, IVRMessage.IN_THE_MORNING, IVRMessage.IN_THE_AFTERNOON, IVRMessage.IN_THE_EVENING);
+    }
+
+    private List<String> getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening) {
         List<String> messages = new ArrayList<String>();
-        if (currentDosageId.equals(previousDosageId) || previousDosageStartHour > 12)
+
+        if (previousDosageDateTime.plusDays(1).toLocalDate().equals(DateUtil.today()) && previousDosageDateTime.getHourOfDay() < 20)
             messages.add(yesterday);
-        if (previousDosageStartHour < 12)
+
+        if (previousDosageDateTime.getHourOfDay() < 12)
             messages.add(morning);
-        else
+        else if (previousDosageDateTime.getHourOfDay() < 16)
+            messages.add(afternoon);
+        else if (previousDosageDateTime.getHourOfDay() < 20)
             messages.add(evening);
+        else if (previousDosageDateTime.getHourOfDay() >= 20)
+            messages.add(IVRMessage.LAST_NIGHT);
+
         return messages;
     }
 }

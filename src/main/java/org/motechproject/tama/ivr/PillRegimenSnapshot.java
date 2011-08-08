@@ -62,12 +62,12 @@ public class PillRegimenSnapshot {
     }
 
     public DateTime getPreviousDosageTime() {
-        DosageResponse prevDosage = getNextDosage();
-        if (prevDosage == null) return null;
-        if (DateUtil.now().getHourOfDay() - pillRegimen.getReminderRepeatWindowInHours() < prevDosage.getDosageHour())
-            return new Time(prevDosage.getDosageHour(), prevDosage.getDosageMinute()).getDateTime(DateUtil.now().minusDays(1));
+        DosageResponse previousDosage = getPreviousDosage();
+        if (previousDosage == null) return null;
+        if (DateUtil.now().getHourOfDay() - pillRegimen.getReminderRepeatWindowInHours() < previousDosage.getDosageHour())
+            return new Time(previousDosage.getDosageHour(), previousDosage.getDosageMinute()).getDateTime(DateUtil.now().minusDays(1));
         else
-            return new Time(prevDosage.getDosageHour(), prevDosage.getDosageMinute()).getDateTime(DateUtil.now());
+            return new Time(previousDosage.getDosageHour(), previousDosage.getDosageMinute()).getDateTime(DateUtil.now());
     }
 
     public DateTime getNextDosageTime() {

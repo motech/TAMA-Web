@@ -25,11 +25,14 @@ public class IVRMessage {
     public static final String YOUR = "your";
     public static final String YESTERDAYS = "yesterdays";
     public static final String MORNING = "morning";
+    public static final String AFTERNOON = "afternoon";
     public static final String EVENING = "evening";
     public static final String DOSE_NOT_RECORDED = "dose_not_recorded";
     public static final String YESTERDAY = "yesterday";
     public static final String IN_THE_MORNING = "in_the_morning";
+    public static final String IN_THE_AFTERNOON = "in_the_afternoon";
     public static final String IN_THE_EVENING = "in_the_evening";
+    public static final String LAST_NIGHT = "last_night";
     public static final String YOU_WERE_SUPPOSED_TO_TAKE = "you_were_supposed_to_take";
     public static final String FROM_THE_BOTTLE = "from_the_bottle";
     public static final String PREVIOUS_DOSE_MENU = "previous_dose_menu";
