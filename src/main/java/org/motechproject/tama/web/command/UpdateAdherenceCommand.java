@@ -23,7 +23,7 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
         IVRContext ivrContext = (IVRContext) o;
 
         DosageStatus newStatus = DosageStatus.from(ivrContext.ivrRequest().getInput());
-        String dosageId = getDosageIdFrom(ivrContext);
+        String dosageId = getDosageId(ivrContext);
 
         DosageAdherenceLog todayLog = logs.findByDosageIdAndDate(dosageId, DateUtil.today());
         DosageAdherenceLog newLog = new DosageAdherenceLog(ivrContext.ivrSession().getPatientId(),
@@ -39,5 +39,9 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
         }
 
         return new String[0];
+    }
+
+    protected String getDosageId(IVRContext ivrContext) {
+        return getDosageIdFrom(ivrContext);
     }
 }

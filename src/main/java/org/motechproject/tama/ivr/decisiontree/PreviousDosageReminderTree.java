@@ -4,10 +4,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tama.web.command.MessageForAdherenceWhenPreviousDosageNotCapturedCommand;
-import org.motechproject.tama.web.command.MessageOnPreviousPillNotTaken;
-import org.motechproject.tama.web.command.MessageOnPreviousPillTaken;
-import org.motechproject.tama.web.command.StopPreviousPillReminderCommand;
+import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +20,8 @@ public class PreviousDosageReminderTree extends TAMADecisionTree {
     private MessageOnPreviousPillNotTaken messageOnPreviousPillNotTaken;
     @Autowired
     private MessageForAdherenceWhenPreviousDosageNotCapturedCommand messageForAdherenceWhenPreviousDosageNotCapturedCommand;
+    @Autowired
+    private UpdatePreviousPillAdherenceCommand updatePreviousPillAdherenceCommand;
 
     @Override
     protected Node createRootNode() {
@@ -30,7 +29,7 @@ public class PreviousDosageReminderTree extends TAMADecisionTree {
                 {"1", Transition.newBuilder()
                         .setDestinationNode(
                                 Node.newBuilder()
-                                        .setTreeCommands(stopPreviousPillReminderCommand)
+                                        .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
                                         .setPrompts(Arrays.<Prompt>asList(
                                                 new AudioPrompt().setCommand(messageOnPreviousPillTaken),
                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand)))
@@ -40,7 +39,7 @@ public class PreviousDosageReminderTree extends TAMADecisionTree {
                 {"3", Transition.newBuilder()
                         .setDestinationNode(
                                 Node.newBuilder()
-                                        .setTreeCommands(stopPreviousPillReminderCommand)
+                                        .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
                                         .setPrompts(Arrays.<Prompt>asList(
                                                 new AudioPrompt().setCommand(messageOnPreviousPillNotTaken),
                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand)))
