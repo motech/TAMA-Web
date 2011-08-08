@@ -15,16 +15,21 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @RooWebScaffold(path = "clinics", formBackingObject = Clinic.class)
 @RequestMapping("/clinics")
 @Controller
 public class ClinicController extends BaseController {
-    @Autowired
     private Clinics clinics;
+    private Cities cities;
 
     @Autowired
-    private Cities cities;
+    public ClinicController(Clinics clinics, Cities cities) {
+        this.clinics = clinics;
+        this.cities = cities;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid Clinic clinic, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -74,10 +79,11 @@ public class ClinicController extends BaseController {
         return "clinics/update";
     }
 
-
     @ModelAttribute("citys")
     public Collection<City> populateCitys() {
-        return cities.getAllCities();
+        List<City> allCities = cities.getAllCities();
+        Collections.sort(allCities);
+        return allCities;
     }
 
     @ModelAttribute("clinics")

@@ -8,10 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DrugDosage extends BaseEntity {
 
@@ -22,7 +19,7 @@ public class DrugDosage extends BaseEntity {
     private String drugName;
 
     @JsonIgnore
-    private Set<Brand> brands;
+    private Set<Brand> brands = new TreeSet<Brand>();
 
     @NotNull
     private String brandId;
@@ -68,7 +65,7 @@ public class DrugDosage extends BaseEntity {
     }
 
     public void setBrands(Set<Brand> brands) {
-        this.brands = brands;
+        this.brands = new TreeSet<Brand>(brands);
     }
 
     public String getBrandId() {

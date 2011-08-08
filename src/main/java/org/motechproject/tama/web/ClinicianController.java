@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @RooWebScaffold(path = "clinicians", formBackingObject = Clinician.class)
 @RequestMapping("/clinicians")
@@ -108,7 +110,9 @@ public class ClinicianController extends BaseController {
 
     @ModelAttribute("clinics")
     public Collection<Clinic> populateClinics() {
-        return clinics.getAll();
+        List<Clinic> allClinics = clinics.getAll();
+        Collections.sort(allClinics);
+        return allClinics;
     }
 
     @ModelAttribute("roles")

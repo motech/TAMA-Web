@@ -6,8 +6,8 @@ import org.ektorp.support.TypeDiscriminator;
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @TypeDiscriminator("doc.documentType == 'Drug'")
 public class Drug extends CouchEntity {
@@ -16,7 +16,7 @@ public class Drug extends CouchEntity {
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Brand> brands = new HashSet<Brand>();
+    private Set<Brand> brands = new TreeSet<Brand>();
 
     public Drug() {
     }

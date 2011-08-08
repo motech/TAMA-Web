@@ -3,8 +3,8 @@ package org.motechproject.tama.builder;
 import org.motechproject.tama.domain.Brand;
 import org.motechproject.tama.domain.Drug;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class DrugBuilder {
 
@@ -34,7 +34,7 @@ public class DrugBuilder {
     }
 
     public DrugBuilder withDefaults(){
-        Set<Brand> brands = new HashSet<Brand>();
+        Set<Brand> brands = new TreeSet<Brand>();
         Brand brand = new Brand("brandName");
         brand.setCompanyId("brandId");
         brands.add(brand);

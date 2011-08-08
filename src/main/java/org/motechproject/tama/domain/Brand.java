@@ -2,7 +2,7 @@ package org.motechproject.tama.domain;
 
 import javax.validation.constraints.NotNull;
 
-public class Brand extends BaseEntity {
+public class Brand extends BaseEntity implements Comparable<Brand> {
 
     @NotNull
     private String name;
@@ -68,4 +68,9 @@ public class Brand extends BaseEntity {
 			return false;
 		return true;
 	}
+
+    @Override
+    public int compareTo(Brand o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
+    }
 }
