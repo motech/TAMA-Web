@@ -33,14 +33,11 @@ public class PillsDelayWarningTest {
     private IVRMessageBuilder ivrMessageBuilder;
 
     private PillsDelayWarning pillsDelayWarning;
-    private Properties properties;
 
     @Before
     public void setup() {
         initMocks(this);
-        properties = new Properties();
-        properties.put(TAMAConstants.PILL_WINDOW, "2");
-        pillsDelayWarning = new PillsDelayWarning(ivrMessageBuilder, properties);
+        pillsDelayWarning = new PillsDelayWarning(ivrMessageBuilder);
         when(context.ivrRequest()).thenReturn(request);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());

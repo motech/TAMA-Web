@@ -61,19 +61,19 @@ public class PillRegimenSnapshot {
         return currentDosageIndex == allDosages.size() - 1 ? allDosages.get(0) : allDosages.get(currentDosageIndex + 1);
     }
 
-    public DateTime getPrevDosageTime(Integer pillWindowInHours) {
+    public DateTime getPreviousDosageTime() {
         DosageResponse prevDosage = getNextDosage();
         if (prevDosage == null) return null;
-        if (DateUtil.now().getHourOfDay() - pillWindowInHours < prevDosage.getDosageHour())
+        if (DateUtil.now().getHourOfDay() - pillRegimen.getReminderRepeatWindowInHours() < prevDosage.getDosageHour())
             return new Time(prevDosage.getDosageHour(), prevDosage.getDosageMinute()).getDateTime(DateUtil.now().minusDays(1));
         else
             return new Time(prevDosage.getDosageHour(), prevDosage.getDosageMinute()).getDateTime(DateUtil.now());
     }
 
-    public DateTime getNextDosageTime(Integer pillWindowInHours) {
+    public DateTime getNextDosageTime() {
         DosageResponse nextDosage = getNextDosage();
         if (nextDosage == null) return null;
-        if (DateUtil.now().getHourOfDay() + pillWindowInHours > nextDosage.getDosageHour())
+        if (DateUtil.now().getHourOfDay() + pillRegimen.getReminderRepeatWindowInHours() > nextDosage.getDosageHour())
             return new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(DateUtil.now().plusDays(1));
         else
             return new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(DateUtil.now());

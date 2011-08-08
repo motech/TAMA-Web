@@ -1,9 +1,7 @@
 package org.motechproject.tama.ivr;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -90,18 +88,6 @@ public class PillRegimenSnapshotTest {
 
         DosageResponse previousDosage = pillRegimenSnapshot.getNextDosage();
         assertEquals("nextDosageId", previousDosage.getDosageId());
-    }
-
-    @Test
-    @Ignore
-    public void shouldGetNextDosageTime() {
-        pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
-        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        DateTime nextDosageTime = pillRegimenSnapshot.getNextDosageTime(2);
-
-        assertEquals(22, nextDosageTime.getHourOfDay());
-        assertEquals(05, nextDosageTime.getMinuteOfHour());
     }
 
     @Test
