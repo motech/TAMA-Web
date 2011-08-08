@@ -46,7 +46,7 @@ public class IVRMessage {
     public static final String TOMORROW = "tomorrow";
 
     /* -------- Adherence Feedback ----------- */
-    public static final String YOUR_ADHERENCE_IS_NOW = "c"; // 001_06_01_YourAdherenceNow.wav
+    public static final String YOUR_ADHERENCE_IS_NOW = "your_adherence_now"; // 001_06_01_YourAdherenceNow.wav
     public static final String PERCENT = "has_become_percent"; // 001_06_03_HasBecomePercent.wav
     public static final String MISSED_PILL_FEEDBACK_FIRST_TIME = "missed_pill_feedback_first_time"; // F01_01_doctorMissedPillFeedback.wav
     public static final String MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME = "missed_pill_feedback_second_to_fourth_time"; // F02_01_doctorMissedPillFeedback.wav
