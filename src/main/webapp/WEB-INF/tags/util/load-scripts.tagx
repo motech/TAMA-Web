@@ -23,7 +23,8 @@
   <script src="${dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${spring_url}" type="text/javascript"><!-- /required for FF3 and Opera --></script>
   <script src="${spring_dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-  <script src="/tama/js/utils.js" type="text/javascript"/>
+  <spring:url value="/resources/js/utils.js" var="utilsjs" />
+  <script src="${utilsjs}" type="text/javascript"/>
   <script language="JavaScript" type="text/javascript">dojo.require("dojo.parser");</script>
 
 </jsp:root>
