@@ -35,15 +35,20 @@ public class PillRegimenSnapshot {
     }
 
     public boolean isPreviousDosageCaptured() {
+        return isVeryFirstDosageCall() || wasPreviousDosageCapturedYesterday();
+    }
+
+    private boolean isVeryFirstDosageCall() {
+        DosageResponse currentDosage = getCurrentDosage();
+        boolean noResponseCapturedForCurrentDosage = currentDosage.getResponseLastCapturedDate() == null;
+        boolean dosageStartedToday = currentDosage.getStartDate().equals(DateUtil.today());
+        boolean firstDosageInTheDay = getSortedDosages().get(0).equals(currentDosage);
+        return noResponseCapturedForCurrentDosage && dosageStartedToday && firstDosageInTheDay;
+    }
+
+    private boolean wasPreviousDosageCapturedYesterday() {
         DosageResponse previousDosage = getPreviousDosage();
-        return isFirstDosage(previousDosage) || wasPreviousDosageCapturedYesterday(previousDosage);
-    }
-
-    private boolean isFirstDosage(DosageResponse previousDosage) {
-        return previousDosage == null || previousDosage.getResponseLastCapturedDate() == null;
-    }
-
-    private boolean wasPreviousDosageCapturedYesterday(DosageResponse previousDosage) {
+        if (previousDosage.getResponseLastCapturedDate() == null) return false;
         return !DateUtil.today().minusDays(1).isAfter(previousDosage.getResponseLastCapturedDate());
     }
 
