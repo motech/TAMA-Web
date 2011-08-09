@@ -90,7 +90,9 @@ public class PillRegimenSnapshot {
         Collections.sort(sortedDosages, new Comparator<DosageResponse>() {
             @Override
             public int compare(DosageResponse d1, DosageResponse d2) {
-                return d1.getDosageHour() - d2.getDosageHour();
+                int d1Minutes = d1.getDosageHour() * 60 + d1.getDosageMinute();
+                int d2Minutes = d2.getDosageHour() * 60 + d2.getDosageMinute();
+                return d1Minutes - d2Minutes;
             }
         });
         return sortedDosages;

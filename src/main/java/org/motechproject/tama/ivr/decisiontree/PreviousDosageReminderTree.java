@@ -6,11 +6,13 @@ import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 @Component
+@Scope("session")
 public class PreviousDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private StopPreviousPillReminderCommand stopPreviousPillReminderCommand;

@@ -7,6 +7,7 @@ import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Scope("session")
 public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private MessageOnPillTaken messageOnPillTaken;
