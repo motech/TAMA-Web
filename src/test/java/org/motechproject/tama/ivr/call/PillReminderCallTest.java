@@ -22,7 +22,6 @@ public class PillReminderCallTest {
 
     private String PHONE_NUMBER = "1234567890";
     private static final String PATIENT_DOC_ID = "P_1";
-    private static final String REGIMEN_ID = "R_1";
     private static final String DOSAGE_ID = "D_1";
     private static final int TOTAL_TIMES_TO_SEND = 2;
     private static final int TIMES_SENT = 0;
@@ -37,7 +36,7 @@ public class PillReminderCallTest {
     public void shouldNotMakeACallForANonExistentPatient() {
         when(patients.get(PATIENT_DOC_ID)).thenReturn(null);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
+        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 
         verify(callService, never()).dial(anyString(), Matchers.<Map<String, String>>any());
     }
@@ -48,7 +47,7 @@ public class PillReminderCallTest {
         when(patient.isNotActive()).thenReturn(true);
         when(patients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
+        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 
         verify(callService, never()).dial(anyString(), Matchers.<Map<String, String>>any());
     }
@@ -60,7 +59,7 @@ public class PillReminderCallTest {
         when(patient.getIVRMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
         when(patients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, REGIMEN_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
+        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 
         verify(callService).dial(eq(PHONE_NUMBER), argThat(new IntermediateCallParametersMatcher()));
     }
@@ -69,8 +68,7 @@ public class PillReminderCallTest {
         @Override
         public boolean matches(Object o) {
             Map map = (Map) o;
-            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID)
-                   && map.get(PillReminderCall.REGIMEN_ID).equals(REGIMEN_ID);
+            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID);
         }
     }
 
@@ -78,8 +76,7 @@ public class PillReminderCallTest {
         @Override
         public boolean matches(Object o) {
             Map map = (Map) o;
-            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID)
-                   && map.get(PillReminderCall.REGIMEN_ID).equals(REGIMEN_ID);
+            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID);
         }
     }
 }

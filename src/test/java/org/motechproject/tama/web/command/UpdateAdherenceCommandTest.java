@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.ivr.IVRContext;
@@ -25,7 +26,7 @@ public class UpdateAdherenceCommandTest {
     private String dosageId;
     private String patientId;
     private String userInput;
-    private Map<String,String> params;
+    private Map<String, String> params;
     private IVRContext context;
     private DosageAdherenceLog log;
 
@@ -45,12 +46,12 @@ public class UpdateAdherenceCommandTest {
         patientId = "test";
         userInput = "1";
         params = new HashMap<String, String>();
-        params.put(PillReminderCall.REGIMEN_ID, pillRegimenId);
         params.put(PillReminderCall.DOSAGE_ID, dosageId);
         context = new IVRContext(req, session);
 
         when(req.getTamaParams()).thenReturn(params);
         when(session.getPatientId()).thenReturn(patientId);
+        when(session.getPillRegimen()).thenReturn(new PillRegimenResponse(pillRegimenId, null, 0, 0, null));
         when(req.getInput()).thenReturn(userInput);
     }
 

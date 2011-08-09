@@ -55,7 +55,6 @@ public class MessageForMedicinesTest {
     @Test
     public void shouldReturnMessagesWithAListOfMedicinestoBeTaken() {
         Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.REGIMEN_ID, "regimenId");
         params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(params);
 

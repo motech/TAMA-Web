@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr;
 
+import org.joda.time.DateTime;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,5 +61,10 @@ public class IVRSession {
 
     public void currentDecisionTreePath(String nextCurrentPosition) {
         set(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION, nextCurrentPosition);
+    }
+
+
+    public DateTime getCallTime() {
+        return (DateTime) get(IVRCallAttribute.CALL_TIME);
     }
 }

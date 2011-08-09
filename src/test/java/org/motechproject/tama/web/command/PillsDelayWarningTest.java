@@ -47,8 +47,8 @@ public class PillsDelayWarningTest {
         when(context.ivrSession()).thenReturn(ivrSession);
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
         mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 16, 00, 00));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
     }
 
     @Test
@@ -67,11 +67,11 @@ public class PillsDelayWarningTest {
     @Test
     public void shouldReturnLastReminderWarningMessageNonLastReminder() {
         Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.REGIMEN_ID, "regimenId");
         params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         params.put(PillReminderCall.TIMES_SENT, "1");
         params.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "1");
         when(request.getTamaParams()).thenReturn(params);
+
 
         String[] messages = pillsDelayWarning.execute(context);
         assertEquals(5, messages.length);

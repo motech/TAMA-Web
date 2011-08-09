@@ -11,7 +11,7 @@ public abstract class BaseTreeCommand implements ITreeCommand{
     }
 
     protected String getRegimenIdFrom(IVRContext ivrContext) {
-        return (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.REGIMEN_ID);
+        return (String) ivrContext.ivrSession().getPillRegimen().getPillRegimenId();
     }
 
     protected int getTimesSent(IVRContext ivrContext) {

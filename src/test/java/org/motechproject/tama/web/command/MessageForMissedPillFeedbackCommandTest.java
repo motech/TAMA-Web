@@ -59,7 +59,7 @@ public class MessageForMissedPillFeedbackCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         ivrRequest = new IVRRequest();
-        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\",\"%s\":\"%s\"}", PillReminderCall.REGIMEN_ID, REGIMEN_ID, PillReminderCall.DOSAGE_ID, "d1"));
+        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}", PillReminderCall.DOSAGE_ID, "d1"));
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
         command = new MessageForMissedPillFeedbackCommand(dosageAdherenceLogs);

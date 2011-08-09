@@ -45,6 +45,7 @@ public class PillRegimenSnapshotNextDosageTest {
         ivrContext = new IVRContext(ivrRequest, ivrSession);
 
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+
         Map<String, String> map = new HashMap();
         map.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(map);
@@ -60,6 +61,7 @@ public class PillRegimenSnapshotNextDosageTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 19, 00, 00));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 19, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime nextDosageTime = pillRegimenSnapshot.getNextDosageTime();
@@ -80,6 +82,7 @@ public class PillRegimenSnapshotNextDosageTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 12, 00, 00));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 12, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime nextDosageTime = pillRegimenSnapshot.getNextDosageTime();
@@ -99,6 +102,7 @@ public class PillRegimenSnapshotNextDosageTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime nextDosageTime = pillRegimenSnapshot.getNextDosageTime();

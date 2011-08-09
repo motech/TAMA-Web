@@ -11,6 +11,7 @@ import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.tama.repository.Patients;
 import org.springframework.aop.target.ThreadLocalTargetSource;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,7 @@ public class AuthenticateAction extends BaseIncomingAction {
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patientId);
+        ivrSession.set(IVRCallAttribute.CALL_TIME, DateUtil.now());
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
         ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
         ivrRequest.setData("");

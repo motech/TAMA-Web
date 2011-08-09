@@ -93,4 +93,8 @@ public class IVRRequest {
     public String getInput() {
         return StringUtils.remove(getData(), POUND_SYMBOL);
     }
+
+    public boolean hasNoTamaData() {
+        return StringUtils.isBlank(tamaData);
+    }
 }

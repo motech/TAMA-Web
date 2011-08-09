@@ -8,13 +8,14 @@ import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PillRegimenResponseBuilder {
 
-    private PillRegimenResponse pillRegimen;
+    private List<DosageResponse> dosages;
 
     public PillRegimenResponse build() {
-        return this.pillRegimen;
+        return new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
     }
 
     public static PillRegimenResponseBuilder startRecording() {
@@ -22,7 +23,7 @@ public class PillRegimenResponseBuilder {
     }
 
     public PillRegimenResponseBuilder withDefaults(){
-        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+        dosages = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> currentDosagesMedicines = new ArrayList<MedicineResponse>();
         ArrayList<MedicineResponse> previousDosagesMedicines = new ArrayList<MedicineResponse>();
         ArrayList<MedicineResponse> nextDosagesMedicines = new ArrayList<MedicineResponse>();
@@ -37,7 +38,15 @@ public class PillRegimenResponseBuilder {
         dosages.add(new DosageResponse("currentDosageId", new Time(16, 5), date, date, date, currentDosagesMedicines));
         dosages.add(new DosageResponse("nextDosageId", new Time(22, 5), date, date, date, nextDosagesMedicines));
 
-        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        return this;
+    }
+
+    public List<DosageResponse> dosages(){
+        return new ArrayList<DosageResponse>(dosages);
+    }
+
+    public PillRegimenResponseBuilder withDosages(List<DosageResponse> dosages) {
+        this.dosages = dosages;
         return this;
     }
 }

@@ -47,7 +47,6 @@ public class RecordDeclinedDosageReasonCommandTest {
          patientId = "test";
          userInput = "1";
          params = new HashMap<String, String>();
-         params.put(PillReminderCall.REGIMEN_ID, pillRegimenId);
          params.put(PillReminderCall.DOSAGE_ID, dosageId);
          context = new IVRContext(req, session);
 

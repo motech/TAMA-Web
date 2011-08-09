@@ -48,7 +48,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         MockitoAnnotations.initMocks(this);
 
         ivrRequest = new IVRRequest();
-        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\",\"%s\":\"%s\"}", PillReminderCall.REGIMEN_ID, REGIMEN_ID, PillReminderCall.DOSAGE_ID, "currentDosageId"));
+        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}",  PillReminderCall.DOSAGE_ID, "currentDosageId"));
 
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();

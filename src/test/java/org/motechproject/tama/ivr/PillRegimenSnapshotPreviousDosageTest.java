@@ -58,6 +58,9 @@ public class PillRegimenSnapshotPreviousDosageTest {
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
+
+        //TODO:Sathe tho
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
 
@@ -80,6 +83,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 21, 00, 00));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 21, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();
@@ -99,6 +103,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();

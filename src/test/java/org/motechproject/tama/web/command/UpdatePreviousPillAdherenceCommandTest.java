@@ -49,7 +49,6 @@ public class UpdatePreviousPillAdherenceCommandTest {
         previousPillTakenCommand = new StopPreviousPillReminderCommand(pillReminderService);
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put(PillReminderCall.REGIMEN_ID, REGIMEN_ID);
         params.put(PillReminderCall.DOSAGE_ID, CURRENT_DOSAGE_ID);
 
         when(ivrSession.getPatientId()).thenReturn(PATIENT_ID);

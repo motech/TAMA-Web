@@ -46,12 +46,14 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
 
         String REGIMEN_ID = "regimenId";
         ivrRequest = new IVRRequest();
-        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\",\"%s\":\"%s\"}", PillReminderCall.REGIMEN_ID, REGIMEN_ID, PillReminderCall.DOSAGE_ID, "currentDosageId"));
+        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}",  PillReminderCall.DOSAGE_ID, "currentDosageId"));
+
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 4, 12, 0));
         when(DateUtil.today()).thenReturn(new LocalDate(2011, 8, 4));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 5), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 5, 15, 5, 0));
+
 
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
