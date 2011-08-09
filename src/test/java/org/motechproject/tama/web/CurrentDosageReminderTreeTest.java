@@ -10,14 +10,12 @@ import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.tama.web.command.*;
 import org.motechproject.util.DateUtil;
+import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,10 +29,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:**/applicationContext.xml"})
+@ContextConfiguration(locations = {"/applicationTestContext.xml"})
 public class CurrentDosageReminderTreeTest {
     @Autowired
-    private testTree currentDosageReminderTree;
+    private TestTree currentDosageReminderTree;
+    @Autowired
+    private ThreadLocalTargetSource threadLocalTargetSource;
 
     @After
     public void TearDown() {
@@ -141,15 +141,16 @@ public class CurrentDosageReminderTreeTest {
 
         IVRRequest ivrRequest = new IVRRequest();
         ivrRequest.setTamaData(String.format("{\"%s\":\"%s\",\"%s\":\"%s\"}", PillReminderCall.REGIMEN_ID, "r1", PillReminderCall.DOSAGE_ID, "currentDosageId"));
-        currentDosageReminderTree.setIvrContext(new IVRContext(ivrRequest, ivrSession));
+        ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
+        threadLocalContext.setIvrContext(null);
+        threadLocalContext.setIvrContext(new IVRContext(ivrRequest, ivrSession));
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
     }
 }
 
 @Component
-class testTree extends CurrentDosageReminderTree {
+class TestTree extends CurrentDosageReminderTree {
     public void setTreeToNull() {
         tree = null;
     }
 }
-

@@ -13,6 +13,7 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
+import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,12 +28,14 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
+@ContextConfiguration(locations = "/applicationTestContext.xml")
 public class IVRActionTest {
     @Mock
     private HttpSession httpSession;
     @Autowired
     private IVRMessage ivrMessage;
+    @Autowired
+    private ThreadLocalTargetSource threadLocalTargetSource;
 
     private IVRAction tamaIvrAction;
     private IVRActionTest.CommandForTamaIvrActionTest commandForTamaIvrActionTest;
@@ -40,7 +43,7 @@ public class IVRActionTest {
     @Before
     public void setup() {
         initMocks(this);
-        tamaIvrAction = new IVRAction(new TestTreeForTamaIvrActionTest(), ivrMessage);
+        tamaIvrAction = new IVRAction(new TestTreeForTamaIvrActionTest(), ivrMessage, threadLocalTargetSource);
         commandForTamaIvrActionTest = new CommandForTamaIvrActionTest();
     }
 

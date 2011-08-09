@@ -42,7 +42,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(patients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
         when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
-        authenticateAction = new AuthenticateAction(pillReminderService, patients, retryAction, null);
+        authenticateAction = new AuthenticateAction(pillReminderService, patients, retryAction, null, null);
     }
 
     @Test

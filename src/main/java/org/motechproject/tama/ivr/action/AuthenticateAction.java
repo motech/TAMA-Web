@@ -10,6 +10,7 @@ import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.tama.repository.Patients;
+import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +23,20 @@ public class AuthenticateAction extends BaseIncomingAction {
     private Patients patients;
     private RetryAction retryAction;
     private CurrentDosageReminderTree currentDosageReminderTree;
+    private ThreadLocalTargetSource threadLocalTargetSource;
 
     @Autowired
-    public AuthenticateAction(PillReminderService pillReminderService, Patients patients, RetryAction retryAction, CurrentDosageReminderTree currentDosageReminderTree) {
+    public AuthenticateAction(PillReminderService pillReminderService, Patients patients, RetryAction retryAction, CurrentDosageReminderTree currentDosageReminderTree, ThreadLocalTargetSource threadLocalTargetSource) {
         this.pillReminderService = pillReminderService;
         this.patients = patients;
         this.retryAction = retryAction;
         this.currentDosageReminderTree = currentDosageReminderTree;
+        this.threadLocalTargetSource = threadLocalTargetSource;
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        return handle(ivrRequest, request, response, new IVRAction(currentDosageReminderTree, messages));
+        return handle(ivrRequest, request, response, new IVRAction(currentDosageReminderTree, messages, threadLocalTargetSource));
     }
 
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IVRAction tamaIvrAction) {

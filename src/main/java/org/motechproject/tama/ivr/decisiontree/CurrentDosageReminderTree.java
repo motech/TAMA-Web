@@ -1,21 +1,24 @@
 package org.motechproject.tama.ivr.decisiontree;
 
 import org.motechproject.decisiontree.model.*;
-import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.web.command.*;
+import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@Scope("session")
+@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CurrentDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private MessageOnPillTaken messageOnPillTaken;
@@ -39,16 +42,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
     @Autowired
     private MessageForMissedPillFeedbackCommand messageForMissedPillFeedbackCommand;
-
-    private IVRContext ivrContext;
-
-    public IVRContext getIvrContext() {
-        return ivrContext;
-    }
-
-    public void setIvrContext(IVRContext ivrContext) {
-        this.ivrContext = ivrContext;
-    }
+    @Autowired
+    private ThreadLocalTargetSource threadLocalTargetSource;
 
     protected Node createRootNode() {
         return Node.newBuilder()
@@ -115,7 +110,8 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
     }
 
     private Map<String, Transition> jumpToPreviousDosageTree() {
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(getIvrContext());
+        ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
+        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(threadLocalContext.getIvrContext());
         if (pillRegimenSnapshot.isPreviousDosageCaptured()) return new HashMap<String, Transition>();
 
         return previousDosageReminderTree.getTree().getRootNode().getTransitions();

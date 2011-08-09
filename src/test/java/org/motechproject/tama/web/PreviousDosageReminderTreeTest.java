@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:**/applicationContext.xml"})
+@ContextConfiguration(locations = {"/applicationTestContext.xml"})
 public class PreviousDosageReminderTreeTest {
     @Autowired
     private PreviousDosageReminderTree previousDosageReminderTree;

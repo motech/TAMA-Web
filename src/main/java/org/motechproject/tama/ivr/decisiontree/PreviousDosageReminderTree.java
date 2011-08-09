@@ -7,12 +7,14 @@ import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
 @Component
-@Scope("session")
+@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class PreviousDosageReminderTree extends TAMADecisionTree {
     @Autowired
     private StopPreviousPillReminderCommand stopPreviousPillReminderCommand;
