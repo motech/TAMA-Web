@@ -1,14 +1,22 @@
 package org.motechproject.tama.ivr.builder;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.motechproject.util.DateUtil;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(DateUtil.class)
 public class IVRDayMessageBuilderTest {
 
     IVRDayMessageBuilder ivrDayMessageBuilder;
@@ -16,6 +24,9 @@ public class IVRDayMessageBuilderTest {
     @Before
     public void setup() {
         ivrDayMessageBuilder = new IVRDayMessageBuilder();
+        mockStatic(DateUtil.class);
+        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 00, 00, 00));
+        when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
     }
 
     @Test

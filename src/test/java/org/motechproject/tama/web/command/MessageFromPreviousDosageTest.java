@@ -1,8 +1,10 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
@@ -14,6 +16,8 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.util.DateUtil;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.*;
 
@@ -21,7 +25,10 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(DateUtil.class)
 public class MessageFromPreviousDosageTest {
 
     @Mock
@@ -48,6 +55,9 @@ public class MessageFromPreviousDosageTest {
         medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("medicine1", null, null));
         medicineResponses.add(new MedicineResponse("medicine2", null, null));
+        mockStatic(DateUtil.class);
+        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 16, 00, 00));
+        when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
     }
 
     @Test
