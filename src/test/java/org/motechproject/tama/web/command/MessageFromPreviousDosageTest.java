@@ -66,7 +66,7 @@ public class MessageFromPreviousDosageTest {
         LocalDate dosageLastTakenDate = DateUtil.today().minusDays(2);
         ArrayList<MedicineResponse> medicines = new ArrayList<MedicineResponse>();
         medicines.add(new MedicineResponse("medicine1", null, null));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, dosageLastTakenDate, medicines));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, dosageLastTakenDate, medicines));
 
         when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
@@ -80,7 +80,7 @@ public class MessageFromPreviousDosageTest {
     public void shouldReturnNoMessagesWhenPreviousDosageHasBeenTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate lastTakenDate = null;
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, lastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, lastTakenDate, new ArrayList<MedicineResponse>()));
 
         when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
