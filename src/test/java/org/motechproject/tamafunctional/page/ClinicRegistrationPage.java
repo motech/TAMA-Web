@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -42,12 +43,12 @@ public class ClinicRegistrationPage extends Page {
         city = new MyWebElement(city);
     }
 
-    public ShowClinicPage registerClinic(Clinic clinic) {
-        name.sendKeys(clinic.getName());
-        address.sendKeys(clinic.getAddress());
-        phoneNumber.sendKeys(clinic.getPhone());
+    public ShowClinicPage registerClinic(TestClinic clinic) {
+        name.sendKeys(clinic.name());
+        address.sendKeys(clinic.address());
+        phoneNumber.sendKeys(clinic.phoneNumber());
         city.clear();
-        city.sendKeys(clinic.getCity().getName());
+        city.sendKeys(clinic.city());
         registerClinicLink.click();
         return MyPageFactory.initElements(webDriver, ShowClinicPage.class);
     }

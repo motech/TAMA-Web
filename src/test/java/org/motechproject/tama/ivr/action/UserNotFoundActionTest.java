@@ -26,7 +26,7 @@ public class UserNotFoundActionTest extends BaseActionTest {
 
     @Test
     public void shouldReturnUserNotFoundResponse() {
-        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
+        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "testdata");
         String responseXML = userNotFoundAction.handle(ivrRequest, request, response);
 
         IVRAuditMatcher matcher = new IVRAuditMatcher(ivrRequest.getSid(), ivrRequest.getCid(), StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND);

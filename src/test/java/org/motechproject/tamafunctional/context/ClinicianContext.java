@@ -1,23 +1,21 @@
 package org.motechproject.tamafunctional.context;
 
-
-import org.motechproject.tama.builder.ClinicianBuilder;
-import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;
 
-public class ClinicianContext extends AbstractContext{
+public class ClinicianContext extends AbstractContext {
 
     private final String userName;
     private final String password;
     private final ClinicContext clinicContext;
 
-    public ClinicianContext(){
+    public ClinicianContext() {
         this.clinicContext = new ClinicContext();
-        Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinicContext.getClinic()).build();
-        userName = clinician.getUsername();
-        password = clinician.getPassword();
+        TestClinician clinician = TestClinician.withMandatory().clinic(clinicContext.getClinic());
+        userName = clinician.userName();
+        password = clinician.password();
     }
 
     public ClinicianContext(String userName, String password, ClinicContext clinicContext) {
@@ -30,8 +28,7 @@ public class ClinicianContext extends AbstractContext{
     @Override
     protected void create(WebDriver webDriver) {
         clinicContext.create(webDriver);
-        Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinicContext.getClinic()).
-                withName(userName).withUserName(userName).withPassword(password).build();
+        TestClinician clinician = TestClinician.withMandatory().clinic(clinicContext.getClinic()).name(userName).userName(userName).password(password);
 
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()

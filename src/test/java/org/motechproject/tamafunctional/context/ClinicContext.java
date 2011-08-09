@@ -1,22 +1,19 @@
 package org.motechproject.tamafunctional.context;
 
-import org.motechproject.tama.builder.ClinicBuilder;
-import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.openqa.selenium.WebDriver;
 
-public class ClinicContext extends AbstractContext{
+public class ClinicContext extends AbstractContext {
+    private TestClinic clinic;
 
-
-    private Clinic clinic;
-
-    public ClinicContext(){
-        clinic = ClinicBuilder.startRecording().withDefaults().build();
+    public ClinicContext() {
+        clinic = TestClinic.withMandatory();
     }
 
-    public ClinicContext(String name){
-        clinic = ClinicBuilder.startRecording().withDefaults().withName(name).build();
+    public ClinicContext(String name) {
+        clinic = TestClinic.withMandatory().name(name);
     }
 
     @Override
@@ -29,10 +26,10 @@ public class ClinicContext extends AbstractContext{
     }
 
     public String getName() {
-        return clinic.getName();
+        return clinic.name();
     }
 
-    public Clinic getClinic() {
+    public TestClinic getClinic() {
         return clinic;
     }
 }

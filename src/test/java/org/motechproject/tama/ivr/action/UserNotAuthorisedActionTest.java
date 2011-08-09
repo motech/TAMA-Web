@@ -27,7 +27,7 @@ public class UserNotAuthorisedActionTest extends BaseActionTest {
 
     @Test
     public void shouldReturnUserNptAuthorisedResponse() {
-        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "data");
+        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "testdata");
 
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn("patientId");

@@ -17,7 +17,7 @@ public abstract class BaseIVRTest extends BaseTest{
     }
 
     protected String urlWith(String sid, String cid, String event, String data) {
-        return urlWith(sid, cid, event) + "&data={" + data + "}";
+        return urlWith(sid, cid, event) + "&testdata={" + data + "}";
     }
 
     protected String print(String response){

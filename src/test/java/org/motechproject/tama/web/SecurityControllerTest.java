@@ -8,6 +8,7 @@ import org.motechproject.tama.domain.TAMAUser;
 import org.motechproject.tama.repository.TAMAUsers;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
+import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,18 +27,18 @@ public class SecurityControllerTest {
     private TAMAUsers tamaUsers;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         initMocks(this);
         securityController = new SecurityController(tamaUsers);
     }
 
     @Test
     public void testChangePasswordFormShouldRedirectToChangePasswordPage() throws Exception {
-        assertEquals("redirect:/changePassword",securityController.changePasswordForm());
+        assertEquals("redirect:/changePassword", securityController.changePasswordForm());
     }
 
     @Test
-    public void testChangePasswordWithWrongOldPassword(){
+    public void testChangePasswordWithWrongOldPassword() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         Model uiModel = mock(Model.class);
         HttpSession session = mock(HttpSession.class);
@@ -53,7 +54,7 @@ public class SecurityControllerTest {
     }
 
     @Test
-    public void testChangePassword(){
+    public void testChangePassword() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         Model uiModel = mock(Model.class);
         HttpSession session = mock(HttpSession.class);
@@ -66,8 +67,8 @@ public class SecurityControllerTest {
         when(authenticatedUser.getTAMAUser()).thenReturn(tamaUser);
 
         String viewName = securityController.changePassword("oldPassword", "new", "new", uiModel, request);
-        verify(authenticatedUser,times(1)).setPassword("new");
-        verify(tamaUsers,times(1)).update(tamaUser);
+        verify(authenticatedUser, times(1)).setPassword("new");
+        verify(tamaUsers, times(1)).update(tamaUser);
         assertEquals("passwordReset", viewName);
     }
 }

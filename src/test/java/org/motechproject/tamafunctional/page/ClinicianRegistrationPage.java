@@ -1,9 +1,9 @@
 package org.motechproject.tamafunctional.page;
 
-import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.Clinician;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.testdata.TestClinic;
+import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -46,14 +46,14 @@ public class ClinicianRegistrationPage extends Page {
         clinicElement = new MyWebElement(clinicElement);
     }
 
-    public ShowClinicianPage registerClinician(Clinician clinician) {
-        name.sendKeys(clinician.getName());
-        username.sendKeys(clinician.getUsername());
-        contactNumber.sendKeys(clinician.getContactNumber());
-        alternateContactNumber.sendKeys(clinician.getAlternateContactNumber());
-        password.sendKeys(clinician.getPassword());
-        Clinic clinic = clinician.getClinic();
-        clinicElement.sendKeys(new StringBuilder().append(clinic.getName()).append(", ").append(clinic.getCity()).toString());
+    public ShowClinicianPage registerClinician(TestClinician clinician) {
+        name.sendKeys(clinician.name());
+        username.sendKeys(clinician.userName());
+        contactNumber.sendKeys(clinician.contactNumber());
+        alternateContactNumber.sendKeys(clinician.alternateContactNumber());
+        password.sendKeys(clinician.password());
+        TestClinic clinic = clinician.clinic();
+        clinicElement.sendKeys(new StringBuilder().append(clinic.name()).append(", ").append(clinic.city()).toString());
         registerClinicianLink.click();
         return MyPageFactory.initElements(webDriver, ShowClinicianPage.class);
 

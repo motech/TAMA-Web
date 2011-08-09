@@ -52,9 +52,9 @@ public class ClinicianBuilder {
         String validContactNumber = "1234567890";
         String validAlternateContactNumber = "1234567890";
         Date time = Calendar.getInstance().getTime();
-        String username = "test"+ time.getTime();
+        String username = "test" + time.getTime();
         String password = "test";
-        String name = "testName"+ time.getTime();
+        String name = "testName" + time.getTime();
         return ClinicianBuilder.startRecording().
                 withName(name).
                 withAlternateContactNumber(validAlternateContactNumber).

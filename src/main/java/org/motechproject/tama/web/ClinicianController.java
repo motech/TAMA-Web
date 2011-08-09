@@ -30,7 +30,7 @@ public class ClinicianController extends BaseController {
     public static final String LIST_VIEW = "clinicians/list";
     public static final String UPDATE_VIEW = "clinicians/update";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/clinicians/";
-    public static final String USERNAME_ALREADY_IN_USE = "sorry, username already in use.";
+    public static final String USERNAME_ALREADY_IN_USE = "sorry, userName already in use.";
     private Clinicians clinicians;
     private Clinics clinics;
 
