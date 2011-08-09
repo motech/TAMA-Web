@@ -16,7 +16,7 @@
     </properties>
     <profiles>
         <profile>
-            <id>smoke</id>
+            <id>tw-ci</id>
             <build>
                 <plugins>
                     <!--PROPERTIES READ-->
@@ -237,6 +237,15 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!--RELEASE-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.1</version>
+                        <configuration>
+                            <preparationGoals>clean verify -P tw-ci</preparationGoals>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -249,6 +258,11 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>motech.nexus</id>
+            <name>Motech Snapshots Repository</name>
+            <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
         </repository>
         <repository>
             <id>spring-maven-release</id>
@@ -266,6 +280,7 @@
             <url>http://spring-roo-repository.springsource.org/release</url>
         </repository>
     </repositories>
+
     <dependencies>
         <!-- General dependencies for standard applications -->
         <dependency>
@@ -646,22 +661,22 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder-api</artifactId>
-            <version>0.1</version>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder</artifactId>
-            <version>0.1</version>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-decisiontree</artifactId>
-            <version>0.1</version>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-decisiontree-common</artifactId>
-            <version>0.1</version>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
