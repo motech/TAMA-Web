@@ -15,6 +15,7 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
     @NotNull
     private String address;
 
+    @NotNull
     private String phone;
 
     @ManyToOne

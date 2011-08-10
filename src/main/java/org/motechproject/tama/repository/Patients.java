@@ -75,7 +75,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
             @Override
             public boolean evaluate(Object o) {
                 Patient patient = (Patient) o;
-                return patientId.equals(patient.getPatientId());
+                return patientId.equalsIgnoreCase(patient.getPatientId());
             }
         });
         return patients;
