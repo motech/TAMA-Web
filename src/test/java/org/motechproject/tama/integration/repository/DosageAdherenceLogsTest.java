@@ -102,6 +102,34 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
+    public void shouldReturnWhenCurrentDosageWillBeTakenLaterOrNot() {
+        LocalDate today = DateUtil.today();
+        DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today).withDosageStatus(DosageStatus.WILL_TAKE_LATER).build();
+        DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today.minusDays(1)).withDosageStatus(DosageStatus.TAKEN).build();
+        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today.minusDays(2)).withDosageStatus(DosageStatus.NOT_TAKEN).build();
+        dosageAdherenceLogs.add(log0);
+        dosageAdherenceLogs.add(log1);
+        dosageAdherenceLogs.add(log2);
+
+        Assert.assertTrue(dosageAdherenceLogs.willCurrentDosageBeTakenLater("r1"));
+    }
+
+    @Test
+    public void shouldConsiderDosageAsTakenWhenCurrentDosageResponseIsWillTakeLater() {
+        LocalDate today = DateUtil.today();
+        DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today).withDosageStatus(DosageStatus.WILL_TAKE_LATER).build();
+        DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today.minusDays(1)).withDosageStatus(DosageStatus.TAKEN).build();
+        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today.minusDays(2)).withDosageStatus(DosageStatus.NOT_TAKEN).build();
+        dosageAdherenceLogs.add(log0);
+        dosageAdherenceLogs.add(log1);
+        dosageAdherenceLogs.add(log2);
+
+        int count = dosageAdherenceLogs.findScheduledDosagesSuccessCount("r1", today.minusDays(28), today);
+
+        Assert.assertEquals(2, count);
+    }
+
+    @Test
     public void shouldGetDosageNotTakenCount() {
         LocalDate today = DateUtil.today();
         DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today).withDosageStatus(DosageStatus.TAKEN).build();

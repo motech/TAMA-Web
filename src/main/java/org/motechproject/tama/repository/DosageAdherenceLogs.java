@@ -8,6 +8,7 @@ import org.ektorp.support.View;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,18 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
         ComplexKey endDosageDatekey = ComplexKey.of(regimenId, DosageStatus.TAKEN, toDate);
         ViewQuery q = createQuery("find_success_log_count_for_a_given_date_range").startKey(startDosageDatekey).endKey(endDosageDatekey);
         ViewResult viewResult = db.queryView(q);
-        return rowCount(viewResult);
+        int successLogCount = rowCount(viewResult);
+
+        if (willCurrentDosageBeTakenLater(regimenId)) return successLogCount + 1;
+        return successLogCount;
+    }
+
+    @View(name = "find_whether_current_dosage_will_be_taken_later", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
+    public boolean willCurrentDosageBeTakenLater(String regimenId) {
+        ComplexKey key = ComplexKey.of(regimenId, DosageStatus.WILL_TAKE_LATER, DateUtil.today());
+        ViewQuery q = createQuery("find_whether_current_dosage_will_be_taken_later").key(key);
+        ViewResult viewResult = db.queryView(q);
+        return rowCount(viewResult) == 1 ? true : false;
     }
 
     @View(name = "find_failure_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus], doc._id);}}", reduce = "_count")
@@ -50,7 +62,7 @@ public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherence
     public DosageAdherenceLog findByDosageIdAndDate(String dosageId, LocalDate dosageDate) {
         ViewQuery q = createQuery("find_by_dosage_id_and_dosageDate").key(ComplexKey.of(dosageId, dosageDate)).includeDocs(true);
         List<DosageAdherenceLog> adherenceLogs = db.queryView(q, DosageAdherenceLog.class);
-        if(adherenceLogs != null && !adherenceLogs.isEmpty()) return adherenceLogs.get(0);
+        if (adherenceLogs != null && !adherenceLogs.isEmpty()) return adherenceLogs.get(0);
         return null;
     }
 }
