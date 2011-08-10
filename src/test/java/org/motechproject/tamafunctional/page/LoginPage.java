@@ -16,7 +16,7 @@ public class LoginPage extends Page {
     public static final String INCORRECT_PASSWORD = "Incorrect";
     public static final String CORRECT_USERNAME = "admin";
     public static final String CORRECT_PASSWORD = "password";
-    public static final String FAILURE_MESSAGE = "Your login attempt was not successful, try again. Reason: User not found.";
+    public static final String FAILURE_MESSAGE = "The username or password you entered is incorrect.";
 
     @FindBy(how = How.ID, using = USERNAME_ID)
     private WebElement userName;

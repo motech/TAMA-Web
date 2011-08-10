@@ -13,7 +13,7 @@ import java.util.List;
 
 public class AuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
     public static final String PLEASE_ENTER_PASSWORD = "Please enter password";
-    public static final String USER_NOT_FOUND = "User not found";
+    public static final String USER_NOT_FOUND = "The username or password you entered is incorrect";
 
     private List<SecurityGroup> groups;
 
