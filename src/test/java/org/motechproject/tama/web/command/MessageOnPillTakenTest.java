@@ -10,7 +10,7 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertArrayEquals;
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +33,10 @@ public class MessageOnPillTakenTest {
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.TIMES_SENT, 0);
         when(request.getTamaParams()).thenReturn(params);
-        assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN}, messageOnPillTaken.execute(context));
+        String[] messages = messageOnPillTaken.execute(context);
+        assertEquals(2, messages.length);
+        assertEquals(IVRMessage.DOSE_TAKEN, messages[0]);
+        assertEquals(IVRMessage.DOSE_RECORDED, messages[1]);
     }
 
     @Test
@@ -41,6 +44,8 @@ public class MessageOnPillTakenTest {
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.TIMES_SENT, 2);
         when(request.getTamaParams()).thenReturn(params);
-        assertArrayEquals(new String[0], messageOnPillTaken.execute(context));
+        String[] messages = messageOnPillTaken.execute(context);
+        assertEquals(1, messages.length);
+        assertEquals(IVRMessage.DOSE_RECORDED, messages[0]);
     }
 }

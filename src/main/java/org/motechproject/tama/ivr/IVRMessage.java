@@ -16,6 +16,7 @@ public class IVRMessage {
     public static final String ITS_TIME_FOR_THE_PILL = "its_time_for_the_pill";
     public static final String PILL_FROM_THE_BOTTLE = "pill_from_the_bottle";
     public static final String PLEASE_TAKE_DOSE = "please_take_dose";
+    public static final String DOSE_RECORDED = "dose_recorded";
     public static final String DOSE_TAKEN = "dose_taken";
     public static final String PLEASE_CARRY_SMALL_BOX = "please_carry_small_box";
     public static final String DOSE_CANNOT_BE_TAKEN_MENU = "dose_cannot_be_taken_menu";
