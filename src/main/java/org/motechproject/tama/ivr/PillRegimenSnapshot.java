@@ -121,8 +121,10 @@ public class PillRegimenSnapshot {
     public int getScheduledDosagesTotalCount(DateTime toDate) {
         int totalCount = 0;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
-            LocalDate startDate = dosageResponse.getStartDate();
-            DateTime fromDate = new DateTime(startDate.getYear(), startDate.getMonthOfYear(), startDate.getDayOfMonth(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute());
+            LocalDate dosageStartDate = dosageResponse.getStartDate();
+            DateTime fromDate = new DateTime(dosageStartDate.getYear(), dosageStartDate.getMonthOfYear(), dosageStartDate.getDayOfMonth(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute());
+            if (toDate.isBefore(fromDate)) continue;
+
             Days days = Days.daysBetween(fromDate, toDate);
             int dayCount = days.getDays() + 1;
             totalCount += Math.min(dayCount, TAMAConstants.DAYS_IN_FOUR_WEEKS);

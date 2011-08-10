@@ -174,6 +174,23 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
+    public void shouldGetTotalCountOfScheduledDosagesForARegimenWithMultipleDosagesInTheSameDay() {
+        ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
+        ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
+        medicineResponses.add(new MedicineResponse("med1", null, null));
+        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 8, 10), DateUtil.newDate(2012, 7, 1), DateUtil.today(), medicineResponses));
+        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 8, 10), DateUtil.newDate(2012, 7, 10), DateUtil.today(), medicineResponses));
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
+
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        DateTime toDate = new DateTime(2011, 8, 10, 12, 0); // TotalCount = 1 + 0 = 1
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
+
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
+        assertEquals(1, totalCount);
+    }
+
+    @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksGreaterThanFour() {
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
         DateTime toDate = new DateTime(2011, 10, 1, 12, 0); // TotalCount = 93 + 89 = 182; capped to 56
