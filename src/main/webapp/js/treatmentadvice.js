@@ -20,6 +20,7 @@ dojo.addOnLoad(function() {
         });
         regimens.set('store', options);
         regimens.setValue(regimens_data[1]._id);
+        regimens.setValue(regimens_data[0]._id);    // because dojo doesn't trigger onchange for setting same value
 
         dojo.connect(regimens, "onChange", function(regimen_id) {
             var options = new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}});
@@ -203,11 +204,11 @@ dojo.addOnLoad(function() {
             },
             {
                 execute: function(){ return getProperties(amTimes).length > 1; },
-                message : "You have entered different times for morning dose. Please change the times to the same time for both dosages."
+                message : "You have entered different times for morning dose. Please change the times to the same time for both morning dosages."
             },
             {
                 execute: function(){ return getProperties(pmTimes).length > 1; },
-                message : "You have entered different times for evening dose. Please change the times to the same time for both dosages."
+                message : "You have entered different times for evening dose. Please change the times to the same time for both evening dosages."
             }];
 
             for (var i = 0; i < conditions.length; i++){

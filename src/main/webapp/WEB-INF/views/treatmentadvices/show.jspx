@@ -25,11 +25,12 @@
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                         <td>
                             <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="dosageType" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage" />
-                            <c:forEach items="${treatmentAdvice.drugDosages[item.index].dosageSchedules}" varStatus="scheduleItem" var="drugDosageSchedule">
-                                <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[scheduleItem.index]}">
-                                    <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[scheduleItem.index]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{scheduleItem.index}" label="Time" />
-                                </c:if>
-                            </c:forEach>
+                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[0]}">
+                                <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[0]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{0}" label="Morning Time" />
+                            </c:if>
+                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[1]}">
+                                <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[1]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{1}" label="Evening Time" />
+                            </c:if>
                         </td>
                 </c:forEach>
             </tr>

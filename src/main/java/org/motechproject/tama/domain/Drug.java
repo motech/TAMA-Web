@@ -50,7 +50,7 @@ public class Drug extends CouchEntity {
     }
 
     public Set<Brand> getBrands() {
-        return this.brands;
+        return new TreeSet<Brand>(this.brands);
     }
 
     public void setBrands(Set<Brand> brands) {
