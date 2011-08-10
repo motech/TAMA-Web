@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.command;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand {
-    private LocalDate toDate;
+    private DateTime toDate;
 
     public MessageForMissedPillFeedbackCommand() {
-        toDate = DateUtil.today();
+        toDate = DateUtil.now();
     }
 
-    public MessageForMissedPillFeedbackCommand(DosageAdherenceLogs dosageAdherenceLogs, LocalDate toDate) {
+    public MessageForMissedPillFeedbackCommand(DosageAdherenceLogs dosageAdherenceLogs, DateTime toDate) {
         super(dosageAdherenceLogs);
         this.toDate = toDate;
     }

@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class MessageForMissedPillFeedbackCommandTest {
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
-        command = new MessageForMissedPillFeedbackCommand(dosageAdherenceLogs, DateUtil.newDate(2011, 8, 4));
+        command = new MessageForMissedPillFeedbackCommand(dosageAdherenceLogs, new DateTime(2011, 8, 4, 12, 0));
     }
 
     @Test

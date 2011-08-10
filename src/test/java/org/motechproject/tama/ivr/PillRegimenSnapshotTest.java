@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,17 +166,17 @@ public class PillRegimenSnapshotTest {
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksLessThanFour() {
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        LocalDate toDate = DateUtil.newDate(2011, 8, 1); // TotalCount = 32 + 23 = 28 + 23 = 51
+        DateTime toDate = new DateTime(2011, 8, 1, 12, 0); // TotalCount = 32 + 22 = 28 + 22 = 50
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
-        assertEquals(51, totalCount);
+        assertEquals(50, totalCount);
     }
 
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksGreaterThanFour() {
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        LocalDate toDate = DateUtil.newDate(2011, 10, 1); // TotalCount = 93 + 89 = 182; capped to 56
+        DateTime toDate = new DateTime(2011, 10, 1, 12, 0); // TotalCount = 93 + 89 = 182; capped to 56
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);

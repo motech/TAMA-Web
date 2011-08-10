@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
-        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(dosageAdherenceLogs, DateUtil.newDate(2011, 8, 4));
+        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(dosageAdherenceLogs, new DateTime(2011, 8, 4, 12, 0));
     }
 
     @Test

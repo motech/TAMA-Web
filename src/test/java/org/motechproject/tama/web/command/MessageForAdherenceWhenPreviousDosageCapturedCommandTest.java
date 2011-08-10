@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +42,6 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     private final String REGIMEN_ID = "regimenId";
     private DosageResponse currentDosage;
-    private DosageResponse previousDosage;
 
     @Before
     public void setup() {
@@ -55,14 +55,15 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         medicineResponses.add(new MedicineResponse("med1", null, null));
         currentDosage = new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), DateUtil.newDate(2012, 7, 1), DateUtil.today(), medicineResponses);
         dosageResponses.add(currentDosage);
-        previousDosage = new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 5), DateUtil.newDate(2012, 7, 5), DateUtil.today(), medicineResponses);
+        DosageResponse previousDosage = new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 5), DateUtil.newDate(2012, 7, 5), DateUtil.today(), medicineResponses);
         dosageResponses.add(previousDosage);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
-        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs, DateUtil.newDate(2011, 8, 4));
+        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs, new DateTime(2011, 8, 4, 12, 0));
         mockStatic(DateUtil.class);
+        when(DateUtil.now()).thenReturn(new DateTime(2011, 7, 1, 12, 0, 0));
         when(DateUtil.today()).thenReturn(new LocalDate(2011, 7, 1));
     }
 
@@ -111,7 +112,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     public void shouldCalculateAdherencePercentage() {
         Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(45);
 
-        int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, DateUtil.today(), 56);
+        int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, DateUtil.now(), 56);
         assertEquals(80, adherencePercentage);
     }
 
