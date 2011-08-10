@@ -73,9 +73,7 @@ public class TreatmentAdvice extends CouchEntity {
 
     public static TreatmentAdvice newDefault() {
         TreatmentAdvice advice = new TreatmentAdvice();
-        DrugDosage firstDosage = new DrugDosage();
-        DrugDosage secondDosage = new DrugDosage();
-        advice.setDrugDosages(Arrays.asList(firstDosage, secondDosage));
+        advice.setDrugDosages(Arrays.asList(DrugDosage.dosageStartingToday(), DrugDosage.dosageStartingToday()));
         return  advice;
     }
 }

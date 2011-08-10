@@ -79,7 +79,6 @@ dojo.addOnLoad(function() {
             }
 
             secondDosageWidgets.forEach(function(widget, i) {
-                console.log(widget.get("customRequired"));
                 if (compositions_data_hash[composition_id].drugs.length == 1) {
                     widget.set("disabled", true);
                     widget.set("required", false);

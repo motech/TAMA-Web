@@ -3,6 +3,7 @@ package org.motechproject.tama.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.LocalDate;
 import org.motechproject.util.DateUtil;
+import org.mvel2.ast.ReturnNode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
@@ -143,5 +144,11 @@ public class DrugDosage extends BaseEntity {
 
     public void setMealAdviceId(String mealAdviceId) {
         this.mealAdviceId = mealAdviceId;
+    }
+
+    public static DrugDosage dosageStartingToday() {
+        final DrugDosage dosage = new DrugDosage();
+        dosage.setStartDate(DateUtil.today());
+        return dosage;
     }
 }
