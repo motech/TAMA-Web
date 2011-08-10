@@ -35,10 +35,10 @@ public class PatientARTRegimenTest  extends BaseTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdviceView treatmentAdvice = TreatmentAdviceViewBuilder.startRecording().withDefaults().withPatientId(patient.getPatientId()).build();
 
-        ViewARTRegimenPage viewARTRegimenPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
-                goToPatientRegistrationPage().
-                registerNewPatient(patient)
+        ViewARTRegimenPage viewARTRegimenPage = MyPageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword())
+                .goToPatientRegistrationPage()
+                .registerNewPatient(patient)
                 .activatePatient()
                 .goToCreateARTRegimenPage()
                 .registerNewARTRegimen(treatmentAdvice)
