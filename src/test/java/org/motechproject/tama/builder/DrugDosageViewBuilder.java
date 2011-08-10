@@ -39,7 +39,7 @@ public class DrugDosageViewBuilder {
 
     public DrugDosageViewBuilder withDefaults(){
         List<String> dosageSchedules = new ArrayList<String>();
-        dosageSchedules.add("10:00am");
-        return this.withBrandName("Efferven").withDosageType("Once Daily").withDosageSchedules(dosageSchedules).withMealAdviceType("After Meal");
+        dosageSchedules.add("10:00");
+        return this.withBrandName("Efferven").withDosageType("Evening Daily").withDosageSchedules(dosageSchedules).withMealAdviceType("After Meal");
     }
 }

@@ -106,55 +106,6 @@ public class TreatmentAdviceControllerTest {
     }
 
     @Test
-    public void shouldGetDrugCompositionsForARegimen() {
-        String regimenId = "patientId";
-        Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
-        HashSet<String> drugIds = new HashSet<String>();
-        drugIds.add("drugId1");
-        drugIds.add("drugId2");
-
-        List<Drug> returnedDrugs = new ArrayList<Drug>();
-        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId1").withName("Drug1").build());
-        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId2").withName("Drug2").build());
-
-        when(regimens.get(regimenId)).thenReturn(regimen);
-        when(drugs.getDrugs(drugIds)).thenReturn(returnedDrugs);
-
-        Set<ComboBoxView> drugCompositions = controller.drugCompositionsFor(regimenId);
-        ComboBoxView regimenComposition = (ComboBoxView) CollectionUtils.get(drugCompositions, 0);
-
-        junit.framework.Assert.assertEquals(1, drugCompositions.size());
-        junit.framework.Assert.assertEquals("regimenCompositionId", regimenComposition.getId());
-        junit.framework.Assert.assertEquals("drugDisplayName", regimenComposition.getDisplayName());
-    }
-
-    @Test
-    public void shouldGetDrugDosagesForARegimenComposition() {
-        String regimenId = "patientId";
-        String regimenCompositionId = "regimenCompositionId";
-        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
-
-        Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
-        HashSet<String> drugIds = new HashSet<String>();
-        drugIds.add("drugId1");
-        drugIds.add("drugId2");
-
-        List<Drug> returnedDrugs = new ArrayList<Drug>();
-        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId1").withName("Drug1").build());
-        returnedDrugs.add(DrugBuilder.startRecording().withId("drugId2").withName("Drug2").build());
-
-        when(regimens.get(regimenId)).thenReturn(regimen);
-        when(drugs.getDrugs(drugIds)).thenReturn(returnedDrugs);
-
-        String redirectUrl = controller.drugDosagesFor(regimenId, regimenCompositionId, treatmentAdvice);
-
-        junit.framework.Assert.assertEquals("treatmentadvices/drugdosages", redirectUrl);
-        junit.framework.Assert.assertEquals(2, treatmentAdvice.getDrugDosages().size());
-        junit.framework.Assert.assertEquals("drugId1", treatmentAdvice.getDrugDosages().get(0).getDrugId());
-        junit.framework.Assert.assertEquals("drugId2", treatmentAdvice.getDrugDosages().get(1).getDrugId());
-    }
-
-    @Test
     public void shouldGetAllRegimens() {
         List<Regimen> returnedRegimens = new ArrayList<Regimen>();
         returnedRegimens.add(RegimenBuilder.startRecording().withDefaults().build());

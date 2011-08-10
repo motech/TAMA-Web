@@ -15,30 +15,33 @@ public class CreateARTRegimenPage extends Page {
 
     public static final String REGIMEN_ID = "_regimenId_id";
 
-    public static final String DRUG1_BRAND_ID = "_treatmentAdvice.drugDosages[0].brandId_id";
+    public static final String DRUG1_BRAND_ID = "_drugDosages[0].brandId_id";
 
     @FindBy(how = How.ID, using = REGIMEN_ID)
     private WebElement regimenElement;
 
-    @FindBy(how = How.ID, using = "_regimenCompositionId_id")
-    private WebElement regimenCompositionElement;
+    @FindBy(how = How.ID, using = "_drugCompositionGroupId_id")
+    private WebElement drugCompositionGroupElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageTypeId_id")
+    @FindBy(how = How.ID, using = "_drugCompositionId_id")
+    private WebElement drugCompositionElement;
+
+    @FindBy(how = How.ID, using = "_drugDosages[0].dosageTypeId_id")
     private WebElement drug1DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id")
+    @FindBy(how = How.ID, using = "_drugDosages[0].dosageSchedules[1]_id")
     private WebElement drug1DosageTimeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].mealAdviceId_id")
+    @FindBy(how = How.ID, using = "_drugDosages[0].mealAdviceId_id")
     private WebElement drug1MealAdviceTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageTypeId_id")
+    @FindBy(how = How.ID, using = "_drugDosages[1].dosageTypeId_id")
     private WebElement drug2DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id")
+    @FindBy(how = How.ID, using = "_drugDosages[1].dosageSchedules[1]_id")
     private WebElement drug2DosageTimeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
+    @FindBy(how = How.ID, using = "_drugDosages[1].mealAdviceId_id")
     private WebElement drug2MealAdviceTypeElement;
 
     @FindBy(how = How.ID, using = "proceed")
@@ -51,7 +54,7 @@ public class CreateARTRegimenPage extends Page {
     @Override
     public void postInitialize() {
         regimenElement = new MyWebElement(regimenElement);
-        regimenCompositionElement = new MyWebElement(regimenCompositionElement);
+        drugCompositionGroupElement = new MyWebElement(drugCompositionGroupElement);
         drug1DosageTypeElement = new MyWebElement(drug1DosageTypeElement);
         drug1DosageTimeElement = new MyWebElement(drug1DosageTimeElement);
         drug1MealAdviceTypeElement = new MyWebElement(drug1MealAdviceTypeElement);
@@ -66,7 +69,7 @@ public class CreateARTRegimenPage extends Page {
     }
 
     public ShowPatientPage registerNewARTRegimen(TreatmentAdviceView treatmentAdvice) {
-        selectRegimenAndWaitTillTheCompositionsShow(treatmentAdvice);
+        selectRegimenAndWaitTillTheCompositionGroupsShow(treatmentAdvice);
         selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
 
         DrugDosageView drugDosage1 = treatmentAdvice.getDrugDosages().get(0);
@@ -84,7 +87,7 @@ public class CreateARTRegimenPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
-    private void selectRegimenAndWaitTillTheCompositionsShow(TreatmentAdviceView treatmentAdvice) {
+    private void selectRegimenAndWaitTillTheCompositionGroupsShow(TreatmentAdviceView treatmentAdvice) {
         regimenElement.sendKeys(treatmentAdvice.getRegimenName());
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
@@ -95,7 +98,7 @@ public class CreateARTRegimenPage extends Page {
     }
 
     private void selectDrugCompositionAndWaitTillTheDrugDosagesShow(TreatmentAdviceView treatmentAdvice) {
-        regimenCompositionElement.sendKeys(treatmentAdvice.getDrugCompositionName());
+        drugCompositionGroupElement.sendKeys(treatmentAdvice.getDrugCompositionName());
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {

@@ -58,6 +58,14 @@ public class Regimen extends CouchEntity {
         return null;
     }
 
+    public DrugCompositionGroup getDrugCompositionGroupFor(String drugCompositionGroupId) {
+        for (DrugCompositionGroup drugCompositionGroup : drugCompositionGroups) {
+            if (drugCompositionGroup.getId().equals(drugCompositionGroupId))
+                return drugCompositionGroup;
+        }
+        return null;
+    }
+
     public Set<DrugCompositionGroup> getDrugCompositionGroups() {
         return this.drugCompositionGroups;
     }

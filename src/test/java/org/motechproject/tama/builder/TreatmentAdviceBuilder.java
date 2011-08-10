@@ -11,8 +11,8 @@ public class TreatmentAdviceBuilder {
         return this;
     }
 
-    public TreatmentAdviceBuilder withRegimenCompositionId(String regimenCompositionId){
-        this.treatmentAdvice.setDrugCompositionId(regimenCompositionId);
+    public TreatmentAdviceBuilder withDrugCompositionGroupId(String regimenCompositionId){
+        this.treatmentAdvice.setDrugCompositionGroupId(regimenCompositionId);
         return this;
     }
 
@@ -35,6 +35,6 @@ public class TreatmentAdviceBuilder {
     }
 
     public TreatmentAdviceBuilder withDefaults(){
-        return this.withId("treatmentAdviceId").withPatientId("patientId").withRegimenCompositionId("regimenCompositionId").withRegimenId("regimenId");
+        return this.withId("treatmentAdviceId").withPatientId("patientId").withDrugCompositionGroupId("regimenCompositionId").withRegimenId("regimenId");
     }
 }

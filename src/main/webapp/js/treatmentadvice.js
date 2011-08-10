@@ -77,6 +77,7 @@ dojo.addOnLoad(function() {
             if (composition_drugs.length > 1) {
                 drug2_name.innerHTML = other_drug.name;
             }
+            var nonRequiredWidgets = ["_drugDosages[1].endDate_id", "_drugDosages[1].advice_id"];
 
             secondDosageWidgets.forEach(function(widget, i) {
                 if (compositions_data_hash[composition_id].drugs.length == 1) {
@@ -88,13 +89,16 @@ dojo.addOnLoad(function() {
                     });
                 } else {
                     widget.set("disabled", false);
-                    widget.set("required", true);
+                    if (dojo.indexOf(nonRequiredWidgets, widget.id) === -1)
+                        widget.set("required", true);
                     dojo.query(".dosage:last-child").style("display", "block");
                     dojo.forEach(dojo.query(".dosage:last-child input"), function(element, i){
                         element.disabled = false;
                     });
                 }
             });
+            _changeFirstDosage();
+            _changeSecondDosage();
         });
 
         var changeDosageType = function(dosage){
@@ -141,8 +145,6 @@ dojo.addOnLoad(function() {
 
         var _changeFirstDosage = changeDosageType(0);
         var _changeSecondDosage = changeDosageType(1);
-        _changeFirstDosage();
-        _changeSecondDosage();
 
         dojo.connect(dijit.byId('_drugDosages[0].dosageTypeId_id'), 'onChange', _changeFirstDosage);
         dojo.connect(dijit.byId('_drugDosages[1].dosageTypeId_id'), 'onChange', _changeSecondDosage);

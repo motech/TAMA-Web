@@ -15,8 +15,8 @@ public class ViewARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = REGIMEN_TEXT_ID)
     private WebElement regimenNameElement;
 
-    @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions_regimenCompositionName_id")
-    private WebElement regimenCompositionNameElement;
+    @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions_drugCompositionName_id")
+    private WebElement drugCompositionGroupNameElement;
 
     public ViewARTRegimenPage(WebDriver webDriver) {
         super(webDriver);
@@ -35,7 +35,7 @@ public class ViewARTRegimenPage extends Page {
         return regimenNameElement.getText();
     }
 
-    public String getRegimenCompositionName() {
-        return regimenCompositionNameElement.getText();
+    public String getDrugCompositionGroupName() {
+        return drugCompositionGroupNameElement.getText();
     }
 }

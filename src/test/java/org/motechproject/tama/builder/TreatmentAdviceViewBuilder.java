@@ -15,8 +15,8 @@ public class TreatmentAdviceViewBuilder {
         return this;
     }
 
-    public TreatmentAdviceViewBuilder withRegimenCompositionName(String regimenCompositionName){
-        this.treatmentAdvice.setDrugCompositionName(regimenCompositionName);
+    public TreatmentAdviceViewBuilder withDrugCompositionGroupName(String drugCompositionGroupName){
+        this.treatmentAdvice.setDrugCompositionName(drugCompositionGroupName);
         return this;
     }
 
@@ -42,6 +42,6 @@ public class TreatmentAdviceViewBuilder {
         List<DrugDosageView> drugDosages = new ArrayList<DrugDosageView>();
         drugDosages.add(DrugDosageViewBuilder.startRecording().withDefaults().build());
         drugDosages.add(DrugDosageViewBuilder.startRecording().withDefaults().withBrandName("Combivir").build());
-        return this.withPatientId("1234").withRegimenName("AZT + 3TC + EFV").withRegimenCompositionName("AZT+3TC / EFV").withDrugDosages(drugDosages);
+        return this.withPatientId("1234").withRegimenName("AZT + 3TC + EFV").withDrugCompositionGroupName("AZT+3TC+EFV").withDrugDosages(drugDosages);
     }
 }

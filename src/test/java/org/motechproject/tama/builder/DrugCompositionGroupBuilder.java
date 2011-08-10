@@ -10,11 +10,6 @@ public class DrugCompositionGroupBuilder {
 
     private DrugCompositionGroup drugCompositionGroup = new DrugCompositionGroup();
 
-    public DrugCompositionGroupBuilder withId(String id){
-        this.drugCompositionGroup.setId(id);
-        return this;
-    }
-
     public DrugCompositionGroupBuilder withDrugCompositions(Set<DrugComposition> drugCompositions){
         this.drugCompositionGroup.setDrugCompositions(drugCompositions);
         return this;
@@ -36,6 +31,6 @@ public class DrugCompositionGroupBuilder {
     public DrugCompositionGroupBuilder withDefaults(){
         Set<DrugComposition> drugCompositions = new HashSet<DrugComposition>();
         drugCompositions.add(DrugCompositionBuilder.startRecording().withDefaults().build());
-        return this.withId("drugCompositionGroupId").withName("drugCompositionGroupName").withDrugCompositions(drugCompositions);
+        return this.withName("drugCompositionGroupName").withDrugCompositions(drugCompositions);
     }
 }

@@ -93,36 +93,6 @@ public class TreatmentAdviceController extends BaseController {
         return "treatmentadvices/show";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/ajax/drugCompositionsFor")
-    public
-    @ResponseBody
-    Set<ComboBoxView> drugCompositionsFor(@RequestParam String regimenId) {
-        Set<DrugComposition> compositions = regimens.get(regimenId).getDrugCompositions();
-        Set<ComboBoxView> comboBoxViews = new HashSet<ComboBoxView>();
-        for (DrugComposition drugComposition : compositions) {
-            comboBoxViews.add(new ComboBoxView(drugComposition.getId(), drugComposition.getDisplayName()));
-        }
-        return comboBoxViews;
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/ajax/drugDosagesFor")
-    public String drugDosagesFor(@RequestParam String regimenId, @RequestParam String drugCompositionId, @ModelAttribute("treatmentAdvice") TreatmentAdvice treatmentAdvice) {
-        Regimen regimen = regimens.get(regimenId);
-        DrugComposition drugComposition = regimen.getDrugCompositionFor(drugCompositionId);
-
-        List<Drug> allDrugs = this.drugs.getDrugs(drugComposition.getDrugIds());
-
-        for (Drug drug : allDrugs) {
-            DrugDosage drugDosage = new DrugDosage();
-            drugDosage.setDrugId(drug.getId());
-            drugDosage.setDrugName(drug.getName());
-            drugDosage.setBrands(drug.getBrands());
-            treatmentAdvice.addDrugDosage(drugDosage);
-        }
-
-        return "treatmentadvices/drugdosages";
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
     public @ResponseBody List<Regimen> allRegimens() {
         List<Regimen> allRegimens = regimens.getAll();

@@ -45,7 +45,7 @@ public class PatientARTRegimenTest  extends BaseTest {
                 .goToViewARTRegimenPage();
         Assert.assertEquals(viewARTRegimenPage.getPatientId(), treatmentAdvice.getPatientId());
         Assert.assertEquals(viewARTRegimenPage.getRegimenName(), treatmentAdvice.getRegimenName());
-        Assert.assertEquals(viewARTRegimenPage.getRegimenCompositionName(), treatmentAdvice.getDrugCompositionName());
+        Assert.assertEquals(viewARTRegimenPage.getDrugCompositionGroupName(), treatmentAdvice.getDrugCompositionName());
 
         viewARTRegimenPage.logout();
     }

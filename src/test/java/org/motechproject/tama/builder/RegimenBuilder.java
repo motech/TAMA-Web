@@ -3,6 +3,7 @@ package org.motechproject.tama.builder;
 import org.motechproject.tama.domain.DrugCompositionGroup;
 import org.motechproject.tama.domain.Regimen;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,8 +36,8 @@ public class RegimenBuilder {
     }
 
     public RegimenBuilder withDefaults(){
-        HashSet<DrugCompositionGroup> compositions = new HashSet<DrugCompositionGroup>();
-        compositions.add(DrugCompositionGroupBuilder.startRecording().withDefaults().build());
-        return this.withId("regimenId").withName("regimenName").withDrugCompositionGroups(compositions);
+        HashSet<DrugCompositionGroup> groups = new HashSet<DrugCompositionGroup>();
+        groups.add(DrugCompositionGroupBuilder.startRecording().withDefaults().build());
+        return this.withId("regimenId").withName("regimenName").withDrugCompositionGroups(groups);
     }
 }
