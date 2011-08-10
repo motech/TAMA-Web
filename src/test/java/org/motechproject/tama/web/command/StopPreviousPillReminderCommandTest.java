@@ -49,29 +49,32 @@ public class StopPreviousPillReminderCommandTest {
 
     @Test
     public void shouldUpdateDosageDateAsTodayOnPillTaken_TAMACallsPatient() {
-        DosageResponse previousDosage = pillRegimenResponse.getDosages().get(0);
-        DosageResponse currentDosage = pillRegimenResponse.getDosages().get(1);
+
+        pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(Arrays.asList(pillRegimenResponse.getDosages().get(1))).build();
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+
+        DosageResponse currentDosage = pillRegimenResponse.getDosages().get(0);
 
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.DOSAGE_ID, currentDosage.getDosageId());
 
         when(ivrRequest.getTamaParams()).thenReturn(params);
-        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(previousDosage.getDosageHour()));
+        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
 
         previousPillTakenCommand.execute(context);
-        verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), previousDosage.getDosageId(), DateUtil.today());
+        verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), currentDosage.getDosageId(), DateUtil.today().minusDays(1));
     }
 
     @Test
     public void shouldUpdateDosageDateAsYesterdayOnPillTaken_TAMACallsPatient() {
-        DosageResponse previousDosage = pillRegimenResponse.getDosages().get(0);
-        DosageResponse currentDosage = pillRegimenResponse.getDosages().get(1);
+        DosageResponse previousDosage = pillRegimenResponse.getDosages().get(2);
+        DosageResponse currentDosage = pillRegimenResponse.getDosages().get(0);
 
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.DOSAGE_ID, currentDosage.getDosageId());
 
         when(ivrRequest.getTamaParams()).thenReturn(params);
-        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(previousDosage.getDosageHour() - (pillRegimenResponse.getReminderRepeatWindowInHours() + 1)));
+        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
 
         previousPillTakenCommand.execute(context);
         verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), previousDosage.getDosageId(), DateUtil.today().minusDays(1));
@@ -87,7 +90,8 @@ public class StopPreviousPillReminderCommandTest {
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
 
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosageResponse.getDosageHour() - (pillRegimenResponse.getReminderRepeatWindowInHours() + 1)));
+        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosageResponse.getDosageHour()));
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
         previousPillTakenCommand.execute(context);
 

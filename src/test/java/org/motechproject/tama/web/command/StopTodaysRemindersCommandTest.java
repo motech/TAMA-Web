@@ -61,13 +61,12 @@ public class StopTodaysRemindersCommandTest {
 
     @Test
     public void shouldUpdateDosageDateToYesterdayForYesterdaysDosage() {
-        DosageResponse currentDosage = pillRegimenResponse.getDosages().get(1);
-        DateTime timeSoThatCurrentDosageIsYesterdaysDosage = DateUtil.now().withHourOfDay(currentDosage.getDosageHour()).minusHours(pillRegimenResponse.getReminderRepeatWindowInHours() + 1);
+        DosageResponse currentDosage = pillRegimenResponse.getDosages().get(2);
+        DosageResponse nextDosage = pillRegimenResponse.getDosages().get(0);
+        DateTime timeSoThatCurrentDosageIsYesterdaysDosage = DateUtil.now().withHourOfDay(nextDosage.getDosageHour()).minusHours(pillRegimenResponse.getReminderRepeatWindowInHours() + 1);
         when(ivrSession.getCallTime()).thenReturn(timeSoThatCurrentDosageIsYesterdaysDosage);
 
-        Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.DOSAGE_ID, currentDosage.getDosageId());
-        when(ivrRequest.getTamaParams()).thenReturn(params);
+        when(ivrRequest.hasNoTamaData()).thenReturn(true);
 
         stopTodaysRemindersCommand.execute(context);
 

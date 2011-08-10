@@ -47,7 +47,6 @@ public class MessageFromPreviousDosageTest {
 
         messageFromPreviousDosage = new MessageFromPreviousDosage();
         when(context.ivrSession()).thenReturn(ivrSession);
-        when(ivrSession.getCallTime()).thenReturn(DateUtil.now());
         when(context.ivrRequest()).thenReturn(ivrRequest);
         params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
         when(ivrRequest.getTamaParams()).thenReturn(params);
@@ -55,10 +54,11 @@ public class MessageFromPreviousDosageTest {
         medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("medicine1", null, null));
         medicineResponses.add(new MedicineResponse("medicine2", null, null));
-        //TODO: previous dosage logic when only one dosage is there
+
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 16, 00, 00));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 16, 00, 00));
     }
 
     @Test

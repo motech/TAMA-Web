@@ -236,7 +236,7 @@ public class PillRegimenSnapshotTest {
 
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
         assertNotNull(pillRegimenSnapshot.getCurrentDosage());
-        assertEquals(dosages.get(1).getDosageHour(), pillRegimenSnapshot.getCurrentDosage().getDosageHour());
+        assertEquals(10, pillRegimenSnapshot.getCurrentDosage().getDosageHour());
     }
 
     @Test

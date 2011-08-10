@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
@@ -13,10 +14,9 @@ public class StopPreviousPillReminderCommand extends StopTodaysRemindersCommand 
         super(pillReminderService);
     }
 
-    @Override
-    protected boolean shouldStopTodaysDosage(IVRContext ivrContext) {
+    protected LocalDate getLastCaptureDate(IVRContext ivrContext) {
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        return pillRegimenSnapshot.isTodaysDosage(pillRegimenSnapshot.getPreviousDosage());
+        return pillRegimenSnapshot.getPreviousDosage().getDosageDate();
     }
 
     @Override

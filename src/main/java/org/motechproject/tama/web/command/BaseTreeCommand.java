@@ -2,12 +2,15 @@ package org.motechproject.tama.web.command;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 
 public abstract class BaseTreeCommand implements ITreeCommand{
 
     protected String getDosageIdFrom(IVRContext ivrContext) {
-        return (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID);
+        String dosageIdInSession = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID);
+        return (dosageIdInSession != null)? dosageIdInSession : new PillRegimenSnapshot(ivrContext).getCurrentDosage().getDosageId();
+
     }
 
     protected String getRegimenIdFrom(IVRContext ivrContext) {

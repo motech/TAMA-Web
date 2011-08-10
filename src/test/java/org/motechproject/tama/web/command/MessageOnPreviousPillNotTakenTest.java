@@ -50,10 +50,6 @@ public class MessageOnPreviousPillNotTakenTest {
         when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
 
-        //TODO: Previous dosage case
-       /* mockStatic(DateUtil.class);
-        when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));*/
 
         String[] messages = messageOnPreviousPillNotTaken.execute(context);
         assertEquals(4, messages.length);

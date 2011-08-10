@@ -2,6 +2,7 @@ package org.motechproject.tama.web.command;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +49,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         MockitoAnnotations.initMocks(this);
 
         ivrRequest = new IVRRequest();
-        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}",  PillReminderCall.DOSAGE_ID, "currentDosageId"));
+        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}", PillReminderCall.DOSAGE_ID, "currentDosageId"));
 
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
@@ -60,6 +61,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        Mockito.when(ivrSession.getCallTime()).thenReturn(new LocalDateTime(2011, 7, 1, 1, 1, 1).toDateTime());
 
         command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs);
         mockStatic(DateUtil.class);

@@ -58,11 +58,10 @@ public class PillRegimenSnapshotPreviousDosageTest {
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
+        int dayOfTheMonth = 10;
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 01, dayOfTheMonth, 9, 00, 00));
 
-        //TODO:Sathe tho
         mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();
@@ -70,7 +69,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
         verifyStatic();
         assertEquals(20, previousDosageTime.getHourOfDay());
         assertEquals(05, previousDosageTime.getMinuteOfHour());
-        assertEquals(9, previousDosageTime.getDayOfMonth());
+        assertEquals(dayOfTheMonth -1, previousDosageTime.getDayOfMonth());
     }
 
     @Test
@@ -82,8 +81,9 @@ public class PillRegimenSnapshotPreviousDosageTest {
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 21, 00, 00));
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 21, 00, 00));
+        int dayOfTheMonth = 10;
+        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 21, 00, 00));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 21, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();
@@ -91,7 +91,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
         verifyStatic();
         assertEquals(10, previousDosageTime.getHourOfDay());
         assertEquals(05, previousDosageTime.getMinuteOfHour());
-        assertEquals(10, previousDosageTime.getDayOfMonth());
+        assertEquals(dayOfTheMonth, previousDosageTime.getDayOfMonth());
     }
 
     @Test
@@ -102,8 +102,9 @@ public class PillRegimenSnapshotPreviousDosageTest {
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 9, 00, 00));
+        int dayOfTheMonth = 10;
+        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 9, 00, 00));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 9, 00, 00));
 
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();
@@ -111,7 +112,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
         verifyStatic();
         assertEquals(10, previousDosageTime.getHourOfDay());
         assertEquals(05, previousDosageTime.getMinuteOfHour());
-        assertEquals(9, previousDosageTime.getDayOfMonth());
+        assertEquals(dayOfTheMonth - 1, previousDosageTime.getDayOfMonth());
     }
 
 }
