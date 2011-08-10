@@ -81,11 +81,10 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPromptForRecordingReasonForNotTakingPill() {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "3");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(3, prompts.size());
+        assertEquals(2, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof MessageForMissedPillFeedbackCommand);
         assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(1).getName());
         assertEquals(MenuAudioPrompt.class, prompts.get(1).getClass());
-        assertTrue(prompts.get(2).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
         assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(UpdateAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
     }
@@ -96,9 +95,11 @@ public class CurrentDosageReminderTreeTest {
 
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "2");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(2, prompts.size());
+        assertEquals(3, prompts.size());
         assertEquals(IVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
         assertEquals(RecordDeclinedDosageReasonCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertTrue(prompts.get(1).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
+        assertTrue(prompts.get(2).getCommand() instanceof MessageFromPreviousDosage);
     }
 
     @Test
@@ -107,8 +108,10 @@ public class CurrentDosageReminderTreeTest {
 
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "3");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(0, prompts.size());
+        assertEquals(2, prompts.size());
         assertEquals(RecordDeclinedDosageReasonCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertTrue(prompts.get(0).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
+        assertTrue(prompts.get(1).getCommand() instanceof MessageFromPreviousDosage);
     }
 
     @Test

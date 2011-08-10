@@ -81,14 +81,14 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageForMissedPillFeedbackCommand),
-                                                        new MenuAudioPrompt().setName(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU),
-                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand)))
+                                                        new MenuAudioPrompt().setName(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU)))
                                                 .setTransitions(new Object[][]{
                                                         {"2", Transition.newBuilder()
                                                                 .setDestinationNode(Node.newBuilder()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
                                                                         .setPrompts(Arrays.asList(
                                                                                 new AudioPrompt().setName(IVRMessage.PLEASE_CARRY_SMALL_BOX),
+                                                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
                                                                         )
                                                                         .setTransitions(jumpToPreviousDosageTree())
@@ -98,6 +98,11 @@ public class CurrentDosageReminderTree extends TAMADecisionTree {
                                                         {"3", Transition.newBuilder()
                                                                 .setDestinationNode(Node.newBuilder()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
+                                                                        .setPrompts(Arrays.asList(
+                                                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
+                                                                                new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
+                                                                        )
+                                                                        .setTransitions(jumpToPreviousDosageTree())
                                                                         .build())
                                                                 .build()
                                                         }
