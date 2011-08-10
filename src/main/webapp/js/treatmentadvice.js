@@ -70,7 +70,7 @@ dojo.addOnLoad(function() {
                     options[i].newItem({name: brand.name, id: brand.companyId });
                 });
                 drug_brands[i].attr('store', options[i]);
-                drug_brands[i].setValue(compositions_data_hash[composition_id].drugs[i].brands[i].companyId);
+                drug_brands[i].setValue(drug.brands[0].companyId);
                 drugIds[i].value = drug._id;
             });
 
