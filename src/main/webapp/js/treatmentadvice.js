@@ -80,6 +80,8 @@ dojo.addOnLoad(function() {
             }
             var nonRequiredWidgets = ["_drugDosages[1].endDate_id", "_drugDosages[1].advice_id"];
 
+            _changeFirstDosage();
+
             secondDosageWidgets.forEach(function(widget, i) {
                 if (compositions_data_hash[composition_id].drugs.length == 1) {
                     widget.set("disabled", true);
@@ -96,10 +98,11 @@ dojo.addOnLoad(function() {
                     dojo.forEach(dojo.query(".dosage:last-child input"), function(element, i){
                         element.disabled = false;
                     });
+                    _changeSecondDosage();
+
                 }
             });
-            _changeFirstDosage();
-            _changeSecondDosage();
+
         });
 
         var changeDosageType = function(dosage){
@@ -131,10 +134,10 @@ dojo.addOnLoad(function() {
                 };
 
                 var schedule = dijit.byId('_drugDosages[' + dosage + '].dosageTypeId_id');
-                if (schedule._lastDisplayedValue == 'Morning Daily') {
+                if (schedule._lastDisplayedValue === 'Morning Daily') {
                     showMorningTime();
                     hideEveningTime();
-                } else if (schedule._lastDisplayedValue == 'Evening Daily'){
+                } else if (schedule._lastDisplayedValue === 'Evening Daily'){
                     showEveningTime();
                     hideMorningTime();
                 } else {

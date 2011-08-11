@@ -34,8 +34,8 @@
                         <field:select field="drugDosages[${item.index}].brandId" id="c_org_motechproject_tama_domain_TreatmentAdvice_brand${item.index}" label="Brand Name *" items="${drugCompositionGroups}" path="/dummy" />
                         <field:select field="drugDosages[${item.index}].dosageTypeId" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}" path="/dosageTypes"  />
 
-                        <field:input field="drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Morning Time" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
-                        <field:input field="drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Evening Time" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
+                        <field:input field="drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Morning Time (am)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
+                        <field:input field="drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Evening Time (pm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
 
                         <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].startDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}" label="Start Date" required="true" />
                         <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].endDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}" label="End Date"/>
