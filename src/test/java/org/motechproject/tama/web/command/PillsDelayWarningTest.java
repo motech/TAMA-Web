@@ -69,7 +69,7 @@ public class PillsDelayWarningTest {
         Map params = new HashMap<String, String>();
         params.put(PillReminderCall.REGIMEN_ID, "regimenId");
         params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
-        params.put(PillReminderCall.TIMES_SENT, "0");
+        params.put(PillReminderCall.TIMES_SENT, "1");
         params.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "1");
         when(request.getTamaParams()).thenReturn(params);
 
