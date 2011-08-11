@@ -16,6 +16,7 @@ public class CreateARTRegimenPage extends Page {
     public static final String REGIMEN_ID = "_regimenId_id";
 
     public static final String DRUG1_BRAND_ID = "_drugDosages[0].brandId_id";
+    public static final String DRUG_BRAND1_ID = "_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id";
 
     @FindBy(how = How.ID, using = REGIMEN_ID)
     private WebElement regimenElement;

@@ -98,6 +98,13 @@ public class ShowPatientPage extends Page {
 
     public CreateARTRegimenPage goToCreateARTRegimenPage() {
         this.clinicVisitsLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = webDriver.findElement(By.id(CreateARTRegimenPage.DRUG_BRAND1_ID));
+                return element != null  && element.getText().equals("EFV");
+            }
+        });
         return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
     }
 
