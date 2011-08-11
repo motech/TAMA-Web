@@ -4,13 +4,11 @@ package org.motechproject.tamafunctional.test;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tamafunctional.context.ClinicContext;
-import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.MyWebElement;
 import org.motechproject.tamafunctional.page.ChangePasswordPage;
-import org.motechproject.tamafunctional.page.ListPatientsPage;
+import org.motechproject.tamafunctional.page.ListClinicsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.PasswordSuccessPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
@@ -40,7 +38,7 @@ public class ChangePasswordTest extends BaseTest {
 
     @Test
     public void testChangePasswordLinkShouldBeShownOnAllPages() {
-        ListPatientsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
+        ListClinicsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
         WebElement navigationLinks = homePage.getNavigationLinks();
         assertNotNull(navigationLinks.findElement(By.id("changePasswordLink")));
     }
@@ -53,7 +51,7 @@ public class ChangePasswordTest extends BaseTest {
 
     @Test
     public void testChangePasswordForAdministrator() {
-        ListPatientsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
+        ListClinicsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
         ChangePasswordPage changePasswordPage = homePage.goToChangePasswordPage();
         PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput("password", "newPassword", "newPassword");
 
