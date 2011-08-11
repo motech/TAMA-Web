@@ -8,7 +8,6 @@ public class SetupSeedData {
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
-        
         SeedLoader seedLoader = context.getBean(SeedLoader.class);
         seedLoader.load();
     }

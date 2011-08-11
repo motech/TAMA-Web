@@ -13,6 +13,9 @@ import org.motechproject.tamafunctional.page.ChangePasswordPage;
 import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.PasswordSuccessPage;
+import org.motechproject.tamafunctional.testdata.TestClinic;
+import org.motechproject.tamafunctional.testdata.TestClinician;
+import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,16 +63,15 @@ public class ChangePasswordTest extends BaseTest {
 
     @Test
     public void testChangePasswordForClinician() {
-        String clinicianForPasswordChangeTest = "clinicianForPasswordChangeTest";
-        String clinicianPassword = "clinicianPassword";
-
-
-        buildContexts(new ClinicianContext(clinicianForPasswordChangeTest, clinicianPassword, new ClinicContext("clinicForPasswordChangeTest")));
+        TestClinic testClinic = TestClinic.withMandatory().andName("clinicForPasswordChangeTest");
+        String clinicianName = unique("clinicianForPasswordChangeTest");
+        TestClinician testClinician = TestClinician.withMandatory().name(clinicianName).userName(clinicianName).password("clinicianPassword").clinic(testClinic);
+        new ClinicanDataService(webDriver).createWithClinc(testClinician);
 
         ChangePasswordPage changePasswordPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinicianForPasswordChangeTest, clinicianPassword).goToChangePasswordPage();
+                loginWithClinicianUserNamePassword(clinicianName, testClinician.password()).goToChangePasswordPage();
 
-        PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput(clinicianPassword, "newPassword", "newPassword");
+        PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput(testClinician.password(), "newPassword", "newPassword");
         assertNotNull(successPage.getSuccessMessageElement());
     }
 

@@ -48,6 +48,8 @@ public class PatientsTest extends SpringIntegrationTest {
     @Before
     public void before() {
         super.before();
+        markForDeletion(patients.getAll().toArray());
+        deleteAll();
         gender = Gender.newGender("Male");
         genders.add(gender);
         ivrLanguage = IVRLanguage.newIVRLanguage("English");

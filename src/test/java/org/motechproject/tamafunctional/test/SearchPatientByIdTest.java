@@ -14,6 +14,7 @@ import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.Page;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -37,17 +38,17 @@ public class SearchPatientByIdTest extends BaseTest {
 
     @Test
     public void testSuccessfulPatientSearch() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("xyz1234").build();
+        TestPatient patient = TestPatient.withMandatory().patientId("xyz1234");
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient).
                 goToListPatientsPage().
-                searchPatientBy(patient.getPatientId());
+                searchPatientBy(patient.patientId());
 
-        assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
-        assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
-        assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirthAsDate()));
+        assertEquals(showPatientPage.getPatientId(), patient.patientId());
+        assertEquals(showPatientPage.getMobileNumber(), patient.mobileNumber());
+        assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
         showPatientPage.logout();
     }
 

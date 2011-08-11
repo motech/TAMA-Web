@@ -4,27 +4,25 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tamafunctional.context.Context;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.setup.WebDriverFactory;
+import org.motechproject.util.DateUtil;
 import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class BaseTest {
     @Rule
     public TestName testName = new TestName();
 
     protected WebDriver webDriver;
-
-    @Autowired
-    protected PillReminderService pillReminderService;
 
     @Before
     public void setUp() {
@@ -36,6 +34,10 @@ public abstract class BaseTest {
         for (Context context : Arrays.asList(contexts)) {
             context.build(webDriver);
         }
+    }
+
+    protected String unique(String name) {
+        return name + DateUtil.now().toInstant().getMillis();
     }
 
     @After

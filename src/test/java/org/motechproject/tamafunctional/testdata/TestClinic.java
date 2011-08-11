@@ -11,7 +11,7 @@ public class TestClinic {
 
     public static TestClinic withMandatory() {
         TestClinic testClinic = new TestClinic();
-        testClinic.name("DefaultName").phoneNumber("1234567890").address("DefaultAddress")
+        testClinic.andName("DefaultName").phoneNumber("1234567890").address("DefaultAddress")
                 .city("Pune");
         return testClinic;
     }
@@ -20,7 +20,7 @@ public class TestClinic {
         return name;
     }
 
-    public TestClinic name(String name) {
+    public TestClinic andName(String name) {
         this.name = name;
         return this;
     }

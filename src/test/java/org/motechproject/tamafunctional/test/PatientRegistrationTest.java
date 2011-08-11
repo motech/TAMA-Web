@@ -12,27 +12,20 @@ import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class PatientRegistrationTest extends BaseTest {
-
-    @Before
-    public void setUp() {
-        super.setUp();
-    }
-
     @Test
     public void testSuccessfulPatientRegistration() {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        TestPatient patient = TestPatient.withMandatory();
 
 //    #252
 //        HIVMedicalHistory hivMedicalHistory = patient.getMedicalHistory().getHivMedicalHistory();
@@ -41,9 +34,9 @@ public class PatientRegistrationTest extends BaseTest {
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
 
-        Assert.assertEquals(showPatientPage.getPatientId(), patient.getPatientId());
-        Assert.assertEquals(showPatientPage.getMobileNumber(), patient.getMobilePhoneNumber());
-        Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.getDateOfBirthAsDate()));
+        Assert.assertEquals(showPatientPage.getPatientId(), patient.patientId());
+        Assert.assertEquals(showPatientPage.getMobileNumber(), patient.mobileNumber());
+        Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
 
 //    #252
 //        Assert.assertEquals(showPatientPage.getHIVTestReason(), hivMedicalHistory.getTestReason().getName());

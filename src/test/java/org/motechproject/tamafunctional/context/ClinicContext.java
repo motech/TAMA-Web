@@ -13,7 +13,7 @@ public class ClinicContext extends AbstractContext {
     }
 
     public ClinicContext(String name) {
-        clinic = TestClinic.withMandatory().name(name);
+        clinic = TestClinic.withMandatory().andName(name);
     }
 
     @Override

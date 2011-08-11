@@ -5,6 +5,7 @@ import org.ektorp.CouchDbConnector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,10 +30,24 @@ public abstract class SpringIntegrationTest {
 
 	@After
 	public void after() {
-		tamaDbConnector.executeBulk(toDelete);
+        deleteAll();
 	}
-	
+
+    protected void deleteAll() {
+        tamaDbConnector.executeBulk(toDelete);
+        toDelete.clear();
+    }
+
+    protected void markForDeletion(Object ... documents) {
+        for (Object document : documents)
+		    markForDeletion(document);
+	}
+
 	protected void markForDeletion(Object document) {
 		toDelete.add(BulkDeleteDocument.of(document));
 	}
+
+    protected String unique(String name) {
+        return name + DateUtil.now().toInstant().getMillis();
+    }
 }

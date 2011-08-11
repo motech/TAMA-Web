@@ -98,7 +98,6 @@ public class PatientBuilder {
     }
 
     public PatientBuilder withDefaults() {
-
         return this.withPatientId("1234_" + DateUtil.now().getMillis()).
                 withDateOfBirth(DateUtil.newDate(1990, 5, 21)).
                 withMobileNumber("9765456789").

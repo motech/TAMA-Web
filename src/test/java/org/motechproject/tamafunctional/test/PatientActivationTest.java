@@ -12,6 +12,7 @@ import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,7 +32,7 @@ public class PatientActivationTest extends BaseTest {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        TestPatient patient = TestPatient.withMandatory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().

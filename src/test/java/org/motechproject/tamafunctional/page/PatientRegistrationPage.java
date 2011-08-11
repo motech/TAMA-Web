@@ -4,6 +4,7 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -41,7 +42,7 @@ public class PatientRegistrationPage extends Page {
         waitForElementWithIdToLoad("_patientId_id");
     }
 
-    public ShowPatientPage registerNewPatient(Patient patient) {
+    public ShowPatientPage registerNewPatient(TestPatient patient) {
         createBasicPatientInformationSection.enterDetails(patient);
 //    #252
 //        createPatientMedicalHistorySection.enterDetails(patient);

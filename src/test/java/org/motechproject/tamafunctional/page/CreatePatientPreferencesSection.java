@@ -1,8 +1,10 @@
 package org.motechproject.tamafunctional.page;
 
 
+import junit.framework.Test;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -19,8 +21,8 @@ public class CreatePatientPreferencesSection {
         passcode = new MyWebElement(passcode);
     }
 
-    public void enterDetails(Patient patient) {
+    public void enterDetails(TestPatient patient) {
         passcode.clear();
-        passcode.sendKeys(String.valueOf(patient.getPasscode()));
+        passcode.sendKeys(String.valueOf(patient.passcode()));
     }
 }

@@ -1,7 +1,6 @@
 package org.motechproject.tama.integration.repository;
 
 import org.ektorp.UpdateConflictException;
-import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.ClinicianBuilder;
@@ -32,44 +31,37 @@ public class CliniciansTest extends SpringIntegrationTest {
     @Autowired
     private Cities cities;
 
-    @Before
-    public void setUp() {
-    }
-
     @Test
     public void testShouldPersistClinician() {
-        String name = "testName1";
+        String name = unique("testName1");
         Clinician testClinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
         clinicians.add(testClinician);
 
         Clinician clinician = clinicians.get(testClinician.getId());
 
         assertNotNull(clinician);
-        markForDeletion(clinician);
-        markForDeletion(cliniciansIds.get(clinician));
+        markForDeletion(clinician, cliniciansIds.get(clinician));
     }
 
     @Test
     @ExpectedException(UpdateConflictException.class)
     public void testNotShouldPersistClinicianWithNonUniqueUserName() {
-        String name = "testName1";
+        String name = unique("testName1");
         Clinician clinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
         clinicians.add(clinician);
 
         Clinician dbClinician = clinicians.get(clinician.getId());
-        markForDeletion(dbClinician);
-        markForDeletion(cliniciansIds.get(dbClinician));
 
         Clinician clinicianWithSameName = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
         clinicians.add(clinicianWithSameName);
-        markForDeletion(clinicianWithSameName);
+        markForDeletion(dbClinician, cliniciansIds.get(dbClinician), clinicianWithSameName);
     }
 
 
     @Test
     public void testShouldMergeClinic() {
-        String testName = "testName2";
-        String newName = "newName";
+        String testName = unique("testName2");
+        String newName = unique("newName");
         Clinician testClinician = ClinicianBuilder.startRecording().withName(testName).withUserName(testName).build();
         clinicians.add(testClinician);
 
@@ -80,8 +72,7 @@ public class CliniciansTest extends SpringIntegrationTest {
 
         assertNotNull(clinician);
         assertEquals(newName, clinician.getName());
-        markForDeletion(testClinician);
-        markForDeletion(cliniciansIds.get(clinician));
+        markForDeletion(testClinician, cliniciansIds.get(clinician));
     }
 
     @Test
@@ -96,10 +87,7 @@ public class CliniciansTest extends SpringIntegrationTest {
 
         Clinician byUserNameAndPassword = clinicians.findByUserNameAndPassword("jack", "samurai");
         assertNotNull(byUserNameAndPassword);
-        markForDeletion(city);
-        markForDeletion(testClinic);
-        markForDeletion(testClinician);
-        markForDeletion(cliniciansIds.get(testClinician));
+        markForDeletion(city, testClinic, testClinician, cliniciansIds.get(testClinician));
     }
 
     @Test
@@ -108,17 +96,15 @@ public class CliniciansTest extends SpringIntegrationTest {
         cities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
         clinics.add(clinic);
-        Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withUserName("foo").build();
+        String clinicianId = unique("foo");
+        Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withUserName(clinicianId).build();
         clinicians.add(clinician);
-        Clinician returnedClinician = clinicians.findByUsername("foo");
+        Clinician returnedClinician = clinicians.findByUsername(clinicianId);
         assertNotNull(returnedClinician);
         assertNotNull(returnedClinician.getClinic());
         assertNotNull(returnedClinician.getClinic().getName().equals(clinic.getName()));
 
-        markForDeletion(city);
-        markForDeletion(clinic);
-        markForDeletion(clinician);
-        markForDeletion(cliniciansIds.get(clinician));
+        markForDeletion(city, clinic, clinician, cliniciansIds.get(clinician));
     }
 
     @Test
@@ -127,18 +113,17 @@ public class CliniciansTest extends SpringIntegrationTest {
         cities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
         clinics.add(clinic);
-        Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withPassword("bar").withUserName("foo").build();
+        String clinicianId = unique("foo");
+        Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withPassword("bar").withUserName(clinicianId).build();
         clinicians.add(clinician);
-        Clinician returnedClinician = clinicians.findByUsername("foo");
+        Clinician returnedClinician = clinicians.findByUsername(clinicianId);
         assertEquals("bar",returnedClinician.getPassword());
 
         returnedClinician.setPassword("foobar");
         clinicians.updatePassword(returnedClinician);
-        returnedClinician = clinicians.findByUsername("foo");
+        returnedClinician = clinicians.findByUsername(clinicianId);
         assertEquals("foobar",returnedClinician.getPassword());
 
-        markForDeletion(city);
-        markForDeletion(clinic);
-        markForDeletion(returnedClinician);
+        markForDeletion(city, clinic, returnedClinician);
     }
 }

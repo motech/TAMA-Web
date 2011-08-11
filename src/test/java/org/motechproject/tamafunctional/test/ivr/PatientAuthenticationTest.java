@@ -14,6 +14,7 @@ import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.MyWebClient;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -46,7 +47,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
     public void shouldTestConversationForActivatedPatientAndWrongPasscode() {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("9876543210").withPasscode("5678").build();
+        TestPatient patient = TestPatient.withMandatory().mobileNumber("9876543210").passcode("5678");
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().

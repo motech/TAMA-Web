@@ -21,10 +21,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class ClinicianSecurityTest extends BaseTest {
-
     @Override
     @Before
     public void setUp() {
@@ -33,9 +30,9 @@ public class ClinicianSecurityTest extends BaseTest {
 
     @Test
     public void shouldVerifyIfCorrectPatientsAreSeenByLoggedInClinician() {
-        String clinicianUsername1 = "cl1" + DateUtil.now().getMillis();
+        String clinicianUsername1 = unique("cl1");
         String clinicianPassword1 = "cl1";
-        String clinicianUsername2 = "cl2" + DateUtil.now().getMillis();
+        String clinicianUsername2 = unique("cl2");
         String clinicianPassword2 = "cl2";
 
         PatientContext patientContext1 = new PatientContext("P1", new ClinicianContext(clinicianUsername1, clinicianPassword1, new ClinicContext("Clinic1")));
@@ -64,5 +61,4 @@ public class ClinicianSecurityTest extends BaseTest {
     public void tearDown() throws IOException {
         super.tearDown();
     }
-
 }
