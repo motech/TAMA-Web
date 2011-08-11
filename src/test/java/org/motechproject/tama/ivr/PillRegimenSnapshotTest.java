@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.model.Time;
@@ -13,6 +14,8 @@ import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.util.DateUtil;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +27,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(DateUtil.class)
 public class PillRegimenSnapshotTest {
     @Mock
     private IVRSession ivrSession;
@@ -165,38 +171,50 @@ public class PillRegimenSnapshotTest {
 
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksLessThanFour() {
+        mockStatic(DateUtil.class);
+        when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 1, 12, 0, 0)); // TotalCount = 32 + 22 = 28 + 22 = 50
+        when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
+        when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
+
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        DateTime toDate = DateUtil.newDateTime(DateUtil.newDate(2011, 8, 1), 12, 0, 0); // TotalCount = 32 + 22 = 28 + 22 = 50
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
         assertEquals(50, totalCount);
     }
 
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWithMultipleDosagesInTheSameDay() {
+        mockStatic(DateUtil.class);
+        when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 10, 12, 0, 0)); // TotalCount = 1 + 0 = 1
+        when(DateUtil.newDateTime(new LocalDate(2011, 8, 10), 9, 5, 0)).thenReturn(new DateTime(2011, 8, 10, 9, 5, 0));
+        when(DateUtil.newDateTime(new LocalDate(2011, 8, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 8, 10, 15, 5, 0));
+
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("med1", null, null));
-        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 8, 10), DateUtil.newDate(2012, 7, 1), DateUtil.today(), medicineResponses));
-        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 8, 10), DateUtil.newDate(2012, 7, 10), DateUtil.today(), medicineResponses));
+        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), new LocalDate(2011, 8, 10), new LocalDate(2012, 7, 1), new LocalDate(2011, 8, 4), medicineResponses));
+        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), new LocalDate(2011, 8, 10), new LocalDate(2012, 7, 10), new LocalDate(2011, 8, 4), medicineResponses));
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        DateTime toDate = DateUtil.newDateTime(DateUtil.newDate(2011, 8, 10), 12, 0, 0); // TotalCount = 1 + 0 = 1
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
         assertEquals(1, totalCount);
     }
 
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksGreaterThanFour() {
+        mockStatic(DateUtil.class);
+        when(DateUtil.now()).thenReturn(new DateTime(2011, 10, 1, 12, 0, 0)); // TotalCount = 93 + 89 = 182; capped to 56
+        when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
+        when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
+
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        DateTime toDate = DateUtil.newDateTime(DateUtil.newDate(2011, 10, 1), 12, 0, 0); // TotalCount = 93 + 89 = 182; capped to 56
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
         assertEquals(56, totalCount);
     }
 
@@ -204,8 +222,8 @@ public class PillRegimenSnapshotTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("med1", null, null));
-        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), DateUtil.newDate(2012, 7, 1), DateUtil.today(), medicineResponses));
-        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 10), DateUtil.newDate(2012, 7, 10), DateUtil.today(), medicineResponses));
+        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), new LocalDate(2011, 7, 1), new LocalDate(2012, 7, 1), new LocalDate(2011, 8, 4), medicineResponses));
+        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), new LocalDate(2011, 7, 10), new LocalDate(2012, 7, 10), new LocalDate(2011, 8, 4), medicineResponses));
         return new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
     }
 }

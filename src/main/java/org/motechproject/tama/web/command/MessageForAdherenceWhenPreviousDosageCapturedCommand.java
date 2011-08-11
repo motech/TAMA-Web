@@ -1,24 +1,18 @@
 package org.motechproject.tama.web.command;
 
-import org.joda.time.DateTime;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
-import org.motechproject.util.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends DosageAdherenceCommand {
 
-    private DateTime toDate;
-
     public MessageForAdherenceWhenPreviousDosageCapturedCommand() {
-        toDate = DateUtil.now();
     }
 
-    public MessageForAdherenceWhenPreviousDosageCapturedCommand(DosageAdherenceLogs dosageAdherenceLogs, DateTime toDate) {
+    public MessageForAdherenceWhenPreviousDosageCapturedCommand(DosageAdherenceLogs dosageAdherenceLogs) {
         super(dosageAdherenceLogs);
-        this.toDate = toDate;
     }
 
     @Override
@@ -28,7 +22,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends Dosage
         String regimenId = getRegimenIdFrom(ivrContext);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         if (pillRegimenSnapshot.isPreviousDosageCaptured()) {
-            return getAdherenceMessage(regimenId, pillRegimenSnapshot, toDate);
+            return getAdherenceMessage(regimenId, pillRegimenSnapshot);
         }
         return new String[0];
     }

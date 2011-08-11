@@ -1,10 +1,11 @@
 package org.motechproject.tama.web.command;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class DosageAdherenceCommand extends BaseTreeCommand {
@@ -18,15 +19,16 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
         this.dosageAdherenceLogs = dosageAdherenceLogs;
     }
 
-    protected int getAdherencePercentage(String regimenId, DateTime toDate, int scheduledDosagesTotalCount) {
-        int scheduledDosagesSuccessCount = dosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, toDate.minusDays(TAMAConstants.DAYS_IN_FOUR_WEEKS).toLocalDate(), toDate.toLocalDate());
+    protected int getAdherencePercentage(String regimenId, int scheduledDosagesTotalCount) {
+        LocalDate toDate = DateUtil.today();
+        int scheduledDosagesSuccessCount = dosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, toDate.minusDays(TAMAConstants.DAYS_IN_FOUR_WEEKS), toDate);
         return scheduledDosagesSuccessCount * 100 / scheduledDosagesTotalCount;
     }
 
-    protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot, DateTime toDate) {
+    protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot) {
         return new String[]{
                 IVRMessage.YOUR_ADHERENCE_IS_NOW,
-                String.valueOf(getAdherencePercentage(regimenId, toDate, pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate))),
+                String.valueOf(getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCount())),
                 IVRMessage.PERCENT
         };
     }

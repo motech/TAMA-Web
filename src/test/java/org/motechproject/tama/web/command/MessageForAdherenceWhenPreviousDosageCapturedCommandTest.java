@@ -61,9 +61,9 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
-        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs, new DateTime(2011, 8, 4, 12, 0));
+        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs);
         mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2011, 7, 1, 12, 0, 0));
+        when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 4, 12, 0));
         when(DateUtil.today()).thenReturn(new LocalDate(2011, 7, 1));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 10, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 10, 5, 0));
@@ -115,7 +115,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     public void shouldCalculateAdherencePercentage() {
         Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(45);
 
-        int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, DateUtil.now(), 56);
+        int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, 56);
         assertEquals(80, adherencePercentage);
     }
 

@@ -117,9 +117,10 @@ public class PillRegimenSnapshot {
         return null;
     }
 
-    public int getScheduledDosagesTotalCount(DateTime toDate) {
+    public int getScheduledDosagesTotalCount() {
         int totalCount = 0;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
+            DateTime toDate = DateUtil.now();
             DateTime fromDate = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
             if (toDate.isBefore(fromDate)) continue;
 

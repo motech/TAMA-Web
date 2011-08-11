@@ -1,24 +1,19 @@
 package org.motechproject.tama.web.command;
 
-import org.joda.time.DateTime;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
-import org.motechproject.util.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand {
-    private DateTime toDate;
 
     public MessageForMissedPillFeedbackCommand() {
-        toDate = DateUtil.now();
     }
 
-    public MessageForMissedPillFeedbackCommand(DosageAdherenceLogs dosageAdherenceLogs, DateTime toDate) {
+    public MessageForMissedPillFeedbackCommand(DosageAdherenceLogs dosageAdherenceLogs) {
         super(dosageAdherenceLogs);
-        this.toDate = toDate;
     }
 
     @Override
@@ -36,7 +31,7 @@ public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand 
             case 4:
                 return new String[]{IVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME};
             default:
-                int adherencePercentage = getAdherencePercentage(regimenId, toDate, pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate));
+                int adherencePercentage = getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCount());
                 return new String[]{getMissedPillFeedbackMessageFor(adherencePercentage)};
         }
     }
