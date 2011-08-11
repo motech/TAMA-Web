@@ -166,7 +166,7 @@ public class PillRegimenSnapshotTest {
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksLessThanFour() {
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        DateTime toDate = new DateTime(2011, 8, 1, 12, 0); // TotalCount = 32 + 22 = 28 + 22 = 50
+        DateTime toDate = DateUtil.newDateTime(DateUtil.newDate(2011, 8, 1), 12, 0, 0); // TotalCount = 32 + 22 = 28 + 22 = 50
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
@@ -183,7 +183,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        DateTime toDate = new DateTime(2011, 8, 10, 12, 0); // TotalCount = 1 + 0 = 1
+        DateTime toDate = DateUtil.newDateTime(DateUtil.newDate(2011, 8, 10), 12, 0, 0); // TotalCount = 1 + 0 = 1
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);
@@ -193,7 +193,7 @@ public class PillRegimenSnapshotTest {
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksGreaterThanFour() {
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        DateTime toDate = new DateTime(2011, 10, 1, 12, 0); // TotalCount = 93 + 89 = 182; capped to 56
+        DateTime toDate = DateUtil.newDateTime(DateUtil.newDate(2011, 10, 1), 12, 0, 0); // TotalCount = 93 + 89 = 182; capped to 56
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount(toDate);

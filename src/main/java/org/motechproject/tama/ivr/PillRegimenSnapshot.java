@@ -2,7 +2,6 @@ package org.motechproject.tama.ivr;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
@@ -121,8 +120,7 @@ public class PillRegimenSnapshot {
     public int getScheduledDosagesTotalCount(DateTime toDate) {
         int totalCount = 0;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
-            LocalDate dosageStartDate = dosageResponse.getStartDate();
-            DateTime fromDate = new DateTime(dosageStartDate.getYear(), dosageStartDate.getMonthOfYear(), dosageStartDate.getDayOfMonth(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute());
+            DateTime fromDate = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
             if (toDate.isBefore(fromDate)) continue;
 
             Days days = Days.daysBetween(fromDate, toDate);
