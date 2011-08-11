@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.builder;
 
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.IVRMessage;
 
 import java.util.List;
 
@@ -16,8 +17,7 @@ public class DecisionTreeBasedResponseBuilder {
             boolean isAudioPrompt = prompt instanceof AudioPrompt;
             if (command == null) {
                 buildPrompts(ivrResponseBuilder, prompt.getName(), isAudioPrompt);
-            }
-            else {
+            } else {
                 String[] promptsFromCommand = command.execute(ivrContext);
                 for (String promptFromCommand : promptsFromCommand) {
                     buildPrompts(ivrResponseBuilder, promptFromCommand, isAudioPrompt);
@@ -27,7 +27,7 @@ public class DecisionTreeBasedResponseBuilder {
         if (hasTransitions) {
             ivrResponseBuilder.collectDtmf();
         } else {
-            ivrResponseBuilder.withHangUp();
+            ivrResponseBuilder.withPlayAudios(IVRMessage.SIGNATURE_MUSIC_URL).withHangUp();
         }
         return ivrResponseBuilder;
     }

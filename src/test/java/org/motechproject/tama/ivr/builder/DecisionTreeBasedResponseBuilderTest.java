@@ -48,7 +48,7 @@ public class DecisionTreeBasedResponseBuilderTest {
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertFalse(responseBuilder.isCollectDtmf());
         assertTrue(responseBuilder.isHangUp());
-        assertEquals(1, responseBuilder.getPlayAudios().size());
+        assertEquals(2, responseBuilder.getPlayAudios().size());
         assertEquals(0, responseBuilder.getPlayTexts().size());
     }
 
@@ -58,7 +58,7 @@ public class DecisionTreeBasedResponseBuilderTest {
                 .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnEmptyCommand())))
                 .build();
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
-        assertEquals(0, responseBuilder.getPlayAudios().size());
+        assertEquals(1, responseBuilder.getPlayAudios().size());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class DecisionTreeBasedResponseBuilderTest {
                 .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnMultiplePromptCommand())))
                 .build();
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
-        assertEquals(2, responseBuilder.getPlayAudios().size());
+        assertEquals(3, responseBuilder.getPlayAudios().size());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class DecisionTreeBasedResponseBuilderTest {
                 .setPrompts(Arrays.asList(new AudioPrompt().setName("hello"), new MenuAudioPrompt().setName("menu")))
                 .build();
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, true);
-        assertEquals(1, responseBuilder.getPlayAudios().size());
+        assertEquals(2, responseBuilder.getPlayAudios().size());
         assertEquals("menu", responseBuilder.getPlayAudios().get(0));
     }
 
