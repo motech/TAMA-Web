@@ -50,7 +50,7 @@
       <c:choose>
         <c:when test="${not empty items}">
           <label for="_${sec_field}_id">
-            <c:out value="${fn:escapeXml(label)}" /><c:if test="${required}">*</c:if>
+            <c:out value="${fn:escapeXml(label)}" /><c:if test="${required}"> *</c:if>
             :
           </label>
           <c:choose>

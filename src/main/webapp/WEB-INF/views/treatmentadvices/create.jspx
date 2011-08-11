@@ -11,7 +11,7 @@
         <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}" />
         <field:display object="${patientIdentifier}" field="" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
         <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimenId" items="${regimens}" itemValue="id" itemLabel="displayName" path="/regimens" label="Regimen *"/>
-        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositiongroups" field="drugCompositionGroupId" items="${drugCompositionGroups}" path="/drugCompositionGroups" label="Drug Composition Group*"/>
+        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositiongroups" field="drugCompositionGroupId" items="${drugCompositionGroups}" path="/drugCompositionGroups" label="Drug Composition Group *"/>
         <div>
             <div>
                 <div id="dosage_times_error" class="error"/>
