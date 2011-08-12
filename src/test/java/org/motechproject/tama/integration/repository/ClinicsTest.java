@@ -1,7 +1,6 @@
 package org.motechproject.tama.integration.repository;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.domain.City;
@@ -65,5 +64,8 @@ public class ClinicsTest extends SpringIntegrationTest {
         Assert.assertNotNull(returnedClinic);
         Assert.assertNotNull(returnedClinic.getCity());
         Assert.assertEquals("Pune", returnedClinic.getCity().getName());
+
+        markForDeletion(returnedClinic.getCity());
+        markForDeletion(returnedClinic);
     }
 }
