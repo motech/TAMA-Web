@@ -77,7 +77,7 @@
                </c:choose>
 
 		    <div id="main">
-                <c:if test="${pageContext['request'].userPrincipal != null}">
+                <c:if test="${pageContext['request'].userPrincipal != null and sessionScope.loggedInUser.clinicName != ''}">
                     <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
                     <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
                       <div>
