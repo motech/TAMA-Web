@@ -146,7 +146,6 @@ public class CurrentDosageReminderTreeTest {
 
         ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}", PillReminderCall.DOSAGE_ID, "currentDosageId"));
         ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
-        threadLocalContext.setIvrContext(null);
         threadLocalContext.setIvrContext(new IVRContext(ivrRequest, ivrSession));
 
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);

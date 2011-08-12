@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Component
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class CurrentDosageReminderTree extends TAMADecisionTree {
+public class CurrentDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private MessageOnPillTaken messageOnPillTaken;
     @Autowired

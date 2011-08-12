@@ -3,16 +3,15 @@ package org.motechproject.tama.ivr.action.pillreminder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tama.ivr.IVRCallAttribute;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
-import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
+import org.motechproject.tama.ivr.*;
+import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
+import org.motechproject.tama.ivr.decisiontree.TreeChooser;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,28 +22,36 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationTestContext.xml")
-public class IVRActionTest {
+@ContextConfiguration(locations = "classpath*:**/applicationTestContext.xml")
+public class IvrActionTest {
     @Mock
     private HttpSession httpSession;
+
     @Autowired
     private IVRMessage ivrMessage;
+
     @Autowired
     private ThreadLocalTargetSource threadLocalTargetSource;
 
-    private IVRAction tamaIvrAction;
-    private IVRActionTest.CommandForTamaIvrActionTest commandForTamaIvrActionTest;
+    @Mock
+    private TreeChooser treeChooser;
+
+    private IvrAction tamaIvrAction;
+
+    private IvrActionTest.CommandForTamaIvrActionTest commandForTamaIvrActionTest;
 
     @Before
     public void setup() {
         initMocks(this);
-        tamaIvrAction = new IVRAction(new TestTreeForTamaIvrActionTest(), ivrMessage, threadLocalTargetSource);
+        tamaIvrAction = new IvrAction(treeChooser, ivrMessage, threadLocalTargetSource);
         commandForTamaIvrActionTest = new CommandForTamaIvrActionTest();
+        when(treeChooser.getTree(any(IVRContext.class))).thenReturn(new TestTreeForTamaIvrActionTest().getTree());
     }
 
     @Test
@@ -70,7 +77,7 @@ public class IVRActionTest {
         verify(httpSession).setAttribute(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION, "/");
     }
 
-    class TestTreeForTamaIvrActionTest extends TAMADecisionTree {
+    class TestTreeForTamaIvrActionTest extends TamaDecisionTree {
         @Override
         protected Node createRootNode() {
             Node rootNode = Node.newBuilder()

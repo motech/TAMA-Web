@@ -7,11 +7,11 @@ import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRCallState;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
-import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
-import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
+import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
+import org.motechproject.tama.ivr.decisiontree.TreeChooser;
 import org.motechproject.tama.repository.Patients;
-import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.motechproject.util.DateUtil;
+import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,24 +23,24 @@ public class AuthenticateAction extends BaseIncomingAction {
     private PillReminderService pillReminderService;
     private Patients patients;
     private RetryAction retryAction;
-    private CurrentDosageReminderTree currentDosageReminderTree;
     private ThreadLocalTargetSource threadLocalTargetSource;
+    private final TreeChooser treeChooser;
 
     @Autowired
-    public AuthenticateAction(PillReminderService pillReminderService, Patients patients, RetryAction retryAction, CurrentDosageReminderTree currentDosageReminderTree, ThreadLocalTargetSource threadLocalTargetSource) {
+    public AuthenticateAction(PillReminderService pillReminderService, Patients patients, RetryAction retryAction, ThreadLocalTargetSource threadLocalTargetSource, TreeChooser treeChooser) {
         this.pillReminderService = pillReminderService;
         this.patients = patients;
         this.retryAction = retryAction;
-        this.currentDosageReminderTree = currentDosageReminderTree;
         this.threadLocalTargetSource = threadLocalTargetSource;
+        this.treeChooser = treeChooser;
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        return handle(ivrRequest, request, response, new IVRAction(currentDosageReminderTree, messages, threadLocalTargetSource));
+        return handle(ivrRequest, request, response, new IvrAction(treeChooser, messages, threadLocalTargetSource));
     }
 
-    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IVRAction tamaIvrAction) {
+    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IvrAction tamaIvrAction) {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = ivrRequest.getInput();
         String id = ivrSession.getPatientId();

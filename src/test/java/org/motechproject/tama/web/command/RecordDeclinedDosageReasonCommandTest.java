@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.ivr.IVRCallAttribute;
@@ -43,7 +44,7 @@ public class RecordDeclinedDosageReasonCommandTest {
          initMocks(this);
 
          pillRegimenId = "pillRegimenId";
-         dosageId = "dosageId";
+         dosageId = "currentDosageId";
          patientId = "test";
          userInput = "1";
          params = new HashMap<String, String>();
@@ -51,6 +52,7 @@ public class RecordDeclinedDosageReasonCommandTest {
          context = new IVRContext(req, session);
 
          when(req.getTamaParams()).thenReturn(params);
+         when(session.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().withRegimenId(pillRegimenId).build());
          when(session.get(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(patientId);
          when(req.getInput()).thenReturn(userInput);
      }

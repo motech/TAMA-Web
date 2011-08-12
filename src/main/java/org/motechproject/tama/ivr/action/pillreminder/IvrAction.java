@@ -9,18 +9,18 @@ import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.builder.DecisionTreeBasedResponseBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
-import org.motechproject.tama.ivr.decisiontree.TAMADecisionTree;
+import org.motechproject.tama.ivr.decisiontree.TreeChooser;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 
 import java.util.List;
 
-public class IVRAction {
-    private TAMADecisionTree tamaDecisionTree;
+public class IvrAction {
+    private TreeChooser treeChooser;
     private IVRMessage ivrMessage;
     private ThreadLocalTargetSource threadLocalTargetSource;
 
-    public IVRAction(TAMADecisionTree tamaDecisionTree, IVRMessage ivrMessage, ThreadLocalTargetSource threadLocalTargetSource) {
-        this.tamaDecisionTree = tamaDecisionTree;
+    public IvrAction(TreeChooser treeChooser, IVRMessage ivrMessage, ThreadLocalTargetSource threadLocalTargetSource) {
+        this.treeChooser = treeChooser;
         this.ivrMessage = ivrMessage;
         this.threadLocalTargetSource = threadLocalTargetSource;
     }
@@ -30,7 +30,7 @@ public class IVRAction {
         ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
         threadLocalContext.setIvrContext(ivrContext);
 
-        Tree tree = tamaDecisionTree.getTree();
+        Tree tree = treeChooser.getTree(ivrContext);
         String userInput = StringUtils.remove(ivrRequest.getData(), BaseIncomingAction.POUND_SYMBOL);
         String currentPosition = ivrSession.currentDecisionTreePath();
         DecisionTreeBasedResponseBuilder responseBuilder = new DecisionTreeBasedResponseBuilder();

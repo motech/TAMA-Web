@@ -3,7 +3,7 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Tree;
 
-public abstract class TAMADecisionTree {
+public abstract class TamaDecisionTree {
     protected Tree tree;
 
     public Tree getTree() {

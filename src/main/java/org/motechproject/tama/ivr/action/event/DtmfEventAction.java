@@ -1,13 +1,11 @@
 package org.motechproject.tama.ivr.action.event;
 
-import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
-import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.ivr.action.AuthenticateAction;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
-import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
-import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
+import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
+import org.motechproject.tama.ivr.decisiontree.TreeChooser;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class DtmfEventAction extends BaseIncomingAction {
     private AuthenticateAction authenticateAction;
-    private CurrentDosageReminderTree currentDosageReminderTree;
+    private TreeChooser treeChooser;
     private ThreadLocalTargetSource threadLocalTargetSource;
 
     @Autowired
     public DtmfEventAction(AuthenticateAction authenticateAction,
-                           CurrentDosageReminderTree currentDosageReminderTree, ThreadLocalTargetSource threadLocalTargetSource) {
+                           TreeChooser treeChooser, ThreadLocalTargetSource threadLocalTargetSource) {
         this.authenticateAction = authenticateAction;
-        this.currentDosageReminderTree = currentDosageReminderTree;
+        this.treeChooser = treeChooser;
         this.threadLocalTargetSource = threadLocalTargetSource;
     }
 
@@ -35,7 +33,7 @@ public class DtmfEventAction extends BaseIncomingAction {
         if (ivrSession.isAuthentication()) {
             return authenticateAction.handle(ivrRequest, request, response);
         } else {
-            return new IVRAction(currentDosageReminderTree, messages, threadLocalTargetSource).handle(ivrRequest, ivrSession);
+            return new IvrAction(treeChooser, messages, threadLocalTargetSource).handle(ivrRequest, ivrSession);
         }
     }
 }

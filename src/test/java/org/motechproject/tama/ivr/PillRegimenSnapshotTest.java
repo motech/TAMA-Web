@@ -88,6 +88,7 @@ public class PillRegimenSnapshotTest {
         assertEquals("previousDosageId", previousDosage.getDosageId());
     }
 
+
     @Test
     public void shouldGetNextDosage() {
         pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
@@ -177,8 +178,9 @@ public class PillRegimenSnapshotTest {
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
 
+        DateTime testCallTime = new DateTime(2011, 8, 1, 12, 0, 0);
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
         assertEquals(50, totalCount);
@@ -191,6 +193,7 @@ public class PillRegimenSnapshotTest {
         when(DateUtil.newDateTime(new LocalDate(2011, 8, 10), 9, 5, 0)).thenReturn(new DateTime(2011, 8, 10, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 8, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 8, 10, 15, 5, 0));
 
+        DateTime testCallTime = new DateTime(2011, 8, 10, 12, 0, 0);
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("med1", null, null));
@@ -199,7 +202,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
         assertEquals(1, totalCount);
@@ -212,8 +215,9 @@ public class PillRegimenSnapshotTest {
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
 
+        DateTime testCallTime = new DateTime(2011, 10, 1, 12, 0, 0);
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
-        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
         assertEquals(56, totalCount);
@@ -242,35 +246,263 @@ public class PillRegimenSnapshotTest {
     @Test
     public void isTakenShouldReturnTrueIfAResponseToTheDosageWasCapturedToday() {
         List<DosageResponse> dosages = new ArrayList<DosageResponse>() {{
-            add(new DosageResponse("currentDosageId", new Time(22, 5), null, null, DateUtil.today(), new ArrayList<MedicineResponse>()));
+            add(new DosageResponse("currentDosageId", new Time(22, 5), DateUtil.today(), null, DateUtil.today(), new ArrayList<MedicineResponse>()));
         }};
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
 
-        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession));
-        assertTrue(new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession)).isCurrentDosageTaken());
+        DateTime testCallTime = DateUtil.now().withHourOfDay(22).withMinuteOfHour(5).withSecondOfMinute(0);
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
+        assertTrue(pillRegimenSnapshot.isCurrentDosageTaken());
     }
 
     @Test
-    public void getCurrentDosageShouldReturnLastDosageIfCallIsMadeIsBeforeTimeForFirstDosage() {
+    public void isTakenShouldReturnTrue_NowBeforePillWindowOfVeryFirstDosage() {
+        List<DosageResponse> dosages = new ArrayList<DosageResponse>() {{
+            add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, null, new ArrayList<MedicineResponse>()));
+        }};
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+
+        when(ivrRequest.hasNoTamaData()).thenReturn(true);
+        DateTime testCallTime = DateUtil.now().withHourOfDay(6).withMinuteOfHour(5).withSecondOfMinute(0);
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertTrue(pillRegimenSnapshot.isCurrentDosageTaken());
+    }
+
+    @Test
+    public void getCurrentDosageShouldReturnLastDosageIfCallIsMadeBeforeTimeForFirstDosage() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate currentDosageLastTakenDate = DateUtil.today().minusDays(1);
         LocalDate previousDosageLastTakenDate = currentDosageLastTakenDate;
-        int firstDosageHour = 10;
-        DateTime testCallTime = DateUtil.now().withHourOfDay(firstDosageHour - 2).withMinuteOfHour(4).withSecondOfMinute(0);
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(firstDosageHour, 5), null, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today(), null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
         Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
 
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).minusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
         assertEquals(dosages.get(0).getDosageHour(), pillRegimenSnapshot.getCurrentDosage().getDosageHour());
     }
+
+    @Test
+    public void getCurrentDosageShouldReturnFirstDosageIfCallIsMade_AfterLastDosage_WithinPillWindowOfTomorrowsFirstDosage() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("currentDosageId", new Time(1, 5), DateUtil.today().minusDays(2), null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(0);
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertEquals(DateUtil.today().plusDays(1), pillRegimenSnapshot.getCurrentDosage().getDosageDate());
+    }
+
+    @Test
+    public void isTimeToTakeCurrentPillShouldReturnTrueIsNowBeforeDosageHour_WithinPillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).minusHours(2).withMinuteOfHour(6).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertTrue(pillRegimenSnapshot.isTimeToTakeCurrentPill());
+    }
+
+    @Test
+    public void isTimeToTakeCurrentPillShouldReturnTrueIsNowAfterDosageHour_WithinPillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).plusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertTrue(pillRegimenSnapshot.isTimeToTakeCurrentPill());
+    }
+
+    @Test
+    public void isTimeToTakeCurrentPillShouldReturnFalseIsNowBeforeDosageHour_OutsidePillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today(), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).minusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertFalse(pillRegimenSnapshot.isTimeToTakeCurrentPill());
+    }
+
+    @Test
+    public void isTimeToTakeCurrentPillShouldReturnFalseIsNowAfterDosageHour_OutsidePillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).plusHours(2).withMinuteOfHour(6).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertFalse(pillRegimenSnapshot.isTimeToTakeCurrentPill());
+    }
+
+    @Test
+    public void isEarlyToTakeDosageShouldReturnTrueIfNowBeforeDosageHour_OutSideDosageInterval_WithinPillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).withMinuteOfHour(5).minusMinutes(16).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertTrue(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+    }
+
+    @Test
+    public void isEarlyToTakeDosageShouldReturnFalseIfNowBeforeDosageHour_OutSideDosageInterval_OutsidePillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today(), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).minusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertFalse(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+    }
+
+    @Test
+    public void isEarlyToTakeDosageShouldReturnFalseIfNowBeforeDosageHour_WithinDosageInterval() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).withMinuteOfHour(5).minusMinutes(14).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertFalse(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+    }
+
+    @Test
+    public void isEarlyToTakeDosageShouldReturnTrue_DosageDateIsTomorrow_NowBeforeDosageHour_WithinDosageInterval() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("currentDosageId", new Time(1, 0), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().minusDays(1).withHourOfDay(23).withMinuteOfHour(59);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertTrue(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+    }
+
+    @Test
+    public void isLateToTakeDosageShouldReturnTrueIfNowAfterDosageHour_OutsidePillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).plusHours(2).withMinuteOfHour(6).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertTrue(pillRegimenSnapshot.isLateToTakeDosage());
+    }
+
+    @Test
+    public void isLateToTakeDosageShouldReturnFalseIfNowAfterDosageHour_WithinPillWindow() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(10).plusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertFalse(pillRegimenSnapshot.isLateToTakeDosage());
+    }
+
+    @Test
+    public void isLateToTakeTheDosageShouldReturnTrue_WhenDosageDateIsYesterday() {
+        ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
+
+        dosages.add(new DosageResponse("currentDosageId", new Time(23, 0), null, null, null, new ArrayList<MedicineResponse>()));
+
+        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(ivrSession.getPillRegimen()).thenReturn(pillRegimen);
+        Mockito.when(ivrRequest.hasNoTamaData()).thenReturn(true);
+
+        DateTime testCallTime = DateUtil.now().withHourOfDay(1).withMinuteOfHour(15).withSecondOfMinute(0);
+
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+        assertTrue(pillRegimenSnapshot.isLateToTakeDosage());
+    }
+
 
     private PillRegimenResponse getPillRegimenResponse() {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();

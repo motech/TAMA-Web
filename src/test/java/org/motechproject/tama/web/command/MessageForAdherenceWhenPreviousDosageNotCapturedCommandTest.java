@@ -53,6 +53,7 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
         when(DateUtil.today()).thenReturn(new LocalDate(2011, 8, 4));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 5), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 5, 15, 5, 0));
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2011, 8, 4, 12, 0));
 
 
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();

@@ -13,9 +13,10 @@ import java.util.List;
 public class PillRegimenResponseBuilder {
 
     private List<DosageResponse> dosages;
+    private String id;
 
     public PillRegimenResponse build() {
-        return new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        return new PillRegimenResponse(id, "patientId", 2, 5, dosages);
     }
 
     public static PillRegimenResponseBuilder startRecording() {
@@ -23,6 +24,7 @@ public class PillRegimenResponseBuilder {
     }
 
     public PillRegimenResponseBuilder withDefaults(){
+        id = "regimenId";
         dosages = new ArrayList<DosageResponse>();
         ArrayList<MedicineResponse> currentDosagesMedicines = new ArrayList<MedicineResponse>();
         ArrayList<MedicineResponse> previousDosagesMedicines = new ArrayList<MedicineResponse>();
@@ -49,4 +51,10 @@ public class PillRegimenResponseBuilder {
         this.dosages = dosages;
         return this;
     }
+
+    public PillRegimenResponseBuilder withRegimenId(String id) {
+        this.id = id;
+        return this;
+    }
+
 }

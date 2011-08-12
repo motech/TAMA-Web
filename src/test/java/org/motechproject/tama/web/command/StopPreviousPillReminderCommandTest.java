@@ -85,7 +85,7 @@ public class StopPreviousPillReminderCommandTest {
     public void shouldUpdateDosageDateOnPillTaken_PatientCallsTAMA() {
 
         when(ivrRequest.hasNoTamaData()).thenReturn(true);
-        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(22, 5), null, null, null, null);
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(22, 5), DateUtil.today(), null, null, null);
         List<DosageResponse> dosages = Arrays.asList(dosageResponse);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
 

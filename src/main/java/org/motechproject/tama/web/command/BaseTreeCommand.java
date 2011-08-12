@@ -8,13 +8,11 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 public abstract class BaseTreeCommand implements ITreeCommand{
 
     protected String getDosageIdFrom(IVRContext ivrContext) {
-        String dosageIdInSession = (String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID);
-        return (dosageIdInSession != null)? dosageIdInSession : new PillRegimenSnapshot(ivrContext).getCurrentDosage().getDosageId();
-
+        return new PillRegimenSnapshot(ivrContext).getCurrentDosage().getDosageId();
     }
 
     protected String getRegimenIdFrom(IVRContext ivrContext) {
-        return (String) ivrContext.ivrSession().getPillRegimen().getPillRegimenId();
+        return ivrContext.ivrSession().getPillRegimen().getPillRegimenId();
     }
 
     protected int getTimesSent(IVRContext ivrContext) {

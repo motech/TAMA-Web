@@ -28,12 +28,17 @@ public class MessageForMedicines extends BaseTreeCommand {
     public String[] execute(Object obj) {
         IVRContext ivrContext = (IVRContext) obj;
         ArrayList<String> messages = new ArrayList<String>();
+        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
 
         Patient patient = patients.get(ivrContext.ivrSession().getPatientId());
         Clinic clinic = clinics.get(patient.getClinic_id());
 
         messages.add(clinic.getName());
-        messages.add(IVRMessage.ITS_TIME_FOR_THE_PILL);
+        if(pillRegimenSnapshot.isTimeToTakeCurrentPill()){
+            messages.add(IVRMessage.ITS_TIME_FOR_THE_PILL);
+        }else{
+            messages.add(IVRMessage.NOT_REPORTED_IF_TAKEN);
+        }
         for (String medicine : getMedicines(ivrContext)) {
             messages.add(medicine);
         }

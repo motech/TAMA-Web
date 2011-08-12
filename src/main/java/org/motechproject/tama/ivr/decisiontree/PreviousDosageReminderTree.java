@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 @Component
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class PreviousDosageReminderTree extends TAMADecisionTree {
+public class PreviousDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private StopPreviousPillReminderCommand stopPreviousPillReminderCommand;
     @Autowired

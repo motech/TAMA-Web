@@ -2,7 +2,6 @@ package org.motechproject.tama.web.command;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
@@ -61,7 +61,6 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        Mockito.when(ivrSession.getCallTime()).thenReturn(new LocalDateTime(2011, 7, 1, 1, 1, 1).toDateTime());
 
         command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs);
         mockStatic(DateUtil.class);
@@ -70,6 +69,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 10, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 10, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 5), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 5, 15, 5, 0));
+        Mockito.when(ivrSession.getCallTime()).thenReturn(new DateTime(2011, 8, 4, 12, 0));
     }
 
     @Test
@@ -87,11 +87,16 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     public void shouldReturnAdherenceMessageForFirstDosage() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate lastTakenDate = null;
+
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2011, 7, 1, 12, 0));
         currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), DateUtil.today().plusYears(1), lastTakenDate, new ArrayList<MedicineResponse>());
         dosages.add(currentDosage);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(28);
+        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(1);
+
+        IVRRequest ivrRequest = mock(IVRRequest.class);
+        when(ivrRequest.hasNoTamaData()).thenReturn(true);
 
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         assertEquals(3, message.length);
@@ -107,6 +112,9 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         currentDosage = new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), DateUtil.today().plusYears(1), lastTakenDate, new ArrayList<MedicineResponse>());
         dosages.add(currentDosage);
 
+
+        IVRRequest ivrRequest = mock(IVRRequest.class);
+        when(ivrRequest.hasNoTamaData()).thenReturn(true);
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));

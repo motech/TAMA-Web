@@ -10,7 +10,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
-import org.motechproject.tama.ivr.action.pillreminder.IVRAction;
+import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
 import org.motechproject.tama.repository.Patients;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -36,7 +36,7 @@ public class AuthenticateActionTest extends BaseActionTest {
     @Mock
     private Patient patient;
     @Mock
-    private IVRAction tamaIvrAction;
+    private IvrAction tamaIvrAction;
     @Mock
     private PillReminderService pillReminderService;
 
