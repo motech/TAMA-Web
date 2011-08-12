@@ -1,5 +1,6 @@
 package org.motechproject.tama.security;
 
+import org.motechproject.tama.domain.Administrator;
 import org.motechproject.tama.domain.TAMAUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -34,6 +35,9 @@ public class AuthenticatedUser extends User {
         return tamaUser.getPassword();
     }
 
+    public boolean isAdministrator() {
+        return tamaUser instanceof Administrator;
+    }
 
     public void setPassword(String newPassword) {
         tamaUser.setPassword(newPassword);

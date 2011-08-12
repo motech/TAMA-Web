@@ -66,9 +66,18 @@
                    </div>
                </div>
                <br />
-		    <tiles:insertAttribute name="menu" ignore="true" />
+
+               <c:choose>
+                   <c:when test="${empty sessionScope.loggedInUser.clinicName}">
+                       <tiles:insertAttribute name="adminMenu" ignore="true" />
+                   </c:when>
+                   <c:otherwise>
+                       <tiles:insertAttribute name="clinicianMenu" ignore="true" />
+                   </c:otherwise>
+               </c:choose>
+
 		    <div id="main">
-                <c:if test="${pageContext['request'].userPrincipal != null}">
+                <c:if test="${pageContext['request'].userPrincipal != null and sessionScope.loggedInUser.clinicName != ''}">
                     <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
                     <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
                       <div>

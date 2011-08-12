@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="tama-tools" basedir=".">
+    <property file="${basedir}\tools.properties"/>
+    <property file="${basedir}\deploy.properties"/>
+
+    <path id="libs">
+        <fileset dir="${tomcat.home}/webapps/${app_name}/WEB-INF/lib/" includes="**/*.jar"/>
+    </path>
+
+    <target name="setup.adherence.logs">
+        <java fork="false" classname="${main.class}">
+            <arg line="${patientId}"/>
+            <arg line="${dosageId}"/>
+            <arg line="${fromDate}"/>
+            <arg line="${toDate}"/>
+            <arg line="${nthDosageThatWillNotBeTaken}"/>
+            <classpath>
+                <path location="${tomcat.home}/webapps/${app_name}/WEB-INF/classes"/>
+                <path refid="libs"/>
+            </classpath>
+        </java>
+    </target>
+</project>

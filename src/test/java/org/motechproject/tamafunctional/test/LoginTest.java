@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.page.ListPatientsPage;
+import org.motechproject.tamafunctional.page.ListClinicsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,8 +34,8 @@ public class LoginTest extends BaseTest {
 
     @Test
     public void testLoginSuccess() {
-        ListPatientsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
-        assertTrue(StringUtils.contains(homePage.getListPatientsPane(),ListPatientsPage.WELCOME_MESSAGE));
+        ListClinicsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
+        assertTrue(StringUtils.contains(homePage.getListClinicsPane(), ListClinicsPage.WELCOME_MESSAGE));
         homePage.logout();
     }
 

@@ -32,6 +32,6 @@ public class PillsDelayWarning extends BaseTreeCommand {
     private boolean isLastReminder(IVRContext ivrContext) {
         int timesSent = getTimesSent(ivrContext);
         int totalTimesToSend = getTotalTimesToSend(ivrContext);
-        return timesSent == totalTimesToSend - 1;
+        return timesSent == totalTimesToSend;
     }
 }

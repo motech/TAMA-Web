@@ -44,13 +44,9 @@ public class LoginPage extends Page {
         return this;
     }
 
-    public ListPatientsPage loginWithCorrectAdminUserNamePassword() {
-        return loginAndWait(CORRECT_USERNAME, CORRECT_PASSWORD);
-    }
-
-    private ListPatientsPage loginAndWait(String userName, String password) {
-        login(userName, password);
-        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
+    public ListClinicsPage loginWithCorrectAdminUserNamePassword() {
+        login(CORRECT_USERNAME, CORRECT_PASSWORD);
+        return MyPageFactory.initElements(webDriver, ListClinicsPage.class);
     }
 
     private void login(String userName, String password) {
@@ -64,7 +60,8 @@ public class LoginPage extends Page {
     }
 
     public ListPatientsPage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {
-        return loginAndWait(clinicianUsername, clinicianPassword);
+        login(clinicianUsername, clinicianPassword);
+        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
     @Override
