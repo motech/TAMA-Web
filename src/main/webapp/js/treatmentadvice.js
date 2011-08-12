@@ -78,7 +78,7 @@ dojo.addOnLoad(function() {
             if (composition_drugs.length > 1) {
                 drug2_name.innerHTML = other_drug.name;
             }
-            var nonRequiredWidgets = ["_drugDosages[1].endDate_id", "_drugDosages[1].advice_id"];
+            var nonRequiredWidgets = ["_drugDosages[1].endDateAsDate_id", "_drugDosages[1].advice_id"];
 
             _changeFirstDosage();
 
@@ -159,8 +159,8 @@ dojo.addOnLoad(function() {
         };
 
         var validateDosageDates = function(dosage) {
-            var start_date = dijit.byId('_drugDosages[' + dosage + '].startDate_id');
-            var end_date = dijit.byId('_drugDosages[' + dosage + '].endDate_id');
+            var start_date = dijit.byId('_drugDosages[' + dosage + '].startDateAsDate_id');
+            var end_date = dijit.byId('_drugDosages[' + dosage + '].endDateAsDate_id');
             end_date.constraints.min = addDays(start_date.value, 1);
             dojo.connect(start_date, 'onChange', function() {
                 if (dijit.byId(start_date) != null) {
