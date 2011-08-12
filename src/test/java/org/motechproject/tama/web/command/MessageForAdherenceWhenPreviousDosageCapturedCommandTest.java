@@ -129,4 +129,13 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         assertEquals(80, adherencePercentage);
     }
 
+    @Test
+    public void shouldReturnHundredPercentageIfTotalCountIsZero() {
+        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(
+                any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(45);
+
+        int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, 0);
+        assertEquals(100, adherencePercentage);
+    }
+
 }
