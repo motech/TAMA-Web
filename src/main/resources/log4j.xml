@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-    <appender class="org.apache.log4j.DailyRollingFileAppender" name="logfile">
+    <appender class="org.apache.log4j.RollingFileAppender" name="logfile">
         <param value="'.'yyyy-MM-dd" name="DatePattern"/>
         <param value="logs/tama.log" name="File"/>
         <param name="Append" value="true"/>
