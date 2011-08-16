@@ -12,10 +12,7 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.util.DateUtil;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class PillRegimenSnapshot {
     private IVRContext ivrContext;
@@ -58,8 +55,8 @@ public class PillRegimenSnapshot {
         List<DosageResponse> allDosages = getSortedDosages();
         if (allDosages == null) return null;
         int currentDosageIndex = allDosages.indexOf(getCurrentDosage().getDosage());
-        return currentDosageIndex == allDosages.size() - 1 ? new MyDosageResponse(allDosages.get(0),today.plusDays(1)) :
-                                                             new MyDosageResponse(allDosages.get(currentDosageIndex + 1), today);
+        return currentDosageIndex == allDosages.size() - 1 ? new MyDosageResponse(allDosages.get(0), today.plusDays(1)) :
+                new MyDosageResponse(allDosages.get(currentDosageIndex + 1), today);
     }
 
     public DateTime getNextDosageTime() {
@@ -87,13 +84,13 @@ public class PillRegimenSnapshot {
     }
 
     private MyDosageResponse getCurrentDosageWithDosageDate(List<DosageResponse> dosageResponses, DosageResponse currentDosage) {
-        if(currentDosage == null){
+        if (currentDosage == null) {
             return getLastDosage(dosageResponses);
         }
 
         int pillWindowStartHour = now.withHourOfDay(currentDosage.getDosageHour()).minusHours(pillRegimen.getReminderRepeatWindowInHours()).getHourOfDay();
         boolean isTomorrowsDosage = pillWindowStartHour > currentDosage.getDosageHour();
-        if(isTomorrowsDosage){
+        if (isTomorrowsDosage) {
             return new MyDosageResponse(currentDosage, today.plusDays(1));
         }
 
@@ -126,18 +123,11 @@ public class PillRegimenSnapshot {
         return today.equals(dosage.getDosageDate());
     }
 
+
     public boolean isTimeToTakeCurrentPill() {
-        MyDosageResponse dosage = getCurrentDosage();
-        int dosageHour = dosage.getDosageHour();
-        int dosageMinute = dosage.getDosageMinute();
+        int pillWindowInMinutes = pillRegimen.getReminderRepeatWindowInHours() * 60;
 
-        int pillWindow = pillRegimen.getReminderRepeatWindowInHours();
-        DateTime dosageTime = now.withHourOfDay(dosageHour).withMinuteOfHour(dosageMinute);
-
-        boolean nowAfterPillWindowStart = now.isAfter(dosageTime.minusHours(pillWindow));
-        boolean nowBeforePillWindowEnd = now.isBefore(dosageTime.plusHours(pillWindow));
-
-        return nowAfterPillWindowStart && nowBeforePillWindowEnd;
+        return nowIsWithin(pillWindowInMinutes);
     }
 
     public boolean isEarlyToTakeDosage(int dosageIntervalInMinutes) {
@@ -153,6 +143,23 @@ public class PillRegimenSnapshot {
         DateTime dosageTime = DateUtil.newDateTime(currentDosage.getDosageDate(), currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
         DateTime pillWindowEnd = dosageTime.plusHours(pillRegimen.getReminderRepeatWindowInHours());
         return now.isAfter(pillWindowEnd);
+    }
+
+    public boolean hasTakenDosageOnTime(int dosageIntervalInMinutes) {
+        return nowIsWithin(dosageIntervalInMinutes);
+    }
+
+    private boolean nowIsWithin(int dosageIntervalInMinutes) {
+        MyDosageResponse dosage = getCurrentDosage();
+        int dosageHour = dosage.getDosageHour();
+        int dosageMinute = dosage.getDosageMinute();
+
+        DateTime dosageTime = now.withHourOfDay(dosageHour).withMinuteOfHour(dosageMinute);
+
+        boolean nowAfterPillWindowStart = now.isAfter(dosageTime.minusMinutes(dosageIntervalInMinutes));
+        boolean nowBeforePillWindowEnd = now.isBefore(dosageTime.plusMinutes(dosageIntervalInMinutes));
+
+        return nowAfterPillWindowStart && nowBeforePillWindowEnd;
     }
 
     public List<String> medicinesForCurrentDosage() {
@@ -217,4 +224,5 @@ public class PillRegimenSnapshot {
         }
         return null;
     }
+
 }
