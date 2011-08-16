@@ -40,9 +40,7 @@ public class CurrentDosageTakenTree extends TamaDecisionTree {
     protected Node createRootNode() {
         return Node.newBuilder()
                 .setPrompts(Arrays.<Prompt>asList(
-                        new AudioPrompt().setCommand(nextCallDetails),
-                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
-                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage)))
+                        new AudioPrompt().setCommand(nextCallDetails)))
                 .setTransitions(jumpToPreviousDosageTree())
                 .build();
     }
