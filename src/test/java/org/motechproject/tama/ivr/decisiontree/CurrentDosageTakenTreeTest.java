@@ -65,7 +65,7 @@ public class CurrentDosageTakenTreeTest {
 
         Node nextNode = testConfirmTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(3, prompts.size());
+        assertEquals(1, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof NextCallDetails);
     }
 
