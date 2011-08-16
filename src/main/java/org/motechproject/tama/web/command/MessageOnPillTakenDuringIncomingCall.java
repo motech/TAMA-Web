@@ -7,6 +7,8 @@ import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class MessageOnPillTakenDuringIncomingCall extends BaseTreeCommand {
 
@@ -27,11 +29,15 @@ public class MessageOnPillTakenDuringIncomingCall extends BaseTreeCommand {
 
         int dosageInterval = Integer.valueOf(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL));
 
+        ArrayList<String> messages = new ArrayList<String>();
         if(pillRegimenSnapshot.isEarlyToTakeDosage(dosageInterval))
-            return new String[]{IVRMessage.TOOK_DOSE_BEFORE_TIME};
+            messages.add(IVRMessage.TOOK_DOSE_BEFORE_TIME);
         else if(pillRegimenSnapshot.isLateToTakeDosage())
-            return new String[]{IVRMessage.TOOK_DOSE_LATE};
-        else
-            return new String[0];
+            messages.add(IVRMessage.TOOK_DOSE_LATE);
+        else if(pillRegimenSnapshot.hasTakenDosageOnTime(dosageInterval))
+            messages.add(IVRMessage.DOSE_TAKEN);
+
+        messages.add(IVRMessage.DOSE_RECORDED);
+        return messages.toArray(new String[]{});
     }
 }
