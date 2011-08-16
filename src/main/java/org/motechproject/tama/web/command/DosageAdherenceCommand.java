@@ -22,7 +22,7 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
     protected int getAdherencePercentage(String regimenId, int scheduledDosagesTotalCount) {
         LocalDate toDate = DateUtil.today();
         int scheduledDosagesSuccessCount = dosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, toDate.minusDays(TAMAConstants.DAYS_IN_FOUR_WEEKS), toDate);
-        return scheduledDosagesTotalCount==0 ? 100 : scheduledDosagesSuccessCount * 100 / scheduledDosagesTotalCount;
+        return scheduledDosagesSuccessCount * 100 / scheduledDosagesTotalCount;
     }
 
     protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot) {

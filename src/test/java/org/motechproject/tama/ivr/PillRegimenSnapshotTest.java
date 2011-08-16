@@ -187,6 +187,33 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
+    public void totalCountShouldIncludeADosageIfNowIsAfterThePillWindowStartHour() {
+        int dosageYear = 2011;
+        int dosageMonth = 7;
+        int dosageDate = 1;
+        int dosageHour = 9;
+        int dosageMinute = 5;
+
+        mockStatic(DateUtil.class);
+        when(DateUtil.today()).thenReturn(new LocalDate(dosageYear, dosageMonth, dosageDate));
+        when(DateUtil.newDateTime(new LocalDate(dosageYear, dosageMonth, dosageDate), dosageHour, dosageMinute, 0))
+        .thenReturn(new DateTime(dosageYear, dosageMonth, dosageDate, dosageHour, dosageMinute, 0));
+        when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
+
+        PillRegimenResponse pillRegimenResponse = getPillRegimenResponse();
+
+        DosageResponse dosage = pillRegimenResponse.getDosages().get(0);
+        int timeWithinPillWindow = dosage.getDosageHour() - 1;
+        DateTime testCallTime = new DateTime(dosageYear, dosageMonth, dosageDate, timeWithinPillWindow, 0, 0);
+
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
+
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
+        assertEquals(1, totalCount);
+    }
+
+    @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWithMultipleDosagesInTheSameDay() {
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 10, 12, 0, 0)); // TotalCount = 1 + 0 = 1
@@ -510,6 +537,6 @@ public class PillRegimenSnapshotTest {
         medicineResponses.add(new MedicineResponse("med1", null, null));
         dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), new LocalDate(2011, 7, 1), new LocalDate(2012, 7, 1), new LocalDate(2011, 8, 4), medicineResponses));
         dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), new LocalDate(2011, 7, 10), new LocalDate(2012, 7, 10), new LocalDate(2011, 8, 4), medicineResponses));
-        return new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
+        return new PillRegimenResponse("r1", "p1", 2, 15, dosageResponses);
     }
 }
