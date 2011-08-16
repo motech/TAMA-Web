@@ -335,7 +335,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void isTimeToTakeCurrentPillShouldReturnTrueIsNowBeforeDosageHour_WithinPillWindow() {
+    public void isTimeToTakeCurrentPillShouldReturnTrueIfNowBeforeDosageHour_WithinPillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
@@ -353,7 +353,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void isTimeToTakeCurrentPillShouldReturnTrueIsNowAfterDosageHour_WithinPillWindow() {
+    public void isTimeToTakeCurrentPillShouldReturnTrueIfNowAfterDosageHour_WithinPillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
@@ -371,7 +371,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void isTimeToTakeCurrentPillShouldReturnFalseIsNowBeforeDosageHour_OutsidePillWindow() {
+    public void isTimeToTakeCurrentPillShouldReturnFalseIfNowBeforeDosageHour_OutsidePillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today(), null, null, new ArrayList<MedicineResponse>()));
@@ -389,7 +389,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void isTimeToTakeCurrentPillShouldReturnFalseIsNowAfterDosageHour_OutsidePillWindow() {
+    public void isTimeToTakeCurrentPillShouldReturnFalseIfNowAfterDosageHour_OutsidePillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
