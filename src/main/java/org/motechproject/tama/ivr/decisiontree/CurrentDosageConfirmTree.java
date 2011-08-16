@@ -23,7 +23,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     @Autowired
     private MessageOnPillTakenDuringIncomingCall messageOnPillTakenDuringIncomingCall;
     @Autowired
-    private MessageForMedicines messageForMedicines;
+    private MessageForMedicinesDuringIncomingCall messageForMedicinesDuringIncomingCall;
     @Qualifier("stopTodaysRemindersCommand")
     @Autowired
     private StopTodaysRemindersCommand stopTodaysRemindersCommand;
@@ -42,7 +42,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     protected Node createRootNode() {
         return Node.newBuilder()
                 .setPrompts(Arrays.asList(
-                        new AudioPrompt().setCommand(messageForMedicines),
+                        new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
                         new MenuAudioPrompt().setName(IVRMessage.PILL_CONFIRM_CALL_MENU)))
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()
