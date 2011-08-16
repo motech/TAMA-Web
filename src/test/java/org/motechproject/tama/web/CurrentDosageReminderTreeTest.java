@@ -61,8 +61,8 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(3, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof MessageOnPillTaken);
-        assertTrue(prompts.get(1).getCommand() instanceof MessageFromPreviousDosage);
-        assertTrue(prompts.get(2).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
+        assertTrue(prompts.get(1).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
+        assertTrue(prompts.get(2).getCommand() instanceof MessageFromPreviousDosage);
         assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 

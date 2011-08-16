@@ -57,8 +57,8 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
-                                                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage),
-                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand))
+                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
+                                                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
                                                 )
                                                 .setTransitions(jumpToPreviousDosageTree())
                                                 .build())
