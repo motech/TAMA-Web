@@ -104,7 +104,9 @@ public class PillRegimenSnapshot {
         int totalCount = 0;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
             DateTime toDate = now;
-            DateTime fromDate = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
+            DateTime dosageStartDate = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
+
+            DateTime fromDate = dosageStartDate.minusHours(pillRegimen.getReminderRepeatWindowInHours());
             if (toDate.isBefore(fromDate)) continue;
 
             Days days = Days.daysBetween(fromDate, toDate);
