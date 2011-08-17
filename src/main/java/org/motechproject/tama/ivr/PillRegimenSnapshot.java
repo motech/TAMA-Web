@@ -181,7 +181,11 @@ public class PillRegimenSnapshot {
     private boolean wasPreviousDosageCapturedYesterday() {
         DosageResponse previousDosage = getPreviousDosage();
         if (previousDosage.getResponseLastCapturedDate() == null) return false;
-        return !today.minusDays(1).isAfter(previousDosage.getResponseLastCapturedDate());
+        return !dosageWasCapturedSomeDayBeforeYesterday(previousDosage);
+    }
+
+    private boolean dosageWasCapturedSomeDayBeforeYesterday(DosageResponse previousDosage) {
+        return today.minusDays(1).isAfter(previousDosage.getResponseLastCapturedDate());
     }
 
     private List<DosageResponse> getSortedDosages() {
