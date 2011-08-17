@@ -5,10 +5,8 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
 import org.motechproject.tama.repository.Patients;
-import org.motechproject.tama.repository.TreatmentAdvices;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -19,16 +17,13 @@ public class SetupAdherenceLogs {
         ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
         DosageAdherenceLogs dosageAdherenceLogs = context.getBean(DosageAdherenceLogs.class);
         Patients patients = context.getBean(Patients.class);
-        TreatmentAdvices treatmentAdvices = context.getBean(TreatmentAdvices.class);
 
         Patient patient = patients.findByPatientId(args[0]).get(0);
-        TreatmentAdvice treatmentAdvice = treatmentAdvices.findByPatientId(patient.getId());
-        String regimenId = treatmentAdvice.getRegimenId();
-
-        String dosageId = args[1];
-        LocalDate fromDate = LocalDate.parse(args[2]);
-        LocalDate toDate = LocalDate.parse(args[3]);
-        int nthDosageThatWillNotBeTaken = Integer.parseInt(args[4]);
+        String regimenId = args[1];
+        String dosageId = args[2];
+        LocalDate fromDate = LocalDate.parse(args[3]);
+        LocalDate toDate = LocalDate.parse(args[4]);
+        int nthDosageThatWillNotBeTaken = Integer.parseInt(args[5]);
 
         int days = Days.daysBetween(fromDate, toDate).getDays() + 1;
         System.out.println(String.format("Days: %s", days));
