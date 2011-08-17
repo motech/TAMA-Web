@@ -28,6 +28,7 @@ public class RetryActionTest extends BaseActionTest {
     public void shouldGoToUserNotAuthorisedActionIfItIsTheLastAttempt() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
         when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(4);
         when(userNotAuthorisedAction.handle(ivrRequest, request, response)).thenReturn("OK");
 
@@ -40,6 +41,7 @@ public class RetryActionTest extends BaseActionTest {
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndAlsoIncrementAttemptCount() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
         when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
 
         String responseXML = retryAction.handle(ivrRequest, request, response);
@@ -52,6 +54,7 @@ public class RetryActionTest extends BaseActionTest {
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndNotIncrementAttemptCountWhenPassCodeIsNotSent() {
         IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", null);
         when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
 
         String responseXML = retryAction.handle(ivrRequest, request, response);

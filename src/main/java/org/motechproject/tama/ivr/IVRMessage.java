@@ -71,8 +71,8 @@ public class IVRMessage {
         return (String) properties.get(key.toLowerCase());
     }
 
-    public String getWav(String key) {
+    public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : key.toLowerCase();
-        return properties.get(CONTENT_LOCATION_URL) + file + WAV;
+        return properties.get(CONTENT_LOCATION_URL) + preferredLangCode + "/" + file + WAV;
     }
 }

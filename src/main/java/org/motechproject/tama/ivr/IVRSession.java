@@ -32,6 +32,10 @@ public class IVRSession {
     public String getPatientId() {
         return (String) session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID);
     }
+    
+    public String getPrefferedLanguageCode() {
+    	return (String) session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE);
+    }
 
     public boolean isSymptomsReportingCall() {
     	return "true".equals(session.getAttribute(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL));

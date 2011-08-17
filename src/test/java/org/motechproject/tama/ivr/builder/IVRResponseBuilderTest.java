@@ -30,9 +30,9 @@ public class IVRResponseBuilderTest {
     @Before
     public void setUp() {
         initMocks(this);
-        builder = new IVRResponseBuilder("sid");
+        builder = new IVRResponseBuilder("sid", "en");
 
-        when(messages.getWav(anyString())).thenReturn("");
+        when(messages.getWav(anyString(), anyString())).thenReturn("");
     }
 
     @Test
@@ -42,18 +42,18 @@ public class IVRResponseBuilderTest {
         Response response = builder.withPlayTexts("nova").create(messages);
         assertTrue(response.getXML().contains("nova"));
 
-        builder = new IVRResponseBuilder("sid");
+        builder = new IVRResponseBuilder("sid","en");
         response = builder.create(messages);
         assertFalse(response.getXML().contains("<playtext>"));
     }
 
     @Test
     public void shouldAddPlayAudioOnlyIfItsNotEmpty() {
-        when(messages.getWav(anyString())).thenReturn("nova");
+        when(messages.getWav(anyString(), anyString())).thenReturn("nova");
         Response response = builder.withPlayAudios("nova").create(messages);
         assertTrue(response.getXML().contains("nova"));
 
-        builder = new IVRResponseBuilder("sid");
+        builder = new IVRResponseBuilder("sid","en");
         response = builder.create(messages);
         assertFalse(response.getXML().contains("<playaudio>"));
     }
@@ -63,7 +63,7 @@ public class IVRResponseBuilderTest {
         Response response = builder.collectDtmf().create(messages);
         assertTrue(response.getXML().contains("<collectdtmf/>"));
 
-        response = new IVRResponseBuilder("sid").create(messages);
+        response = new IVRResponseBuilder("sid","en").create(messages);
         assertFalse(response.getXML().contains("<collectdtmf/>"));
     }
 
@@ -90,14 +90,14 @@ public class IVRResponseBuilderTest {
         Response response = builder.withHangUp().create(messages);
         assertTrue(response.getXML().contains("<hangup/>"));
 
-        response = new IVRResponseBuilder("sid").create(messages);
+        response = new IVRResponseBuilder("sid","en").create(messages);
         assertFalse(response.getXML().contains("<hangup/>"));
     }
 
     @Test
     public void shouldAddMultiplePlayAudios() {
-        when(messages.getWav("wav1")).thenReturn("wav1");
-        when(messages.getWav("wav2")).thenReturn("wav2");
+        when(messages.getWav("wav1","en")).thenReturn("wav1");
+        when(messages.getWav("wav2","en")).thenReturn("wav2");
         Response response = builder.withPlayAudios("wav1").withPlayAudios("wav2").create(messages);
         assertTrue(response.getXML().contains("<playaudio>wav1</playaudio>"));
         assertTrue(response.getXML().contains("<playaudio>wav2</playaudio>"));

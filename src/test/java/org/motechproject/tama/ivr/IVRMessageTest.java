@@ -22,7 +22,7 @@ public class IVRMessageTest {
         properties.put(IVRMessage.CONTENT_LOCATION_URL, "http://localhost/");
         properties.put("mayo", "clinic.welcome.mayo");
 
-        assertEquals("http://localhost/clinic.welcome.mayo.wav", messages.getWav("mayo"));
-        assertEquals("http://localhost/apollo.wav", messages.getWav("apollo"));
+        assertEquals("http://localhost/en/clinic.welcome.mayo.wav", messages.getWav("mayo","en"));
+        assertEquals("http://localhost/en/apollo.wav", messages.getWav("apollo","en"));
     }
 }

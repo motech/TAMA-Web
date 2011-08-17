@@ -13,13 +13,18 @@ import java.util.List;
 public class IVRResponseBuilder {
     private boolean isHangUp;
     private String sid;
+    private String preferredLangCode;
     private boolean collectDtmf;
     private int dtmfLength;
     private List<String> playTexts = new ArrayList<String>();
     private List<String> playAudios = new ArrayList<String>();
 
     public IVRResponseBuilder(String sid) {
+    	this(sid, "en");
+    }
+    public IVRResponseBuilder(String sid, String preferredLangCode) {
         this.sid = sid;
+        this.preferredLangCode = preferredLangCode;
     }
 
     public IVRResponseBuilder withPlayTexts(String... playTexts) {
@@ -58,12 +63,12 @@ public class IVRResponseBuilder {
             CollectDtmf collectDtmf = KookooCollectDtmfFactory.create();
             if(dtmfLength > 0) collectDtmf.setMaxDigits(dtmfLength);
             for (String playText : playTexts) collectDtmf.addPlayText(ivrMessage.get(playText));
-            for (String playAudio : playAudios) collectDtmf.addPlayAudio(ivrMessage.getWav(playAudio));
+            for (String playAudio : playAudios) collectDtmf.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
 
             response.addCollectDtmf(collectDtmf);
         } else {
             for (String playText : playTexts) response.addPlayText(ivrMessage.get(playText));
-            for (String playAudio : playAudios) response.addPlayAudio(ivrMessage.getWav(playAudio));
+            for (String playAudio : playAudios) response.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
         }
         if (isHangUp) response.addHangup();
         return response;

@@ -32,7 +32,7 @@ public abstract class BaseActionTest {
     }
 
     protected void mockIVRMessage() {
-        when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL)).thenReturn("http://music");
+        when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL, "en")).thenReturn("http://music");
     }
 
     protected String sanitize(String responseXML) {

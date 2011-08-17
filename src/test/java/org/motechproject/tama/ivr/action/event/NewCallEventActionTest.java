@@ -1,18 +1,20 @@
 package org.motechproject.tama.ivr.action.event;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.*;
-import org.motechproject.tama.ivr.action.UserNotFoundAction;
-import org.motechproject.tama.repository.Patients;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.IVRCallAttribute;
+import org.motechproject.tama.ivr.IVRCallState;
+import org.motechproject.tama.ivr.IVREvent;
+import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.action.UserNotFoundAction;
+import org.motechproject.tama.repository.Patients;
 
 public class NewCallEventActionTest extends BaseActionTest {
     @Mock
@@ -67,9 +69,10 @@ public class NewCallEventActionTest extends BaseActionTest {
     public void shouldSendThePinRequestXMLResponseForAnAuthorizedPatient() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
         when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
-        when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL)).thenReturn("http://server/tama.wav");
+        when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL, "en")).thenReturn("http://server/tama.wav");
 
         String responseXML = action.handle(ivrRequest, request, response);
         assertEquals("<response sid=\"unique-call-id\"><collectdtmf><playaudio>http://server/tama.wav</playaudio></collectdtmf></response>", sanitize(responseXML));

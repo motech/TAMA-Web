@@ -13,13 +13,13 @@ public class IVRLanguageSeed extends Seed {
 
     @Override
     public void load() {
-        languages.add(IVRLanguage.newIVRLanguage("Hindi"));
-        languages.add(IVRLanguage.newIVRLanguage("English"));
-        languages.add(IVRLanguage.newIVRLanguage("Telugu"));
-        languages.add(IVRLanguage.newIVRLanguage("Kannada"));
-        languages.add(IVRLanguage.newIVRLanguage("Tamil"));
-        languages.add(IVRLanguage.newIVRLanguage("Manipuri"));
-        languages.add(IVRLanguage.newIVRLanguage("Marathi"));
+        languages.add(IVRLanguage.newIVRLanguage("Hindi", "hi"));
+        languages.add(IVRLanguage.newIVRLanguage("English", "en"));
+        languages.add(IVRLanguage.newIVRLanguage("Telugu", "te"));
+        languages.add(IVRLanguage.newIVRLanguage("Kannada", "kn"));
+        languages.add(IVRLanguage.newIVRLanguage("Tamil", "ta"));
+        languages.add(IVRLanguage.newIVRLanguage("Manipuri", "mni"));
+        languages.add(IVRLanguage.newIVRLanguage("Marathi", "mr"));
     }
 
 }

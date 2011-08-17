@@ -53,6 +53,8 @@ public class AuthenticateAction extends BaseIncomingAction {
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patientId);
+        ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getIvrLanguage().getCode());
+        
         ivrSession.set(IVRCallAttribute.CALL_TIME, DateUtil.now());
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
         ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);

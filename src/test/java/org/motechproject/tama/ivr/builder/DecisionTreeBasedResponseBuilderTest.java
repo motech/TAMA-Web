@@ -2,19 +2,32 @@ package org.motechproject.tama.ivr.builder;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.motechproject.decisiontree.model.*;
+import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.IVRSession;
 
 import java.util.Arrays;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DecisionTreeBasedResponseBuilderTest {
     private DecisionTreeBasedResponseBuilder treeBasedResponseBuilder;
 
+    @Mock
+    IVRContext ivrContext;
+    @Mock
+    IVRSession ivrSession;
+    
     @Before
     public void setUp() {
         treeBasedResponseBuilder = new DecisionTreeBasedResponseBuilder();
+        initMocks(this);
+        when(ivrSession.getPrefferedLanguageCode()).thenReturn("en");
+        when(ivrContext.ivrSession()).thenReturn(ivrSession);
     }
 
     @Test
@@ -37,7 +50,7 @@ public class DecisionTreeBasedResponseBuilderTest {
     }
 
     private IVRResponseBuilder nextResponse(Node rootNode, boolean retryOnIncorrectUserAction) {
-        return treeBasedResponseBuilder.ivrResponse("foo", rootNode, new IVRContext(null, null), retryOnIncorrectUserAction);
+        return treeBasedResponseBuilder.ivrResponse("foo", rootNode, ivrContext, retryOnIncorrectUserAction);
     }
 
     @Test

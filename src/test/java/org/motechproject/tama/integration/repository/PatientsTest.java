@@ -52,7 +52,7 @@ public class PatientsTest extends SpringIntegrationTest {
         deleteAll();
         gender = Gender.newGender("Male");
         genders.add(gender);
-        ivrLanguage = IVRLanguage.newIVRLanguage("English");
+        ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
         ivrLanguages.add(ivrLanguage);
     }
 

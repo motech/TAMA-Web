@@ -34,11 +34,10 @@ public class RetryAction extends BaseIncomingAction {
         if (isLast(attempt))
             return userNotAuthorisedAction.handle(ivrRequest, request, response);
 
-        if (ivrRequest.hasNoData())
-            return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
-
-        ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
-        return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
+        if (!ivrRequest.hasNoData())
+           ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
+        
+        return dtmfResponseWithWav(ivrRequest, ivrSession, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 
     private Integer getAttempt(IVRSession ivrSession) {

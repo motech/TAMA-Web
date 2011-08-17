@@ -6,6 +6,7 @@ public class IVRLanguage extends CouchEntity {
 
     @NotNull
     private String name;
+    private String code;
 
     public IVRLanguage() {
     }
@@ -22,9 +23,19 @@ public class IVRLanguage extends CouchEntity {
         this.name = name;
     }
 
-    public static IVRLanguage newIVRLanguage(String language) {
+    
+    public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public static IVRLanguage newIVRLanguage(String language, String code) {
         IVRLanguage ivrLanguage = new IVRLanguage();
         ivrLanguage.setName(language);
+        ivrLanguage.setCode(code);
         return ivrLanguage;
     }
 
