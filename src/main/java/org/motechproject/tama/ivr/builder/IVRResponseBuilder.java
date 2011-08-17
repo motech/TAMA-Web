@@ -4,6 +4,8 @@ import com.ozonetel.kookoo.CollectDtmf;
 import com.ozonetel.kookoo.Response;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.decisiontree.KookooCollectDtmfFactory;
+import org.motechproject.tama.ivr.decisiontree.KookooResponseFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ public class IVRResponseBuilder {
     private boolean isHangUp;
     private String sid;
     private boolean collectDtmf;
+    private int dtmfLength;
     private List<String> playTexts = new ArrayList<String>();
     private List<String> playAudios = new ArrayList<String>();
 
@@ -36,17 +39,24 @@ public class IVRResponseBuilder {
         return this;
     }
 
+    public IVRResponseBuilder collectDtmf(int dtmfLength) {
+        collectDtmf = true;
+        this.dtmfLength = dtmfLength;
+        return this;
+    }
+
     public IVRResponseBuilder withHangUp() {
         this.isHangUp = true;
         return this;
     }
 
     public Response create(IVRMessage ivrMessage) {
-        Response response = new Response();
+        Response response = KookooResponseFactory.create();
         if (StringUtils.isNotBlank(sid)) response.setSid(sid);
 
         if (collectDtmf) {
-            CollectDtmf collectDtmf = new CollectDtmf();
+            CollectDtmf collectDtmf = KookooCollectDtmfFactory.create();
+            if(dtmfLength > 0) collectDtmf.setMaxDigits(dtmfLength);
             for (String playText : playTexts) collectDtmf.addPlayText(ivrMessage.get(playText));
             for (String playAudio : playAudios) collectDtmf.addPlayAudio(ivrMessage.getWav(playAudio));
 
