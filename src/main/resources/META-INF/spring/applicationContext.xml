@@ -18,6 +18,7 @@
     <import resource="classpath:applicationPillReminderAPI.xml"/>
     <import resource="classpath:inboundEventChannelAdapter.xml"/>
     <import resource="classpath:applicationDecisionTree.xml"/>
+    <import resource="classpath:applicationCmsLiteApi.xml"/>
 
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
