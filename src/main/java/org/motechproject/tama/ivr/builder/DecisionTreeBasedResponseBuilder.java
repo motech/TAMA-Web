@@ -25,7 +25,7 @@ public class DecisionTreeBasedResponseBuilder {
             }
         }
         if (hasTransitions) {
-            ivrResponseBuilder.collectDtmf();
+            ivrResponseBuilder.collectDtmf(1);
         } else {
             ivrResponseBuilder.withPlayAudios(IVRMessage.SIGNATURE_MUSIC_URL).withHangUp();
         }
