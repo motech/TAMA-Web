@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,5 +47,16 @@ public class IVRControllerTest {
 
         verify(action).handle(ivrRequest, request, response);
         assertEquals("reply", reply);
+    }
+    @Test
+    public void shoulReturnAHungupResponseXmlWhenThereIsAnExcpetion() {
+        when(ivrRequest.callEvent()).thenReturn(IVREvent.HANGUP);
+        when(actions.findFor(IVREvent.HANGUP)).thenReturn(action);
+        when(action.handle(ivrRequest, request, response)).thenThrow(new RuntimeException("test"));
+
+        String reply = controller.reply(ivrRequest, request, response);
+
+        assertNotNull(reply);
+        assertTrue(reply.contains("<hangup/>"));
     }
 }

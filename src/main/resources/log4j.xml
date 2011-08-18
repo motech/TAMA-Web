@@ -10,6 +10,11 @@
             <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
         </layout>
     </appender>
+    <appender class="org.apache.log4j.ConsoleAppender" name="console">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
+        </layout>
+    </appender>
     <logger name="org.springframework">
         <level value="warn"/>
     </logger>
@@ -17,10 +22,11 @@
         <level value="warn"/>
     </logger>
     <logger name="org.motechproject">
-        <level value="debug"/>
+        <level value="warn"/>
     </logger>
     <root>
-        <priority value="debug"/>
+        <priority value="warn"/>
+        <appender-ref ref="console"/>
         <appender-ref ref="logfile"/>
     </root>
 </log4j:configuration>
