@@ -33,7 +33,7 @@ public class MessageForMedicinesDuringIncomingCall extends BaseTreeCommand {
         Patient patient = patients.get(ivrContext.ivrSession().getPatientId());
         Clinic clinic = clinics.get(patient.getClinic_id());
 
-        messages.add(clinic.getName());
+        messages.add(String.format("welcome_to_%s", clinic.getName()));
         if(pillRegimenSnapshot.isTimeToTakeCurrentPill()){
             messages.add(IVRMessage.ITS_TIME_FOR_THE_PILL);
         }else{

@@ -95,7 +95,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         String[] messages = messageForMedicinesDuringIncomingCall.execute(context);
 
         assertEquals(5, messages.length);
-        assertEquals("clinicName", messages[0]);
+        assertEquals("welcome_to_clinicName", messages[0]);
         assertEquals("its_time_for_the_pill", messages[1]);
         assertEquals("medicine1", messages[2]);
         assertEquals("medicine2", messages[3]);
@@ -125,7 +125,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         String[] messages = messageForMedicinesDuringIncomingCall.execute(context);
 
         assertEquals(4, messages.length);
-        assertEquals("clinicName", messages[0]);
+        assertEquals("welcome_to_clinicName", messages[0]);
         assertEquals("not_reported_if_taken", messages[1]);
         assertEquals("medicine3", messages[2]);
         assertEquals("pill_from_the_bottle", messages[3]);
