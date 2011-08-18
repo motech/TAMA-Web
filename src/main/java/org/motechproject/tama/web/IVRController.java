@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.log4j.Logger;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/ivr")
 public class IVRController {
+
+    Logger LOG = Logger.getLogger(this.getClass());
     @Autowired
     private Actions actions;
 

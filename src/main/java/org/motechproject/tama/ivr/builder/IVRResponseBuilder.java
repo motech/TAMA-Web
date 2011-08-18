@@ -57,7 +57,6 @@ public class IVRResponseBuilder {
         if (collectDtmf) {
             CollectDtmf collectDtmf = KookooCollectDtmfFactory.create();
             if(dtmfLength > 0) collectDtmf.setMaxDigits(dtmfLength);
-            collectDtmf.setTimeOut(2000);
             for (String playText : playTexts) collectDtmf.addPlayText(ivrMessage.get(playText));
             for (String playAudio : playAudios) collectDtmf.addPlayAudio(ivrMessage.getWav(playAudio));
 
