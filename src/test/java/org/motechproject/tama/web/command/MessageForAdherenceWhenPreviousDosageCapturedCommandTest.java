@@ -26,6 +26,8 @@ import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -127,5 +129,16 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
         int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, 56);
         assertEquals(80, adherencePercentage);
+    }
+
+    @Test
+    public void shouldCalculateSuccessfulCountForExactlyTwentyEightDays() {
+        mockStatic(DateUtil.class);
+        LocalDate toDate = new LocalDate(2011, 8, 18);
+        when(DateUtil.today()).thenReturn(toDate);
+
+        command.getAdherencePercentage(REGIMEN_ID, 28);
+
+        verify(dosageAdherenceLogs).findScheduledDosagesSuccessCount(any(String.class), eq(new LocalDate(2011, 7, 22)), eq(toDate));
     }
 }
