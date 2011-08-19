@@ -1,9 +1,9 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.framework.MyWebElement;
-import org.motechproject.tama.web.model.DrugDosageView;
-import org.motechproject.tama.web.model.TreatmentAdviceView;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -54,14 +54,14 @@ public class CreateARTRegimenPage extends Page {
 
     @Override
     public void postInitialize() {
-        regimenElement = new MyWebElement(regimenElement);
-        drugCompositionGroupElement = new MyWebElement(drugCompositionGroupElement);
-        drug1DosageTypeElement = new MyWebElement(drug1DosageTypeElement);
-        drug1DosageTimeElement = new MyWebElement(drug1DosageTimeElement);
-        drug1MealAdviceTypeElement = new MyWebElement(drug1MealAdviceTypeElement);
-        drug2DosageTypeElement = new MyWebElement(drug2DosageTypeElement);
-        drug2DosageTimeElement = new MyWebElement(drug2DosageTimeElement);
-        drug2MealAdviceTypeElement = new MyWebElement(drug2MealAdviceTypeElement);
+        regimenElement = WebDriverFactory.createWebElement(regimenElement);
+        drugCompositionGroupElement = WebDriverFactory.createWebElement(drugCompositionGroupElement);
+        drug1DosageTypeElement = WebDriverFactory.createWebElement(drug1DosageTypeElement);
+        drug1DosageTimeElement = WebDriverFactory.createWebElement(drug1DosageTimeElement);
+        drug1MealAdviceTypeElement = WebDriverFactory.createWebElement(drug1MealAdviceTypeElement);
+        drug2DosageTypeElement = WebDriverFactory.createWebElement(drug2DosageTypeElement);
+        drug2DosageTimeElement = WebDriverFactory.createWebElement(drug2DosageTimeElement);
+        drug2MealAdviceTypeElement = WebDriverFactory.createWebElement(drug2MealAdviceTypeElement);
     }
 
     @Override
@@ -69,27 +69,27 @@ public class CreateARTRegimenPage extends Page {
         waitForElementWithIdToLoad(REGIMEN_ID);
     }
 
-    public ShowPatientPage registerNewARTRegimen(TreatmentAdviceView treatmentAdvice) {
+    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         selectRegimenAndWaitTillTheCompositionGroupsShow(treatmentAdvice);
         selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
 
-        DrugDosageView drugDosage1 = treatmentAdvice.getDrugDosages().get(0);
-        drug1DosageTypeElement.sendKeys(drugDosage1.getDosageType());
-        drug1DosageTimeElement.sendKeys(drugDosage1.getDosageSchedules().get(0));
-        drug1MealAdviceTypeElement.sendKeys(drugDosage1.getMealAdviceType());
+        TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
+        drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
+        drug1DosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
+        drug1MealAdviceTypeElement.sendKeys(drugDosage1.mealAdvice());
 
-        DrugDosageView drugDosage2 = treatmentAdvice.getDrugDosages().get(1);
-        drug2DosageTypeElement.sendKeys(drugDosage2.getDosageType());
-        drug2DosageTimeElement.sendKeys(drugDosage2.getDosageSchedules().get(0));
-        drug2MealAdviceTypeElement.sendKeys(drugDosage2.getMealAdviceType());
+        TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);
+        drug2DosageTypeElement.sendKeys(drugDosage2.dosageType());
+        drug2DosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
+        drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
 
         saveElement.click();
         this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
-    private void selectRegimenAndWaitTillTheCompositionGroupsShow(TreatmentAdviceView treatmentAdvice) {
-        regimenElement.sendKeys(treatmentAdvice.getRegimenName());
+    private void selectRegimenAndWaitTillTheCompositionGroupsShow(TestTreatmentAdvice treatmentAdvice) {
+        regimenElement.sendKeys(treatmentAdvice.regimenName());
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
@@ -98,8 +98,8 @@ public class CreateARTRegimenPage extends Page {
         });
     }
 
-    private void selectDrugCompositionAndWaitTillTheDrugDosagesShow(TreatmentAdviceView treatmentAdvice) {
-        drugCompositionGroupElement.sendKeys(treatmentAdvice.getDrugCompositionName());
+    private void selectDrugCompositionAndWaitTillTheDrugDosagesShow(TestTreatmentAdvice treatmentAdvice) {
+        drugCompositionGroupElement.sendKeys(treatmentAdvice.drugCompositionName());
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {

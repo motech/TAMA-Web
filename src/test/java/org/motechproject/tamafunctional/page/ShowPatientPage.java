@@ -8,6 +8,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class ShowPatientPage extends Page {
     public static final String PATIENT_ID_ID = "_s_org_motechproject_tama_domain_patient_patientId_patientId_id";
 
@@ -102,7 +105,7 @@ public class ShowPatientPage extends Page {
             @Override
             public Boolean apply(WebDriver webDriver) {
                 final WebElement element = webDriver.findElement(By.id(CreateARTRegimenPage.DRUG_BRAND1_ID));
-                return element != null  && element.getText().equals("EFV");
+                return element != null;
             }
         });
         return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
@@ -122,5 +125,13 @@ public class ShowPatientPage extends Page {
     public ListPatientsPage goToListPatientsPage() {
         listPatientsLink.click();
         return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
+    }
+
+    public String patientDocId() {
+        try{
+            return new URL(webDriver.getCurrentUrl()).getFile().replace("/tama/patients/", "");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

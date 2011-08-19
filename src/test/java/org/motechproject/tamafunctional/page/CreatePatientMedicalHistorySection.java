@@ -3,7 +3,7 @@ package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tama.domain.HIVMedicalHistory;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -24,12 +24,12 @@ public class CreatePatientMedicalHistorySection {
     private WebElement nextToPatientPreferences;
 
     public void postInitialize() {
-        hivTestReason = new MyWebElement(hivTestReason);
-        modeOfTransmission = new MyWebElement(modeOfTransmission);
-        arvAllergy = new MyWebElement(arvAllergy);
-        arvAllergyDescription = new MyWebElement(arvAllergyDescription);
-        drdRash = new MyWebElement(drdRash);
-        nextToPatientPreferences = new MyWebElement(nextToPatientPreferences);
+        hivTestReason = WebDriverFactory.createWebElement(hivTestReason);
+        modeOfTransmission = WebDriverFactory.createWebElement(modeOfTransmission);
+        arvAllergy = WebDriverFactory.createWebElement(arvAllergy);
+        arvAllergyDescription = WebDriverFactory.createWebElement(arvAllergyDescription);
+        drdRash = WebDriverFactory.createWebElement(drdRash);
+        nextToPatientPreferences = WebDriverFactory.createWebElement(nextToPatientPreferences);
     }
 
     public void enterDetails(Patient patient) {

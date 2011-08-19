@@ -1,58 +1,32 @@
 package org.motechproject.tamafunctional.test;
 
-import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.motechproject.tama.builder.TreatmentAdviceViewBuilder;
-import org.motechproject.tama.web.model.TreatmentAdviceView;
-import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
-import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.page.LoginPage;
-import org.motechproject.tamafunctional.page.ViewARTRegimenPage;
+import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
+import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
+import org.motechproject.tamafunctional.testdataservice.PatientDataService;
+import org.openqa.selenium.support.PageFactory;
 
-import java.io.IOException;
+import static junit.framework.Assert.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class PatientARTRegimenTest extends BaseTest {
-
-    @Before
-    public void setUp() {
-        super.setUp();
-    }
-
     @Test
     public void testPatientARTRegimen() {
-        ClinicianContext clinicianContext = new ClinicianContext();
-        buildContexts(clinicianContext);
-        TestPatient patient = TestPatient.withMandatory();
-        TreatmentAdviceView treatmentAdvice = TreatmentAdviceViewBuilder.startRecording().withDefaults().withPatientId(patient.patientId()).build();
+        TestClinician clinician = TestClinician.withMandatory();
+        new ClinicanDataService(webDriver).createWithClinc(clinician);
 
-        ViewARTRegimenPage viewARTRegimenPage = MyPageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword())
-                .goToPatientRegistrationPage()
-                .registerNewPatient(patient)
-                .activatePatient()
-                .goToCreateARTRegimenPage()
-                .registerNewARTRegimen(treatmentAdvice)
-                .goToViewARTRegimenPage();
-        Assert.assertEquals(viewARTRegimenPage.getPatientId(), treatmentAdvice.getPatientId());
-        Assert.assertEquals(viewARTRegimenPage.getRegimenName(), treatmentAdvice.getRegimenName());
-        Assert.assertEquals(viewARTRegimenPage.getDrugCompositionGroupName(), treatmentAdvice.getDrugCompositionName());
+        TestPatient patient = TestPatient.withMandatory(clinician.clinic());
+        PatientDataService patientDataService = new PatientDataService(webDriver);
+        patientDataService.registerAndActivate(patient, clinician);
 
-        viewARTRegimenPage.logout();
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forMorning(), TestDrugDosage.forEvening());
+        patientDataService.setupARTRegimen(treatmentAdvice, patient, clinician);
+
+        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);
+        assertEquals(savedTreatmentAdvice.regimenName(), treatmentAdvice.regimenName());
+        assertEquals(savedTreatmentAdvice.drugCompositionName(), treatmentAdvice.drugCompositionName());
     }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-    }
-
-
 }

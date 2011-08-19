@@ -3,7 +3,7 @@ package org.motechproject.tamafunctional.testdata;
 import org.joda.time.LocalDate;
 import org.motechproject.util.DateUtil;
 
-public class TestPatient {
+public class TestPatient extends TestEntity {
     private String patientId;
     private LocalDate dateOfBirth;
     private String mobileNumber;
@@ -17,17 +17,26 @@ public class TestPatient {
     private TestPatient() {
     }
 
-    public static TestPatient withMandatory() {
+    public static TestPatient withMandatory(TestClinic clinic) {
         TestPatient testPatient = new TestPatient();
-        return testPatient.patientId("1234_" + DateUtil.now().getMillis()).
+        return testPatient.patientId(unique("1234_")).
                 dateOfBirth(DateUtil.newDate(1990, 5, 21)).
                 mobileNumber("9765456789").
                 passcode("123456").
-                clinic(TestClinic.withMandatory()).
+                clinic(clinic).
                 travelTimeToClinicInDays("1").
                 travelTimeToClinicInHours("2").
                 travelTimeToClinicInHours("3").
                 medicalHistory(TestHIVMedicalHistory.withDefault());
+    }
+
+    public static TestPatient withMandatory(TestClinician clinician) {
+        return withMandatory(clinician.clinic());
+    }
+
+    private TestPatient clinic(TestClinic clinic) {
+        this.clinic = clinic;
+        return this;
     }
 
     public TestPatient medicalHistory(TestHIVMedicalHistory hivMedicalHistory) {
@@ -50,11 +59,6 @@ public class TestPatient {
         return this;
     }
 
-    public TestPatient clinic(TestClinic clinic) {
-        this.clinic = clinic;
-        return this;
-    }
-
     public TestPatient passcode(String passcode) {
         this.passcode = passcode;
         return this;
@@ -63,10 +67,6 @@ public class TestPatient {
     public TestPatient patientId(String patientId) {
         this.patientId = patientId;
         return this;
-    }
-
-    public String patientId() {
-        return patientId;
     }
 
     public TestPatient mobileNumber(String mobileNumber) {
@@ -101,5 +101,14 @@ public class TestPatient {
 
     public String passcode() {
         return passcode;
+    }
+
+    @Override
+    public String resourceName() {
+        return "patients";
+    }
+
+    public String patientId() {
+        return patientId;
     }
 }

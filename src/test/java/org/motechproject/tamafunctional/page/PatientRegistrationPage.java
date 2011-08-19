@@ -1,9 +1,8 @@
 package org.motechproject.tamafunctional.page;
 
 
-import org.motechproject.tama.domain.Patient;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,7 +29,7 @@ public class PatientRegistrationPage extends Page {
 
     @Override
     public void postInitialize() {
-        patientId = new MyWebElement(patientId);
+        patientId = WebDriverFactory.createWebElement(patientId);
         createBasicPatientInformationSection.postInitialize();
 //    #252
 //        createPatientMedicalHistorySection.postInitialize();

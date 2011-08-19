@@ -1,7 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -34,9 +34,9 @@ public class ChangePasswordPage extends Page {
 
     @Override
     public void postInitialize() {
-        oldPassword = new MyWebElement(oldPassword);
-        newPassword = new MyWebElement(newPassword);
-        confirmPassword = new MyWebElement(confirmPassword);
+        oldPassword = WebDriverFactory.createWebElement(oldPassword);
+        newPassword = WebDriverFactory.createWebElement(newPassword);
+        confirmPassword = WebDriverFactory.createWebElement(confirmPassword);
     }
 
     @Override

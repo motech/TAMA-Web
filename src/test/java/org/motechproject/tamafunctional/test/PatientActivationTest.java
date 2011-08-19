@@ -18,8 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class PatientActivationTest extends BaseTest {
 
     @Before
@@ -32,7 +30,7 @@ public class PatientActivationTest extends BaseTest {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
 
-        TestPatient patient = TestPatient.withMandatory();
+        TestPatient patient = TestPatient.withMandatory(clinicianContext.clinic());
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().

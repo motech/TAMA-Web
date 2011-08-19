@@ -1,8 +1,6 @@
 package org.motechproject.tamafunctional.testdata;
 
-import java.util.Calendar;
-
-public class TestClinician {
+public class TestClinician extends TestEntity {
     private String contactNumber = "1234567890";
     private String alternateContactNumber = "1234567890";
     private String name;
@@ -16,9 +14,9 @@ public class TestClinician {
 
     public static TestClinician withMandatory() {
         TestClinician testClinician = new TestClinician();
-        long time = Calendar.getInstance().getTime().getTime();
-        testClinician.name("testName" + time);
-        testClinician.userName("test" + time);
+        String unique = unique("");
+        testClinician.name("testName" + unique);
+        testClinician.userName("test" + unique);
 
         String validContactNumber = "1234567890";
         String validAlternateContactNumber = "1234567890";
@@ -83,5 +81,10 @@ public class TestClinician {
     public TestClinician contactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
         return this;
+    }
+
+    @Override
+    public String resourceName() {
+        return "clinicians";
     }
 }

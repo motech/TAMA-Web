@@ -1,6 +1,6 @@
 package org.motechproject.tamafunctional.testdata;
 
-public class TestClinic {
+public class TestClinic extends TestEntity {
     private String name;
     private String phoneNumber;
     private String address;
@@ -10,17 +10,15 @@ public class TestClinic {
     }
 
     public static TestClinic withMandatory() {
-        TestClinic testClinic = new TestClinic();
-        testClinic.andName("DefaultName").phoneNumber("1234567890").address("DefaultAddress")
+        return new TestClinic().name(unique("DefaultName")).phoneNumber("1234567890").address("DefaultAddress")
                 .city("Pune");
-        return testClinic;
     }
 
     public String name() {
         return name;
     }
 
-    public TestClinic andName(String name) {
+    public TestClinic name(String name) {
         this.name = name;
         return this;
     }
@@ -50,5 +48,10 @@ public class TestClinic {
     public TestClinic city(String city) {
         this.city = city;
         return this;
+    }
+
+    @Override
+    public String resourceName() {
+        return "clinics";
     }
 }

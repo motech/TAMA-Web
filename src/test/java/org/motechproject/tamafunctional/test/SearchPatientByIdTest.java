@@ -5,8 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.Patient;
 import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -23,8 +21,6 @@ import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class SearchPatientByIdTest extends BaseTest {
 
     private ClinicianContext clinicianContext;
@@ -38,7 +34,7 @@ public class SearchPatientByIdTest extends BaseTest {
 
     @Test
     public void testSuccessfulPatientSearch() {
-        TestPatient patient = TestPatient.withMandatory().patientId("xyz1234");
+        TestPatient patient = TestPatient.withMandatory(clinicianContext.clinic()).patientId("xyz1234");
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().

@@ -1,14 +1,15 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.framework.TamaUrl;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
 public class LoginPage extends Page {
-    public static final String LOGIN_URL = "http://localhost:"+System.getProperty("jetty.port","8080")+"/tama/login";
+    public static final String LOGIN_URL = TamaUrl.baseFor("login");
     public static final String USERNAME_ID = "j_username";
     public static final String PASSWORD_ID = "j_password";
     public static final String ERROR_MESSAGE_XPATH = "//div[@class='errors']/p";
@@ -35,8 +36,8 @@ public class LoginPage extends Page {
     }
 
     public void postInitialize() {
-        userName = new MyWebElement(userName);
-        password = new MyWebElement(password);
+        userName = WebDriverFactory.createWebElement(userName);
+        password = WebDriverFactory.createWebElement(password);
     }
 
     public LoginPage loginWithIncorrectAdminUserNamePassword() {

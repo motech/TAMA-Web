@@ -1,6 +1,8 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.framework.TamaUrl;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -44,5 +46,10 @@ public class ListPatientsPage extends Page {
         WebElement changePasswordLink = getNavigationLinks().findElement(By.id("changePasswordLink"));
         changePasswordLink.click();
         return MyPageFactory.initElements(webDriver, ChangePasswordPage.class);
+    }
+
+    public ShowPatientPage gotoShowPatientPage(TestPatient patient) {
+        webDriver.get(TamaUrl.viewPageUrlFor(patient));
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 }

@@ -3,26 +3,21 @@ package org.motechproject.tamafunctional.test;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.framework.MyWebElement;
 import org.motechproject.tamafunctional.page.ChangePasswordPage;
 import org.motechproject.tamafunctional.page.ListClinicsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.PasswordSuccessPage;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static junit.framework.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class ChangePasswordTest extends BaseTest {
 
     @Before
@@ -32,7 +27,7 @@ public class ChangePasswordTest extends BaseTest {
 
     @Test
     public void testChangePasswordLinkShouldNotBeShownOnTheLoginPage() {
-        MyWebElement navigationLinks = new MyWebElement(MyPageFactory.initElements(webDriver, LoginPage.class).getNavigationLinks());
+        WebElement navigationLinks = WebDriverFactory.createWebElement(MyPageFactory.initElements(webDriver, LoginPage.class).getNavigationLinks());
         assertNull(navigationLinks.findElement(By.id("changePasswordLink")));
     }
 
@@ -61,7 +56,7 @@ public class ChangePasswordTest extends BaseTest {
 
     @Test
     public void testChangePasswordForClinician() {
-        TestClinic testClinic = TestClinic.withMandatory().andName("clinicForPasswordChangeTest");
+        TestClinic testClinic = TestClinic.withMandatory().name("clinicForPasswordChangeTest");
         String clinicianName = unique("clinicianForPasswordChangeTest");
         TestClinician testClinician = TestClinician.withMandatory().name(clinicianName).userName(clinicianName).password("clinicianPassword").clinic(testClinic);
         new ClinicanDataService(webDriver).createWithClinc(testClinician);

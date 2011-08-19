@@ -20,7 +20,7 @@ public class PatientContext extends AbstractContext {
 
     @Override
     protected void create(WebDriver webDriver) {
-        TestPatient patient = TestPatient.withMandatory().patientId(patientId);
+        TestPatient patient = TestPatient.withMandatory(clinicianContext.clinic()).patientId(patientId);
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword())
                 .goToPatientRegistrationPage()

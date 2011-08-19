@@ -1,7 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;
@@ -42,8 +42,8 @@ public class ClinicianRegistrationPage extends Page {
 
     @Override
     public void postInitialize() {
-        name = new MyWebElement(name);
-        clinicElement = new MyWebElement(clinicElement);
+        name = WebDriverFactory.createWebElement(name);
+        clinicElement = WebDriverFactory.createWebElement(clinicElement);
     }
 
     public ShowClinicianPage registerClinician(TestClinician clinician) {
@@ -56,6 +56,5 @@ public class ClinicianRegistrationPage extends Page {
         clinicElement.sendKeys(new StringBuilder().append(clinic.name()).append(", ").append(clinic.city()).toString());
         registerClinicianLink.click();
         return MyPageFactory.initElements(webDriver, ShowClinicianPage.class);
-
     }
 }

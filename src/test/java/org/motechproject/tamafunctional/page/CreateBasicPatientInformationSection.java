@@ -1,8 +1,8 @@
 package org.motechproject.tamafunctional.page;
 
 
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.framework.ExtendedWebElement;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -34,25 +34,22 @@ public class CreateBasicPatientInformationSection {
 //    private WebElement nextToMedicalHistory;
 
     public void postInitialize() {
-        patientId = new MyWebElement(patientId);
-        mobileNumber = new MyWebElement(mobileNumber);
-        dateOfBirth = new MyWebElement(dateOfBirth);
-        travelTimeInDays = new MyWebElement(travelTimeInDays);
-        travelTimeInHrs = new MyWebElement(travelTimeInHrs);
-        travelTimeInMins = new MyWebElement(travelTimeInMins);
-        gender = new MyWebElement(gender);
+        patientId = WebDriverFactory.createWebElement(patientId);
+        mobileNumber = WebDriverFactory.createWebElement(mobileNumber);
+        dateOfBirth = WebDriverFactory.createWebElement(dateOfBirth);
+        travelTimeInDays = WebDriverFactory.createWebElement(travelTimeInDays);
+        travelTimeInHrs = WebDriverFactory.createWebElement(travelTimeInHrs);
+        travelTimeInMins = WebDriverFactory.createWebElement(travelTimeInMins);
+        gender = WebDriverFactory.createWebElement(gender);
     }
 
     public void enterDetails(TestPatient patient) {
         patientId.sendKeys(patient.patientId());
         mobileNumber.sendKeys(patient.mobileNumber());
         dateOfBirth.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
-        travelTimeInDays.clear();
-        travelTimeInDays.sendKeys(patient.travelTimeToClinicInDays());
-        travelTimeInHrs.clear();
-        travelTimeInHrs.sendKeys(patient.travelTimeToClinicInHours());
-        travelTimeInMins.clear();
-        travelTimeInMins.sendKeys(String.valueOf(patient.travelTimeToClinicInMinutes()));
+        ((ExtendedWebElement)travelTimeInDays).select(patient.travelTimeToClinicInDays());
+        ((ExtendedWebElement)travelTimeInHrs).select(patient.travelTimeToClinicInHours());
+        ((ExtendedWebElement)travelTimeInMins).select(String.valueOf(patient.travelTimeToClinicInMinutes()));
 
         nextToPatientPreferences.click();
     }

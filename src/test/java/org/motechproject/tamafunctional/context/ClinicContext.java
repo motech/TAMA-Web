@@ -12,10 +12,6 @@ public class ClinicContext extends AbstractContext {
         clinic = TestClinic.withMandatory();
     }
 
-    public ClinicContext(String name) {
-        clinic = TestClinic.withMandatory().andName(name);
-    }
-
     @Override
     protected void create(WebDriver webDriver) {
         MyPageFactory.initElements(webDriver, LoginPage.class)

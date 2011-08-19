@@ -1,9 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 
-import junit.framework.Test;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tamafunctional.framework.MyWebElement;
+import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -17,8 +15,8 @@ public class CreatePatientPreferencesSection {
     private WebElement passcode;
 
     public void postInitialize() {
-        ivrLanguage = new MyWebElement(ivrLanguage);
-        passcode = new MyWebElement(passcode);
+        ivrLanguage = WebDriverFactory.createWebElement(ivrLanguage);
+        passcode = WebDriverFactory.createWebElement(passcode);
     }
 
     public void enterDetails(TestPatient patient) {

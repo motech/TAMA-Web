@@ -2,6 +2,7 @@ package org.motechproject.tamafunctional.context;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;
 
@@ -16,13 +17,6 @@ public class ClinicianContext extends AbstractContext {
         TestClinician clinician = TestClinician.withMandatory().clinic(clinicContext.getClinic());
         userName = clinician.userName();
         password = clinician.password();
-    }
-
-    public ClinicianContext(String userName, String password, ClinicContext clinicContext) {
-        super(clinicContext);
-        this.clinicContext = clinicContext;
-        this.userName = userName;
-        this.password = password;
     }
 
     @Override
@@ -43,5 +37,9 @@ public class ClinicianContext extends AbstractContext {
 
     public String getPassword() {
         return password;
+    }
+
+    public TestClinic clinic() {
+        return clinicContext.getClinic();
     }
 }

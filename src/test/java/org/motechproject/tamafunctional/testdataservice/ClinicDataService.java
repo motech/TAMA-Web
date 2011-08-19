@@ -5,11 +5,9 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.openqa.selenium.WebDriver;
 
-public class ClinicDataService {
-    private WebDriver webDriver;
-
+public class ClinicDataService extends EntityDataService {
     public ClinicDataService(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public void create(TestClinic testClinic) {

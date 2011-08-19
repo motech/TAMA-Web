@@ -1,6 +1,9 @@
 package org.motechproject.tamafunctional.setup;
 
+import org.motechproject.tamafunctional.framework.HtmlUnitWebElement;
+import org.motechproject.tamafunctional.framework.TamaWebElement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -10,6 +13,13 @@ public class WebDriverFactory {
 
     public static final String TEST_DRIVER = "test.driver";
     public static final String HTMLUNIT = "htmlunit";
+
+    public static WebElement createWebElement(WebElement webElement) {
+        if (HTMLUNIT.equals(driverName()))
+            return new HtmlUnitWebElement(webElement);
+        else
+            return new TamaWebElement(webElement);
+    }
 
     private enum Driver {
 
@@ -64,7 +74,11 @@ public class WebDriverFactory {
     }
 
     public static WebDriver getInstance() {
-        String name = System.getProperty(TEST_DRIVER, HTMLUNIT);
+        String name = driverName();
         return Driver.enumFor(name).give();
+    }
+
+    private static String driverName() {
+        return System.getProperty(TEST_DRIVER, HTMLUNIT);
     }
 }
