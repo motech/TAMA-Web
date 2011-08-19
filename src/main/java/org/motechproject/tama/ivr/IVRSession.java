@@ -33,6 +33,10 @@ public class IVRSession {
         return (String) session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID);
     }
 
+    public boolean isSymptomsReportingCall() {
+    	return "true".equals(session.getAttribute(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL));
+    }
+    
     public PillRegimenResponse getPillRegimen() {
         return (PillRegimenResponse) session.getAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT);
     }

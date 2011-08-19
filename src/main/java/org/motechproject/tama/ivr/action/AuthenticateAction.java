@@ -56,6 +56,8 @@ public class AuthenticateAction extends BaseIncomingAction {
         ivrSession.set(IVRCallAttribute.CALL_TIME, DateUtil.now());
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
         ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
+        ivrSession.set(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL, request.getParameter("symptoms_reporting"));
+        
         ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }

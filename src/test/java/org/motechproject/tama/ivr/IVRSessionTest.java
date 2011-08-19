@@ -1,11 +1,13 @@
 package org.motechproject.tama.ivr;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.AssertTrue;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -65,5 +67,10 @@ public class IVRSessionTest {
 
         verify(session).invalidate();
         verify(request).getSession();
+    }
+    @Test 
+    public void shouldReturnCallType() {
+    	when(session.getAttribute(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL)).thenReturn("true");
+    	Assert.assertTrue(ivrSession.isSymptomsReportingCall());
     }
 }

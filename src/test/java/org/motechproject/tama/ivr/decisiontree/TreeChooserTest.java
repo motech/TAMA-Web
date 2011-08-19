@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -56,6 +57,9 @@ public class TreeChooserTest {
     private ThreadLocalTargetSource threadLocalTargetSource;
     @Autowired
     private CurrentDosageConfirmTree currentDosageConfirmTree;
+
+    @Autowired
+	private Regimen6PartialTree regimen6PartialTree;
 
     @Before
     public void setUp(){
@@ -111,6 +115,14 @@ public class TreeChooserTest {
         when(ivrRequest.hasNoTamaData()).thenReturn(true);
 
         assertEquals(currentDosageConfirmTree.getTree(), treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
+    }
+
+    @Test
+    public void shouldGetRegimen6PartialTreeIfKookooCallsWithSymptomsReportingCallType() {
+        when(ivrRequest.hasNoTamaData()).thenReturn(true);
+        when(ivrSession.isSymptomsReportingCall()).thenReturn(true);
+        
+        assertTrue(regimen6PartialTree.getTree() == treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
     }
 
 }

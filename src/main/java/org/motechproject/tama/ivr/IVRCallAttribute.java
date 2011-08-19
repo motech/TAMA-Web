@@ -7,4 +7,6 @@ public class IVRCallAttribute {
     public static final String NUMBER_OF_ATTEMPTS = "number_of_retries";
     public static final String CURRENT_DECISION_TREE_POSITION = "current_decision_tree_position";
     public static final String CALL_TIME = "call_time";
+    public static final String PREFERRED_LANGUAGE_CODE = "preferred_lang_code";
+    public static final String IS_SYMPTOMS_REPORTING_CALL = "is_symptom_reporting_call";
 }

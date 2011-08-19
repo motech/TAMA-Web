@@ -21,16 +21,31 @@ public class TreeChooser {
     @Autowired
     private CurrentDosageConfirmTree currentDosageConfirmTree;
 
+    @Autowired
+	private Regimen6PartialTree regimen6PartialTree;
+
     public Tree getTree(IVRContext ivrContext) {
-        if (ivrContext.ivrRequest().hasNoTamaData()) {
-            PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-            if (pillRegimenSnapshot.isCurrentDosageTaken()) {
-                return currentDosageTakenTree.getTree();
-            } else {
-                return currentDosageConfirmTree.getTree();
-            }
+		if (isIncomingCall(ivrContext)) {
+			if (isSymptomsReportingCall(ivrContext)) {
+				return regimen6PartialTree.getTree();
+			} else {
+	            PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+	            if (pillRegimenSnapshot.isCurrentDosageTaken()) {
+	                return currentDosageTakenTree.getTree();
+	            } else {
+	                return currentDosageConfirmTree.getTree();
+	            }
+			}
         } else {
             return currentDosageReminderTree.getTree();
         }
     }
+
+	private boolean isSymptomsReportingCall(IVRContext ivrContext) {
+		return ivrContext.ivrSession().isSymptomsReportingCall();
+	}
+
+	private boolean isIncomingCall(IVRContext ivrContext) {
+		return ivrContext.ivrRequest().hasNoTamaData();
+	}
 }
