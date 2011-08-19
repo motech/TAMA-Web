@@ -140,7 +140,6 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
         if (!StringUtils.isBlank(patient.getClinic_id()))
             patient.setClinic(clinics.get(patient.getClinic_id()));
         MedicalHistory medicalHistory = patient.getMedicalHistory();
-        // #252
         if (medicalHistory != null) {
             HIVMedicalHistory hivMedicalHistory = medicalHistory.getHivMedicalHistory();
             if (!StringUtils.isBlank(hivMedicalHistory.getTestReasonId()))

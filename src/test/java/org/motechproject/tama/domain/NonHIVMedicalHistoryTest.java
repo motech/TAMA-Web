@@ -16,6 +16,14 @@ public class NonHIVMedicalHistoryTest{
         Assert.assertEquals(1, nonHIVMedicalHistory.getSpecifiedAllergies().size());
     }
 
+    @Test
+    public void shouldAddASystemCategory(){
+        NonHIVMedicalHistory nonHIVMedicalHistory = new NonHIVMedicalHistory();
+        SystemCategory respiratory = new SystemCategory();
+        nonHIVMedicalHistory.addSystemCategory(respiratory);
+        Assert.assertFalse(nonHIVMedicalHistory.getSystemCategories().isEmpty());
+    }
+
     private ArrayList<AllergyHistory> getAllergiesHistory() {
         ArrayList<AllergyHistory> allergiesHistory = new ArrayList<AllergyHistory>();
         AllergyHistory specifiedAllergy = new AllergyHistory();

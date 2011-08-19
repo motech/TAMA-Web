@@ -3,7 +3,10 @@ package org.motechproject.tama.web;
 import org.ektorp.UpdateConflictException;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.domain.AilmentState;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.SystemCategory;
+import org.motechproject.tama.domain.SystemCategoryDefiniton;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 
 @RooWebScaffold(path = "patients", formBackingObject = Patient.class)
@@ -185,6 +189,16 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("modesOfTransmission", new ModesOfTransmissionView(modesOfTransmission).getAll());
         uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
         uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
+        uiModel.addAttribute("systemCategories", systemCategories());
+        uiModel.addAttribute("options", AilmentState.values());
+    }
+
+    private List<SystemCategory> systemCategories() {
+        List<SystemCategory> systemCategories = new LinkedList<SystemCategory>();
+        for(SystemCategoryDefiniton definiton:SystemCategoryDefiniton.values()) {
+           systemCategories.add(definiton.getSystemCategory());
+        }
+        return systemCategories;
     }
 
     private void addDateTimeFormat(Model uiModel) {

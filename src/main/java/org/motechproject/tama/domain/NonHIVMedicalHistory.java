@@ -3,13 +3,16 @@ package org.motechproject.tama.domain;
 import org.motechproject.tama.TAMAConstants;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class NonHIVMedicalHistory extends BaseEntity {
 
-    private List<AllergyHistory> allergiesHistory = new ArrayList<AllergyHistory>();
+    private List<AllergyHistory> allergiesHistory = new LinkedList<AllergyHistory>();
 
     private List<TAMAConstants.NNRTIRash> rashes = new ArrayList<TAMAConstants.NNRTIRash>();
+
+    private List<SystemCategory> systemCategories = new LinkedList<SystemCategory>();
 
     public List<AllergyHistory> getAllergiesHistory() {
         return allergiesHistory;
@@ -27,6 +30,10 @@ public class NonHIVMedicalHistory extends BaseEntity {
         this.rashes = rashes;
     }
 
+    public void setSystemCategories(List<SystemCategory> systemCategories) {
+        this.systemCategories = systemCategories;
+    }
+
     public List<AllergyHistory> getSpecifiedAllergies() {
         ArrayList<AllergyHistory> specifiedAllergies = new ArrayList<AllergyHistory>();
         for (AllergyHistory allergyHistory : allergiesHistory) {
@@ -34,5 +41,14 @@ public class NonHIVMedicalHistory extends BaseEntity {
                 specifiedAllergies.add(allergyHistory);
         }
         return specifiedAllergies;
+    }
+
+    public NonHIVMedicalHistory addSystemCategory(SystemCategory systemCategory) {
+        systemCategories.add(systemCategory);
+        return this;
+    }
+
+    public List<SystemCategory> getSystemCategories() {
+        return systemCategories;
     }
 }
