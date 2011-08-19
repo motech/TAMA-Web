@@ -6,7 +6,6 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.motechproject.tamafunctional.context.Context;
 import org.motechproject.tamafunctional.page.LoginPage;
-import org.motechproject.tamafunctional.setup.WebDriverFactory;
 import org.motechproject.util.DateUtil;
 import org.openqa.selenium.WebDriver;
 
@@ -15,8 +14,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class BaseTest {
     @Rule

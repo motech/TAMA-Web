@@ -1,12 +1,9 @@
-package org.motechproject.tamafunctional.setup;
+package org.motechproject.tamafunctional.framework;
 
-import org.motechproject.tamafunctional.framework.HtmlUnitWebElement;
-import org.motechproject.tamafunctional.framework.TamaWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 public class WebDriverFactory {
@@ -47,7 +44,7 @@ public class WebDriverFactory {
         HTML_UNIT("htmlunit") {
             @Override
             WebDriver give() {
-                return new HtmlUnitDriver(true);
+                return new TamaHtmlUnitDriver(true, false);
             }
         };
 

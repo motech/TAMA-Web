@@ -22,7 +22,7 @@ public class PatientARTRegimenTest extends BaseTest {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);
 
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forMorning(), TestDrugDosage.forEvening());
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
         patientDataService.setupARTRegimen(treatmentAdvice, patient, clinician);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);

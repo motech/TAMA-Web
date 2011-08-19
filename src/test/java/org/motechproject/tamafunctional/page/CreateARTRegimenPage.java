@@ -1,10 +1,12 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.setup.WebDriverFactory;
+import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -70,22 +72,29 @@ public class CreateARTRegimenPage extends Page {
     }
 
     public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
-        selectRegimenAndWaitTillTheCompositionGroupsShow(treatmentAdvice);
-        selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
+//        These calls are problematic because of ajax based implementation, using the default composition and regimen instead
+//        selectRegimenAndWaitTillTheCompositionGroupsShow(treatmentAdvice);
+//        selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
 
         TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
         drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
+        tabOut(drug1DosageTypeElement);
         drug1DosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
         drug1MealAdviceTypeElement.sendKeys(drugDosage1.mealAdvice());
 
         TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);
         drug2DosageTypeElement.sendKeys(drugDosage2.dosageType());
+        tabOut(drug2DosageTypeElement);
         drug2DosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
 
         saveElement.click();
         this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    private void tabOut(WebElement webElement) {
+        ((ExtendedWebElement)webElement).sendKey(Keys.TAB);
     }
 
     private void selectRegimenAndWaitTillTheCompositionGroupsShow(TestTreatmentAdvice treatmentAdvice) {

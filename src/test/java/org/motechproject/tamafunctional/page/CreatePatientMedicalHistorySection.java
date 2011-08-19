@@ -3,7 +3,7 @@ package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tama.domain.HIVMedicalHistory;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tamafunctional.setup.WebDriverFactory;
+import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;

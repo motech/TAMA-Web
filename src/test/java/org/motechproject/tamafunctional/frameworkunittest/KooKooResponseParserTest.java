@@ -5,6 +5,7 @@ import org.motechproject.tamafunctional.framework.KooKooResponseParser;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 public class KooKooResponseParserTest {
     @Test

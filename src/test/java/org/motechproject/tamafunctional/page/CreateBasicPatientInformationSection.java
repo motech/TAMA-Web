@@ -2,7 +2,7 @@ package org.motechproject.tamafunctional.page;
 
 
 import org.motechproject.tamafunctional.framework.ExtendedWebElement;
-import org.motechproject.tamafunctional.setup.WebDriverFactory;
+import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

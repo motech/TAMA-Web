@@ -17,11 +17,11 @@ public class TestDrugDosage  extends TestEntity {
     }
 
     public static TestDrugDosage forMorning() {
-        return withExtrinsic().dosageType("Morning Daily").dosageSchedule("10.00");
+        return withExtrinsic().dosageType("Morning Daily").dosageSchedule("10:00");
     }
 
     public static TestDrugDosage forEvening() {
-        return withExtrinsic().dosageType("Evening Daily").dosageSchedule("10.00");
+        return withExtrinsic().dosageType("Evening Daily").dosageSchedule("10:00");
     }
 
     public TestDrugDosage dosageType(String dosageType) {

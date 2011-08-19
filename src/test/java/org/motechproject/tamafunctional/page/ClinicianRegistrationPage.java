@@ -1,7 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.setup.WebDriverFactory;
+import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;

@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.framework;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.springframework.util.StringUtils;
@@ -33,7 +34,7 @@ public class TamaWebElement implements ExtendedWebElement {
     @Override
     public void sendKeys(CharSequence... charSequences) {
         click();
-        if (webElement.getText().length() != 0)
+        if (webElement.getText().length() != 0 || webElement.getValue().length() != 0)
             clear();
         webElement.sendKeys(charSequences);
     }
@@ -95,5 +96,10 @@ public class TamaWebElement implements ExtendedWebElement {
     @Override
     public void select(String value) {
         webElement.sendKeys(value);
+    }
+
+    @Override
+    public void sendKey(CharSequence charSequence) {
+        webElement.sendKeys(charSequence);
     }
 }
