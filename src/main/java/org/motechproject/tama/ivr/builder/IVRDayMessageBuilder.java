@@ -11,7 +11,11 @@ public class IVRDayMessageBuilder {
 
     public List<String> getMessageForNextDosage(DateTime nextDosageDateTime) {
         List<String> messages = new ArrayList<String>();
-        messages.add(String.valueOf(nextDosageDateTime.getHourOfDay() % 12));
+        if (nextDosageDateTime.getHourOfDay() == 0 || nextDosageDateTime.getHourOfDay() == 12) {
+            messages.add(String.valueOf(12));
+        } else {
+            messages.add(String.valueOf(nextDosageDateTime.getHourOfDay() % 12));
+        }
         messages.add(String.valueOf(nextDosageDateTime.getMinuteOfHour()));
         messages.add(nextDosageDateTime.getHourOfDay() < 12 ? IVRMessage.IN_THE_MORNING : IVRMessage.IN_THE_EVENING);
         messages.add(nextDosageDateTime.toLocalDate().equals(DateUtil.today()) ? IVRMessage.TODAY : IVRMessage.TOMORROW);
