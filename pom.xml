@@ -22,7 +22,7 @@
                     <!--PROPERTIES READ-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
+                        <artifactId>properties-maven-plugin</artifactId>	
                         <version>1.0-alpha-2</version>
                         <executions>
                             <execution>
@@ -251,7 +251,6 @@
             </build>
         </profile>
     </profiles>
-
     <repositories>
         <repository>
             <id>central</id>
@@ -262,9 +261,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>motech-repo</id>
-            <name>Motech Maven Repository</name>
-            <url>http://nexus.motechproject.org/content/repositories/public</url>
+            <id>motech.nexus</id>
+            <name>Motech Snapshots Repository</name>
+            <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
         </repository>
         <repository>
             <id>spring-maven-release</id>
@@ -678,6 +677,16 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-decisiontree-common</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-cmslite-api</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>tama-symptoms-reporting</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>

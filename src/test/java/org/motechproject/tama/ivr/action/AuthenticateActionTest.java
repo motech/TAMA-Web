@@ -89,7 +89,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         verify(session).setAttribute(IVRCallAttribute.CALL_TIME, now);
         verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, PATIENT_ID);
         verify(session).setAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
-        verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
+//        verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
         verify(session).setAttribute(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL, "true");
         verify(tamaIvrAction).handle(any(IVRRequest.class), any(IVRSession.class));
     }

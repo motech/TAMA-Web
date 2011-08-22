@@ -11,8 +11,7 @@ public class Regimen6PartialTree extends TamaDecisionTree {
 	protected Node createRootNode() {
 		try {
 			Class builderClass = Class.forName("org.motechproject.tama.ivr.decisiontree.Regimen6PartialTreeBuilder");
-			return (Node)builderClass.getMethod("getRootNode", Void.class).invoke(null);
-			
+			return (Node)builderClass.getMethod("getRootNode", new Class[0]).invoke(null);
 		} catch (Exception e) {
 			return null;
 		}
