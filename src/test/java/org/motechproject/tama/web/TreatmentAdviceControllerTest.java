@@ -1,14 +1,11 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
-import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.repository.*;
@@ -16,21 +13,20 @@ import org.motechproject.tama.web.model.ComboBoxView;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 public class TreatmentAdviceControllerTest {
 
     private TreatmentAdviceController controller;
-    private HttpServletRequest request;
     private Model uiModel;
 
     private TreatmentAdvices treatmentAdvices;
     private Patients patients;
     private Regimens regimens;
-    private Drugs drugs;
     private DosageTypes dosageTypes;
     private MealAdviceTypes mealAdviceTypes;
     private PillReminderService pillReminderService;
@@ -41,15 +37,13 @@ public class TreatmentAdviceControllerTest {
         treatmentAdvices = mock(TreatmentAdvices.class);
         patients = mock(Patients.class);
         regimens = mock(Regimens.class);
-        drugs = mock(Drugs.class);
         dosageTypes = mock(DosageTypes.class);
         mealAdviceTypes = mock(MealAdviceTypes.class);
         pillReminderService = mock(PillReminderService.class);
         requestMapper = mock(PillRegimenRequestMapper.class);
 
-        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes, pillReminderService, requestMapper);
+        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, null, dosageTypes, mealAdviceTypes, pillReminderService, requestMapper);
 
-        request = mock(HttpServletRequest.class);
         uiModel = mock(Model.class);
     }
 
@@ -57,10 +51,8 @@ public class TreatmentAdviceControllerTest {
     public void shouldCreatePillRegimenRequest() {
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
         treatmentAdvice.setPatientId("1234");
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        BindingResult bindingResult = mock(BindingResult.class);
 
-        controller.create(treatmentAdvice, bindingResult, uiModel, httpServletRequest);
+        controller.create(treatmentAdvice, uiModel);
         verify(requestMapper).map(treatmentAdvice);
         verify(pillReminderService).createNew(any(PillRegimenRequest.class));
     }
@@ -73,21 +65,9 @@ public class TreatmentAdviceControllerTest {
 
         when(patients.get("patientId")).thenReturn(patient);
         when(treatmentAdvices.findByPatientId(patientId)).thenReturn(null);
-        String redirectURL = controller.createForm(patientId, uiModel, request);
+        controller.createForm(patientId, uiModel);
 
-        junit.framework.Assert.assertEquals("treatmentadvices/create", redirectURL);
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
-    }
-
-    @Test
-    public void shouldRedirectToShowTreatmentAdvice_WhenPatientHasATreatmentAdvice() {
-        String patientId = "patientId";
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-
-        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
-        String redirectURL = controller.createForm(patientId, uiModel, request);
-
-        junit.framework.Assert.assertEquals("redirect:/treatmentadvices/treatmentAdviceId", redirectURL);
     }
 
     @Test
@@ -99,9 +79,8 @@ public class TreatmentAdviceControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
 
-        String redirectURL = controller.create(treatmentAdvice, bindingResult, uiModel, request);
+        controller.create(treatmentAdvice, uiModel);
 
-        junit.framework.Assert.assertEquals("redirect:/patients/patientId", redirectURL);
         verify(treatmentAdvices).add(treatmentAdvice);
     }
 

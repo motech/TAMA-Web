@@ -6,7 +6,7 @@
         <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
         <c:choose>
           <c:when test="${patient.active}">
-              <spring:url value="/treatmentadvices" var="clinic_visits_url">
+              <spring:url value="/clinicvisits" var="clinic_visits_url">
                   <spring:param name="form" />
                   <spring:param name="patientId" value="${patient.id}" />
                 </spring:url>

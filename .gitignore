@@ -12,6 +12,7 @@ maven-eclipse.xml
 log.roo
 *.class
 *.eml
+*.log
 *.userlibraries
 out/
 Error_log/

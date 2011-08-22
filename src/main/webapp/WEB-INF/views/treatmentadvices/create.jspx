@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
     <spring:url value="/resources/images/favicon.ico" var="favicon" />
     <spring:url value="/resources/js/treatmentadvice.js" var="treatmentadvicejs" />
     <script src="${treatmentadvicejs}" type="text/javascript"/>
@@ -7,11 +7,11 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <form:create id="fc_org_motechproject_tama_domain_TreatmentAdvice" modelAttribute="treatmentAdvice" path="/treatmentadvices" render="${empty dependencies}" z="fHi3nZ2yXf8qzpuAArmXy4h8ghE=">
+    <util:panel id="fc_org_motechproject_tama_domain_TreatmentAdvice" title="Register new Treatment Advice" openPane="true">
         <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}" />
         <field:display object="${patientIdentifier}" field="" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
-        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="regimenId" items="${regimens}" itemValue="id" itemLabel="displayName" path="/regimens" label="Regimen *"/>
-        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositiongroups" field="drugCompositionGroupId" items="${drugCompositionGroups}" path="/drugCompositionGroups" label="Drug Composition Group *"/>
+        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="treatmentAdvice.regimenId" items="${regimens}" itemValue="id" itemLabel="displayName" path="/treatmentadvices/regimens" label="Regimen *"/>
+        <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositiongroups" field="treatmentAdvice.drugCompositionGroupId" items="${drugCompositionGroups}" path="/treatmentadvices/drugCompositionGroups" label="Drug Composition Group *"/>
         <div>
             <div>
                 <div id="dosage_times_error" class="error"/>
@@ -22,7 +22,7 @@
 
                         <c:choose>
                             <c:when test="${item.index == 0}">
-                                <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="drugCompositionId" items="${drugCompositions}" path="/drugCompositions" label="Drug Name *"/>
+                                <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions" field="treatmentAdvice.drugCompositionId" items="${drugCompositions}" path="/treatmentadvices/drugCompositions" label="Drug Name *"/>
                             </c:when>
                             <c:otherwise>
                                 <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name *" />
@@ -31,22 +31,22 @@
 
                         <input type="hidden" id="drugDosages[${item.index}].drugId" name="drugDosages[${item.index}].drugId" />
 
-                        <field:select field="drugDosages[${item.index}].brandId" id="c_org_motechproject_tama_domain_TreatmentAdvice_brand${item.index}" label="Brand Name *" items="${drugCompositionGroups}" path="/dummy" />
-                        <field:select field="drugDosages[${item.index}].dosageTypeId" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}" path="/dosageTypes"  />
+                        <field:select field="treatmentAdvice.drugDosages[${item.index}].brandId" id="c_org_motechproject_tama_domain_TreatmentAdvice_brand${item.index}" label="Brand Name *" items="${drugCompositionGroups}" path="/treatmentadvices/dummy" />
+                        <field:select field="treatmentAdvice.drugDosages[${item.index}].dosageTypeId" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}" path="/treatmentadvices/dosageTypes"  />
 
-                        <field:input field="drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Morning Time (am)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
-                        <field:input field="drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Evening Time (pm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0" label="Morning Time (am)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1" label="Evening Time (pm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" required="true" />
 
-                        <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].startDateAsDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}" label="Start Date" required="true" />
-                        <field:datetime dateTimePattern="dd/MM/yyyy" field="drugDosages[${item.index}].endDateAsDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}" label="End Date"/>
+                        <field:datetime dateTimePattern="dd/MM/yyyy" field="treatmentAdvice.drugDosages[${item.index}].startDateAsDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}" label="Start Date" required="true" />
+                        <field:datetime dateTimePattern="dd/MM/yyyy" field="treatmentAdvice.drugDosages[${item.index}].endDateAsDate" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}" label="End Date"/>
 
-                        <field:input field="drugDosages[${item.index}].advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice"/>
-                        <field:select field="drugDosages[${item.index}].mealAdviceId" id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}" label="Meal Advice *" itemLabel="type" itemValue="id" items="${mealAdviceTypes}" path="/dosageTypes"/>
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice"/>
+                        <field:select field="treatmentAdvice.drugDosages[${item.index}].mealAdviceId" id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}" label="Meal Advice *" itemLabel="type" itemValue="id" items="${mealAdviceTypes}" path="/treatmentadvices/mealAdviceTypes"/>
                     </div>
                 </c:forEach>
             </div>
         </div>
         <br />
-    </form:create>
+    </util:panel>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
 </div>

@@ -2,6 +2,7 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.LocalDate;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,9 +19,6 @@ public class DrugDosage extends BaseEntity {
     @JsonIgnore
     private String drugName;
 
-    @JsonIgnore
-    private Set<Brand> brands = new TreeSet<Brand>();
-
     @NotNull
     private String brandId;
 
@@ -32,11 +30,11 @@ public class DrugDosage extends BaseEntity {
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date startDateAsDate;
 
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date endDateAsDate;
 
     private String advice;
@@ -58,14 +56,6 @@ public class DrugDosage extends BaseEntity {
 
     public void setDrugName(String drugName) {
         this.drugName = drugName;
-    }
-
-    public Set<Brand> getBrands() {
-        return this.brands;
-    }
-
-    public void setBrands(Set<Brand> brands) {
-        this.brands = new TreeSet<Brand>(brands);
     }
 
     public String getBrandId() {

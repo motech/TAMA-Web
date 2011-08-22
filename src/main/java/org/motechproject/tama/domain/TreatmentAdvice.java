@@ -1,6 +1,7 @@
 package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.util.DateUtil;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
@@ -23,6 +24,9 @@ public class TreatmentAdvice extends CouchEntity {
 
     @NotNull
     private String drugCompositionGroupId;
+
+    @NotNull
+    private String reasonForDiscontinuing;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
@@ -71,9 +75,23 @@ public class TreatmentAdvice extends CouchEntity {
         this.drugCompositionGroupId = drugCompositionGroupId;
     }
 
+    public String getReasonForDiscontinuing() {
+        return reasonForDiscontinuing;
+    }
+
+    public void setReasonForDiscontinuing(String reasonForDiscontinuing) {
+        this.reasonForDiscontinuing = reasonForDiscontinuing;
+    }
+
     public static TreatmentAdvice newDefault() {
         TreatmentAdvice advice = new TreatmentAdvice();
         advice.setDrugDosages(Arrays.asList(DrugDosage.dosageStartingToday(), DrugDosage.dosageStartingToday()));
-        return  advice;
+        return advice;
+    }
+
+    public void endTheRegimen() {
+        for (DrugDosage dosage : getDrugDosages()) {
+            dosage.setEndDate(DateUtil.today());
+        }
     }
 }

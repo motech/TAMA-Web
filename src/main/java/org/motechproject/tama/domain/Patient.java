@@ -27,7 +27,7 @@ public class Patient extends CouchEntity {
     protected String mobilePhoneNumber;
 
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = "dd/MM/yyyy")
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
     @NotNull
     protected Date dateOfBirthAsDate;
