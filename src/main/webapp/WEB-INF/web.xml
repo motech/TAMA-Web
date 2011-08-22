@@ -76,9 +76,19 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>resource</servlet-name>
+        <servlet-class>org.motechproject.cmslite.api.web.ResourceServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>tama</servlet-name>
         <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>resource</servlet-name>
+        <url-pattern>/wav/*</url-pattern>
     </servlet-mapping>
 
     <session-config>
@@ -95,7 +105,7 @@
         <location>/resourceNotFound</location>
     </error-page>
 
-     <error-page>
+    <error-page>
         <error-code>403</error-code>
         <location>/authorizationFailure</location>
     </error-page>

@@ -20,7 +20,6 @@
     <import resource="classpath:applicationDecisionTree.xml"/>
     <import resource="classpath:applicationCmsLiteApi.xml"/>
 
-
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
         <property name="algorithm" value="PBEWithMD5AndDES"/>
         <property name="password" value="jasypt"/>
