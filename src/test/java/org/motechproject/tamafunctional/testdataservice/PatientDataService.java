@@ -42,8 +42,13 @@ public class PatientDataService extends EntityDataService {
         return login(clinician).gotoShowPatientPage(patient);
     }
 
-    public void setupARTRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
+    public void createARTRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
         viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice).logout();
+    }
+
+    public void reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
+        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice)
+                .goToViewARTRegimenPage().goToChangeARTRegimenPage().reCreateARTRegimen(treatmentAdvice).logout();
     }
 
     public TestTreatmentAdvice getTreatmentAdvice(TestPatient patient, TestClinician clinician) {

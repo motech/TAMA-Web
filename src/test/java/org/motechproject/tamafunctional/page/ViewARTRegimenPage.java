@@ -1,9 +1,12 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class ViewARTRegimenPage extends Page {
 
@@ -17,6 +20,9 @@ public class ViewARTRegimenPage extends Page {
 
     @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions_drugCompositionName_id")
     private WebElement drugCompositionGroupNameElement;
+
+    @FindBy(how = How.ID, using = "changeRegimen")
+    private WebElement changeRegimenElement;
 
     public ViewARTRegimenPage(WebDriver webDriver) {
         super(webDriver);
@@ -37,5 +43,16 @@ public class ViewARTRegimenPage extends Page {
 
     public String getDrugCompositionGroupName() {
         return drugCompositionGroupNameElement.getText();
+    }
+
+    public CreateARTRegimenPage goToChangeARTRegimenPage() {
+        this.changeRegimenElement.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(By.id(CreateARTRegimenPage.DISCONTINUATION_REASON_ID)) != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
     }
 }

@@ -16,6 +16,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 public class CreateARTRegimenPage extends Page {
 
     public static final String REGIMEN_ID = "_treatmentAdvice.regimenId_id";
+    public static final String DISCONTINUATION_REASON_ID = "_discontinuationReason_id";
 
     public static final String DRUG1_BRAND_ID = "_treatmentAdvice.drugDosages[0].brandId_id";
     public static final String DRUG_BRAND1_ID = "_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id";
@@ -47,6 +48,12 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
     private WebElement drug2MealAdviceTypeElement;
 
+    @FindBy(how = How.ID, using = DISCONTINUATION_REASON_ID)
+    private WebElement discontinuationReasonElement;
+
+    @FindBy(how = How.ID, using = "nextToRegisterNewTreatmentAdvice")
+    private WebElement nextToRegisterNewTreatmentAdvice;
+
     @FindBy(how = How.ID, using = "proceed")
     private WebElement saveElement;
 
@@ -64,6 +71,9 @@ public class CreateARTRegimenPage extends Page {
         drug2DosageTypeElement = WebDriverFactory.createWebElement(drug2DosageTypeElement);
         drug2DosageTimeElement = WebDriverFactory.createWebElement(drug2DosageTimeElement);
         drug2MealAdviceTypeElement = WebDriverFactory.createWebElement(drug2MealAdviceTypeElement);
+
+        discontinuationReasonElement = WebDriverFactory.createWebElement(discontinuationReasonElement);
+        nextToRegisterNewTreatmentAdvice = WebDriverFactory.createWebElement(nextToRegisterNewTreatmentAdvice);
     }
 
     @Override
@@ -76,6 +86,20 @@ public class CreateARTRegimenPage extends Page {
 //        selectRegimenAndWaitTillTheCompositionGroupsShow(treatmentAdvice);
 //        selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
 
+        setupNewARTRegimen(treatmentAdvice);
+        this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public ViewARTRegimenPage reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice) {
+        discontinuationReasonElement.sendKeys(treatmentAdvice.discontinuationReason());
+        nextToRegisterNewTreatmentAdvice.click();
+        setupNewARTRegimen(treatmentAdvice);
+        this.waitForElementWithIdToLoad(ViewARTRegimenPage.REGIMEN_TEXT_ID);
+        return MyPageFactory.initElements(webDriver, ViewARTRegimenPage.class);
+    }
+
+    private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
         drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
         tabOut(drug1DosageTypeElement);
@@ -89,8 +113,6 @@ public class CreateARTRegimenPage extends Page {
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
 
         saveElement.click();
-        this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
     private void tabOut(WebElement webElement) {

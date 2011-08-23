@@ -8,6 +8,7 @@ public class TestTreatmentAdvice {
     private List<TestDrugDosage> drugDosages = new ArrayList<TestDrugDosage>();
     private String regimenName;
     private String drugCompositionName;
+    private String discontinuationReason;
 
     public TestTreatmentAdvice() {
     }
@@ -15,7 +16,7 @@ public class TestTreatmentAdvice {
     public static TestTreatmentAdvice withExtrinsic(TestDrugDosage... drugDosages) {
         TestTreatmentAdvice treatmentAdvice = new TestTreatmentAdvice();
         treatmentAdvice.drugDosages.addAll(Arrays.asList(drugDosages));
-        return treatmentAdvice.regimenName("AZT + 3TC + EFV").drugCompositionName("AZT+3TC+EFV");
+        return treatmentAdvice.regimenName("AZT + 3TC + EFV").drugCompositionName("AZT+3TC+EFV").discontinuationReason("change regimen");
     }
 
     public TestTreatmentAdvice drugCompositionName(String name) {
@@ -38,5 +39,14 @@ public class TestTreatmentAdvice {
 
     public List<TestDrugDosage> drugDosages() {
         return drugDosages;
+    }
+
+    public String discontinuationReason() {
+        return discontinuationReason;
+    }
+
+    public TestTreatmentAdvice discontinuationReason(String discontinuationReason) {
+        this.discontinuationReason = discontinuationReason;
+        return this;
     }
 }
