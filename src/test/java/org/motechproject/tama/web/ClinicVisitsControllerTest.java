@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.TreatmentAdvices;
@@ -12,24 +13,24 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClinicVisitsControllerTest {
 
+    @Mock
     private TreatmentAdviceController treatmentAdviceController;
-    private ClinicVisitsController controller;
+    @Mock
     private HttpServletRequest request;
+    @Mock
     private Model uiModel;
-
+    @Mock
     private TreatmentAdvices treatmentAdvices;
+    private ClinicVisitsController controller;
 
     @Before
     public void setUp() {
-        treatmentAdvices = mock(TreatmentAdvices.class);
-        treatmentAdviceController = mock(TreatmentAdviceController.class);
+        initMocks(this);
         controller = new ClinicVisitsController(treatmentAdviceController, treatmentAdvices);
-
-        request = mock(HttpServletRequest.class);
-        uiModel = mock(Model.class);
     }
 
     @Test
