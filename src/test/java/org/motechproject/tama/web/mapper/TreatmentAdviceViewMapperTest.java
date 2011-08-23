@@ -1,21 +1,21 @@
 package org.motechproject.tama.web.mapper;
 
 import junit.framework.Assert;
-import org.apache.bcel.generic.ANEWARRAY;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.builder.DrugCompositionGroupBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.domain.*;
+import org.motechproject.tama.domain.DrugCompositionGroup;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.Regimen;
+import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.Patients;
 import org.motechproject.tama.repository.Regimens;
 import org.motechproject.tama.repository.TreatmentAdvices;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -53,6 +53,8 @@ public class TreatmentAdviceViewMapperTest {
 
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens, null, null, null).map("treatmentAdviceId");
 
+        Assert.assertEquals(treatmentAdvice.getId(), treatmentAdviceView.getTreatmentAdviceId());
+        Assert.assertEquals(treatmentAdvice.getPatientId(), treatmentAdviceView.getPatientIdentifier());
         Assert.assertEquals(patient.getPatientId(), treatmentAdviceView.getPatientId());
         Assert.assertEquals(regimen.getDisplayName(), treatmentAdviceView.getRegimenName());
         Assert.assertEquals(group.getName(), treatmentAdviceView.getDrugCompositionName());

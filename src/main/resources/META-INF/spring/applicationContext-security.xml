@@ -21,6 +21,7 @@
         <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/patients/**" method="DELETE" access="denyAll" requires-channel="${web.protocol}"/>

@@ -5,13 +5,33 @@ import java.util.List;
 
 public class TreatmentAdviceView {
 
+    private String treatmentAdviceId;
+
     private String patientId;
+
+    private String patientIdentifier;
 
     private String regimenName;
 
     private String drugCompositionName;
 
     private List<DrugDosageView> drugDosages = new ArrayList<DrugDosageView>();
+
+    public String getTreatmentAdviceId() {
+        return treatmentAdviceId;
+    }
+
+    public void setTreatmentAdviceId(String treatmentAdviceId) {
+        this.treatmentAdviceId = treatmentAdviceId;
+    }
+
+    public String getPatientIdentifier() {
+        return patientIdentifier;
+    }
+
+    public void setPatientIdentifier(String patientIdentifier) {
+        this.patientIdentifier = patientIdentifier;
+    }
 
     public String getPatientId() {
         return patientId;

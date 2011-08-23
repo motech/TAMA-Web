@@ -258,8 +258,9 @@ dojo.addOnLoad(function() {
         }
     };
 
+    var requestURL = document.URL.indexOf('treatmentadvices') > 0 ? 'ajax/regimens' : 'treatmentadvices/ajax/regimens';
     dojo.xhrGet({
-        url: "treatmentadvices/ajax/regimens",
+        url: requestURL,
         handleAs: "json",
         load: function(result) {
             regimens_data = result;

@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.DosageType;
 import org.motechproject.tama.domain.MealAdviceType;
 import org.motechproject.tama.domain.Regimen;
@@ -12,16 +13,15 @@ import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.tama.web.view.DosageTypesView;
 import org.motechproject.tama.web.view.MealAdviceTypesView;
 import org.motechproject.tama.web.view.RegimensView;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +66,30 @@ public class TreatmentAdviceController extends BaseController {
     public @ResponseBody List<Regimen> allRegimens() {
         List<Regimen> allRegimens = regimens.getAll();
         return allRegimens;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/changeRegimen")
+    public String changeRegimenForm(@RequestParam String id, @RequestParam String patientId, Model uiModel) {
+        uiModel.addAttribute("adviceEndDate", DateUtil.today().toString(TAMAConstants.DATE_FORMAT));
+        uiModel.addAttribute("existingTreatmentAdviceId", id);
+        createForm(patientId, uiModel);
+        return "treatmentadvices/update";
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, Model uiModel, HttpServletRequest httpServletRequest) {
+        endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
+        uiModel.asMap().clear();
+        treatmentAdvices.add(treatmentAdvice);
+        pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
+    }
+
+    private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {
+        TreatmentAdvice existingTreatmentAdvice = treatmentAdvices.get(treatmentAdviceId);
+        existingTreatmentAdvice.setReasonForDiscontinuing(discontinuationReason);
+        existingTreatmentAdvice.endTheRegimen();
+        treatmentAdvices.update(existingTreatmentAdvice);
     }
 
     public void createForm(String patientId, Model uiModel) {

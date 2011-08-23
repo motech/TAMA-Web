@@ -15,36 +15,36 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class CreateARTRegimenPage extends Page {
 
-    public static final String REGIMEN_ID = "_regimenId_id";
+    public static final String REGIMEN_ID = "_treatmentAdvice.regimenId_id";
 
-    public static final String DRUG1_BRAND_ID = "_drugDosages[0].brandId_id";
+    public static final String DRUG1_BRAND_ID = "_treatmentAdvice.drugDosages[0].brandId_id";
     public static final String DRUG_BRAND1_ID = "_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id";
 
     @FindBy(how = How.ID, using = REGIMEN_ID)
     private WebElement regimenElement;
 
-    @FindBy(how = How.ID, using = "_drugCompositionGroupId_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugCompositionGroupId_id")
     private WebElement drugCompositionGroupElement;
 
-    @FindBy(how = How.ID, using = "_drugCompositionId_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugCompositionId_id")
     private WebElement drugCompositionElement;
 
-    @FindBy(how = How.ID, using = "_drugDosages[0].dosageTypeId_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageTypeId_id")
     private WebElement drug1DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_drugDosages[0].dosageSchedules[1]_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id")
     private WebElement drug1DosageTimeElement;
 
-    @FindBy(how = How.ID, using = "_drugDosages[0].mealAdviceId_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].mealAdviceId_id")
     private WebElement drug1MealAdviceTypeElement;
 
-    @FindBy(how = How.ID, using = "_drugDosages[1].dosageTypeId_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageTypeId_id")
     private WebElement drug2DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_drugDosages[1].dosageSchedules[1]_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id")
     private WebElement drug2DosageTimeElement;
 
-    @FindBy(how = How.ID, using = "_drugDosages[1].mealAdviceId_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
     private WebElement drug2MealAdviceTypeElement;
 
     @FindBy(how = How.ID, using = "proceed")

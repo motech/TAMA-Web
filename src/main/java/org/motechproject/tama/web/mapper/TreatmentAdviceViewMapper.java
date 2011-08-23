@@ -29,6 +29,8 @@ public class TreatmentAdviceViewMapper {
         DrugCompositionGroup drugCompositionGroup = regimen.getDrugCompositionGroupFor(treatmentAdvice.getDrugCompositionGroupId());
 
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
+        treatmentAdviceView.setTreatmentAdviceId(treatmentAdvice.getId());
+        treatmentAdviceView.setPatientIdentifier(treatmentAdvice.getPatientId());
         treatmentAdviceView.setPatientId(patient.getPatientId());
         treatmentAdviceView.setRegimenName(regimen.getDisplayName());
         treatmentAdviceView.setDrugCompositionName(drugCompositionGroup.getName());
