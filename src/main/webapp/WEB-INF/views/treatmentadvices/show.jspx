@@ -44,13 +44,6 @@
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                         <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="endDateAsDate" date="true" dateTimePattern="dd/MM/yyyy" label="End Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_endDate${item.index}"/>
-                        </td>
-                </c:forEach>
-            </tr>
-            <tr>
-                <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
-                        <td>
                             <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice" />
                         </td>
                 </c:forEach>

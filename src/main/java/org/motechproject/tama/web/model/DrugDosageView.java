@@ -19,8 +19,6 @@ public class DrugDosageView extends TamaView {
 
     private Date startDateAsDate;
 
-    private Date endDateAsDate;
-
     private String advice;
 
     private String mealAdviceType;
@@ -71,22 +69,6 @@ public class DrugDosageView extends TamaView {
 
     public void setStartDateAsDate(Date startDate) {
         this.startDateAsDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return DateUtil.newDate(endDateAsDate);
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDateAsDate = toDate(endDate);
-    }
-
-    public Date getEndDateAsDate() {
-        return endDateAsDate;
-    }
-
-    public void setEndDateAsDate(Date endDate) {
-        this.endDateAsDate = endDate;
     }
 
     public String getAdvice() {

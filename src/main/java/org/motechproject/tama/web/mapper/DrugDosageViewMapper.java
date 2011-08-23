@@ -30,7 +30,6 @@ public class DrugDosageViewMapper {
         drugDosageView.setDosageType(dosageType.getType());
         drugDosageView.setDosageSchedules(drugDosage.getDosageSchedules());
         drugDosageView.setStartDate(drugDosage.getStartDate());
-        drugDosageView.setEndDate(drugDosage.getEndDate());
         drugDosageView.setAdvice(drugDosage.getAdvice());
         drugDosageView.setMealAdviceType(mealAdviceType.getType());
         return drugDosageView;

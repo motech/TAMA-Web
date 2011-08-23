@@ -78,7 +78,7 @@ dojo.addOnLoad(function() {
             if (composition_drugs.length > 1) {
                 drug2_name.innerHTML = other_drug.name;
             }
-            var nonRequiredWidgets = ["_treatmentAdvice.drugDosages[1].endDateAsDate_id", "_treatmentAdvice.drugDosages[1].advice_id"];
+            var nonRequiredWidgets = ["_treatmentAdvice.drugDosages[1].advice_id"];
 
             _changeFirstDosage();
 
@@ -152,24 +152,6 @@ dojo.addOnLoad(function() {
 
         dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[0].dosageTypeId_id'), 'onChange', _changeFirstDosage);
         dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[1].dosageTypeId_id'), 'onChange', _changeSecondDosage);
-
-        var addDays = function addDays(date, days){
-            date.setDate(date.getDate()+days);
-            return date;
-        };
-
-        var validateDosageDates = function(dosage) {
-            var start_date = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].startDateAsDate_id');
-            var end_date = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].endDateAsDate_id');
-            end_date.constraints.min = addDays(start_date.value, 1);
-            dojo.connect(start_date, 'onChange', function() {
-                if (dijit.byId(start_date) != null) {
-                    dijit.byId(end_date).constraints.min = addDays(start_date.value, 1);
-                }
-            });
-        };
-        validateDosageDates(0);
-        validateDosageDates(1);
 
         var validateDosageTimes = function() {
             var drug1AmTime = dijit.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
