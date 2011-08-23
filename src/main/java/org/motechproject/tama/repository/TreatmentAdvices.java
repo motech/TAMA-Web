@@ -1,5 +1,6 @@
 package org.motechproject.tama.repository;
 
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
@@ -25,6 +26,11 @@ public class TreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvice> 
     public TreatmentAdvice findByPatientId(String patientId) {
         ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
         List<TreatmentAdvice> treatmentAdvices = db.queryView(q, TreatmentAdvice.class);
-        return treatmentAdvices.isEmpty() ? null : treatmentAdvices.get(0);
+        for (TreatmentAdvice treatmentAdvice : treatmentAdvices) {
+            if (StringUtils.isEmpty(treatmentAdvice.getReasonForDiscontinuing())) {
+                return treatmentAdvice;
+            }
+        }
+        return null;
     }
 }

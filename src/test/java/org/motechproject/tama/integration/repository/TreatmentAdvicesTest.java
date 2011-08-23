@@ -1,11 +1,11 @@
 package org.motechproject.tama.integration.repository;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.repository.TreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static junit.framework.Assert.*;
 
 public class TreatmentAdvicesTest extends SpringIntegrationTest {
 
@@ -20,8 +20,8 @@ public class TreatmentAdvicesTest extends SpringIntegrationTest {
 
         TreatmentAdvice retrievedTreatmentAdvice = treatmentAdvices.findByPatientId("111111");
 
-        Assert.assertNotNull(retrievedTreatmentAdvice);
-        Assert.assertEquals("111111", retrievedTreatmentAdvice.getPatientId());
+        assertNotNull(retrievedTreatmentAdvice);
+        assertEquals("111111", retrievedTreatmentAdvice.getPatientId());
 
         markForDeletion(treatmentAdvice);
     }
@@ -30,6 +30,27 @@ public class TreatmentAdvicesTest extends SpringIntegrationTest {
     public void testFindByPatientIdReturnsNoTreatmentAdvice() {
         String invalidPatientId = "999999";
         TreatmentAdvice retrievedTreatmentAdvice = treatmentAdvices.findByPatientId(invalidPatientId);
-        Assert.assertNull(retrievedTreatmentAdvice);
+        assertNull(retrievedTreatmentAdvice);
+    }
+
+    @Test
+    public void shouldReturnTreatmentAdviceWhichIsInProgress(){
+        TreatmentAdvice inactiveTreatmentAdvice = new TreatmentAdvice();
+        TreatmentAdvice activeTreatmentAdvice = new TreatmentAdvice();
+        inactiveTreatmentAdvice.setReasonForDiscontinuing("Bad Medicine");
+        inactiveTreatmentAdvice.setPatientId("patientA");
+        activeTreatmentAdvice.setPatientId("patientA");
+
+        treatmentAdvices.add(activeTreatmentAdvice);
+        treatmentAdvices.add(inactiveTreatmentAdvice);
+
+        TreatmentAdvice retrievedTreatmentAdvice = treatmentAdvices.findByPatientId("patientA");
+
+        assertNotNull(retrievedTreatmentAdvice);
+        assertNull(retrievedTreatmentAdvice.getReasonForDiscontinuing());
+        assertEquals("patientA", retrievedTreatmentAdvice.getPatientId());
+
+        markForDeletion(inactiveTreatmentAdvice);
+        markForDeletion(activeTreatmentAdvice);
     }
 }
