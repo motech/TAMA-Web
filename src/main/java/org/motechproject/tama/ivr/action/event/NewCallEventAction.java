@@ -32,6 +32,7 @@ public class NewCallEventAction extends BaseIncomingAction {
         }
         ivrSession.setState(IVRCallState.COLLECT_PIN);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patient.getId());
+        ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getIvrLanguage().getCode());
         return dtmfResponseWithWav(ivrRequest, ivrSession, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 

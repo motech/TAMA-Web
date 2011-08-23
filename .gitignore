@@ -3,6 +3,8 @@
 .settings/
 target/
 felix-cache/
+build/logs/
+logs/
 .externalToolBuilders/
 maven-eclipse.xml
 *.iml

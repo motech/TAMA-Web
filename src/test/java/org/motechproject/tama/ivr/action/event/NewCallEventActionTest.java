@@ -1,20 +1,17 @@
 package org.motechproject.tama.ivr.action.event;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVRCallAttribute;
-import org.motechproject.tama.ivr.IVRCallState;
-import org.motechproject.tama.ivr.IVREvent;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
 import org.motechproject.tama.repository.Patients;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class NewCallEventActionTest extends BaseActionTest {
     @Mock
@@ -58,11 +55,14 @@ public class NewCallEventActionTest extends BaseActionTest {
         when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
         when(patient.getId()).thenReturn("patientId");
+        IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
+        when(patient.getIvrLanguage()).thenReturn(ivrLanguage);
 
         action.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.COLLECT_PIN);
         verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, "patientId");
+        verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
     }
 
     @Test
@@ -72,6 +72,8 @@ public class NewCallEventActionTest extends BaseActionTest {
         when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
+        IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
+        when(patient.getIvrLanguage()).thenReturn(ivrLanguage);
         when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL, "en")).thenReturn("http://server/tama.wav");
 
         String responseXML = action.handle(ivrRequest, request, response);
