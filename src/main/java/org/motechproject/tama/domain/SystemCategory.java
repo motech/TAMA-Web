@@ -29,6 +29,13 @@ public class SystemCategory extends BaseEntity {
         return ailments.isEmpty();
     }
 
+    public static SystemCategory newSystemCategory(String name, Ailments ailments) {
+        final SystemCategory systemCategory = new SystemCategory();
+        systemCategory.setAilments(ailments);
+        systemCategory.setName(name);
+        return systemCategory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

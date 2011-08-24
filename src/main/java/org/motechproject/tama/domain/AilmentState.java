@@ -3,19 +3,19 @@ package org.motechproject.tama.domain;
 import org.apache.commons.lang.StringUtils;
 
 public enum AilmentState {
-    NONE("") {
+    NONE("None") {
         @Override
         public boolean isWithDescription() {
             return false;
         }
     },
-    YES_WITH_HISTORY("") {
+    YES_WITH_HISTORY("History and not active") {
         @Override
         public boolean isWithDescription() {
             return true;
         }
     },
-    YES("") {
+    YES("Currently Active") {
         @Override
         public boolean isWithDescription() {
             return true;

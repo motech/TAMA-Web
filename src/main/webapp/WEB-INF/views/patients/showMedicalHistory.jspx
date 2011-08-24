@@ -35,7 +35,9 @@
                     <c:out value="None" />
                 </span>
             </c:if>
+            <jsp:include page="showSystemCategories.jspx" />
         </util:panel>
     </util:panel>
     <br />
 </div>
+

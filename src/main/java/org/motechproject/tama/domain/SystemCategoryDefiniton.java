@@ -1,4 +1,4 @@
-package org.motechproject.tama.domain;
+ package org.motechproject.tama.domain;
 
 
 import java.util.Arrays;
@@ -81,10 +81,7 @@ public enum SystemCategoryDefiniton {
     }
 
     public SystemCategory getSystemCategory() {
-        final SystemCategory systemCategory = new SystemCategory();
-        systemCategory.setAilments(getAilments());
-        systemCategory.setName(this.getCategoryName());
-        return systemCategory;
+        return SystemCategory.newSystemCategory(this.getCategoryName(), getAilments());
     }
 
 

@@ -434,3 +434,54 @@ fieldset th {
 #_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_id {
     height: 22px;
 }
+
+.system_categories > .title {
+    font-weight: bold;
+}
+
+.system_categories .category {
+    clear: both;
+    width: 700px;
+}
+
+.system_categories .category > .title {
+    font-weight: bold;
+}
+
+.system_categories .category .title {
+    float: left;
+    width: 360px;
+    padding: 5px 0;
+}
+
+.system_categories .category .state {
+    float: left;
+    width: 160px;
+}
+
+.system_categories .category .description {
+    float: left;
+    width: 160px;
+}
+
+.system_categories .category .ailments {
+    margin-left: 10px;
+    clear: both;
+}
+
+.system_categories .category .ailments .ailment {
+    padding: 5px 0;
+}
+
+.system_categories .category .ailments .ailment .title {
+    float: left;
+    width: 350px;
+}
+
+.system_categories .category .ailments .ailment .state {
+    width: 150px;
+}
+
+.system_categories .category .ailments .ailment .description {
+    width: 150px;
+}
