@@ -4,14 +4,14 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" render="${empty dependencies}" z="HkT/39qeIawAHTgF7FpZDeoTr94=">
         <jsp:include page="createBasicInformation.jspx" />
-
+        <br/>
         <jsp:include page="createMedicalHistory.jspx" />
         <br/>
         <jsp:include page="createPatientPreferences.jspx" />
     </form:create>
     <script type="text/javascript">
         function openAllPanels() {
-            openPanel([basicInformationPanelWidget, preferencesPanelWidget]);
+            openPanel([basicInformationPanelWidget, medicalHistoryPanelWidget, preferencesPanelWidget]);
         }
 
         function showMedicalHistory() {
@@ -21,7 +21,7 @@
         }
 
         function showPatientPreferences() {
-            closePanel([basicInformationPanelWidget]);
+            closePanel([medicalHistoryPanelWidget]);
             hideElement([nextToPatientPreferencesButton]);
             showElement([preferencesPanel, submitButtonDiv]);
         }
@@ -30,7 +30,6 @@
             basicInformationPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
             medicalHistoryPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
             preferencesPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
-            basicInformationPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
             preferencesPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
             medicalHistoryPanel = dojo.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
             nextToMedicalHistoryButton = dojo.byId('nextToMedicalHistorySpan');
@@ -42,8 +41,7 @@
                 openAllPanels();
             }
             else {
-                hideElement([preferencesPanel, submitButtonDiv]);
-                hideElement([preferencesPanel, nextToPatientPreferencesButton, submitButtonDiv]);
+                hideElement([preferencesPanel, medicalHistoryPanel, nextToPatientPreferencesButton, submitButtonDiv]);
             }
             dojo.connect(dojo.byId('proceed'), 'onclick', openAllPanels);
         });

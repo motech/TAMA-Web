@@ -39,6 +39,10 @@ public class TestPatient extends TestEntity {
         return this;
     }
 
+    public TestHIVMedicalHistory medicalHistory() {
+        return hivMedicalHistory;
+    }
+
     public TestPatient medicalHistory(TestHIVMedicalHistory hivMedicalHistory) {
         this.hivMedicalHistory = hivMedicalHistory;
         return this;

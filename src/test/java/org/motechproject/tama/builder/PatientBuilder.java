@@ -43,11 +43,6 @@ public class PatientBuilder {
         return this;
     }
 
-    public PatientBuilder withTravelTimeToClinicInMins(int mins) {
-        patient.setTravelTimeToClinicInMinutes(mins);
-        return this;
-    }
-
     public PatientBuilder withTravelTimeToClinicInHours(int hours) {
         patient.setTravelTimeToClinicInHours(hours);
         return this;
@@ -65,16 +60,6 @@ public class PatientBuilder {
 
     public PatientBuilder withMedicalHistory(MedicalHistory medicalHistory) {
         patient.setMedicalHistory(medicalHistory);
-        return this;
-    }
-
-    public PatientBuilder withId(String id) {
-        patient.setId(id);
-        return this;
-    }
-
-    public PatientBuilder withRevision(String revision) {
-        patient.setRevision(revision);
         return this;
     }
 

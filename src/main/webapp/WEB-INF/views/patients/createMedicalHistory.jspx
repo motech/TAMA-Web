@@ -51,6 +51,7 @@
                     </c:forEach>
                 </div>
             </div>
+            <br />
             <div class="drug_history drug_history_allergy">
                 <span class="ailements_label">
                     <c:out value="Please check the appropriate box for each item"/>
@@ -122,6 +123,4 @@
         <input id="nextToPatientPreferences" type="button" value="${next_button}" onClick="showPatientPreferences();"/>
         <br />
     </span>
-    <br />
-
 </div>

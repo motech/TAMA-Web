@@ -26,12 +26,8 @@ public class CreateBasicPatientInformationSection {
     private WebElement travelTimeInMins;
     @FindBy(how = How.ID, using = "_gender_id")
     private WebElement gender;
-    @FindBy(how = How.ID, using = "nextToPatientPreferences")
-    private WebElement nextToPatientPreferences;
-
-//    #252
-//    @FindBy(how = How.ID, using = "nextToMedicalHistory")
-//    private WebElement nextToMedicalHistory;
+    @FindBy(how = How.ID, using = "nextToMedicalHistory")
+    private WebElement nextToMedicalHistory;
 
     public void postInitialize() {
         patientId = WebDriverFactory.createWebElement(patientId);
@@ -51,6 +47,6 @@ public class CreateBasicPatientInformationSection {
         ((ExtendedWebElement)travelTimeInHrs).select(patient.travelTimeToClinicInHours());
         ((ExtendedWebElement)travelTimeInMins).select(String.valueOf(patient.travelTimeToClinicInMinutes()));
 
-        nextToPatientPreferences.click();
+        nextToMedicalHistory.click();
     }
 }

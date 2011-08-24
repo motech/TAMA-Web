@@ -15,15 +15,13 @@ public class PatientRegistrationPage extends Page {
     @FindBy(how = How.ID, using = "_patientId_id")
     private WebElement patientId;
     private CreateBasicPatientInformationSection createBasicPatientInformationSection;
-//    #252
-//    private CreatePatientMedicalHistorySection createPatientMedicalHistorySection;
+    private CreatePatientMedicalHistorySection createPatientMedicalHistorySection;
     private CreatePatientPreferencesSection createPatientPreferencesSection;
 
     public PatientRegistrationPage(WebDriver webDriver) {
         super(webDriver);
         createBasicPatientInformationSection = PageFactory.initElements(webDriver, CreateBasicPatientInformationSection.class);
-//    #252
-//        createPatientMedicalHistorySection = PageFactory.initElements(webDriver, CreatePatientMedicalHistorySection.class);
+        createPatientMedicalHistorySection = PageFactory.initElements(webDriver, CreatePatientMedicalHistorySection.class);
         createPatientPreferencesSection = PageFactory.initElements(webDriver, CreatePatientPreferencesSection.class);
     }
 
@@ -31,8 +29,7 @@ public class PatientRegistrationPage extends Page {
     public void postInitialize() {
         patientId = WebDriverFactory.createWebElement(patientId);
         createBasicPatientInformationSection.postInitialize();
-//    #252
-//        createPatientMedicalHistorySection.postInitialize();
+        createPatientMedicalHistorySection.postInitialize();
         createPatientPreferencesSection.postInitialize();
     }
 
@@ -43,8 +40,7 @@ public class PatientRegistrationPage extends Page {
 
     public ShowPatientPage registerNewPatient(TestPatient patient) {
         createBasicPatientInformationSection.enterDetails(patient);
-//    #252
-//        createPatientMedicalHistorySection.enterDetails(patient);
+        createPatientMedicalHistorySection.enterDetails(patient);
         createPatientPreferencesSection.enterDetails(patient);
         patientId.submit();
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);

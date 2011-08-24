@@ -186,6 +186,7 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <argLine>-XX:MaxPermSize=1024M</argLine>
                             <systemProperties>
                                 <property>
                                     <name>jetty.port</name>

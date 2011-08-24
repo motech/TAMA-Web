@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.test;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Test;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -21,8 +22,6 @@ public class PatientRegistrationTest extends BaseTest {
 
         TestPatient patient = TestPatient.withMandatory(clinicianContext.clinic());
 
-//    #252
-//        HIVMedicalHistory hivMedicalHistory = patient.getMedicalHistory().getHivMedicalHistory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().
@@ -32,11 +31,10 @@ public class PatientRegistrationTest extends BaseTest {
         Assert.assertEquals(showPatientPage.getMobileNumber(), patient.mobileNumber());
         Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
 
-//    #252
-//        Assert.assertEquals(showPatientPage.getHIVTestReason(), hivMedicalHistory.getTestReason().getName());
-//        Assert.assertEquals(showPatientPage.getModeOfTransmission(), hivMedicalHistory.getModeOfTransmission().getType());
-//        Assert.assertEquals(showPatientPage.getAllergyText(), "ARV Allergy : arvAllergyDescription");
-//        Assert.assertEquals(showPatientPage.getRashText(), TAMAConstants.NNRTIRash.DRD.getValue());
+        Assert.assertEquals(showPatientPage.getHIVTestReason(), patient.medicalHistory().testReason());
+        Assert.assertEquals(showPatientPage.getModeOfTransmission(), patient.medicalHistory().modeOfTransmission());
+        Assert.assertEquals(showPatientPage.getAllergyText(), "ARV Allergy : arvAllergyDescription");
+        Assert.assertEquals(showPatientPage.getRashText(), TAMAConstants.NNRTIRash.DRD.getValue());
         showPatientPage.logout();
     }
 
@@ -44,5 +42,4 @@ public class PatientRegistrationTest extends BaseTest {
     public void  tearDown() throws IOException {
        super.tearDown();
     }
-
 }

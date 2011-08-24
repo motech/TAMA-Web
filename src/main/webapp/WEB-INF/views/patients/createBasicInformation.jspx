@@ -17,12 +17,4 @@
         <spring:message code="button_next" var="next_button" htmlEscape="false" />
         <input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>
     </span>
-
-    <span class="submit" id="nextToPatientPreferencesSpan">
-        <br />
-        <spring:message code="button_next" var="next_button" htmlEscape="false" />
-        <input id="nextToPatientPreferences" type="button" value="${next_button}" onClick="showPatientPreferences();"/>
-        <br />
-    </span>
-
 </div>
