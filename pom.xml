@@ -70,6 +70,7 @@
                                         <echo message="Seed data loading: START"/>
                                         <property name="compile_classpath" refid="maven.compile.classpath"/>
                                         <java classname="org.motechproject.tama.tools.seed.SetupSeedData">
+                                            <jvmarg value="-XX:MaxPermSize=1024M" />
                                             <classpath>
                                                 <pathelement path="${compile_classpath}"/>
                                             </classpath>
@@ -741,7 +742,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
-		    <argLine>-XX:MaxPermSize=1024M</argLine>
+                    <argLine>-XX:MaxPermSize=1024M</argLine>
                     <printSummary>true</printSummary>
                     <excludes>
                         <exclude>**/*_Roo_*</exclude>
