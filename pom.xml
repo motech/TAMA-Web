@@ -69,7 +69,7 @@
                                     <target>
                                         <echo message="Seed data loading: START"/>
                                         <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                        <java classname="org.motechproject.tama.tools.seed.SetupSeedData" fork="true">
+                                        <java classname="org.motechproject.tama.tools.seed.SetupSeedData" fork="true" spawn="true">
                                             <jvmarg value="-XX:MaxPermSize=1024M" />
                                             <classpath>
                                                 <pathelement path="${compile_classpath}"/>
