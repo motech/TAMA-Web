@@ -62,12 +62,12 @@ public class IVRResponseBuilder {
         if (collectDtmf) {
             CollectDtmf collectDtmf = KookooCollectDtmfFactory.create();
             if(dtmfLength > 0) collectDtmf.setMaxDigits(dtmfLength);
-            for (String playText : playTexts) collectDtmf.addPlayText(ivrMessage.get(playText));
+            for (String playText : playTexts) collectDtmf.addPlayText(ivrMessage.getText(playText));
             for (String playAudio : playAudios) collectDtmf.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
 
             response.addCollectDtmf(collectDtmf);
         } else {
-            for (String playText : playTexts) response.addPlayText(ivrMessage.get(playText));
+            for (String playText : playTexts) response.addPlayText(ivrMessage.getText(playText));
             for (String playAudio : playAudios) response.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
         }
         if (isHangUp) response.addHangup();

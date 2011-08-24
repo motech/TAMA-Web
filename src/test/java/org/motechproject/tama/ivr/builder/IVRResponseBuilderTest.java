@@ -37,7 +37,7 @@ public class IVRResponseBuilderTest {
 
     @Test
     public void shouldAddPlayTextOnlyIfItsNotEmpty() {
-        when(messages.get(anyString())).thenReturn("nova");
+        when(messages.getText(anyString())).thenReturn("nova");
 
         Response response = builder.withPlayTexts("nova").create(messages);
         assertTrue(response.getXML().contains("nova"));
@@ -105,8 +105,8 @@ public class IVRResponseBuilderTest {
 
     @Test
     public void shouldAddMultiplePlayTexts() {
-        when(messages.get("txt1")).thenReturn("txt1");
-        when(messages.get("txt2")).thenReturn("txt2");
+        when(messages.getText("txt1")).thenReturn("txt1");
+        when(messages.getText("txt2")).thenReturn("txt2");
         Response response = builder.withPlayTexts("txt1").withPlayTexts("txt2").create(messages);
         assertTrue(response.getXML().contains("<playtext>txt1</playtext>"));
         assertTrue(response.getXML().contains("<playtext>txt2</playtext>"));

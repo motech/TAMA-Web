@@ -12,7 +12,7 @@ public class DecisionTreeBasedResponseBuilder {
         List<Prompt> prompts = node.getPrompts();
         boolean hasTransitions = node.hasTransitions();
         for (Prompt prompt : prompts) {
-            if (retryOnIncorrectUserAction && !(prompt instanceof MenuAudioPrompt)) continue;
+            if (retryOnIncorrectUserAction && !(prompt instanceof MenuAudioPrompt) && prompt instanceof AudioPrompt) continue;
             ITreeCommand command = prompt.getCommand();
             boolean isAudioPrompt = prompt instanceof AudioPrompt;
             if (command == null) {
@@ -25,14 +25,22 @@ public class DecisionTreeBasedResponseBuilder {
             }
         }
         if (hasTransitions) {
-            ivrResponseBuilder.collectDtmf(1);
+            ivrResponseBuilder.collectDtmf(maxLenOfTransitionOptions(node));
         } else {
             ivrResponseBuilder.withPlayAudios(IVRMessage.SIGNATURE_MUSIC_URL).withHangUp();
         }
         return ivrResponseBuilder;
     }
 
-    private void buildPrompts(IVRResponseBuilder ivrResponseBuilder, String promptName, boolean isAudioPrompt) {
+    private int maxLenOfTransitionOptions(Node node) {
+    	int maxLen = 0;
+		for (String key :node.getTransitions().keySet()){
+			if (maxLen<key.length())maxLen = key.length();
+		}
+		return maxLen;
+	}
+
+	private void buildPrompts(IVRResponseBuilder ivrResponseBuilder, String promptName, boolean isAudioPrompt) {
         if (isAudioPrompt) ivrResponseBuilder.withPlayAudios(promptName);
         else ivrResponseBuilder.withPlayTexts(promptName);
     }
