@@ -122,7 +122,7 @@ dojo.addOnLoad(function() {
                     evening_time.set('required', true);
                     evening_label.style.display = 'block';
                 };
-                var hideMorningTime = functio_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_idn() {
+                var hideMorningTime = function() {
                     morning_time.set('disabled', true);
                     morning_time.set('required', false);
                     morning_label.style.display = 'none';
@@ -190,8 +190,7 @@ dojo.addOnLoad(function() {
             {
                 execute: function(){ return getProperties(amTimes).length > 1; },
                 message : "You have entered different times for morning dose. Please change the times to the same time for both morning dosages."
-            },                                                                                       <c:choose>
-
+            },
             {
                 execute: function(){ return getProperties(pmTimes).length > 1; },
                 message : "You have entered different times for evening dose. Please change the times to the same time for both evening dosages."
