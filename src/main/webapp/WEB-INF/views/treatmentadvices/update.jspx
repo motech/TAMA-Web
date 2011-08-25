@@ -5,7 +5,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <util:panel id="fc_org_motechproject_tama_domain_patient_Change_Treatment_Advice" title="Change Treatment Advice" openPane="true">
         <spring:url value="/treatmentadvices/changeRegimen" var="form_url"/>
-        <form action="${form_url}" method="POST">
+        <form action="${form_url}" method="POST" id="treatmentAdvice">
             <util:panel id="fc_org_motechproject_tama_domain_patient_Existing_Treatment_Advice" title="Reason for Discontinuing" openPane="true">
                 <field:display object="${adviceEndDate}" field="" label="End Date" id="c_org_motechproject_tama_domain_Existing_TreatmentAdvice_endDate"/>
                 <input type="hidden" name="existingTreatmentAdviceId" value="${existingTreatmentAdviceId}"/>
