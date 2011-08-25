@@ -3,10 +3,7 @@ package org.motechproject.tama.web;
 import org.ektorp.UpdateConflictException;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.domain.AilmentState;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.SystemCategory;
-import org.motechproject.tama.domain.SystemCategoryDefiniton;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -28,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,7 +80,8 @@ public class PatientController extends BaseController {
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
-        initUIModel(uiModel, new Patient());
+        Patient patient = new Patient();
+        initUIModel(uiModel, patient);
         return CREATE_VIEW;
     }
 
@@ -127,7 +126,9 @@ public class PatientController extends BaseController {
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-        initUIModel(uiModel, patients.findByIdAndClinicId(id, loggedInClinic(request)));
+        final Patient patient = patients.findByIdAndClinicId(id, loggedInClinic(request));
+        initUIModel(uiModel, patient);
+        uiModel.addAttribute("systemCategories", patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories());
         return UPDATE_VIEW;
     }
 
@@ -189,16 +190,9 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("modesOfTransmission", new ModesOfTransmissionView(modesOfTransmission).getAll());
         uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
         uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
-        uiModel.addAttribute("systemCategories", systemCategories());
+        uiModel.addAttribute("systemCategories", SystemCategoryDefiniton.all());
         uiModel.addAttribute("options", AilmentState.values());
-    }
-
-    private List<SystemCategory> systemCategories() {
-        List<SystemCategory> systemCategories = new LinkedList<SystemCategory>();
-        for(SystemCategoryDefiniton definiton:SystemCategoryDefiniton.values()) {
-           systemCategories.add(definiton.getSystemCategory());
-        }
-        return systemCategories;
+        uiModel.addAttribute("questions", MedicalHistoryQuestions.all());
     }
 
     private void addDateTimeFormat(Model uiModel) {

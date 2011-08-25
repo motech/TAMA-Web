@@ -40,6 +40,8 @@ public class IvrAction {
         if (nodeInfo.node() == null) {
             nodeInfo = tree.currentNodeInfo(currentPosition);
             retryOnIncorrectUserAction = true;
+
+
         } else if (!retryOnIncorrectUserAction){
             List<ITreeCommand> treeCommands = nodeInfo.node().getTreeCommands();
             for(ITreeCommand command : treeCommands) {

@@ -5,16 +5,18 @@
        <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.systemCategories}" varStatus="categoryStatus" var="category">
            <div class='category'>
                <span class='title'>
-                   <c:out value="${categoryStatus.index + 1}" />.<c:out value=" ${category.name}"></c:out>
+                <![CDATA[ &#x2022; ]]> <c:out value=" ${category.name}"></c:out>
                </span>
                <c:if test="${category.categoryEmpty}">
                    <c:forEach items="${category.ailments.otherAilments}" varStatus="otherAilmentItemStatus" var="otherAilment">
-                       <span class='state'>
-                           <c:out value=" ${otherAilment.state.displayName}"></c:out>
-                       </span>
-                       <span class='description'>
-                           <c:out value=" ${otherAilment.description}"></c:out>
-                       </span>
+                       <c:if test="${category.name != 'Other' or otherAilment.state.displayName != 'None'}">
+                           <span class='state'>
+                               <c:out value=" ${otherAilment.state.displayName}"></c:out>
+                           </span>
+                           <span class='description'>
+                               <c:out value=" ${otherAilment.description}"></c:out>
+                           </span>
+                       </c:if>
                    </c:forEach>
                </c:if>
                <c:if test="${not category.categoryEmpty}">
@@ -22,7 +24,7 @@
                        <c:forEach items="${category.ailments.ailments}" varStatus="ailmentItemStatus" var="ailment">
                            <div class='ailment'>
                                <span class='title'>
-                                   <c:out value="${categoryStatus.index + 1}" />.<c:out value="${ailmentItemStatus.index + 1}" /><c:out value=" ${ailment.definition.value}"></c:out>
+                                   <![CDATA[ &#x2022; ]]> <c:out value=" ${ailment.definition.value}"></c:out>
                                </span>
                                <span class='state'>
                                    <c:out value=" ${ailment.state.displayName}"></c:out>
@@ -31,15 +33,17 @@
                        </c:forEach>
                        <div class='ailment'>
                            <c:forEach items="${category.ailments.otherAilments}" varStatus="otherAilmentItemStatus" var="otherAilment">
-                               <span class='title'>
-                                   <c:out value="${categoryStatus.index + 1}" />.<c:out value="*" /><c:out value=" ${otherAilment.definition.value}"></c:out>
-                               </span>
-                               <span class='state'>
-                                   <c:out value=" ${otherAilment.state.displayName}"></c:out>
-                               </span>
-                               <span class='description'>
-                                    <c:out value=" ${otherAilment.description}"></c:out>
-                               </span>
+                               <c:if test="${otherAilment.state.displayName != 'None'}">
+                                   <span class='title'>
+                                       <![CDATA[ &#x2022; ]]> <c:out value=" ${otherAilment.definition.value}"></c:out>
+                                   </span>
+                                   <span class='state'>
+                                       <c:out value=" ${otherAilment.state.displayName}"></c:out>
+                                   </span>
+                                   <span class='description'>
+                                        <c:out value=" ${otherAilment.description}"></c:out>
+                                   </span>
+                               </c:if>
                            </c:forEach>
                        </div>
                    </div>

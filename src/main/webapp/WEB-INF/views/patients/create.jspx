@@ -5,7 +5,8 @@
     <form:create id="fc_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" render="${empty dependencies}" z="HkT/39qeIawAHTgF7FpZDeoTr94=">
         <jsp:include page="createBasicInformation.jspx" />
         <br/>
-        <jsp:include page="createMedicalHistory.jspx" />
+        <jsp:include page="medicalHistoryForm.jspx" />
+        <jsp:include page="nextToPatientPreferences.jspx" />
         <br/>
         <jsp:include page="createPatientPreferences.jspx" />
     </form:create>

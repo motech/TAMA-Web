@@ -3,6 +3,7 @@
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.motechproject.tama.domain.AilmentDefinition.*;
@@ -59,7 +60,11 @@ public enum SystemCategoryDefiniton {
     ENT("Ears, Nose, Throat", new Ailments().setAilments(Collections.<Ailment>emptyList())
             .setOtherAilments(Arrays.asList(OtherAilment.newOtherAilment()))),
 
-    Other("Other", new Ailments().setAilments(Collections.<Ailment>emptyList())
+    Other("Other", new Ailments().setAilments(Arrays.asList(Hypertension.getAilment(),
+            Nephrotoxicity.getAilment(),
+            Diabetes.getAilment(),
+            Tuberculosis.getAilment(),
+            Alcoholism.getAilment()))
             .setOtherAilments(Arrays.asList(OtherAilment.newOtherAilment(),
                     OtherAilment.newOtherAilment(),
                     OtherAilment.newOtherAilment())));
@@ -80,10 +85,17 @@ public enum SystemCategoryDefiniton {
         return this.categoryName;
     }
 
-    public SystemCategory getSystemCategory() {
+    private SystemCategory getSystemCategory() {
         return SystemCategory.newSystemCategory(this.getCategoryName(), getAilments());
     }
 
+    public static  List<SystemCategory> all() {
+        List<SystemCategory> systemCategories = new LinkedList<SystemCategory>();
+        for(SystemCategoryDefiniton definiton : SystemCategoryDefiniton.values()) {
+           systemCategories.add(definiton.getSystemCategory());
+        }
+        return systemCategories;
+    }
 
 
 }

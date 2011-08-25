@@ -1,0 +1,21 @@
+.medical_history .category {
+    background-color: #EFEFEF;
+    font-weight: bold;
+}
+
+.medical_history .ailment {
+    background-color: #FFFFFF;
+}
+
+.medical_history .questions .question {
+    height: 25px;
+}
+
+.medical_history .questions .question input {
+    float: left;
+}
+
+
+.medical_history .questions .question label {
+    margin-top: 5px
+}

@@ -14,6 +14,16 @@ public class NonHIVMedicalHistory extends BaseEntity {
 
     private List<SystemCategory> systemCategories = new LinkedList<SystemCategory>();
 
+    private List<MedicalHistoryQuestion> questions = new LinkedList<MedicalHistoryQuestion>();
+
+    public List<MedicalHistoryQuestion> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<MedicalHistoryQuestion> questions) {
+        this.questions = questions;
+    }
+
     public List<AllergyHistory> getAllergiesHistory() {
         return allergiesHistory;
     }

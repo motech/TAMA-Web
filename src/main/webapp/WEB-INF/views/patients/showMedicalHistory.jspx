@@ -10,6 +10,7 @@
         </util:panel>
         <br/>
         <util:panel id="fc_org_motechproject_tama_domain_patient_non_HIV_Medical_History" title="Non - HIV Medical History" openPane="true">
+
             <span class="drug_allergy_view_label"><c:out value="History of drug allergy / hypersensitivity" /></span>
             <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.allergiesHistory}" varStatus="item" var="allergyHistory">
                 <c:if test="${allergyHistory.specified}">
@@ -21,11 +22,13 @@
                     </span>
                 </c:if>
             </c:forEach>
+
             <c:if test="${empty patient.medicalHistory.nonHivMedicalHistory.specifiedAllergies}">
                 <span class="drug_allergy_text">
                     <c:out value="None" />
                 </span>
             </c:if>
+
             <span class="drug_rash_view_label"><c:out value="History of rash while receiving NNRTIs" /></span>
             <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.rashes}" varStatus="item" var="rash">
                 <span class="drug_rash_text"><c:out value="${rash.value}" /></span>
@@ -35,6 +38,18 @@
                     <c:out value="None" />
                 </span>
             </c:if>
+
+
+            <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.questions}" varStatus="status" var="question">
+                <span class="drug_rash_view_label">
+                    <c:out value="${question.question}" />
+                </span>
+                <span class="drug_allergy_text">
+                    <c:out value="${question.historyPresent}" />
+                    <c:out value="${question.comments}" />
+                </span>
+            </c:forEach>
+
             <jsp:include page="showSystemCategories.jspx" />
         </util:panel>
     </util:panel>

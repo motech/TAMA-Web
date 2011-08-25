@@ -435,6 +435,10 @@ fieldset th {
     height: 22px;
 }
 
+.system_categories {
+    margin-top: 15px;
+}
+
 .system_categories > .title {
     font-weight: bold;
 }

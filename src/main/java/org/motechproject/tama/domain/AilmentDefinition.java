@@ -30,7 +30,17 @@ public enum AilmentDefinition {
 
     Nightmares("Nightmares"),
 
-    others("others");
+    Hypertension("Hypertension"),
+
+    Nephrotoxicity("Nephrotoxicity"),
+
+    Diabetes("Diabetes"),
+
+    Tuberculosis("Tuberculosis"),
+
+    Alcoholism("Alcoholism"),
+
+    others("Others");
 
     private final String value;
 

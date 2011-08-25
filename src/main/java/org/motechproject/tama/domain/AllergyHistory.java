@@ -1,8 +1,8 @@
  package org.motechproject.tama.domain;
 
-import org.motechproject.tama.TAMAConstants;
+ import org.motechproject.tama.TAMAConstants;
 
-public class AllergyHistory extends BaseEntity {
+ public class AllergyHistory extends BaseEntity {
 
     private TAMAConstants.DrugAllergy drugAllergy;
     private boolean specified;
