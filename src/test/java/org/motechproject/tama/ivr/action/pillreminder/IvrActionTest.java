@@ -1,31 +1,35 @@
 package org.motechproject.tama.ivr.action.pillreminder;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tama.ivr.*;
-import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
-import org.motechproject.tama.ivr.decisiontree.TreeChooser;
-import org.springframework.aop.target.ThreadLocalTargetSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.Arrays;
+
+import javax.servlet.http.HttpSession;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.ITreeCommand;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.tama.ivr.IVRCallAttribute;
+import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
+import org.motechproject.tama.ivr.decisiontree.TreeChooser;
+import org.springframework.aop.target.ThreadLocalTargetSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationTestContext.xml")
@@ -75,6 +79,13 @@ public class IvrActionTest {
         tamaIvrAction.handle(new IVRRequest("sid", "cid", "event", ""), new IVRSession(httpSession));
 
         verify(httpSession).setAttribute(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION, "/");
+    }
+    
+    @Test
+    public void shouldNotExecuteCommandIfThereIsNoUserInput() {
+    	  when(httpSession.getAttribute(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION)).thenReturn("/");
+    	  tamaIvrAction.handle(new IVRRequest("sid", "cid", "event", ""), new IVRSession(httpSession));
+    	  assertFalse(commandForTamaIvrActionTest.isCalled());
     }
 
     class TestTreeForTamaIvrActionTest extends TamaDecisionTree {
