@@ -10,7 +10,7 @@ import java.util.Properties;
 @Component
 public class ScheduledJobDataService {
     private Properties properties;
-    private String QRTZ_JOB_DETAILS_TABLE = "qrtz_job_details";
+    private String QRTZ_JOB_DETAILS_TABLE = "QRTZ_JOB_DETAILS";
 
     @Autowired
     public ScheduledJobDataService(@Qualifier("quartzProperties") Properties properties) {
@@ -32,9 +32,9 @@ public class ScheduledJobDataService {
         Connection connection = null;
         try {
             connection = createConnection();
-            clearTable(connection, "qrtz_cron_triggers");
-            clearTable(connection, "qrtz_simple_triggers");
-            clearTable(connection, "qrtz_triggers");
+            clearTable(connection, "QRTZ_CRON_TRIGGERS");
+            clearTable(connection, "QRTZ_SIMPLE_TRIGGERS");
+            clearTable(connection, "QRTZ_TRIGGERS");
             clearTable(connection, QRTZ_JOB_DETAILS_TABLE);
         } catch (SQLException e) {
             closeHandles(connection, null, null);
