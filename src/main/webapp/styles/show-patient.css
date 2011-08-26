@@ -1,3 +1,7 @@
+.show_patient_preferences label {
+    width: 250px;
+}
+
 .update_patient {
     margin-top: -37px;
     padding-left: 230px;

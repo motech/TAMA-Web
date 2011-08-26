@@ -22,6 +22,8 @@ public class PatientPreferences extends BaseEntity {
 
     private ReminderCall reminderCall = ReminderCall.Daily;
 
+    private TAMAConstants.DayOfWeek dayOfWeeklyCall;
+
     public ReminderCall getReminderCall() {
         return this.reminderCall;
     }
@@ -54,5 +56,13 @@ public class PatientPreferences extends BaseEntity {
 
     public void setIvrLanguageId(String ivrLanguageId) {
         this.ivrLanguageId = ivrLanguageId;
+    }
+
+    public TAMAConstants.DayOfWeek getDayOfWeeklyCall() {
+        return dayOfWeeklyCall;
+    }
+
+    public void setDayOfWeeklyCall(TAMAConstants.DayOfWeek dayOfWeeklyCall) {
+        this.dayOfWeeklyCall = dayOfWeeklyCall;
     }
 }

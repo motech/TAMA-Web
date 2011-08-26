@@ -3,7 +3,10 @@ package org.motechproject.tama.web;
 import org.ektorp.UpdateConflictException;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.domain.*;
+import org.motechproject.tama.domain.AilmentState;
+import org.motechproject.tama.domain.MedicalHistoryQuestions;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.SystemCategoryDefiniton;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -26,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 @RooWebScaffold(path = "patients", formBackingObject = Patient.class)
@@ -193,6 +195,7 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("systemCategories", SystemCategoryDefiniton.all());
         uiModel.addAttribute("options", AilmentState.values());
         uiModel.addAttribute("questions", MedicalHistoryQuestions.all());
+        uiModel.addAttribute("daysOfWeek", Arrays.asList(TAMAConstants.DayOfWeek.values()));
     }
 
     private void addDateTimeFormat(Model uiModel) {

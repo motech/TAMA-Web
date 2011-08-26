@@ -42,6 +42,7 @@
             nextToPatientPreferencesButton = dojo.byId('nextToPatientPreferencesSpan');
             submitButtonDiv = dojo.byId('fc_org_motechproject_tama_domain_patient_submit');
 
+            dojo.parser.parse();
             if (formHasErrors()) {
                 hideElement([nextToPatientPreferencesButton]);
                 openAllPanels();

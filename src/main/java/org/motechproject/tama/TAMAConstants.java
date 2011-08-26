@@ -34,6 +34,10 @@ public class TAMAConstants {
         Daily, Weekly
     }
 
+    public enum DayOfWeek {
+        Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+    }
+
     public enum AUTH_STATUS {
         AUTHENTICATED("Authenticated"), UNAUTHENTICATED("Unauthenticated");
         private String value;
