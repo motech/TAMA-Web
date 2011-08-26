@@ -7,7 +7,7 @@ public class TestHIVMedicalHistory {
     private TestHIVMedicalHistory() {
     }
 
-    public static TestHIVMedicalHistory withDefault() {
+    public static TestHIVMedicalHistory withMandatory() {
         TestHIVMedicalHistory hivMedicalHistory = new TestHIVMedicalHistory();
         return hivMedicalHistory.modeOfTransmission("Vertical").testReason("STDs");
     }

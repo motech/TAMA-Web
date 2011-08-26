@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-    <appender class="org.apache.log4j.RollingFileAppender" name="logfile">
+    <appender name="production" class="org.apache.log4j.RollingFileAppender">
         <param value="logs/tama.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
         <param name="maxBackupIndex" value="5"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
+            <param name="ConversionPattern" value="[%d{ISO8601}] [%c] [%p] [ThreadId:%t] - %m%n"/>
         </layout>
     </appender>
-    <appender class="org.apache.log4j.RollingFileAppender" name="functionaltestlogfile">
+    <appender name="functionaltest" class="org.apache.log4j.RollingFileAppender">
         <param value="logs/tamafunctional.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
         <param name="maxBackupIndex" value="5"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
+            <param name="ConversionPattern" value="[%d{ISO8601}] [%c] [%p] [ThreadId:%t] - %m%n"/>
         </layout>
     </appender>
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{ISO8601}] [%c] [%p] [ThreadId:%t] - %m%n"/>
+        </layout>
+    </appender>
+
     <logger name="org.springframework">
         <level value="warn"/>
     </logger>
@@ -28,12 +35,21 @@
     <logger name="org.motechproject">
         <level value="warn"/>
     </logger>
-    <logger name="com.gargoylesoftware">
-        <level value="error"/>
-        <appender-ref ref="functionaltestlogfile"/>
+
+    <!-- Tama Functional logger's additivity is set to false in the TamaFunctionalLoggerFactory -->
+    <logger name="org.motechproject.tamafunctional">
+        <level value="info"/>
+        <appender-ref ref="functionaltest"/>
+        <appender-ref ref="console"/>
     </logger>
+    <logger name="com.gargoylesoftware">
+        <level value="fatal"/>
+        <appender-ref ref="functionaltest"/>
+    </logger>
+
     <root>
         <priority value="warn"/>
-        <appender-ref ref="logfile"/>
+        <appender-ref ref="production"/>
+        <appender-ref ref="console"/>
     </root>
 </log4j:configuration>

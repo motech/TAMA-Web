@@ -22,8 +22,8 @@ public class IVRResponse {
         return collectdtmf != null;
     }
 
-    public boolean audioPlayed(String name) {
-        return collectDtmf() && collectdtmf.playsAudio(name);
+    public boolean audioPlayed(String ... name) {
+        return collectDtmf() && collectdtmf.hasAudio(name);
     }
 
     public String audioPlayed() {

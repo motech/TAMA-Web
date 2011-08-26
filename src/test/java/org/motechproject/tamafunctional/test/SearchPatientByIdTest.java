@@ -4,7 +4,6 @@ package org.motechproject.tamafunctional.test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -13,8 +12,6 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.Page;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -34,7 +31,7 @@ public class SearchPatientByIdTest extends BaseTest {
 
     @Test
     public void testSuccessfulPatientSearch() {
-        TestPatient patient = TestPatient.withMandatory(clinicianContext.clinic()).patientId("xyz1234");
+        TestPatient patient = TestPatient.withMandatory().patientId("xyz1234");
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().

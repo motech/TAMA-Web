@@ -7,16 +7,9 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="classpath*:**/applicationContext.xml"/>
-
-    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
-        <property name="scopes">
-            <map>
-                <entry key="session">
-                    <bean class="org.springframework.context.support.SimpleThreadScope"/>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
+    <util:properties id="quartzProperties" location="classpath:/quartz.properties"/>
+    <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
+    <context:annotation-config/>
+    <context:spring-configured/>
+    <context:component-scan base-package="org.motechproject.tamafunctional"/>
 </beans>

@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.framework;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -15,7 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
-public abstract class BaseTest {
+public abstract class BaseTest extends FunctionalTestObject {
     @Rule
     public TestName testName = new TestName();
 
@@ -56,5 +57,4 @@ public abstract class BaseTest {
                 output.close();
         }
     }
-
 }

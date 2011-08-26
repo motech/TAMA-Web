@@ -25,6 +25,7 @@ public class PatientDataService extends EntityDataService {
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
         patient.id(showPatientPage.patientDocId());
+        logInfo("{Created}{Patient}{DocId=%s}", patient.id());
         return showPatientPage;
     }
 
@@ -56,5 +57,11 @@ public class PatientDataService extends EntityDataService {
         TestTreatmentAdvice treatmentAdvice = new TestTreatmentAdvice().regimenName(viewARTRegimenPage.getRegimenName()).drugCompositionName(viewARTRegimenPage.getDrugCompositionGroupName());
         viewARTRegimenPage.logout();
         return treatmentAdvice;
+    }
+
+    public void setupARTRegimenWithDependents(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
+        new ClinicanDataService(webDriver).createWithClinc(clinician);
+        registerAndActivate(patient, clinician);
+        createARTRegimen(treatmentAdvice, patient, clinician);
     }
 }

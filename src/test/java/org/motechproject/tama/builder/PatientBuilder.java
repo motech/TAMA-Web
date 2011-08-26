@@ -86,7 +86,7 @@ public class PatientBuilder {
         return this.withPatientId("1234_" + DateUtil.now().getMillis()).
                 withDateOfBirth(DateUtil.newDate(1990, 5, 21)).
                 withMobileNumber("9765456789").
-                withPasscode("123456").
+                withPasscode("1234").
                 withClinic(Clinic.newClinic()).
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).

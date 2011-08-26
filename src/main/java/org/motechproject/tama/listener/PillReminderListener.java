@@ -22,7 +22,6 @@ public class PillReminderListener {
     public void handlePillReminderEvent(MotechEvent motechEvent) {
         Map<String, Object> parameters = motechEvent.getParameters();
         String patientDocId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
-        String regimenId = (String) parameters.get(EventKeys.PILLREMINDER_ID_KEY);
         String dosageId = (String) parameters.get(EventKeys.DOSAGE_ID_KEY);
         int timesAlreadyCalled = (Integer) parameters.get(EventKeys.PILLREMINDER_TIMES_SENT);
         int totalCallsToBeMade = (Integer) parameters.get(EventKeys.PILLREMINDER_TOTAL_TIMES_TO_SEND);

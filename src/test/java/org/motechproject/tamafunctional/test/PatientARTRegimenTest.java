@@ -18,7 +18,7 @@ public class PatientARTRegimenTest extends BaseTest {
         TestClinician clinician = TestClinician.withMandatory();
         new ClinicanDataService(webDriver).createWithClinc(clinician);
 
-        TestPatient patient = TestPatient.withMandatory(clinician.clinic());
+        TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);
 
@@ -31,11 +31,11 @@ public class PatientARTRegimenTest extends BaseTest {
     }
 
     @Test
-    public void testReCreateARTRegimenForPatient() {
+    public void saveRegimenForPatient() {
         TestClinician clinician = TestClinician.withMandatory();
         new ClinicanDataService(webDriver).createWithClinc(clinician);
 
-        TestPatient patient = TestPatient.withMandatory(clinician.clinic());
+        TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);
 

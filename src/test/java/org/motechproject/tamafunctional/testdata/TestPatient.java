@@ -8,35 +8,31 @@ public class TestPatient extends TestEntity {
     private LocalDate dateOfBirth;
     private String mobileNumber;
     private String passcode;
-    private TestClinic clinic;
     private String travelTimeToClinicInDays;
     private String travelTimeToClinicInHours;
     private String travelTimeToClinicInMinutes;
     private TestHIVMedicalHistory hivMedicalHistory;
 
+    //TODO: when running tests in parallel we might have to come up with something better than this. This doesn't protect you against multiple runs
+    private static long uniquePhoneNumber = 1000000001;
+
     private TestPatient() {
     }
 
-    public static TestPatient withMandatory(TestClinic clinic) {
+    public static TestPatient withMandatory() {
         TestPatient testPatient = new TestPatient();
         return testPatient.patientId(unique("1234_")).
                 dateOfBirth(DateUtil.newDate(1990, 5, 21)).
-                mobileNumber("9765456789").
-                passcode("123456").
-                clinic(clinic).
+                mobileNumber(Long.toString(uniquePhoneNumber++)).
+                passcode("1234").
                 travelTimeToClinicInDays("1").
                 travelTimeToClinicInHours("2").
                 travelTimeToClinicInHours("3").
-                medicalHistory(TestHIVMedicalHistory.withDefault());
+                medicalHistory(TestHIVMedicalHistory.withMandatory());
     }
 
     public static TestPatient withMandatory(TestClinician clinician) {
-        return withMandatory(clinician.clinic());
-    }
-
-    private TestPatient clinic(TestClinic clinic) {
-        this.clinic = clinic;
-        return this;
+        return withMandatory();
     }
 
     public TestHIVMedicalHistory medicalHistory() {

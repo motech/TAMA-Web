@@ -4,8 +4,6 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
@@ -13,8 +11,6 @@ import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
@@ -30,7 +26,7 @@ public class PatientActivationTest extends BaseTest {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
 
-        TestPatient patient = TestPatient.withMandatory(clinicianContext.clinic());
+        TestPatient patient = TestPatient.withMandatory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().

@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.apache.log4j.Logger;
+import org.motechproject.tama.TamaException;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
@@ -17,14 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/ivr")
 public class IVRController {
-
-    Logger LOG = Logger.getLogger(this.getClass());
-    @Autowired
+    Logger logger = Logger.getLogger(this.getClass());
     private Actions actions;
 
-    public IVRController() {
-    }
-
+    @Autowired
     public IVRController(Actions actions) {
         this.actions = actions;
     }
@@ -32,8 +29,12 @@ public class IVRController {
     @RequestMapping(value = "reply", method = RequestMethod.GET)
     @ResponseBody
     public String reply(@ModelAttribute IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        BaseIncomingAction action = actions.findFor(ivrRequest.callEvent());
-        return action.handle(ivrRequest, request, response);
+        try {
+            BaseIncomingAction action = actions.findFor(ivrRequest.callEvent());
+            return action.handle(ivrRequest, request, response);
+        } catch (Exception e) {
+            logger.error("Failed to handled incoming request", e);
+            throw new TamaException("Failed to handled incoming request", e);
+        }
     }
-
 }

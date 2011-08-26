@@ -20,7 +20,7 @@ public class PatientRegistrationTest extends BaseTest {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
 
-        TestPatient patient = TestPatient.withMandatory(clinicianContext.clinic());
+        TestPatient patient = TestPatient.withMandatory();
 
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).

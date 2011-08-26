@@ -10,11 +10,12 @@ public class ClinicDataService extends EntityDataService {
         super(webDriver);
     }
 
-    public void create(TestClinic testClinic) {
+    public void create(TestClinic clinic) {
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicRegistrationPage()
-                .registerClinic(testClinic)
+                .registerClinic(clinic)
                 .logout();
+        logInfo("{Created}{Clinic}{Name=%s}", clinic.name());
     }
 }

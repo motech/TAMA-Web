@@ -23,9 +23,9 @@ public class ClinicianSecurityTest extends BaseTest {
         TestClinician clinician2 = TestClinician.withMandatory().clinic(TestClinic.withMandatory().name(unique("securityTest")));
         new ClinicanDataService(webDriver).createWithClinc(clinician2);
 
-        TestPatient patientUnderClinican1 = TestPatient.withMandatory(clinician1.clinic());
+        TestPatient patientUnderClinican1 = TestPatient.withMandatory();
         new PatientDataService(webDriver).register(patientUnderClinican1, clinician1);
-        TestPatient patientUnderClinican2 = TestPatient.withMandatory(clinician1.clinic());
+        TestPatient patientUnderClinican2 = TestPatient.withMandatory();
         new PatientDataService(webDriver).register(patientUnderClinican2, clinician2);
 
         assertThatClinicianSeesOnlyHisPatients(clinician1, patientUnderClinican1, patientUnderClinican2);

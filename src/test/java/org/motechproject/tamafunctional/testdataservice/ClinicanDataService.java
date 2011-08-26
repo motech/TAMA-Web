@@ -17,6 +17,7 @@ public class ClinicanDataService extends EntityDataService {
                 .goToClinicianRegistrationPage()
                 .registerClinician(clinician)
                 .logout();
+        logInfo("{Created}{Clinician}{UserName=%s}", clinician.userName());
     }
 
     public void createWithClinc(TestClinician clinician) {

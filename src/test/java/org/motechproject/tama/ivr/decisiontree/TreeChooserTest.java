@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationTestContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class TreeChooserTest {
 
     @Autowired

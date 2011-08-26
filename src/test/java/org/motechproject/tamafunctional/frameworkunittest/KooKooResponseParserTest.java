@@ -5,7 +5,6 @@ import org.motechproject.tamafunctional.framework.KooKooResponseParser;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 
 public class KooKooResponseParserTest {
     @Test
@@ -14,5 +13,11 @@ public class KooKooResponseParserTest {
         assertNotNull(ivrResponse);
         assertNotNull(ivrResponse.isHangedUp());
         assertNotNull(ivrResponse.sid());
+    }
+
+    @Test
+    public void parseCollectDtmfWithMultipleAudio() {
+        IVRResponse ivrResponse = KooKooResponseParser.fromXml("<response sid=\"123\"><collectdtmf><playaudio>foo.wav</playaudio><playaudio>bar.wav</playaudio></collectdtmf></response>");
+        assertNotNull(ivrResponse);
     }
 }
