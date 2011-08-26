@@ -17,6 +17,7 @@
 
         function showMedicalHistory() {
             closePanel([basicInformationPanelWidget]);
+            openPanel([medicalHistoryPanelWidget]);
             hideElement([nextToMedicalHistoryButton]);
             showElement([medicalHistoryPanel, nextToPatientPreferencesButton]);
         }

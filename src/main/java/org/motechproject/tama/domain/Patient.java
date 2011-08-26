@@ -20,9 +20,6 @@ import java.util.Date;
 public class Patient extends CouchEntity {
     protected String patientId;
     @NotNull
-    @Pattern(regexp = TAMAConstants.PASSCODE_REGEX, message = TAMAMessages.PASSCODE_REGEX_MESSAGE)
-    protected String passcode;
-    @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     protected String mobilePhoneNumber;
 
@@ -36,19 +33,16 @@ public class Patient extends CouchEntity {
     private Gender gender;
     @ManyToOne
     private Clinic clinic;
-    @ManyToOne
-    private IVRLanguage ivrLanguage;
 
     private MedicalHistory medicalHistory;
+    private PatientPreferences patientPreferences;
 
-    private ReminderCall reminderCall = ReminderCall.Daily;
     private Status status = Status.Inactive;
     private int travelTimeToClinicInDays;
     private int travelTimeToClinicInHours;
     private int travelTimeToClinicInMinutes;
     private Date registrationDateAsDate;
     private String genderId;
-    private String ivrLanguageId;
     private String clinic_id;
 
     @JsonIgnore
@@ -62,16 +56,12 @@ public class Patient extends CouchEntity {
     }
 
     public boolean authenticatedWith(String passcode) {
-        return this.passcode.equals(passcode);
+        return this.patientPreferences.getPasscode().equals(passcode);
     }
 
     @JsonIgnore
     public String getIVRMobilePhoneNumber() {
         return String.format("0%s", mobilePhoneNumber);
-    }
-
-    public enum ReminderCall {
-        Daily, Weekly
     }
 
     public enum Status {
@@ -89,22 +79,6 @@ public class Patient extends CouchEntity {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
-    }
-
-    public String getPasscode() {
-        return this.passcode;
-    }
-
-    public void setPasscode(String passcode) {
-        this.passcode = passcode;
-    }
-
-    public ReminderCall getReminderCall() {
-        return this.reminderCall;
-    }
-
-    public void setReminderCall(ReminderCall reminderCall) {
-        this.reminderCall = reminderCall;
     }
 
     public Status getStatus() {
@@ -172,6 +146,14 @@ public class Patient extends CouchEntity {
         this.medicalHistory = medicalHistory;
     }
 
+    public PatientPreferences getPatientPreferences() {
+        return patientPreferences;
+    }
+
+    public void setPatientPreferences(PatientPreferences patientPreferences) {
+        this.patientPreferences = patientPreferences;
+    }
+
     public LocalDate getRegistrationDate() {
         if (registrationDateAsDate == null) {
             this.registrationDateAsDate = toDate(DateUtil.today());
@@ -207,16 +189,6 @@ public class Patient extends CouchEntity {
     }
 
     @JsonIgnore
-    public IVRLanguage getIvrLanguage() {
-        return this.ivrLanguage;
-    }
-
-    public void setIvrLanguage(IVRLanguage ivrLanguage) {
-        this.ivrLanguage = ivrLanguage;
-        this.ivrLanguageId = ivrLanguage.getId();
-    }
-
-    @JsonIgnore
     public Clinic getClinic() {
         return this.clinic;
     }
@@ -234,14 +206,6 @@ public class Patient extends CouchEntity {
         this.genderId = genderId;
     }
 
-    public String getIvrLanguageId() {
-        return ivrLanguageId;
-    }
-
-    public void setIvrLanguageId(String ivrLanguageId) {
-        this.ivrLanguageId = ivrLanguageId;
-    }
-
     public String getClinic_id() {
         return clinic_id;
     }
@@ -252,5 +216,20 @@ public class Patient extends CouchEntity {
 
     public String uniqueId() {
         return this.getClinic_id() + '_' + this.getPatientId();
+    }
+
+    @JsonIgnore
+    public IVRLanguage getIvrLanguage() {
+        return this.patientPreferences.getIvrLanguage();
+    }
+
+    @JsonIgnore
+    public void setIvrLanguage(IVRLanguage ivrLanguage) {
+        this.patientPreferences.setIvrLanguage(ivrLanguage);
+    }
+
+    @JsonIgnore
+    public String getIvrLanguageId() {
+        return this.patientPreferences.getIvrLanguageId();
     }
 }

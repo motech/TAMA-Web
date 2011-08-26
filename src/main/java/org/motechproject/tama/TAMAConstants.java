@@ -30,6 +30,10 @@ public class TAMAConstants {
         }
     }
 
+    public enum ReminderCall {
+        Daily, Weekly
+    }
+
     public enum AUTH_STATUS {
         AUTHENTICATED("Authenticated"), UNAUTHENTICATED("Unauthenticated");
         private String value;

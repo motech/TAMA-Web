@@ -5,6 +5,7 @@
     <form:update id="fu_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
         <jsp:include page="updateBasicInformation.jspx" />
         <jsp:include page="medicalHistoryForm.jspx" />
+        <br/>
         <jsp:include page="updatePatientPreferences.jspx" />
     </form:update>
     <script type="text/javascript">

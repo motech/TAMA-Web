@@ -34,7 +34,7 @@ public class PatientBuilder {
     }
 
     public PatientBuilder withPasscode(String passcode) {
-        patient.setPasscode(passcode);
+        patient.getPatientPreferences().setPasscode(passcode);
         return this;
     }
 

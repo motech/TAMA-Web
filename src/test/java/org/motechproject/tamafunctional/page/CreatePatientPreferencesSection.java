@@ -9,9 +9,9 @@ import org.openqa.selenium.support.How;
 
 public class CreatePatientPreferencesSection {
 
-    @FindBy(how = How.ID, using = "_ivrLanguage_id")
+    @FindBy(how = How.ID, using = "_patientPreferences.ivrLanguage_id")
     private WebElement ivrLanguage;
-    @FindBy(how = How.ID, using = "_passcode_id")
+    @FindBy(how = How.ID, using = "_patientPreferences.passcode_id")
     private WebElement passcode;
 
     public void postInitialize() {

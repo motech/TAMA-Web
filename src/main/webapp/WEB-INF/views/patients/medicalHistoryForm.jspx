@@ -5,7 +5,7 @@
     <spring:url value="/resources/js/nonhivmedicalhistory.js" var="nonhivmedicalhistoryjs" />
     <script src="${nonhivmedicalhistoryjs}" type="text/javascript"/>
     <spring:message code="label_org_motechproject_tama_domain_patient_medical_history" var="medical_history" htmlEscape="false" />
-    <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="true">
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="${param.section == medical_history}">
         <util:panel id="fc_org_motechproject_tama_domain_patient_HIV_Medical_History" title="HIV Related Medical History" openPane="true">
             <field:select field="medicalHistory.hivMedicalHistory.testReasonId" id="c_org_motechproject_tama_domain_patient_test_reason" itemValue="id" itemLabel="name" items="${testReasons}" path="/testReasons" required="true" />
             <field:select field="medicalHistory.hivMedicalHistory.modeOfTransmissionId" id="c_org_motechproject_tama_domain_patient_mode_of_transmission" itemValue="id" itemLabel="type" items="${modesOfTransmission}" path="/modesOfTransmission" required="true" />
