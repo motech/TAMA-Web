@@ -19,3 +19,11 @@
 .medical_history .questions .question label {
     margin-top: 5px
 }
+
+div.question {
+    font-weight: bold;
+}
+
+span.ailements_label {
+   font-weight: bold;
+}

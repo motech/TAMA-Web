@@ -45,8 +45,17 @@
                     <c:out value="${question.question}" />
                 </span>
                 <span class="drug_allergy_text">
-                    <c:out value="${question.historyPresent}" />
-                    <c:out value="${question.comments}" />
+                    <c:choose>
+                        <c:when test="${question.historyPresent}">
+                            Yes
+                        </c:when>
+                        <c:otherwise>
+                            No
+                        </c:otherwise>
+                    </c:choose>
+                    <c:if test="${not empty question.comments}">
+                        ,<c:out value="${question.comments}" />
+                    </c:if>
                 </span>
             </c:forEach>
 

@@ -50,9 +50,10 @@
                         <span>
                             <springform:checkbox id="c_org_motechproject_tama_domain_Patient_medicalHistory_question_${questionStatus.index}" path="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].historyPresent" value="${question.historyPresent}" label="${question.question}" class="requires_comment_${question.requiresComment}"/>
                             <input type="hidden" name="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].question" value="${question.question}" />
+                            <input type="hidden" name="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].requiresComment" value="${question.requiresComment}" />
                         </span>
                             <c:if test="${question.requiresComment}" >
-                                <field:input id="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].comments" field="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].comments" label=" " />
+                                <field:input id="c_org_motechproject_tama_domain_Patient_question[${questionStatus.index}]" field="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].comments" label="  " />
                             </c:if>
                         </div>
                     </c:forEach>
@@ -71,6 +72,12 @@
                 <br/>
                 <div class="system_category_option">
                     <table>
+                        <thead>
+                            <th><spring:message code="table_header_medical_history_system"/></th>
+                            <th><spring:message code="table_header_medical_history_option_none"/></th>
+                            <th><spring:message code="table_header_medical_history_option_not_active"/></th>
+                            <th><spring:message code="table_header_medical_history_option_active"/></th>
+                        </thead>
                         <tbody>
                             <c:forEach items="${systemCategories}" varStatus="item" var="category">
                             <springform:hidden id="c_org_motechproject_tama_domain_Patient_systemCategory${item.index}" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].name" value="${category.name}" />
