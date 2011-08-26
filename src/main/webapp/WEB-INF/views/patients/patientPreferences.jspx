@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<div class='patient_preferences' xmlns:springform="http://www.springframework.org/tags/form" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+    <spring:message code="label_org_motechproject_tama_domain_patient_tama_preferences" var="tama_preferences" htmlEscape="false" />
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="${tama_preferences}" openPane="true">
+        <field:input field="patientPreferences.passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" max="10"/>
+        <field:select field="patientPreferences.ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed" required="true"/>
+
+        <div class='section'>
+            <div class='left_pane'>
+                Medicine Adherence Report Calls* :
+            </div>
+            <div class='right_pane'>
+                <div class='radio_group'>
+                    <springform:radiobutton id="c_org_motechproject_tama_domain_Patient_daily_reminderCall" path="patientPreferences.reminderCall" value="Daily" label="Activate Daily Pill Reminder Call"/>
+                </div>
+                <div class='radio_group'>
+                    <springform:radiobutton id="c_org_motechproject_tama_domain_Patient_weekly_reminderCall" path="patientPreferences.reminderCall" value="Weekly" label="Activate Weekly Adherence Calls"/>
+                </div>
+            </div>
+        </div>
+
+    </util:panel>
+    <br />
+</div>

@@ -1,0 +1,26 @@
+/* patient preferences */
+
+.patient_preferences .section {
+    width: 600px;
+    overflow: auto;
+}
+
+.patient_preferences .left_pane {
+    float: left;
+    width: 40%;
+}
+
+.patient_preferences .right_pane {
+    float: left;
+    width: 60%;
+}
+
+.patient_preferences input {
+    float: none;
+    height: auto;
+}
+
+.patient_preferences label {
+    float: none;
+    margin: 0;
+}
