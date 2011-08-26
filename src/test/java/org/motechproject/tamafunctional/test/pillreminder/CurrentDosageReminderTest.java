@@ -22,7 +22,7 @@ import java.io.IOException;
 import static org.motechproject.tama.ivr.IVRMessage.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationTestContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class CurrentDosageReminderTest extends BaseIVRTest {
     @Autowired
     private ScheduledJobDataService scheduledJobDataService;

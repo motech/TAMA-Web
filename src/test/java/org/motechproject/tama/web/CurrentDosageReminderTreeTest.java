@@ -29,7 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/applicationContext.xml"})
+@ContextConfiguration(locations = {"/applicationTestContext.xml"})
 public class CurrentDosageReminderTreeTest {
     @Autowired
     private TestTree currentDosageReminderTree;
