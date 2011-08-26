@@ -29,11 +29,11 @@ public class PatientTest {
     @Test
     public void testNotNullConstraintFieldsOnPatient() {
         Patient nullPatient = PatientBuilder.startRecording().build();
+
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(nullPatient);
-        assertEquals(3, constraintViolations.size());
         assertConstraintViolation(constraintViolations, "dateOfBirthAsDate", "may not be null");
         assertConstraintViolation(constraintViolations, "mobilePhoneNumber", "may not be null");
-        assertConstraintViolation(constraintViolations, "passcode", "may not be null");
+        assertConstraintViolation(constraintViolations, "patientPreferences.passcode", "may not be null");
     }
 
     @Test
@@ -51,7 +51,7 @@ public class PatientTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPasscode(invalidPasscode).build();
         Set<ConstraintViolation<Patient>> constraintViolations = validator.validate(patient);
         assertEquals(1, constraintViolations.size());
-        assertConstraintViolation(constraintViolations, "passcode", "Passcode should be numeric and 4-10 digits long.");
+        assertConstraintViolation(constraintViolations, "patientPreferences.passcode", "Passcode should be numeric and 4-10 digits long.");
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
@@ -35,7 +36,8 @@ public class Patient extends CouchEntity {
     private Clinic clinic;
 
     private MedicalHistory medicalHistory;
-    private PatientPreferences patientPreferences;
+    @Valid
+    private PatientPreferences patientPreferences = new PatientPreferences();
 
     private Status status = Status.Inactive;
     private int travelTimeToClinicInDays;
