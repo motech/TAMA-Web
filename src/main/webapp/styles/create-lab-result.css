@@ -1,0 +1,7 @@
+.test-date-field label {
+    display: none;
+}
+
+.test-date-field #__id{
+    width: 7.4em;
+}

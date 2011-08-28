@@ -12,9 +12,11 @@ import org.motechproject.tama.repository.LabTests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class LabResultsTest extends SpringIntegrationTest {
 
@@ -53,10 +55,10 @@ public class LabResultsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldReturnLabResultsForPatientGivenPatientId() {
-        String patientId = "somePatientId";
+        String patientId = "somePatientId_byPatient";
 
-        LabTest labTest1 = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId1").build();
-        LabTest labTest2 = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId2").build();
+        LabTest labTest1 = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId1_byPatient").build();
+        LabTest labTest2 = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId2_byPatient").build();
         labTests.add(labTest1);
         labTests.add(labTest2);
 
@@ -80,6 +82,36 @@ public class LabResultsTest extends SpringIntegrationTest {
 
         markForDeletion(labTest2);
         markForDeletion(labTest1);
+    }
+
+    @Test
+    public void shouldMergeLabResultsWithLabResultsFromTheDatabase() {
+
+        String patientId = "patientId_merge";
+
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId_merge").build();
+        labTests.add(labTest);
+
+        LabResult labResultAlreadyPresentInDB = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withResult("1").withPatientId(patientId).build();
+        labResults.add(labResultAlreadyPresentInDB);
+
+        List<LabResult> labResultsForPatient = labResults.findByPatientId(patientId);
+
+        assertEquals("1", labResultsForPatient.get(0).getResult());
+
+        LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withResult("2").withPatientId(patientId).build();
+        labResultFromUI.setId(labResultAlreadyPresentInDB.getId());
+
+        labResults.merge(Arrays.asList(labResultFromUI));
+
+        labResultsForPatient = labResults.findByPatientId(patientId);
+
+        assertEquals("2", labResultsForPatient.get(0).getResult());
+        assertNotNull(labResultsForPatient.get(0).getRevision());
+
+
+        markForDeletion(labResultAlreadyPresentInDB);
+        markForDeletion(labTest);
     }
 
 }

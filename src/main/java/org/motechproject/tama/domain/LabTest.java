@@ -7,7 +7,7 @@ public class LabTest extends CouchEntity {
 
     String name;
 
-    String normalValue;
+    String normalRange;
 
     public String getName() {
         return name;
@@ -17,11 +17,18 @@ public class LabTest extends CouchEntity {
         this.name = name;
     }
 
-    public String getNormalValue() {
-        return normalValue;
+    public String getNormalRange() {
+        return normalRange;
     }
 
-    public void setNormalValue(String normalValue) {
-        this.normalValue = normalValue;
+    public void setNormalRange(String normalRange) {
+        this.normalRange = normalRange;
+    }
+
+    public static LabTest newLabTest(String name, String normalRange) {
+        LabTest labTest = new LabTest();
+        labTest.setName(name);
+        labTest.setNormalRange(normalRange);
+        return labTest;
     }
 }

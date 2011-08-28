@@ -44,4 +44,13 @@ public class LabResults extends CouchDbRepositorySupport<LabResult> {
     private void loadDependencies(LabResult labResult) {
         labResult.setLabTest(labTests.get(labResult.getLabTest_id()));
     }
+
+    public void merge(List<LabResult> labResultsForPatient) {
+        for(LabResult labResult : labResultsForPatient){
+            LabResult labResultInDb = get(labResult.getId());
+            labResultInDb.setResult(labResult.getResult());
+            labResultInDb.setTestDate(labResult.getTestDate());
+            update(labResultInDb);
+        }
+    }
 }

@@ -3,8 +3,16 @@ package org.motechproject.tama.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.TAMAMessages;
+import org.motechproject.util.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import java.util.Date;
 
 @TypeDiscriminator("doc.documentType == 'LabResult'")
 public class LabResult extends CouchEntity {
@@ -16,7 +24,11 @@ public class LabResult extends CouchEntity {
 
     private String result;
 
-    private LocalDate clinicVisitDate;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
+    @NotNull
+    private Date testDateAsDate;
 
     @NotNull
     private String labTest_id;
@@ -46,14 +58,22 @@ public class LabResult extends CouchEntity {
         this.result = result;
     }
 
-    public LocalDate getClinicVisitDate() {
-        return clinicVisitDate;
+    public LocalDate getTestDate() {
+        return DateUtil.newDate(testDateAsDate);
     }
 
-    public void setClinicVisitDate(LocalDate clinicVisitDate) {
-        this.clinicVisitDate = clinicVisitDate;
+    public void setTestDate(LocalDate testDate) {
+        this.testDateAsDate = toDate(testDate);
     }
 
+    @JsonIgnore
+    public Date getTestDateAsDate() {
+        return testDateAsDate;
+    }
+
+    public void setTestDateAsDate(Date testDateAsDate) {
+        this.testDateAsDate = testDateAsDate;
+    }
 
     public String getLabTest_id() {
         return labTest_id;

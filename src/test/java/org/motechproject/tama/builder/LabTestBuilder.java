@@ -11,7 +11,7 @@ public class LabTestBuilder {
     }
 
     public LabTestBuilder withDefaults() {
-        withId("");
+        withId("id");
         return this;
     }
 

@@ -6,6 +6,9 @@ public class LabResultBuilder {
 
     private String labTestId;
     private String patientId;
+    private String result;
+    private String id;
+    private String revision;
 
     public static LabResultBuilder startRecording() {
         return new LabResultBuilder();
@@ -14,6 +17,7 @@ public class LabResultBuilder {
     public LabResultBuilder withDefaults() {
         withLabTest_id("");
         withPatientId("");
+        withResult("");
         return this;
     }
 
@@ -21,6 +25,7 @@ public class LabResultBuilder {
         LabResult labResult = new LabResult();
         labResult.setLabTest_id(labTestId);
         labResult.setPatientId(patientId);
+        labResult.setResult(result);
         return labResult;
     }
 
@@ -31,6 +36,11 @@ public class LabResultBuilder {
 
     public LabResultBuilder withPatientId(String patientId) {
         this.patientId = patientId;
+        return this;
+    }
+
+    public LabResultBuilder withResult(String result) {
+        this.result = result;
         return this;
     }
 }

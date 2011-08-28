@@ -7,10 +7,16 @@
         <c:choose>
           <c:when test="${patient.active}">
               <spring:url value="/clinicvisits" var="clinic_visits_url">
-                  <spring:param name="form" />
-                  <spring:param name="patientId" value="${patient.id}" />
-                </spring:url>
+                  <spring:param name="form"/>
+                  <spring:param name="patientId" value="${patient.id}"/>
+              </spring:url>
+              <spring:url value="/labresults" var="lab_results_url">
+                  <spring:param name="form"/>
+                  <spring:param name="patientId" value="${patient.id}"/>
+              </spring:url>
               <a id="clinic_visits" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
+              <c:out value=" "/>
+              <a id="lab_results" href="${lab_results_url}">Lab Results</a>
           </c:when>
           <c:otherwise>
               <div class="update_patient">
