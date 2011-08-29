@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class TreeChooser {
 
     @Autowired
+    @Qualifier("currentDosageTakenTree")
     private CurrentDosageTakenTree currentDosageTakenTree;
 
     @Autowired
@@ -22,12 +23,12 @@ public class TreeChooser {
     private CurrentDosageConfirmTree currentDosageConfirmTree;
 
     @Autowired
-	private Regimen6PartialTree regimen6PartialTree;
+	private Regimen6Tree regimen6Tree;
 
     public Tree getTree(IVRContext ivrContext) {
 		if (isIncomingCall(ivrContext)) {
 			if (isSymptomsReportingCall(ivrContext)) {
-				return regimen6PartialTree.getTree();
+				return regimen6Tree.getTree();
 			} else {
 	            PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
 	            if (pillRegimenSnapshot.isCurrentDosageTaken()) {

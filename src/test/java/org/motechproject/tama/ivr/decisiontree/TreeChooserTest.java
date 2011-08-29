@@ -37,12 +37,12 @@ public class TreeChooserTest {
     @Autowired
     private TreeChooser treeChooser;
 
-
     @Autowired
     @Qualifier("currentDosageReminderTree")
     private CurrentDosageReminderTree currentDosageReminderTree;
 
     @Autowired
+    @Qualifier("currentDosageTakenTree")
     private CurrentDosageTakenTree currentDosageTakenTree;
 
     @Mock
@@ -59,7 +59,7 @@ public class TreeChooserTest {
     private CurrentDosageConfirmTree currentDosageConfirmTree;
 
     @Autowired
-	private Regimen6PartialTree regimen6PartialTree;
+	private Regimen6Tree regimen6Tree;
 
     @Before
     public void setUp(){
@@ -67,8 +67,6 @@ public class TreeChooserTest {
 
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-
-
     }
 
     @Test
@@ -118,11 +116,10 @@ public class TreeChooserTest {
     }
 
     @Test
-    public void shouldGetRegimen6PartialTreeIfKookooCallsWithSymptomsReportingCallType() {
+    public void shouldGetRegimen6TreeIfKookooCallsWithSymptomsReportingCallType() {
         when(ivrRequest.hasNoTamaData()).thenReturn(true);
         when(ivrSession.isSymptomsReportingCall()).thenReturn(true);
         
-        assertTrue(regimen6PartialTree.getTree() == treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
+        assertTrue(regimen6Tree.getTree() == treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
     }
-
 }
