@@ -47,6 +47,9 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")
     private WebElement listPatientsLink;
 
+    @FindBy(how = How.ID, using = "lab_results")
+    private WebElement labResultsLink;
+
     public ShowPatientPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -122,13 +125,24 @@ public class ShowPatientPage extends Page {
         return MyPageFactory.initElements(webDriver, ViewARTRegimenPage.class);
     }
 
+    public CreateLabResultsPage goToLabResultsPage() {
+        this.labResultsLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(By.id(CreateLabResultsPage.TEST_DATE_ELEMENT)) != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, CreateLabResultsPage.class);
+    }
+
     public ListPatientsPage goToListPatientsPage() {
         listPatientsLink.click();
         return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
     public String patientDocId() {
-        try{
+        try {
             return new URL(webDriver.getCurrentUrl()).getFile().replace("/tama/patients/", "");
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);

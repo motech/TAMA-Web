@@ -13,7 +13,7 @@
             <spring:url value="/labresults/${patientId}" var="edit_url">
                 <spring:param name="form"/>
             </spring:url>
-            <a href="${edit_url}">[edit]</a>
+            <a id="labresults_edit_link" href="${edit_url}">[edit]</a>
         </div>
         <table>
             <thead>
@@ -35,13 +35,13 @@
             <tbody>
             <c:forEach items="${labResultsForPatient}" varStatus="labResultIndex" var="labResult">
                 <tr>
-                    <td>
+                    <td id="_labResults[${labResultIndex.index}].testDateAsDate_id">
                         <c:out value="${labResult.testDate}"/>
                     </td>
                     <td>
                         <c:out value="${labResult.labTest.name}"/>
                     </td>
-                    <td>
+                    <td id="_labResults[${labResultIndex.index}].result_id">
                         <c:out value="${labResult.result}"/>
                     </td>
                     <td>
