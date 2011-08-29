@@ -2,7 +2,8 @@ package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.domain.LabResult;
 
-import java.util.LinkedList;
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LabResultsUIModel {
@@ -13,7 +14,8 @@ public class LabResultsUIModel {
 
     private String z;
 
-    private List<LabResult> labResults = new LinkedList<LabResult>();
+    @Valid
+    private List<LabResult> labResults = new ArrayList<LabResult>();
 
     public String getId() {
         return id;

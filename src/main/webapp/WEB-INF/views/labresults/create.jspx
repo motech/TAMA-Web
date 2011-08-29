@@ -39,14 +39,14 @@
                     <field:hidden  path="labResults[${labTestIndex.index}].patientId"  id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_patient_id" value="${labResults[labTestIndex.index].patientId}"/>
                     <field:hidden  path="labResults[${labTestIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_labtest_id" value="${labTest.id}"/>
                     <tr>
-                        <td class="test-date-field">
-                            <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labTestIndex.index}].testDateAsDate" id="c_org_motechproject_tama_domain_LabResult_testDate" past="true" future="false" required="true" />
+                        <td class="test-field">
+                            <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labTestIndex.index}].testDateAsDate" label="c_org_motechproject_tama_domain_LabResult_testDate" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false" required="true" />
                         </td>
                         <td>
                             <c:out value="${labTest.name}"/>
                         </td>
-                        <td>
-                            <field:input  path="labResults[${labTestIndex.index}].result"  id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result"/>
+                        <td class="test-field">
+                            <formfield:input  field="labResults[${labTestIndex.index}].result"  label="hiddenLabel" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result" required="true"/>
                         </td>
                         <td>
                             <c:out value="${labTest.normalRange}"/>
@@ -56,7 +56,8 @@
                 </tbody>
             </table>
             <br/>
-            <input type="submit" value="Save"/>
+            <input type="submit" id="proceed" value="Save"/>
+            <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
         </springform:form>
     </util:panel>
 </div>

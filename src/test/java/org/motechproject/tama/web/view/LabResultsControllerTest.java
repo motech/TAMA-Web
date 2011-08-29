@@ -176,6 +176,26 @@ public class LabResultsControllerTest {
     }
 
     @Test
+    public void createShouldReturnCreateView_SubmittedDataHasErrors() {
+        String patientId = "patientId";
+        LabResult labResult = new LabResult();
+        labResult.setPatientId(patientId);
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        Model uiModel = mock(Model.class);
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+
+        LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
+        labResultsUIModel.setLabResults(Arrays.asList(labResult));
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        String URL = labResultsController.create(labResultsUIModel, bindingResult, uiModel, httpServletRequest);
+
+        assertEquals("labresults/create", URL);
+    }
+
+    @Test
     public void showShouldAddLabResultsForPatientToUIModel() {
         LabResult labresult = new LabResult();
         Model uiModel = mock(Model.class);
@@ -238,6 +258,28 @@ public class LabResultsControllerTest {
         verify(uiModel).addAttribute(eq("labResultsUIModel"), labResults.capture());
         verify(uiModel).addAttribute("patientId", patientId);
         assertEquals(labResultsForPatient, labResults.getValue().getLabResults());
+    }
+
+    @Test
+    public void updateShouldReturnUpdateForm_SubmittedDataHasErrors() {
+        LabResult labResult = new LabResult();
+        String patientId = "somePatientId";
+        labResult.setPatientId(patientId);
+        List<LabResult> labResultsForPatient = Arrays.asList(labResult);
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        Model uiModel = mock(Model.class);
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+
+        LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
+        labResultsUIModel.setLabResults(labResultsForPatient);
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        String viewName = labResultsController.update(labResultsUIModel, bindingResult, uiModel, httpServletRequest);
+
+        verify(labResults, never()).merge(labResultsForPatient);
+        assertEquals("labresults/update", viewName);
     }
 
     @Test

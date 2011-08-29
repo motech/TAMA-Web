@@ -25,6 +25,7 @@
         <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/patients/**" method="DELETE" access="denyAll" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/labresults/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
     </http>
 
     <beans:bean name="authenticationProvider" class="org.motechproject.tama.security.AuthenticationProvider">

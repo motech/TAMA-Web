@@ -2,6 +2,7 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
+import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
@@ -22,12 +23,13 @@ public class LabResult extends CouchEntity {
     @NotNull
     private String patientId;
 
+    @NotNull
     private String result;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
-    @NotNull
+    @Past(message = TAMAMessages.TEST_DATE_MUST_BE_IN_PAST)
+    @NotNull(message = TAMAMessages.TEST_DATE_NOT_EMPTY)
     private Date testDateAsDate;
 
     @NotNull

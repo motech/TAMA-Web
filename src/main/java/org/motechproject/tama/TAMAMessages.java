@@ -7,4 +7,6 @@ public class TAMAMessages {
     public static final String DATE_OF_BIRTH_MUST_BE_IN_PAST = "Date Of Birth must be in the past.";
     public static final String OLD_PASSWORD_MISMATCH = "The current password is incorrect";
 
+    public static final String TEST_DATE_MUST_BE_IN_PAST = "Test date must be in the past.";
+    public static final String TEST_DATE_NOT_EMPTY = "Test date must not be empty";
 }

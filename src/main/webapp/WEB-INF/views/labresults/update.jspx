@@ -40,15 +40,17 @@
                 <field:hidden  path="labResults[${labResultIndex.index}].id"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_id" value="${labResult.id}"/>
                 <field:hidden  path="labResults[${labResultIndex.index}].patientId"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_patient_id" value="${labResult.patientId}"/>
                 <field:hidden  path="labResults[${labResultIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_id" value="${labResult.labTest_id}"/>
+                <field:hidden  path="labResults[${labResultIndex.index}].labTest.normalRange"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_normalRange" value="${labResult.labTest.normalRange}"/>
+                <field:hidden  path="labResults[${labResultIndex.index}].labTest.name"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_name" value="${labResult.labTest.name}"/>
                 <tr>
-                    <td class="test-date-field">
+                    <td class="test-field">
                         <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labResultIndex.index}].testDateAsDate" id="c_org_motechproject_tama_domain_LabResult_testDate" past="true" future="false" required="true" />
                     </td>
                     <td>
                         <c:out value="${labResult.labTest.name}"/>
                     </td>
-                    <td>
-                        <field:input  path="labResults[${labResultIndex.index}].result"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_result" field="${labResult.result}"/>
+                    <td class="test-field">
+                        <formfield:input field="labResults[${labResultIndex.index}].result" required="true" label="hiddenLabel" id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_result"/>
                     </td>
                     <td>
                         <c:out value="${labResult.labTest.normalRange}"/>
@@ -57,5 +59,6 @@
             </c:forEach>
             </tbody>
         </table>
+        <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
     </form:update>
 </div>

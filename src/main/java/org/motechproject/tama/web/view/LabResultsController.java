@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class LabResultsController extends BaseController {
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
         if (labResults.findByPatientId(patientId).isEmpty()) {
+            uiModel.addAttribute("labResultsUIModel", LabResultsUIModel.newDefault());
             populateUIModel(uiModel, patientId);
             return CREATE_VIEW;
         } else {
@@ -50,7 +52,12 @@ public class LabResultsController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String create(LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(@Valid LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            populateUIModel(uiModel, labResultsUiModel.getPatientId());
+            uiModel.addAttribute("labResultUiModel", labResultsUiModel);
+            return CREATE_VIEW;
+        }
         for (LabResult labResult : labResultsUiModel.getLabResults()) {
             this.labResults.add(labResult);
         }
@@ -74,16 +81,20 @@ public class LabResultsController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public String update(LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        labResults.merge(labResultsUiModel.getLabResults());
-        return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUiModel.getPatientId(), httpServletRequest);
+    public String update(@Valid LabResultsUIModel labResultsUIModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            uiModel.addAttribute("labResultsUIModel", labResultsUIModel);
+            uiModel.addAttribute("patientId", labResultsUIModel.getPatientId());
+            return "labresults/update";
+        }
+        labResults.merge(labResultsUIModel.getLabResults());
+        return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUIModel.getPatientId(), httpServletRequest);
     }
 
     private void populateUIModel(Model uiModel, String patientId) {
         List<LabTest> labTestsAvailable = labTests.getAll();
         uiModel.addAttribute("labTests", labTestsAvailable);
 
-        uiModel.addAttribute("labResultsUIModel", LabResultsUIModel.newDefault());
         uiModel.addAttribute("patientId", patientId);
         uiModel.addAttribute("today", DateUtil.today());
 
