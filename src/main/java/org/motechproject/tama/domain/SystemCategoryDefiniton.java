@@ -10,7 +10,7 @@ import static org.motechproject.tama.domain.AilmentDefinition.*;
 
 public enum SystemCategoryDefiniton {
 
-    Allergic("Allergic", new Ailments().setAilments(Arrays.asList(Asthma.getAilment(),
+    Allergic("Allergic/Immunologic", new Ailments().setAilments(Arrays.asList(Asthma.getAilment(),
             Psoriasis.getAilment(),
             HayFever.getAilment(),
             Sinusitis.getAilment(),

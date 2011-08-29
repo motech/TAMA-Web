@@ -9,6 +9,7 @@
             <br/>
         </util:panel>
         <br/>
+        <div class="medical_history_view">
         <util:panel id="fc_org_motechproject_tama_domain_patient_non_HIV_Medical_History" title="Non - HIV Medical History" openPane="true">
 
             <span class="drug_allergy_view_label"><c:out value="History of drug allergy / hypersensitivity" /></span>
@@ -54,13 +55,14 @@
                         </c:otherwise>
                     </c:choose>
                     <c:if test="${not empty question.comments}">
-                        ,<c:out value="${question.comments}" />
+                        ,<![CDATA[ &nbsp;&nbsp; ]]><c:out value="${question.comments}" />
                     </c:if>
                 </span>
             </c:forEach>
 
             <jsp:include page="showSystemCategories.jspx" />
         </util:panel>
+        </div>
     </util:panel>
     <br />
 </div>

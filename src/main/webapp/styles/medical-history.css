@@ -24,6 +24,11 @@ div.question {
     font-weight: bold;
 }
 
+span.comments input {
+    font-weight: normal;
+}
+
 span.ailements_label {
    font-weight: bold;
 }
+

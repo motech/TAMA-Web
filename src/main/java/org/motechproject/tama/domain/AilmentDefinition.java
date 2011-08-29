@@ -28,7 +28,7 @@ public enum AilmentDefinition {
 
     Somnolence("Somnolence"),
 
-    Nightmares("Nightmares"),
+    Nightmares("Abnormal dreams/Nightmares"),
 
     Hypertension("Hypertension"),
 

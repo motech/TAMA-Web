@@ -53,14 +53,12 @@
                             <input type="hidden" name="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].requiresComment" value="${question.requiresComment}" />
                         </span>
                             <c:if test="${question.requiresComment}" >
-                                <field:input id="c_org_motechproject_tama_domain_Patient_question[${questionStatus.index}]" field="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].comments" label="  " />
+                                <span class="comments"><field:input id="c_org_motechproject_tama_domain_Patient_question[${questionStatus.index}]" field="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].comments" label="   " /></span>
                             </c:if>
                         </div>
                     </c:forEach>
-
                 </div>
             </div>
-
 
             <br />
             <br />
@@ -75,8 +73,8 @@
                         <thead>
                             <th><spring:message code="table_header_medical_history_system"/></th>
                             <th><spring:message code="table_header_medical_history_option_none"/></th>
-                            <th><spring:message code="table_header_medical_history_option_not_active"/></th>
-                            <th><spring:message code="table_header_medical_history_option_active"/></th>
+                            <th><spring:message code="table_header_medical_history_option_not_active"/><br/><spring:message code="table_header_medical_history_yes_specify"/></th>
+                            <th><spring:message code="table_header_medical_history_option_active"/><br/><spring:message code="table_header_medical_history_yes_specify"/></th>
                         </thead>
                         <tbody>
                             <c:forEach items="${systemCategories}" varStatus="item" var="category">
@@ -131,11 +129,7 @@
                         </tbody>
                     </table>
                 </div>
-
-
             </div>
-
-
         </util:panel>
         <br/>
     </util:panel>
