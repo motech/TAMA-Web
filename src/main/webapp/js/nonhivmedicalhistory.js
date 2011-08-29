@@ -27,7 +27,9 @@ dojo.addOnLoad(function() {
     dojo.forEach(dojo.query(".requires_comment_true"), function(element, index) {
        dojo.forEach(dojo.query("#" + element.id).parent().next(), function(widgetElement, index) {
           descriptionWidget = dijit.byId("_medicalHistory.nonHivMedicalHistory.questions["+ index +"].comments_id");
-          descriptionWidget.domNode.setAttribute('style', 'display:none');
+          if(!element.checked) {
+            descriptionWidget.domNode.setAttribute('style', 'display:none');
+          }
            dojo.connect(element, "onclick", function (evt) {
             if (element.checked) {
                 setRequiredForElement(descriptionWidget, true);
