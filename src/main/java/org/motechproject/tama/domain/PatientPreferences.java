@@ -24,6 +24,8 @@ public class PatientPreferences extends BaseEntity {
 
     private TAMAConstants.DayOfWeek dayOfWeeklyCall;
 
+    private TimeOfDay bestCallTime;
+
     public ReminderCall getReminderCall() {
         return this.reminderCall;
     }
@@ -64,5 +66,13 @@ public class PatientPreferences extends BaseEntity {
 
     public void setDayOfWeeklyCall(TAMAConstants.DayOfWeek dayOfWeeklyCall) {
         this.dayOfWeeklyCall = dayOfWeeklyCall;
+    }
+
+    public TimeOfDay getBestCallTime() {
+        return bestCallTime;
+    }
+
+    public void setBestCallTime(TimeOfDay bestCallTime) {
+        this.bestCallTime = bestCallTime;
     }
 }

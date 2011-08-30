@@ -23,3 +23,11 @@
 .patient_preferences label {
     width: 250px;
 }
+
+.patient_preferences .best_call_time #_bestCallTime_id {
+    float: left;
+}
+
+.patient_preferences .best_call_time .dijitComboBox {
+    width: 50px;
+}

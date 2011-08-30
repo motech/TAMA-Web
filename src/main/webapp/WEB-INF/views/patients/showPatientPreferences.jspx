@@ -11,6 +11,9 @@
         <c:if test="${not empty patient.patientPreferences.dayOfWeeklyCall}">
             <field:display field="dayOfWeeklyCall" id="patientPreferencesDayOfWeeklyCall" object="${patient.patientPreferences}" label="Day of Week for Weekly Adherence Call"/>
         </c:if>
+        <c:if test="${not empty patient.patientPreferences.bestCallTime.timeOfDayAsString}">
+            <field:display field="" id="bestCallTime" object="${patient.patientPreferences.bestCallTime.timeOfDayAsString} ${patient.patientPreferences.bestCallTime.timeMeridiem}" label="Best Call Time"/>
+        </c:if>
     </util:panel>
     <br />
 </div>

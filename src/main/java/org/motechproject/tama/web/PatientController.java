@@ -196,6 +196,7 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("options", AilmentState.values());
         uiModel.addAttribute("questions", MedicalHistoryQuestions.all());
         uiModel.addAttribute("daysOfWeek", Arrays.asList(TAMAConstants.DayOfWeek.values()));
+        uiModel.addAttribute("timeMeridiems", Arrays.asList(TAMAConstants.TimeMeridiem.values()));
     }
 
     private void addDateTimeFormat(Model uiModel) {

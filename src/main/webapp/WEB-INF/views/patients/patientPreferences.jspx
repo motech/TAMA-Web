@@ -10,11 +10,11 @@
         <field:input field="patientPreferences.passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" max="10"/>
         <field:select field="patientPreferences.ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed" required="true"/>
 
-        <div class='section'>
+        <div class='daily_reminder section'>
             <label class='left_pane'>
                 Medicine Adherence Report Calls * :
             </label>
-            <div class='daily_reminder right_pane'>
+            <div class='right_pane'>
                 <div class='radio_group'>
                     <springform:radiobutton id="dailyReminderCall" path="patientPreferences.reminderCall" value="Daily" label="Activate Daily Pill Reminder Call"/>
                 </div>
@@ -24,6 +24,25 @@
             </div>
         </div>
         <field:select field="patientPreferences.dayOfWeeklyCall" id="patientPreferencesDayOfWeeklyCall" items="${daysOfWeek}" path="/daysOfWeek" required="true" label="Day of Week for Weekly Adherence Call"/>
+        <div class='best_call_time_radio section'>
+            <label class='left_pane'>
+                Agree to be called at Best Call Time :
+            </label>
+            <div class='right_pane'>
+                <div class='radio_group'>
+                    <input type="radio" id="bestCallTimeYes" value="Yes" name="bestCallTimeRadio"/>
+                    <label for="bestCallTimeYes">Yes</label>
+                </div>
+                <div class='radio_group'>
+                    <input type="radio" id="bestCallTimeNo" value="No" name="bestCallTimeRadio" />
+                    <label for="bestCallTimeNo">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="best_call_time section">
+            <field:input field="patientPreferences.bestCallTime.timeOfDayAsString" id="bestCallTime" required="true" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" label="Best Call Time (hh:mm)"/>
+            <springform:select id="ampm" items="${timeMeridiems}" path="patientPreferences.bestCallTime.timeMeridiem" />
+        </div>
 
     </util:panel>
     <br />
