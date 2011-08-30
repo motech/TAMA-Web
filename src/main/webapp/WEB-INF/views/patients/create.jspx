@@ -26,6 +26,7 @@
 
         function showPatientPreferences() {
             closePanel([medicalHistoryPanelWidget]);
+            openPanel([preferencesPanelWidget]);
             hideElement([nextToPatientPreferencesButton]);
             showElement([preferencesPanel, submitButtonDiv]);
         }
