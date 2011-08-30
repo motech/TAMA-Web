@@ -35,6 +35,15 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.CLASS_NAME, using = "drug_rash_text")
     private WebElement rash;
 
+    @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_patient_passcode_passcode_id")
+    private WebElement passcode;
+
+    @FindBy(how = How.ID, using = "_patientPreferencesDayOfWeeklyCall_dayOfWeeklyCall_id")
+    private WebElement dayOfWeeklyCall;
+
+    @FindBy(how = How.ID, using = "_bestCallTime__id")
+    private WebElement bestCallTime;
+
     @FindBy(how = How.ID, using = "activatePatient")
     private WebElement activationLink;
 
@@ -85,6 +94,18 @@ public class ShowPatientPage extends Page {
 
     public String getRashText() {
         return rash.getText();
+    }
+
+    public String getPasscode() {
+        return passcode.getText();
+    }
+
+    public String getDayOfWeeklyCall() {
+        return dayOfWeeklyCall.getText();
+    }
+
+    public String getBestCallTime() {
+        return bestCallTime.getText();
     }
 
     public String getStatus() {

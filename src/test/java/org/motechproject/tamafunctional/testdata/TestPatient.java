@@ -7,11 +7,11 @@ public class TestPatient extends TestEntity {
     private String patientId;
     private LocalDate dateOfBirth;
     private String mobileNumber;
-    private String passcode;
     private String travelTimeToClinicInDays;
     private String travelTimeToClinicInHours;
     private String travelTimeToClinicInMinutes;
     private TestHIVMedicalHistory hivMedicalHistory;
+    private TestPatientPreferences patientPreferences;
 
     //TODO: when running tests in parallel we might have to come up with something better than this. This doesn't protect you against multiple runs
     private static long uniquePhoneNumber = 1000000001;
@@ -24,11 +24,11 @@ public class TestPatient extends TestEntity {
         return testPatient.patientId(unique("1234_")).
                 dateOfBirth(DateUtil.newDate(1990, 5, 21)).
                 mobileNumber(Long.toString(uniquePhoneNumber++)).
-                passcode("1234").
                 travelTimeToClinicInDays("1").
                 travelTimeToClinicInHours("2").
                 travelTimeToClinicInHours("3").
-                medicalHistory(TestHIVMedicalHistory.withMandatory());
+                medicalHistory(TestHIVMedicalHistory.withMandatory()).
+                patientPreferences(TestPatientPreferences.withMandatory());
     }
 
     public static TestPatient withMandatory(TestClinician clinician) {
@@ -44,6 +44,15 @@ public class TestPatient extends TestEntity {
         return this;
     }
 
+    public TestPatientPreferences patientPreferences() {
+        return patientPreferences;
+    }
+
+    public TestPatient patientPreferences(TestPatientPreferences patientPreferences) {
+        this.patientPreferences = patientPreferences;
+        return this;
+    }
+
     public TestPatient travelTimeToClinicInDays(String days) {
         travelTimeToClinicInDays = days;
         return this;
@@ -56,11 +65,6 @@ public class TestPatient extends TestEntity {
 
     public TestPatient travelTimeToClinicInMinutues(String minutes) {
         travelTimeToClinicInMinutes = minutes;
-        return this;
-    }
-
-    public TestPatient passcode(String passcode) {
-        this.passcode = passcode;
         return this;
     }
 
@@ -97,10 +101,6 @@ public class TestPatient extends TestEntity {
 
     public String travelTimeToClinicInMinutes() {
         return travelTimeToClinicInMinutes;
-    }
-
-    public String passcode() {
-        return passcode;
     }
 
     @Override

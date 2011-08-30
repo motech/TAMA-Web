@@ -27,14 +27,19 @@ public class PatientRegistrationTest extends BaseTest {
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
 
-        Assert.assertEquals(showPatientPage.getPatientId(), patient.patientId());
-        Assert.assertEquals(showPatientPage.getMobileNumber(), patient.mobileNumber());
-        Assert.assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
+        Assert.assertEquals(patient.patientId(), showPatientPage.getPatientId());
+        Assert.assertEquals(patient.mobileNumber(), showPatientPage.getMobileNumber());
+        Assert.assertEquals(new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()), showPatientPage.getDateOfBirth());
 
-        Assert.assertEquals(showPatientPage.getHIVTestReason(), patient.medicalHistory().testReason());
-        Assert.assertEquals(showPatientPage.getModeOfTransmission(), patient.medicalHistory().modeOfTransmission());
-        Assert.assertEquals(showPatientPage.getAllergyText(), "ARV Allergy : arvAllergyDescription");
-        Assert.assertEquals(showPatientPage.getRashText(), TAMAConstants.NNRTIRash.DRD.getValue());
+        Assert.assertEquals(patient.medicalHistory().testReason(), showPatientPage.getHIVTestReason());
+        Assert.assertEquals(patient.medicalHistory().modeOfTransmission(), showPatientPage.getModeOfTransmission());
+        Assert.assertEquals("ARV Allergy : arvAllergyDescription", showPatientPage.getAllergyText());
+        Assert.assertEquals(TAMAConstants.NNRTIRash.DRD.getValue(), showPatientPage.getRashText());
+
+        Assert.assertEquals(patient.patientPreferences().passcode(), showPatientPage.getPasscode());
+        Assert.assertEquals(patient.patientPreferences().dayOfWeeklyCall(), showPatientPage.getDayOfWeeklyCall());
+        String bestCallTimeAsString = String.format("%s %s", patient.patientPreferences().bestCallTime(), patient.patientPreferences().timeMeridiem());
+        Assert.assertEquals(bestCallTimeAsString, showPatientPage.getBestCallTime());
         showPatientPage.logout();
     }
 

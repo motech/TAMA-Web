@@ -12,8 +12,8 @@ import org.openqa.selenium.support.PageFactory;
 
 public class PatientRegistrationPage extends Page {
 
-    @FindBy(how = How.ID, using = "_patientId_id")
-    private WebElement patientId;
+    @FindBy(how = How.ID, using = "proceed")
+    private WebElement savePatient;
     private CreateBasicPatientInformationSection createBasicPatientInformationSection;
     private CreatePatientMedicalHistorySection createPatientMedicalHistorySection;
     private CreatePatientPreferencesSection createPatientPreferencesSection;
@@ -27,7 +27,7 @@ public class PatientRegistrationPage extends Page {
 
     @Override
     public void postInitialize() {
-        patientId = WebDriverFactory.createWebElement(patientId);
+        savePatient = WebDriverFactory.createWebElement(savePatient);
         createBasicPatientInformationSection.postInitialize();
         createPatientMedicalHistorySection.postInitialize();
         createPatientPreferencesSection.postInitialize();
@@ -42,7 +42,7 @@ public class PatientRegistrationPage extends Page {
         createBasicPatientInformationSection.enterDetails(patient);
         createPatientMedicalHistorySection.enterDetails(patient);
         createPatientPreferencesSection.enterDetails(patient);
-        patientId.submit();
+        savePatient.click();
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 }
