@@ -375,6 +375,19 @@ fieldset th {
 	color:#888888;
 }
 
+.display_field {
+    margin-bottom: 10px;
+    overflow: auto;
+}
+
+.dijitTitlePane {
+    margin-bottom: 10px;
+}
+
+.dijit {
+    margin-bottom: 10px !important;
+}
+
 .dijitArrowButton {
 	height: 20px;
 }

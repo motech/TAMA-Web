@@ -13,7 +13,6 @@
     </util:panel>
 
     <span class="submit" id="nextToMedicalHistorySpan">
-        <br />
         <spring:message code="button_next" var="next_button" htmlEscape="false" />
         <input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>
     </span>

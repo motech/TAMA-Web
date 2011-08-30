@@ -12,13 +12,10 @@
                 <field:textarea field="discontinuationReason" id="c_org_motechproject_tama_domain_Existing_TreatmentAdvice_reasonForDiscontinuing" label="Reason for Discontinuing" required="true" />
             </util:panel>
             <span class="submit" id="nextToRegisterNewTreatmentAdviceSpan">
-                <br />
                 <spring:message code="button_next" var="next_button" htmlEscape="false" />
                 <input id="nextToRegisterNewTreatmentAdvice" type="button" value="${next_button}" onClick="registerNewTreatmentAdvice();"/>
             </span>
-            <br />
             <jsp:include page="create.jspx" />
-            <br />
             <div class="submit" id="fc_org_motechproject_tama_domain_patient_New_Treatment_Advice_submit">
               <spring:message code="button_save" var="save_button" htmlEscape="false" />
               <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>

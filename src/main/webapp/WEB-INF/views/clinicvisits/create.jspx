@@ -8,7 +8,6 @@
         <spring:url value="/clinicvisits/create" var="form_url"/>
         <form action="${form_url}" method="POST" id="treatmentAdvice">
             <jsp:include page="../treatmentadvices/create.jspx" />
-            <br />
             <div class="submit" id="fc_org_motechproject_tama_domain_patient_Clinic_Visit_submit">
               <spring:message code="button_save" var="save_button" htmlEscape="false" />
               <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>

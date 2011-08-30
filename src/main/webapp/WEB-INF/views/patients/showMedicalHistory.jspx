@@ -4,11 +4,8 @@
     <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="true" update="true">
         <util:panel id="fc_org_motechproject_tama_domain_patient_HIV_Medical_History" title="HIV Related Medical History" openPane="true">
             <field:display field="name" id="s_org_motechproject_tama_domain_patient_test_reason" object="${patient.medicalHistory.hivMedicalHistory.testReason}"/>
-            <br/>
             <field:display field="type" id="s_org_motechproject_tama_domain_patient_mode_of_transmission" object="${patient.medicalHistory.hivMedicalHistory.modeOfTransmission}"/>
-            <br/>
         </util:panel>
-        <br/>
         <div class="medical_history_view">
         <util:panel id="fc_org_motechproject_tama_domain_patient_non_HIV_Medical_History" title="Non - HIV Medical History" openPane="true">
 
@@ -64,6 +61,5 @@
         </util:panel>
         </div>
     </util:panel>
-    <br />
 </div>
 

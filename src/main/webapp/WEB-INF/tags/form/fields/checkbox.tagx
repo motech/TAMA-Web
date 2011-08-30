@@ -33,6 +33,5 @@
       	Spring.addDecoration(new Spring.ElementDecoration({elementId : '_${sec_field}_id', widgetType : 'dijit.form.CheckBox', widgetAttrs : {}}));
       </script>
     </div>
-    <br />
   </c:if>
 </jsp:root>

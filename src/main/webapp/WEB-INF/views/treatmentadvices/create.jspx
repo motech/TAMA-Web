@@ -45,7 +45,6 @@
                 </c:forEach>
             </div>
         </div>
-        <br />
     </util:panel>
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice" render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
 </div>

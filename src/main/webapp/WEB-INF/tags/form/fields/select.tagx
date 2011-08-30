@@ -121,7 +121,6 @@
                       </c:choose>
                     </c:otherwise>
                   </c:choose>
-                  <br />
                   <form:errors cssClass="errors" id="_${sec_field}_error_id" path="${sec_field}" />
                 </c:otherwise>
               </c:choose>
@@ -193,7 +192,6 @@
                       </c:choose>
                     </c:otherwise>
                   </c:choose>
-                  <br />
                   <form:errors cssClass="errors" id="_${sec_field}_error_id" path="${sec_field}" />
                 </c:otherwise>
               </c:choose>
@@ -211,6 +209,5 @@
         </c:otherwise>
       </c:choose>
     </div>
-    <br />
   </c:if>
 </jsp:root>

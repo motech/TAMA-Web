@@ -27,7 +27,6 @@
                      </div>
                   </form>
               </div>
-              <br/>
           </c:otherwise>
         </c:choose>
     </util:panel>
