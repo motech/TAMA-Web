@@ -40,13 +40,13 @@
                     <field:hidden  path="labResults[${labTestIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_labtest_id" value="${labTest.id}"/>
                     <tr>
                         <td class="test-field">
-                            <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labTestIndex.index}].testDateAsDate" label="c_org_motechproject_tama_domain_LabResult_testDate" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false" required="true" />
+                            <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labTestIndex.index}].testDateAsDate" label="TestDate" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false" required="true" />
                         </td>
                         <td>
                             <c:out value="${labTest.name}"/>
                         </td>
                         <td class="test-field">
-                            <formfield:input  field="labResults[${labTestIndex.index}].result"  label="hiddenLabel" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result" required="true"/>
+                            <formfield:input  field="labResults[${labTestIndex.index}].result"  label="Result" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result" required="true"/>
                         </td>
                         <td>
                             <c:out value="${labTest.normalRange}"/>

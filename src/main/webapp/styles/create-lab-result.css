@@ -1,3 +1,7 @@
+.test-field .box{
+    margin-left: 0px;
+}
+
 .test-field label {
     display: none;
 }

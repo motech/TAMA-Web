@@ -40,8 +40,8 @@ public class LabResultRecordTest extends BaseTest {
     public void successfulLabResultCreation() {
         ShowLabResultsPage labResultPage = setUpALabResult_AfterActivatingAPatient();
 
-        assertEquals("1998-11-12", labResultPage.getTestDates().get(0));
-        assertEquals("1998-11-12", labResultPage.getTestDates().get(1));
+        assertEquals("12/11/1998", labResultPage.getTestDates().get(0));
+        assertEquals("12/11/1998", labResultPage.getTestDates().get(1));
         assertEquals(labResult.results().get(0), labResultPage.getResults().get(0));
         assertEquals(labResult.results().get(1), labResultPage.getResults().get(1));
 

@@ -2,11 +2,15 @@
 <div version="2.0" xmlns:spring="http://www.springframework.org/tags"
      xmlns:springform="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:field="http://www.springframework.org/tags/form">
 
     <spring:url value="/resources/images/favicon.ico" var="favicon"/>
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/resources/styles/create-lab-result.css" var="create_labresult_css_url"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"></link>
 
     <util:panel id="fc_org_motechproject_tama_domain_Lab_Result" title="Lab Results" openPane="true">
         <div class="text_right_align">
@@ -35,8 +39,8 @@
             <tbody>
             <c:forEach items="${labResultsForPatient}" varStatus="labResultIndex" var="labResult">
                 <tr>
-                    <td id="_labResults[${labResultIndex.index}].testDateAsDate_id">
-                        <c:out value="${labResult.testDate}"/>
+                    <td class="test-field"  id="_labResults[${labResultIndex.index}].testDateAsDate_id">
+                        <formfield:display date="true" dateTimePattern="dd/MM/yyyy" label="hiddenLabel" field="testDateAsDate" object="${labResult}" id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
                     </td>
                     <td>
                         <c:out value="${labResult.labTest.name}"/>
