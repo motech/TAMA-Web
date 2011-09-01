@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -13,11 +14,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public abstract class Page {
     protected WebDriver webDriver;
     private static final long MaxPageLoadTime = 10;
+    private static final long DOMLoadTimeInSeconds =2;
     protected WebDriverWait wait;
 
     public Page(WebDriver webDriver) {
         this.webDriver = webDriver;
         this.wait = new WebDriverWait(webDriver, MaxPageLoadTime);
+        waitForDomToBeReady();
         this.waitForPageToLoad();
     }
 
@@ -69,6 +72,14 @@ public abstract class Page {
         logoutLink.click();
     }
 
+    private void waitForDomToBeReady() {
+        try {
+            long DOMLoadTimeInMilliSeconds = DOMLoadTimeInSeconds * 1000;
+            Thread.sleep(DOMLoadTimeInMilliSeconds);
+        } catch (InterruptedException e) {
+        }
+    }
+
     protected void waitForElementWithIdToLoad(final String id) {
         waitForElementToLoad(By.id(id));
     }
@@ -81,7 +92,12 @@ public abstract class Page {
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(by) != null;
+                WebElement element = webDriver.findElement(by);
+                try {
+                    return element != null && element.isEnabled();
+                } catch (StaleElementReferenceException e) {
+                    return false;
+                }
             }
         });
     }
