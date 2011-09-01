@@ -1,6 +1,7 @@
 package org.motechproject.tama.ivr.builder;
 
 import com.ozonetel.kookoo.CollectDtmf;
+import com.ozonetel.kookoo.Dial;
 import com.ozonetel.kookoo.Response;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.ivr.IVRMessage;
@@ -18,10 +19,12 @@ public class IVRResponseBuilder {
     private int dtmfLength;
     private List<String> playTexts = new ArrayList<String>();
     private List<String> playAudios = new ArrayList<String>();
+    private String dialNumber;
 
     public IVRResponseBuilder(String sid) {
-    	this(sid, "en");
+        this(sid, "en");
     }
+
     public IVRResponseBuilder(String sid, String preferredLangCode) {
         this.sid = sid;
         this.preferredLangCode = preferredLangCode;
@@ -36,6 +39,11 @@ public class IVRResponseBuilder {
     public IVRResponseBuilder withPlayAudios(String... playAudios) {
         for (String playAudio : playAudios)
             this.playAudios.add(playAudio);
+        return this;
+    }
+
+    public IVRResponseBuilder withDialNumber(String phoneNumber) {
+        this.dialNumber = phoneNumber;
         return this;
     }
 
@@ -61,14 +69,16 @@ public class IVRResponseBuilder {
 
         if (collectDtmf) {
             CollectDtmf collectDtmf = KookooCollectDtmfFactory.create();
-            if(dtmfLength > 0) collectDtmf.setMaxDigits(dtmfLength);
+            if (dtmfLength > 0) collectDtmf.setMaxDigits(dtmfLength);
             for (String playText : playTexts) collectDtmf.addPlayText(ivrMessage.getText(playText));
-            for (String playAudio : playAudios) collectDtmf.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
+            for (String playAudio : playAudios)
+                collectDtmf.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
 
             response.addCollectDtmf(collectDtmf);
         } else {
             for (String playText : playTexts) response.addPlayText(ivrMessage.getText(playText));
             for (String playAudio : playAudios) response.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
+            if (dialNumber != null) response.addDial(new Dial(dialNumber, false));
         }
         if (isHangUp) response.addHangup();
         return response;

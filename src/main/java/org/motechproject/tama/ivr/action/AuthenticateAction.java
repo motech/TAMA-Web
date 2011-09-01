@@ -40,7 +40,7 @@ public class AuthenticateAction extends BaseIncomingAction {
         return handle(ivrRequest, request, response, new IvrAction(treeChooser, messages, threadLocalTargetSource));
     }
 
-    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IvrAction tamaIvrAction) {
+    protected String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IvrAction tamaIvrAction) {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = ivrRequest.getInput();
         String id = ivrSession.getPatientId();

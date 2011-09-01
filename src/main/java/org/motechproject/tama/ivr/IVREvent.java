@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr;
 
 public enum IVREvent {
-    NEW_CALL("NewCall"), RECORD("Record"), GOT_DTMF("GotDTMF"), HANGUP("Hangup"), DISCONNECT("Disconnect");
+    NEW_CALL("NewCall"), RECORD("Record"), GOT_DTMF("GotDTMF"), HANGUP("Hangup"), DISCONNECT("Disconnect"), DIAL("Dial");
 
     private String key;
 

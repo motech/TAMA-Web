@@ -12,20 +12,28 @@ public class DecisionTreeBasedResponseBuilder {
         List<Prompt> prompts = node.getPrompts();
         boolean hasTransitions = node.hasTransitions();
         for (Prompt prompt : prompts) {
-            if (retryOnIncorrectUserAction && !(prompt instanceof MenuAudioPrompt) && prompt instanceof AudioPrompt) continue;
+            if (retryOnIncorrectUserAction && !(prompt instanceof MenuAudioPrompt) && prompt instanceof AudioPrompt)
+                continue;
             ITreeCommand command = prompt.getCommand();
             boolean isAudioPrompt = prompt instanceof AudioPrompt;
+            boolean isDialPrompt = prompt instanceof DialPrompt;
             if (command == null) {
-                buildPrompts(ivrResponseBuilder, prompt.getName(), isAudioPrompt);
-            } else if (!retryOnIncorrectUserAction){
+                if (isDialPrompt) {
+                    buildPrompts(ivrResponseBuilder, ((DialPrompt) prompt).getPhoneNumber(), isAudioPrompt, isDialPrompt);
+                } else {
+                    buildPrompts(ivrResponseBuilder, prompt.getName(), isAudioPrompt, isDialPrompt);
+                }
+            } else if (!retryOnIncorrectUserAction) {
                 String[] promptsFromCommand = command.execute(ivrContext);
                 for (String promptFromCommand : promptsFromCommand) {
-                    buildPrompts(ivrResponseBuilder, promptFromCommand, isAudioPrompt);
+                    buildPrompts(ivrResponseBuilder, promptFromCommand, isAudioPrompt, isDialPrompt);
                 }
             }
         }
         if (hasTransitions) {
-            ivrResponseBuilder.collectDtmf(maxLenOfTransitionOptions(node));
+            if (node.getTransitions().get("answered") == null) {
+                ivrResponseBuilder.collectDtmf(maxLenOfTransitionOptions(node));
+            }
         } else {
             ivrResponseBuilder.withPlayAudios(IVRMessage.SIGNATURE_MUSIC_URL).withHangUp();
         }
@@ -33,15 +41,16 @@ public class DecisionTreeBasedResponseBuilder {
     }
 
     private int maxLenOfTransitionOptions(Node node) {
-    	int maxLen = 0;
-		for (String key :node.getTransitions().keySet()){
-			if (maxLen<key.length())maxLen = key.length();
-		}
-		return maxLen;
-	}
+        int maxLen = 0;
+        for (String key : node.getTransitions().keySet()) {
+            if (maxLen < key.length()) maxLen = key.length();
+        }
+        return maxLen;
+    }
 
-	private void buildPrompts(IVRResponseBuilder ivrResponseBuilder, String promptName, boolean isAudioPrompt) {
+    private void buildPrompts(IVRResponseBuilder ivrResponseBuilder, String promptName, boolean isAudioPrompt, boolean isDialPrompt) {
         if (isAudioPrompt) ivrResponseBuilder.withPlayAudios(promptName);
+        else if (isDialPrompt) ivrResponseBuilder.withDialNumber(promptName);
         else ivrResponseBuilder.withPlayTexts(promptName);
     }
 }

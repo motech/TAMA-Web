@@ -41,6 +41,7 @@
                 <entry key="gotdtmf" value-ref="dtmfEventAction"/>
                 <entry key="disconnect" value-ref="disconnectEventAction"/>
                 <entry key="hangup" value-ref="hangupEventAction"/>
+                <entry key="dial" value-ref="dialEventAction"/>
             </map>
         </constructor-arg>
     </bean>

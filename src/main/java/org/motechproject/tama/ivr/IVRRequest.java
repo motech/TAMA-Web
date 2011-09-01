@@ -14,6 +14,7 @@ public class IVRRequest {
     private String event;
     private String data;
     private String tamaData;
+    private String status;
 
     public static final String POUND_SYMBOL = "%23";
 
@@ -25,6 +26,14 @@ public class IVRRequest {
         this.cid = cid;
         this.event = event;
         this.data = data;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getSid() {

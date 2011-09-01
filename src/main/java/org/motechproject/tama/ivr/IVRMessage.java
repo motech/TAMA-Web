@@ -71,11 +71,12 @@ public class IVRMessage {
         return (String) properties.get(key.toLowerCase());
     }
 
-    
+
     public String getText(String key) {
-    	String text = get(key);
-        return (String) (text == null?key:text);
+        String text = get(key);
+        return text == null ? key : text;
     }
+
     public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : key.toLowerCase();
         return properties.get(CONTENT_LOCATION_URL) + preferredLangCode + "/" + file + WAV;
