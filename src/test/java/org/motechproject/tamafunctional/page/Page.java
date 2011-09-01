@@ -14,7 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public abstract class Page {
     protected WebDriver webDriver;
     private static final long MaxPageLoadTime = 10;
-    private static final long DOMLoadTimeInSeconds =2;
+    private static final long DOMLoadTimeInSeconds =1;
     protected WebDriverWait wait;
 
     public Page(WebDriver webDriver) {
