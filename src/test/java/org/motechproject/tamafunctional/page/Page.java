@@ -3,7 +3,6 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -11,16 +10,18 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public abstract class Page {
     protected WebDriver webDriver;
     private static final long MaxPageLoadTime = 10;
-    private static final long DOMLoadTimeInSeconds =1;
+    private static final long DOMLoadTimeInSeconds = 1;
     protected WebDriverWait wait;
 
     public Page(WebDriver webDriver) {
         this.webDriver = webDriver;
         this.wait = new WebDriverWait(webDriver, MaxPageLoadTime);
-        waitForDomToBeReady();
+
         this.waitForPageToLoad();
     }
 
@@ -72,13 +73,6 @@ public abstract class Page {
         logoutLink.click();
     }
 
-    private void waitForDomToBeReady() {
-        try {
-            long DOMLoadTimeInMilliSeconds = DOMLoadTimeInSeconds * 1000;
-            Thread.sleep(DOMLoadTimeInMilliSeconds);
-        } catch (InterruptedException e) {
-        }
-    }
 
     protected void waitForElementWithIdToLoad(final String id) {
         waitForElementToLoad(By.id(id));
@@ -88,16 +82,21 @@ public abstract class Page {
         waitForElementToLoad(By.xpath(path));
     }
 
+    protected void waitForDojoElementToLoad(final String id, final String dojoClass) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                WebElement element = webDriver.findElement(By.id(id));
+                return element != null && isNotBlank(element.getAttribute("class")) && element.getAttribute("class").contains(dojoClass);
+            }
+        });
+    }
+
     private void waitForElementToLoad(final By by) {
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                WebElement element = webDriver.findElement(by);
-                try {
-                    return element != null && element.isEnabled();
-                } catch (StaleElementReferenceException e) {
-                    return false;
-                }
+                return webDriver.findElement(by) != null;
             }
         });
     }

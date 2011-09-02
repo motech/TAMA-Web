@@ -78,7 +78,7 @@ public class CreateARTRegimenPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad(REGIMEN_ID);
+        waitForDojoElementToLoad(REGIMEN_ID,"dijitInputInner");
     }
 
     public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {

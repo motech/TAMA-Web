@@ -35,7 +35,7 @@ public class PatientRegistrationPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad("_patientId_id");
+        waitForDojoElementToLoad("_patientId_id", "dijitInputInner");
     }
 
     public ShowPatientPage registerNewPatient(TestPatient patient) {
