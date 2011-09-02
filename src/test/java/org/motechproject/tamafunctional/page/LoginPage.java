@@ -32,7 +32,7 @@ public class LoginPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad(USERNAME_ID);
+        waitForDojoElementToLoad(USERNAME_ID,"dijitInputInner");
     }
 
     public void postInitialize() {
