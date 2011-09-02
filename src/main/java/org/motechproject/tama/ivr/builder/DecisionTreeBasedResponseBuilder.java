@@ -19,14 +19,14 @@ public class DecisionTreeBasedResponseBuilder {
             boolean isDialPrompt = prompt instanceof DialPrompt;
             if (command == null) {
                 if (isDialPrompt) {
-                    buildPrompts(ivrResponseBuilder, ((DialPrompt) prompt).getPhoneNumber(), isAudioPrompt, isDialPrompt);
+                    buildPrompts(ivrResponseBuilder, null, nextDialPhoneNumber((DialPrompt) prompt, ivrContext), isAudioPrompt, isDialPrompt);
                 } else {
-                    buildPrompts(ivrResponseBuilder, prompt.getName(), isAudioPrompt, isDialPrompt);
+                    buildPrompts(ivrResponseBuilder, prompt.getName(), null, isAudioPrompt, isDialPrompt);
                 }
             } else if (!retryOnIncorrectUserAction) {
                 String[] promptsFromCommand = command.execute(ivrContext);
                 for (String promptFromCommand : promptsFromCommand) {
-                    buildPrompts(ivrResponseBuilder, promptFromCommand, isAudioPrompt, isDialPrompt);
+                    buildPrompts(ivrResponseBuilder, promptFromCommand, null, isAudioPrompt, isDialPrompt);
                 }
             }
         }
@@ -40,6 +40,13 @@ public class DecisionTreeBasedResponseBuilder {
         return ivrResponseBuilder;
     }
 
+    private String[] nextDialPhoneNumber(DialPrompt prompt, IVRContext ivrContext) {
+        Object dialCount = ivrContext.ivrSession().get("dialCount");
+        Integer.parseInt((String) dialCount);
+
+        return ((DialPrompt) prompt).getPhoneNumbers();
+    }
+
     private int maxLenOfTransitionOptions(Node node) {
         int maxLen = 0;
         for (String key : node.getTransitions().keySet()) {
@@ -48,9 +55,11 @@ public class DecisionTreeBasedResponseBuilder {
         return maxLen;
     }
 
-    private void buildPrompts(IVRResponseBuilder ivrResponseBuilder, String promptName, boolean isAudioPrompt, boolean isDialPrompt) {
+    private void buildPrompts(IVRResponseBuilder ivrResponseBuilder, String promptName, String phoneNumber, boolean isAudioPrompt, boolean isDialPrompt) {
         if (isAudioPrompt) ivrResponseBuilder.withPlayAudios(promptName);
-        else if (isDialPrompt) ivrResponseBuilder.withDialNumber(promptName);
+        else if (isDialPrompt) {
+            ivrResponseBuilder.withDialNumber(phoneNumber);
+        }
         else ivrResponseBuilder.withPlayTexts(promptName);
     }
 }

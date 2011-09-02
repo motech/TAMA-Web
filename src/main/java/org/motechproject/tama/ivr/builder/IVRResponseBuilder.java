@@ -19,7 +19,8 @@ public class IVRResponseBuilder {
     private int dtmfLength;
     private List<String> playTexts = new ArrayList<String>();
     private List<String> playAudios = new ArrayList<String>();
-    private String dialNumber;
+    private String[] dialNumbers;
+    private int dialCount;
 
     public IVRResponseBuilder(String sid) {
         this(sid, "en");
@@ -28,6 +29,12 @@ public class IVRResponseBuilder {
     public IVRResponseBuilder(String sid, String preferredLangCode) {
         this.sid = sid;
         this.preferredLangCode = preferredLangCode;
+    }
+
+    public IVRResponseBuilder(String sid, String preferredLangCode, int dialCount) {
+        this.sid = sid;
+        this.preferredLangCode = preferredLangCode;
+        this.dialCount = dialCount;
     }
 
     public IVRResponseBuilder withPlayTexts(String... playTexts) {
@@ -42,8 +49,8 @@ public class IVRResponseBuilder {
         return this;
     }
 
-    public IVRResponseBuilder withDialNumber(String phoneNumber) {
-        this.dialNumber = phoneNumber;
+    public IVRResponseBuilder withDialNumbers(String[] phoneNumbers) {
+        this.dialNumbers = phoneNumbers;
         return this;
     }
 
@@ -78,7 +85,9 @@ public class IVRResponseBuilder {
         } else {
             for (String playText : playTexts) response.addPlayText(ivrMessage.getText(playText));
             for (String playAudio : playAudios) response.addPlayAudio(ivrMessage.getWav(playAudio, preferredLangCode));
-            if (dialNumber != null) response.addDial(new Dial(dialNumber, false));
+            if (dialNumbers != null) {
+                response.addDial(new Dial(dialNumbers[dialCount], false));
+            }
         }
         if (isHangUp) response.addHangup();
         return response;

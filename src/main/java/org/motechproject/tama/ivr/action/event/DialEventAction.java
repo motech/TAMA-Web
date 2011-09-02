@@ -26,12 +26,17 @@ public class DialEventAction extends BaseIncomingAction {
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
+        int dialCount = Integer.parseInt((String) ivrSession.get("dialCount"));
         if (ivrRequest.getStatus().equals("answered")) {
             ivrRequest.setData("answered");
+            ivrSession.set("dialCount", ++dialCount);
             return new IvrAction(treeChooser, messages, threadLocalTargetSource).handle(ivrRequest, ivrSession);
-        }
-        else {
-            ivrRequest.setData("not_answered");
+        } else {
+            if (dialCount > 2) {
+                ivrRequest.setData("not_answered");
+            } else {
+                ivrRequest.setData("");
+            }
             return new IvrAction(treeChooser, messages, threadLocalTargetSource).handle(ivrRequest, ivrSession);
         }
     }
