@@ -160,6 +160,18 @@ public class PatientsTest extends SpringIntegrationTest {
     }
 
     @Test
+    public void shouldDeactivatePatient() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Active).withPatientId("7890").withGender(gender).withIVRLanguage(ivrLanguage).build();
+        patients.add(patient);
+
+        patients.deactivate(patient.getId());
+        markForDeletion(patient);
+
+        List<Patient> dbPatients = patients.findByPatientId("7890");
+        assertTrue(dbPatients.get(0).isNotActive());
+    }
+
+    @Test
     public void shouldFindClinicForPatient() {
         Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         clinics.add(clinicForPatient);

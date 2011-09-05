@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -12,13 +13,17 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.util.DateUtil;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class PillRegimenSnapshot {
     private IVRContext ivrContext;
     private PillRegimenResponse pillRegimen;
     private final DateTime now;
     private LocalDate today;
+    Logger logger = Logger.getLogger(this.getClass());
 
     public PillRegimenSnapshot(IVRContext ivrContext, DateTime now) {
         this.ivrContext = ivrContext;
@@ -70,6 +75,9 @@ public class PillRegimenSnapshot {
     }
 
     public MyDosageResponse getCurrentDosage() {
+        logger.error("ivrContext.ivrRequest().hasNoTamaData()" + ivrContext.ivrRequest().hasNoTamaData());
+        logger.error(ivrContext.ivrRequest().getTamaParams());
+        logger.error("getDosage((String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID)); "+ getDosage((String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID)));
         if (ivrContext.ivrRequest().hasNoTamaData()) {
             List<DosageResponse> dosageResponses = getSortedDosages();
             DosageResponse currentDosage = null;

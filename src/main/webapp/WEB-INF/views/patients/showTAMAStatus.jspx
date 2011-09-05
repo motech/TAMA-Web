@@ -17,6 +17,16 @@
               <a id="clinic_visits" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
               <c:out value=" "/>
               <a id="lab_results" href="${lab_results_url}">Lab Results</a>
+              <br/>
+              <br/>
+              <div class="update_patient">
+                  <form action="deactivate" method="POST">
+                     <input type="hidden" name="id" value="${patient.id}"/>
+                     <div class='submit'>
+                       <input type="submit" id="deactivatePatient" value="Deactivate"/>
+                     </div>
+                  </form>
+              </div>
           </c:when>
           <c:otherwise>
               <div class="update_patient">

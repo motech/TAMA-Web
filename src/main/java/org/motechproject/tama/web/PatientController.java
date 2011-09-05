@@ -74,9 +74,21 @@ public class PatientController extends BaseController {
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/activate/{id}")
+    @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
     public String activate(@PathVariable String id) {
         patients.activate(id);
+        return REDIRECT_TO_LIST_VIEW;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
+    public String deactivate(@RequestParam String id, HttpServletRequest request) {
+        patients.deactivate(id);
+        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/deactivate/{id}")
+    public String deactivate(@PathVariable String id) {
+        patients.deactivate(id);
         return REDIRECT_TO_LIST_VIEW;
     }
 

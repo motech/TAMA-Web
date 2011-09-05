@@ -196,10 +196,11 @@ dojo.addOnLoad(function() {
                 message : "You have entered different times for evening dose. Please change the times to the same time for both evening dosages."
             }];
 
-            for (var i = 0; i < conditions.length; i++){
-                if (conditions[i].execute())
-                    return conditions[i].message;
-            }
+//        Disabled in lieu of #494, for usability testing.
+//            for (var i = 0; i < conditions.length; i++){
+//                if (conditions[i].execute())
+//                    return conditions[i].message;
+//            }
             return null;
         };
 

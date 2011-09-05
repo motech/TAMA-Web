@@ -66,6 +66,11 @@ public class Patient extends CouchEntity {
         return String.format("0%s", mobilePhoneNumber);
     }
 
+    public Patient deactivate() {
+        this.status = Status.Inactive;
+        return this;
+    }
+
     public enum Status {
         Inactive, Active
     }

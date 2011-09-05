@@ -84,6 +84,13 @@ public class PatientTest {
     }
 
     @Test
+    public void shouldTestDeactivationOfPatient() {
+        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        patient.deactivate();
+        assertTrue(patient.getStatus().equals(Patient.Status.Inactive));
+    }
+
+    @Test
     public void shouldGetIVRMobilePhoneNumber(){
         Patient patient = PatientBuilder.startRecording().withMobileNumber("9876543210").build();
         assertEquals("09876543210", patient.getIVRMobilePhoneNumber());

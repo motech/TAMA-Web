@@ -107,7 +107,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     public void activate(String id) {
         Patient patient = get(id);
         patient.activate();
-        merge(patient);
+        update(patient);
     }
 
     public void merge(Patient patient) {
@@ -151,5 +151,11 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     private Patient singleResult(List<Patient> patients) {
         return (patients == null || patients.isEmpty()) ? null : patients.get(0);
+    }
+
+    public void deactivate(String id) {
+        Patient patient = get(id);
+        patient.deactivate();
+        update(patient);
     }
 }
