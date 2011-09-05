@@ -52,7 +52,7 @@ public class CreateLabResultsPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad(TEST_DATE_ELEMENT);
+        waitForDojoElementToLoad(TEST_DATE_ELEMENT,"dijitInputInner");
     }
 
     private void enterTestData(TestLabResult labResult) {

@@ -31,7 +31,7 @@ public class ClinicRegistrationPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad("_name_id");
+        waitForDojoElementToLoad("_name_id","dijitInputInner");
     }
 
     @Override
