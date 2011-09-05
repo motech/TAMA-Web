@@ -12,7 +12,9 @@ import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -42,7 +44,7 @@ public class PillsDelayWarningTest {
     @Before
     public void setup() {
         initMocks(this);
-        pillsDelayWarning = new PillsDelayWarning();
+        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil())));
         when(context.ivrRequest()).thenReturn(request);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
@@ -76,10 +78,10 @@ public class PillsDelayWarningTest {
         String[] messages = pillsDelayWarning.execute(context);
         assertEquals(5, messages.length);
         assertEquals(IVRMessage.LAST_REMINDER_WARNING, messages[0]);
-        assertEquals("10", messages[1]);
-        assertEquals("5", messages[2]);
-        assertEquals("in_the_evening", messages[3]);
-        assertEquals("today", messages[4]);
+        assertEquals("Num_010", messages[1]);
+        assertEquals("Num_005", messages[2]);
+        assertEquals("001_007_04_evening", messages[3]);
+        assertEquals("timeOfDayToday", messages[4]);
     }
 }
 

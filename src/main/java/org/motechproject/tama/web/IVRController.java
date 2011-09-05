@@ -31,7 +31,9 @@ public class IVRController {
     public String reply(@ModelAttribute IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
             BaseIncomingAction action = actions.findFor(ivrRequest.callEvent());
-            return action.handle(ivrRequest, request, response);
+            final String handle = action.handle(ivrRequest, request, response);
+            logger.error(String.format(" XML returned %s", handle));
+            return handle;
         } catch (Exception e) {
             logger.error("Failed to handled incoming request", e);
             throw new TamaException("Failed to handled incoming request", e);

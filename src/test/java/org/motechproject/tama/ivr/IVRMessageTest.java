@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.util.FileUtil;
 
 import java.util.Properties;
 
@@ -14,7 +15,7 @@ public class IVRMessageTest {
     @Before
     public void setUp() {
         properties = new Properties();
-        messages = new IVRMessage(properties);
+        messages = new IVRMessage(properties, new FileUtil());
     }
 
     @Test
@@ -24,5 +25,12 @@ public class IVRMessageTest {
 
         assertEquals("http://localhost/en/clinic.welcome.mayo.wav", messages.getWav("mayo","en"));
         assertEquals("http://localhost/en/apollo.wav", messages.getWav("apollo","en"));
+    }
+
+    @Test
+    public void shouldReturnWavFileForNumbers() {
+        assertEquals("Num_000", messages.getNumberFilename(0));
+        assertEquals("Num_003", messages.getNumberFilename(3));
+        assertEquals("Num_046", messages.getNumberFilename(46));
     }
 }

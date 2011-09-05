@@ -90,9 +90,9 @@ public class MessageForMedicinesTest {
 
         assertEquals(5, messages.length);
         assertEquals("clinicName", messages[0]);
-        assertEquals("its_time_for_the_pill", messages[1]);
+        assertEquals("001_02_02_itsTimeForPill1", messages[1]);
         assertEquals("medicine1", messages[2]);
         assertEquals("medicine2", messages[3]);
-        assertEquals("pill_from_the_bottle", messages[4]);
+        assertEquals("001_07_07_fromTheBottle1", messages[4]);
     }
 }

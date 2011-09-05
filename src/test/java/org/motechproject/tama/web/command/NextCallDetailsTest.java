@@ -8,8 +8,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
+import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -36,7 +39,7 @@ public class NextCallDetailsTest {
     @Before
     public void setup() {
         initMocks(this);
-        nextCallDetails = new NextCallDetails();
+        nextCallDetails = new NextCallDetails(new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil())));
 
         context = new IVRContext(request, ivrSession);
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
@@ -52,11 +55,11 @@ public class NextCallDetailsTest {
 
         String[] messages = nextCallDetails.execute(context);
         assertEquals(6, messages.length);
-        assertEquals("next_dose_is", messages[0]);
-        assertEquals("at", messages[1]);
-        assertEquals("10", messages[2]);
-        assertEquals("5", messages[3]);
-        assertEquals("in_the_evening", messages[4]);
-        assertEquals("today", messages[5]);
+        assertEquals("010_04_01_nextDoseIs1", messages[0]);
+        assertEquals("timeOfDay_At", messages[1]);
+        assertEquals("Num_010", messages[2]);
+        assertEquals("Num_005", messages[3]);
+        assertEquals("001_007_04_evening", messages[4]);
+        assertEquals("timeOfDayToday", messages[5]);
     }
 }

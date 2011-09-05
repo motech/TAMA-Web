@@ -10,7 +10,9 @@ import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -36,7 +38,7 @@ public class MessageOnPreviousPillNotTakenTest {
     @Before
     public void setup() {
         initMocks(this);
-        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken();
+        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken(new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil())));
         when(context.ivrRequest()).thenReturn(request);
     }
 

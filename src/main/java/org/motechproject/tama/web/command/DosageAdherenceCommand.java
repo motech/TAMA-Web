@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class DosageAdherenceCommand extends BaseTreeCommand {
     @Autowired
     protected DosageAdherenceLogs dosageAdherenceLogs;
+    @Autowired
+    protected IVRMessage ivrMessage;
 
     protected DosageAdherenceCommand() {
     }
@@ -29,7 +31,7 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
     protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot) {
         return new String[]{
                 IVRMessage.YOUR_ADHERENCE_IS_NOW,
-                String.valueOf(getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCount())),
+                ivrMessage.getNumberFilename(getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCount())),
                 IVRMessage.PERCENT
         };
     }

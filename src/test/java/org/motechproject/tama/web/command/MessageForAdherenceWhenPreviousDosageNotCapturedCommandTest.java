@@ -18,6 +18,7 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -64,7 +65,7 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(dosageAdherenceLogs);
+        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(dosageAdherenceLogs, new IVRMessage(null, new FileUtil()));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         assertEquals(3, message.length);
         assertEquals(IVRMessage.YOUR_ADHERENCE_IS_NOW, message[0]);
-        assertEquals("100", message[1]);
+        assertEquals("Num_100", message[1]);
         assertEquals(IVRMessage.PERCENT, message[2]);
     }
 }

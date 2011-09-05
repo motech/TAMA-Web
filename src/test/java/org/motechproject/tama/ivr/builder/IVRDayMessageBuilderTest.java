@@ -5,11 +5,14 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -23,7 +26,7 @@ public class IVRDayMessageBuilderTest {
 
     @Before
     public void setup() {
-        ivrDayMessageBuilder = new IVRDayMessageBuilder();
+        ivrDayMessageBuilder = new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil()));
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 00, 00, 00));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
@@ -34,10 +37,10 @@ public class IVRDayMessageBuilderTest {
         DateTime time = DateUtil.now().plusDays(1).withHourOfDay(10).withMinuteOfHour(20);
 
         List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time);
-        assertEquals("10", messages.get(0));
-        assertEquals("20", messages.get(1));
-        assertEquals("in_the_morning", messages.get(2));
-        assertEquals("tomorrow", messages.get(3));
+        assertEquals("Num_010", messages.get(0));
+        assertEquals("Num_020", messages.get(1));
+        assertEquals("001_007_04_morning", messages.get(2));
+        assertEquals("timeOfDay_Tomorrow", messages.get(3));
     }
 
     @Test
@@ -45,10 +48,10 @@ public class IVRDayMessageBuilderTest {
         DateTime time = DateUtil.now().plusDays(1).withHourOfDay(19).withMinuteOfHour(20);
 
         List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time);
-        assertEquals("7", messages.get(0));
-        assertEquals("20", messages.get(1));
-        assertEquals("in_the_evening", messages.get(2));
-        assertEquals("tomorrow", messages.get(3));
+        assertEquals("Num_007", messages.get(0));
+        assertEquals("Num_020", messages.get(1));
+        assertEquals("001_007_04_evening", messages.get(2));
+        assertEquals("timeOfDay_Tomorrow", messages.get(3));
     }
 
     @Test
@@ -56,10 +59,10 @@ public class IVRDayMessageBuilderTest {
         DateTime time = DateUtil.now().withHourOfDay(19).withMinuteOfHour(20);
 
         List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time);
-        assertEquals("7", messages.get(0));
-        assertEquals("20", messages.get(1));
-        assertEquals("in_the_evening", messages.get(2));
-        assertEquals("today", messages.get(3));
+        assertEquals("Num_007", messages.get(0));
+        assertEquals("Num_020", messages.get(1));
+        assertEquals("001_007_04_evening", messages.get(2));
+        assertEquals("timeOfDayToday", messages.get(3));
     }
 
     @Test
@@ -68,7 +71,7 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(1, messages.size());
-        assertEquals("morning", messages.get(0));
+        assertEquals("001_08_02_morning", messages.get(0));
     }
 
     @Test
@@ -77,8 +80,8 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("yesterdays", messages.get(0));
-        assertEquals("morning", messages.get(1));
+        assertEquals("001_08_02_yesterdays", messages.get(0));
+        assertEquals("001_08_02_morning", messages.get(1));
     }
 
     @Test
@@ -87,8 +90,8 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAY_IN_THE_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("yesterday", messages.get(0));
-        assertEquals("in_the_morning", messages.get(1));
+        assertEquals("001_007_04_yesterday", messages.get(0));
+        assertEquals("001_007_04_morning", messages.get(1));
     }
 
     @Test
@@ -97,8 +100,8 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("yesterdays", messages.get(0));
-        assertEquals("afternoon", messages.get(1));
+        assertEquals("001_08_02_yesterdays", messages.get(0));
+        assertEquals("001_08_02_afternoon", messages.get(1));
     }
 
     @Test
@@ -107,8 +110,8 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("yesterdays", messages.get(0));
-        assertEquals("evening", messages.get(1));
+        assertEquals("001_08_02_yesterdays", messages.get(0));
+        assertEquals("001_08_02_evening", messages.get(1));
     }
 
     @Test
@@ -117,6 +120,6 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(1, messages.size());
-        assertEquals("last_night", messages.get(0));
+        assertEquals("001_009_02_lastnight", messages.get(0));
     }
 }

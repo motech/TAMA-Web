@@ -7,10 +7,18 @@ import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PillsDelayWarning extends BaseTreeCommand {
+
+    private IVRDayMessageBuilder ivrDayMessageBuilder;
+
+    @Autowired
+    public PillsDelayWarning(IVRDayMessageBuilder ivrDayMessageBuilder) {
+        this.ivrDayMessageBuilder = ivrDayMessageBuilder;
+    }
 
     @Override
     public String[] execute(Object context) {
@@ -20,7 +28,7 @@ public class PillsDelayWarning extends BaseTreeCommand {
             return (String[]) ArrayUtils.addAll(
                     new String[]{
                             IVRMessage.LAST_REMINDER_WARNING
-                    }, new IVRDayMessageBuilder().getMessageForNextDosage(nextDosageTime).toArray());
+                    }, ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime).toArray());
         }
         return new String[]{
                 IVRMessage.PLEASE_TAKE_DOSE,

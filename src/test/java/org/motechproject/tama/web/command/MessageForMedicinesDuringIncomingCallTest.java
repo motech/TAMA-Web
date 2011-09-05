@@ -96,10 +96,10 @@ public class MessageForMedicinesDuringIncomingCallTest {
 
         assertEquals(5, messages.length);
         assertEquals("welcome_to_clinicName", messages[0]);
-        assertEquals("its_time_for_the_pill", messages[1]);
+        assertEquals("001_02_02_itsTimeForPill1", messages[1]);
         assertEquals("medicine1", messages[2]);
         assertEquals("medicine2", messages[3]);
-        assertEquals("pill_from_the_bottle", messages[4]);
+        assertEquals("001_07_07_fromTheBottle1", messages[4]);
     }
 
 
@@ -126,8 +126,8 @@ public class MessageForMedicinesDuringIncomingCallTest {
 
         assertEquals(4, messages.length);
         assertEquals("welcome_to_clinicName", messages[0]);
-        assertEquals("not_reported_if_taken", messages[1]);
+        assertEquals("010_02_04_notReportedIfTaken", messages[1]);
         assertEquals("medicine3", messages[2]);
-        assertEquals("pill_from_the_bottle", messages[3]);
+        assertEquals("001_07_07_fromTheBottle1", messages[3]);
     }
 }
