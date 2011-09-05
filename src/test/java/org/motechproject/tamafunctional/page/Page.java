@@ -14,7 +14,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public abstract class Page {
     protected WebDriver webDriver;
-    private static final long MaxPageLoadTime = 10;
+    private static final long MaxPageLoadTime = 25;
     protected WebDriverWait wait;
 
     public Page(WebDriver webDriver) {
