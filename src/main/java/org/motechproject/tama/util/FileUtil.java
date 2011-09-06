@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 public class FileUtil {
 
     public String sanitizeFilename(String filename) {
-        return filename.toLowerCase().replaceAll("[^a-z0-9-_.]+", "_");
+        return filename.toLowerCase().replaceAll("[ ]*_[ ]*", "_").replaceAll("[^a-z0-9-_.]+", "_");
     }
 }

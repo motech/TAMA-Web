@@ -32,7 +32,7 @@ public class FileUtilTest {
     @Test
     public void shouldFoo() {
         String sanitized = new FileUtil().sanitizeFilename("pier _ walkway");
-        assertEquals("pier___walkway", sanitized);
+        assertEquals("pier_walkway", sanitized);
     }
 
     @Test
