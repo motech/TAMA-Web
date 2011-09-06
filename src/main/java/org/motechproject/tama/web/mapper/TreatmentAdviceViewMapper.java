@@ -6,26 +6,26 @@ import org.motechproject.tama.web.model.TreatmentAdviceView;
 
 public class TreatmentAdviceViewMapper {
 
-    private Regimens regimens;
-    private Drugs drugs;
-    private DosageTypes dosageTypes;
-    private MealAdviceTypes mealAdviceTypes;
-    private TreatmentAdvices treatmentAdvices;
-    private Patients patients;
+    private AllRegimens allRegimens;
+    private AllDrugs allDrugs;
+    private AllDosageTypes allDosageTypes;
+    private AllMealAdviceTypes allMealAdviceTypes;
+    private AllTreatmentAdvices allTreatmentAdvices;
+    private AllPatients allPatients;
 
-    public TreatmentAdviceViewMapper(TreatmentAdvices treatmentAdvices, Patients patients, Regimens regimens, Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes) {
-        this.treatmentAdvices = treatmentAdvices;
-        this.patients = patients;
-        this.regimens = regimens;
-        this.drugs = drugs;
-        this.dosageTypes = dosageTypes;
-        this.mealAdviceTypes = mealAdviceTypes;
+    public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
+        this.allTreatmentAdvices = allTreatmentAdvices;
+        this.allPatients = allPatients;
+        this.allRegimens = allRegimens;
+        this.allDrugs = allDrugs;
+        this.allDosageTypes = allDosageTypes;
+        this.allMealAdviceTypes = allMealAdviceTypes;
     }
 
     public TreatmentAdviceView map(String treatmentAdviceId) {
-        TreatmentAdvice treatmentAdvice = treatmentAdvices.get(treatmentAdviceId);
-        Patient patient = patients.get(treatmentAdvice.getPatientId());
-        Regimen regimen = regimens.get(treatmentAdvice.getRegimenId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
+        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
+        Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
         DrugCompositionGroup drugCompositionGroup = regimen.getDrugCompositionGroupFor(treatmentAdvice.getDrugCompositionGroupId());
 
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
@@ -35,7 +35,7 @@ public class TreatmentAdviceViewMapper {
         treatmentAdviceView.setRegimenName(regimen.getDisplayName());
         treatmentAdviceView.setDrugCompositionName(drugCompositionGroup.getName());
 
-        DrugDosageViewMapper drugDosageViewMapper = new DrugDosageViewMapper(drugs, dosageTypes, mealAdviceTypes);
+        DrugDosageViewMapper drugDosageViewMapper = new DrugDosageViewMapper(allDrugs, allDosageTypes, allMealAdviceTypes);
         for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
             treatmentAdviceView.addDrugDosage(drugDosageViewMapper.map(drugDosage));
         }

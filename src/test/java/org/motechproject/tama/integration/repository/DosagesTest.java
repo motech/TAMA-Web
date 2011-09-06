@@ -3,8 +3,7 @@ package org.motechproject.tama.integration.repository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.repository.DosageTypes;
+import org.motechproject.tama.repository.AllDosageTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -12,18 +11,18 @@ import java.util.List;
 public class DosagesTest extends SpringIntegrationTest {
 
     @Autowired
-    DosageTypes dosageTypes;
+    AllDosageTypes allDosageTypes;
 
     @Test
     public void testGetAllShouldSortAndReturnTheList() {
         DosageType twice = new DosageType("Twice Daily");
         DosageType morning = new DosageType("Morning Daily");
         DosageType evening = new DosageType("Evening Daily");
-        dosageTypes.add(twice);
-        dosageTypes.add(morning);
-        dosageTypes.add(evening);
+        allDosageTypes.add(twice);
+        allDosageTypes.add(morning);
+        allDosageTypes.add(evening);
 
-        List<DosageType> all = dosageTypes.getAll();
+        List<DosageType> all = allDosageTypes.getAll();
         Assert.assertEquals("Evening Daily", all.get(0).getType());
         Assert.assertEquals("Twice Daily", all.get(all.size() -1).getType());
 

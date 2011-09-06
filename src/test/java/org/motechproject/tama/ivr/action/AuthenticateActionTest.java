@@ -12,7 +12,7 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
 import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -29,7 +29,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class AuthenticateActionTest extends BaseActionTest {
     private AuthenticateAction authenticateAction;
     @Mock
-    private Patients patients;
+    private AllPatients allPatients;
     @Mock
     private RetryAction retryAction;
     @Mock
@@ -48,12 +48,12 @@ public class AuthenticateActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
-        when(patients.get(PATIENT_ID)).thenReturn(patient);
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
         when(patient.getIvrLanguage()).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
         when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         when(request.getParameter("symptoms_reporting")).thenReturn("true");        	
-        authenticateAction = new AuthenticateAction(pillReminderService, patients, retryAction, null, null);
+        authenticateAction = new AuthenticateAction(pillReminderService, allPatients, retryAction, null, null);
     }
 
     @Test

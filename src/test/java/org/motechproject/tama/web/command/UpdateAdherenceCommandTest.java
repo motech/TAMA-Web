@@ -11,7 +11,7 @@ import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class UpdateAdherenceCommandTest {
     private DosageAdherenceLog log;
 
     @Mock
-    private DosageAdherenceLogs logs;
+    private AllDosageAdherenceLogs logs;
     @Mock
     private IVRRequest req;
     @Mock

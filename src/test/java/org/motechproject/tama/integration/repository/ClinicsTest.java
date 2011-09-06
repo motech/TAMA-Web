@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.repository.Cities;
-import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.AllCities;
+import org.motechproject.tama.repository.AllClinics;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.assertEquals;
@@ -15,19 +15,19 @@ import static junit.framework.Assert.assertNotNull;
 public class ClinicsTest extends SpringIntegrationTest {
 
     @Autowired
-    private Clinics clinics;
+    private AllClinics allClinics;
     @Autowired
-    private Cities cities;
+    private AllCities allCities;
 
     @Test
     public void testShouldPersistClinic() {
         City city = City.newCity("TestCity");
-        cities.add(city);
+        allCities.add(city);
         String name = "testName";
         Clinic testClinic = ClinicBuilder.startRecording().withName(name).withCity(city).build();
-        clinics.add(testClinic);
+        allClinics.add(testClinic);
 
-        Clinic clinic = clinics.get(testClinic.getId());
+        Clinic clinic = allClinics.get(testClinic.getId());
 
         assertNotNull(clinic);
         markForDeletion(testClinic);
@@ -36,17 +36,17 @@ public class ClinicsTest extends SpringIntegrationTest {
     @Test
     public void testShouldMergeClinic() {
         City city = City.newCity("TestCity");
-        cities.add(city);
+        allCities.add(city);
 
         String testName = "testName";
         String newName = "newName";
         Clinic testClinic = ClinicBuilder.startRecording().withName(testName).withCity(city).build();
-        clinics.add(testClinic);
+        allClinics.add(testClinic);
 
         testClinic.setName(newName);
-        clinics.update(testClinic);
+        allClinics.update(testClinic);
 
-        Clinic clinic = clinics.get(testClinic.getId());
+        Clinic clinic = allClinics.get(testClinic.getId());
 
         assertNotNull(clinic);
         assertEquals(newName, clinic.getName());
@@ -57,10 +57,10 @@ public class ClinicsTest extends SpringIntegrationTest {
     @Test
     public void shouldLoadCorrespondingCityWhenQueryingClinic() {
         City city = City.newCity("Pune");
-        cities.add(city);
+        allCities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
-        clinics.add(clinic);
-        Clinic returnedClinic = clinics.get(clinic.getId());
+        allClinics.add(clinic);
+        Clinic returnedClinic = allClinics.get(clinic.getId());
         Assert.assertNotNull(returnedClinic);
         Assert.assertNotNull(returnedClinic.getCity());
         Assert.assertEquals("Pune", returnedClinic.getCity().getName());

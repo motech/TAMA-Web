@@ -1,28 +1,28 @@
 package org.motechproject.tama.web.mapper;
 
 import org.motechproject.tama.domain.*;
-import org.motechproject.tama.repository.DosageTypes;
-import org.motechproject.tama.repository.Drugs;
-import org.motechproject.tama.repository.MealAdviceTypes;
+import org.motechproject.tama.repository.AllDosageTypes;
+import org.motechproject.tama.repository.AllDrugs;
+import org.motechproject.tama.repository.AllMealAdviceTypes;
 import org.motechproject.tama.web.model.DrugDosageView;
 
 public class DrugDosageViewMapper {
 
-    private Drugs drugs;
-    private DosageTypes dosageTypes;
-    private MealAdviceTypes mealAdviceTypes;
+    private AllDrugs allDrugs;
+    private AllDosageTypes allDosageTypes;
+    private AllMealAdviceTypes allMealAdviceTypes;
 
-    public DrugDosageViewMapper(Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes) {
-        this.drugs = drugs;
-        this.dosageTypes = dosageTypes;
-        this.mealAdviceTypes = mealAdviceTypes;
+    public DrugDosageViewMapper(AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
+        this.allDrugs = allDrugs;
+        this.allDosageTypes = allDosageTypes;
+        this.allMealAdviceTypes = allMealAdviceTypes;
     }
 
     public DrugDosageView map(DrugDosage drugDosage) {
-        Drug drug = drugs.get(drugDosage.getDrugId());
+        Drug drug = allDrugs.get(drugDosage.getDrugId());
         Brand brand = drug.getBrand(drugDosage.getBrandId());
-        DosageType dosageType = dosageTypes.get(drugDosage.getDosageTypeId());
-        MealAdviceType mealAdviceType = mealAdviceTypes.get(drugDosage.getMealAdviceId());
+        DosageType dosageType = allDosageTypes.get(drugDosage.getDosageTypeId());
+        MealAdviceType mealAdviceType = allMealAdviceTypes.get(drugDosage.getMealAdviceId());
 
         DrugDosageView drugDosageView = new DrugDosageView();
         drugDosageView.setDrugName(drug.getName());

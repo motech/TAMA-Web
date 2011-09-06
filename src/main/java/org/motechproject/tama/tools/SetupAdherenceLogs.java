@@ -5,8 +5,8 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
+import org.motechproject.tama.repository.AllPatients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,10 +15,10 @@ public class SetupAdherenceLogs {
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
-        DosageAdherenceLogs dosageAdherenceLogs = context.getBean(DosageAdherenceLogs.class);
-        Patients patients = context.getBean(Patients.class);
+        AllDosageAdherenceLogs allDosageAdherenceLogs = context.getBean(AllDosageAdherenceLogs.class);
+        AllPatients allPatients = context.getBean(AllPatients.class);
 
-        Patient patient = patients.findByPatientId(args[0]).get(0);
+        Patient patient = allPatients.findByPatientId(args[0]).get(0);
         String regimenId = args[1];
         String dosageId = args[2];
         LocalDate fromDate = LocalDate.parse(args[3]);
@@ -40,7 +40,7 @@ public class SetupAdherenceLogs {
             else
                 dosageAdherenceLog.setDosageStatus(DosageStatus.TAKEN);
 
-            dosageAdherenceLogs.add(dosageAdherenceLog);
+            allDosageAdherenceLogs.add(dosageAdherenceLog);
             System.out.println(String.format("Inserted record: %s", count + 1));
         }
     }

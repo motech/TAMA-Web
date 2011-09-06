@@ -3,7 +3,7 @@ package org.motechproject.tama.web.command;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,8 +12,8 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends Dosage
     public MessageForAdherenceWhenPreviousDosageCapturedCommand() {
     }
 
-    public MessageForAdherenceWhenPreviousDosageCapturedCommand(DosageAdherenceLogs dosageAdherenceLogs, IVRMessage ivrMessage) {
-        super(dosageAdherenceLogs);
+    public MessageForAdherenceWhenPreviousDosageCapturedCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, IVRMessage ivrMessage) {
+        super(allDosageAdherenceLogs);
         this.ivrMessage = ivrMessage;
     }
 

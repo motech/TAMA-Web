@@ -11,10 +11,10 @@ import java.util.Comparator;
 import java.util.List;
 
 @Repository
-public class MealAdviceTypes extends AbstractCouchRepository<MealAdviceType>{
+public class AllMealAdviceTypes extends AbstractCouchRepository<MealAdviceType>{
 
     @Autowired
-	public MealAdviceTypes(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+	public AllMealAdviceTypes(@Qualifier("tamaDbConnector") CouchDbConnector db) {
 		super(MealAdviceType.class, db);
 	}
 

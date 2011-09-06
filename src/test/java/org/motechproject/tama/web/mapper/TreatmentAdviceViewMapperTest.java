@@ -10,9 +10,9 @@ import org.motechproject.tama.domain.DrugCompositionGroup;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.repository.Patients;
-import org.motechproject.tama.repository.Regimens;
-import org.motechproject.tama.repository.TreatmentAdvices;
+import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.repository.AllRegimens;
+import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 
 import java.util.ArrayList;
@@ -22,15 +22,15 @@ import static org.mockito.Mockito.when;
 
 public class TreatmentAdviceViewMapperTest {
 
-    private TreatmentAdvices treatmentAdvices;
-    private Patients patients;
-    private Regimens regimens;
+    private AllTreatmentAdvices allTreatmentAdvices;
+    private AllPatients allPatients;
+    private AllRegimens allRegimens;
 
     @Before
     public void setUp() {
-        treatmentAdvices = mock(TreatmentAdvices.class);
-        patients = mock(Patients.class);
-        regimens = mock(Regimens.class);
+        allTreatmentAdvices = mock(AllTreatmentAdvices.class);
+        allPatients = mock(AllPatients.class);
+        allRegimens = mock(AllRegimens.class);
     }
 
     @Test
@@ -45,13 +45,11 @@ public class TreatmentAdviceViewMapperTest {
                                                                 .withDrugCompositionGroupId(group.getId())
                                                                 .withPatientId(patient.getId())
                                                                   .build();
-        when(treatmentAdvices.get("treatmentAdviceId")).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.get("treatmentAdviceId")).thenReturn(treatmentAdvice);
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+        when(allRegimens.get(regimen.getId())).thenReturn(regimen);
 
-        when(patients.get(patient.getId())).thenReturn(patient);
-
-        when(regimens.get(regimen.getId())).thenReturn(regimen);
-
-        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens, null, null, null).map("treatmentAdviceId");
+        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceViewMapper(allTreatmentAdvices, allPatients, allRegimens, null, null, null).map("treatmentAdviceId");
 
         Assert.assertEquals(treatmentAdvice.getId(), treatmentAdviceView.getTreatmentAdviceId());
         Assert.assertEquals(treatmentAdvice.getPatientId(), treatmentAdviceView.getPatientIdentifier());

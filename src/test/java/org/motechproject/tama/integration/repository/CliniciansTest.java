@@ -7,10 +7,10 @@ import org.motechproject.tama.builder.ClinicianBuilder;
 import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.repository.Cities;
-import org.motechproject.tama.repository.ClinicianIds;
-import org.motechproject.tama.repository.Clinicians;
-import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.AllCities;
+import org.motechproject.tama.repository.AllClinicianIds;
+import org.motechproject.tama.repository.AllClinicians;
+import org.motechproject.tama.repository.AllClinics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 
@@ -20,27 +20,27 @@ import static junit.framework.Assert.assertNotNull;
 public class CliniciansTest extends SpringIntegrationTest {
 
     @Autowired
-    private Clinicians clinicians;
+    private AllClinicians allClinicians;
 
     @Autowired
-    private ClinicianIds cliniciansIds;
+    private AllClinicianIds allCliniciansIds;
 
     @Autowired
-    private Clinics clinics;
+    private AllClinics allClinics;
 
     @Autowired
-    private Cities cities;
+    private AllCities allCities;
 
     @Test
     public void testShouldPersistClinician() {
         String name = unique("testName1");
         Clinician testClinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
-        clinicians.add(testClinician);
+        allClinicians.add(testClinician);
 
-        Clinician clinician = clinicians.get(testClinician.getId());
+        Clinician clinician = allClinicians.get(testClinician.getId());
 
         assertNotNull(clinician);
-        markForDeletion(clinician, cliniciansIds.get(clinician));
+        markForDeletion(clinician, allCliniciansIds.get(clinician));
     }
 
     @Test
@@ -48,13 +48,13 @@ public class CliniciansTest extends SpringIntegrationTest {
     public void testNotShouldPersistClinicianWithNonUniqueUserName() {
         String name = unique("testName1");
         Clinician clinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
-        clinicians.add(clinician);
+        allClinicians.add(clinician);
 
-        Clinician dbClinician = clinicians.get(clinician.getId());
+        Clinician dbClinician = allClinicians.get(clinician.getId());
 
         Clinician clinicianWithSameName = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
-        clinicians.add(clinicianWithSameName);
-        markForDeletion(dbClinician, cliniciansIds.get(dbClinician), clinicianWithSameName);
+        allClinicians.add(clinicianWithSameName);
+        markForDeletion(dbClinician, allCliniciansIds.get(dbClinician), clinicianWithSameName);
     }
 
 
@@ -63,65 +63,65 @@ public class CliniciansTest extends SpringIntegrationTest {
         String testName = unique("testName2");
         String newName = unique("newName");
         Clinician testClinician = ClinicianBuilder.startRecording().withName(testName).withUserName(testName).build();
-        clinicians.add(testClinician);
+        allClinicians.add(testClinician);
 
         testClinician.setName(newName);
-        clinicians.update(testClinician);
+        allClinicians.update(testClinician);
 
-        Clinician clinician = clinicians.get(testClinician.getId());
+        Clinician clinician = allClinicians.get(testClinician.getId());
 
         assertNotNull(clinician);
         assertEquals(newName, clinician.getName());
-        markForDeletion(testClinician, cliniciansIds.get(clinician));
+        markForDeletion(testClinician, allCliniciansIds.get(clinician));
     }
 
     @Test
     public void shouldFindByUserNameAndPassword() {
         City city = City.newCity("Test");
-        cities.add(city);
+        allCities.add(city);
         Clinic testClinic = ClinicBuilder.startRecording().withName("testClinic").withCity(city).build();
-        clinics.add(testClinic);
+        allClinics.add(testClinic);
         Clinician testClinician = ClinicianBuilder.startRecording().withName("testName").
                 withUserName("jack").withPassword("samurai").withClinic(testClinic).build();
-        clinicians.add(testClinician);
+        allClinicians.add(testClinician);
 
-        Clinician byUserNameAndPassword = clinicians.findByUserNameAndPassword("jack", "samurai");
+        Clinician byUserNameAndPassword = allClinicians.findByUserNameAndPassword("jack", "samurai");
         assertNotNull(byUserNameAndPassword);
-        markForDeletion(city, testClinic, testClinician, cliniciansIds.get(testClinician));
+        markForDeletion(city, testClinic, testClinician, allCliniciansIds.get(testClinician));
     }
 
     @Test
     public void shouldLoadCorrespondingClinicWhenQueryingClinician() {
         City city = City.newCity("Test");
-        cities.add(city);
+        allCities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
-        clinics.add(clinic);
+        allClinics.add(clinic);
         String clinicianId = unique("foo");
         Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withUserName(clinicianId).build();
-        clinicians.add(clinician);
-        Clinician returnedClinician = clinicians.findByUsername(clinicianId);
+        allClinicians.add(clinician);
+        Clinician returnedClinician = allClinicians.findByUsername(clinicianId);
         assertNotNull(returnedClinician);
         assertNotNull(returnedClinician.getClinic());
         assertNotNull(returnedClinician.getClinic().getName().equals(clinic.getName()));
 
-        markForDeletion(city, clinic, clinician, cliniciansIds.get(clinician));
+        markForDeletion(city, clinic, clinician, allCliniciansIds.get(clinician));
     }
 
     @Test
     public void shouldUpdateClinicianPassword() {
        City city = City.newCity("Test");
-        cities.add(city);
+        allCities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
-        clinics.add(clinic);
+        allClinics.add(clinic);
         String clinicianId = unique("foo");
         Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withPassword("bar").withUserName(clinicianId).build();
-        clinicians.add(clinician);
-        Clinician returnedClinician = clinicians.findByUsername(clinicianId);
+        allClinicians.add(clinician);
+        Clinician returnedClinician = allClinicians.findByUsername(clinicianId);
         assertEquals("bar",returnedClinician.getPassword());
 
         returnedClinician.setPassword("foobar");
-        clinicians.updatePassword(returnedClinician);
-        returnedClinician = clinicians.findByUsername(clinicianId);
+        allClinicians.updatePassword(returnedClinician);
+        returnedClinician = allClinicians.findByUsername(clinicianId);
         assertEquals("foobar",returnedClinician.getPassword());
 
         markForDeletion(city, clinic, returnedClinician);

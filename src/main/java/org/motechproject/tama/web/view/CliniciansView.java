@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.repository.Clinicians;
+import org.motechproject.tama.repository.AllClinicians;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class CliniciansView {
 
-    private final Clinicians clinicians;
+    private final AllClinicians clinicians;
 
-    public CliniciansView(Clinicians clinicians){
+    public CliniciansView(AllClinicians clinicians){
         this.clinicians = clinicians;
     }
 

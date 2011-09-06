@@ -51,44 +51,44 @@ public class PatientController extends BaseController {
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
     public static final String PATIENT_ID_ALREADY_IN_USE = "sorry, patient-id already in use";
 
-    private Patients patients;
-    private Clinics clinics;
-    private Genders genders;
-    private IVRLanguages ivrLanguages;
-    private HIVTestReasons testReasons;
-    private ModesOfTransmission modesOfTransmission;
+    private AllPatients allPatients;
+    private AllClinics allClinics;
+    private AllGenders allGenders;
+    private AllIVRLanguages allIVRLanguages;
+    private AllHIVTestReasons allTestReasons;
+    private AllModesOfTransmission allModesOfTransmission;
 
     @Autowired
-    public PatientController(Patients patients, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, HIVTestReasons testReasons, ModesOfTransmission modesOfTransmission) {
-        this.patients = patients;
-        this.clinics = clinics;
-        this.genders = genders;
-        this.ivrLanguages = ivrLanguages;
-        this.testReasons = testReasons;
-        this.modesOfTransmission = modesOfTransmission;
+    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission) {
+        this.allPatients = allPatients;
+        this.allClinics = allClinics;
+        this.allGenders = allGenders;
+        this.allIVRLanguages = allIVRLanguages;
+        this.allTestReasons = allTestReasons;
+        this.allModesOfTransmission = allModesOfTransmission;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
     public String activate(@RequestParam String id, HttpServletRequest request) {
-        patients.activate(id);
+        allPatients.activate(id);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
     public String activate(@PathVariable String id) {
-        patients.activate(id);
+        allPatients.activate(id);
         return REDIRECT_TO_LIST_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
     public String deactivate(@RequestParam String id, HttpServletRequest request) {
-        patients.deactivate(id);
+        allPatients.deactivate(id);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate/{id}")
     public String deactivate(@PathVariable String id) {
-        patients.deactivate(id);
+        allPatients.deactivate(id);
         return REDIRECT_TO_LIST_VIEW;
     }
 
@@ -102,14 +102,14 @@ public class PatientController extends BaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         addDateTimeFormat(uiModel);
-        uiModel.addAttribute(PATIENT, patients.findByIdAndClinicId(id, loggedInClinic(request)));
+        uiModel.addAttribute(PATIENT, allPatients.findByIdAndClinicId(id, loggedInClinic(request)));
         uiModel.addAttribute(ITEM_ID, id);
         return SHOW_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
-        uiModel.addAttribute(PATIENTS, patients.findByClinic(loggedInClinic(request)));
+        uiModel.addAttribute(PATIENTS, allPatients.findByClinic(loggedInClinic(request)));
         addDateTimeFormat(uiModel);
         return LIST_VIEW;
     }
@@ -121,7 +121,7 @@ public class PatientController extends BaseController {
             return CREATE_VIEW;
         }
         try {
-            patients.addToClinic(patient, loggedInClinic(request));
+            allPatients.addToClinic(patient, loggedInClinic(request));
             uiModel.asMap().clear();
         } catch (UpdateConflictException e) {
             bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
@@ -140,7 +140,7 @@ public class PatientController extends BaseController {
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-        final Patient patient = patients.findByIdAndClinicId(id, loggedInClinic(request));
+        final Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         initUIModel(uiModel, patient);
         uiModel.addAttribute("systemCategories", patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories());
         return UPDATE_VIEW;
@@ -153,7 +153,7 @@ public class PatientController extends BaseController {
             return UPDATE_VIEW;
         }
         uiModel.asMap().clear();
-        patients.merge(patient);
+        allPatients.merge(patient);
 
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
@@ -163,17 +163,17 @@ public class PatientController extends BaseController {
                          @RequestParam(value = "page", required = false) Integer page,
                          @RequestParam(value = "size", required = false) Integer size, Model uiModel,
                          HttpServletRequest request) {
-        patients.remove(id);
+        allPatients.remove(id);
         uiModel.asMap().clear();
         uiModel.addAttribute(PAGE, (page == null) ? "1" : page.toString());
         uiModel.addAttribute(SIZE, (size == null) ? "10" : size.toString());
-        uiModel.addAttribute(PATIENTS, patients.findByClinic(loggedInClinic(request)));
+        uiModel.addAttribute(PATIENTS, allPatients.findByClinic(loggedInClinic(request)));
         return REDIRECT_TO_LIST_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
     public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest request) {
-        List<Patient> patientsByClinic = patients.findByPatientIdAndClinicId(patientId, loggedInClinic(request));
+        List<Patient> patientsByClinic = allPatients.findByPatientIdAndClinicId(patientId, loggedInClinic(request));
 
         if (patientsByClinic == null || patientsByClinic.isEmpty()) {
             uiModel.addAttribute(PATIENT_ID, patientId);
@@ -194,14 +194,14 @@ public class PatientController extends BaseController {
     }
 
     private void populateModel(Model uiModel) {
-        uiModel.addAttribute("clinics", new ClinicsView(clinics).getAll());
-        uiModel.addAttribute("ivrlanguages", new IvrLanguagesView(ivrLanguages).getAll());
+        uiModel.addAttribute("clinics", new ClinicsView(allClinics).getAll());
+        uiModel.addAttribute("ivrlanguages", new IvrLanguagesView(allIVRLanguages).getAll());
         uiModel.addAttribute("daysInAMonth", TAMAConstants.Time.MAX_DAYS_IN_A_MONTH.list());
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());
-        uiModel.addAttribute("genders", genders.getAll());
-        uiModel.addAttribute("testReasons", new HIVTestReasonsView(testReasons).getAll());
-        uiModel.addAttribute("modesOfTransmission", new ModesOfTransmissionView(modesOfTransmission).getAll());
+        uiModel.addAttribute("genders", allGenders.getAll());
+        uiModel.addAttribute("testReasons", new HIVTestReasonsView(allTestReasons).getAll());
+        uiModel.addAttribute("modesOfTransmission", new ModesOfTransmissionView(allModesOfTransmission).getAll());
         uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
         uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
         uiModel.addAttribute("systemCategories", SystemCategoryDefiniton.all());

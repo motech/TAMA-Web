@@ -10,14 +10,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class Clinics extends AbstractCouchRepository<Clinic> {
+public class AllClinics extends AbstractCouchRepository<Clinic> {
 
-    private Cities cities;
+    private AllCities allCities;
 
     @Autowired
-    public Clinics(@Qualifier("tamaDbConnector") CouchDbConnector db, Cities cities) {
+    public AllClinics(@Qualifier("tamaDbConnector") CouchDbConnector db, AllCities allCities) {
         super(Clinic.class, db);
-        this.cities = cities;
+        this.allCities = allCities;
         initStandardDesignDocument();
     }
 
@@ -26,7 +26,7 @@ public class Clinics extends AbstractCouchRepository<Clinic> {
         List<Clinic> clinicList = super.getAll();
         for(Clinic clinic : clinicList) {
             if (!StringUtils.isEmpty(clinic.getCityId()))
-                clinic.setCity(cities.get(clinic.getCityId()));
+                clinic.setCity(allCities.get(clinic.getCityId()));
         }
         return clinicList;
     }
@@ -35,7 +35,7 @@ public class Clinics extends AbstractCouchRepository<Clinic> {
     public Clinic get(String id) {
         Clinic clinic = super.get(id);
         if (!StringUtils.isEmpty(clinic.getCityId()))
-            clinic.setCity(cities.get(clinic.getCityId()));
+            clinic.setCity(allCities.get(clinic.getCityId()));
         return clinic;
     }
 }

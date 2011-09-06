@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.domain.MealAdviceType;
-import org.motechproject.tama.repository.MealAdviceTypes;
+import org.motechproject.tama.repository.AllMealAdviceTypes;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class MealAdviceTypesView {
 
-    private final MealAdviceTypes mealAdviceTypes;
+    private final AllMealAdviceTypes mealAdviceTypes;
 
-    public MealAdviceTypesView(MealAdviceTypes mealAdviceTypes){
+    public MealAdviceTypesView(AllMealAdviceTypes mealAdviceTypes){
         this.mealAdviceTypes = mealAdviceTypes;
     }
 

@@ -9,7 +9,7 @@ import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
 import org.motechproject.tama.ivr.decisiontree.TreeChooser;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,15 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class AuthenticateAction extends BaseIncomingAction {
     private PillReminderService pillReminderService;
-    private Patients patients;
+    private AllPatients allPatients;
     private RetryAction retryAction;
     private ThreadLocalTargetSource threadLocalTargetSource;
     private final TreeChooser treeChooser;
 
     @Autowired
-    public AuthenticateAction(PillReminderService pillReminderService, Patients patients, RetryAction retryAction, ThreadLocalTargetSource threadLocalTargetSource, TreeChooser treeChooser) {
+    public AuthenticateAction(PillReminderService pillReminderService, AllPatients allPatients, RetryAction retryAction, ThreadLocalTargetSource threadLocalTargetSource, TreeChooser treeChooser) {
         this.pillReminderService = pillReminderService;
-        this.patients = patients;
+        this.allPatients = allPatients;
         this.retryAction = retryAction;
         this.threadLocalTargetSource = threadLocalTargetSource;
         this.treeChooser = treeChooser;
@@ -44,7 +44,7 @@ public class AuthenticateAction extends BaseIncomingAction {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = ivrRequest.getInput();
         String id = ivrSession.getPatientId();
-        Patient patient = patients.get(id);
+        Patient patient = allPatients.get(id);
 
         if (!patient.authenticatedWith(passcode)) {
             return retryAction.handle(ivrRequest, request, response);

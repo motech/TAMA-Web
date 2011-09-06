@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.MealAdviceType;
-import org.motechproject.tama.repository.MealAdviceTypes;
+import org.motechproject.tama.repository.AllMealAdviceTypes;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class MealAdviceTypesViewTest {
     private MealAdviceTypesView mealAdviceTypesView;
 
     @Mock
-    private MealAdviceTypes mealAdviceTypes;
+    private AllMealAdviceTypes mealAdviceTypes;
 
     @Before
     public void setUp() {

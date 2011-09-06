@@ -4,7 +4,7 @@ import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.DrugCompositionGroup;
 import org.motechproject.tama.domain.Regimen;
 import org.motechproject.tama.domain.DrugComposition;
-import org.motechproject.tama.repository.Regimens;
+import org.motechproject.tama.repository.AllRegimens;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 public class RegimenSeed extends Seed {
 
     @Autowired
-    private Regimens regimens;
+    private AllRegimens allRegimens;
     @Autowired
     private DrugSeed drugSeed;
 
@@ -27,38 +27,38 @@ public class RegimenSeed extends Seed {
             drugCompositionGroup("TDF+3TC+NVP", drugComposition(drugs, "TDF+3TC", "NVP")),
             drugCompositionGroup("TDF+FTC+NVP", drugComposition(drugs, "TDF+FTC", "NVP"))
         );
-        regimens.add(regimen1);
+        allRegimens.add(regimen1);
 
         Regimen regimen2 = new Regimen("Regimen II", "TDF + 3TC / fTC + EFV");
         regimen2.addCompositionGroup(
             drugCompositionGroup("TDF+3TC+EFV", drugComposition(drugs, "TDF+3TC", "EFV"),drugComposition(drugs, "TDF+3TC+EFV")),
             drugCompositionGroup("TDF+FTC+EFV", drugComposition(drugs, "TDF+FTC", "EFV"), drugComposition(drugs, "TDF+FTC+EFV"))
         );
-        regimens.add(regimen2);
+        allRegimens.add(regimen2);
 
         Regimen regimen3 = new Regimen("Regimen III", "AZT + 3TC + NVP");
         regimen3.addCompositionGroup(
             drugCompositionGroup("AZT+3TC+NVP", drugComposition(drugs, "AZT+3TC+NVP"), drugComposition(drugs, "AZT+3TC", "NVP"))
         );
-        regimens.add(regimen3);
+        allRegimens.add(regimen3);
 
         Regimen regimen4 = new Regimen("Regimen IV", "AZT + 3TC + EFV");
         regimen4.addCompositionGroup(
             drugCompositionGroup("AZT+3TC+EFV", drugComposition(drugs, "AZT+3TC", "EFV"))
         );
-        regimens.add(regimen4);
+        allRegimens.add(regimen4);
 
         Regimen regimen5 = new Regimen("Regimen V", "d4T + 3TC + NVP");
         regimen5.addCompositionGroup(
             drugCompositionGroup("d4T+3TC+NVP", drugComposition(drugs, "d4T+3TC", "NVP"), drugComposition(drugs, "d4T+3TC+NVP"))
         );
-        regimens.add(regimen5);
+        allRegimens.add(regimen5);
 
         Regimen regimen6 = new Regimen("Regimen VI", "d4T + 3TC + EFV");
         regimen6.addCompositionGroup(
             drugCompositionGroup("d4T+3TC+EFV", drugComposition(drugs, "d4T+3TC", "EFV"))
         );
-        regimens.add(regimen6);
+        allRegimens.add(regimen6);
     }
 
     private DrugComposition drugComposition(Map<String, Drug> drugs, String... drugNames) {

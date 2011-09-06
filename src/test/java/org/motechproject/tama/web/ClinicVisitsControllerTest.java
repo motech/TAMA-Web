@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.repository.TreatmentAdvices;
+import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -24,13 +24,13 @@ public class ClinicVisitsControllerTest {
     @Mock
     private Model uiModel;
     @Mock
-    private TreatmentAdvices treatmentAdvices;
+    private AllTreatmentAdvices allTreatmentAdvices;
     private ClinicVisitsController controller;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new ClinicVisitsController(treatmentAdviceController, treatmentAdvices);
+        controller = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ClinicVisitsControllerTest {
         String patientId = "patientId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
-        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("redirect:/clinicvisits/treatmentAdviceId", redirectURL);
@@ -48,7 +48,7 @@ public class ClinicVisitsControllerTest {
     public void shouldRedirectToCreateClinicVisits_WhenPatientDoesNotHaveATreatmentAdvice() {
         String patientId = "patientId";
 
-        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("clinicvisits/create", redirectURL);
@@ -59,7 +59,7 @@ public class ClinicVisitsControllerTest {
     public void shouldCreateNewClinicVisitsFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = "patientId";
 
-        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("clinicvisits/create", redirectURL);

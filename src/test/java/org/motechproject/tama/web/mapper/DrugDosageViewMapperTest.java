@@ -8,9 +8,9 @@ import org.motechproject.tama.domain.DosageType;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.MealAdviceType;
-import org.motechproject.tama.repository.DosageTypes;
-import org.motechproject.tama.repository.Drugs;
-import org.motechproject.tama.repository.MealAdviceTypes;
+import org.motechproject.tama.repository.AllDosageTypes;
+import org.motechproject.tama.repository.AllDrugs;
+import org.motechproject.tama.repository.AllMealAdviceTypes;
 import org.motechproject.tama.web.model.DrugDosageView;
 
 import java.util.ArrayList;
@@ -20,31 +20,31 @@ import static org.mockito.Mockito.when;
 
 public class DrugDosageViewMapperTest {
 
-    private Drugs drugs;
-    private DosageTypes dosageTypes;
-    private MealAdviceTypes mealAdviceTypes;
+    private AllDrugs allDrugs;
+    private AllDosageTypes allDosageTypes;
+    private AllMealAdviceTypes allMealAdviceTypes;
     private DrugDosage drugDosage;
 
     @Before
     public void setUp() {
-        drugs = mock(Drugs.class);
-        dosageTypes = mock(DosageTypes.class);
-        mealAdviceTypes = mock(MealAdviceTypes.class);
+        allDrugs = mock(AllDrugs.class);
+        allDosageTypes = mock(AllDosageTypes.class);
+        allMealAdviceTypes = mock(AllMealAdviceTypes.class);
         drugDosage = getDrugDosage();
     }
 
     @Test
     public void shouldReturnDrugDosageViewForDrugDosage() {
         Drug drug = DrugBuilder.startRecording().withDefaults().build();
-        when(drugs.get("drugId")).thenReturn(drug);
+        when(allDrugs.get("drugId")).thenReturn(drug);
 
         DosageType dosageType = new DosageType("Once");
-        when(dosageTypes.get("dosageTypeId")).thenReturn(dosageType);
+        when(allDosageTypes.get("dosageTypeId")).thenReturn(dosageType);
 
         MealAdviceType mealAdviceType = new MealAdviceType("After Meal");
-        when(mealAdviceTypes.get("mealAdviceTypeId")).thenReturn(mealAdviceType);
+        when(allMealAdviceTypes.get("mealAdviceTypeId")).thenReturn(mealAdviceType);
 
-        DrugDosageView drugDosageView = new DrugDosageViewMapper(drugs, dosageTypes, mealAdviceTypes).map(drugDosage);
+        DrugDosageView drugDosageView = new DrugDosageViewMapper(allDrugs, allDosageTypes, allMealAdviceTypes).map(drugDosage);
 
         Assert.assertEquals("drugName", drugDosageView.getDrugName());
         Assert.assertEquals("brandName", drugDosageView.getBrandName());

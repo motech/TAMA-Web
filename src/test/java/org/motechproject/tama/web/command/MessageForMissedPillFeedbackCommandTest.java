@@ -18,7 +18,7 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -34,7 +34,7 @@ public class MessageForMissedPillFeedbackCommandTest {
     @Mock
     IVRSession ivrSession;
     @Mock
-    DosageAdherenceLogs dosageAdherenceLogs;
+    AllDosageAdherenceLogs allDosageAdherenceLogs;
 
     private MessageForMissedPillFeedbackCommand command;
     private IVRRequest ivrRequest;
@@ -63,21 +63,21 @@ public class MessageForMissedPillFeedbackCommandTest {
         ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}", PillReminderCall.DOSAGE_ID, "d1"));
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        command = new MessageForMissedPillFeedbackCommand(dosageAdherenceLogs);
+        command = new MessageForMissedPillFeedbackCommand(allDosageAdherenceLogs);
     }
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForTheFirstTime() {
-        when(dosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(1);
+        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(1);
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(IVRMessage.MISSED_PILL_FEEDBACK_FIRST_TIME, message[0]);
-        verify(dosageAdherenceLogs).findScheduledDosagesFailureCount(REGIMEN_ID);
+        verify(allDosageAdherenceLogs).findScheduledDosagesFailureCount(REGIMEN_ID);
     }
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForTheSecondTime() {
-        when(dosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(2);
+        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(2);
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(IVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME, message[0]);
@@ -85,8 +85,8 @@ public class MessageForMissedPillFeedbackCommandTest {
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceMoreThan90() {
-        when(dosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
-        when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(TOTAL_DOSAGE_COUNT * 95 / 100);
+        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(TOTAL_DOSAGE_COUNT * 95 / 100);
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(IVRMessage.MISSED_PILL_FEEDBACK_MORE_THAN_90, message[0]);
@@ -94,8 +94,8 @@ public class MessageForMissedPillFeedbackCommandTest {
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceBetween70And90() {
-        when(dosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
-        when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(TOTAL_DOSAGE_COUNT * 90 / 100);
+        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(TOTAL_DOSAGE_COUNT * 90 / 100);
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(IVRMessage.MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90, message[0]);
@@ -103,9 +103,9 @@ public class MessageForMissedPillFeedbackCommandTest {
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceLessThan70() {
-        when(dosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
+        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
         LocalDate today = DateUtil.today();
-        when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID, today, today.minusDays(28))).thenReturn(TOTAL_DOSAGE_COUNT * 69 / 100);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID, today, today.minusDays(28))).thenReturn(TOTAL_DOSAGE_COUNT * 69 / 100);
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(IVRMessage.MISSED_PILL_FEEDBACK_LESS_THAN_70, message[0]);

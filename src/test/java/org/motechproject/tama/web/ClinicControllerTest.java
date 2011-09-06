@@ -6,14 +6,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.motechproject.tama.domain.City;
-import org.motechproject.tama.repository.Cities;
+import org.motechproject.tama.repository.AllCities;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class ClinicControllerTest {
     @Mock
-    private Cities cities;
+    private AllCities allCities;
 
     @Test
     public void shouldSortCitiesInAlphabeticalOrderCaseInsensitive() {
@@ -33,8 +33,8 @@ public class ClinicControllerTest {
         cityList.add(city3);
         cityList.add(city4);
 
-        Mockito.when(cities.getAllCities()).thenReturn(cityList);
-        ClinicController clinicController = new ClinicController(null, cities);
+        Mockito.when(allCities.getAllCities()).thenReturn(cityList);
+        ClinicController clinicController = new ClinicController(null, allCities);
 
         Collection<City> sortedCities = clinicController.populateCitys();
         Assert.assertEquals(4, sortedCities.size());

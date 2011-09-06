@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.repository.Clinicians;
+import org.motechproject.tama.repository.AllClinicians;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
 
@@ -18,7 +18,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ClinicianSecurityGroupTest extends SecurityGroupTest{
     private ClinicianSecurityGroup group;
     @Mock
-    private Clinicians clinicians;
+    private AllClinicians clinicians;
 
     @Before
     public void setUp() {

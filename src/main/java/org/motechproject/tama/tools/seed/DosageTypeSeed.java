@@ -1,7 +1,7 @@
 package org.motechproject.tama.tools.seed;
 
 import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.repository.DosageTypes;
+import org.motechproject.tama.repository.AllDosageTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 public class DosageTypeSeed extends Seed {
 
 	@Autowired
-	private DosageTypes dosageTypes;
+	private AllDosageTypes allDosageTypes;
 	
 	@Override
 	public void load() {
-		dosageTypes.add(new DosageType("Morning Daily"));
-		dosageTypes.add(new DosageType("Evening Daily"));
-		dosageTypes.add(new DosageType("Twice Daily"));
+		allDosageTypes.add(new DosageType("Morning Daily"));
+		allDosageTypes.add(new DosageType("Evening Daily"));
+		allDosageTypes.add(new DosageType("Twice Daily"));
 	}
 }

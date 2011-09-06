@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.AllClinics;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,14 +10,14 @@ import java.util.List;
 
 public class ClinicsView {
 
-    private final Clinics clinics;
+    private final AllClinics allClinics;
 
-    public ClinicsView(Clinics clinics){
-        this.clinics = clinics;
+    public ClinicsView(AllClinics allClinics){
+        this.allClinics = allClinics;
     }
 
     public List<Clinic> getAll() {
-        List<Clinic> allClinics = clinics.getAll();
+        List<Clinic> allClinics = this.allClinics.getAll();
         Collections.sort(allClinics, new Comparator<Clinic>() {
             @Override
             public int compare(Clinic clinic, Clinic otherClinic) {

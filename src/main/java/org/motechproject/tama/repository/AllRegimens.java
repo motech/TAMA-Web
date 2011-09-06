@@ -15,14 +15,14 @@ import java.util.*;
 
 @Repository
 @View( name="all", map = "function(doc) { if (doc.documentType == 'Regimen') { emit(null, doc) } }")
-public class Regimens extends CouchDbRepositorySupport<Regimen> {
+public class AllRegimens extends CouchDbRepositorySupport<Regimen> {
 
-    private Drugs drugs;
+    private AllDrugs allDrugs;
 
     @Autowired
-    public Regimens(@Qualifier("tamaDbConnector") CouchDbConnector db, Drugs drugs) {
+    public AllRegimens(@Qualifier("tamaDbConnector") CouchDbConnector db, AllDrugs allDrugs) {
         super(Regimen.class, db);
-        this.drugs = drugs;
+        this.allDrugs = allDrugs;
         initStandardDesignDocument();
     }
 
@@ -47,7 +47,7 @@ public class Regimens extends CouchDbRepositorySupport<Regimen> {
             for (DrugComposition drugComposition : group.getDrugCompositions()) {
                 Set<Drug> drugSet = new HashSet<Drug>();
                 for (String drugId : drugComposition.getDrugIds()) {
-                    drugSet.add(drugs.get(drugId));
+                    drugSet.add(allDrugs.get(drugId));
                 }
                 drugComposition.setDrugs(drugSet);
             }

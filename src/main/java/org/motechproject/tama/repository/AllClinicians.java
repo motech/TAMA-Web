@@ -12,17 +12,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class Clinicians extends AbstractCouchRepository<Clinician> {
-    private Clinics clinics;
-    private ClinicianIds clinicianIds;
+public class AllClinicians extends AbstractCouchRepository<Clinician> {
+    private AllClinics allClinics;
+    private AllClinicianIds allClinicianIds;
     private PBEStringEncryptor encryptor;
 
     @Autowired
-    public Clinicians(@Qualifier("tamaDbConnector")CouchDbConnector db, PBEStringEncryptor encryptor, Clinics clinics, ClinicianIds clinicinanIds) {
+    public AllClinicians(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor, AllClinics allClinics, AllClinicianIds clinicinanIds) {
         super(Clinician.class, db);
-        this.clinics = clinics;
+        this.allClinics = allClinics;
         this.encryptor = encryptor;
-        this.clinicianIds = clinicinanIds;
+        this.allClinicianIds = clinicinanIds;
         initStandardDesignDocument();
     }
 
@@ -47,14 +47,14 @@ public class Clinicians extends AbstractCouchRepository<Clinician> {
     @Override
     public void add(Clinician clinician) {
         clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
-        clinicianIds.add(clinician);
+        allClinicianIds.add(clinician);
         super.add(clinician);
     }
 
     @Override
     public void remove(Clinician clinician) {
         super.remove(clinician);
-        clinicianIds.remove(clinician);
+        allClinicianIds.remove(clinician);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Clinicians extends AbstractCouchRepository<Clinician> {
     }
 
     private void loadDependencies(Clinician clinician) {
-        if(!StringUtils.isEmpty(clinician.getClinicId())) clinician.setClinic(clinics.get(clinician.getClinicId()));
+        if(!StringUtils.isEmpty(clinician.getClinicId())) clinician.setClinic(allClinics.get(clinician.getClinicId()));
     }
 
     @Override

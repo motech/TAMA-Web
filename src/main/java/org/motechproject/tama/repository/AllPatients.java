@@ -18,23 +18,23 @@ import java.util.List;
 
 @Repository
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
-public class Patients extends CouchDbRepositorySupport<Patient> {
-    private Clinics clinics;
-    private Genders genders;
-    private IVRLanguages ivrLanguages;
-    private PatientIds patientIds;
-    private HIVTestReasons hivTestReasons;
-    private ModesOfTransmission modesOfTransmission;
+public class AllPatients extends CouchDbRepositorySupport<Patient> {
+    private AllClinics allClinics;
+    private AllGenders AllGenders;
+    private AllIVRLanguages AllIVRLanguages;
+    private AllPatientIds AllPatientIds;
+    private AllHIVTestReasons allHIVTestReasons;
+    private AllModesOfTransmission allModesOfTransmission;
 
     @Autowired
-    public Patients(@Qualifier("tamaDbConnector") CouchDbConnector db, Clinics clinics, Genders genders, IVRLanguages ivrLanguages, PatientIds patientIds, HIVTestReasons hivTestReasons, ModesOfTransmission modesOfTransmission) {
+    public AllPatients(@Qualifier("tamaDbConnector") CouchDbConnector db, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllPatientIds allPatientIds, AllHIVTestReasons allHIVTestReasons, AllModesOfTransmission allModesOfTransmission) {
         super(Patient.class, db);
-        this.clinics = clinics;
-        this.genders = genders;
-        this.ivrLanguages = ivrLanguages;
-        this.patientIds = patientIds;
-        this.hivTestReasons = hivTestReasons;
-        this.modesOfTransmission = modesOfTransmission;
+        this.allClinics = allClinics;
+        this.AllGenders = allGenders;
+        this.AllIVRLanguages = allIVRLanguages;
+        this.AllPatientIds = allPatientIds;
+        this.allHIVTestReasons = allHIVTestReasons;
+        this.allModesOfTransmission = allModesOfTransmission;
         initStandardDesignDocument();
     }
 
@@ -100,7 +100,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public void addToClinic(Patient patient, String clinicId) {
         patient.setClinic_id(clinicId);
-        patientIds.add(patient);
+        AllPatientIds.add(patient);
         add(patient);
     }
 
@@ -121,7 +121,7 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
 
     public void remove(String id) {
         remove(get(id));
-        patientIds.remove(this.get(id));
+        AllPatientIds.remove(this.get(id));
     }
 
     @Override
@@ -134,18 +134,18 @@ public class Patients extends CouchDbRepositorySupport<Patient> {
     private void loadPatientDependencies(Patient patient) {
         if (patient == null) return;
         if (!StringUtils.isBlank(patient.getGenderId()))
-            patient.setGender(genders.get(patient.getGenderId()));
+            patient.setGender(AllGenders.get(patient.getGenderId()));
         if (!StringUtils.isBlank(patient.getIvrLanguageId()))
-            patient.setIvrLanguage(ivrLanguages.get(patient.getIvrLanguageId()));
+            patient.setIvrLanguage(AllIVRLanguages.get(patient.getIvrLanguageId()));
         if (!StringUtils.isBlank(patient.getClinic_id()))
-            patient.setClinic(clinics.get(patient.getClinic_id()));
+            patient.setClinic(allClinics.get(patient.getClinic_id()));
         MedicalHistory medicalHistory = patient.getMedicalHistory();
         if (medicalHistory != null) {
             HIVMedicalHistory hivMedicalHistory = medicalHistory.getHivMedicalHistory();
             if (!StringUtils.isBlank(hivMedicalHistory.getTestReasonId()))
-                hivMedicalHistory.setTestReason(hivTestReasons.get(hivMedicalHistory.getTestReasonId()));
+                hivMedicalHistory.setTestReason(allHIVTestReasons.get(hivMedicalHistory.getTestReasonId()));
             if (!StringUtils.isBlank(hivMedicalHistory.getModeOfTransmissionId()))
-                hivMedicalHistory.setModeOfTransmission(modesOfTransmission.get(hivMedicalHistory.getModeOfTransmissionId()));
+                hivMedicalHistory.setModeOfTransmission(allModesOfTransmission.get(hivMedicalHistory.getModeOfTransmissionId()));
         }
     }
 

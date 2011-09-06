@@ -2,8 +2,8 @@ package org.motechproject.tama.web.view;
 
 import org.motechproject.tama.domain.LabResult;
 import org.motechproject.tama.domain.LabTest;
-import org.motechproject.tama.repository.LabResults;
-import org.motechproject.tama.repository.LabTests;
+import org.motechproject.tama.repository.AllLabResults;
+import org.motechproject.tama.repository.AllLabTests;
 import org.motechproject.tama.web.BaseController;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;
@@ -31,18 +31,18 @@ public class LabResultsController extends BaseController {
     public static final String REDIRECT_AND_SHOW_LAB_RESULTS = "redirect:/labresults/";
     public static final String SHOW_VIEW = "labresults/show";
 
-    private final LabResults labResults;
-    private final LabTests labTests;
+    private final AllLabResults allLabResults;
+    private final AllLabTests allLabTests;
 
     @Autowired
-    public LabResultsController(LabResults labResults, LabTests labTests) {
-        this.labResults = labResults;
-        this.labTests = labTests;
+    public LabResultsController(AllLabResults allLabResults, AllLabTests allLabTests) {
+        this.allLabResults = allLabResults;
+        this.allLabTests = allLabTests;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (labResults.findByPatientId(patientId).isEmpty()) {
+        if (allLabResults.findByPatientId(patientId).isEmpty()) {
             uiModel.addAttribute("labResultsUIModel", LabResultsUIModel.newDefault());
             populateUIModel(uiModel, patientId);
             return CREATE_VIEW;
@@ -59,14 +59,14 @@ public class LabResultsController extends BaseController {
             return CREATE_VIEW;
         }
         for (LabResult labResult : labResultsUiModel.getLabResults()) {
-            this.labResults.add(labResult);
+            this.allLabResults.add(labResult);
         }
         return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUiModel.getPatientId(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String patientId, Model uiModel) {
-        uiModel.addAttribute("labResultsForPatient", labResults.findByPatientId(patientId));
+        uiModel.addAttribute("labResultsForPatient", allLabResults.findByPatientId(patientId));
         uiModel.addAttribute("patientId", patientId);
         return SHOW_VIEW;
     }
@@ -74,7 +74,7 @@ public class LabResultsController extends BaseController {
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String patientId, Model uiModel) {
         LabResultsUIModel labResultsUIModel = LabResultsUIModel.newDefault();
-        labResultsUIModel.setLabResults(labResults.findByPatientId(patientId));
+        labResultsUIModel.setLabResults(allLabResults.findByPatientId(patientId));
         uiModel.addAttribute("labResultsUIModel", labResultsUIModel);
         uiModel.addAttribute("patientId", patientId);
         return "labresults/update";
@@ -87,12 +87,12 @@ public class LabResultsController extends BaseController {
             uiModel.addAttribute("patientId", labResultsUIModel.getPatientId());
             return "labresults/update";
         }
-        labResults.merge(labResultsUIModel.getLabResults());
+        allLabResults.merge(labResultsUIModel.getLabResults());
         return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUIModel.getPatientId(), httpServletRequest);
     }
 
     private void populateUIModel(Model uiModel, String patientId) {
-        List<LabTest> labTestsAvailable = labTests.getAll();
+        List<LabTest> labTestsAvailable = allLabTests.getAll();
         uiModel.addAttribute("labTests", labTestsAvailable);
 
         uiModel.addAttribute("patientId", patientId);

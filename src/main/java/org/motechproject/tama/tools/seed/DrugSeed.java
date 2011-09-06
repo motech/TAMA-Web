@@ -3,7 +3,7 @@ package org.motechproject.tama.tools.seed;
 import org.motechproject.tama.domain.Brand;
 import org.motechproject.tama.domain.Company;
 import org.motechproject.tama.domain.Drug;
-import org.motechproject.tama.repository.Drugs;
+import org.motechproject.tama.repository.AllDrugs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,87 +14,87 @@ import java.util.Map;
 public class DrugSeed extends Seed {
 
 	@Autowired
-	private Drugs drugs;
+	private AllDrugs drugs;
 	
 	@Autowired
 	private CompanySeed companySeed;
 	
 	@Override
 	public void load() {
-		Map <String, Company> companies = companySeed.loadAllCompanies();
+		Map <String, Company> allCompanies = companySeed.loadAllCompanies();
 		
 		Drug drug1 = new Drug("AZT+3TC+NVP");
-		drug1.addBrand(new Brand("Duovir-N",companies.get("Cipla")));
-		drug1.addBrand(new Brand("Zidovex-LN",companies.get("Aurobindo")));
-		drug1.addBrand(new Brand("Virocom-N",companies.get("Ranbaxy")));
-		drug1.addBrand(new Brand("Zidolam-N",companies.get("Genx")));
-		drug1.addBrand(new Brand("Lazid-N",companies.get("Emcure")));
+		drug1.addBrand(new Brand("Duovir-N",allCompanies.get("Cipla")));
+		drug1.addBrand(new Brand("Zidovex-LN",allCompanies.get("Aurobindo")));
+		drug1.addBrand(new Brand("Virocom-N",allCompanies.get("Ranbaxy")));
+		drug1.addBrand(new Brand("Zidolam-N",allCompanies.get("Genx")));
+		drug1.addBrand(new Brand("Lazid-N",allCompanies.get("Emcure")));
 		drugs.add(drug1);
 		
 		
 		Drug drug2 = new Drug("AZT+3TC");
-		drug2.addBrand(new Brand("Duovir",companies.get("Cipla")));
-		drug2.addBrand(new Brand("Zidovex-L",companies.get("Aurobindo")));
-		drug2.addBrand(new Brand("Virocom",companies.get("Ranbaxy")));
-		drug2.addBrand(new Brand("Zidolam",companies.get("Genx")));
-		drug2.addBrand(new Brand("Lazid",companies.get("Emcure")));
-		drug2.addBrand(new Brand("Combivir",companies.get("Merck")));
+		drug2.addBrand(new Brand("Duovir",allCompanies.get("Cipla")));
+		drug2.addBrand(new Brand("Zidovex-L",allCompanies.get("Aurobindo")));
+		drug2.addBrand(new Brand("Virocom",allCompanies.get("Ranbaxy")));
+		drug2.addBrand(new Brand("Zidolam",allCompanies.get("Genx")));
+		drug2.addBrand(new Brand("Lazid",allCompanies.get("Emcure")));
+		drug2.addBrand(new Brand("Combivir",allCompanies.get("Merck")));
 		drugs.add(drug2);
 		
 		Drug drug3 = new Drug("NVP");
-		drug3.addBrand(new Brand("Nevimune",companies.get("Cipla")));
-		drug3.addBrand(new Brand("Nevirex",companies.get("Aurobindo")));
-		drug3.addBrand(new Brand("Nevivir",companies.get("Genx")));
-		drug3.addBrand(new Brand("Nevir",companies.get("Emcure")));
-		drug3.addBrand(new Brand("Viramune",companies.get("Merck")));
+		drug3.addBrand(new Brand("Nevimune",allCompanies.get("Cipla")));
+		drug3.addBrand(new Brand("Nevirex",allCompanies.get("Aurobindo")));
+		drug3.addBrand(new Brand("Nevivir",allCompanies.get("Genx")));
+		drug3.addBrand(new Brand("Nevir",allCompanies.get("Emcure")));
+		drug3.addBrand(new Brand("Viramune",allCompanies.get("Merck")));
 		drugs.add(drug3);
 		
 		Drug drug4 = new Drug("d4T+3TC+NVP");
-		drug4.addBrand(new Brand("Triomune",companies.get("Cipla")));
-		drug4.addBrand(new Brand("Stavex-LN",companies.get("Aurobindo")));
-		drug4.addBrand(new Brand("Virolans30",companies.get("Ranbaxy")));
-		drug4.addBrand(new Brand("Nevilast30",companies.get("Genx")));
-		drug4.addBrand(new Brand("Emtri 30",companies.get("Emcure")));
+		drug4.addBrand(new Brand("Triomune",allCompanies.get("Cipla")));
+		drug4.addBrand(new Brand("Stavex-LN",allCompanies.get("Aurobindo")));
+		drug4.addBrand(new Brand("Virolans30",allCompanies.get("Ranbaxy")));
+		drug4.addBrand(new Brand("Nevilast30",allCompanies.get("Genx")));
+		drug4.addBrand(new Brand("Emtri 30",allCompanies.get("Emcure")));
 		drugs.add(drug4);
 
 		Drug drug5 = new Drug("d4T+3TC");
-		drug5.addBrand(new Brand("Lamivir-S",companies.get("Cipla")));
-		drug5.addBrand(new Brand("Stavex-L",companies.get("Aurobindo")));
-		drug5.addBrand(new Brand("Virolans",companies.get("Ranbaxy")));
-		drug5.addBrand(new Brand("Lamistar",companies.get("Genx")));
+		drug5.addBrand(new Brand("Lamivir-S",allCompanies.get("Cipla")));
+		drug5.addBrand(new Brand("Stavex-L",allCompanies.get("Aurobindo")));
+		drug5.addBrand(new Brand("Virolans",allCompanies.get("Ranbaxy")));
+		drug5.addBrand(new Brand("Lamistar",allCompanies.get("Genx")));
 		drugs.add(drug5);
 
 		Drug drug6 = new Drug("EFV");
-		drug6.addBrand(new Brand("Efavir",companies.get("Cipla")));
-		drug6.addBrand(new Brand("Viranz",companies.get("Aurobindo")));
-		drug6.addBrand(new Brand("Efferven",companies.get("Ranbaxy")));
-		drug6.addBrand(new Brand("Estiva",companies.get("Genx")));
-		drug6.addBrand(new Brand("Efcure",companies.get("Emcure")));
-		drug6.addBrand(new Brand("Stocrin",companies.get("Merck")));
+		drug6.addBrand(new Brand("Efavir",allCompanies.get("Cipla")));
+		drug6.addBrand(new Brand("Viranz",allCompanies.get("Aurobindo")));
+		drug6.addBrand(new Brand("Efferven",allCompanies.get("Ranbaxy")));
+		drug6.addBrand(new Brand("Estiva",allCompanies.get("Genx")));
+		drug6.addBrand(new Brand("Efcure",allCompanies.get("Emcure")));
+		drug6.addBrand(new Brand("Stocrin",allCompanies.get("Merck")));
 		drugs.add(drug6);
 		
 		Drug drug7 = new Drug("TDF+3TC");
-		drug7.addBrand(new Brand("Tenvir-L",companies.get("Cipla")));
-		drug7.addBrand(new Brand("Tavin-L",companies.get("Emcure")));
-		drug7.addBrand(new Brand("Ricovir-L",companies.get("Matrix")));
+		drug7.addBrand(new Brand("Tenvir-L",allCompanies.get("Cipla")));
+		drug7.addBrand(new Brand("Tavin-L",allCompanies.get("Emcure")));
+		drug7.addBrand(new Brand("Ricovir-L",allCompanies.get("Matrix")));
 		drugs.add(drug7);
 		
 		Drug drug8 = new Drug("TDF+FTC");
-		drug8.addBrand(new Brand("Tenvir-EM",companies.get("Cipla")));
-		drug8.addBrand(new Brand("Forstavir-EM",companies.get("Aurobindo")));
-		drug8.addBrand(new Brand("Tavin EM",companies.get("Emcure")));
+		drug8.addBrand(new Brand("Tenvir-EM",allCompanies.get("Cipla")));
+		drug8.addBrand(new Brand("Forstavir-EM",allCompanies.get("Aurobindo")));
+		drug8.addBrand(new Brand("Tavin EM",allCompanies.get("Emcure")));
 		drugs.add(drug8);
 		
 		Drug drug9 = new Drug("TDF+3TC+EFV");
-		drug9.addBrand(new Brand("Trioday",companies.get("Cipla")));
-		drug9.addBrand(new Brand("Telura",companies.get("Matrix")));
+		drug9.addBrand(new Brand("Trioday",allCompanies.get("Cipla")));
+		drug9.addBrand(new Brand("Telura",allCompanies.get("Matrix")));
 		drugs.add(drug9);
 		
 		Drug drug10 = new Drug("TDF+FTC+EFV");
-		drug10.addBrand(new Brand("Viraday",companies.get("Cipla")));
-		drug10.addBrand(new Brand("Forstavir-3",companies.get("Aurobindo")));
-		drug10.addBrand(new Brand("Vonavir",companies.get("Emcure")));
-		drug10.addBrand(new Brand("Teevir",companies.get("Matrix")));
+		drug10.addBrand(new Brand("Viraday",allCompanies.get("Cipla")));
+		drug10.addBrand(new Brand("Forstavir-3",allCompanies.get("Aurobindo")));
+		drug10.addBrand(new Brand("Vonavir",allCompanies.get("Emcure")));
+		drug10.addBrand(new Brand("Teevir",allCompanies.get("Matrix")));
 		drugs.add(drug10);
 	}
 

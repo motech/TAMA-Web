@@ -75,10 +75,8 @@ public class PillRegimenSnapshot {
     }
 
     public MyDosageResponse getCurrentDosage() {
-        logger.error("ivrContext.ivrRequest().hasNoTamaData()" + ivrContext.ivrRequest().hasNoTamaData());
-        logger.error(ivrContext.ivrRequest().getTamaParams());
-        logger.error("getDosage((String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID)); "+ getDosage((String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID)));
-        if (ivrContext.ivrRequest().hasNoTamaData()) {
+        IVRRequest ivrRequest = ivrContext.ivrRequest();
+        if (ivrRequest.hasNoTamaData()) {
             List<DosageResponse> dosageResponses = getSortedDosages();
             DosageResponse currentDosage = null;
             for (DosageResponse dosageResponse : dosageResponses) {
@@ -87,7 +85,7 @@ public class PillRegimenSnapshot {
             }
             return getCurrentDosageWithDosageDate(dosageResponses, currentDosage);
         } else {
-            return getDosage((String) ivrContext.ivrRequest().getTamaParams().get(PillReminderCall.DOSAGE_ID));
+            return getDosage((String) ivrRequest.getTamaParams().get(PillReminderCall.DOSAGE_ID));
         }
     }
 

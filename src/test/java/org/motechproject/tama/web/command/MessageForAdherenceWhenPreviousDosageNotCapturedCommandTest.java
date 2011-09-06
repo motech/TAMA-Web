@@ -17,7 +17,7 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -36,7 +36,7 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
     @Mock
     IVRSession ivrSession;
     @Mock
-    DosageAdherenceLogs dosageAdherenceLogs;
+    AllDosageAdherenceLogs allDosageAdherenceLogs;
 
     private MessageForAdherenceWhenPreviousDosageNotCapturedCommand command;
     private IVRRequest ivrRequest;
@@ -65,12 +65,12 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(dosageAdherenceLogs, new IVRMessage(null, new FileUtil()));
+        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(allDosageAdherenceLogs, new IVRMessage(null, new FileUtil()));
     }
 
     @Test
     public void shouldReturnAdherenceMessageWhenPreviousDosageInformationNotCaptured() {
-        when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(56);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(56);
 
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         assertEquals(3, message.length);

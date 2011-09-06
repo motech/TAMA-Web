@@ -32,7 +32,7 @@ public class IVRController {
         try {
             BaseIncomingAction action = actions.findFor(ivrRequest.callEvent());
             final String handle = action.handle(ivrRequest, request, response);
-            logger.error(String.format(" XML returned %s", handle));
+            logger.info(String.format(" XML returned: %s", handle));
             return handle;
         } catch (Exception e) {
             logger.error("Failed to handled incoming request", e);

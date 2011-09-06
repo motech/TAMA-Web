@@ -5,10 +5,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.builder.ClinicianBuilder;
 import org.motechproject.tama.domain.TAMAUser;
-import org.motechproject.tama.repository.TAMAUsers;
+import org.motechproject.tama.repository.AllTAMAUsers;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
-import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +21,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class SecurityControllerTest {
 
     private SecurityController securityController;
-
     @Mock
-    private TAMAUsers tamaUsers;
+    private AllTAMAUsers allTAMAUsers;
 
     @Before
     public void setUp() {
         initMocks(this);
-        securityController = new SecurityController(tamaUsers);
+        securityController = new SecurityController(allTAMAUsers);
     }
 
     @Test
@@ -68,7 +66,7 @@ public class SecurityControllerTest {
 
         String viewName = securityController.changePassword("oldPassword", "new", "new", uiModel, request);
         verify(authenticatedUser, times(1)).setPassword("new");
-        verify(tamaUsers, times(1)).update(tamaUser);
+        verify(allTAMAUsers, times(1)).update(tamaUser);
         assertEquals("passwordReset", viewName);
     }
 }

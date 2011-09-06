@@ -1,7 +1,7 @@
 package org.motechproject.tama.tools.seed;
 
 import org.motechproject.tama.domain.IVRLanguage;
-import org.motechproject.tama.repository.IVRLanguages;
+import org.motechproject.tama.repository.AllIVRLanguages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class IVRLanguageSeed extends Seed {
 
     @Autowired
-    private IVRLanguages languages;
+    private AllIVRLanguages languages;
 
     @Override
     public void load() {

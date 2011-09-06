@@ -14,7 +14,7 @@ import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.repository.Drugs;
+import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.util.DateUtil;
 
 import java.util.*;
@@ -25,7 +25,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class PillRegimenRequestMapperTest {
 
     @Mock
-    private Drugs drugs;
+    private AllDrugs allDrugs;
 
     @Mock
     private Properties properties;
@@ -37,7 +37,7 @@ public class PillRegimenRequestMapperTest {
 
     @Test
     public void shouldGetRetryIntervalAndPillWindowFromProperties() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(drugs, properties);
+        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, properties);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
 
         Drug drug = mock(Drug.class);
@@ -47,7 +47,7 @@ public class PillRegimenRequestMapperTest {
         when(properties.getProperty(TAMAConstants.PILL_WINDOW)).thenReturn("10");
         when(properties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("10");
         when(properties.getProperty(TAMAConstants.REMINDER_LAG)).thenReturn("10");
-        when(drugs.get(Matchers.<String>any())).thenReturn(drug);
+        when(allDrugs.get(Matchers.<String>any())).thenReturn(drug);
 
 
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
@@ -68,7 +68,7 @@ public class PillRegimenRequestMapperTest {
 
     @Test
     public void shouldAddReminderLagToDosageMinutes() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(drugs, properties);
+        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, properties);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
 
         Drug drug = mock(Drug.class);
@@ -77,7 +77,7 @@ public class PillRegimenRequestMapperTest {
         propertiesExpectations(reminderTimeLag);
 
         treatmentAdvice.setPatientId("123");
-        when(drugs.get(Matchers.<String>any())).thenReturn(drug);
+        when(allDrugs.get(Matchers.<String>any())).thenReturn(drug);
 
 
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
@@ -103,7 +103,7 @@ public class PillRegimenRequestMapperTest {
 
     @Test
     public void shouldMapTreatmentAdvicesToPillRegimenRequest() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(drugs, properties);
+        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, properties);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
         treatmentAdvice.setPatientId("123");
 
@@ -113,8 +113,8 @@ public class PillRegimenRequestMapperTest {
         LocalDate startDateForDrug2 = DateUtil.newDate(2011, 02, 10);
         LocalDate endDateForDrug2 = DateUtil.newDate(2011, 06, 10);
 
-        when(drugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
-        when(drugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
+        when(allDrugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
+        when(allDrugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
         String reminderTimeLag = "5";
         propertiesExpectations(reminderTimeLag);
         drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));

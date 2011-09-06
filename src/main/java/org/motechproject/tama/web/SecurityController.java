@@ -3,7 +3,7 @@ package org.motechproject.tama.web;
 
 
 import org.motechproject.tama.TAMAMessages;
-import org.motechproject.tama.repository.TAMAUsers;
+import org.motechproject.tama.repository.AllTAMAUsers;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class SecurityController extends BaseController{
 
-    private TAMAUsers tamaUsers;
+    private AllTAMAUsers allTAMAUsers;
 
     @Autowired
-    public SecurityController(TAMAUsers tamaUsers){
-        this.tamaUsers = tamaUsers;
+    public SecurityController(AllTAMAUsers allTAMAUsers){
+        this.allTAMAUsers = allTAMAUsers;
     }
 
     @RequestMapping(value = "changePassword", method = RequestMethod.GET)
@@ -45,7 +45,7 @@ public class SecurityController extends BaseController{
         }
         else{
             user.setPassword(newPassword);
-            tamaUsers.update(user.getTAMAUser());
+            allTAMAUsers.update(user.getTAMAUser());
             return "passwordReset";
         }
     }

@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.domain.HIVTestReason;
-import org.motechproject.tama.repository.HIVTestReasons;
+import org.motechproject.tama.repository.AllHIVTestReasons;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class HIVTestReasonsView {
 
-    private final HIVTestReasons HIVTestReasons;
+    private final AllHIVTestReasons HIVTestReasons;
 
-    public HIVTestReasonsView(HIVTestReasons HIVTestReasons){
+    public HIVTestReasonsView(AllHIVTestReasons HIVTestReasons){
         this.HIVTestReasons = HIVTestReasons;
     }
 

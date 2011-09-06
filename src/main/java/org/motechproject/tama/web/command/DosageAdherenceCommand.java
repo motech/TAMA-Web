@@ -4,27 +4,27 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class DosageAdherenceCommand extends BaseTreeCommand {
     @Autowired
-    protected DosageAdherenceLogs dosageAdherenceLogs;
+    protected AllDosageAdherenceLogs allDosageAdherenceLogs;
     @Autowired
     protected IVRMessage ivrMessage;
 
     protected DosageAdherenceCommand() {
     }
 
-    public DosageAdherenceCommand(DosageAdherenceLogs dosageAdherenceLogs) {
-        this.dosageAdherenceLogs = dosageAdherenceLogs;
+    public DosageAdherenceCommand(AllDosageAdherenceLogs allDosageAdherenceLogs) {
+        this.allDosageAdherenceLogs = allDosageAdherenceLogs;
     }
 
     protected int getAdherencePercentage(String regimenId, int scheduledDosagesTotalCount) {
         LocalDate toDate = DateUtil.today();
         LocalDate fromDate = toDate.minusDays(TAMAConstants.DAYS_IN_FOUR_WEEKS - 1);
-        int scheduledDosagesSuccessCount = dosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, fromDate, toDate);
+        int scheduledDosagesSuccessCount = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, fromDate, toDate);
         return scheduledDosagesSuccessCount * 100 / scheduledDosagesTotalCount;
     }
 

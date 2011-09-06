@@ -13,14 +13,14 @@ import java.util.List;
 
 @Repository
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'LabResult') { emit(null, doc) } }")
-public class LabResults extends CouchDbRepositorySupport<LabResult> {
+public class AllLabResults extends CouchDbRepositorySupport<LabResult> {
 
-    private LabTests labTests;
+    private AllLabTests allLabTests;
 
     @Autowired
-    public LabResults(@Qualifier("tamaDbConnector") CouchDbConnector db, LabTests labTests) {
+    public AllLabResults(@Qualifier("tamaDbConnector") CouchDbConnector db, AllLabTests allLabTests) {
         super(LabResult.class, db);
-        this.labTests = labTests;
+        this.allLabTests = allLabTests;
         initStandardDesignDocument();
     }
 
@@ -42,7 +42,7 @@ public class LabResults extends CouchDbRepositorySupport<LabResult> {
     }
 
     private void loadDependencies(LabResult labResult) {
-        labResult.setLabTest(labTests.get(labResult.getLabTest_id()));
+        labResult.setLabTest(allLabTests.get(labResult.getLabTest_id()));
     }
 
     public void merge(List<LabResult> labResultsForPatient) {

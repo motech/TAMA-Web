@@ -3,7 +3,7 @@ package org.motechproject.tama.web.command;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,8 +12,8 @@ public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand 
     public MessageForMissedPillFeedbackCommand() {
     }
 
-    public MessageForMissedPillFeedbackCommand(DosageAdherenceLogs dosageAdherenceLogs) {
-        super(dosageAdherenceLogs);
+    public MessageForMissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs) {
+        super(allDosageAdherenceLogs);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand 
         IVRContext ivrContext = (IVRContext) o;
         String regimenId = getRegimenIdFrom(ivrContext);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        int dosagesFailureCount = dosageAdherenceLogs.findScheduledDosagesFailureCount(regimenId);
+        int dosagesFailureCount = allDosageAdherenceLogs.findScheduledDosagesFailureCount(regimenId);
 
         switch (dosagesFailureCount) {
             case 1:

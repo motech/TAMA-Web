@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.builder.ClinicianBuilder;
 import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.repository.Clinicians;
+import org.motechproject.tama.repository.AllClinicians;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public class CliniciansViewTest {
     private CliniciansView cliniciansDropDownList;
 
     @Mock
-    private Clinicians clinicians;
+    private AllClinicians clinicians;
 
     @Before
     public void setUp() {

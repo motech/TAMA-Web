@@ -2,15 +2,14 @@ package org.motechproject.tama.integration.repository;
 
 import org.junit.Test;
 import org.motechproject.tama.domain.Administrator;
-import org.motechproject.tama.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.repository.Administrators;
+import org.motechproject.tama.repository.AllAdministrators;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.assertEquals;
 
-public class AdministratorsTest extends SpringIntegrationTest {
+public class AllAdministratorsTest extends SpringIntegrationTest {
     @Autowired
-    private Administrators administrators;
+    private AllAdministrators allAdministrators;
 
     @Test
     public void shouldFetchTheAdministratorWithPasswordDecrypted() {
@@ -18,10 +17,10 @@ public class AdministratorsTest extends SpringIntegrationTest {
         administrator.setUsername("new_admin");
         administrator.setPassword("password");
 
-        administrators.add(administrator);
+        allAdministrators.add(administrator);
         markForDeletion(administrator);
 
-        Administrator dbAdministrator = administrators.findByUserNameAndPassword("new_admin", "password");
+        Administrator dbAdministrator = allAdministrators.findByUserNameAndPassword("new_admin", "password");
         assertEquals(dbAdministrator.getUsername(), "new_admin");
         assertEquals(dbAdministrator.getPassword(), "password");
     }

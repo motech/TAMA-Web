@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.domain.ModeOfTransmission;
-import org.motechproject.tama.repository.ModesOfTransmission;
+import org.motechproject.tama.repository.AllModesOfTransmission;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class ModesOfTransmissionView {
 
-    private final ModesOfTransmission modesOfTransmission;
+    private final AllModesOfTransmission modesOfTransmission;
 
-    public ModesOfTransmissionView(ModesOfTransmission modesOfTransmission){
+    public ModesOfTransmissionView(AllModesOfTransmission modesOfTransmission){
         this.modesOfTransmission = modesOfTransmission;
     }
 

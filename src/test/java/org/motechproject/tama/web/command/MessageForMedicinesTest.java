@@ -14,8 +14,8 @@ import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.repository.Clinics;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllClinics;
+import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -34,9 +34,9 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class MessageForMedicinesTest {
 
     @Mock
-    private Patients patients;
+    private AllPatients allPatients;
     @Mock
-    private Clinics clinics;
+    private AllClinics allClinics;
     @Mock
     private IVRContext context;
     @Mock
@@ -57,14 +57,14 @@ public class MessageForMedicinesTest {
         patient.setClinic_id("clinicId");
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
 
-        messageForMedicines = new MessageForMedicines(patients, clinics);
+        messageForMedicines = new MessageForMedicines(allPatients, allClinics);
 
         when(context.ivrSession()).thenReturn(ivrSession);
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
         when(context.ivrRequest()).thenReturn(ivrRequest);
         when(ivrSession.getPatientId()).thenReturn("patientId");
-        when(patients.get("patientId")).thenReturn(patient);
-        when(clinics.get("clinicId")).thenReturn(clinic);
+        when(allPatients.get("patientId")).thenReturn(patient);
+        when(allClinics.get("clinicId")).thenReturn(clinic);
 
         today = DateUtil.today();
         now = DateUtil.now();

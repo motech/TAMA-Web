@@ -14,12 +14,12 @@ import java.util.List;
 
 @Repository
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'Administrator') { emit(null, doc) } }")
-public class Administrators extends CouchDbRepositorySupport<Administrator> {
+public class AllAdministrators extends CouchDbRepositorySupport<Administrator> {
 
     private PBEStringEncryptor encryptor;
 
     @Autowired
-    public Administrators(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor) {
+    public AllAdministrators(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor) {
         super(Administrator.class, db);
         initStandardDesignDocument();
         this.encryptor = encryptor;

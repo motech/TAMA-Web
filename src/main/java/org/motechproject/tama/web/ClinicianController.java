@@ -3,8 +3,8 @@ package org.motechproject.tama.web;
 import org.ektorp.UpdateConflictException;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.repository.Clinicians;
-import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.AllClinicians;
+import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.web.view.CliniciansView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -31,13 +31,13 @@ public class ClinicianController extends BaseController {
     public static final String UPDATE_VIEW = "clinicians/update";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/clinicians/";
     public static final String USERNAME_ALREADY_IN_USE = "sorry, userName already in use.";
-    private Clinicians clinicians;
-    private Clinics clinics;
+    private AllClinicians allClinicians;
+    private AllClinics allClinics;
 
     @Autowired
-    public ClinicianController(Clinicians clinicians, Clinics clinics) {
-        this.clinicians = clinicians;
-        this.clinics = clinics;
+    public ClinicianController(AllClinicians allClinicians, AllClinics allClinics) {
+        this.allClinicians = allClinicians;
+        this.allClinics = allClinics;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -47,7 +47,7 @@ public class ClinicianController extends BaseController {
             return CREATE_VIEW;
         }
         try {
-            clinicians.add(clinician);
+            allClinicians.add(clinician);
             uiModel.asMap().clear();
         } catch (UpdateConflictException e) {
             bindingResult.addError(new FieldError("Clinician", "username", clinician.getUsername(), false,
@@ -66,14 +66,14 @@ public class ClinicianController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel) {
-        uiModel.addAttribute("clinician", clinicians.get(id));
+        uiModel.addAttribute("clinician", allClinicians.get(id));
         uiModel.addAttribute("itemId", id);
         return SHOW_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        uiModel.addAttribute("clinicians", new CliniciansView(clinicians).getAll());
+        uiModel.addAttribute("clinicians", new CliniciansView(allClinicians).getAll());
         return LIST_VIEW;
     }
 
@@ -84,19 +84,19 @@ public class ClinicianController extends BaseController {
             return UPDATE_VIEW;
         }
         uiModel.asMap().clear();
-        clinicians.update(clinician);
+        allClinicians.update(clinician);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(clinician.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel) {
-        uiModel.addAttribute("clinician", clinicians.get(id));
+        uiModel.addAttribute("clinician", allClinicians.get(id));
         return UPDATE_VIEW;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        clinicians.remove(clinicians.get(id));
+        allClinicians.remove(allClinicians.get(id));
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
@@ -105,12 +105,12 @@ public class ClinicianController extends BaseController {
 
     @ModelAttribute("clinicians")
     public Collection<Clinician> populateClinicians() {
-        return clinicians.getAll();
+        return allClinicians.getAll();
     }
 
     @ModelAttribute("clinics")
     public Collection<Clinic> populateClinics() {
-        List<Clinic> allClinics = clinics.getAll();
+        List<Clinic> allClinics = this.allClinics.getAll();
         Collections.sort(allClinics);
         return allClinics;
     }

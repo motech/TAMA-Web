@@ -1,7 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.repository.TreatmentAdvices;
+import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -24,19 +24,19 @@ public class ClinicVisitsController extends BaseController {
     @Autowired
     private TreatmentAdviceController treatmentAdviceController;
     @Autowired
-    private TreatmentAdvices treatmentAdvices;
+    private AllTreatmentAdvices allTreatmentAdvices;
 
     protected ClinicVisitsController() {
     }
 
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, TreatmentAdvices treatmentAdvices) {
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices) {
         this.treatmentAdviceController = treatmentAdviceController;
-        this.treatmentAdvices = treatmentAdvices;
+        this.allTreatmentAdvices = allTreatmentAdvices;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        TreatmentAdvice adviceForPatient = treatmentAdvices.findByPatientId(patientId);
+        TreatmentAdvice adviceForPatient = allTreatmentAdvices.findByPatientId(patientId);
         if (adviceForPatient != null) {
             return "redirect:/clinicvisits/" + encodeUrlPathSegment(adviceForPatient.getId(), httpServletRequest);
         }

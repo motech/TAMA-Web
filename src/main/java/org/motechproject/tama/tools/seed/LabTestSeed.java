@@ -1,7 +1,7 @@
 package org.motechproject.tama.tools.seed;
 
 import org.motechproject.tama.domain.LabTest;
-import org.motechproject.tama.repository.LabTests;
+import org.motechproject.tama.repository.AllLabTests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 public class LabTestSeed extends Seed{
 
     @Autowired
-    private LabTests labTests;
+    private AllLabTests allLabTests;
 
     @Override
     public void load() {
-        labTests.add(LabTest.newLabTest("CD4", "xx-yy"));
-        labTests.add(LabTest.newLabTest("PVL", "xx-yy"));
+        allLabTests.add(LabTest.newLabTest("CD4", "xx-yy"));
+        allLabTests.add(LabTest.newLabTest("PVL", "xx-yy"));
     }
 }

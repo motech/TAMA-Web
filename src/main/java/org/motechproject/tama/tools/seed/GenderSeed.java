@@ -1,7 +1,7 @@
 package org.motechproject.tama.tools.seed;
 
 import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.repository.Genders;
+import org.motechproject.tama.repository.AllGenders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 public class GenderSeed extends Seed {
 
 	@Autowired
-	private Genders genders;
+	private AllGenders allGenders;
 	
 	@Override
 	public void load() {
-		genders.add(Gender.newGender("Male"));
-		genders.add(Gender.newGender("Female"));
+		allGenders.add(Gender.newGender("Male"));
+		allGenders.add(Gender.newGender("Female"));
 	}
 }

@@ -1,7 +1,7 @@
 package org.motechproject.tama.tools.seed;
 
 import org.motechproject.tama.domain.ModeOfTransmission;
-import org.motechproject.tama.repository.ModesOfTransmission;
+import org.motechproject.tama.repository.AllModesOfTransmission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,18 +9,18 @@ import org.springframework.stereotype.Service;
 public class ModeOfTransmissionSeed extends Seed {
 
 	@Autowired
-	private ModesOfTransmission modesOfTransmission;
+	private AllModesOfTransmission allModesOfTransmission;
 	
 	@Override
 	public void load() {
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Heterosexual"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Homosexual"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Blood Transmission"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Intravenous"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Intramuscular"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Dialysis"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Vertical"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Bisexual"));
-		modesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Others"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Heterosexual"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Homosexual"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Blood Transmission"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Intravenous"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Intramuscular"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Dialysis"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Vertical"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Bisexual"));
+		allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Others"));
 	}
 }

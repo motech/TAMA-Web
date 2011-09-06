@@ -6,7 +6,7 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllPatients;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class PillReminderCallTest {
     private PillReminderCall pillReminderCall;
     @Mock
-    private Patients patients;
+    private AllPatients allPatients;
     @Mock
     private CallService callService;
 
@@ -29,12 +29,12 @@ public class PillReminderCallTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pillReminderCall = new PillReminderCall(callService, patients);
+        pillReminderCall = new PillReminderCall(callService, allPatients);
     }
 
     @Test
     public void shouldNotMakeACallForANonExistentPatient() {
-        when(patients.get(PATIENT_DOC_ID)).thenReturn(null);
+        when(allPatients.get(PATIENT_DOC_ID)).thenReturn(null);
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 
@@ -45,7 +45,7 @@ public class PillReminderCallTest {
     public void shouldNotMakeACallForInActivePatient() {
         Patient patient = mock(Patient.class);
         when(patient.isNotActive()).thenReturn(true);
-        when(patients.get(PATIENT_DOC_ID)).thenReturn(patient);
+        when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 
@@ -57,7 +57,7 @@ public class PillReminderCallTest {
         Patient patient = mock(Patient.class);
         when(patient.isNotActive()).thenReturn(false);
         when(patient.getIVRMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
-        when(patients.get(PATIENT_DOC_ID)).thenReturn(patient);
+        when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 

@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.IVRLanguage;
-import org.motechproject.tama.repository.IVRLanguages;
+import org.motechproject.tama.repository.AllIVRLanguages;
 
 import java.util.ArrayList;
 
@@ -19,18 +19,18 @@ public class IvrLanguagesViewTest {
     private IvrLanguagesView ivrLanguagesView;
 
     @Mock
-    private IVRLanguages ivrLanguages;
+    private AllIVRLanguages allIVRLanguages;
 
     @Before
     public void setUp() {
         initMocks(this);
-        ivrLanguagesView = new IvrLanguagesView(ivrLanguages);
+        ivrLanguagesView = new IvrLanguagesView(allIVRLanguages);
     }
 
     @Test
     public void shouldSortByNameAscending() {
 
-        when(ivrLanguages.getAll()).thenReturn(new ArrayList<IVRLanguage>() {
+        when(allIVRLanguages.getAll()).thenReturn(new ArrayList<IVRLanguage>() {
             {
                 add(new IVRLanguage(){{ setName("language2");}});
                 add(new IVRLanguage(){{ setName("language1");}});
@@ -43,7 +43,7 @@ public class IvrLanguagesViewTest {
     @Test
     public void shouldIgnoreCaseWhenSorting() {
 
-        when(ivrLanguages.getAll()).thenReturn(new ArrayList<IVRLanguage>() {
+        when(allIVRLanguages.getAll()).thenReturn(new ArrayList<IVRLanguage>() {
             {
                 add(new IVRLanguage(){{ setName("Language2");}});
                 add(new IVRLanguage(){{ setName("language1");}});

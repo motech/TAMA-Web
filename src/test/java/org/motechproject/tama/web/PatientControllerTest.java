@@ -38,26 +38,26 @@ public class PatientControllerTest {
     @Mock
     private AuthenticatedUser user;
     @Mock
-    private HttpSession session;
-    @Mock
-    private Patients patients;
-    @Mock
     private HttpServletRequest request;
     @Mock
-    private Clinics clinics;
+    private HttpSession session;
     @Mock
-    private Genders genders;
+    private AllPatients allPatients;
     @Mock
-    private IVRLanguages ivrLanguages;
+    private AllClinics allClinics;
     @Mock
-    private HIVTestReasons testReasons;
+    private AllGenders allGenders;
     @Mock
-    private ModesOfTransmission modesOfTransmission;
+    private AllIVRLanguages allIVRLanguages;
+    @Mock
+    private AllHIVTestReasons allTestReasons;
+    @Mock
+    private AllModesOfTransmission allModesOfTransmission;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(patients, clinics, genders, ivrLanguages, testReasons, modesOfTransmission);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class PatientControllerTest {
         String id = "1234";
         String nextPage = controller.activate(id, request);
 
-        verify(patients).activate(id);
+        verify(allPatients).activate(id);
         assertTrue(nextPage.contains("redirect:/patients/"));
         assertTrue(nextPage.contains("1234"));
     }
@@ -75,7 +75,7 @@ public class PatientControllerTest {
         String id = "1234";
         String nextPage = controller.activate(id);
 
-        verify(patients).activate(id);
+        verify(allPatients).activate(id);
         assertEquals("redirect:/patients", nextPage);
     }
 
@@ -87,7 +87,7 @@ public class PatientControllerTest {
         List<Patient> patientsFromDb = new ArrayList<Patient>();
         patientsFromDb.add(patientFromDb);
 
-        when(patients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(patientsFromDb);
+        when(allPatients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(patientsFromDb);
         when(patientFromDb.getId()).thenReturn("couchDbId");
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
@@ -105,7 +105,7 @@ public class PatientControllerTest {
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
         String previousPage = expectedPreviousPageUrl + "?patientIdNotFound=1_abcd";
 
-        when(patients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(new ArrayList<Patient>());
+        when(allPatients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(new ArrayList<Patient>());
         when(request.getHeader("Referer")).thenReturn(previousPage);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
@@ -124,7 +124,7 @@ public class PatientControllerTest {
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients?page=1";
         String previousPage = expectedPreviousPageUrl + "&patientIdNotFound=abc_8";
 
-        when(patients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(null);
+        when(allPatients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(null);
         when(request.getHeader("Referer")).thenReturn(previousPage);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
@@ -154,7 +154,7 @@ public class PatientControllerTest {
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-        verify(patients).addToClinic(patientFromUI, clinicId);
+        verify(allPatients).addToClinic(patientFromUI, clinicId);
         assertTrue(modelMap.isEmpty());
         assertEquals("redirect:/patients/123", createPage);
     }

@@ -4,7 +4,7 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,20 +13,20 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class NewCallEventAction extends BaseIncomingAction {
-    private Patients patients;
+    private AllPatients allPatients;
     private UserNotFoundAction userNotFoundAction;
 
     @Autowired
-    public NewCallEventAction(IVRMessage messages, Patients patients, UserNotFoundAction userNotFoundAction) {
+    public NewCallEventAction(IVRMessage messages, AllPatients allPatients, UserNotFoundAction userNotFoundAction) {
         this.messages = messages;
-        this.patients = patients;
+        this.allPatients = allPatients;
         this.userNotFoundAction = userNotFoundAction;
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = createIVRSession(request);
-        Patient patient = patients.findByMobileNumber(ivrRequest.getCid());
+        Patient patient = allPatients.findByMobileNumber(ivrRequest.getCid());
         if (!isValidCaller(patient)) {
             return userNotFoundAction.handle(ivrRequest, request, response);
         }

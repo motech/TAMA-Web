@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.HIVTestReason;
-import org.motechproject.tama.repository.HIVTestReasons;
+import org.motechproject.tama.repository.AllHIVTestReasons;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class HIVTestReasonsViewTest {
     private HIVTestReasonsView HIVTestReasonsView;
 
     @Mock
-    private HIVTestReasons HIVTestReasons;
+    private AllHIVTestReasons HIVTestReasons;
 
     @Before
     public void setUp() {

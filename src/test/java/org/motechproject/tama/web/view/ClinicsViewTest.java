@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.AllClinics;
 
 import java.util.ArrayList;
 
@@ -20,17 +20,17 @@ public class ClinicsViewTest {
     private ClinicsView clinicsView;
 
     @Mock
-    private Clinics clinics;
+    private AllClinics allClinics;
 
     @Before
     public void setUp() {
         initMocks(this);
-        clinicsView = new ClinicsView(clinics);
+        clinicsView = new ClinicsView(allClinics);
     }
 
     @Test
     public void shouldSortByNameAscending() {
-        when(clinics.getAll()).thenReturn(new ArrayList<Clinic>() {
+        when(allClinics.getAll()).thenReturn(new ArrayList<Clinic>() {
             {
                 add(new ClinicBuilder().withDefaults().withName("clinic2").build());
                 add(new ClinicBuilder().withDefaults().withName("clinic1").build());
@@ -42,7 +42,7 @@ public class ClinicsViewTest {
 
     @Test
     public void shouldIgnoreCaseWhenSorting() {
-        when(clinics.getAll()).thenReturn(new ArrayList<Clinic>() {
+        when(allClinics.getAll()).thenReturn(new ArrayList<Clinic>() {
             {
                 add(new ClinicBuilder().withDefaults().withName("Clinic2").build());
                 add(new ClinicBuilder().withDefaults().withName("clinic1").build());

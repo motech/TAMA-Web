@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class Companies extends AbstractCouchRepository<Company> {
+public class AllCompanies extends AbstractCouchRepository<Company> {
 
     @Autowired
-    public Companies(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+    public AllCompanies(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(Company.class, db);
     }
 }

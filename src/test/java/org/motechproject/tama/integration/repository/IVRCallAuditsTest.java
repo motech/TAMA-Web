@@ -2,7 +2,7 @@ package org.motechproject.tama.integration.repository;
 
 import org.junit.Test;
 import org.motechproject.tama.domain.IVRCallAudit;
-import org.motechproject.tama.repository.IVRCallAudits;
+import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 public class IVRCallAuditsTest extends SpringIntegrationTest {
 
     @Autowired
-    private IVRCallAudits audits;
+    private AllIVRCallAudits audits;
 
     @Test
     public void shouldPersistAndFetchAudit() {

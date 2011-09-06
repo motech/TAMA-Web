@@ -42,15 +42,15 @@ public class TreatmentAdviceControllerTest {
     @Mock
     private HttpServletRequest request;
     @Mock
-    private TreatmentAdvices treatmentAdvices;
+    private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
-    private Patients patients;
+    private AllPatients allPatients;
     @Mock
-    private Regimens regimens;
+    private AllRegimens allRegimens;
     @Mock
-    private DosageTypes dosageTypes;
+    private AllDosageTypes allDosageTypes;
     @Mock
-    private MealAdviceTypes mealAdviceTypes;
+    private AllMealAdviceTypes allMealAdviceTypes;
     @Mock
     private PillReminderService pillReminderService;
     @Mock
@@ -59,7 +59,7 @@ public class TreatmentAdviceControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new TreatmentAdviceController(treatmentAdvices, patients, regimens, null, dosageTypes, mealAdviceTypes, pillReminderService, requestMapper);
+        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, pillReminderService, requestMapper);
     }
 
     @Test
@@ -78,8 +78,8 @@ public class TreatmentAdviceControllerTest {
         TreatmentAdvice treatmentAdviceAttr = new TreatmentAdvice();
         Patient patient = PatientBuilder.startRecording().withPatientId("patientId").build();
 
-        when(patients.get("patientId")).thenReturn(patient);
-        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allPatients.get("patientId")).thenReturn(patient);
+        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
         controller.createForm(patientId, uiModel);
 
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
@@ -96,14 +96,14 @@ public class TreatmentAdviceControllerTest {
 
         controller.create(treatmentAdvice, uiModel);
 
-        verify(treatmentAdvices).add(treatmentAdvice);
+        verify(allTreatmentAdvices).add(treatmentAdvice);
     }
 
     @Test
     public void shouldGetAllRegimens() {
         List<Regimen> returnedRegimens = new ArrayList<Regimen>();
         returnedRegimens.add(RegimenBuilder.startRecording().withDefaults().build());
-        when(regimens.getAll()).thenReturn(returnedRegimens);
+        when(allRegimens.getAll()).thenReturn(returnedRegimens);
 
         List<ComboBoxView> viewRegimens = controller.regimens();
         junit.framework.Assert.assertEquals(1, viewRegimens.size());
@@ -122,7 +122,7 @@ public class TreatmentAdviceControllerTest {
         List<MealAdviceType> allMealAdviceTypes = new ArrayList<MealAdviceType>();
         allMealAdviceTypes.add(new MealAdviceType("Before Meal"));
 
-        when(mealAdviceTypes.getAll()).thenReturn(allMealAdviceTypes);
+        when(this.allMealAdviceTypes.getAll()).thenReturn(allMealAdviceTypes);
 
         List<MealAdviceType> returnedMealAdviceTypes = controller.mealAdviceTypes();
         junit.framework.Assert.assertEquals(1, returnedMealAdviceTypes.size());
@@ -134,7 +134,7 @@ public class TreatmentAdviceControllerTest {
         List<DosageType> allDosageTypes = new ArrayList<DosageType>();
         allDosageTypes.add(new DosageType("Once Daily"));
 
-        when(dosageTypes.getAll()).thenReturn(allDosageTypes);
+        when(this.allDosageTypes.getAll()).thenReturn(allDosageTypes);
 
         List<DosageType> returnedDosageTypes = controller.dosageTypes();
         junit.framework.Assert.assertEquals(1, returnedDosageTypes.size());
@@ -151,8 +151,8 @@ public class TreatmentAdviceControllerTest {
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(new LocalDate(2012, 12, 12));
 
-        when(patients.get(patientId)).thenReturn(patient);
-        when(treatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allPatients.get(patientId)).thenReturn(patient);
+        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
         String returnURL = controller.changeRegimenForm(treatmentAdviceId, patientId, uiModel);
 
         assertThat(returnURL, is("treatmentadvices/update"));
@@ -169,13 +169,13 @@ public class TreatmentAdviceControllerTest {
         TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).build();
         TreatmentAdvice newTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(treatmentAdviceId).build();
 
-        when(treatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
+        when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, newTreatmentAdvice, uiModel, request);
 
         assertThat(redirectURL, is("redirect:/clinicvisits/treatmentAdviceId"));
         assertThat(existingTreatmentAdvice.getReasonForDiscontinuing(), is(discontinuationReason));
-        verify(treatmentAdvices).update(existingTreatmentAdvice);
-        verify(treatmentAdvices).add(newTreatmentAdvice);
+        verify(allTreatmentAdvices).update(existingTreatmentAdvice);
+        verify(allTreatmentAdvices).add(newTreatmentAdvice);
         verify(pillReminderService).renew(any(PillRegimenRequest.class));
     }
 }

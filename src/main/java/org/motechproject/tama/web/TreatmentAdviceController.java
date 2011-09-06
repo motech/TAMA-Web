@@ -31,17 +31,17 @@ import java.util.List;
 public class TreatmentAdviceController extends BaseController {
 
     @Autowired
-    private MealAdviceTypes mealAdviceTypes;
+    private AllMealAdviceTypes allMealAdviceTypes;
     @Autowired
-    private DosageTypes dosageTypes;
+    private AllDosageTypes allDosageTypes;
     @Autowired
-    private Drugs drugs;
+    private AllDrugs allDrugs;
     @Autowired
-    private Regimens regimens;
+    private AllRegimens allRegimens;
     @Autowired
-    private TreatmentAdvices treatmentAdvices;
+    private AllTreatmentAdvices allTreatmentAdvices;
     @Autowired
-    private Patients patients;
+    private AllPatients allPatients;
     @Qualifier("pillReminderService")
     @Autowired
     private PillReminderService pillReminderService;
@@ -51,20 +51,20 @@ public class TreatmentAdviceController extends BaseController {
     protected TreatmentAdviceController() {
     }
 
-    public TreatmentAdviceController(TreatmentAdvices treatmentAdvices, Patients patients, Regimens regimens, Drugs drugs, DosageTypes dosageTypes, MealAdviceTypes mealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper) {
-        this.treatmentAdvices = treatmentAdvices;
-        this.patients = patients;
-        this.regimens = regimens;
-        this.drugs = drugs;
-        this.dosageTypes = dosageTypes;
-        this.mealAdviceTypes = mealAdviceTypes;
+    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper) {
+        this.allTreatmentAdvices = allTreatmentAdvices;
+        this.allPatients = allPatients;
+        this.allRegimens = allRegimens;
+        this.allDrugs = allDrugs;
+        this.allDosageTypes = allDosageTypes;
+        this.allMealAdviceTypes = allMealAdviceTypes;
         this.pillReminderService = pillReminderService;
         this.pillRegimenRequestMapper = requestMapper;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
     public @ResponseBody List<Regimen> allRegimens() {
-        List<Regimen> allRegimens = regimens.getAll();
+        List<Regimen> allRegimens = this.allRegimens.getAll();
         return allRegimens;
     }
 
@@ -80,16 +80,16 @@ public class TreatmentAdviceController extends BaseController {
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, Model uiModel, HttpServletRequest httpServletRequest) {
         endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
         uiModel.asMap().clear();
-        treatmentAdvices.add(treatmentAdvice);
+        allTreatmentAdvices.add(treatmentAdvice);
         pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
 
     private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {
-        TreatmentAdvice existingTreatmentAdvice = treatmentAdvices.get(treatmentAdviceId);
+        TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
         existingTreatmentAdvice.setReasonForDiscontinuing(discontinuationReason);
         existingTreatmentAdvice.endTheRegimen();
-        treatmentAdvices.update(existingTreatmentAdvice);
+        allTreatmentAdvices.update(existingTreatmentAdvice);
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -101,18 +101,18 @@ public class TreatmentAdviceController extends BaseController {
 
     public void create(TreatmentAdvice treatmentAdvice, Model uiModel) {
         uiModel.asMap().clear();
-        treatmentAdvices.add(treatmentAdvice);
+        allTreatmentAdvices.add(treatmentAdvice);
         pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
     }
 
     public void show(String id, Model uiModel) {
-        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(treatmentAdvices, patients, regimens, drugs, dosageTypes, mealAdviceTypes);
+        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(allTreatmentAdvices, allPatients, allRegimens, allDrugs, allDosageTypes, allMealAdviceTypes);
         uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(id));
         uiModel.addAttribute("itemId", id);
     }
 
     public List<ComboBoxView> regimens() {
-        List<Regimen> allRegimens = new RegimensView(regimens).getAll();
+        List<Regimen> allRegimens = new RegimensView(this.allRegimens).getAll();
         List<ComboBoxView> comboBoxViews = new ArrayList<ComboBoxView>();
         for (Regimen regimen : allRegimens) {
             comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getDisplayName()));
@@ -134,17 +134,17 @@ public class TreatmentAdviceController extends BaseController {
 
     @ModelAttribute("mealAdviceTypes")
     public List<MealAdviceType> mealAdviceTypes() {
-        return new MealAdviceTypesView(mealAdviceTypes).getAll();
+        return new MealAdviceTypesView(allMealAdviceTypes).getAll();
     }
 
     @ModelAttribute("dosageTypes")
     public List<DosageType> dosageTypes() {
-        return new DosageTypesView(dosageTypes).getAll();
+        return new DosageTypesView(allDosageTypes).getAll();
     }
 
     private void populateModel(Model uiModel, TreatmentAdvice treatmentAdvice) {
         uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
-        uiModel.addAttribute("patientIdentifier", patients.get(treatmentAdvice.getPatientId()).getPatientId());
+        uiModel.addAttribute("patientIdentifier", allPatients.get(treatmentAdvice.getPatientId()).getPatientId());
         uiModel.addAttribute("regimens", regimens());
         uiModel.addAttribute("drugCompositions", drugCompositions());
         uiModel.addAttribute("drugCompositionGroups", drugCompositionGroups());

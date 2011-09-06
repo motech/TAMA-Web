@@ -5,17 +5,17 @@ import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageNotTakenReason;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RecordDeclinedDosageReasonCommand extends BaseTreeCommand {
-    private DosageAdherenceLogs logs;
+    private AllDosageAdherenceLogs logs;
 
     @Autowired
-    public RecordDeclinedDosageReasonCommand(DosageAdherenceLogs logs) {
+    public RecordDeclinedDosageReasonCommand(AllDosageAdherenceLogs logs) {
         this.logs = logs;
     }
 

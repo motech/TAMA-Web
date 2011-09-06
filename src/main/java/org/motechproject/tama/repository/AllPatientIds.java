@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PatientIds extends AbstractCouchRepository<PatientId> {
+public class AllPatientIds extends AbstractCouchRepository<PatientId> {
 
     @Autowired
-    public PatientIds(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+    public AllPatientIds(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(PatientId.class, db);
         initStandardDesignDocument();
     }

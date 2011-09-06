@@ -7,7 +7,7 @@ import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllPatients;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 public class NewCallEventActionTest extends BaseActionTest {
     @Mock
-    private Patients patients;
+    private AllPatients allPatients;
     @Mock
     private UserNotFoundAction userNotFoundAction;
     @Mock
@@ -26,13 +26,13 @@ public class NewCallEventActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
-        action = new NewCallEventAction(messages, patients, userNotFoundAction);
+        action = new NewCallEventAction(messages, allPatients, userNotFoundAction);
     }
 
     @Test
     public void shouldHangupIfUserIsNotRegistered() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
-        when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(null);
+        when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(null);
         when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("hangup response");
         String responseXML = action.handle(ivrRequest, request, response);
         assertEquals("hangup response", responseXML);
@@ -41,7 +41,7 @@ public class NewCallEventActionTest extends BaseActionTest {
     @Test
     public void shouldHangupIfPatientIsNotActive() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
-        when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
+        when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(false);
         when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("hangup response");
         String responseXML = action.handle(ivrRequest, request, response);
@@ -52,7 +52,7 @@ public class NewCallEventActionTest extends BaseActionTest {
     public void shouldInitiateASessionWithRequiredAttributesForANewCallFromAnAuthorizedPatient() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
         when(request.getSession()).thenReturn(session);
-        when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
+        when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
         when(patient.getId()).thenReturn("patientId");
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
@@ -70,7 +70,7 @@ public class NewCallEventActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
-        when(patients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
+        when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
         when(patient.getIvrLanguage()).thenReturn(ivrLanguage);

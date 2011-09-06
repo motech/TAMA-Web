@@ -2,8 +2,8 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.repository.Cities;
-import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.AllCities;
+import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -22,13 +22,13 @@ import java.util.List;
 @RequestMapping("/clinics")
 @Controller
 public class ClinicController extends BaseController {
-    private Clinics clinics;
-    private Cities cities;
+    private AllClinics allClinics;
+    private AllCities allCities;
 
     @Autowired
-    public ClinicController(Clinics clinics, Cities cities) {
-        this.clinics = clinics;
-        this.cities = cities;
+    public ClinicController(AllClinics allClinics, AllCities allCities) {
+        this.allClinics = allClinics;
+        this.allCities = allCities;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -38,7 +38,7 @@ public class ClinicController extends BaseController {
             return "clinics/create";
         }
         uiModel.asMap().clear();
-        clinics.add(clinic);
+        allClinics.add(clinic);
         return "redirect:/clinics/" + encodeUrlPathSegment(clinic.getId().toString(), httpServletRequest);
     }
 
@@ -50,14 +50,14 @@ public class ClinicController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel) {
-        uiModel.addAttribute("clinic", clinics.get(id));
+        uiModel.addAttribute("clinic", allClinics.get(id));
         uiModel.addAttribute("itemId", id);
         return "clinics/show";
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        uiModel.addAttribute("clinics", new ClinicsView(clinics).getAll());
+        uiModel.addAttribute("clinics", new ClinicsView(allClinics).getAll());
         return "clinics/list";
     }
 
@@ -68,26 +68,26 @@ public class ClinicController extends BaseController {
             return "clinics/update";
         }
         uiModel.asMap().clear();
-        clinic.setRevision(clinics.get(clinic.getId()).getRevision());
-        clinics.update(clinic);
+        clinic.setRevision(allClinics.get(clinic.getId()).getRevision());
+        allClinics.update(clinic);
         return "redirect:/clinics/" + encodeUrlPathSegment(clinic.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel) {
-        uiModel.addAttribute("clinic", clinics.get(id));
+        uiModel.addAttribute("clinic", allClinics.get(id));
         return "clinics/update";
     }
 
     @ModelAttribute("citys")
     public Collection<City> populateCitys() {
-        List<City> allCities = cities.getAllCities();
+        List<City> allCities = this.allCities.getAllCities();
         Collections.sort(allCities);
         return allCities;
     }
 
     @ModelAttribute("clinics")
     public Collection<Clinic> populateClinics() {
-        return clinics.getAll();
+        return allClinics.getAll();
     }
 }

@@ -5,8 +5,8 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.repository.Clinics;
-import org.motechproject.tama.repository.Patients;
+import org.motechproject.tama.repository.AllClinics;
+import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +15,13 @@ import java.util.List;
 
 @Component
 public class MessageForMedicines extends BaseTreeCommand {
-    private Patients patients;
-    private Clinics clinics;
+    private AllPatients allPatients;
+    private AllClinics allClinics;
 
     @Autowired
-    public MessageForMedicines(Patients patients, Clinics clinics) {
-        this.patients = patients;
-        this.clinics = clinics;
+    public MessageForMedicines(AllPatients allPatients, AllClinics allClinics) {
+        this.allPatients = allPatients;
+        this.allClinics = allClinics;
     }
 
     @Override
@@ -29,8 +29,8 @@ public class MessageForMedicines extends BaseTreeCommand {
         IVRContext ivrContext = (IVRContext) obj;
         ArrayList<String> messages = new ArrayList<String>();
 
-        Patient patient = patients.get(ivrContext.ivrSession().getPatientId());
-        Clinic clinic = clinics.get(patient.getClinic_id());
+        Patient patient = allPatients.get(ivrContext.ivrSession().getPatientId());
+        Clinic clinic = allClinics.get(patient.getClinic_id());
 
         messages.add(clinic.getName());
         messages.add(IVRMessage.ITS_TIME_FOR_THE_PILL);

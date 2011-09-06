@@ -11,10 +11,10 @@ import java.util.Comparator;
 import java.util.List;
 
 @Repository
-public class DosageTypes extends AbstractCouchRepository<DosageType> {
+public class AllDosageTypes extends AbstractCouchRepository<DosageType> {
 
     @Autowired
-    protected DosageTypes(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+    protected AllDosageTypes(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(DosageType.class, db);
     }
 

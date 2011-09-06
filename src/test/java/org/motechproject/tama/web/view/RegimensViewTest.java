@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.domain.Regimen;
-import org.motechproject.tama.repository.Regimens;
+import org.motechproject.tama.repository.AllRegimens;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public class RegimensViewTest {
     private RegimensView regimensView;
 
     @Mock
-    private Regimens regimens;
+    private AllRegimens regimens;
 
     @Before
     public void setUp() {

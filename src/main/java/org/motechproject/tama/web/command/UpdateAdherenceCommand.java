@@ -3,7 +3,7 @@ package org.motechproject.tama.web.command;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpdateAdherenceCommand extends BaseTreeCommand {
 
-    private DosageAdherenceLogs logs;
+    private AllDosageAdherenceLogs logs;
 
     @Autowired
-    public UpdateAdherenceCommand(DosageAdherenceLogs logs) {
+    public UpdateAdherenceCommand(AllDosageAdherenceLogs logs) {
         this.logs = logs;
     }
 

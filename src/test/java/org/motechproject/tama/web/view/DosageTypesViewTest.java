@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.repository.DosageTypes;
+import org.motechproject.tama.repository.AllDosageTypes;
 
 import java.util.ArrayList;
 
@@ -19,18 +19,18 @@ public class DosageTypesViewTest {
     private DosageTypesView dosageTypesView;
 
     @Mock
-    private DosageTypes dosageTypes;
+    private AllDosageTypes allDosageTypes;
 
     @Before
     public void setUp() {
         initMocks(this);
-        dosageTypesView = new DosageTypesView(dosageTypes);
+        dosageTypesView = new DosageTypesView(allDosageTypes);
     }
 
     @Test
     public void shouldSortByTypeAscending() {
 
-        when(dosageTypes.getAll()).thenReturn(new ArrayList<DosageType>() {
+        when(allDosageTypes.getAll()).thenReturn(new ArrayList<DosageType>() {
             {
                 add(new DosageType("type2"));
                 add(new DosageType("type1"));
@@ -43,7 +43,7 @@ public class DosageTypesViewTest {
     @Test
     public void shouldIgnoreCaseWhenSorting() {
 
-        when(dosageTypes.getAll()).thenReturn(new ArrayList<DosageType>() {
+        when(allDosageTypes.getAll()).thenReturn(new ArrayList<DosageType>() {
             {
                 add(new DosageType("Type2"));
                 add(new DosageType("type1"));

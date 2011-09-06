@@ -16,10 +16,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class DosageAdherenceLogs extends AbstractCouchRepository<DosageAdherenceLog> {
+public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdherenceLog> {
 
     @Autowired
-    public DosageAdherenceLogs(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+    public AllDosageAdherenceLogs(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(DosageAdherenceLog.class, db);
     }
 

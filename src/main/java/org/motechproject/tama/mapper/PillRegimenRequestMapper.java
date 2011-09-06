@@ -1,6 +1,5 @@
 package org.motechproject.tama.mapper;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
@@ -9,7 +8,7 @@ import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.repository.Drugs;
+import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.tama.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,18 +22,18 @@ import static org.apache.commons.collections.CollectionUtils.*;
 public class PillRegimenRequestMapper {
 
     @Autowired
-    private Drugs drugs;
+    private AllDrugs allDrugs;
 
     @Autowired
     @Qualifier("ivrProperties")
     private Properties properties;
 
-    public PillRegimenRequestMapper(Drugs drugs) {
-        this.drugs = drugs;
+    public PillRegimenRequestMapper(AllDrugs allDrugs) {
+        this.allDrugs = allDrugs;
     }
 
-    public PillRegimenRequestMapper(Drugs drugs, Properties properties) {
-        this.drugs = drugs;
+    public PillRegimenRequestMapper(AllDrugs allDrugs, Properties properties) {
+        this.allDrugs = allDrugs;
         this.properties = properties;
     }
 
@@ -100,7 +99,7 @@ public class PillRegimenRequestMapper {
     private List<MedicineRequest> createMedicineRequests(List<DrugDosage> drugDosages) {
         List<MedicineRequest> medicineRequests = new ArrayList<MedicineRequest>();
         for (DrugDosage drugDosage : drugDosages) {
-            MedicineRequest medicineRequest = new MedicineRequest(drugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
+            MedicineRequest medicineRequest = new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
                     drugDosage.getStartDate(),
                     drugDosage.getEndDate());
             medicineRequests.add(medicineRequest);

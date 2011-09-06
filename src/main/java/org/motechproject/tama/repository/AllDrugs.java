@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class Drugs extends AbstractCouchRepository<Drug>{
+public class AllDrugs extends AbstractCouchRepository<Drug>{
 
     @Autowired
-	protected Drugs(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+	protected AllDrugs(@Qualifier("tamaDbConnector") CouchDbConnector db) {
 		super(Drug.class, db);
 	}
 

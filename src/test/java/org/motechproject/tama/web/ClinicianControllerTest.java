@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Clinician;
-import org.motechproject.tama.repository.Clinicians;
-import org.motechproject.tama.repository.Clinics;
+import org.motechproject.tama.repository.AllClinicians;
+import org.motechproject.tama.repository.AllClinics;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -27,9 +27,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ClinicianControllerTest {
     private ClinicianController controller;
     @Mock
-    private Clinicians clinicians;
+    private AllClinicians clinicians;
     @Mock
-    private Clinics clinics;
+    private AllClinics clinics;
     @Mock
     private BindingResult bindingResult;
     @Mock

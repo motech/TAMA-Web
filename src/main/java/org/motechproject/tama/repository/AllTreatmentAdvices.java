@@ -14,10 +14,10 @@ import java.util.List;
 
 @Repository
 @View( name="all", map = "function(doc) { if (doc.documentType == 'TreatmentAdvice') { emit(null, doc) } }")
-public class TreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvice> {
+public class AllTreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvice> {
 
     @Autowired
-    public TreatmentAdvices(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+    public AllTreatmentAdvices(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(TreatmentAdvice.class, db);
         initStandardDesignDocument();
     }

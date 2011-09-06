@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.IVRCallAudit;
 import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.repository.IVRCallAudits;
+import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserNotFoundAction extends BaseIncomingAction {
 
     @Autowired
-    public UserNotFoundAction(IVRMessage messages, IVRCallAudits audits) {
+    public UserNotFoundAction(IVRMessage messages, AllIVRCallAudits audits) {
         this.audits = audits;
         this.messages = messages;
     }

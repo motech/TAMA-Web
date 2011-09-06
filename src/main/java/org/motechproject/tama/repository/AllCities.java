@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class Cities extends AbstractCouchRepository<City> {
+public class AllCities extends AbstractCouchRepository<City> {
 
     @Autowired
-    public Cities(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+    public AllCities(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(City.class, db);
         initStandardDesignDocument();
     }

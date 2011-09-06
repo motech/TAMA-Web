@@ -17,7 +17,7 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.repository.DosageAdherenceLogs;
+import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -39,7 +39,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
     @Mock
     IVRSession ivrSession;
     @Mock
-    DosageAdherenceLogs dosageAdherenceLogs;
+    AllDosageAdherenceLogs allDosageAdherenceLogs;
 
     private MessageForAdherenceWhenPreviousDosageCapturedCommand command;
     private IVRRequest ivrRequest;
@@ -65,7 +65,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
 
-        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(dosageAdherenceLogs, new IVRMessage(null, new FileUtil()));
+        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(allDosageAdherenceLogs, new IVRMessage(null, new FileUtil()));
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 4, 12, 0));
         when(DateUtil.today()).thenReturn(new LocalDate(2011, 7, 1));
@@ -77,7 +77,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     @Test
     public void shouldReturnAdherenceMessageWhenPreviousDosageInformationCaptured() {
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(56);
+        Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(56);
 
         String[] message = command.execute(new IVRContext(ivrRequest, ivrSession));
         assertEquals(3, message.length);
@@ -96,7 +96,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
         dosages.add(currentDosage);
 
         Mockito.when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(1);
+        Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(1);
 
         IVRRequest ivrRequest = mock(IVRRequest.class);
         when(ivrRequest.hasNoTamaData()).thenReturn(true);
@@ -126,7 +126,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
     @Test
     public void shouldCalculateAdherencePercentage() {
-        Mockito.when(dosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(45);
+        Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(45);
 
         int adherencePercentage = command.getAdherencePercentage(REGIMEN_ID, 56);
         assertEquals(80, adherencePercentage);
@@ -140,6 +140,6 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
         command.getAdherencePercentage(REGIMEN_ID, 28);
 
-        verify(dosageAdherenceLogs).findScheduledDosagesSuccessCount(any(String.class), eq(new LocalDate(2011, 7, 22)), eq(toDate));
+        verify(allDosageAdherenceLogs).findScheduledDosagesSuccessCount(any(String.class), eq(new LocalDate(2011, 7, 22)), eq(toDate));
     }
 }

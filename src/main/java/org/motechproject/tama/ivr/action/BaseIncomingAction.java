@@ -7,7 +7,7 @@ import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
-import org.motechproject.tama.repository.IVRCallAudits;
+import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class BaseIncomingAction {
     @Autowired
     protected IVRMessage messages;
-    protected IVRCallAudits audits;
+    protected AllIVRCallAudits audits;
 
     public static final String POUND_SYMBOL = "%23";
 
