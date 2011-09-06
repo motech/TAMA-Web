@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.test.pillreminder;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.ivr.Caller;
@@ -33,6 +34,7 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
     }
 
     @Test
+    @Ignore
     public void dosageTakenFlow() throws IOException {
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();

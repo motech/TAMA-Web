@@ -37,6 +37,7 @@ public class CreateLabResultsPage extends Page {
     }
 
     public ShowLabResultsPage registerNewLabResult(TestLabResult labResult) {
+        waitForDojoElementToLoad(TEST_DATE_ELEMENT,"dijitInputInner");
         enterTestData(labResult);
         results(labResult.results());
         return submit();
@@ -52,10 +53,11 @@ public class CreateLabResultsPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForDojoElementToLoad(TEST_DATE_ELEMENT,"dijitInputInner");
+        waitForElementWithIdToLoad(TEST_DATE_ELEMENT);
     }
 
     private void enterTestData(TestLabResult labResult) {
+
         testDateForCD4.sendKeys(labResult.testDates().get(0));
         testDateForPVL.sendKeys(labResult.testDates().get(1));
     }
