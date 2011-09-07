@@ -55,6 +55,7 @@ public class AudioSeed extends Seed {
                         ResourceQuery resourceQuery = new ResourceQuery(fileUtil.sanitizeFilename(wav.getName()), new File(language_dir).getName());
                         FileInputStream inputStream = new FileInputStream(wav);
                         cmsLiteService.addContent(resourceQuery, inputStream);
+                        logger.info("loaded " + wavFilePath);
                     } catch (Exception e) {
                         logger.error("Could not load wav file : " + wavFilePath, e);
                     }
