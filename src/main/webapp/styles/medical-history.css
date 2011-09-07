@@ -8,7 +8,7 @@
 }
 
 .medical_history .questions .question {
-    height: 25px;
+    height: 26px;
 }
 
 .medical_history .questions .question input {
@@ -30,5 +30,10 @@ span.comments input {
 
 span.ailements_label {
    font-weight: bold;
+}
+
+span.comments label{
+    margin-right: 1em;
+    text-align: right;
 }
 

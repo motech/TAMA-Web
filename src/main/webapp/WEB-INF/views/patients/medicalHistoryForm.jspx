@@ -51,13 +51,14 @@
                             <input type="hidden" name="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].requiresComment" value="${question.requiresComment}" />
                         </span>
                             <c:if test="${question.requiresComment}" >
-                                <span class="comments"><field:input id="c_org_motechproject_tama_domain_Patient_question[${questionStatus.index}]" field="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].comments" label="   " /></span>
+                                <span class="comments"><field:input id="c_org_motechproject_tama_domain_Patient_question[${questionStatus.index}]" field="medicalHistory.nonHivMedicalHistory.questions[${questionStatus.index}].comments" label="No. of weeks" /></span>
                             </c:if>
                         </div>
                     </c:forEach>
                 </div>
             </div>
 
+            <br />
             <br />
             <div class="drug_history drug_history_allergy">
                 <span class="ailements_label">
@@ -69,8 +70,9 @@
                         <thead>
                             <th><spring:message code="table_header_medical_history_system"/></th>
                             <th><spring:message code="table_header_medical_history_option_none"/></th>
-                            <th><spring:message code="table_header_medical_history_option_not_active"/><br/><spring:message code="table_header_medical_history_yes_specify"/></th>
-                            <th><spring:message code="table_header_medical_history_option_active"/><br/><spring:message code="table_header_medical_history_yes_specify"/></th>
+                            <th><spring:message code="table_header_medical_history_option_not_active"/><br/><spring:message code="table_header_medical_history_yes"/></th>
+                            <th><spring:message code="table_header_medical_history_option_active"/><br/><spring:message code="table_header_medical_history_yes"/></th>
+                            <th><spring:message code="table_header_medical_history_specify"/></th>
                         </thead>
                         <tbody>
                             <c:forEach items="${systemCategories}" varStatus="item" var="category">
@@ -87,11 +89,12 @@
                                             <c:forEach items="${options}" varStatus="optionStatus" var="option">
                                                 <td>
                                                    <springform:radiobutton id="c_org_motechproject_tama_domain_Patient_otherAilment${item.index}_state" name="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].state" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].state" value="${option}" class="has_description ${option}"/>
-                                                    <c:if test="${option.withDescription}">
-                                                       <springform:input type="text" id="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" name="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" class="${optionStatus.index}, description_other_${option}" disabled="${otherAilment.state != option}"/>
-                                                   </c:if>
                                                 </td>
+                                                
                                             </c:forEach>
+                                            <td>
+                                                 <springform:input type="text" id="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" name="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" class="${optionStatus.index}, description_other_${option}" disabled="${otherAilment.state != option}"/>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </c:if>
@@ -104,6 +107,7 @@
                                             <c:forEach items="${options}" varStatus="otherAilment" var="option">
                                                 <td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_ailment${item.index}_state" name="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.ailments[${ailmentItem.index}].state" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.ailments[${ailmentItem.index}].state" value="${option}"/></td>
                                             </c:forEach>
+                                            <td></td>
                                         </tr>
                                     </c:forEach>
                                     <c:forEach items="${category.ailments.otherAilments}" varStatus="ailmentItem" var="ailment">
@@ -113,11 +117,11 @@
                                             <c:forEach items="${options}" varStatus="otherAilment" var="option">
                                                <td>
                                                    <springform:radiobutton id="c_org_motechproject_tama_domain_Patient_ailment${item.index}_state" name="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].state" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].state" value="${option}" class="has_description ${option}"/>
-                                                   <c:if test="${option.withDescription}">
-                                                       <springform:input type="text" id="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" name="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" class="description_other_${option}" disabled="${ailment.state != option}"/>
-                                                   </c:if>
                                                </td>
                                             </c:forEach>
+                                            <td>
+                                            	<springform:input type="text" id="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" path="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" name="medicalHistory.nonHivMedicalHistory.systemCategories[${item.index}].ailments.otherAilments[${ailmentItem.index}].description" class="description_other_${option}" disabled="${ailment.state != option}"/>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </c:if>

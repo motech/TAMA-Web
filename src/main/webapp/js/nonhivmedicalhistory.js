@@ -28,41 +28,33 @@ dojo.addOnLoad(function() {
        dojo.forEach(dojo.query("#" + element.id).parent().next(), function(widgetElement, index) {
           descriptionWidget = dijit.byId("_medicalHistory.nonHivMedicalHistory.questions["+ index +"].comments_id");
           if(!element.checked) {
-            descriptionWidget.domNode.setAttribute('style', 'display:none');
+            descriptionWidget.domNode.parentNode.setAttribute('style', 'display:none');
           }
            dojo.connect(element, "onclick", function (evt) {
             if (element.checked) {
                 setRequiredForElement(descriptionWidget, true);
-                descriptionWidget.domNode.setAttribute('style', 'display:inline-block');
+                descriptionWidget.domNode.parentNode.setAttribute('style', 'display:inline-block');
             }
             else {
                 clearElement(descriptionWidget);
                 setRequiredForElement(descriptionWidget, false);
-                descriptionWidget.domNode.setAttribute('style', 'display:none');
+                descriptionWidget.domNode.parentNode.setAttribute('style', 'display:none');
             }
            });
        });
     });
-
-   var neighbour = function(descripton_element) {
-     if (dojo.hasClass(descripton_element, 'YES'))
-        return dojo.query(descripton_element).parent().prev().query("input[type='text']");
-     else if (dojo.hasClass(descripton_element, 'YES_WITH_HISTORY'))
-        return dojo.query(descripton_element).parent().next().query("input[type='text']");
-     else
-        return dojo.query(descripton_element).parent().parent().query("input[type='text']");
-   };
-
-
-
+  
    dojo.forEach(dojo.query(".has_description"), function(element, index) {
       dojo.connect(element, "onclick", function(event) {
-        dojo.forEach(dojo.query(element).parent().query("input[type='text']"), function(elem, index) {
-           elem.disabled = false;
-        });
-        dojo.forEach(neighbour(element), function(elem, index) {
-           elem.disabled = true;
-        });
+        var noneOption = dojo.hasClass(element, "NONE");
+      	var otherTextBox = dojo.query(element).parent().parent().query("input[type='text']")[0];
+      	otherTextBox.disabled = noneOption;
+      	if (noneOption) otherTextBox.value='';
       });
+   });
+   
+   dojo.forEach(dojo.query("input.has_description:not([value='NONE']):checked"), function(element, index) {
+   		element.disabled=false;
+   		dojo.query(element).parent().parent().query("input[type='text']")[0].disabled = false;
    });
 });
