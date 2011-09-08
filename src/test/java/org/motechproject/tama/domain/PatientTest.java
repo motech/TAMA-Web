@@ -10,6 +10,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.List;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
@@ -99,8 +100,11 @@ public class PatientTest {
     @Test
     public void shouldReturnUniqueId(){
         Clinic clinic = new Clinic("C1");
-        Patient patient = PatientBuilder.startRecording().withClinic(clinic).withPatientId("P1").build();
-        assertEquals("C1_P1",patient.uniqueId());
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("P1").withClinic(clinic).withMobileNumber("1234567890").withPasscode("1234").build();
+        List<String> uniqueFields = patient.uniqueFields();
+
+        assertEquals("ClinicAndPatientIdUniqueConstraint:clinic_id_C1_patient_id_P1", uniqueFields.get(0));
+        assertEquals("PhoneNumberAndPasscodeUniqueConstraint:ph_no_1234567890_pass_code_1234", uniqueFields.get(1));
     }
 
     private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {

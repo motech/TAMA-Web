@@ -1,8 +1,8 @@
 package org.motechproject.tama.web;
 
-import org.ektorp.UpdateConflictException;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.AilmentState;
 import org.motechproject.tama.domain.MedicalHistoryQuestions;
 import org.motechproject.tama.domain.Patient;
@@ -49,7 +49,8 @@ public class PatientController extends BaseController {
     public static final String SIZE = "size";
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
-    public static final String PATIENT_ID_ALREADY_IN_USE = "sorry, patient-id already in use";
+    public static final String CLINIC_AND_PATIENT_ID_ALREADY_IN_USE = "Sorry, the entered patient-id already in use.";
+    private static final String PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE = "Sorry, the entered combination of phone number and TAMA-PIN is already in use.";
 
     private AllPatients allPatients;
     private AllClinics allClinics;
@@ -123,9 +124,16 @@ public class PatientController extends BaseController {
         try {
             allPatients.addToClinic(patient, loggedInClinic(request));
             uiModel.asMap().clear();
-        } catch (UpdateConflictException e) {
-            bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
-                    new String[]{"patient_id_not_unique"}, new Object[]{}, PATIENT_ID_ALREADY_IN_USE));
+        } catch (TamaException e) {
+            String message = e.getMessage();
+            if(message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)){
+                bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
+                        new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
+            }
+            else if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)){
+                bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
+                        new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
+            }
             initUIModel(uiModel, patient);
             return CREATE_VIEW;
         }

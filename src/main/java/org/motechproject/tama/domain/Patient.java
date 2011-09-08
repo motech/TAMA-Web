@@ -15,10 +15,15 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'Patient'")
 public class Patient extends CouchEntity {
+    public static final String CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT = "ClinicAndPatientIdUniqueConstraint";
+    public static final String PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT = "PhoneNumberAndPasscodeUniqueConstraint";
+
     protected String patientId;
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
@@ -221,8 +226,16 @@ public class Patient extends CouchEntity {
         this.clinic_id = clinic_id;
     }
 
-    public String uniqueId() {
-        return this.getClinic_id() + '_' + this.getPatientId();
+    public List<String> uniqueFields() {
+        return Arrays.asList(clinicAndPatientId(), phoneNumberAndPasscode());
+    }
+
+    public String clinicAndPatientId() {
+        return CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + ":clinic_id_" + this.getClinic_id() + "_patient_id_" + this.getPatientId();
+    }
+
+    public String phoneNumberAndPasscode() {
+        return PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + ":ph_no_" + this.getMobilePhoneNumber() + "_pass_code_" + this.getPatientPreferences().getPasscode();
     }
 
     @JsonIgnore

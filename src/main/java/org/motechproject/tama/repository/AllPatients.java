@@ -20,19 +20,19 @@ import java.util.List;
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
 public class AllPatients extends CouchDbRepositorySupport<Patient> {
     private AllClinics allClinics;
-    private AllGenders AllGenders;
-    private AllIVRLanguages AllIVRLanguages;
-    private AllPatientIds AllPatientIds;
+    private AllGenders allGenders;
+    private AllIVRLanguages allIVRLanguages;
+    private AllUniquePatientFields allUniquePatientFields;
     private AllHIVTestReasons allHIVTestReasons;
     private AllModesOfTransmission allModesOfTransmission;
 
     @Autowired
-    public AllPatients(@Qualifier("tamaDbConnector") CouchDbConnector db, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllPatientIds allPatientIds, AllHIVTestReasons allHIVTestReasons, AllModesOfTransmission allModesOfTransmission) {
+    public AllPatients(@Qualifier("tamaDbConnector") CouchDbConnector db, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllUniquePatientFields allUniquePatientFields, AllHIVTestReasons allHIVTestReasons, AllModesOfTransmission allModesOfTransmission) {
         super(Patient.class, db);
         this.allClinics = allClinics;
-        this.AllGenders = allGenders;
-        this.AllIVRLanguages = allIVRLanguages;
-        this.AllPatientIds = allPatientIds;
+        this.allGenders = allGenders;
+        this.allIVRLanguages = allIVRLanguages;
+        this.allUniquePatientFields = allUniquePatientFields;
         this.allHIVTestReasons = allHIVTestReasons;
         this.allModesOfTransmission = allModesOfTransmission;
         initStandardDesignDocument();
@@ -100,7 +100,7 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
 
     public void addToClinic(Patient patient, String clinicId) {
         patient.setClinic_id(clinicId);
-        AllPatientIds.add(patient);
+        allUniquePatientFields.add(patient);
         add(patient);
     }
 
@@ -121,7 +121,7 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
 
     public void remove(String id) {
         remove(get(id));
-        AllPatientIds.remove(this.get(id));
+        allUniquePatientFields.remove(this.get(id));
     }
 
     @Override
@@ -134,9 +134,9 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
     private void loadPatientDependencies(Patient patient) {
         if (patient == null) return;
         if (!StringUtils.isBlank(patient.getGenderId()))
-            patient.setGender(AllGenders.get(patient.getGenderId()));
+            patient.setGender(allGenders.get(patient.getGenderId()));
         if (!StringUtils.isBlank(patient.getIvrLanguageId()))
-            patient.setIvrLanguage(AllIVRLanguages.get(patient.getIvrLanguageId()));
+            patient.setIvrLanguage(allIVRLanguages.get(patient.getIvrLanguageId()));
         if (!StringUtils.isBlank(patient.getClinic_id()))
             patient.setClinic(allClinics.get(patient.getClinic_id()));
         MedicalHistory medicalHistory = patient.getMedicalHistory();

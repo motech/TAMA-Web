@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.*;
@@ -171,12 +172,12 @@ public class PatientControllerTest {
         when(uiModel.asMap()).thenReturn(modelMap);
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
-        when(user.getClinicId()).thenThrow(new UpdateConflictException());
+        when(user.getClinicId()).thenThrow(new TamaException("ClinicAndPatientIdUniqueConstraint:" + "some STUFF", new UpdateConflictException()));
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
         verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
-                    new String[]{"patient_id_not_unique"}, new Object[]{}, PatientController.PATIENT_ID_ALREADY_IN_USE));
+                    new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
         assertEquals("patients/create", createPage);
     }
 

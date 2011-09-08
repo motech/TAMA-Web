@@ -1,10 +1,10 @@
 package org.motechproject.tama.integration.repository;
 
-import org.ektorp.UpdateConflictException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.TamaException;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.MedicalHistoryBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
@@ -73,7 +73,7 @@ public class PatientsTest extends SpringIntegrationTest {
     }
 
     @Test
-    @ExpectedException(UpdateConflictException.class)
+    @ExpectedException(TamaException.class)
     public void shouldNotAddPatientWithNonUniqueCombinationOfPatientIdAndClinicId() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         allClinics.add(clinic);

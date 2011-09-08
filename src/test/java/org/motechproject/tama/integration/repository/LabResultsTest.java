@@ -107,7 +107,7 @@ public class LabResultsTest extends SpringIntegrationTest {
         assertNotNull(labResultsForPatient.get(0).getRevision());
 
 
-        markForDeletion(labResultAlreadyPresentInDB);
+        markForDeletion(allLabResults.get(labResultAlreadyPresentInDB.getId()));
         markForDeletion(labTest);
     }
 
