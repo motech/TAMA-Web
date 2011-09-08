@@ -212,7 +212,7 @@ public class PillRegimenSnapshot {
         if (dosage == null) return new ArrayList<String>();
         List<String> medicines = new ArrayList<String>();
         for (MedicineResponse medicine : dosage.getMedicines())
-            medicines.add(medicine.getName());
+            medicines.add(String.format("pill%s", medicine.getName()));
         return medicines;
     }
 

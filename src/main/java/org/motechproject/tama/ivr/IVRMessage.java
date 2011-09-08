@@ -14,7 +14,7 @@ public class IVRMessage {
     public static final String WAV = ".wav";
 
     Logger logger = Logger.getLogger(this.getClass());
-    public static final String MINUTES = "timeOfDay_Minutes";
+    public static final String MINUTES = "timeOfDayMinutes";
     public static final String SIGNATURE_MUSIC_URL = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
@@ -26,21 +26,21 @@ public class IVRMessage {
     public static final String DOSE_TAKEN = "001_08_03_doseTaken";
     public static final String PLEASE_CARRY_SMALL_BOX = "004_05_01_doctorNoPillsAdvice";
     public static final String YOUR_NEXT_DOSE_IS = "010_04_01_nextDoseIs1";
-    public static final String AT = "timeOfDay_At";
+    public static final String AT = "timeOfDayAt";
     public static final String DOSE_CANNOT_BE_TAKEN_MENU = "004_04_04_MissedPillMenu";
     public static final String LAST_REMINDER_WARNING = "005_04_01_CannotDelayPillsNow";
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "001_07_01_your";
     public static final String YESTERDAYS = "001_08_02_yesterdays";
-    public static final String MORNING = "001_08_02_morning";
-    public static final String AFTERNOON = "001_08_02_afternoon";
-    public static final String EVENING = "001_08_02_evening";
+    public static final String MORNING = "001_08_02_doseTimeOfMorning";
+    public static final String AFTERNOON = "001_08_02_doseTimeOfAfternoon";
+    public static final String EVENING = "001_08_02_doseTimeOfEvening";
     public static final String DOSE_NOT_RECORDED = "001_07_03_doseNotRecorded";
-    public static final String YESTERDAY = "001_007_04_yesterday";
-    public static final String IN_THE_MORNING = "001_007_04_morning";
-    public static final String IN_THE_AFTERNOON = "001_007_04_afternoon";
-    public static final String IN_THE_EVENING = "001_007_04_evening";
-    public static final String LAST_NIGHT = "001_009_02_lastnight";
+    public static final String YESTERDAY = "001_07_04_doseTimeAtYesterday";
+    public static final String IN_THE_MORNING = "001_07_04_doseTimeAtMorning";
+    public static final String IN_THE_AFTERNOON = "001_07_04_doseTimeAtAfternoon";
+    public static final String IN_THE_EVENING = "001_07_04_doseTimeAtEvening";
+    public static final String LAST_NIGHT = "001_09_02_doseTimeOfLastnight";
     public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
     public static final String FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
     public static final String PREVIOUS_DOSE_MENU = "001_07_08_lastDoseMenu";
@@ -54,7 +54,7 @@ public class IVRMessage {
     public static final String NOT_REPORTED_IF_TAKEN = "010_02_04_notReportedIfTaken";
     /* -------- PreviousDosage ----------- */
     public static final String TODAY = "timeOfDayToday";
-    public static final String TOMORROW = "timeOfDay_Tomorrow";
+    public static final String TOMORROW = "timeOfDayTomorrow";
     /* -------- Adherence Feedback ----------- */
     public static final String YOUR_ADHERENCE_IS_NOW = "001_06_01_YourAdherenceNow"; // 001_06_01_YourAdherenceNow.wav
     public static final String PERCENT = "001_06_03_HasBecomePercent"; // 001_06_03_HasBecomePercent.wav

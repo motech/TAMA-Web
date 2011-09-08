@@ -63,8 +63,8 @@ public class PillRegimenSnapshotTest {
 
         List<String> medicines = pillRegimenSnapshot.medicinesForCurrentDosage();
         assertEquals(2, medicines.size());
-        assertEquals("medicine1", medicines.get(0));
-        assertEquals("medicine2", medicines.get(1));
+        assertEquals("pillmedicine1", medicines.get(0));
+        assertEquals("pillmedicine2", medicines.get(1));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class PillRegimenSnapshotTest {
 
         List<String> medicines = pillRegimenSnapshot.medicinesForPreviousDosage();
         assertEquals(1, medicines.size());
-        assertEquals("medicine3", medicines.get(0));
+        assertEquals("pillmedicine3", medicines.get(0));
     }
 
     @Test
