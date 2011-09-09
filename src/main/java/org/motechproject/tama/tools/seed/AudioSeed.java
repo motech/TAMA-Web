@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Component
 public class AudioSeed extends Seed {
@@ -24,6 +26,7 @@ public class AudioSeed extends Seed {
     CMSLiteService cmsLiteService;
     private String wavFilesLocation;
     private FileUtil fileUtil;
+    private int poolSize =  10;
 
     @Autowired
     public AudioSeed(CMSLiteService cmsLiteService, @Qualifier("ivrProperties") Properties ivrProperties, FileUtil fileUtil) {
@@ -42,26 +45,37 @@ public class AudioSeed extends Seed {
             return;
         }
 
-        for (String language_dir : language_dirs) {
+        for (final String language_dir : language_dirs) {
             String language_dir_path = wavFilesLocation + "/" + language_dir;
             for (String sub_folder : new File(language_dir_path).list(DirectoryFileFilter.INSTANCE)) {
                 String subFolderPath = language_dir_path + "/" + sub_folder;
                 String[] wav_files = new File(subFolderPath + "/").list(new SuffixFileFilter(".wav"));
                 if (wav_files == null) return;
+                ExecutorService executor = Executors.newFixedThreadPool(poolSize);
                 for (String wav_file : wav_files) {
-                    String wavFilePath = subFolderPath + "/" + wav_file;
-                    try {
-                        File wav = new File(wavFilePath);
-                        ResourceQuery resourceQuery = new ResourceQuery(fileUtil.sanitizeFilename(wav.getName()), new File(language_dir).getName());
-                        FileInputStream inputStream = new FileInputStream(wav);
-                        cmsLiteService.addContent(resourceQuery, inputStream);
-                        logger.info("loaded " + wavFilePath);
-                    } catch (Exception e) {
-                        logger.error("Could not load wav file : " + wavFilePath, e);
-                    }
+                    final String wavFilePath = subFolderPath + "/" + wav_file;
+                    Runnable worker = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                File wav = new File(wavFilePath);
+                                ResourceQuery resourceQuery = new ResourceQuery(fileUtil.sanitizeFilename(wav.getName()), new File(language_dir).getName());
+                                FileInputStream inputStream = new FileInputStream(wav);
+                                cmsLiteService.addContent(resourceQuery, inputStream);
+                                logger.info("loaded " + wavFilePath);
+                            } catch (Exception e) {
+                                logger.error("Could not load wav file : " + wavFilePath, e);
+                            }
+                        }
+                    };
+                    executor.execute(worker);
                 }
+                executor.shutdown();
+                while (!executor.isTerminated()) {
 
+                }
             }
+
         }
     }
 }

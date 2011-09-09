@@ -30,6 +30,7 @@ public class NextCallDetails extends BaseTreeCommand {
         messageForNextDosage.add(IVRMessage.YOUR_NEXT_DOSE_IS);
         messageForNextDosage.add(IVRMessage.AT);
         messageForNextDosage.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime));
+        messageForNextDosage.add(IVRMessage.YOUR_NEXT_DOSE_IS_PADDING);
 
         return  messageForNextDosage.toArray(new String[messageForNextDosage.size()]);
     }

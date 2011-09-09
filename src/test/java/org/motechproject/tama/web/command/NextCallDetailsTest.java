@@ -54,12 +54,13 @@ public class NextCallDetailsTest {
         when(request.hasNoTamaData()).thenReturn(true);
 
         String[] messages = nextCallDetails.execute(context);
-        assertEquals(6, messages.length);
+        assertEquals(7, messages.length);
         assertEquals("010_04_01_nextDoseIs1", messages[0]);
-        assertEquals("timeOfDay_At", messages[1]);
+        assertEquals("timeOfDayAt", messages[1]);
         assertEquals("Num_010", messages[2]);
         assertEquals("Num_005", messages[3]);
-        assertEquals("001_007_04_evening", messages[4]);
+        assertEquals("001_07_04_doseTimeAtEvening", messages[4]);
         assertEquals("timeOfDayToday", messages[5]);
+        assertEquals("010_04_01_nextDoseIs2", messages[6]);
     }
 }

@@ -21,14 +21,16 @@ public class IVRMessage {
     public static final String PILL_CONFIRM_CALL_MENU = "010_02_04MainMenu1";
     public static final String ITS_TIME_FOR_THE_PILL = "001_02_02_itsTimeForPill1";
     public static final String PILL_FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
-    public static final String PLEASE_TAKE_DOSE = "001_02_05_pillTimeMenu";
+    public static final String PLEASE_TAKE_DOSE = "003_03_01_TAMAPillDelayWarning1";
     public static final String DOSE_RECORDED = "001_05_01_doseRecorded";
     public static final String DOSE_TAKEN = "001_08_03_doseTaken";
     public static final String PLEASE_CARRY_SMALL_BOX = "004_05_01_doctorNoPillsAdvice";
     public static final String YOUR_NEXT_DOSE_IS = "010_04_01_nextDoseIs1";
+    public static final String YOUR_NEXT_DOSE_IS_PADDING = "010_04_01_nextDoseIs2";
     public static final String AT = "timeOfDayAt";
     public static final String DOSE_CANNOT_BE_TAKEN_MENU = "004_04_04_MissedPillMenu";
     public static final String LAST_REMINDER_WARNING = "005_04_01_CannotDelayPillsNow";
+    public static final String LAST_REMINDER_WARNING_PADDING = "005_04_03_WillCallAgain";
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "001_07_01_your";
     public static final String YESTERDAYS = "001_08_02_yesterdays";
@@ -65,6 +67,10 @@ public class IVRMessage {
     public static final String MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90 = "F04_01_doctorMissedPillFeedback"; // F04_01_doctorMissedPillFeedback.wav
     public static final String MISSED_PILL_FEEDBACK_LESS_THAN_70 = "F05_01_doctorMissedPillFeedback"; // F05_01_doctorMissedPillFeedback.wav
 
+//    010_04_01_nextDoseIs1.wav
+//    010_04_06_nextDoseIs2.wav
+//    005_04_01_CannotDelayPillsNow.wav
+
     /* -------- Adherence Feedback ----------- */
     private Properties properties;
     private FileUtil fileUtil;
@@ -86,7 +92,6 @@ public class IVRMessage {
     }
     public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : fileUtil.sanitizeFilename(key);
-        logger.error("CONTENT_LOCATION_URL "+properties.get(CONTENT_LOCATION_URL));
         return properties.get(CONTENT_LOCATION_URL) + preferredLangCode + "/" + file + WAV;
     }
 

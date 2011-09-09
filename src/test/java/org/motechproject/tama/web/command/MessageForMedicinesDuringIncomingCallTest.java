@@ -97,8 +97,8 @@ public class MessageForMedicinesDuringIncomingCallTest {
         assertEquals(5, messages.length);
         assertEquals("welcome_to_clinicName", messages[0]);
         assertEquals("001_02_02_itsTimeForPill1", messages[1]);
-        assertEquals("medicine1", messages[2]);
-        assertEquals("medicine2", messages[3]);
+        assertEquals("pillmedicine1", messages[2]);
+        assertEquals("pillmedicine2", messages[3]);
         assertEquals("001_07_07_fromTheBottle1", messages[4]);
     }
 
@@ -127,7 +127,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         assertEquals(4, messages.length);
         assertEquals("welcome_to_clinicName", messages[0]);
         assertEquals("010_02_04_notReportedIfTaken", messages[1]);
-        assertEquals("medicine3", messages[2]);
+        assertEquals("pillmedicine3", messages[2]);
         assertEquals("001_07_07_fromTheBottle1", messages[3]);
     }
 }

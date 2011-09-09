@@ -21,6 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -40,11 +41,15 @@ public class PillsDelayWarningTest {
     private IVRSession ivrSession;
 
     private PillsDelayWarning pillsDelayWarning;
+    private String retryInterval;
 
     @Before
     public void setup() {
         initMocks(this);
-        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil())));
+        Properties stubProperties = new Properties();
+        retryInterval = "15";
+        stubProperties.put(TAMAConstants.RETRY_INTERVAL, retryInterval);
+        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil())), new IVRMessage(null, new FileUtil()),stubProperties);
         when(context.ivrRequest()).thenReturn(request);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
@@ -61,7 +66,7 @@ public class PillsDelayWarningTest {
         when(request.getTamaParams()).thenReturn(params);
         assertArrayEquals(new String[]{
                 IVRMessage.PLEASE_TAKE_DOSE,
-                TAMAConstants.RETRY_INTERVAL,
+                String.format("Num_%03d",Integer.valueOf(retryInterval)),
                 IVRMessage.MINUTES},
                 pillsDelayWarning.execute(context));
     }
@@ -76,12 +81,13 @@ public class PillsDelayWarningTest {
 
 
         String[] messages = pillsDelayWarning.execute(context);
-        assertEquals(5, messages.length);
+        assertEquals(6, messages.length);
         assertEquals(IVRMessage.LAST_REMINDER_WARNING, messages[0]);
         assertEquals("Num_010", messages[1]);
         assertEquals("Num_005", messages[2]);
-        assertEquals("001_007_04_evening", messages[3]);
+        assertEquals("001_07_04_doseTimeAtEvening", messages[3]);
         assertEquals("timeOfDayToday", messages[4]);
+        assertEquals("005_04_03_WillCallAgain", messages[5]);
     }
 }
 

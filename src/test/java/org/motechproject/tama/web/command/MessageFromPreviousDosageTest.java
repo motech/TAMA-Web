@@ -76,7 +76,7 @@ public class MessageFromPreviousDosageTest {
         List<String> messages = Arrays.asList(messageFromPreviousDosage.execute(context));
         assertTrue(messages.contains(IVRMessage.MORNING));
         assertTrue(messages.contains(IVRMessage.IN_THE_MORNING));
-        assertTrue(messages.contains("medicine1"));
+        assertTrue(messages.contains("pillmedicine1"));
     }
 
     @Test
