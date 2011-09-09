@@ -84,7 +84,7 @@ public class AuthenticateAction extends BaseAction {
     }
 
     private boolean hasNoTreatmentAdvice(Patient patient) {
-        return allTreatmentAdvices.findByPatientId(patient.getId()) != null;
+        return allTreatmentAdvices.findByPatientId(patient.getId()) == null;
     }
 
     private boolean isSymptomReportingCall(HttpServletRequest request) {
