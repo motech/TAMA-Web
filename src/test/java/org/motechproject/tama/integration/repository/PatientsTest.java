@@ -171,7 +171,8 @@ public class PatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldUpdatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("1234").withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("1234").withClinic(clinic).withGender(gender).withIVRLanguage(ivrLanguage).build();
         allPatients.add(patient);
 
         String mobilePhoneNumber = "9986573310";

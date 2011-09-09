@@ -11,6 +11,7 @@ import org.ektorp.support.View;
 import org.motechproject.tama.domain.HIVMedicalHistory;
 import org.motechproject.tama.domain.MedicalHistory;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -117,6 +118,7 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
 
     @Override
     public void add(Patient entity) {
+        entity.setId(UUIDUtil.newUUID());
         allUniquePatientFields.add(entity);
         super.add(entity);
     }
@@ -134,6 +136,13 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
         patient.setRevision(dbPatient.getRevision());
         if (dbPatient.isActive()) patient.activate();
         update(patient);
+    }
+
+    @Override
+    public void update(Patient entity) {
+        allUniquePatientFields.remove(entity);
+        allUniquePatientFields.add(entity);
+        super.update(entity);
     }
 
     public void remove(String id) {

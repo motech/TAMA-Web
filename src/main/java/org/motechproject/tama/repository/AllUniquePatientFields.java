@@ -2,6 +2,7 @@ package org.motechproject.tama.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.UpdateConflictException;
+import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.Patient;
@@ -27,7 +28,7 @@ public class AllUniquePatientFields extends AbstractCouchRepository<UniquePatien
         List<String> addedFields = new ArrayList<String>();
         for (String field : patient.uniqueFields()) {
             try {
-                this.add(new UniquePatientField(field));
+                this.add(new UniquePatientField(field, patient.getId()));
                 addedFields.add(field);
             } catch (UpdateConflictException e) {
                 for (String addedField : addedFields) {
@@ -39,15 +40,22 @@ public class AllUniquePatientFields extends AbstractCouchRepository<UniquePatien
     }
 
     public void remove(Patient patient) {
-        for (String field : patient.uniqueFields()) {
-            this.remove(this.get(field));
+        for (UniquePatientField field : get(patient)) {
+            this.remove(field);
         }
     }
 
     public List<UniquePatientField> get(Patient patient) {
         List<UniquePatientField> uniqueFields = new ArrayList<UniquePatientField>();
-        for (String field : patient.uniqueFields())
-            uniqueFields.add(this.get(field));
+        for (UniquePatientField field : findByPatientDocId(patient.getId()))
+            uniqueFields.add(field);
         return uniqueFields;
     }
+
+    @View(name = "find_by_primary_doc_id", map = "function(doc) {if (doc.documentType =='UniquePatientField' && doc.primaryDocId) {emit(doc.primaryDocId, doc._id);}}")
+    public List<UniquePatientField> findByPatientDocId(String patientDocId) {
+        ViewQuery q = createQuery("find_by_primary_doc_id").key(patientDocId).includeDocs(true);
+        return db.queryView(q, UniquePatientField.class);
+    }
+
 }
