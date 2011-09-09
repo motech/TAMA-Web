@@ -57,7 +57,9 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(patient.getIvrLanguage()).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
         when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(new TreatmentAdvice());
         when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
-        when(request.getParameter("symptoms_reporting")).thenReturn("true");        	
+        when(request.getParameter("symptoms_reporting")).thenReturn("true");
+        when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(IVRCallAttribute.CALLER_ID)).thenReturn(MOBILE_NO);
         authenticateAction = new AuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null);
     }
 
@@ -65,7 +67,6 @@ public class AuthenticateActionTest extends BaseActionTest {
     public void shouldGoToRetryActionIfPatientPassCodeIsNotValid() {
         IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
 
-        when(request.getSession(false)).thenReturn(session);
         when(retryAction.handle(ivrRequest, request, response)).thenReturn("OK");
         when(patient.authenticatedWith(PASSCODE)).thenReturn(false);
         when(patient.isActive()).thenReturn(true);
@@ -83,7 +84,6 @@ public class AuthenticateActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
         DateTime now = new DateTime(2010, 10, 10, 16, 00, 00);
 
-        when(request.getSession(false)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
         when(patient.authenticatedWith(PASSCODE)).thenReturn(true);
         when(patient.isActive()).thenReturn(true);

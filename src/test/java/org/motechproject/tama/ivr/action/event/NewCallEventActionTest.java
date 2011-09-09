@@ -7,10 +7,8 @@ import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
-import org.motechproject.tama.ivr.action.BaseAction;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
 import org.motechproject.tama.repository.AllPatients;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -62,7 +60,6 @@ public class NewCallEventActionTest extends BaseActionTest {
     public void shouldSendThePinRequestXMLResponseForAnAuthorizedPatient() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
@@ -78,8 +75,6 @@ public class NewCallEventActionTest extends BaseActionTest {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
         when(request.getSession(false)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
-        when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn("2323");
         when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
         when(patient.isActive()).thenReturn(true);
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
@@ -87,6 +82,8 @@ public class NewCallEventActionTest extends BaseActionTest {
         when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL, "en")).thenReturn("http://server/tama.wav");
 
         String responseXML = action.handleInternal(ivrRequest, request, response);
+        verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.COLLECT_PIN);
+        verify(session).setAttribute(IVRCallAttribute.CALLER_ID, PHONE_NUMBER);
         verify(eventService).publishEvent(any(org.motechproject.eventtracking.domain.Event.class));
     }
 }

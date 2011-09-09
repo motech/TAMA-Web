@@ -1,8 +1,5 @@
 package org.motechproject.tama.ivr.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -19,6 +16,9 @@ import org.motechproject.util.DateUtil;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class AuthenticateAction extends BaseAction {
@@ -52,12 +52,13 @@ public class AuthenticateAction extends BaseAction {
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IvrAction tamaIvrAction) {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = ivrRequest.getInput();
-        Patient patient = allPatients.findByMobileNumber(ivrRequest.getCid());
+        String phoneNumber = (String) ivrSession.get(IVRCallAttribute.CALLER_ID);
+        Patient patient = allPatients.findByMobileNumber(phoneNumber);
 
         if(patient == null)
             return userNotFoundAction.handle(ivrRequest, request, response);
 
-        patient = allPatients.findByMobileNumberAndPasscode(ivrRequest.getCid(), passcode);
+        patient = allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode);
 
         if (!isAuthenticatedUser(passcode, patient)) {
             return retryAction.handle(ivrRequest, request, response);

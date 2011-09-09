@@ -28,6 +28,7 @@ public class NewCallEventAction extends BaseEventAction {
             return userNotFoundAction.handle(ivrRequest, request, response);
         }
         IVRSession ivrSession = createIVRSession(request);
+        ivrSession.set(IVRCallAttribute.CALLER_ID, ivrRequest.getCid());
         ivrSession.setState(IVRCallState.COLLECT_PIN);
         return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
