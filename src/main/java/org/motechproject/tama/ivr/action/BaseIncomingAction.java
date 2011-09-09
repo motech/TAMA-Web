@@ -25,8 +25,8 @@ public abstract class BaseIncomingAction {
         return ivrResponse.getXML();
     }
 
-    protected String dtmfResponseWithWav(IVRRequest ivrRequest,IVRSession ivrSession, String key) {
-        Response ivrResponse = new IVRResponseBuilder(ivrRequest.getSid(), ivrSession.getPrefferedLanguageCode()).collectDtmf().withPlayAudios(key).create(messages);
+    protected String dtmfResponseWithWav(IVRRequest ivrRequest, String key) {
+        Response ivrResponse = new IVRResponseBuilder(ivrRequest.getSid()).collectDtmf().withPlayAudios(key).create(messages);
         return ivrResponse.getXML();
     }
 

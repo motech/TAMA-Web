@@ -26,23 +26,13 @@ public class NewCallEventActionTest extends BaseActionTest {
     @Before
     public void setUp() {
         super.setUp();
-        action = new NewCallEventAction(messages, allPatients, userNotFoundAction);
+        action = new NewCallEventAction(messages, userNotFoundAction, allPatients);
     }
 
     @Test
     public void shouldHangupIfUserIsNotRegistered() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
         when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(null);
-        when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("hangup response");
-        String responseXML = action.handle(ivrRequest, request, response);
-        assertEquals("hangup response", responseXML);
-    }
-
-    @Test
-    public void shouldHangupIfPatientIsNotActive() {
-        IVRRequest ivrRequest = new IVRRequest("unique-call-id", PHONE_NUMBER, IVREvent.NEW_CALL.key(), "Data");
-        when(allPatients.findByMobileNumber(PHONE_NUMBER)).thenReturn(patient);
-        when(patient.isActive()).thenReturn(false);
         when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("hangup response");
         String responseXML = action.handle(ivrRequest, request, response);
         assertEquals("hangup response", responseXML);
@@ -61,8 +51,6 @@ public class NewCallEventActionTest extends BaseActionTest {
         action.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.COLLECT_PIN);
-        verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, "patientId");
-        verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
     }
 
     @Test

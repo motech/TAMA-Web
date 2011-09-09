@@ -1,7 +1,10 @@
+
 package org.motechproject.tama.ivr.action.event;
 
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.*;
+import org.motechproject.tama.ivr.IVRCallState;
+import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseIncomingAction;
 import org.motechproject.tama.ivr.action.UserNotFoundAction;
 import org.motechproject.tama.repository.AllPatients;
@@ -13,30 +16,28 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class NewCallEventAction extends BaseIncomingAction {
-    private AllPatients allPatients;
+
     private UserNotFoundAction userNotFoundAction;
+    private AllPatients allPatients;
 
     @Autowired
-    public NewCallEventAction(IVRMessage messages, AllPatients allPatients, UserNotFoundAction userNotFoundAction) {
-        this.messages = messages;
-        this.allPatients = allPatients;
+    public NewCallEventAction(IVRMessage messages, UserNotFoundAction userNotFoundAction, AllPatients allPatients) {
         this.userNotFoundAction = userNotFoundAction;
+        this.allPatients = allPatients;
+        this.messages = messages;
     }
-
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        IVRSession ivrSession = createIVRSession(request);
-        Patient patient = allPatients.findByMobileNumber(ivrRequest.getCid());
-        if (!isValidCaller(patient)) {
+        if (!isRegisteredNumber(ivrRequest.getCid())) {
             return userNotFoundAction.handle(ivrRequest, request, response);
         }
+
+        IVRSession ivrSession = createIVRSession(request);
         ivrSession.setState(IVRCallState.COLLECT_PIN);
-        ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patient.getId());
-        ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getIvrLanguage().getCode());
-        return dtmfResponseWithWav(ivrRequest, ivrSession, IVRMessage.SIGNATURE_MUSIC_URL);
+        return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 
-    private boolean isValidCaller(Patient patient) {
-        return (patient != null && patient.isActive());
+    private boolean isRegisteredNumber(String phoneNumber) {
+        return (phoneNumber != null && (allPatients.findByMobileNumber(phoneNumber) != null));
     }
 }

@@ -3,6 +3,7 @@ package org.motechproject.tama.repository;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
@@ -68,6 +69,17 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
         return patient;
     }
 
+    @View(name = "find_by_mobile_number_and_passcode", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber && doc.patientPreferences.passcode) {emit([doc.mobilePhoneNumber, doc.patientPreferences.passcode], doc._id);}}")
+    public Patient findByMobileNumberAndPasscode(String phoneNumber, String passcode) {
+        String mobileNumber = phoneNumber.length() > 10 ? phoneNumber.substring(1) : phoneNumber;
+        ComplexKey key = ComplexKey.of(mobileNumber, passcode);
+        ViewQuery q = createQuery("find_by_mobile_number_and_passcode").key(key).includeDocs(true);
+        List<Patient> patients = db.queryView(q, Patient.class);
+        Patient patient = singleResult(patients);
+        loadPatientDependencies(patient);
+        return patient;
+    }
+
     public List<Patient> findByPatientIdAndClinicId(final String patientId, final String clinicId) {
         List<Patient> patients = findByClinic(clinicId);
         if (patients == null) return patients;
@@ -100,8 +112,13 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
 
     public void addToClinic(Patient patient, String clinicId) {
         patient.setClinic_id(clinicId);
-        allUniquePatientFields.add(patient);
         add(patient);
+    }
+
+    @Override
+    public void add(Patient entity) {
+        allUniquePatientFields.add(entity);
+        super.add(entity);
     }
 
     public void activate(String id) {
@@ -121,7 +138,12 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
 
     public void remove(String id) {
         remove(get(id));
-        allUniquePatientFields.remove(this.get(id));
+    }
+
+    @Override
+    public void remove(Patient entity) {
+        allUniquePatientFields.remove(entity);
+        super.remove(entity);
     }
 
     @Override

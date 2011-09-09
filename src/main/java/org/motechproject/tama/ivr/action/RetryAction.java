@@ -37,7 +37,7 @@ public class RetryAction extends BaseIncomingAction {
         if (!ivrRequest.hasNoData())
            ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
         
-        return dtmfResponseWithWav(ivrRequest, ivrSession, IVRMessage.SIGNATURE_MUSIC_URL);
+        return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
     }
 
     private Integer getAttempt(IVRSession ivrSession) {

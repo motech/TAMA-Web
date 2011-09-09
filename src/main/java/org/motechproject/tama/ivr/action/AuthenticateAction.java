@@ -21,18 +21,21 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class AuthenticateAction extends BaseIncomingAction {
     private PillReminderService pillReminderService;
-    private AllPatients allPatients;
     private RetryAction retryAction;
+
+    private AllPatients allPatients;
     private ThreadLocalTargetSource threadLocalTargetSource;
     private final TreeChooser treeChooser;
+    private UserNotFoundAction userNotFoundAction;
 
     @Autowired
-    public AuthenticateAction(PillReminderService pillReminderService, AllPatients allPatients, RetryAction retryAction, ThreadLocalTargetSource threadLocalTargetSource, TreeChooser treeChooser) {
+    public AuthenticateAction(PillReminderService pillReminderService, AllPatients allPatients, RetryAction retryAction, ThreadLocalTargetSource threadLocalTargetSource, TreeChooser treeChooser, UserNotFoundAction userNotFoundAction) {
         this.pillReminderService = pillReminderService;
         this.allPatients = allPatients;
         this.retryAction = retryAction;
         this.threadLocalTargetSource = threadLocalTargetSource;
         this.treeChooser = treeChooser;
+        this.userNotFoundAction = userNotFoundAction;
     }
 
     @Override
@@ -43,24 +46,32 @@ public class AuthenticateAction extends BaseIncomingAction {
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IvrAction tamaIvrAction) {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = ivrRequest.getInput();
-        String id = ivrSession.getPatientId();
-        Patient patient = allPatients.get(id);
+        Patient patient = allPatients.findByMobileNumberAndPasscode(ivrRequest.getCid(), passcode);
+
+        if (!isValidCaller(patient)) {
+            return userNotFoundAction.handle(ivrRequest, request, response);
+        }
+
+        String patientId = patient.getPatientId();
 
         if (!patient.authenticatedWith(passcode)) {
             return retryAction.handle(ivrRequest, request, response);
         }
-        String patientId = ivrSession.getPatientId();
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
         ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patientId);
         ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getIvrLanguage().getCode());
-        
+
         ivrSession.set(IVRCallAttribute.CALL_TIME, DateUtil.now());
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
         ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
         ivrSession.set(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL, request.getParameter("symptoms_reporting"));
-        
+
         ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }
+    private boolean isValidCaller(Patient patient) {
+        return (patient != null && patient.isActive());
+    }
+
 }

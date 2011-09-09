@@ -53,7 +53,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(patient.getIvrLanguage()).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
         when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         when(request.getParameter("symptoms_reporting")).thenReturn("true");        	
-        authenticateAction = new AuthenticateAction(pillReminderService, allPatients, retryAction, null, null);
+        authenticateAction = new AuthenticateAction(pillReminderService, allPatients, retryAction, null, null, userNotFoundAction);
     }
 
     @Test
@@ -63,6 +63,8 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(request.getSession(false)).thenReturn(session);
         when(retryAction.handle(ivrRequest, request, response)).thenReturn("OK");
         when(patient.authenticatedWith(PASSCODE)).thenReturn(false);
+        when(patient.isActive()).thenReturn(true);
+        when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
 
         String handle = authenticateAction.handle(ivrRequest, request, response, tamaIvrAction);
 
@@ -78,6 +80,9 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(request.getSession(false)).thenReturn(session);
         when(request.getSession()).thenReturn(session);
         when(patient.authenticatedWith(PASSCODE)).thenReturn(true);
+        when(patient.isActive()).thenReturn(true);
+        when(patient.getPatientId()).thenReturn(PATIENT_ID);
+        when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(null, PATIENT_ID, 2, 5, null);
         when(pillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(pillRegimenResponse);
 
@@ -91,8 +96,18 @@ public class AuthenticateActionTest extends BaseActionTest {
         verify(session).setAttribute(IVRCallAttribute.CALL_TIME, now);
         verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, PATIENT_ID);
         verify(session).setAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
-//        verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
+        verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
         verify(session).setAttribute(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL, "true");
         verify(tamaIvrAction).handle(any(IVRRequest.class), any(IVRSession.class));
+    }
+
+    @Test
+    public void shouldHangupIfPatientIsNotActive() {
+        IVRRequest ivrRequest = new IVRRequest("unique-call-id", MOBILE_NO, IVREvent.NEW_CALL.key(), "Data");
+        when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
+        when(patient.isActive()).thenReturn(false);
+        when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("hangup response");
+        String responseXML = authenticateAction.handle(ivrRequest, request, response);
+        assertEquals("hangup response", responseXML);
     }
 }
