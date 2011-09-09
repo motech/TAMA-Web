@@ -35,7 +35,7 @@ public class MessageOnPillTakenTest {
         when(request.getTamaParams()).thenReturn(params);
         String[] messages = messageOnPillTaken.execute(context);
         assertEquals(2, messages.length);
-        assertEquals(IVRMessage.DOSE_TAKEN, messages[0]);
+        assertEquals(IVRMessage.DOSE_TAKEN_ON_TIME, messages[0]);
         assertEquals(IVRMessage.DOSE_RECORDED, messages[1]);
     }
 

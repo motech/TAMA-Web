@@ -13,7 +13,7 @@ public class MessageOnPillTaken extends BaseTreeCommand {
         IVRContext ivrContext = (IVRContext) context;
         ArrayList<String> messages = new ArrayList<String>();
         if (getTimesSent(ivrContext) == 0) {
-            messages.add(IVRMessage.DOSE_TAKEN);
+            messages.add(IVRMessage.DOSE_TAKEN_ON_TIME);
         }
         messages.add(IVRMessage.DOSE_RECORDED);
         return messages.toArray(new String[]{});

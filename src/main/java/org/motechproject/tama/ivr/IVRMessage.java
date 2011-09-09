@@ -24,6 +24,7 @@ public class IVRMessage {
     public static final String PLEASE_TAKE_DOSE = "003_03_01_TAMAPillDelayWarning1";
     public static final String DOSE_RECORDED = "001_05_01_doseRecorded";
     public static final String DOSE_TAKEN = "001_08_03_doseTaken";
+    public static final String DOSE_TAKEN_ON_TIME = "001_04_01_tookOnTime";
     public static final String PLEASE_CARRY_SMALL_BOX = "004_05_01_doctorNoPillsAdvice";
     public static final String YOUR_NEXT_DOSE_IS = "010_04_01_nextDoseIs1";
     public static final String YOUR_NEXT_DOSE_IS_PADDING = "010_04_01_nextDoseIs2";
@@ -67,9 +68,6 @@ public class IVRMessage {
     public static final String MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90 = "F04_01_doctorMissedPillFeedback"; // F04_01_doctorMissedPillFeedback.wav
     public static final String MISSED_PILL_FEEDBACK_LESS_THAN_70 = "F05_01_doctorMissedPillFeedback"; // F05_01_doctorMissedPillFeedback.wav
 
-//    010_04_01_nextDoseIs1.wav
-//    010_04_06_nextDoseIs2.wav
-//    005_04_01_CannotDelayPillsNow.wav
 
     /* -------- Adherence Feedback ----------- */
     private Properties properties;
