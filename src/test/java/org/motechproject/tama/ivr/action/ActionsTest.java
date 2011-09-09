@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.action;
 
 import org.junit.Test;
 import org.motechproject.tama.ivr.IVREvent;
+import org.motechproject.tama.ivr.action.event.BaseEventAction;
 import org.motechproject.tama.ivr.action.event.HangupEventAction;
 import org.motechproject.tama.ivr.action.event.NewCallEventAction;
 
@@ -14,8 +15,8 @@ public class ActionsTest {
 
     @Test
     public void shouldReturnActionBasedOnKey() {
-        Map<String, BaseIncomingAction> map = new HashMap<String, BaseIncomingAction>();
-        map.put("newcall", new NewCallEventAction(null, null, null));
+        Map<String, BaseEventAction> map = new HashMap<String, BaseEventAction>();
+        map.put("newcall", new NewCallEventAction(null, null, null, null));
         map.put("hangup", new HangupEventAction());
 
         Actions actions = new Actions(map);

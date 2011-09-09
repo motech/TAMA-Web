@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class UserNotAuthorisedAction extends BaseIncomingAction {
+public class UserNotAuthorisedAction extends BaseAction {
     @Autowired
     public UserNotAuthorisedAction(IVRMessage messages, AllIVRCallAudits audits) {
         this.messages = messages;

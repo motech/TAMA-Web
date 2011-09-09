@@ -21,9 +21,7 @@ public class HangupEventActionTest extends BaseActionTest {
     public void shouldCloseIVRSession() {
         IVRRequest ivrRequest = mock(IVRRequest.class);
         when(request.getSession(false)).thenReturn(session);
-
-        action.handle(ivrRequest, request, response);
-
+        action.postHandle(ivrRequest, request, response);
         verify(session).invalidate();
     }
 }

@@ -1,5 +1,8 @@
 package org.motechproject.tama.ivr.action;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Patient;
@@ -15,12 +18,9 @@ import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @Service
-public class AuthenticateAction extends BaseIncomingAction {
-    private PillReminderService pillReminderService;
+public class AuthenticateAction extends BaseAction {
+	private PillReminderService pillReminderService;
     private RetryAction retryAction;
 
     private AllPatients allPatients;
@@ -63,8 +63,7 @@ public class AuthenticateAction extends BaseIncomingAction {
         ivrSession.set(IVRCallAttribute.CALL_TIME, DateUtil.now());
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
         ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
-        ivrSession.set(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL, request.getParameter("symptoms_reporting"));
-
+        ivrSession.set(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM, request.getParameter(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM));
         ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }

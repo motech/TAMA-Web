@@ -6,7 +6,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.NodeInfo;
 import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.tama.ivr.*;
-import org.motechproject.tama.ivr.action.BaseIncomingAction;
+import org.motechproject.tama.ivr.action.BaseAction;
 import org.motechproject.tama.ivr.builder.DecisionTreeBasedResponseBuilder;
 import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.ivr.decisiontree.TreeChooser;
@@ -31,7 +31,7 @@ public class IvrAction {
         threadLocalContext.setIvrContext(ivrContext);
 
         Tree tree = treeChooser.getTree(ivrContext);
-        String userInput = StringUtils.remove(ivrRequest.getData(), BaseIncomingAction.POUND_SYMBOL);
+        String userInput = StringUtils.remove(ivrRequest.getData(), BaseAction.POUND_SYMBOL);
         String currentPosition = ivrSession.currentDecisionTreePath();
         DecisionTreeBasedResponseBuilder responseBuilder = new DecisionTreeBasedResponseBuilder();
 

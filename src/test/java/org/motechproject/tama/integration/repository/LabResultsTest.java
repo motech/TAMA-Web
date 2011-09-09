@@ -85,7 +85,6 @@ public class LabResultsTest extends SpringIntegrationTest {
     public void shouldMergeLabResultsWithLabResultsFromTheDatabase() {
 
         String patientId = "patientId_merge";
-
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId_merge").build();
         allLabTests.add(labTest);
 
@@ -93,6 +92,7 @@ public class LabResultsTest extends SpringIntegrationTest {
         allLabResults.add(labResultAlreadyPresentInDB);
 
         List<LabResult> labResultsForPatient = allLabResults.findByPatientId(patientId);
+        
 
         assertEquals("1", labResultsForPatient.get(0).getResult());
 
@@ -106,9 +106,9 @@ public class LabResultsTest extends SpringIntegrationTest {
         assertEquals("2", labResultsForPatient.get(0).getResult());
         assertNotNull(labResultsForPatient.get(0).getRevision());
 
-
         markForDeletion(allLabResults.get(labResultAlreadyPresentInDB.getId()));
         markForDeletion(labTest);
+        
     }
 
 }

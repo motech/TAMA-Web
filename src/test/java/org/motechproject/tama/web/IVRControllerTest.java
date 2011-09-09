@@ -6,7 +6,8 @@ import org.mockito.Mock;
 import org.motechproject.tama.ivr.IVREvent;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
-import org.motechproject.tama.ivr.action.BaseIncomingAction;
+import org.motechproject.tama.ivr.action.BaseAction;
+import org.motechproject.tama.ivr.action.event.BaseEventAction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +28,7 @@ public class IVRControllerTest {
     @Mock
     private Actions actions;
     @Mock
-    private BaseIncomingAction action;
+    private BaseEventAction action;
 
     @Before
     public void setUp() {
@@ -39,11 +40,11 @@ public class IVRControllerTest {
     public void shouldDelegateToActionsToHandleTheRequest() {
         when(ivrRequest.callEvent()).thenReturn(IVREvent.HANGUP);
         when(actions.findFor(IVREvent.HANGUP)).thenReturn(action);
-        when(action.handle(ivrRequest, request, response)).thenReturn("reply");
+        when(action.handleInternal(ivrRequest, request, response)).thenReturn("reply");
 
         String reply = controller.reply(ivrRequest, request, response);
 
-        verify(action).handle(ivrRequest, request, response);
+        verify(action).handleInternal(ivrRequest, request, response);
         assertEquals("reply", reply);
     }
 }

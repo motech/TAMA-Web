@@ -16,6 +16,8 @@ public class IVRRequest {
     private String tamaData;
 
     public static final String POUND_SYMBOL = "%23";
+    
+    public static enum CallDirection {Inbound, Outbound};
 
     public IVRRequest() {
     }
@@ -67,11 +69,7 @@ public class IVRRequest {
         return StringUtils.isBlank(this.data);
     }
 
-    public String getTamaData() {
-        return tamaData;
-    }
-
-    public void setTamaData(String tamaData) {
+	public void setTamaData(String tamaData) {
         this.tamaData = tamaData;
     }
 
@@ -96,5 +94,8 @@ public class IVRRequest {
 
     public boolean hasNoTamaData() {
         return StringUtils.isBlank(tamaData);
+    }
+    public CallDirection getCallDirection() {
+    	return hasNoTamaData()?CallDirection.Inbound: CallDirection.Outbound;
     }
 }

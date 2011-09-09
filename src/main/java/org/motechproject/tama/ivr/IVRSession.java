@@ -38,7 +38,7 @@ public class IVRSession {
     }
 
     public boolean isSymptomsReportingCall() {
-    	return "true".equals(session.getAttribute(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL));
+    	return "true".equals(session.getAttribute(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM));
     }
     
     public PillRegimenResponse getPillRegimen() {
@@ -75,4 +75,6 @@ public class IVRSession {
     public DateTime getCallTime() {
         return (DateTime) get(IVRCallAttribute.CALL_TIME);
     }
+
+	
 }

@@ -70,7 +70,7 @@ public class IVRSessionTest {
     }
     @Test 
     public void shouldReturnCallType() {
-    	when(session.getAttribute(IVRCallAttribute.IS_SYMPTOMS_REPORTING_CALL)).thenReturn("true");
+    	when(session.getAttribute(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
     	Assert.assertTrue(ivrSession.isSymptomsReportingCall());
     }
 }

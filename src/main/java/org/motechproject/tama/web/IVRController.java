@@ -4,7 +4,8 @@ import org.apache.log4j.Logger;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.action.Actions;
-import org.motechproject.tama.ivr.action.BaseIncomingAction;
+import org.motechproject.tama.ivr.action.BaseAction;
+import org.motechproject.tama.ivr.action.event.BaseEventAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,8 +31,8 @@ public class IVRController {
     @ResponseBody
     public String reply(@ModelAttribute IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
-            BaseIncomingAction action = actions.findFor(ivrRequest.callEvent());
-            final String handle = action.handle(ivrRequest, request, response);
+            BaseEventAction action = actions.findFor(ivrRequest.callEvent());
+            final String handle = action.handleInternal(ivrRequest, request, response);
             logger.info(String.format(" XML returned: %s", handle));
             return handle;
         } catch (Exception e) {

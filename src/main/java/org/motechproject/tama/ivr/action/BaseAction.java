@@ -1,6 +1,8 @@
 package org.motechproject.tama.ivr.action;
 
-import com.ozonetel.kookoo.Response;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.IVRCallAudit;
 import org.motechproject.tama.ivr.IVRMessage;
@@ -10,10 +12,9 @@ import org.motechproject.tama.ivr.builder.IVRResponseBuilder;
 import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.ozonetel.kookoo.Response;
 
-public abstract class BaseIncomingAction {
+public abstract class BaseAction {
     @Autowired
     protected IVRMessage messages;
     protected AllIVRCallAudits audits;
@@ -43,8 +44,9 @@ public abstract class BaseIncomingAction {
     }
 
     abstract public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response);
-
     public String getKey() {
         return StringUtils.EMPTY;
     }
+
+	
 }
