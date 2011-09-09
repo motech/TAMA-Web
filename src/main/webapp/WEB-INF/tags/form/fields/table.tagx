@@ -112,7 +112,9 @@
                      <c:when test="${not doCustomAction}">
                          <td class="utilbox">
                          <spring:url value="${customActionPath}/${itemId}" var="custom_action_form_url"/>
-                            <a href="${fn:escapeXml(custom_action_form_url)}">${customActionLabel}</a>
+                             <form:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
+                                <a class="post_anchor" href="#">${customActionLabel}</a>
+                             </form:form>
                          </td>
                      </c:when>
                      <c:otherwise>

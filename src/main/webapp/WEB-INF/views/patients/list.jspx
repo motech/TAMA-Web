@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/resources/js/list_patients.js" var="list_patients_js" />
+    <script src="${list_patients_js}" type="text/javascript"/>
+
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
         <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients" z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE="
                      customAction="true" customActionPath="patients/activate" customActionLabel="Activate"
