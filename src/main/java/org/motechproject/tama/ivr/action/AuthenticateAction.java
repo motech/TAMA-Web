@@ -46,20 +46,18 @@ public class AuthenticateAction extends BaseIncomingAction {
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IvrAction tamaIvrAction) {
         IVRSession ivrSession = getIVRSession(request);
         String passcode = ivrRequest.getInput();
-        Patient patient = allPatients.findByMobileNumberAndPasscode(ivrRequest.getCid(), passcode);
+        Patient patient = allPatients.findByMobileNumber(ivrRequest.getCid());
 
-        if (!isValidCaller(patient)) {
-            return userNotFoundAction.handle(ivrRequest, request, response);
-        }
-
-        String patientId = patient.getPatientId();
-
-        if (!patient.authenticatedWith(passcode)) {
+        if(patient == null) return userNotFoundAction.handle(ivrRequest, request, response);
+        patient = allPatients.findByMobileNumberAndPasscode(ivrRequest.getCid(), passcode);
+        if (!isAuthenticatedUser(passcode, patient)) {
             return retryAction.handle(ivrRequest, request, response);
         }
+        if (!patient.isActive()) return userNotFoundAction.handle(ivrRequest, request, response);
+
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
-        ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patientId);
+        ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patient.getId());
         ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getIvrLanguage().getCode());
 
         ivrSession.set(IVRCallAttribute.CALL_TIME, DateUtil.now());
@@ -70,8 +68,9 @@ public class AuthenticateAction extends BaseIncomingAction {
         ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }
-    private boolean isValidCaller(Patient patient) {
-        return (patient != null && patient.isActive());
+
+    private boolean isAuthenticatedUser(String passcode, Patient patient) {
+        return patient != null && patient.authenticatedWith(passcode);
     }
 
 }

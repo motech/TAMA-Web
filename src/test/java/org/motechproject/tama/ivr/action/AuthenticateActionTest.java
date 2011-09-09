@@ -65,6 +65,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(patient.authenticatedWith(PASSCODE)).thenReturn(false);
         when(patient.isActive()).thenReturn(true);
         when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
+        when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
 
         String handle = authenticateAction.handle(ivrRequest, request, response, tamaIvrAction);
 
@@ -83,6 +84,7 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(patient.isActive()).thenReturn(true);
         when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
+        when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(null, PATIENT_ID, 2, 5, null);
         when(pillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(pillRegimenResponse);
 
@@ -105,7 +107,9 @@ public class AuthenticateActionTest extends BaseActionTest {
     public void shouldHangupIfPatientIsNotActive() {
         IVRRequest ivrRequest = new IVRRequest("unique-call-id", MOBILE_NO, IVREvent.NEW_CALL.key(), "Data");
         when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
+        when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, "Data")).thenReturn(patient);
         when(patient.isActive()).thenReturn(false);
+        when(patient.authenticatedWith("Data")).thenReturn(true);
         when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("hangup response");
         String responseXML = authenticateAction.handle(ivrRequest, request, response);
         assertEquals("hangup response", responseXML);
