@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DecisionTreeBasedResponseBuilder {
     public IVRResponseBuilder ivrResponse(String sid, Node node, IVRContext ivrContext, boolean retryOnIncorrectUserAction) {
-        IVRResponseBuilder ivrResponseBuilder = new IVRResponseBuilder(sid, ivrContext.ivrSession().getPrefferedLanguageCode());
+        IVRResponseBuilder ivrResponseBuilder = new IVRResponseBuilder(sid, ivrContext.ivrSession().getPreferredLanguageCode());
         List<Prompt> prompts = node.getPrompts();
         boolean hasTransitions = node.hasTransitions();
         for (Prompt prompt : prompts) {

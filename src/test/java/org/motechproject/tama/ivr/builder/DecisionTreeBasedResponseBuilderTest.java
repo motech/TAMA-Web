@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.*;
-import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.ivr.IVRSession;
 
@@ -26,7 +25,7 @@ public class DecisionTreeBasedResponseBuilderTest {
     public void setUp() {
         treeBasedResponseBuilder = new DecisionTreeBasedResponseBuilder();
         initMocks(this);
-        when(ivrSession.getPrefferedLanguageCode()).thenReturn("en");
+        when(ivrSession.getPreferredLanguageCode()).thenReturn("en");
         when(ivrContext.ivrSession()).thenReturn(ivrSession);
     }
 

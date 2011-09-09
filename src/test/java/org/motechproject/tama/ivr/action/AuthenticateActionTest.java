@@ -9,10 +9,12 @@ import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.action.event.BaseActionTest;
 import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -40,6 +42,8 @@ public class AuthenticateActionTest extends BaseActionTest {
     private IvrAction tamaIvrAction;
     @Mock
     private PillReminderService pillReminderService;
+    @Mock
+    private AllTreatmentAdvices allTreatmentAdvices;
 
     private static final String PATIENT_ID = "12345";
     public static final String MOBILE_NO = "9876543210";
@@ -51,9 +55,10 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
         when(patient.getIvrLanguage()).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
+        when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(new TreatmentAdvice());
         when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         when(request.getParameter("symptoms_reporting")).thenReturn("true");        	
-        authenticateAction = new AuthenticateAction(pillReminderService, allPatients, retryAction, null, null, userNotFoundAction);
+        authenticateAction = new AuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null);
     }
 
     @Test

@@ -33,7 +33,7 @@ public class IVRSession {
         return (String) session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID);
     }
     
-    public String getPrefferedLanguageCode() {
+    public String getPreferredLanguageCode() {
     	return (String) session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE);
     }
 
