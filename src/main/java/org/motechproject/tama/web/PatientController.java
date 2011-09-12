@@ -160,8 +160,18 @@ public class PatientController extends BaseController {
             initUIModel(uiModel, patient);
             return UPDATE_VIEW;
         }
-        uiModel.asMap().clear();
-        allPatients.merge(patient);
+        try {
+            allPatients.merge(patient);
+            uiModel.asMap().clear();
+        } catch (TamaException e) {
+            String message = e.getMessage();
+            if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)){
+                bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
+                        new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
+            }
+            initUIModel(uiModel, patient);
+            return UPDATE_VIEW;
+        }
 
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
