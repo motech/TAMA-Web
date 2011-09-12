@@ -10,7 +10,7 @@ import org.motechproject.tama.ivr.IVRSession;
 import java.util.Arrays;
 
 import static junit.framework.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DecisionTreeBasedResponseBuilderTest {
@@ -20,7 +20,7 @@ public class DecisionTreeBasedResponseBuilderTest {
     IVRContext ivrContext;
     @Mock
     IVRSession ivrSession;
-    
+
     @Before
     public void setUp() {
         treeBasedResponseBuilder = new DecisionTreeBasedResponseBuilder();
@@ -36,11 +36,11 @@ public class DecisionTreeBasedResponseBuilderTest {
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()
                                 .setDestinationNode(Node.newBuilder()
-                                                .setPrompts(Arrays.asList(new AudioPrompt().setName("bar"))).build()).build()
+                                        .setPrompts(Arrays.asList(new AudioPrompt().setName("bar"))).build()).build()
                         },
                         {"2", Transition.newBuilder()
                                 .setDestinationNode(Node.newBuilder()
-                                                .setPrompts(Arrays.asList(new AudioPrompt().setName("baz"))).build()).build()
+                                        .setPrompts(Arrays.asList(new AudioPrompt().setName("baz"))).build()).build()
                         }}).build();
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertTrue(responseBuilder.isCollectDtmf());
@@ -92,17 +92,34 @@ public class DecisionTreeBasedResponseBuilderTest {
         assertEquals("menu", responseBuilder.getPlayAudios().get(0));
     }
 
-    class ReturnEmptyCommand implements ITreeCommand{
+    @Test
+    public void shouldExecuteCommandsInMenuAudioPromptsDuringReplayOnIncorrectUserResponse() {
+        ITreeCommand mockCommand = mock(ITreeCommand.class);
+        when(mockCommand.execute(any())).thenReturn(new String[]{});
+
+        MenuAudioPrompt menu = new MenuAudioPrompt();
+        menu.setName("menu");
+        menu.setCommand(mockCommand);
+
+        Node rootNode = Node.newBuilder()
+                .setPrompts(Arrays.asList(new AudioPrompt().setName("hello"), menu))
+                .build();
+        nextResponse(rootNode, true);
+        verify(mockCommand, times(1)).execute(any());
+
+    }
+
+    class ReturnEmptyCommand implements ITreeCommand {
         @Override
         public String[] execute(Object o) {
             return new String[0];
         }
     }
 
-    class ReturnMultiplePromptCommand implements ITreeCommand{
+    class ReturnMultiplePromptCommand implements ITreeCommand {
         @Override
         public String[] execute(Object o) {
-            return new String[] {"a", "b"};
+            return new String[]{"a", "b"};
         }
     }
 }
