@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -19,6 +20,8 @@ public class PillReminderCallTest {
     private AllPatients allPatients;
     @Mock
     private CallService callService;
+    @Mock 
+    private EventService eventService;
 
     private String PHONE_NUMBER = "1234567890";
     private static final String PATIENT_DOC_ID = "P_1";
@@ -29,7 +32,7 @@ public class PillReminderCallTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pillReminderCall = new PillReminderCall(callService, allPatients);
+        pillReminderCall = new PillReminderCall(callService, eventService, allPatients);
     }
 
     @Test

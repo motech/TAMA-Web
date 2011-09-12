@@ -37,9 +37,5 @@ public class DtmfEventAction extends BaseEventAction {
         } else {
             return new IvrAction(treeChooser, messages, threadLocalTargetSource).handle(ivrRequest, ivrSession);
         }
-    }
-    @Override
-    public IVREvent getCallEventName() {
-    	return IVREvent.GOT_DTMF;
-    }    
+    } 
 }

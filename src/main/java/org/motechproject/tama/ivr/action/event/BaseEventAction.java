@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.motechproject.eventtracking.service.EventService;
+import org.motechproject.tama.eventlogging.EventDataBuilder;
 import org.motechproject.tama.eventlogging.EventLogConstants;
 import org.motechproject.tama.ivr.IVRCallAttribute;
 import org.motechproject.tama.ivr.IVRCallEvent;
@@ -23,18 +24,20 @@ public abstract class BaseEventAction extends BaseAction{
     
     Map<String, String> eventData = new HashMap<String, String>();
 
-	abstract public IVREvent getCallEventName();
- 
-	protected void publishIVREvent(IVREvent name, String externalId, String callTypeName, IVRRequest.CallDirection callDirection, String inputData, String responseXML) {
-        addEventLogData(EventLogConstants.RESPONSE_XML, responseXML);
-        addEventLogData(EventLogConstants.CALL_DIRECTION, callDirection.toString());
-		eventService.publishEvent(new IVRCallEvent(name, externalId, callTypeName, DateUtil.now(), eventData));
+	protected void publishIVREvent(IVREvent name, String externalId, String callTypeName, IVRRequest.CallDirection callDirection, String callerId, String inputData, String responseXML) {
+		
+		EventDataBuilder builder = new EventDataBuilder(name.toString(), externalId, callTypeName, DateUtil.now());
+        builder.withResponseXML(responseXML)
+        .withCallDirection(callDirection.toString())
+        .withCallerId(callerId)
+        .withData(eventData);
+		eventService.publishEvent(builder.build());
 	}
 
 	public String handleInternal(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
 		String responseXML = handle(ivrRequest, request, response);
 		IVRSession ivrSession = getIVRSession(request);
-		publishIVREvent(getCallEventName(), ivrSession.getPatientId(), getCallTypeName(request), ivrRequest.getCallDirection(), ivrRequest.getData(), responseXML);
+		publishIVREvent(ivrRequest.callEvent(), ivrSession.getPatientId(), getCallTypeName(request), ivrRequest.getCallDirection(), ivrRequest.getCid(), ivrRequest.getData(), responseXML);
 		postHandle(ivrRequest, request, response);
 		return responseXML;
 	}
@@ -44,7 +47,7 @@ public abstract class BaseEventAction extends BaseAction{
     }
 
 	private String getCallTypeName(HttpServletRequest request) {
-		return "true".equals(request.getParameter(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM))?"Symptom Reporting":"Pill Reminder";
+		return "true".equals(request.getParameter(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM))?EventLogConstants.CALL_TYPE_SYMPTOM_REPORTING:EventLogConstants.CALL_TYPE_PILL_REMINDER;
 	}
 	
 	protected void addEventLogData(String key, String value){

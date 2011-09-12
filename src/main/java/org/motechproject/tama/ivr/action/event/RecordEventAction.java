@@ -13,8 +13,4 @@ public class RecordEventAction extends BaseEventAction {
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
-    @Override
-    public IVREvent getCallEventName() {
-    	return IVREvent.RECORD;
-    }
 }

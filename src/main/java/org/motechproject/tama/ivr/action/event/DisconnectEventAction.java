@@ -20,8 +20,4 @@ public class DisconnectEventAction extends BaseEventAction {
     		HttpServletResponse response) {
         getIVRSession(request).close();
     }
-    @Override
-    public IVREvent getCallEventName() {
-    	return IVREvent.DISCONNECT;
-    }
 }

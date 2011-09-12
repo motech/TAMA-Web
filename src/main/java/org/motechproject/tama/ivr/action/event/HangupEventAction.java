@@ -18,8 +18,4 @@ public class HangupEventAction extends BaseEventAction {
         getIVRSession(request).close();
         return;
     }
-    @Override
-    public IVREvent getCallEventName() {
-    	return IVREvent.HANGUP;
-    }
 }

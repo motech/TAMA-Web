@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.motechproject.eventtracking.domain.Event;
 
 public class IVRCallEvent implements Event{ 
-	IVREvent eventName; 
+	String eventName; 
 	String externalID;
 	String callType;
 	DateTime dateTime;
@@ -14,7 +14,7 @@ public class IVRCallEvent implements Event{
 	
 	public IVRCallEvent() {}
 
-	public IVRCallEvent(IVREvent eventName, String externalID, String callType,
+	public IVRCallEvent(String eventName, String externalID, String callType,
 			DateTime dateTime, Map<String, String> data) {
 		super();
 		this.eventName = eventName;
@@ -24,10 +24,10 @@ public class IVRCallEvent implements Event{
 		this.data = data;
 	}
 
-	public IVREvent getEventName() {
+	public String getEventName() {
 		return eventName;
 	}
-	public void setEventName(IVREvent eventName) {
+	public void setEventName(String eventName) {
 		this.eventName = eventName;
 	}
 	public String getExternalID() {
