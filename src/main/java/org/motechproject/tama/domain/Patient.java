@@ -21,8 +21,8 @@ import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'Patient'")
 public class Patient extends CouchEntity {
-    public static final String CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT = "ClinicAndPatientIdUniqueConstraint";
-    public static final String PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT = "PhoneNumberAndPasscodeUniqueConstraint";
+    public static final String CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT = "Constraint:Unique:Clinic/PatientId::";
+    public static final String PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT = "Constraint:Unique:PhoneNumber/Passcode::";
 
     protected String patientId;
     @NotNull
@@ -226,18 +226,6 @@ public class Patient extends CouchEntity {
         this.clinic_id = clinic_id;
     }
 
-    public List<String> uniqueFields() {
-        return Arrays.asList(clinicAndPatientId(), phoneNumberAndPasscode());
-    }
-
-    public String clinicAndPatientId() {
-        return CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + ":clinic_id_" + this.getClinic_id() + "_patient_id_" + this.getPatientId();
-    }
-
-    public String phoneNumberAndPasscode() {
-        return PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + ":ph_no_" + this.getMobilePhoneNumber() + "_pass_code_" + this.getPatientPreferences().getPasscode();
-    }
-
     @JsonIgnore
     public IVRLanguage getIvrLanguage() {
         return this.patientPreferences.getIvrLanguage();
@@ -251,5 +239,17 @@ public class Patient extends CouchEntity {
     @JsonIgnore
     public String getIvrLanguageId() {
         return this.patientPreferences.getIvrLanguageId();
+    }
+
+    public List<String> uniqueFields() {
+        return Arrays.asList(clinicAndPatientId(), phoneNumberAndPasscode());
+    }
+
+    public String clinicAndPatientId() {
+        return CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + this.getClinic_id() + "/" + this.getPatientId();
+    }
+
+    public String phoneNumberAndPasscode() {
+        return PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + this.getMobilePhoneNumber() + "/" + this.getPatientPreferences().getPasscode();
     }
 }

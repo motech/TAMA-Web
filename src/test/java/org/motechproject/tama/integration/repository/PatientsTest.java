@@ -203,7 +203,8 @@ public class PatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldAddPatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).withClinic(clinic).build();
         allPatients.add(patient);
         markForDeletion(patient);
 
@@ -214,8 +215,8 @@ public class PatientsTest extends SpringIntegrationTest {
         markForDeletion(uniquePatientFields.get(1));
 
         assertThat(dbPatients.get(0).getPatientId(), is("5678"));
-        assertThat(uniquePatientFields.get(0).getId(), is("ClinicAndPatientIdUniqueConstraint:clinic_id_null_patient_id_5678"));
-        assertThat(uniquePatientFields.get(1).getId(), is("PhoneNumberAndPasscodeUniqueConstraint:ph_no_9765456789_pass_code_1234"));
+        assertThat(uniquePatientFields.get(0).getId(), is(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "null/5678"));
+        assertThat(uniquePatientFields.get(1).getId(), is(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + "9765456789/1234"));
     }
 
     @Test

@@ -12,7 +12,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
-public class AllUniquePatientFieldsTest extends SpringIntegrationTest{
+public class AllUniquePatientFieldsTest extends SpringIntegrationTest {
 
     @Autowired
     private AllUniquePatientFields allPatientUniqueFields;
@@ -30,8 +30,8 @@ public class AllUniquePatientFieldsTest extends SpringIntegrationTest{
         markForDeletion(uniquePatientFields.get(0));
         markForDeletion(uniquePatientFields.get(1));
 
-        assertEquals("ClinicAndPatientIdUniqueConstraint:clinic_id_C1_patient_id_P1", uniquePatientFields.get(0).getId());
-        assertEquals("PhoneNumberAndPasscodeUniqueConstraint:ph_no_1234567890_pass_code_1234", uniquePatientFields.get(1).getId());
+        assertEquals(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "C1/P1", uniquePatientFields.get(0).getId());
+        assertEquals(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + "1234567890/1234", uniquePatientFields.get(1).getId());
     }
 
     @Test

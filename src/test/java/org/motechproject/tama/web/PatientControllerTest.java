@@ -172,7 +172,7 @@ public class PatientControllerTest {
         when(uiModel.asMap()).thenReturn(modelMap);
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
-        when(user.getClinicId()).thenThrow(new TamaException("ClinicAndPatientIdUniqueConstraint:" + "some STUFF", new UpdateConflictException()));
+        when(user.getClinicId()).thenThrow(new TamaException(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "some STUFF", new UpdateConflictException()));
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 

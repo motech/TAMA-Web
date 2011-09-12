@@ -92,19 +92,19 @@ public class PatientTest {
     }
 
     @Test
-    public void shouldGetIVRMobilePhoneNumber(){
+    public void shouldGetIVRMobilePhoneNumber() {
         Patient patient = PatientBuilder.startRecording().withMobileNumber("9876543210").build();
         assertEquals("09876543210", patient.getIVRMobilePhoneNumber());
     }
 
     @Test
-    public void shouldReturnUniqueId(){
+    public void shouldReturnUniqueId() {
         Clinic clinic = new Clinic("C1");
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("P1").withClinic(clinic).withMobileNumber("1234567890").withPasscode("1234").build();
         List<String> uniqueFields = patient.uniqueFields();
 
-        assertEquals("ClinicAndPatientIdUniqueConstraint:clinic_id_C1_patient_id_P1", uniqueFields.get(0));
-        assertEquals("PhoneNumberAndPasscodeUniqueConstraint:ph_no_1234567890_pass_code_1234", uniqueFields.get(1));
+        assertEquals(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "C1/P1", uniqueFields.get(0));
+        assertEquals(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + "1234567890/1234", uniqueFields.get(1));
     }
 
     private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {
