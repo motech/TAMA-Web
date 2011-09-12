@@ -1,22 +1,20 @@
 package org.motechproject.tama.ivr.action.event;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.tama.eventlogging.EventDataBuilder;
 import org.motechproject.tama.eventlogging.EventLogConstants;
 import org.motechproject.tama.ivr.IVRCallAttribute;
-import org.motechproject.tama.ivr.IVRCallEvent;
 import org.motechproject.tama.ivr.IVREvent;
 import org.motechproject.tama.ivr.IVRRequest;
 import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.action.BaseAction;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class BaseEventAction extends BaseAction{
     @Autowired
@@ -37,7 +35,8 @@ public abstract class BaseEventAction extends BaseAction{
 	public String handleInternal(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
 		String responseXML = handle(ivrRequest, request, response);
 		IVRSession ivrSession = getIVRSession(request);
-		publishIVREvent(ivrRequest.callEvent(), ivrSession.getPatientId(), getCallTypeName(request), ivrRequest.getCallDirection(), ivrRequest.getCid(), ivrRequest.getData(), responseXML);
+        String patientId = ivrSession.isValid() ? ivrSession.getPatientId() : "Unknown";
+        publishIVREvent(ivrRequest.callEvent(), patientId, getCallTypeName(request), ivrRequest.getCallDirection(), ivrRequest.getCid(), ivrRequest.getData(), responseXML);
 		postHandle(ivrRequest, request, response);
 		return responseXML;
 	}

@@ -71,10 +71,12 @@ public class IVRSession {
         set(IVRCallAttribute.CURRENT_DECISION_TREE_POSITION, nextCurrentPosition);
     }
 
-
     public DateTime getCallTime() {
         return (DateTime) get(IVRCallAttribute.CALL_TIME);
     }
 
+    public boolean isValid() {
+        return session != null;
+    }
 	
 }
