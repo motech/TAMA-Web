@@ -126,11 +126,13 @@ dojo.addOnLoad(function() {
                     morning_time.set('disabled', true);
                     morning_time.set('required', false);
                     morning_label.style.display = 'none';
+                    morning_time.set('value','');
                 };
                 var hideEveningTime = function() {
                     evening_time.set('disabled', true);
                     evening_time.set('required', false);
                     evening_label.style.display = 'none';
+                    evening_time.set('value','');
                 };
 
                 var schedule = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].dosageTypeId_id');
