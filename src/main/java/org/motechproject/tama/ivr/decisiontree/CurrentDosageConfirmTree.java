@@ -40,26 +40,24 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     private ThreadLocalTargetSource threadLocalTargetSource;
 
     protected Node createRootNode() {
-        return Node.newBuilder()
+        return new Node()
                 .setPrompts(Arrays.asList(
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
                         new MenuAudioPrompt().setName(IVRMessage.PILL_CONFIRM_CALL_MENU)))
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()
                                 .setDestinationNode(
-                                        Node.newBuilder()
+                                        new Node()
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageOnPillTakenDuringIncomingCall),
                                                         new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
                                                 )
-                                                .setTransitions(jumpToPreviousDosageTree())
-                                                .build())
+                                                .setTransitions(jumpToPreviousDosageTree()))
                                 .build()
                         }
-                })
-                .build();
+                });
     }
 
     private Map<String, Transition> jumpToPreviousDosageTree() {

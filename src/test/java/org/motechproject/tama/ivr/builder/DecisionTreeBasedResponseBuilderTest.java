@@ -31,17 +31,17 @@ public class DecisionTreeBasedResponseBuilderTest {
 
     @Test
     public void shouldAddCollectDtmfIfTheNodeHasTransitions() {
-        Node rootNode = Node.newBuilder()
+        Node rootNode = new Node()
                 .setPrompts(Arrays.asList(new AudioPrompt().setName("foo")))
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()
-                                .setDestinationNode(Node.newBuilder()
-                                        .setPrompts(Arrays.asList(new AudioPrompt().setName("bar"))).build()).build()
+                                .setDestinationNode(new Node()
+                                                .setPrompts(Arrays.asList(new AudioPrompt().setName("bar")))).build()
                         },
                         {"2", Transition.newBuilder()
-                                .setDestinationNode(Node.newBuilder()
-                                        .setPrompts(Arrays.asList(new AudioPrompt().setName("baz"))).build()).build()
-                        }}).build();
+                                .setDestinationNode(new Node()
+                                                .setPrompts(Arrays.asList(new AudioPrompt().setName("baz")))).build()
+                        }});
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertTrue(responseBuilder.isCollectDtmf());
         assertEquals(1, responseBuilder.getPlayAudios().size());
@@ -54,9 +54,8 @@ public class DecisionTreeBasedResponseBuilderTest {
 
     @Test
     public void shouldAddAddHangupIfTheNodeDoesNotHaveAnyTransitions() {
-        Node rootNode = Node.newBuilder()
-                .setPrompts(Arrays.asList(new AudioPrompt().setName("foo")))
-                .build();
+        Node rootNode = new Node()
+                .setPrompts(Arrays.asList(new AudioPrompt().setName("foo")));
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertFalse(responseBuilder.isCollectDtmf());
         assertTrue(responseBuilder.isHangUp());
@@ -66,27 +65,24 @@ public class DecisionTreeBasedResponseBuilderTest {
 
     @Test
     public void whenAudioCommandReturnsNullThenItShouldNotGetAddedToResponse() {
-        Node rootNode = Node.newBuilder()
-                .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnEmptyCommand())))
-                .build();
+        Node rootNode = new Node()
+                .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnEmptyCommand())));
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertEquals(1, responseBuilder.getPlayAudios().size());
     }
 
     @Test
     public void createMultiplePlayAudiosWhenACommandReturnsMultiplePrompts() {
-        Node rootNode = Node.newBuilder()
-                .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnMultiplePromptCommand())))
-                .build();
+        Node rootNode = new Node()
+                .setPrompts(Arrays.asList(new AudioPrompt().setCommand(new ReturnMultiplePromptCommand())));
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
         assertEquals(3, responseBuilder.getPlayAudios().size());
     }
 
     @Test
     public void shouldAddOnlyMenuAudioPromptsToReplayOnIncorrectUserResponse() {
-        Node rootNode = Node.newBuilder()
-                .setPrompts(Arrays.asList(new AudioPrompt().setName("hello"), new MenuAudioPrompt().setName("menu")))
-                .build();
+        Node rootNode = new Node()
+                .setPrompts(Arrays.asList(new AudioPrompt().setName("hello"), new MenuAudioPrompt().setName("menu")));
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, true);
         assertEquals(2, responseBuilder.getPlayAudios().size());
         assertEquals("menu", responseBuilder.getPlayAudios().get(0));

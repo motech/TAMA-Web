@@ -46,72 +46,66 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
     private ThreadLocalTargetSource threadLocalTargetSource;
 
     protected Node createRootNode() {
-        return Node.newBuilder()
+        return new Node()
                 .setPrompts(Arrays.asList(
                         new AudioPrompt().setCommand(messageForMedicines),
                         new MenuAudioPrompt().setName(IVRMessage.PILL_REMINDER_RESPONSE_MENU)))
                 .setTransitions(new Object[][]{
                         {"1", Transition.newBuilder()
                                 .setDestinationNode(
-                                        Node.newBuilder()
+                                        new Node()
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
                                                         new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
                                                 )
-                                                .setTransitions(jumpToPreviousDosageTree())
-                                                .build())
+                                                .setTransitions(jumpToPreviousDosageTree()))
                                 .build()
                         },
                         {"2", Transition.newBuilder()
                                 .setDestinationNode(
-                                        Node.newBuilder()
+                                        new Node()
                                                 .setTreeCommands(updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(pillsDelayWarning),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage)))
-                                                .setTransitions(jumpToPreviousDosageTree())
-                                                .build())
+                                                .setTransitions(jumpToPreviousDosageTree()))
                                 .build()
                         },
                         {"3", Transition.newBuilder()
                                 .setDestinationNode(
-                                        Node.newBuilder()
+                                        new Node()
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(Arrays.<Prompt>asList(
                                                         new AudioPrompt().setCommand(messageForMissedPillFeedbackCommand),
                                                         new MenuAudioPrompt().setName(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU)))
                                                 .setTransitions(new Object[][]{
                                                         {"2", Transition.newBuilder()
-                                                                .setDestinationNode(Node.newBuilder()
+                                                                .setDestinationNode(new Node()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
                                                                         .setPrompts(Arrays.asList(
                                                                                 new AudioPrompt().setName(IVRMessage.PLEASE_CARRY_SMALL_BOX),
                                                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
                                                                         )
-                                                                        .setTransitions(jumpToPreviousDosageTree())
-                                                                        .build())
+                                                                        .setTransitions(jumpToPreviousDosageTree()))
                                                                 .build()
                                                         },
                                                         {"3", Transition.newBuilder()
-                                                                .setDestinationNode(Node.newBuilder()
+                                                                .setDestinationNode(new Node()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
                                                                         .setPrompts(Arrays.asList(
                                                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
                                                                         )
-                                                                        .setTransitions(jumpToPreviousDosageTree())
-                                                                        .build())
+                                                                        .setTransitions(jumpToPreviousDosageTree()))
                                                                 .build()
                                                         }
-                                                })
-                                                .build())
+                                                }))
                                 .build()
                         }
-                })
-                .build();
+                });
     }
 
     private Map<String, Transition> jumpToPreviousDosageTree() {

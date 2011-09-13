@@ -26,27 +26,25 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
 
     @Override
     protected Node createRootNode() {
-        return Node.newBuilder().setTransitions(new Object[][]{
+        return new Node().setTransitions(new Object[][]{
                 {"1", Transition.newBuilder()
                         .setDestinationNode(
-                                Node.newBuilder()
+                                new Node()
                                         .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
                                         .setPrompts(Arrays.<Prompt>asList(
                                                 new AudioPrompt().setCommand(messageOnPreviousPillTaken),
-                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand)))
-                                        .build())
+                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand))))
                         .build()
                 },
                 {"3", Transition.newBuilder()
                         .setDestinationNode(
-                                Node.newBuilder()
+                                new Node()
                                         .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
                                         .setPrompts(Arrays.<Prompt>asList(
                                                 new AudioPrompt().setCommand(messageOnPreviousPillNotTaken),
-                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand)))
-                                        .build())
+                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand))))
                         .build()
                 }
-        }).build();
+        });
     }
 }

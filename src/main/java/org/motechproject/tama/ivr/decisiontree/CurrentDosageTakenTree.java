@@ -3,10 +3,7 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.tama.web.command.MessageForAdherenceWhenPreviousDosageCapturedCommand;
-import org.motechproject.tama.web.command.MessageFromPreviousDosage;
 import org.motechproject.tama.web.command.NextCallDetails;
-import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -22,23 +19,10 @@ public class CurrentDosageTakenTree extends TamaDecisionTree {
     @Autowired
     private NextCallDetails nextCallDetails;
 
-    @Autowired
-    private ThreadLocalTargetSource threadLocalTargetSource;
-
-    @Autowired
-    private MessageFromPreviousDosage messageFromPreviousDosage;
-
-    @Autowired
-    private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
-
-    @Autowired
-    private PreviousDosageReminderTree previousDosageReminderTree;
-
     @Override
     protected Node createRootNode() {
-        return Node.newBuilder()
+        return new Node()
                 .setPrompts(Arrays.<Prompt>asList(
-                        new AudioPrompt().setCommand(nextCallDetails)))
-                .build();
+                        new AudioPrompt().setCommand(nextCallDetails)));
     }
 }
