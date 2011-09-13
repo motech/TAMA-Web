@@ -52,7 +52,7 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).minusMinutes(2));
-        assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
+        assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN_ON_TIME, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
     }
 
     @Test
@@ -62,9 +62,8 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).plusMinutes(2));
-        assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
+        assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN_ON_TIME, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
     }
-
 
     @Test
     public void shouldOnlyReturnDoseRecordedMessageIfPatientCallsAfterDosageHour_OutsideDosageInterval_WithinPillWindow() {
