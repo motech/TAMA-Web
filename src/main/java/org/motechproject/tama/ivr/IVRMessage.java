@@ -22,6 +22,7 @@ public class IVRMessage {
     public static final String ITS_TIME_FOR_THE_PILL = "001_02_02_itsTimeForPill1";
     public static final String PILL_FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
     public static final String PLEASE_TAKE_DOSE = "003_03_01_TAMAPillDelayWarning1";
+    public static final String CALL_AFTER_SOME_TIME = "003_03_03_TAMAPillDelayWarning2";
     public static final String DOSE_RECORDED = "001_05_01_doseRecorded";
     public static final String DOSE_TAKEN_ON_TIME = "001_04_01_tookOnTime";
     public static final String PLEASE_CARRY_SMALL_BOX = "004_05_01_doctorNoPillsAdvice";

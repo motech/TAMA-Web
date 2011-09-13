@@ -67,7 +67,7 @@ public class PillsDelayWarningTest {
         assertArrayEquals(new String[]{
                 IVRMessage.PLEASE_TAKE_DOSE,
                 String.format("Num_%03d",Integer.valueOf(retryInterval)),
-                IVRMessage.MINUTES},
+                IVRMessage.CALL_AFTER_SOME_TIME},
                 pillsDelayWarning.execute(context));
     }
 

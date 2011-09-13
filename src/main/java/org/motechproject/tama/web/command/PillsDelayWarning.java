@@ -45,7 +45,7 @@ public class PillsDelayWarning extends BaseTreeCommand {
         return new String[]{
                 IVRMessage.PLEASE_TAKE_DOSE,
                 ivrMessage.getNumberFilename(Integer.valueOf((String) properties.get(TAMAConstants.RETRY_INTERVAL))),
-                IVRMessage.MINUTES
+                IVRMessage.CALL_AFTER_SOME_TIME
         };
     }
 
