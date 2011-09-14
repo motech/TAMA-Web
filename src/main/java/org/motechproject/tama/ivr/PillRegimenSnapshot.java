@@ -59,9 +59,10 @@ public class PillRegimenSnapshot {
     public MyDosageResponse getNextDosage() {
         List<DosageResponse> allDosages = getSortedDosages();
         if (allDosages == null) return null;
-        int currentDosageIndex = allDosages.indexOf(getCurrentDosage().getDosage());
-        return currentDosageIndex == allDosages.size() - 1 ? new MyDosageResponse(allDosages.get(0), today.plusDays(1)) :
-                new MyDosageResponse(allDosages.get(currentDosageIndex + 1), today);
+        MyDosageResponse currentDosage = getCurrentDosage();
+        int currentDosageIndex = allDosages.indexOf(currentDosage.getDosage());
+        return currentDosageIndex == allDosages.size() - 1 ? new MyDosageResponse(allDosages.get(0), currentDosage.getDosageDate().plusDays(1)) :
+                new MyDosageResponse(allDosages.get(currentDosageIndex + 1), currentDosage.getDosageDate());
     }
 
     public DateTime getNextDosageTime() {
