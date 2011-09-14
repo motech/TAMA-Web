@@ -34,14 +34,14 @@ public class IVRDayMessageBuilder {
     }
 
     public List<String> getMessageForPreviousDosage_YESTERDAYS_MORNING(DateTime previousDosageDateTime) {
-        return getMessageForPreviousDosage(previousDosageDateTime, IVRMessage.YESTERDAYS, IVRMessage.MORNING, IVRMessage.AFTERNOON, IVRMessage.EVENING);
+        return getMessageForPreviousDosage(previousDosageDateTime, IVRMessage.YESTERDAYS, IVRMessage.MORNING, IVRMessage.AFTERNOON, IVRMessage.EVENING, IVRMessage.LAST_NIGHT);
     }
 
     public List<String> getMessageForPreviousDosage_YESTERDAY_IN_THE_MORNING(DateTime previousDosageDateTime) {
-        return getMessageForPreviousDosage(previousDosageDateTime, IVRMessage.YESTERDAY, IVRMessage.IN_THE_MORNING, IVRMessage.IN_THE_AFTERNOON, IVRMessage.IN_THE_EVENING);
+        return getMessageForPreviousDosage(previousDosageDateTime, IVRMessage.YESTERDAY, IVRMessage.IN_THE_MORNING, IVRMessage.IN_THE_AFTERNOON, IVRMessage.IN_THE_EVENING, IVRMessage.IN_THE_LAST_NIGHT);
     }
 
-    private List<String> getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening) {
+    private List<String> getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening, String lastNight) {
         List<String> messages = new ArrayList<String>();
 
         if (previousDosageDateTime.plusDays(1).toLocalDate().equals(DateUtil.today()) && previousDosageDateTime.getHourOfDay() < 20)
@@ -54,7 +54,7 @@ public class IVRDayMessageBuilder {
         else if (previousDosageDateTime.getHourOfDay() < 20)
             messages.add(evening);
         else if (previousDosageDateTime.getHourOfDay() >= 20)
-            messages.add(IVRMessage.LAST_NIGHT);
+            messages.add(lastNight);
 
         return messages;
     }
