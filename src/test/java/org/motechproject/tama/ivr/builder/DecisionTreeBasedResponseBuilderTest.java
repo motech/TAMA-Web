@@ -95,9 +95,8 @@ public class DecisionTreeBasedResponseBuilderTest {
         menu.setName("menu");
         menu.setCommand(mockCommand);
 
-        Node rootNode = Node.newBuilder()
-                .setPrompts(Arrays.asList(new AudioPrompt().setName("hello"), menu))
-                .build();
+        Node rootNode = new Node()
+                .setPrompts(new AudioPrompt().setName("hello"), menu);
         nextResponse(rootNode, true);
         verify(mockCommand, times(1)).execute(any());
 

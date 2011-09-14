@@ -8,10 +8,9 @@ public abstract class TamaDecisionTree {
 
     public Tree getTree() {
         if (tree != null) return tree;
-        tree = Tree.newBuilder()
+        tree = new Tree()
                 .setName(this.getClass().getName())
-                .setRootNode(createRootNode())
-                .build();
+                .setRootNode(createRootNode());
         return tree;
     }
 
