@@ -17,7 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -87,16 +86,16 @@ public class IvrActionTest {
         @Override
         protected Node createRootNode() {
             return new Node()
-                    .setPrompts(Arrays.asList(new AudioPrompt().setName("foo")))
+                    .setPrompts(new AudioPrompt().setName("foo"))
                     .setTreeCommands(commandForTamaIvrActionTest)
                     .setTransitions(new Object[][]{
-                            {"1", Transition.newBuilder()
+                            {"1", new Transition()
                                     .setDestinationNode(new Node()
-                                            .setPrompts(Arrays.asList(new AudioPrompt().setName("bar")))).build()
+                                            .setPrompts(new AudioPrompt().setName("bar")))
                             },
-                            {"2", Transition.newBuilder()
+                            {"2", new Transition()
                                     .setDestinationNode(new Node()
-                                            .setPrompts(Arrays.asList(new AudioPrompt().setName("baz")))).build()
+                                            .setPrompts(new AudioPrompt().setName("baz")))
                             }});
         }
     }
