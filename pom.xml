@@ -5,7 +5,7 @@
     <groupId>org.motechproject.tama</groupId>
     <artifactId>tama</artifactId>
     <packaging>war</packaging>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
     <name>tama</name>
     <properties>
         <roo.version>1.1.4.RELEASE</roo.version>
@@ -663,37 +663,37 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder-api</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-event-tracking-api</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-decisiontree</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-decisiontree-common</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-cmslite-api</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>tama-symptoms-reporting</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
