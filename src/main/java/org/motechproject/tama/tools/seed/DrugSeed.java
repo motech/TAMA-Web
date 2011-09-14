@@ -54,7 +54,7 @@ public class DrugSeed extends Seed {
 		drug4.addBrand(new Brand("Stavex-LN",allCompanies.get("Aurobindo")));
 		drug4.addBrand(new Brand("Virolans30",allCompanies.get("Ranbaxy")));
 		drug4.addBrand(new Brand("Nevilast30",allCompanies.get("Genx")));
-		drug4.addBrand(new Brand("Emtri 30",allCompanies.get("Emcure")));
+		drug4.addBrand(new Brand("Emtri30",allCompanies.get("Emcure")));
 		drugs.add(drug4);
 
 		Drug drug5 = new Drug("d4T+3TC");
