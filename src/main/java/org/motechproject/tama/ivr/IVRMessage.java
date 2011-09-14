@@ -18,7 +18,9 @@ public class IVRMessage {
     public static final String SIGNATURE_MUSIC_URL = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
-    public static final String PILL_CONFIRM_CALL_MENU = "010_02_04MainMenu1";
+
+    public static final String PILL_CONFIRM_CALL_MENU = "010_03_02_MainMenu2";
+
     public static final String ITS_TIME_FOR_THE_PILL = "001_02_02_itsTimeForPill1";
     public static final String PILL_FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
     public static final String PLEASE_TAKE_DOSE = "003_03_01_TAMAPillDelayWarning1";
@@ -34,19 +36,26 @@ public class IVRMessage {
     public static final String LAST_REMINDER_WARNING_PADDING = "005_04_03_WillCallAgain";
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "001_07_01_your";
-    public static final String YESTERDAYS = "001_08_02_yesterdays";
-    public static final String MORNING = "001_08_02_doseTimeOfMorning";
-    public static final String AFTERNOON = "001_08_02_doseTimeOfAfternoon";
-    public static final String EVENING = "001_08_02_doseTimeOfEvening";
+
+    public static final String YESTERDAYS   = "001_07_02_yesterdays";
+    public static final String MORNING      = "001_07_02_doseTimeOfMorning";
+    public static final String AFTERNOON    = "001_07_02_doseTimeOfAfternoon";
+    public static final String EVENING      = "001_07_02_doseTimeOfEvening";
+    public static final String LAST_NIGHT   = "001_07_02_doseTimeOfLastnight";
+
     public static final String DOSE_NOT_RECORDED = "001_07_03_doseNotRecorded";
-    public static final String YESTERDAY = "001_07_04_doseTimeAtYesterday";
-    public static final String IN_THE_MORNING = "001_07_04_doseTimeAtMorning";
-    public static final String IN_THE_AFTERNOON = "001_07_04_doseTimeAtAfternoon";
-    public static final String IN_THE_EVENING = "001_07_04_doseTimeAtEvening";
-    public static final String LAST_NIGHT = "001_09_02_doseTimeOfLastnight";
+
+    public static final String YESTERDAY         = "001_07_04_doseTimeAtYesterday";
+    public static final String IN_THE_MORNING    = "001_07_04_doseTimeAtMorning";
+    public static final String IN_THE_AFTERNOON  = "001_07_04_doseTimeAtAfternoon";
+    public static final String IN_THE_EVENING    = "001_07_04_doseTimeAtEvening";
+    public static final String IN_THE_LAST_NIGHT = "001_07_04_doseTimeAtLastnight";
+
     public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
     public static final String FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
     public static final String PREVIOUS_DOSE_MENU = "001_07_08_lastDoseMenu";
+    /* ------------------- */
+
     public static final String YOU_SAID_YOU_TOOK = "001_08_01_youSaidYouTook";
     public static final String YOU_SAID_YOU_DID_NOT_TAKE = "001_09_01_youSaidYouTookNot";
     public static final String DOSE = "001_08_03_doseTaken";

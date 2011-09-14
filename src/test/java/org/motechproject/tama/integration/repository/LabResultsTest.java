@@ -17,6 +17,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 public class LabResultsTest extends SpringIntegrationTest {
 
@@ -68,11 +69,10 @@ public class LabResultsTest extends SpringIntegrationTest {
 
         assertEquals(2, results.size());
 
-//        assertEquals(patientId, results.get(0).getPatientId());
-//        assertEquals(patientId, results.get(1).getPatientId());
+        List<String> expectedIds = Arrays.asList(labTest1.getId(), labTest2.getId());
 
-        assertEquals(labTest1.getId(), results.get(0).getLabTest_id());
-        assertEquals(labTest2.getId(), results.get(1).getLabTest_id());
+        assertTrue(expectedIds.contains(results.get(0).getLabTest_id()));
+        assertTrue(expectedIds.contains(results.get(1).getLabTest_id()));
 
         markForDeletion(labResult2);
         markForDeletion(labResult1);

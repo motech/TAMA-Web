@@ -71,7 +71,7 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(1, messages.size());
-        assertEquals("001_08_02_doseTimeOfMorning", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfMorning", messages.get(0));
     }
 
     @Test
@@ -80,8 +80,8 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("001_08_02_yesterdays", messages.get(0));
-        assertEquals("001_08_02_doseTimeOfMorning", messages.get(1));
+        assertEquals("001_07_02_yesterdays", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfMorning", messages.get(1));
     }
 
     @Test
@@ -100,8 +100,8 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("001_08_02_yesterdays", messages.get(0));
-        assertEquals("001_08_02_doseTimeOfAfternoon", messages.get(1));
+        assertEquals("001_07_02_yesterdays", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfAfternoon", messages.get(1));
     }
 
     @Test
@@ -110,8 +110,8 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("001_08_02_yesterdays", messages.get(0));
-        assertEquals("001_08_02_doseTimeOfEvening", messages.get(1));
+        assertEquals("001_07_02_yesterdays", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfEvening", messages.get(1));
     }
 
     @Test
@@ -120,6 +120,6 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(1, messages.size());
-        assertEquals("001_09_02_doseTimeOfLastnight", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfLastnight", messages.get(0));
     }
 }
