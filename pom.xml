@@ -16,237 +16,51 @@
     </properties>
     <profiles>
         <profile>
+            <!--runs unit/integration/functional tests and builds FAT war-->
             <id>tw-ci</id>
+
+        </profile>
+        <profile>
+            <!--runs unit/integration/functional tests and builds THIN war-->
+            <id>grameen1-ci</id>
             <build>
                 <plugins>
-                    <!--PROPERTIES READ-->
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>	
-                        <version>1.0-alpha-2</version>
-                        <executions>
-                            <execution>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>read-project-properties</goal>
-                                </goals>
-                                <configuration>
-                                    <files>
-                                        <file>${project.basedir}/build/maven.properties</file>
-                                    </files>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!--DATA SETUP-->
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>recreate-Db</id>
-                                <phase>test-compile</phase>
-                                <configuration>
-                                    <target>
-                                        <echo message="Recreating DB: START"/>
-                                        <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                        <java classname="org.motechproject.tama.tools.RecreateDB">
-                                            <classpath>
-                                                <pathelement path="${compile_classpath}"/>
-                                            </classpath>
-                                        </java>
-                                        <echo message="Recreating DB: END"/>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>load-seed-data-in-Db</id>
-                                <phase>pre-integration-test</phase>
-                                <configuration>
-                                    <target>
-                                        <echo message="Seed data loading: START"/>
-                                        <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                        <java classname="org.motechproject.tama.tools.seed.SetupSeedData" fork="true" spawn="true">
-                                            <jvmarg value="-XX:MaxPermSize=1024M" />
-                                            <classpath>
-                                                <pathelement path="${compile_classpath}"/>
-                                            </classpath>
-                                        </java>
-                                        <echo message="Seed data loading: END"/>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>setup-quartz-schema</id>
-                                <phase>process-resources</phase>
-                                <configuration>
-                                    <target>
-                                        <echo message="Quartz schema loading: START"/>
-                                        <path id="dependencies">
-                                            <fileset
-                                                    file="${project.basedir}/build/lib/mysql-connector-java-5.1.13.jar"/>
-                                        </path>
-                                        <sql driver="${mysql.driver}"
-                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
-                                             userid="${mysql.user}"
-                                             classpathref="dependencies"
-                                             password="${mysql.password}">
-                                            drop database ${mysql.db};
-                                            create database ${mysql.db};
-                                        </sql>
-                                        <sql driver="${mysql.driver}"
-                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
-                                             userid="${mysql.user}"
-                                             classpathref="dependencies"
-                                             password="${mysql.password}"
-                                             src="${project.basedir}/build/sql/tables_mysql_innodb.sql"/>
-                                        <echo message="Quartz schema loading: END"/>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>start-activemq</id>
-                                <phase>initialize</phase>
-                                <configuration>
-                                    <target name="start.activemq">
-                                        <condition property="script.interpreter" value="bash" else="cmd">
-                                            <os family="unix"/>
-                                        </condition>
-                                        <condition property="script.switch" value="/c" else="">
-                                            <not>
-                                                <os family="unix"/>
-                                            </not>
-                                        </condition>
-                                        <condition property="script.suffix" value="sh" else="bat">
-                                            <os family="unix"/>
-                                        </condition>
-                                        <condition property="activemq.home" value="${activemq.unix.home}"
-                                                   else="${activemq.windows.home}">
-                                            <os family="unix"/>
-                                        </condition>
-
-                                        <echo message="Waiting for ActiveMQ to start on ${os.name}"/>
-                                        <exec executable="${script.interpreter}" dir="${activemq.home}" spawn="true">
-                                            <arg line="${script.switch} ${activemq.home}/bin/activemq.${script.suffix}"/>
-                                        </exec>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>2.1.1</version>
+                        <configuration>
+                            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                        </configuration>
                     </plugin>
 
-                    <!--SELENIUM-->
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!--runs NO tests and builds FAT war-->
+            <id>grameen2-ci</id>
+            <build>
+                <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>start</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>start-server</goal>
-                                </goals>
-                                <configuration>
-                                    <background>true</background>
-                                    <logOutput>true</logOutput>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>stop</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop-server</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.9</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/**/*.java</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
-                    <!--FUNCTIONAL TESTS-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>2.9</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                         <configuration>
-                            <argLine>-XX:MaxPermSize=1024M</argLine>
-                            <systemProperties>
-                                <property>
-                                    <name>jetty.port</name>
-                                    <value>${jetty.port}</value>
-                                </property>
-                                <property>
-                                    <name>test.driver</name>
-                                    <value>${test.driver}</value>
-                                </property>
-                            </systemProperties>
-                            <includes>
-                                <include>**/tamafunctional/**/*Test.java</include>
-                            </includes>
                             <excludes>
+                                <exclude>/**/*.java</exclude>
+                                <exclude>**/tamafunctional/**/*.java</exclude>
                             </excludes>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>jetty-maven-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <systemProperty>
-                                    <name>jetty.port</name>
-                                    <value>${jetty.port}</value>
-                                </systemProperty>
-                                <systemProperty>
-                                    <name>test.driver</name>
-                                    <value>${test.driver}</value>
-                                </systemProperty>
-                            </systemProperties>
-                            <daemon>true</daemon>
-                            <stopPort>6667</stopPort>
-                            <stopKey>secret</stopKey>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>start-jetty</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>stop-jetty</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!--RELEASE-->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.1</version>
-                        <configuration>
-                            <preparationGoals>clean verify -P tw-ci</preparationGoals>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -726,11 +540,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
@@ -739,6 +548,256 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!--PROPERTIES READ-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.basedir}/build/maven.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--DATA SETUP-->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>recreate-Db</id>
+                        <phase>test-compile</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Recreating DB: START"/>
+                                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                <java classname="org.motechproject.tama.tools.RecreateDB">
+                                    <classpath>
+                                        <pathelement path="${compile_classpath}"/>
+                                    </classpath>
+                                </java>
+                                <echo message="Recreating DB: END"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>load-seed-data-in-Db</id>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Seed data loading: START"/>
+                                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                <java classname="org.motechproject.tama.tools.seed.SetupSeedData" fork="true"
+                                      spawn="true">
+                                    <jvmarg value="-XX:MaxPermSize=1024M"/>
+                                    <classpath>
+                                        <pathelement path="${compile_classpath}"/>
+                                    </classpath>
+                                </java>
+                                <echo message="Seed data loading: END"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>setup-quartz-schema</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Quartz schema loading: START"/>
+                                <path id="dependencies">
+                                    <fileset
+                                            file="${project.basedir}/build/lib/mysql-connector-java-5.1.13.jar"/>
+                                </path>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}">
+                                    drop database ${mysql.db};
+                                    create database ${mysql.db};
+                                </sql>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}"
+                                     src="${project.basedir}/build/sql/tables_mysql_innodb.sql"/>
+                                <echo message="Quartz schema loading: END"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>start-activemq</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <target name="start.activemq">
+                                <condition property="script.interpreter" value="bash" else="cmd">
+                                    <os family="unix"/>
+                                </condition>
+                                <condition property="script.switch" value="/c" else="">
+                                    <not>
+                                        <os family="unix"/>
+                                    </not>
+                                </condition>
+                                <condition property="script.suffix" value="sh" else="bat">
+                                    <os family="unix"/>
+                                </condition>
+                                <condition property="activemq.home" value="${activemq.unix.home}"
+                                           else="${activemq.windows.home}">
+                                    <os family="unix"/>
+                                </condition>
+
+                                <echo message="Waiting for ActiveMQ to start on ${os.name}"/>
+                                <exec executable="${script.interpreter}" dir="${activemq.home}" spawn="true">
+                                    <arg line="${script.switch} ${activemq.home}/bin/activemq.${script.suffix}"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--SELENIUM-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>selenium-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start-server</goal>
+                        </goals>
+                        <configuration>
+                            <background>true</background>
+                            <logOutput>true</logOutput>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop-server</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--TESTS-->
+            <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.9</version>
+                        <configuration>
+                            <argLine>-XX:MaxPermSize=1024M</argLine>
+                            <printSummary>true</printSummary>
+                            <excludes>
+                                <exclude>**/*_Roo_*</exclude>
+                                <exclude>**/tamafunctional/**/*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.9</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <argLine>-XX:MaxPermSize=1024M</argLine>
+                            <systemProperties>
+                                <property>
+                                    <name>jetty.port</name>
+                                    <value>${jetty.port}</value>
+                                </property>
+                                <property>
+                                    <name>test.driver</name>
+                                    <value>${test.driver}</value>
+                                </property>
+                            </systemProperties>
+                            <includes>
+                                <include>**/tamafunctional/**/*Test.java</include>
+                            </includes>
+                            <excludes>
+                            </excludes>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        </configuration>
+                    </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>jetty.port</name>
+                            <value>${jetty.port}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>test.driver</name>
+                            <value>${test.driver}</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <daemon>true</daemon>
+                    <stopPort>6667</stopPort>
+                    <stopKey>secret</stopKey>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--RELEASE-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <preparationGoals>clean verify -P tw-ci</preparationGoals>
+                </configuration>
+            </plugin>
+            <!--PACKAGING-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -746,19 +805,6 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <outputDirectory/>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <argLine>-XX:MaxPermSize=1024M</argLine>
-                    <printSummary>true</printSummary>
-                    <excludes>
-                        <exclude>**/*_Roo_*</exclude>
-                        <exclude>**/tamafunctional/**/*.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -776,6 +822,7 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.5</version>
             </plugin>
+            <!--IDE-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -809,34 +856,6 @@
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <dependenciesAsLibraries>true</dependenciesAsLibraries>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>tomcat-maven-plugin</artifactId>
-                <version>1.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>7.3.0.v20110203</version>
-                <configuration>
-                    <stopPort>6667</stopPort>
-                    <stopKey>secret</stopKey>
-                    <webAppConfig>
-                        <contextPath>/${project.name}</contextPath>
-                    </webAppConfig>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>selenium-maven-plugin</artifactId>
-                <version>1.1</version>
-                <configuration>
-                    <suite>src/main/webapp/selenium/test-suite.xhtml</suite>
-                    <browser>*firefox</browser>
-                    <results>${project.build.directory}/selenium.html</results>
-                    <startURL>http://localhost:4444/</startURL>
                 </configuration>
             </plugin>
         </plugins>
