@@ -1,5 +1,6 @@
  package org.motechproject.tama.web;
 
+import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.DosageType;
@@ -45,6 +46,8 @@ public class TreatmentAdviceController extends BaseController {
     @Qualifier("pillReminderService")
     @Autowired
     private PillReminderService pillReminderService;
+    @Autowired
+    private MotechSchedulerService schedulerService;
     @Autowired
     private PillRegimenRequestMapper pillRegimenRequestMapper;
 
@@ -103,6 +106,15 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.asMap().clear();
         allTreatmentAdvices.add(treatmentAdvice);
         pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
+        scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+    }
+
+    private void scheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
+//        Map<String, Object> eventParams = null;
+//        MotechEvent motechEvent = new MotechEvent(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER, eventParams);
+//        String cronJobExpression = new CronJobSimpleExpressionBuilder(new Time(0, 0)).build();
+//        CronSchedulableJob schedulableJob = new CronSchedulableJob(motechEvent, cronJobExpression, treatmentAdvice.getStartDate(), treatmentAdvice.getEndDate());
+//        schedulerService.scheduleJob(schedulableJob);
     }
 
     public void show(String id, Model uiModel) {

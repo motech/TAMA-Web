@@ -20,6 +20,7 @@
     <import resource="classpath:inboundEventChannelAdapter.xml"/>
     <import resource="classpath:applicationDecisionTree.xml"/>
     <import resource="classpath:applicationCmsLiteApi.xml"/>
+    <import resource="classpath:applicationPlatformScheduler.xml"/>
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
         <property name="algorithm" value="PBEWithMD5AndDES"/>

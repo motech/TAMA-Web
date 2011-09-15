@@ -187,6 +187,21 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
+    public void shouldGetTotalCountOfScheduledDosagesForARegimenTillThePreviousWeek() {
+        mockStatic(DateUtil.class);
+        when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 1, 12, 0, 0)); // TotalCount = 25 + 15 = 40
+        when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
+        when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
+
+        DateTime testCallTime = new DateTime(2011, 8, 1, 12, 0, 0);
+        Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
+        pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
+
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountTillPreviousWeek();
+        assertEquals(40, totalCount);
+    }
+
+    @Test
     public void totalCountShouldIncludeADosageIfNowIsAfterThePillWindowStartHour() {
         int dosageYear = 2011;
         int dosageMonth = 7;
