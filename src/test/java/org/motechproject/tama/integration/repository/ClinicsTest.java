@@ -9,8 +9,7 @@ import org.motechproject.tama.repository.AllCities;
 import org.motechproject.tama.repository.AllClinics;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import java.util.List;
 
 public class ClinicsTest extends SpringIntegrationTest {
 
@@ -20,52 +19,46 @@ public class ClinicsTest extends SpringIntegrationTest {
     private AllCities allCities;
 
     @Test
-    public void testShouldPersistClinic() {
-        City city = City.newCity("TestCity");
-        allCities.add(city);
-        String name = "testName";
-        Clinic testClinic = ClinicBuilder.startRecording().withName(name).withCity(city).build();
-        allClinics.add(testClinic);
-
-        Clinic clinic = allClinics.get(testClinic.getId());
-
-        assertNotNull(clinic);
-        markForDeletion(testClinic);
-    }
-
-    @Test
-    public void testShouldMergeClinic() {
-        City city = City.newCity("TestCity");
-        allCities.add(city);
-
-        String testName = "testName";
-        String newName = "newName";
-        Clinic testClinic = ClinicBuilder.startRecording().withName(testName).withCity(city).build();
-        allClinics.add(testClinic);
-
-        testClinic.setName(newName);
-        allClinics.update(testClinic);
-
-        Clinic clinic = allClinics.get(testClinic.getId());
-
-        assertNotNull(clinic);
-        assertEquals(newName, clinic.getName());
-        markForDeletion(testClinic);
-    }
-
-
-    @Test
     public void shouldLoadCorrespondingCityWhenQueryingClinic() {
         City city = City.newCity("Pune");
         allCities.add(city);
+
         Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
         allClinics.add(clinic);
+
         Clinic returnedClinic = allClinics.get(clinic.getId());
+
         Assert.assertNotNull(returnedClinic);
         Assert.assertNotNull(returnedClinic.getCity());
-        Assert.assertEquals("Pune", returnedClinic.getCity().getName());
+        Assert.assertEquals(city.getName(), returnedClinic.getCity().getName());
 
-        markForDeletion(returnedClinic.getCity());
-        markForDeletion(returnedClinic);
+        markForDeletion(clinic);
+        markForDeletion(city);
+    }
+
+    @Test
+    public void getAllShouldLoadCorrespondingCities() {
+        City city = City.newCity("Pune");
+        allCities.add(city);
+
+        City anotherCity = City.newCity("Chennai");
+        allCities.add(anotherCity);
+
+        Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
+        allClinics.add(clinic);
+
+        Clinic anotherClinic = ClinicBuilder.startRecording().withCity(anotherCity).build();
+        allClinics.add(anotherClinic);
+
+        List<Clinic> returnedClinics = allClinics.getAll();
+
+        Assert.assertEquals(city.getName(), returnedClinics.get(0).getCity().getName());
+        Assert.assertEquals(anotherCity.getName(), returnedClinics.get(1).getCity().getName());
+
+        markForDeletion(anotherClinic);
+        markForDeletion(anotherCity);
+
+        markForDeletion(clinic);
+        markForDeletion(city);
     }
 }
