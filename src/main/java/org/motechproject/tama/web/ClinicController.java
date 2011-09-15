@@ -35,7 +35,7 @@ public class ClinicController extends BaseController {
     public String create(@Valid Clinic clinic, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("clinic", clinic);
-            return "clinics/create";
+            return "clinics/clinicForm";
         }
         uiModel.asMap().clear();
         allClinics.add(clinic);
@@ -45,7 +45,7 @@ public class ClinicController extends BaseController {
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
         uiModel.addAttribute("clinic", Clinic.newClinic());
-        return "clinics/create";
+        return "clinics/clinicForm";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -65,7 +65,7 @@ public class ClinicController extends BaseController {
     public String update(@Valid Clinic clinic, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("clinic", clinic);
-            return "clinics/update";
+            return "clinics/clinicForm";
         }
         uiModel.asMap().clear();
         clinic.setRevision(allClinics.get(clinic.getId()).getRevision());
@@ -76,7 +76,8 @@ public class ClinicController extends BaseController {
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("clinic", allClinics.get(id));
-        return "clinics/update";
+        uiModel.addAttribute("mode", "update");
+        return "clinics/clinicForm";
     }
 
     @ModelAttribute("citys")

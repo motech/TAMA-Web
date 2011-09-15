@@ -1,24 +1,41 @@
 package org.motechproject.tama.web;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.motechproject.tama.domain.City;
 import org.motechproject.tama.repository.AllCities;
+import org.motechproject.tama.repository.AllClinics;
+import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 public class ClinicControllerTest {
+
     @Mock
     private AllCities allCities;
 
+    @Mock
+    private AllClinics allClinics;
+
+    private ClinicController clinicController;
+
+    @Before
+    public void setUp() {
+        initMocks(this);
+        clinicController = new ClinicController(allClinics, allCities);
+    }
+
     @Test
     public void shouldSortCitiesInAlphabeticalOrderCaseInsensitive() {
-        MockitoAnnotations.initMocks(this);
-
         City city1 = new City("1");
         city1.setName("Pune");
         City city2 = new City("2");
@@ -34,7 +51,6 @@ public class ClinicControllerTest {
         cityList.add(city4);
 
         Mockito.when(allCities.getAllCities()).thenReturn(cityList);
-        ClinicController clinicController = new ClinicController(null, allCities);
 
         Collection<City> sortedCities = clinicController.populateCitys();
         Assert.assertEquals(4, sortedCities.size());
@@ -43,5 +59,16 @@ public class ClinicControllerTest {
         Assert.assertEquals("chirala", sortedCityArray[1].getName());
         Assert.assertEquals("Hyderabad", sortedCityArray[2].getName());
         Assert.assertEquals("Pune", sortedCityArray[3].getName());
+    }
+
+    @Test
+    public void updateShouldPassUpdateModeToView() {
+        Model uiModel = mock(Model.class);
+        String clinicId = "tempId";
+
+        when(allClinics.get(clinicId)).thenReturn(null);
+        clinicController.updateForm(clinicId, uiModel);
+
+        verify(uiModel).addAttribute("mode", "update");
     }
 }
