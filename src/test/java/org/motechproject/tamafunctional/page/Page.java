@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -85,8 +86,12 @@ public abstract class Page {
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                WebElement element = webDriver.findElement(By.id(id));
-                return element != null && isNotBlank(element.getAttribute("class")) && element.getAttribute("class").contains(dojoClass);
+                try {
+                    WebElement element = webDriver.findElement(By.id(id));
+                    return element != null && isNotBlank(element.getAttribute("class")) && element.getAttribute("class").contains(dojoClass);
+                } catch (StaleElementReferenceException ex) {
+                    return false;
+                }
             }
         });
     }
