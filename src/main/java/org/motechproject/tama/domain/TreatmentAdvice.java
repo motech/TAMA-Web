@@ -1,13 +1,14 @@
 package org.motechproject.tama.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.util.DateUtil;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity {
@@ -92,17 +93,5 @@ public class TreatmentAdvice extends CouchEntity {
         for (DrugDosage dosage : getDrugDosages()) {
             dosage.setEndDate(DateUtil.today());
         }
-    }
-
-    @JsonIgnore
-    public Date getEndDate() {
-        DrugDosage dosageWithMaxEndDate = Collections.max(getDrugDosages(), new DrugDosage.EndDateBasedComparator());
-        return dosageWithMaxEndDate.getEndDateAsDate();
-    }
-
-    @JsonIgnore
-    public Date getStartDate() {
-        DrugDosage dosageWithMinStartDate = Collections.min(getDrugDosages(), new DrugDosage.StartDateBasedComparator());
-        return dosageWithMinStartDate.getStartDateAsDate();
     }
 }

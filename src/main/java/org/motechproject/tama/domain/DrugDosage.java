@@ -9,10 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DrugDosage extends BaseEntity {
 
@@ -142,31 +139,5 @@ public class DrugDosage extends BaseEntity {
         final DrugDosage dosage = new DrugDosage();
         dosage.setStartDate(DateUtil.today());
         return dosage;
-    }
-
-    public static class EndDateBasedComparator implements Comparator<DrugDosage> {
-        @Override
-        public int compare(DrugDosage o1, DrugDosage o2) {
-            if (o1.getEndDate() == null) {
-                return 1;
-            }
-            if (o2.getEndDate() == null) {
-                return -1;
-            }
-            return o1.getEndDate().compareTo(o2.getEndDate());
-        }
-    }
-
-    public static class StartDateBasedComparator implements Comparator<DrugDosage> {
-        @Override
-        public int compare(DrugDosage o1, DrugDosage o2) {
-            if (o1.getStartDate() == null) {
-                return 1;
-            }
-            if (o2.getStartDate() == null) {
-                return -1;
-            }
-            return o1.getStartDate().compareTo(o2.getStartDate());
-        }
     }
 }
