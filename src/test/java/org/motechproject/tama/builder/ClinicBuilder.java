@@ -3,6 +3,8 @@ package org.motechproject.tama.builder;
 import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
 
+import java.util.Arrays;
+
 public class ClinicBuilder {
 
     private Clinic clinic = Clinic.newClinic();
@@ -41,11 +43,18 @@ public class ClinicBuilder {
         return this;
     }
 
+    public ClinicBuilder withClinicianContacts(Clinic.ClinicianContact... contacts) {
+        this.clinic.setClinicianContacts(Arrays.asList(contacts));
+        return this;
+    }
+
     public ClinicBuilder withDefaults() {
+        Clinic.ClinicianContact contact = new Clinic.ClinicianContact("drpujari","0987654321");
         this.withName("DefaultName")
                 .withPhoneNumber("1234567890")
                 .withAddress("DefaultAddress")
-                .withCity(City.newCity("Pune"));
+                .withCity(City.newCity("Pune"))
+                .withClinicianContacts(contact);
         return this;
     }
 }

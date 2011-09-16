@@ -2,9 +2,17 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.TAMAMessages;
 
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.LinkedList;
+import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'Clinic'")
 public class Clinic extends CouchEntity implements Comparable<Clinic> {
@@ -17,6 +25,11 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
 
     @NotNull
     private String phone;
+
+    @Size(min = 1, max = 3, message = "Please enter the contact details for at least one clinician")
+    @OneToMany
+    @Valid
+    private List<ClinicianContact> clinicianContacts = new LinkedList<ClinicianContact>();
 
     @ManyToOne
     private City city;
@@ -63,6 +76,14 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
         this.phone = phone;
     }
 
+    public List<ClinicianContact> getClinicianContacts() {
+        return clinicianContacts;
+    }
+
+    public void setClinicianContacts(List<ClinicianContact> clinicianContacts) {
+        this.clinicianContacts = clinicianContacts;
+    }
+
     @JsonIgnore
     public City getCity() {
         return city;
@@ -84,5 +105,39 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
     @Override
     public int compareTo(Clinic o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
+    }
+
+    public static class ClinicianContact {
+
+        @NotNull(message = "Clinician name is mandatory")
+        private String name;
+
+        @NotNull(message = "Phone number is mandatory")
+        @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
+        private String phoneNumber;
+
+        public ClinicianContact(){
+        }
+
+        public ClinicianContact(String name, String phoneNumber) {
+            this.name = name;
+            this.phoneNumber = phoneNumber;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
     }
 }

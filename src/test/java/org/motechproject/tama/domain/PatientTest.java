@@ -15,6 +15,7 @@ import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.motechproject.tama.testutil.ValidationUtil.assertConstraintViolation;
 
 
 public class PatientTest {
@@ -107,13 +108,5 @@ public class PatientTest {
         assertEquals(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + "1234567890/1234", uniqueFields.get(1));
     }
 
-    private void assertConstraintViolation(Set<ConstraintViolation<Patient>> constraintViolations, String property, String message) {
 
-        for (ConstraintViolation<Patient> patientViolation : constraintViolations) {
-            if (patientViolation.getPropertyPath().toString().equals(property) && patientViolation.getMessage().equals(message)) {
-                return;
-            }
-        }
-        Assert.fail("could not find expected violation for property " + property);
-    }
 }

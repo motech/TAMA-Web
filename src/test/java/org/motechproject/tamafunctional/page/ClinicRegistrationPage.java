@@ -22,6 +22,25 @@ public class ClinicRegistrationPage extends Page {
     @FindBy(how = How.ID, using = "_city_id")
     private WebElement city;
 
+    @FindBy(how = How.ID, using = "_clinicianContacts[0].name_id")
+    private WebElement clinicianContact0Name;
+
+    @FindBy(how = How.ID, using = "_clinicianContacts[0].phoneNumber_id")
+    private WebElement clinicianContact0Number;
+
+    @FindBy(how = How.ID, using = "_clinicianContacts[1].name_id")
+    private WebElement clinicianContact1Name;
+
+    @FindBy(how = How.ID, using = "_clinicianContacts[1].phoneNumber_id")
+    private WebElement clinicianContact1Number;
+
+    @FindBy(how = How.ID, using = "_clinicianContacts[2].name_id")
+    private WebElement clinicianContact2Name;
+
+    @FindBy(how = How.ID, using = "_clinicianContacts[2].phoneNumber_id")
+    private WebElement clinicianContact2Number;
+
+
     @FindBy(how = How.ID, using = "proceed")
     private WebElement registerClinicLink;
 
@@ -40,6 +59,12 @@ public class ClinicRegistrationPage extends Page {
         address = WebDriverFactory.createWebElement(address);
         phoneNumber = WebDriverFactory.createWebElement(phoneNumber);
         city = WebDriverFactory.createWebElement(city);
+        clinicianContact0Name = WebDriverFactory.createWebElement(clinicianContact0Name);
+        clinicianContact0Number = WebDriverFactory.createWebElement(clinicianContact0Number);
+        clinicianContact1Name = WebDriverFactory.createWebElement(clinicianContact1Name);
+        clinicianContact1Number = WebDriverFactory.createWebElement(clinicianContact1Number);
+        clinicianContact2Name = WebDriverFactory.createWebElement(clinicianContact2Name);
+        clinicianContact2Number = WebDriverFactory.createWebElement(clinicianContact2Number);
     }
 
     public ShowClinicPage registerClinic(TestClinic clinic) {
@@ -48,6 +73,12 @@ public class ClinicRegistrationPage extends Page {
         phoneNumber.sendKeys(clinic.phoneNumber());
         city.clear();
         city.sendKeys(clinic.city());
+        clinicianContact0Name.clear();
+        clinicianContact0Name.click();
+        clinicianContact0Name.sendKeys(clinic.clinicianContact0Name());
+        clinicianContact0Number.clear();
+        clinicianContact0Number.click();
+        clinicianContact0Number.sendKeys(clinic.clinicianContact0Number());
         registerClinicLink.click();
         return MyPageFactory.initElements(webDriver, ShowClinicPage.class);
     }

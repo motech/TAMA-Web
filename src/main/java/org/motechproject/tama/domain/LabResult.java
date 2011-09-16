@@ -2,7 +2,6 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
-import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;

@@ -1,0 +1,25 @@
+.contacts {
+    margin-bottom: 10px;
+}
+
+.contacts .title {
+    margin: 8px 0;
+    font-weight: bold;
+    border-bottom: 1px solid #efefef;
+}
+
+.contacts .contact {
+    margin-top: 8px;
+    border-bottom: 1px solid #efefef;
+}
+
+.contacts .clincian-contacts {
+    margin-left: 0;
+    margin-left: 4px;
+    margin-bottom: 5px;
+}
+
+.contacts .errors {
+    margin-left: 4px;
+    display: inline;
+}
