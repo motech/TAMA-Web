@@ -76,7 +76,11 @@ public class TestClinic extends TestEntity {
                     .address("DefaultAddress")
                     .city("Pune")
                     .clinicianContact0Name("pujari")
-                    .clinicianContact0Number("9876543210");
+                    .clinicianContact0Number("9876543210")
+                    .clinicianContact1Name("pujari1")
+                    .clinicianContact1Number("9876543210")
+                    .clinicianContact2Name("pujari2")
+                    .clinicianContact2Number("9876543210");
     }
 
     public String name() {

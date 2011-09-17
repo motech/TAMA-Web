@@ -73,12 +73,12 @@ public class ClinicRegistrationPage extends Page {
         phoneNumber.sendKeys(clinic.phoneNumber());
         city.clear();
         city.sendKeys(clinic.city());
-        clinicianContact0Name.clear();
-        clinicianContact0Name.click();
         clinicianContact0Name.sendKeys(clinic.clinicianContact0Name());
-        clinicianContact0Number.clear();
-        clinicianContact0Number.click();
         clinicianContact0Number.sendKeys(clinic.clinicianContact0Number());
+        clinicianContact1Name.sendKeys(clinic.clinicianContact1Name());
+        clinicianContact1Number.sendKeys(clinic.clinicianContact1Number());
+        clinicianContact2Name.sendKeys(clinic.clinicianContact2Name());
+        clinicianContact2Number.sendKeys(clinic.clinicianContact2Number());
         registerClinicLink.click();
         return MyPageFactory.initElements(webDriver, ShowClinicPage.class);
     }
