@@ -47,7 +47,7 @@ public class EventLoggingServiceIT {
 
         log = allLogs.get(0);
         
-        assertEquals("1", log.getExternalId());
+        assertEquals("1", log.getPatientDocId());
         assertEquals("PillReminderCall", log.getLogType());
         assertEquals("NewCallEvent", log.getName());
         assertEquals("", log.getDescription());
