@@ -22,9 +22,9 @@ public abstract class BaseEventAction extends BaseAction{
     
     Map<String, String> eventData = new HashMap<String, String>();
 
-	protected void publishIVREvent(IVREvent name, String externalId, String callTypeName, IVRRequest.CallDirection callDirection, String callerId, String inputData, String responseXML) {
+	protected void publishIVREvent(String kookooSid, IVREvent name, String externalId, String callTypeName, IVRRequest.CallDirection callDirection, String callerId, String inputData, String responseXML) {
 		
-		EventDataBuilder builder = new EventDataBuilder(name.toString(), externalId, callTypeName, DateUtil.now());
+		EventDataBuilder builder = new EventDataBuilder(kookooSid, name.toString(), externalId, callTypeName, DateUtil.now());
         builder.withResponseXML(responseXML)
         .withCallDirection(callDirection.toString())
         .withCallerId(callerId)
@@ -36,7 +36,7 @@ public abstract class BaseEventAction extends BaseAction{
 		String responseXML = handle(ivrRequest, request, response);
 		IVRSession ivrSession = getIVRSession(request);
         String patientId = ivrSession.isValid() ? ivrSession.getPatientId() : "Unknown";
-        publishIVREvent(ivrRequest.callEvent(), patientId, getCallTypeName(request), ivrRequest.getCallDirection(), ivrRequest.getCid(), ivrRequest.getData(), responseXML);
+        publishIVREvent(ivrRequest.getSid(), ivrRequest.callEvent(), patientId, getCallTypeName(request), ivrRequest.getCallDirection(), ivrRequest.getCid(), ivrRequest.getData(), responseXML);
 		postHandle(ivrRequest, request, response);
 		return responseXML;
 	}

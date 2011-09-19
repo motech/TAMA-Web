@@ -12,6 +12,7 @@ public class TAMAConstants {
     public static final String DOSAGE_INTERVAL = "dosage.interval";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
     public static final int DAYS_IN_FOUR_WEEKS = 28;
+    public static final String IS_OUTBOUND_CALL = "is_outbound";
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),

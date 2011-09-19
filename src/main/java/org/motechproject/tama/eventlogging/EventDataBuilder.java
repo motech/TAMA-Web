@@ -1,20 +1,20 @@
 package org.motechproject.tama.eventlogging;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.joda.time.DateTime;
 import org.motechproject.eventtracking.domain.Event;
 import org.motechproject.tama.ivr.IVRCallEvent;
 import org.motechproject.util.DateUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventDataBuilder {
 	
 	private IVRCallEvent callEvent;
 	Map<String, String> eventData = new HashMap<String, String>();
 	
-	public EventDataBuilder(String eventName, String externalId, String callTypeName, DateTime dateTime) {
-		callEvent = new IVRCallEvent(eventName, externalId, callTypeName, DateUtil.now(), eventData);
+	public EventDataBuilder(String kookooSid, String eventName, String externalId, String callTypeName, DateTime dateTime) {
+		callEvent = new IVRCallEvent(kookooSid, eventName, externalId, callTypeName, DateUtil.now(), eventData);
 	}
 
 	public EventDataBuilder withCallerId(String callerId) {

@@ -1,21 +1,22 @@
 package org.motechproject.tama.ivr;
 
-import java.util.Map;
-
 import org.joda.time.DateTime;
 import org.motechproject.eventtracking.domain.Event;
 
-public class IVRCallEvent implements Event{ 
-	String eventName; 
-	String externalID;
-	String callType;
-	DateTime dateTime;
-	Map<String, String> data;
-	
+import java.util.Map;
+
+public class IVRCallEvent implements Event{
+    String eventName;
+    String kookooSid;
+
+    String externalID;
+    String callType;
+    DateTime dateTime;
+    Map<String, String> data;
 	public IVRCallEvent() {}
 
-	public IVRCallEvent(String eventName, String externalID, String callType,
-			DateTime dateTime, Map<String, String> data) {
+	public IVRCallEvent(String kookooSid, String eventName, String externalID, String callType,
+                        DateTime dateTime, Map<String, String> data) {
 		super();
 		this.eventName = eventName;
 		this.externalID = externalID;
@@ -24,13 +25,21 @@ public class IVRCallEvent implements Event{
 		this.data = data;
 	}
 
+    public String getKookooSid() {
+        return kookooSid;
+    }
+
+    public void setKookooSid(String kookooSid) {
+        this.kookooSid = kookooSid;
+    }
+
 	public String getEventName() {
 		return eventName;
 	}
-	public void setEventName(String eventName) {
+    public void setEventName(String eventName) {
 		this.eventName = eventName;
 	}
-	public String getExternalID() {
+    public String getExternalID() {
 		return externalID;
 	}
 	public void setExternalID(String externalID) {

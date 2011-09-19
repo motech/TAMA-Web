@@ -1,11 +1,10 @@
 package org.motechproject.tama.ivr.call;
 
-import org.motechproject.eventtracking.domain.Event;
 import org.motechproject.eventtracking.service.EventService;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.eventlogging.EventDataBuilder;
 import org.motechproject.tama.eventlogging.EventLogConstants;
-import org.motechproject.tama.ivr.IVRCallEvent;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class PillReminderCall {
 
     private AllPatients allPatients;
     private CallService callService;
-	private EventService eventService;
+    private EventService eventService;
 
     @Autowired
     public PillReminderCall(CallService callService, EventService eventService, AllPatients allPatients) {
@@ -36,6 +35,7 @@ public class PillReminderCall {
             put(DOSAGE_ID, dosageId);
             put(TIMES_SENT, String.valueOf(timesSent));
             put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
+            put(TAMAConstants.IS_OUTBOUND_CALL, "true");
         }};
         makeCall(patientId, params);
     }
@@ -43,7 +43,7 @@ public class PillReminderCall {
     private void makeCall(String patientId, Map<String, String> params) {
         Patient patient = allPatients.get(patientId);
         if (patient == null || patient.isNotActive()) return;
-        EventDataBuilder eventDataBuilder = new EventDataBuilder("Dial", patient.getId(), EventLogConstants.CALL_TYPE_PILL_REMINDER, DateUtil.now());
+        EventDataBuilder eventDataBuilder = new EventDataBuilder(null, "Dial", patient.getId(), EventLogConstants.CALL_TYPE_PILL_REMINDER, DateUtil.now());
         eventDataBuilder.withCallDirection(EventLogConstants.CALL_DIRECTION_OUTBOUND)
         	.withCallerId(patient.getIVRMobilePhoneNumber());
 		eventService.publishEvent(eventDataBuilder.build());

@@ -40,7 +40,7 @@ public class EventLoggingServiceIT {
         data.put("StartDate", now.toString());
         data.put("EndDate", now.toString());
 
-        service.create("1", "PillReminderCall", "NewCallEvent", "", now, data);
+        service.create("", "1", "PillReminderCall", "NewCallEvent", "", now, data);
         
         List<EventLog> allLogs = allEventLogs.getAll();
         assertEquals(1, allLogs.size());

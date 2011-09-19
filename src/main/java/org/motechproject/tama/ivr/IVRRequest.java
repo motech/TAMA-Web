@@ -3,6 +3,7 @@ package org.motechproject.tama.ivr;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.motechproject.tama.TAMAConstants;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -95,7 +96,12 @@ public class IVRRequest {
     public boolean hasNoTamaData() {
         return StringUtils.isBlank(tamaData);
     }
+
+    public boolean hasTamaData(){
+        return !hasNoTamaData();
+    }
+
     public CallDirection getCallDirection() {
-    	return hasNoTamaData()?CallDirection.Inbound: CallDirection.Outbound;
+    	return hasTamaData() && "true".equals(getTamaParams().get(TAMAConstants.IS_OUTBOUND_CALL)) ? CallDirection.Outbound: CallDirection.Inbound;
     }
 }

@@ -18,8 +18,8 @@ public class EventLoggingServiceImpl implements EventLoggingService {
     }
 
     @Override
-    public void create(String externalId, String logType, String name, String description, DateTime dateTime, Map<String, String> data) {
-        EventLog eventLog = new EventLog(externalId, logType, name, description, dateTime, data);
+    public void create(String kookooSid, String externalId, String logType, String name, String description, DateTime dateTime, Map<String, String> data) {
+        EventLog eventLog = new EventLog(kookooSid, externalId, logType, name, description, dateTime, data);
         allEventLogs.add(eventLog);
     }
 }

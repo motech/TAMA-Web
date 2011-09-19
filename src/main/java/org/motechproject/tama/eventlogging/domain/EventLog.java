@@ -13,17 +13,18 @@ public class EventLog extends CouchEntity {
 	private String type = "EventLog";
 	@JsonProperty("code")
 	String code;
-    private String patientDocId;
+
+    private String kookooSid;
+
     private String logType;
     private String name;
     private String description;
     private DateTime dateTime;
     private Map<String, String> data;
-
     public EventLog() {
     }
 
-    public EventLog(String patientDocId, String logType, String name, String description, DateTime dateTime, Map<String, String> data) {
+    public EventLog(String kookooSid, String patientDocId, String logType, String name, String description, DateTime dateTime, Map<String, String> data) {
         this.patientDocId = patientDocId;
         this.logType = logType;
         this.name = name;
@@ -31,6 +32,16 @@ public class EventLog extends CouchEntity {
         this.dateTime = dateTime;
         this.data = data;
     }
+
+    public String getKookooSid() {
+        return kookooSid;
+    }
+
+    public void setKookooSid(String kookooSid) {
+        this.kookooSid = kookooSid;
+    }
+
+    private String patientDocId;
 
     public String getPatientDocId() {
         return patientDocId;
