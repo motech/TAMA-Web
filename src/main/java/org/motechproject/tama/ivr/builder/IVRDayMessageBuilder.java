@@ -27,7 +27,9 @@ public class IVRDayMessageBuilder {
         } else {
             messages.add(iVRMessage.getNumberFilename(nextDosageDateTime.getHourOfDay() % 12));
         }
-        messages.add(iVRMessage.getNumberFilename(nextDosageDateTime.getMinuteOfHour()));
+        if(nextDosageDateTime.getMinuteOfHour() != 0){
+            messages.add(iVRMessage.getNumberFilename(nextDosageDateTime.getMinuteOfHour()));
+        }
         messages.add(nextDosageDateTime.getHourOfDay() < 12 ? IVRMessage.IN_THE_MORNING : IVRMessage.IN_THE_EVENING);
         messages.add(nextDosageDateTime.toLocalDate().equals(DateUtil.today()) ? IVRMessage.TODAY : IVRMessage.TOMORROW);
         return messages;
