@@ -50,8 +50,13 @@ public class DecisionTreeBasedResponseBuilderTest {
 				hangup = true;
 				return this;
 			}
-			
-			@Override
+
+            @Override
+            public IVRResponseBuilder withNextUrl(String s) {
+                return this;
+            }
+
+            @Override
 			public boolean isHangUp() {
 				return hangup;
 			}
