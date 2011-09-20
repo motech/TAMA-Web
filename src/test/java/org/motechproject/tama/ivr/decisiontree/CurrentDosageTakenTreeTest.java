@@ -26,7 +26,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class CurrentDosageTakenTreeTest {
 
-
     @Autowired
     private TestConfirmTree testConfirmTree;
 
@@ -48,7 +47,6 @@ public class CurrentDosageTakenTreeTest {
         testConfirmTree.setTreeToNull();
     }
 
-
     @Test
     public void shouldGetPillTakenCommand() {
         Node nextNode = testConfirmTree.getTree().nextNode("", "");
@@ -56,7 +54,6 @@ public class CurrentDosageTakenTreeTest {
         assertEquals(1, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof NextCallDetails);
     }
-
 }
 
 @Component

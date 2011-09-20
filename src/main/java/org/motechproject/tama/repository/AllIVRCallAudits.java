@@ -17,6 +17,4 @@ public class AllIVRCallAudits extends CouchDbRepositorySupport<IVRCallAudit> {
         super(IVRCallAudit.class, db);
         initStandardDesignDocument();
     }
-
-
 }

@@ -154,6 +154,7 @@ public class CurrentDosageReminderTreeTest {
         threadLocalContext.setIvrContext(new IVRContext(ivrRequest, ivrSession));
 
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
+        when(ivrSession.getCallTime()).thenReturn(DateUtil.now());
     }
 }
 

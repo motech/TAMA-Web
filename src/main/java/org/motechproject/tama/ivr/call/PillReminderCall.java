@@ -3,10 +3,9 @@ package org.motechproject.tama.ivr.call;
 import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.ivr.eventlogging.EventDataBuilder;
 import org.motechproject.server.service.ivr.CallRequest;
+import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRService;
-import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.eventlogging.EventLogConstants;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ public class PillReminderCall {
     private IVRService ivrService;
     private EventService eventService;
 
-
     @Autowired
     @Qualifier("ivrProperties")
     private Properties properties;
@@ -45,7 +43,6 @@ public class PillReminderCall {
             put(DOSAGE_ID, dosageId);
             put(TIMES_SENT, String.valueOf(timesSent));
             put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
-            put(TAMAConstants.IS_OUTBOUND_CALL, "true");
         }};
         makeCall(patientId, params);
     }
@@ -54,7 +51,7 @@ public class PillReminderCall {
         Patient patient = allPatients.get(patientId);
         if (patient == null || patient.isNotActive()) return;
         EventDataBuilder eventDataBuilder = new EventDataBuilder(null, "Dial", patient.getId(), new HashMap<String, String>(), DateUtil.now());
-        eventDataBuilder.withCallDirection(EventLogConstants.CALL_DIRECTION_OUTBOUND)
+        eventDataBuilder.withCallDirection(IVRRequest.CallDirection.Outbound)
                 .withCallerId(patient.getIVRMobilePhoneNumber());
         eventService.publishEvent(eventDataBuilder.build());
         CallRequest callRequest = new CallRequest(patient.getIVRMobilePhoneNumber(), params, getApplicationUrl());

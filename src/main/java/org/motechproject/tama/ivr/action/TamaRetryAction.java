@@ -35,8 +35,7 @@ public class TamaRetryAction extends BaseAction {
         if (isLast(attempt))
             return userNotAuthorisedAction.handle(ivrRequest, request, response);
 
-        if (!ivrRequest.hasNoData())
-           ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
+        ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
         
         return dtmfResponseWithWav(ivrRequest, messages.getSignatureMusic());
     }

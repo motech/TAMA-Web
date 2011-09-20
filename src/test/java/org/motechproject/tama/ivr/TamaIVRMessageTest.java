@@ -8,7 +8,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
-public class IVRMessageTest {
+public class TamaIVRMessageTest {
     private TamaIVRMessage messages;
     private Properties properties;
 
