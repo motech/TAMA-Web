@@ -7,12 +7,17 @@ import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.tama.web.command.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.aop.target.ThreadLocalTargetSource;
@@ -48,7 +53,7 @@ public class CurrentDosageReminderTreeTest {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
-        assertEquals(IVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(1).getName());
+        assertEquals(TamaIVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(1).getName());
         assertEquals(MenuAudioPrompt.class, prompts.get(1).getClass());
         assertTrue(nextNode.getTreeCommands().isEmpty());
     }
@@ -83,7 +88,7 @@ public class CurrentDosageReminderTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof MessageForMissedPillFeedbackCommand);
-        assertEquals(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(1).getName());
+        assertEquals(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(1).getName());
         assertEquals(MenuAudioPrompt.class, prompts.get(1).getClass());
         assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(UpdateAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
@@ -96,7 +101,7 @@ public class CurrentDosageReminderTreeTest {
         Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "2");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(3, prompts.size());
-        assertEquals(IVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
+        assertEquals(TamaIVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
         assertEquals(RecordDeclinedDosageReasonCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertTrue(prompts.get(1).getCommand() instanceof MessageForAdherenceWhenPreviousDosageCapturedCommand);
         assertTrue(prompts.get(2).getCommand() instanceof MessageFromPreviousDosage);
@@ -142,13 +147,13 @@ public class CurrentDosageReminderTreeTest {
         List<DosageResponse> dosageResponses = Arrays.asList(currentDosage, previousDosage);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
 
-        IVRRequest ivrRequest = new IVRRequest();
+        IVRRequest ivrRequest = new KookooRequest();
 
-        ivrRequest.setTamaData(String.format("{\"%s\":\"%s\"}", PillReminderCall.DOSAGE_ID, "currentDosageId"));
+        ivrRequest.setParameter(PillReminderCall.DOSAGE_ID, "currentDosageId");
         ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
         threadLocalContext.setIvrContext(new IVRContext(ivrRequest, ivrSession));
 
-        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
     }
 }
 

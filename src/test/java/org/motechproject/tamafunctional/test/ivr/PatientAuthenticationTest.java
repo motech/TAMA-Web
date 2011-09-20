@@ -1,7 +1,7 @@
 package org.motechproject.tamafunctional.test.ivr;
 
 import org.junit.Test;
-import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.ivr.Caller;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -33,10 +33,10 @@ public class PatientAuthenticationTest extends BaseIVRTest {
 
         Caller caller = caller(patient);
         IVRResponse ivrResponse = caller.call();
-        asksForCollectDtmfWith(ivrResponse, IVRMessage.SIGNATURE_MUSIC_URL);
+        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC_URL);
 
         ivrResponse = caller.enter("1234#");
-        asksForCollectDtmfWith(ivrResponse, IVRMessage.SIGNATURE_MUSIC_URL);
+        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC_URL);
     }
 }
 

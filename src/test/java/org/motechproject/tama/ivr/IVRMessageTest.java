@@ -9,18 +9,18 @@ import java.util.Properties;
 import static org.junit.Assert.assertEquals;
 
 public class IVRMessageTest {
-    private IVRMessage messages;
+    private TamaIVRMessage messages;
     private Properties properties;
 
     @Before
     public void setUp() {
         properties = new Properties();
-        messages = new IVRMessage(properties, new FileUtil());
+        messages = new TamaIVRMessage(properties, new FileUtil());
     }
 
     @Test
     public void shouldReturnWavFileLink() {
-        properties.put(IVRMessage.CONTENT_LOCATION_URL, "http://localhost/");
+        properties.put(TamaIVRMessage.CONTENT_LOCATION_URL, "http://localhost/");
         properties.put("mayo", "clinic.welcome.mayo");
 
         assertEquals("http://localhost/en/clinic.welcome.mayo.wav", messages.getWav("mayo","en"));

@@ -1,17 +1,21 @@
 package org.motechproject.tama.ivr.action;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ivr.action.AuthenticateAction;
+import org.motechproject.ivr.action.IvrAction;
+import org.motechproject.server.decisiontree.DecisionTreeBasedResponseBuilder;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.server.service.ivr.IVRCallState;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVRCallAttribute;
-import org.motechproject.tama.ivr.IVRCallState;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
-import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
-import org.motechproject.tama.ivr.decisiontree.TreeChooser;
+import org.motechproject.tama.ivr.decisiontree.TamaTreeChooser;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
+import org.motechproject.tama.util.TamaSessionUtil;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,32 +25,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class AuthenticateAction extends BaseAction {
+public class TamaAuthenticateAction extends AuthenticateAction {
     private PillReminderService pillReminderService;
-    private RetryAction retryAction;
-    private UserNotFoundAction userNotFoundAction;
+    private TamaRetryAction retryAction;
+    private TamaUserNotFoundAction userNotFoundAction;
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
-    private final TreeChooser treeChooser;
-    private ThreadLocalTargetSource threadLocalTargetSource;
+    private final TamaTreeChooser treeChooser;
+    private DecisionTreeBasedResponseBuilder responseBuilder;
 
     @Autowired
-    public AuthenticateAction(PillReminderService pillReminderService,
-                              AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
-                              RetryAction retryAction, UserNotFoundAction userNotFoundAction,
-                              ThreadLocalTargetSource threadLocalTargetSource, TreeChooser treeChooser) {
+    public TamaAuthenticateAction(PillReminderService pillReminderService,
+                                  AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
+                                  TamaRetryAction retryAction, TamaUserNotFoundAction userNotFoundAction,
+                                  ThreadLocalTargetSource threadLocalTargetSource, TamaTreeChooser treeChooser, DecisionTreeBasedResponseBuilder ivrResponseBuilder) {
         this.pillReminderService = pillReminderService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.retryAction = retryAction;
-        this.threadLocalTargetSource = threadLocalTargetSource;
         this.treeChooser = treeChooser;
         this.userNotFoundAction = userNotFoundAction;
+        this.responseBuilder = ivrResponseBuilder;
     }
 
     @Override
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
-        return handle(ivrRequest, request, response, new IvrAction(treeChooser, messages, threadLocalTargetSource));
+        return handle(ivrRequest, request, response, new IvrAction(treeChooser, messages, responseBuilder));
     }
 
     public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response, IvrAction tamaIvrAction) {
@@ -55,7 +59,7 @@ public class AuthenticateAction extends BaseAction {
         String phoneNumber = (String) ivrSession.get(IVRCallAttribute.CALLER_ID);
         Patient patient = allPatients.findByMobileNumber(phoneNumber);
 
-        if(patient == null)
+        if (patient == null)
             return userNotFoundAction.handle(ivrRequest, request, response);
 
         patient = allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode);
@@ -68,13 +72,13 @@ public class AuthenticateAction extends BaseAction {
 
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
-        ivrSession.set(IVRCallAttribute.PATIENT_DOC_ID, patient.getId());
+        ivrSession.set(TamaSessionAttribute.PATIENT_DOC_ID, patient.getId());
         ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getIvrLanguage().getCode());
 
-        ivrSession.set(IVRCallAttribute.CALL_TIME, DateUtil.now());
+        ivrSession.setCallTime(DateUtil.now());
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
-        ivrSession.set(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
-        ivrSession.set(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM, request.getParameter(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM));
+        ivrSession.set(TamaSessionAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
+        ivrSession.set(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM, request.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM));
         ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }
@@ -88,7 +92,7 @@ public class AuthenticateAction extends BaseAction {
     }
 
     private boolean isSymptomReportingCall(HttpServletRequest request) {
-        return StringUtils.isNotBlank(request.getParameter(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM));
+        return StringUtils.isNotBlank(request.getParameter(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM));
     }
 
 }

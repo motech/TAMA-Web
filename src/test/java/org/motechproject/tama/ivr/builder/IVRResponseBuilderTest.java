@@ -5,9 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.decisiontree.KookooCollectDtmfFactory;
-import org.motechproject.tama.ivr.decisiontree.KookooResponseFactory;
+import org.motechproject.ivr.kookoo.KookooCollectDtmfFactory;
+import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.ivr.kookoo.KookooResponseFactory;
+import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -23,14 +24,14 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({KookooResponseFactory.class, KookooCollectDtmfFactory.class})
 public class IVRResponseBuilderTest {
 
-    private IVRResponseBuilder builder;
+    private KookooIVRResponseBuilder builder;
     @Mock
     private IVRMessage messages;
 
     @Before
     public void setUp() {
         initMocks(this);
-        builder = new IVRResponseBuilder("sid", "en");
+        builder = new KookooIVRResponseBuilder();
 
         when(messages.getWav(anyString(), anyString())).thenReturn("");
     }
@@ -39,32 +40,32 @@ public class IVRResponseBuilderTest {
     public void shouldAddPlayTextOnlyIfItsNotEmpty() {
         when(messages.getText(anyString())).thenReturn("nova");
 
-        Response response = builder.withPlayTexts("nova").create(messages);
-        assertTrue(response.getXML().contains("nova"));
+        String response = builder.withPlayTexts("nova").create(messages, "sid", "en");
+        assertTrue(response.contains("nova"));
 
-        builder = new IVRResponseBuilder("sid","en");
-        response = builder.create(messages);
-        assertFalse(response.getXML().contains("<playtext>"));
+        builder = new KookooIVRResponseBuilder();
+        response = builder.create(messages, "sid", "en");
+        assertFalse(response.contains("<playtext>"));
     }
 
     @Test
     public void shouldAddPlayAudioOnlyIfItsNotEmpty() {
         when(messages.getWav(anyString(), anyString())).thenReturn("nova");
-        Response response = builder.withPlayAudios("nova").create(messages);
-        assertTrue(response.getXML().contains("nova"));
+        String response = builder.withPlayAudios("nova").create(messages, "sid", "en");
+        assertTrue(response.contains("nova"));
 
-        builder = new IVRResponseBuilder("sid","en");
-        response = builder.create(messages);
-        assertFalse(response.getXML().contains("<playaudio>"));
+        builder = new KookooIVRResponseBuilder();
+        response = builder.create(messages, "sid", "en");
+        assertFalse(response.contains("<playaudio>"));
     }
 
     @Test
     public void shouldAddCollectDTMFOnlyIfItsNotNull() {
-        Response response = builder.collectDtmf().create(messages);
-        assertTrue(response.getXML().contains("<collectdtmf/>"));
+        String response = builder.collectDtmf().create(messages, "sid", "en");
+        assertTrue(response.contains("<collectdtmf/>"));
 
-        response = new IVRResponseBuilder("sid","en").create(messages);
-        assertFalse(response.getXML().contains("<collectdtmf/>"));
+        response = new KookooIVRResponseBuilder().create(messages, "sid", "en");
+        assertFalse(response.contains("<collectdtmf/>"));
     }
 
     @Test
@@ -75,40 +76,40 @@ public class IVRResponseBuilderTest {
         when(KookooCollectDtmfFactory.create()).thenReturn(new TestableCollectDtmf());
 
 
-        TestableKookooResponse response = (TestableKookooResponse) builder.collectDtmf(4).create(messages);
-        assertTrue(response.getDtmf().getMaxDigits() == 4);
+        String response = builder.collectDtmf(4).create(messages, "sid", "en");
+        assertTrue(response.contains("l=\"4\""));
 
         when(KookooResponseFactory.create()).thenReturn(new TestableKookooResponse());
         when(KookooCollectDtmfFactory.create()).thenReturn(new TestableCollectDtmf());
 
-        TestableKookooResponse zeoDigitResponse = (TestableKookooResponse) new IVRResponseBuilder("sid").collectDtmf(0).create(messages);
-        assertTrue(zeoDigitResponse.getDtmf().getMaxDigits() == 0);
+        String zeroDigitResponse =  new KookooIVRResponseBuilder().collectDtmf(0).createWithDefaultLanguage(messages,"sid");
+        assertTrue(zeroDigitResponse.contains("<collectdtmf/>"));
     }
 
     @Test
     public void shouldHangupOnlyOnlyWhenAskedFor() {
-        Response response = builder.withHangUp().create(messages);
-        assertTrue(response.getXML().contains("<hangup/>"));
+        String response = builder.withHangUp().create(messages, "sid", "en");
+        assertTrue(response.contains("<hangup/>"));
 
-        response = new IVRResponseBuilder("sid","en").create(messages);
-        assertFalse(response.getXML().contains("<hangup/>"));
+        response = new KookooIVRResponseBuilder().create(messages, "12", "en");
+        assertFalse(response.contains("<hangup/>"));
     }
 
     @Test
     public void shouldAddMultiplePlayAudios() {
         when(messages.getWav("wav1","en")).thenReturn("wav1");
         when(messages.getWav("wav2","en")).thenReturn("wav2");
-        Response response = builder.withPlayAudios("wav1").withPlayAudios("wav2").create(messages);
-        assertTrue(response.getXML().contains("<playaudio>wav1</playaudio>"));
-        assertTrue(response.getXML().contains("<playaudio>wav2</playaudio>"));
+        String response = builder.withPlayAudios("wav1").withPlayAudios("wav2").create(messages, "12", "en");
+        assertTrue(response.contains("<playaudio>wav1</playaudio>"));
+        assertTrue(response.contains("<playaudio>wav2</playaudio>"));
     }
 
     @Test
     public void shouldAddMultiplePlayTexts() {
         when(messages.getText("txt1")).thenReturn("txt1");
         when(messages.getText("txt2")).thenReturn("txt2");
-        Response response = builder.withPlayTexts("txt1").withPlayTexts("txt2").create(messages);
-        assertTrue(response.getXML().contains("<playtext>txt1</playtext>"));
-        assertTrue(response.getXML().contains("<playtext>txt2</playtext>"));
+        String response = builder.withPlayTexts("txt1").withPlayTexts("txt2").create(messages, "12", "en");
+        assertTrue(response.contains("<playtext>txt1</playtext>"));
+        assertTrue(response.contains("<playtext>txt2</playtext>"));
     }
 }

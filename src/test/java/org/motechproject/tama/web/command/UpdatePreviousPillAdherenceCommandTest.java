@@ -6,14 +6,16 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
+import org.motechproject.tama.util.TamaSessionUtil;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,16 +50,13 @@ public class UpdatePreviousPillAdherenceCommandTest {
 
         previousPillTakenCommand = new StopPreviousPillReminderCommand(pillReminderService);
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(PillReminderCall.DOSAGE_ID, CURRENT_DOSAGE_ID);
-
-        when(ivrSession.getPatientId()).thenReturn(PATIENT_ID);
-        when(ivrRequest.getTamaParams()).thenReturn(params);
+        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");        
+        when(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(context.ivrRequest()).thenReturn(ivrRequest);
 
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        when(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
     }
 
     @Test

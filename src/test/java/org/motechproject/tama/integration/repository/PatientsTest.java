@@ -67,7 +67,7 @@ public class PatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldLoadPatientByPatientId() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("9191919199").withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
         allPatients.add(patient);
         markForDeletion(patient);
         markForDeletion(allUniquePatientFields.getAll().get(0));

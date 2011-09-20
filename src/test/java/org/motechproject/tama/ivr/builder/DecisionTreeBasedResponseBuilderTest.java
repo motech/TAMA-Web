@@ -4,8 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.*;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.server.decisiontree.DecisionTreeBasedResponseBuilder;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRMessage;
+import org.motechproject.server.service.ivr.IVRResponseBuilder;
+import org.motechproject.server.service.ivr.IVRSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
@@ -18,10 +24,85 @@ public class DecisionTreeBasedResponseBuilderTest {
     IVRContext ivrContext;
     @Mock
     IVRSession ivrSession;
+    
 
     @Before
     public void setUp() {
-        treeBasedResponseBuilder = new DecisionTreeBasedResponseBuilder();
+        treeBasedResponseBuilder = new DecisionTreeBasedResponseBuilder(new IVRResponseBuilder() {
+			
+        	List<String> audios = new ArrayList<String>();
+        	boolean hangup;
+        	boolean collectDtmf;
+			@Override
+			public IVRResponseBuilder withPlayTexts(String... playTexts) {
+				return this;
+			}
+			
+			@Override
+			public IVRResponseBuilder withPlayAudios(String... playAudios) {
+				for (int i=0; i<playAudios.length; i++)
+					audios.add(playAudios[i]);
+				return this;
+			}
+			
+			@Override
+			public IVRResponseBuilder withHangUp() {
+				hangup = true;
+				return this;
+			}
+			
+			@Override
+			public boolean isHangUp() {
+				return hangup;
+			}
+			
+			@Override
+			public boolean isCollectDtmf() {
+				return collectDtmf;
+			}
+			
+			@Override
+			public List<String> getPlayTexts() {
+				return new ArrayList<String>();
+			}
+			
+			@Override
+			public List<String> getPlayAudios() {
+				return audios;
+			}
+			
+			@Override
+			public String createWithDefaultLanguage(IVRMessage ivrMessage, String sessionId) {
+				return null;
+			}
+			
+			@Override
+			public String create(IVRMessage ivrMessage, String sessionId, String languageCode) {
+				return null;
+			}
+			
+			@Override
+			public IVRResponseBuilder collectDtmf(int dtmfLength) {
+				collectDtmf = true;
+				return this;
+			}
+		}, new IVRMessage() {
+			
+			@Override
+			public String getWav(String key, String preferredLangCode) {
+				return null;
+			}
+			
+			@Override
+			public String getText(String key) {
+				return null;
+			}
+			
+			@Override
+			public String getSignatureMusic() {
+				return "signature_music.wav";
+			}
+		});
         initMocks(this);
         when(ivrSession.getPreferredLanguageCode()).thenReturn("en");
         when(ivrContext.ivrSession()).thenReturn(ivrSession);
@@ -47,7 +128,7 @@ public class DecisionTreeBasedResponseBuilderTest {
     }
 
     private IVRResponseBuilder nextResponse(Node rootNode, boolean retryOnIncorrectUserAction) {
-        return treeBasedResponseBuilder.ivrResponse("foo", rootNode, ivrContext, retryOnIncorrectUserAction);
+        return treeBasedResponseBuilder.ivrResponse(rootNode, ivrContext, retryOnIncorrectUserAction);
     }
 
     @Test

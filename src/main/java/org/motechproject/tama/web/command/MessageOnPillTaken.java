@@ -1,7 +1,7 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ public class MessageOnPillTaken extends BaseTreeCommand {
         IVRContext ivrContext = (IVRContext) context;
         ArrayList<String> messages = new ArrayList<String>();
         if (getTimesSent(ivrContext) == 0) {
-            messages.add(IVRMessage.DOSE_TAKEN_ON_TIME);
+            messages.add(TamaIVRMessage.DOSE_TAKEN_ON_TIME);
         }
-        messages.add(IVRMessage.DOSE_RECORDED);
+        messages.add(TamaIVRMessage.DOSE_RECORDED);
         return messages.toArray(new String[]{});
     }
 }

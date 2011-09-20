@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.apache.log4j.Logger;
+import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 @Component
-public class IVRMessage {
+public class TamaIVRMessage implements IVRMessage {
     public static final String WAV = ".wav";
 
     Logger logger = Logger.getLogger(this.getClass());
@@ -83,7 +83,7 @@ public class IVRMessage {
     private FileUtil fileUtil;
 
     @Autowired
-    public IVRMessage(@Qualifier("ivrProperties") Properties properties, FileUtil fileUtil) {
+    public TamaIVRMessage(@Qualifier("ivrProperties") Properties properties, FileUtil fileUtil) {
         this.properties = properties;
         this.fileUtil = fileUtil;
     }
@@ -93,16 +93,28 @@ public class IVRMessage {
     }
 
     
-    public String getText(String key) {
+    /* (non-Javadoc)
+	 * @see org.motechproject.tama.ivr.IVRMessage#getText(java.lang.String)
+	 */
+    @Override
+	public String getText(String key) {
     	String text = get(key);
         return (String) (text == null?key:text);
     }
-    public String getWav(String key, String preferredLangCode) {
+    /* (non-Javadoc)
+	 * @see org.motechproject.tama.ivr.IVRMessage#getWav(java.lang.String, java.lang.String)
+	 */
+    @Override
+	public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : fileUtil.sanitizeFilename(key);
         return properties.get(CONTENT_LOCATION_URL) + preferredLangCode + "/" + file + WAV;
     }
 
     public String getNumberFilename(int n) {
         return String.format("Num_%03d", n);
+    }
+    @Override
+    public String getSignatureMusic() {
+    	return SIGNATURE_MUSIC_URL;
     }
 }

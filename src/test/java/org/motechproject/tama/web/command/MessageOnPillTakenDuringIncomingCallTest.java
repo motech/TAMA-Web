@@ -5,12 +5,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -32,7 +34,7 @@ public class MessageOnPillTakenDuringIncomingCallTest {
     private PillRegimenResponse pillRegimenResponse;
 
     @Mock
-    private IVRMessage ivrMessage;
+    private TamaIVRMessage ivrMessage;
 
     @Before
     public void setup() {
@@ -41,8 +43,8 @@ public class MessageOnPillTakenDuringIncomingCallTest {
         context = new IVRContext(ivrRequest, ivrSession);
 
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
-        when(ivrRequest.hasNoTamaData()).thenReturn(true);
+        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
+        when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
     }
 
     @Test
@@ -52,7 +54,7 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).minusMinutes(2));
-        assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN_ON_TIME, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
+        assertArrayEquals(new String[]{TamaIVRMessage.DOSE_TAKEN_ON_TIME, TamaIVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
     }
 
     @Test
@@ -62,7 +64,7 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).plusMinutes(2));
-        assertArrayEquals(new String[]{IVRMessage.DOSE_TAKEN_ON_TIME, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
+        assertArrayEquals(new String[]{TamaIVRMessage.DOSE_TAKEN_ON_TIME, TamaIVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
     }
 
     @Test
@@ -72,7 +74,7 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).plusMinutes((dosageInterval + 2)));
-        assertArrayEquals(new String[]{IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
+        assertArrayEquals(new String[]{TamaIVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
     }
 
     @Test
@@ -82,7 +84,7 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).minusMinutes((dosageInterval+2)));
-        assertArrayEquals(new String[]{IVRMessage.TOOK_DOSE_BEFORE_TIME, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
+        assertArrayEquals(new String[]{TamaIVRMessage.TOOK_DOSE_BEFORE_TIME, TamaIVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
     }
 
     @Test
@@ -93,6 +95,6 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).plusHours(reminderRepeatWindowInHours).plusHours(1));
-        assertArrayEquals(new String[]{IVRMessage.TOOK_DOSE_LATE, IVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
+        assertArrayEquals(new String[]{TamaIVRMessage.TOOK_DOSE_LATE, TamaIVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.execute(context));
     }
 }

@@ -1,9 +1,10 @@
 package org.motechproject.tama.ivr.action;
 
-import org.motechproject.tama.ivr.IVRCallAttribute;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.ivr.action.BaseAction;
+import org.motechproject.server.service.ivr.IVRMessage;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,16 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class RetryAction extends BaseAction {
+public class TamaRetryAction extends BaseAction {
     @Value("#{ivrProperties['max.number.of.attempts']}")
     private Integer maxNoOfAttempts;
     @Autowired
-    private UserNotAuthorisedAction userNotAuthorisedAction;
+    private TamaUserNotAuthorisedAction userNotAuthorisedAction;
 
-    public RetryAction() {
+    public TamaRetryAction() {
     }
 
-    public RetryAction(UserNotAuthorisedAction userNotAuthorisedAction, Integer maxNoOfAttempts, IVRMessage messages) {
+    public TamaRetryAction(TamaUserNotAuthorisedAction userNotAuthorisedAction, Integer maxNoOfAttempts, IVRMessage messages) {
         this.userNotAuthorisedAction = userNotAuthorisedAction;
         this.maxNoOfAttempts = maxNoOfAttempts;
         this.messages = messages;
@@ -37,7 +38,7 @@ public class RetryAction extends BaseAction {
         if (!ivrRequest.hasNoData())
            ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
         
-        return dtmfResponseWithWav(ivrRequest, IVRMessage.SIGNATURE_MUSIC_URL);
+        return dtmfResponseWithWav(ivrRequest, messages.getSignatureMusic());
     }
 
     private Integer getAttempt(IVRSession ivrSession) {

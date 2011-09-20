@@ -4,8 +4,8 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.web.command.*;
 import org.springframework.aop.target.ThreadLocalTargetSource;
@@ -45,7 +45,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
-                        new MenuAudioPrompt().setName(IVRMessage.PILL_CONFIRM_CALL_MENU))
+                        new MenuAudioPrompt().setName(TamaIVRMessage.PILL_CONFIRM_CALL_MENU))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()
                                 .setDestinationNode(

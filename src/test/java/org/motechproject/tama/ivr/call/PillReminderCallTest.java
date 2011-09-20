@@ -5,7 +5,10 @@ import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.eventtracking.service.EventService;
+import org.motechproject.server.service.ivr.CallRequest;
+import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -19,7 +22,7 @@ public class PillReminderCallTest {
     @Mock
     private AllPatients allPatients;
     @Mock
-    private CallService callService;
+    private IVRService callService;
     @Mock 
     private EventService eventService;
 
@@ -32,7 +35,8 @@ public class PillReminderCallTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pillReminderCall = new PillReminderCall(callService, eventService, allPatients);
+        pillReminderCall = Mockito.spy(new PillReminderCall(callService, eventService, allPatients));
+        Mockito.doReturn("").when(pillReminderCall).getApplicationUrl();
     }
 
     @Test
@@ -40,8 +44,7 @@ public class PillReminderCallTest {
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(null);
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
-
-        verify(callService, never()).dial(anyString(), Matchers.<Map<String, String>>any());
+        verify(callService, never()).initiateCall(any(CallRequest.class));
     }
 
     @Test
@@ -52,7 +55,7 @@ public class PillReminderCallTest {
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 
-        verify(callService, never()).dial(anyString(), Matchers.<Map<String, String>>any());
+        verify(callService, never()).initiateCall(any(CallRequest.class));
     }
 
     @Test
@@ -64,7 +67,7 @@ public class PillReminderCallTest {
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
 
-        verify(callService).dial(eq(PHONE_NUMBER), argThat(new IntermediateCallParametersMatcher()));
+        verify(callService).initiateCall(any(CallRequest.class));
     }
 
     public class IntermediateCallParametersMatcher extends ArgumentMatcher<Map> {

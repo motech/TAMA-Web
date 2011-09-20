@@ -1,10 +1,9 @@
-package org.motechproject.tama.ivr.action.event;
+package org.motechproject.tama.ivr.action;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.mockito.Mock;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.repository.AllIVRCallAudits;
+import org.motechproject.server.service.ivr.IVRMessage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +12,8 @@ import javax.servlet.http.HttpSession;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public abstract class BaseActionTest {
+public class BaseActionTest {
+    public static final String SIGNATURE_MUSIC = "http://music";
     @Mock
     protected HttpServletRequest request;
     @Mock
@@ -22,8 +22,6 @@ public abstract class BaseActionTest {
     protected HttpSession session;
     @Mock
     protected IVRMessage messages;
-    @Mock
-    protected AllIVRCallAudits audits;
 
     @Before
     public void setUp() {
@@ -32,7 +30,7 @@ public abstract class BaseActionTest {
     }
 
     protected void mockIVRMessage() {
-        when(messages.getWav(IVRMessage.SIGNATURE_MUSIC_URL, "en")).thenReturn("http://music");
+        when(messages.getSignatureMusic()).thenReturn(SIGNATURE_MUSIC);
     }
 
     protected String sanitize(String responseXML) {

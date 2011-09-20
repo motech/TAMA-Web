@@ -5,16 +5,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.motechproject.ivr.action.IvrAction;
+import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.server.service.ivr.IVRCallState;
+import org.motechproject.server.service.ivr.IVREvent;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.ivr.*;
-import org.motechproject.tama.ivr.action.event.BaseActionTest;
-import org.motechproject.tama.ivr.action.pillreminder.IvrAction;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -28,14 +33,14 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DateUtil.class)
-public class AuthenticateActionTest extends BaseActionTest {
-    private AuthenticateAction authenticateAction;
+public class TamaAuthenticateActionTest extends BaseActionTest {
+    private TamaAuthenticateAction authenticateAction;
     @Mock
     private AllPatients allPatients;
     @Mock
-    private RetryAction retryAction;
+    private TamaRetryAction retryAction;
     @Mock
-    private UserNotFoundAction userNotFoundAction;
+    private TamaUserNotFoundAction userNotFoundAction;
     @Mock
     private Patient patient;
     @Mock
@@ -56,16 +61,16 @@ public class AuthenticateActionTest extends BaseActionTest {
         when(patient.getId()).thenReturn(PATIENT_ID);
         when(patient.getIvrLanguage()).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
         when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(new TreatmentAdvice());
-        when(session.getAttribute(IVRCallAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
+        when(session.getAttribute(TamaSessionAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         when(request.getParameter("symptoms_reporting")).thenReturn("true");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.CALLER_ID)).thenReturn(MOBILE_NO);
-        authenticateAction = new AuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null);
+        authenticateAction = new TamaAuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null, null);
     }
 
     @Test
     public void shouldGoToRetryActionIfPatientPassCodeIsNotValid() {
-        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
+        IVRRequest ivrRequest = new KookooRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
 
         when(retryAction.handle(ivrRequest, request, response)).thenReturn("OK");
         when(patient.authenticatedWith(PASSCODE)).thenReturn(false);
@@ -81,7 +86,7 @@ public class AuthenticateActionTest extends BaseActionTest {
 
     @Test
     public void shouldGoToTamaIvrActionIfPatientPassCodeIsValid() {
-        IVRRequest ivrRequest = new IVRRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
+        IVRRequest ivrRequest = new KookooRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
         DateTime now = new DateTime(2010, 10, 10, 16, 00, 00);
 
         when(request.getSession()).thenReturn(session);
@@ -101,16 +106,16 @@ public class AuthenticateActionTest extends BaseActionTest {
         verify(session).invalidate();
         verify(session).setAttribute(IVRCallAttribute.CALL_STATE, IVRCallState.AUTH_SUCCESS);
         verify(session).setAttribute(IVRCallAttribute.CALL_TIME, now);
-        verify(session).setAttribute(IVRCallAttribute.PATIENT_DOC_ID, PATIENT_ID);
-        verify(session).setAttribute(IVRCallAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
+        verify(session).setAttribute(TamaSessionAttribute.PATIENT_DOC_ID, PATIENT_ID);
+        verify(session).setAttribute(TamaSessionAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
         verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
-        verify(session).setAttribute(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM, "true");
+        verify(session).setAttribute(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM, "true");
         verify(tamaIvrAction).handle(any(IVRRequest.class), any(IVRSession.class));
     }
 
     @Test
     public void shouldHangupIfPatientIsNotActive() {
-        IVRRequest ivrRequest = new IVRRequest("unique-call-id", MOBILE_NO, IVREvent.NEW_CALL.key(), "Data");
+        IVRRequest ivrRequest = new KookooRequest("unique-call-id", MOBILE_NO, IVREvent.NEW_CALL.key(), "Data");
         when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, "Data")).thenReturn(patient);
         when(patient.isActive()).thenReturn(false);

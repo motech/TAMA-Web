@@ -2,9 +2,9 @@ package org.motechproject.tama.web.command;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.joda.time.DateTime;
+import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ public class PillsDelayWarning extends BaseTreeCommand {
 
     private IVRDayMessageBuilder ivrDayMessageBuilder;
 
-    private IVRMessage ivrMessage;
+    private TamaIVRMessage ivrMessage;
 
     private Properties properties;
 
     @Autowired
-    public PillsDelayWarning(IVRDayMessageBuilder ivrDayMessageBuilder, IVRMessage ivrMessage,  @Qualifier("ivrProperties")Properties properties) {
+    public PillsDelayWarning(IVRDayMessageBuilder ivrDayMessageBuilder, TamaIVRMessage ivrMessage,  @Qualifier("ivrProperties")Properties properties) {
         this.ivrDayMessageBuilder = ivrDayMessageBuilder;
         this.ivrMessage = ivrMessage;
         this.properties = properties;
@@ -37,15 +37,15 @@ public class PillsDelayWarning extends BaseTreeCommand {
         if (isLastReminder(ivrContext)) {
             DateTime nextDosageTime = new PillRegimenSnapshot(ivrContext).getNextDosageTime();
             List<String> messages = new ArrayList<String>();
-            messages.add(IVRMessage.LAST_REMINDER_WARNING);
+            messages.add(TamaIVRMessage.LAST_REMINDER_WARNING);
             messages.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime));
-            messages.add(IVRMessage.LAST_REMINDER_WARNING_PADDING);
+            messages.add(TamaIVRMessage.LAST_REMINDER_WARNING_PADDING);
             return  messages.toArray(new String[messages.size()]);
         }
         return new String[]{
-                IVRMessage.PLEASE_TAKE_DOSE,
+                TamaIVRMessage.PLEASE_TAKE_DOSE,
                 ivrMessage.getNumberFilename(Integer.valueOf((String) properties.get(TAMAConstants.RETRY_INTERVAL))),
-                IVRMessage.CALL_AFTER_SOME_TIME
+                TamaIVRMessage.CALL_AFTER_SOME_TIME
         };
     }
 

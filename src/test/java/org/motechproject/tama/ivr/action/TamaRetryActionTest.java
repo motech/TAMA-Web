@@ -3,30 +3,35 @@ package org.motechproject.tama.ivr.action;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.ivr.IVRCallAttribute;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.action.event.BaseActionTest;
+import org.motechproject.server.service.ivr.IVREvent;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class RetryActionTest extends BaseActionTest {
-    private RetryAction retryAction;
+public class TamaRetryActionTest extends BaseActionTest {
+    private TamaRetryAction retryAction;
     @Mock
-    private UserNotAuthorisedAction userNotAuthorisedAction;
+    private TamaUserNotAuthorisedAction userNotAuthorisedAction;
     private Integer maxAttempts;
+    @Mock
+    IVRRequest ivrRequest;
 
     @Before
     public void setUp() {
         super.setUp();
 
         maxAttempts = 5;
-        retryAction = new RetryAction(userNotAuthorisedAction, maxAttempts, messages);
+        retryAction = new TamaRetryAction(userNotAuthorisedAction, maxAttempts, messages);
     }
 
     @Test
     public void shouldGoToUserNotAuthorisedActionIfItIsTheLastAttempt() {
-        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
+        when(ivrRequest.getSessionId()).thenReturn("sid");
+        when(ivrRequest.getCallerId()).thenReturn("cid");
+        when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
+        when(ivrRequest.getData()).thenReturn("1234#");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(4);
@@ -39,11 +44,14 @@ public class RetryActionTest extends BaseActionTest {
 
     @Test
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndAlsoIncrementAttemptCount() {
-        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", "1234#");
+        when(ivrRequest.getSessionId()).thenReturn("sid");
+        when(ivrRequest.getCallerId()).thenReturn("cid");
+        when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
+        when(ivrRequest.getData()).thenReturn("1234#");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
-
+        when(messages.getWav(SIGNATURE_MUSIC, "en")).thenReturn(SIGNATURE_MUSIC);
         String responseXML = retryAction.handle(ivrRequest, request, response);
 
         verify(session).setAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS, 1);
@@ -52,10 +60,14 @@ public class RetryActionTest extends BaseActionTest {
 
     @Test
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndNotIncrementAttemptCountWhenPassCodeIsNotSent() {
-        IVRRequest ivrRequest = new IVRRequest("sid", "cid", "event", null);
+        when(ivrRequest.getSessionId()).thenReturn("sid");
+        when(ivrRequest.getCallerId()).thenReturn("cid");
+        when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
+        when(ivrRequest.getData()).thenReturn(null);
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
+        when(messages.getWav(SIGNATURE_MUSIC, "en")).thenReturn(SIGNATURE_MUSIC);
 
         String responseXML = retryAction.handle(ivrRequest, request, response);
 

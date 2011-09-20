@@ -1,5 +1,9 @@
 package org.motechproject.tama.web.command;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,19 +11,14 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class StopTodaysRemindersCommandTest {
 
@@ -41,7 +40,7 @@ public class StopTodaysRemindersCommandTest {
         context = new IVRContext(ivrRequest, ivrSession);
 
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
 
     }
 
@@ -50,10 +49,7 @@ public class StopTodaysRemindersCommandTest {
         DosageResponse currentDosage = pillRegimenResponse.getDosages().get(1);
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
 
-        Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.DOSAGE_ID, currentDosage.getDosageId());
-        when(ivrRequest.getTamaParams()).thenReturn(params);
-
+        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn(currentDosage.getDosageId());
         stopTodaysRemindersCommand.execute(context);
 
         verify(pillReminderService).dosageStatusKnown("regimenId", currentDosage.getDosageId(), DateUtil.today());
@@ -66,7 +62,7 @@ public class StopTodaysRemindersCommandTest {
         DateTime timeSoThatCurrentDosageIsYesterdaysDosage = DateUtil.now().withHourOfDay(nextDosage.getDosageHour()).minusHours(pillRegimenResponse.getReminderRepeatWindowInHours() + 1);
         when(ivrSession.getCallTime()).thenReturn(timeSoThatCurrentDosageIsYesterdaysDosage);
 
-        when(ivrRequest.hasNoTamaData()).thenReturn(true);
+        when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
 
         stopTodaysRemindersCommand.execute(context);
 

@@ -1,9 +1,10 @@
 package org.motechproject.tama.web.command;
 
+import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
-import org.motechproject.tama.ivr.IVRContext;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
+import org.motechproject.tama.util.TamaSessionUtil;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,8 +27,8 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
         String dosageId = getDosageId(ivrContext);
 
         DosageAdherenceLog todayLog = logs.findByDosageIdAndDate(dosageId, DateUtil.today());
-        DosageAdherenceLog newLog = new DosageAdherenceLog(ivrContext.ivrSession().getPatientId(),
-                getRegimenIdFrom(ivrContext),
+        DosageAdherenceLog newLog = new DosageAdherenceLog(TamaSessionUtil.getPatientId(ivrContext),
+        		TamaSessionUtil.getRegimenIdFrom(ivrContext),
                 dosageId,
                 newStatus);
 
@@ -42,6 +43,6 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
     }
 
     protected String getDosageId(IVRContext ivrContext) {
-        return getDosageIdFrom(ivrContext);
+        return TamaSessionUtil.getDosageIdFrom(ivrContext);
     }
 }

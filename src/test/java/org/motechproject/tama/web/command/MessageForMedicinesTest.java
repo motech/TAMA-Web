@@ -6,16 +6,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.util.TamaSessionUtil;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -58,11 +60,10 @@ public class MessageForMedicinesTest {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
 
         messageForMedicines = new MessageForMedicines(allPatients, allClinics);
-
         when(context.ivrSession()).thenReturn(ivrSession);
-        when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        when(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
         when(context.ivrRequest()).thenReturn(ivrRequest);
-        when(ivrSession.getPatientId()).thenReturn("patientId");
+        when(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.PATIENT_DOC_ID)).thenReturn("patientId");
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
 
@@ -77,13 +78,10 @@ public class MessageForMedicinesTest {
 
     @Test
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken() {
-        Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
-
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
 
-        when(ivrRequest.getTamaParams()).thenReturn(params);
+        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
         when(ivrSession.getCallTime()).thenReturn(timeWithinPillWindow);
 
         String[] messages = messageForMedicines.execute(context);

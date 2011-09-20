@@ -4,8 +4,8 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tama.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.web.command.*;
 import org.springframework.aop.target.ThreadLocalTargetSource;
@@ -51,7 +51,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(messageForMedicines),
-                        new MenuAudioPrompt().setName(IVRMessage.PILL_REMINDER_RESPONSE_MENU))
+                        new MenuAudioPrompt().setName(TamaIVRMessage.PILL_REMINDER_RESPONSE_MENU))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()
                                 .setDestinationNode(
@@ -79,13 +79,13 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageForMissedPillFeedbackCommand),
-                                                        new MenuAudioPrompt().setName(IVRMessage.DOSE_CANNOT_BE_TAKEN_MENU))
+                                                        new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU))
                                                 .setTransitions(new Object[][]{
                                                         {"2", new Transition()
                                                                 .setDestinationNode(new Node()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
                                                                         .setPrompts(
-                                                                                new AudioPrompt().setName(IVRMessage.PLEASE_CARRY_SMALL_BOX),
+                                                                                new AudioPrompt().setName(TamaIVRMessage.PLEASE_CARRY_SMALL_BOX),
                                                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
                                                                         )

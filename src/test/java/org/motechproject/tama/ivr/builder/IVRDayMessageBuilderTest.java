@@ -5,7 +5,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -26,7 +26,7 @@ public class IVRDayMessageBuilderTest {
 
     @Before
     public void setup() {
-        ivrDayMessageBuilder = new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil()));
+        ivrDayMessageBuilder = new IVRDayMessageBuilder(new TamaIVRMessage(null, new FileUtil()));
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 00, 00, 00));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));

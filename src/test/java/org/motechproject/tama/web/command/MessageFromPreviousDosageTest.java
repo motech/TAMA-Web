@@ -10,13 +10,14 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.util.FileUtil;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -40,18 +41,16 @@ public class MessageFromPreviousDosageTest {
     @Mock
     private IVRSession ivrSession;
     private MessageFromPreviousDosage messageFromPreviousDosage;
-    private Map params = new HashMap<String, String>();
     private ArrayList<MedicineResponse> medicineResponses;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        messageFromPreviousDosage = new MessageFromPreviousDosage(new IVRDayMessageBuilder(new IVRMessage(null, new FileUtil())));
+        messageFromPreviousDosage = new MessageFromPreviousDosage(new IVRDayMessageBuilder(new TamaIVRMessage(null, new FileUtil())));
         when(context.ivrSession()).thenReturn(ivrSession);
         when(context.ivrRequest()).thenReturn(ivrRequest);
-        params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
-        when(ivrRequest.getTamaParams()).thenReturn(params);
+        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
 
         medicineResponses = new ArrayList<MedicineResponse>();
         medicineResponses.add(new MedicineResponse("medicine1", null, null));
@@ -71,11 +70,11 @@ public class MessageFromPreviousDosageTest {
         medicines.add(new MedicineResponse("medicine1", null, null));
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, dosageLastTakenDate, medicines));
 
-        when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
+        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
         List<String> messages = Arrays.asList(messageFromPreviousDosage.execute(context));
-        assertTrue(messages.contains(IVRMessage.MORNING));
-        assertTrue(messages.contains(IVRMessage.IN_THE_MORNING));
+        assertTrue(messages.contains(TamaIVRMessage.MORNING));
+        assertTrue(messages.contains(TamaIVRMessage.IN_THE_MORNING));
         assertTrue(messages.contains("pillmedicine1"));
     }
 
@@ -85,7 +84,7 @@ public class MessageFromPreviousDosageTest {
         LocalDate lastTakenDate = null;
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, lastTakenDate, new ArrayList<MedicineResponse>()));
 
-        when(ivrSession.getPillRegimen()).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
+        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
         String[] messages = messageFromPreviousDosage.execute(context);
 

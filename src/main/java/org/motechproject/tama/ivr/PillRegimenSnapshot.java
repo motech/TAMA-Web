@@ -8,8 +8,12 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.util.TamaSessionUtil;
 import org.motechproject.util.DateUtil;
 import org.springframework.util.CollectionUtils;
 
@@ -27,7 +31,7 @@ public class PillRegimenSnapshot {
 
     public PillRegimenSnapshot(IVRContext ivrContext, DateTime now) {
         this.ivrContext = ivrContext;
-        this.pillRegimen = ivrContext.ivrSession().getPillRegimen();
+        this.pillRegimen = TamaSessionUtil.getPillRegimen(ivrContext);
         this.now = now;
         this.today = new LocalDate(now);
     }
@@ -77,7 +81,7 @@ public class PillRegimenSnapshot {
 
     public MyDosageResponse getCurrentDosage() {
         IVRRequest ivrRequest = ivrContext.ivrRequest();
-        if (ivrRequest.hasNoTamaData()) {
+        if (ivrRequest.getCallDirection() == CallDirection.Inbound) {
             List<DosageResponse> dosageResponses = getSortedDosages();
             DosageResponse currentDosage = null;
             for (DosageResponse dosageResponse : dosageResponses) {
@@ -86,7 +90,7 @@ public class PillRegimenSnapshot {
             }
             return getCurrentDosageWithDosageDate(dosageResponses, currentDosage);
         } else {
-            return getDosage((String) ivrRequest.getTamaParams().get(PillReminderCall.DOSAGE_ID));
+            return getDosage((String) ivrRequest.getParameter(PillReminderCall.DOSAGE_ID));
         }
     }
 

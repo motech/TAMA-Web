@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,16 +4,16 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
@@ -45,13 +45,11 @@ public class UpdateAdherenceCommandTest {
         dosageId = "currentDosageId";
         patientId = "test";
         userInput = "1";
-        params = new HashMap<String, String>();
-        params.put(PillReminderCall.DOSAGE_ID, dosageId);
         context = new IVRContext(req, session);
 
-        when(req.getTamaParams()).thenReturn(params);
-        when(session.getPatientId()).thenReturn(patientId);
-        when(session.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().withRegimenId(pillRegimenId).build());
+        when(req.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn(dosageId);
+        when(session.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().withRegimenId(pillRegimenId).build());
+        when(session.get(TamaSessionAttribute.PATIENT_DOC_ID)).thenReturn(patientId);
         when(req.getInput()).thenReturn(userInput);
     }
 

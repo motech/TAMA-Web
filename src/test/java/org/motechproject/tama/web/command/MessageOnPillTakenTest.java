@@ -2,9 +2,9 @@ package org.motechproject.tama.web.command;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRMessage;
-import org.motechproject.tama.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 
 import java.util.HashMap;
@@ -30,22 +30,18 @@ public class MessageOnPillTakenTest {
 
     @Test
     public void shouldReturnDoseTakenMessageForTheFirstReminder() {
-        Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.TIMES_SENT, 0);
-        when(request.getTamaParams()).thenReturn(params);
+        when(request.getParameter(PillReminderCall.TIMES_SENT)).thenReturn("0");
         String[] messages = messageOnPillTaken.execute(context);
         assertEquals(2, messages.length);
-        assertEquals(IVRMessage.DOSE_TAKEN_ON_TIME, messages[0]);
-        assertEquals(IVRMessage.DOSE_RECORDED, messages[1]);
+        assertEquals(TamaIVRMessage.DOSE_TAKEN_ON_TIME, messages[0]);
+        assertEquals(TamaIVRMessage.DOSE_RECORDED, messages[1]);
     }
 
     @Test
     public void shouldNotReturnDoseTakenMessageForSubsequentReminders() {
-        Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.TIMES_SENT, 2);
-        when(request.getTamaParams()).thenReturn(params);
+        when(request.getParameter(PillReminderCall.TIMES_SENT)).thenReturn("2");
         String[] messages = messageOnPillTaken.execute(context);
         assertEquals(1, messages.length);
-        assertEquals(IVRMessage.DOSE_RECORDED, messages[0]);
+        assertEquals(TamaIVRMessage.DOSE_RECORDED, messages[0]);
     }
 }

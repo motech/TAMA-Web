@@ -2,7 +2,7 @@ package org.motechproject.tama.web.command;
 
 import org.joda.time.LocalDate;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
@@ -12,7 +12,7 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
     @Autowired
     protected AllDosageAdherenceLogs allDosageAdherenceLogs;
     @Autowired
-    protected IVRMessage ivrMessage;
+    protected TamaIVRMessage ivrMessage;
 
     protected DosageAdherenceCommand() {
     }
@@ -30,9 +30,9 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
 
     protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot) {
         return new String[]{
-                IVRMessage.YOUR_ADHERENCE_IS_NOW,
+                TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
                 ivrMessage.getNumberFilename(getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCount())),
-                IVRMessage.PERCENT
+                TamaIVRMessage.PERCENT
         };
     }
 }

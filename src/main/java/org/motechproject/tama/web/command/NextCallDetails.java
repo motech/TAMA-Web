@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.command;
 
 import org.joda.time.DateTime;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRMessage;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ public class NextCallDetails extends BaseTreeCommand {
 
         DateTime nextDosageTime = new PillRegimenSnapshot(ivrContext).getNextDosageTime();
         List<String> messageForNextDosage = new ArrayList<String>();
-        messageForNextDosage.add(IVRMessage.YOUR_NEXT_DOSE_IS);
-        messageForNextDosage.add(IVRMessage.AT);
+        messageForNextDosage.add(TamaIVRMessage.YOUR_NEXT_DOSE_IS);
+        messageForNextDosage.add(TamaIVRMessage.AT);
         messageForNextDosage.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime));
-        messageForNextDosage.add(IVRMessage.YOUR_NEXT_DOSE_IS_PADDING);
+        messageForNextDosage.add(TamaIVRMessage.YOUR_NEXT_DOSE_IS_PADDING);
 
         return  messageForNextDosage.toArray(new String[messageForNextDosage.size()]);
     }

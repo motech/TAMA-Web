@@ -1,18 +1,22 @@
 package org.motechproject.tama.ivr;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.constraints.AssertTrue;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.motechproject.server.service.ivr.IVRCallState;
+import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
+import org.motechproject.tama.util.TamaSessionUtil;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 
 public class IVRSessionTest {
     private IVRSession ivrSession;
@@ -70,7 +74,7 @@ public class IVRSessionTest {
     }
     @Test 
     public void shouldReturnCallType() {
-    	when(session.getAttribute(IVRCallAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
-    	Assert.assertTrue(ivrSession.isSymptomsReportingCall());
+    	when(session.getAttribute(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
+    	Assert.assertTrue(TamaSessionUtil.isSymptomsReportingCall(ivrSession));
     }
 }

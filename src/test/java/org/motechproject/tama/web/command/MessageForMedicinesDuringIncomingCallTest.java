@@ -10,16 +10,18 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.IVRContext;
-import org.motechproject.tama.ivr.IVRRequest;
-import org.motechproject.tama.ivr.IVRSession;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.util.TamaSessionUtil;
+import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -66,9 +68,9 @@ public class MessageForMedicinesDuringIncomingCallTest {
         messageForMedicinesDuringIncomingCall = new MessageForMedicinesDuringIncomingCall(allPatients, allClinics);
 
         when(context.ivrSession()).thenReturn(ivrSession);
-        when(ivrSession.getPillRegimen()).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        when(TamaSessionUtil.getPillRegimen(ivrSession)).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
         when(context.ivrRequest()).thenReturn(ivrRequest);
-        when(ivrSession.getPatientId()).thenReturn("patientId");
+        when(TamaSessionUtil.getPatientId(ivrSession)).thenReturn("patientId");
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
 
@@ -83,13 +85,10 @@ public class MessageForMedicinesDuringIncomingCallTest {
 
     @Test
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeWithinDosagePillWindow() {
-        Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
-
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
 
-        when(ivrRequest.getTamaParams()).thenReturn(params);
+        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
         when(ivrSession.getCallTime()).thenReturn(timeWithinPillWindow);
 
         String[] messages = messageForMedicinesDuringIncomingCall.execute(context);
@@ -105,9 +104,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
 
     @Test
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeAfterDosagePillWindow() {
-        Map params = new HashMap<String, String>();
-        params.put(PillReminderCall.DOSAGE_ID, "currentDosageId");
-
+        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
         int dosageHour = 10;
         DateTime timeAfterPillWindow = now.withHourOfDay(dosageHour + 3).withMinuteOfHour(5);
         List<DosageResponse> dosages = Arrays.asList(new DosageResponse("currentDosageId", new Time(dosageHour, 5), today.minusDays(2),
@@ -118,9 +115,9 @@ public class MessageForMedicinesDuringIncomingCallTest {
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(today);
 
-        when(ivrRequest.getTamaParams()).thenReturn(params);
+        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
         when(ivrSession.getCallTime()).thenReturn(timeAfterPillWindow);
-        when(ivrSession.getPillRegimen()).thenReturn(pillRegimenResponse);
+        when(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
 
         String[] messages = messageForMedicinesDuringIncomingCall.execute(context);
 

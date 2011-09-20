@@ -2,8 +2,9 @@ package org.motechproject.tama.web.command;
 
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class StopTodaysRemindersCommand extends BaseTreeCommand {
     public String[] execute(Object obj) {
         IVRContext ivrContext = (IVRContext) obj;
 
-        pillReminderService.dosageStatusKnown(getRegimenIdFrom(ivrContext), getDosageId(ivrContext), getLastCaptureDate(ivrContext));
+        pillReminderService.dosageStatusKnown(TamaSessionUtil.getRegimenIdFrom(ivrContext), getDosageId(ivrContext), getLastCaptureDate(ivrContext));
         return new String[0];
     }
 
@@ -30,7 +31,7 @@ public class StopTodaysRemindersCommand extends BaseTreeCommand {
     }
 
     protected String getDosageId(IVRContext ivrContext) {
-        return getDosageIdFrom(ivrContext);
+        return TamaSessionUtil.getDosageIdFrom(ivrContext);
     }
 }
 
