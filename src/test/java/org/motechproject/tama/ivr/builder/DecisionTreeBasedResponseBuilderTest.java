@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.builder;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.server.decisiontree.DecisionTreeBasedResponseBuilder;
@@ -10,10 +11,6 @@ import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.server.service.ivr.IVRResponseBuilder;
 import org.motechproject.server.service.ivr.IVRSession;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -21,96 +18,20 @@ public class DecisionTreeBasedResponseBuilderTest {
     private DecisionTreeBasedResponseBuilder treeBasedResponseBuilder;
 
     @Mock
-    IVRContext ivrContext;
+    private IVRContext ivrContext;
     @Mock
-    IVRSession ivrSession;
-    
+    private IVRSession ivrSession;
+    @Mock
+    private IVRResponseBuilder ivrResponseBuilder;
+    @Mock
+    private IVRMessage ivrMessage;
 
     @Before
     public void setUp() {
-        treeBasedResponseBuilder = new DecisionTreeBasedResponseBuilder(new IVRResponseBuilder() {
-			
-        	List<String> audios = new ArrayList<String>();
-        	boolean hangup;
-        	boolean collectDtmf;
-			@Override
-			public IVRResponseBuilder withPlayTexts(String... playTexts) {
-				return this;
-			}
-			
-			@Override
-			public IVRResponseBuilder withPlayAudios(String... playAudios) {
-				for (int i=0; i<playAudios.length; i++)
-					audios.add(playAudios[i]);
-				return this;
-			}
-			
-			@Override
-			public IVRResponseBuilder withHangUp() {
-				hangup = true;
-				return this;
-			}
-
-            @Override
-            public IVRResponseBuilder withNextUrl(String s) {
-                return this;
-            }
-
-            @Override
-			public boolean isHangUp() {
-				return hangup;
-			}
-			
-			@Override
-			public boolean isCollectDtmf() {
-				return collectDtmf;
-			}
-			
-			@Override
-			public List<String> getPlayTexts() {
-				return new ArrayList<String>();
-			}
-			
-			@Override
-			public List<String> getPlayAudios() {
-				return audios;
-			}
-			
-			@Override
-			public String createWithDefaultLanguage(IVRMessage ivrMessage, String sessionId) {
-				return null;
-			}
-			
-			@Override
-			public String create(IVRMessage ivrMessage, String sessionId, String languageCode) {
-				return null;
-			}
-			
-			@Override
-			public IVRResponseBuilder collectDtmf(int dtmfLength) {
-				collectDtmf = true;
-				return this;
-			}
-		}, new IVRMessage() {
-			
-			@Override
-			public String getWav(String key, String preferredLangCode) {
-				return null;
-			}
-			
-			@Override
-			public String getText(String key) {
-				return null;
-			}
-			
-			@Override
-			public String getSignatureMusic() {
-				return "signature_music.wav";
-			}
-		});
         initMocks(this);
         when(ivrSession.getPreferredLanguageCode()).thenReturn("en");
         when(ivrContext.ivrSession()).thenReturn(ivrSession);
+        treeBasedResponseBuilder = new DecisionTreeBasedResponseBuilder(ivrResponseBuilder, ivrMessage);
     }
 
     @Test
@@ -126,10 +47,12 @@ public class DecisionTreeBasedResponseBuilderTest {
                                 .setDestinationNode(new Node()
                                         .setPrompts(new AudioPrompt().setName("baz")))
                         }});
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
-        assertTrue(responseBuilder.isCollectDtmf());
-        assertEquals(1, responseBuilder.getPlayAudios().size());
-        assertEquals(0, responseBuilder.getPlayTexts().size());
+
+        nextResponse(rootNode, false);
+
+        verify(ivrResponseBuilder).collectDtmf(1);
+        verify(ivrResponseBuilder).withPlayAudios("foo");
+        verify(ivrResponseBuilder, never()).withPlayTexts(Matchers.<String>any());
     }
 
     private IVRResponseBuilder nextResponse(Node rootNode, boolean retryOnIncorrectUserAction) {
@@ -137,39 +60,77 @@ public class DecisionTreeBasedResponseBuilderTest {
     }
 
     @Test
-    public void shouldAddAddHangupIfTheNodeDoesNotHaveAnyTransitions() {
+    public void shouldAddHangupIfTheNodeDoesNotHaveAnyTransitions() {
         Node rootNode = new Node()
                 .setPrompts(new AudioPrompt().setName("foo"));
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
-        assertFalse(responseBuilder.isCollectDtmf());
-        assertTrue(responseBuilder.isHangUp());
-        assertEquals(2, responseBuilder.getPlayAudios().size());
-        assertEquals(0, responseBuilder.getPlayTexts().size());
+        nextResponse(rootNode, false);
+
+        verify(ivrResponseBuilder, times(1)).withHangUp();
+        verify(ivrResponseBuilder, never()).collectDtmf(Matchers.<Integer>any());
+    }
+
+    @Test
+    public void shouldAddSignatureMusicIfNodeDoesNotHaveAnyTransitions() {
+        String SIGNATURE_MUSIC_URL = "signature_music.wav";
+        when(ivrMessage.getSignatureMusic()).thenReturn(SIGNATURE_MUSIC_URL);
+        Node rootNode = new Node()
+                .setPrompts(new AudioPrompt().setName("foo"));
+        nextResponse(rootNode, false);
+
+        verify(ivrResponseBuilder).withPlayAudios(SIGNATURE_MUSIC_URL);
     }
 
     @Test
     public void whenAudioCommandReturnsNullThenItShouldNotGetAddedToResponse() {
-        Node rootNode = new Node()
-                .setPrompts(new AudioPrompt().setCommand(new ReturnEmptyCommand()));
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
-        assertEquals(1, responseBuilder.getPlayAudios().size());
+        Node rootNode =  new Node()
+                .setPrompts(new AudioPrompt().setCommand(new ReturnEmptyCommand()))
+                .setTransitions(new Object[][]{
+                        {"1", new Transition()
+                                .setDestinationNode(new Node()
+                                        .setPrompts(new AudioPrompt().setName("bar")))
+                        },
+                        {"2", new Transition()
+                                .setDestinationNode(new Node()
+                                        .setPrompts(new AudioPrompt().setName("baz")))
+                        }});
+        nextResponse(rootNode, false);
+        verify(ivrResponseBuilder, never()).withPlayAudios(Matchers.<String>any());
     }
 
     @Test
     public void createMultiplePlayAudiosWhenACommandReturnsMultiplePrompts() {
         Node rootNode = new Node()
-                .setPrompts(new AudioPrompt().setCommand(new ReturnMultiplePromptCommand()));
-        IVRResponseBuilder responseBuilder = nextResponse(rootNode, false);
-        assertEquals(3, responseBuilder.getPlayAudios().size());
+                .setPrompts(new AudioPrompt().setCommand(new ReturnTwoPromptsCommand())).
+                        setTransitions(new Object[][]{
+                                {"1", new Transition()
+                                        .setDestinationNode(new Node()
+                                                .setPrompts(new AudioPrompt().setName("bar")))
+                                },
+                                {"2", new Transition()
+                                        .setDestinationNode(new Node()
+                                                .setPrompts(new AudioPrompt().setName("baz")))
+                                }});
+        nextResponse(rootNode, false);
+        verify(ivrResponseBuilder,times(2)).withPlayAudios(Matchers.<String>any());
     }
 
     @Test
     public void shouldAddOnlyMenuAudioPromptsToReplayOnIncorrectUserResponse() {
         Node rootNode = new Node()
-                .setPrompts(new AudioPrompt().setName("hello"), new MenuAudioPrompt().setName("menu"));
+                .setPrompts(new AudioPrompt().setName("hello"), new MenuAudioPrompt().setName("menu")).
+                        setTransitions(new Object[][]{
+                                {"1", new Transition()
+                                        .setDestinationNode(new Node()
+                                                .setPrompts(new AudioPrompt().setName("bar")))
+                                },
+                                {"2", new Transition()
+                                        .setDestinationNode(new Node()
+                                                .setPrompts(new AudioPrompt().setName("baz")))
+                                }});
+
         IVRResponseBuilder responseBuilder = nextResponse(rootNode, true);
-        assertEquals(2, responseBuilder.getPlayAudios().size());
-        assertEquals("menu", responseBuilder.getPlayAudios().get(0));
+        verify(responseBuilder,times(1)).withPlayAudios(Matchers.<String>any());
+        verify(responseBuilder).withPlayAudios("menu");
     }
 
     @Test
@@ -185,7 +146,6 @@ public class DecisionTreeBasedResponseBuilderTest {
                 .setPrompts(new AudioPrompt().setName("hello"), menu);
         nextResponse(rootNode, true);
         verify(mockCommand, times(1)).execute(any());
-
     }
 
     class ReturnEmptyCommand implements ITreeCommand {
@@ -195,7 +155,7 @@ public class DecisionTreeBasedResponseBuilderTest {
         }
     }
 
-    class ReturnMultiplePromptCommand implements ITreeCommand {
+    class ReturnTwoPromptsCommand implements ITreeCommand {
         @Override
         public String[] execute(Object o) {
             return new String[]{"a", "b"};
