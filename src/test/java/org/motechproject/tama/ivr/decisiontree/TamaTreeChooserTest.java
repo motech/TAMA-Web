@@ -59,7 +59,7 @@ public class TamaTreeChooserTest {
     private CurrentDosageConfirmTree currentDosageConfirmTree;
 
     @Autowired
-	private Regimen6Tree regimen6Tree;
+	private Regimen1To6Tree regimen1To6Tree;
 
     @Before
     public void setUp(){
@@ -117,6 +117,6 @@ public class TamaTreeChooserTest {
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
         when(ivrSession.get(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
         
-        assertTrue(regimen6Tree.getTree() == treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
+        assertTrue(regimen1To6Tree.getTree() == treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
     }
 }

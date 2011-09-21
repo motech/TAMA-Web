@@ -26,12 +26,12 @@ public class TamaTreeChooser implements TreeChooser {
     private CurrentDosageConfirmTree currentDosageConfirmTree;
 
     @Autowired
-    private Regimen6Tree regimen6Tree;
+    private Regimen1To6Tree regimen1To6Tree;
 
     public Tree getTree(IVRContext ivrContext) {
         if (isIncomingCall(ivrContext)) {
             if (TamaSessionUtil.isSymptomsReportingCall(ivrContext)) {
-                return regimen6Tree.getTree();
+                return regimen1To6Tree.getTree();
             } else {
                 PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
                 if (pillRegimenSnapshot.isCurrentDosageTaken()) {
