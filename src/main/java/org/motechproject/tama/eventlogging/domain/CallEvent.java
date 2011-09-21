@@ -7,25 +7,26 @@ import org.motechproject.tama.domain.CouchEntity;
 
 import java.util.Map;
 
-@TypeDiscriminator("doc.documentType == 'EventLog'")
-public class EventLog extends CouchEntity {
-	@JsonProperty("type")
-	private String type = "EventLog";
-	@JsonProperty("code")
-	String code;
+public class CallEvent extends CouchEntity {
 
     private String sessionId;
+
     private String patientDocId;
+
     private String logType;
+
     private String name;
+
     private String description;
+
     private DateTime dateTime;
+
     private Map<String, String> data;
 
-    public EventLog() {
+    public CallEvent() {
     }
 
-    public EventLog(String sessionId, String patientDocId, String logType, String name, String description, DateTime dateTime, Map<String, String> data) {
+    public CallEvent(String sessionId, String patientDocId, String logType, String name, String description, DateTime dateTime, Map<String, String> data) {
         this.sessionId = sessionId;
         this.patientDocId = patientDocId;
         this.logType = logType;

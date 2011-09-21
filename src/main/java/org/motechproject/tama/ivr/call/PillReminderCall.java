@@ -50,6 +50,7 @@ public class PillReminderCall {
     private void makeCall(String patientId, Map<String, String> params) {
         Patient patient = allPatients.get(patientId);
         if (patient == null || patient.isNotActive()) return;
+        // TODO: Move this to platform
         EventDataBuilder eventDataBuilder = new EventDataBuilder(null, "Dial", patient.getId(), new HashMap<String, String>(), DateUtil.now());
         eventDataBuilder.withCallDirection(IVRRequest.CallDirection.Outbound)
                 .withCallerId(patient.getIVRMobilePhoneNumber());
