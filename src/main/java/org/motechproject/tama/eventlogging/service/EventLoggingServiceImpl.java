@@ -21,6 +21,7 @@ public class EventLoggingServiceImpl implements EventLoggingService {
     @Override
     public void create(String callId, String externalId, String logType, String name, String description, DateTime dateTime, Map<String, String> data) {
         CallDetail callDetail = allCallDetails.getByCallId(callId);
+        if (callDetail == null) return;
         callDetail.add(new CallEvent(callId, externalId, logType, name, description, dateTime, data));
         allCallDetails.update(callDetail);
     }
