@@ -8,4 +8,9 @@
             <menu:item id="i_patient_list" messageCode="global_menu_list" url="/patients"/>
         </menu:category>
     </menu:menu>
+    <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
+        <menu:category id="c_alerts" z="eF9KM9LmRl+DN4yo3LTRDZuTkik=">
+            <menu:item id="i_alert_list" messageCode="global_menu_list" url="/alerts" />
+        </menu:category>
+    </menu:menu>
 </div>

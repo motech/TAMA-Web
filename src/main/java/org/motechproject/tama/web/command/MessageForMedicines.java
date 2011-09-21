@@ -28,7 +28,7 @@ public class MessageForMedicines extends BaseTreeCommand {
     @Override
     public String[] execute(Object obj) {
         IVRContext ivrContext = (IVRContext) obj;
-        ArrayList<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<String>();
 
         Patient patient = allPatients.get(TamaSessionUtil.getPatientId(ivrContext));
         Clinic clinic = allClinics.get(patient.getClinic_id());

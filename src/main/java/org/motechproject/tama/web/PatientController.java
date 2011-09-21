@@ -200,11 +200,6 @@ public class PatientController extends BaseController {
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patientsByClinic.get(0).getId(), request);
     }
 
-    private String loggedInClinic(HttpServletRequest request) {
-        AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
-        return user.getClinicId();
-    }
-
     private String getReferrer(HttpServletRequest request) {
         String referrer = request.getHeader("Referer");
         referrer = referrer.replaceFirst("(\\?|&)" + PATIENT_ID + "=[[0-9][^0-9]]*$", "");

@@ -481,6 +481,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
+            <artifactId>motech-alerts-api</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-server-api</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
@@ -544,6 +549,11 @@
             <artifactId>kxml2-min</artifactId>
             <version>2.3.0</version>
             <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.lambdaj</groupId>
+            <artifactId>lambdaj</artifactId>
+            <version>2.3.1</version>
         </dependency>
     </dependencies>
     <build>
@@ -777,7 +787,7 @@
                 <executions>
                     <execution>
                         <id>recreate-Db</id>
-                        <phase>process-test-classes</phase>
+                        <phase>pre-integration-test</phase>
                         <configuration>
                             <target>
                                 <echo message="Recreating DB: START"/>
@@ -796,7 +806,7 @@
                     </execution>
                     <execution>
                         <id>load-seed-data-in-Db</id>
-                        <phase>process-test-classes</phase>
+                        <phase>pre-integration-test</phase>
                         <configuration>
                             <target>
                                 <echo message="Seed data loading: START"/>
@@ -815,7 +825,7 @@
                     </execution>
                     <execution>
                         <id>setup-quartz-schema</id>
-                        <phase>process-test-classes</phase>
+                        <phase>pre-integration-test</phase>
                         <configuration>
                             <target>
                                 <echo message="Quartz schema loading: START"/>

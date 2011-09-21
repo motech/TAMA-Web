@@ -1,5 +1,7 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -17,5 +19,11 @@ public abstract class BaseController {
             throw new RuntimeException(uee);
         }
         return pathSegment;
+    }
+
+
+    protected String loggedInClinic(HttpServletRequest request) {
+        AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
+        return user.getClinicId();
     }
 }
