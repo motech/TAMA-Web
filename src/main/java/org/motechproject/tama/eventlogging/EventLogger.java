@@ -32,7 +32,7 @@ public class EventLogger implements Observer {
             Map<String, String> requestParams = event.getRequestParams();
             String isSymptomsReporting = requestParams.get(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM);
             String callType = "true".equals(isSymptomsReporting) ? CALL_TYPE_SYMPTOM_REPORTING : CALL_TYPE_PILL_REMINDER;
-            eventLoggingService.create(event.getSessionId(), event.getExternalID(), callType, event.getEventName(), "", event.getDateTime(), event.getData());
+            eventLoggingService.create(event.getCallId(), event.getExternalID(), callType, event.getCallEvent(), "", event.getDateTime(), event.getData());
         }
     }
 }
