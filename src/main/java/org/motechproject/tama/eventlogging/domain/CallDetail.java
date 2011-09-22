@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
 import org.motechproject.tama.domain.CouchEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CallDetail extends CouchEntity{
@@ -22,7 +23,18 @@ public class CallDetail extends CouchEntity{
 
     private DateTime endTime;
 
-    private List<CallEvent> callEvents;
+    private List<CallDetailUnit> callEvents = new ArrayList<CallDetailUnit>();
+
+    public CallDetail() {
+    }
+
+    public CallDetail(String callId, String callType, String callDirection, String patientDocumentId, String patientPhoneNumber) {
+        this.patientPhoneNumber = patientPhoneNumber;
+        this.patientDocumentId = patientDocumentId;
+        this.callDirection = callDirection;
+        this.callType = callType;
+        this.callId = callId;
+    }
 
     public String getCallId() {
         return callId;
@@ -80,16 +92,16 @@ public class CallDetail extends CouchEntity{
         this.endTime = endTime;
     }
 
-    public List<CallEvent> getCallEvents() {
+    public List<CallDetailUnit> getCallEvents() {
         return callEvents;
     }
 
-    public void setCallEvents(List<CallEvent> callEvents) {
+    public void setCallEvents(List<CallDetailUnit> callEvents) {
         this.callEvents = callEvents;
     }
 
     @JsonIgnore
-    public void add(CallEvent eventLog) {
+    public void add(CallDetailUnit eventLog) {
         this.callEvents.add(eventLog);
     }
 }
