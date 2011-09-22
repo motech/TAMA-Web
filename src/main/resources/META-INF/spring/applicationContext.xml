@@ -9,7 +9,7 @@
 
     <util:properties id="couchdbProperties" location="classpath:/couchdb.properties"/>
     <util:properties id="ivrProperties" location="classpath:/ivr.properties"/>
-    <util:properties id="symptom" location="classpath:/ivr.properties"/>
+    <util:properties id="symptomProperties" location="classpath:/symptomReporting.properties"/>
 
     <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
     <context:annotation-config/>

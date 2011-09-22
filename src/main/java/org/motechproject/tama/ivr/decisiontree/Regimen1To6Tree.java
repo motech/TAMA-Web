@@ -1,15 +1,15 @@
 package org.motechproject.tama.ivr.decisiontree;
 
+import org.apache.log4j.Logger;
 import org.motechproject.decisiontree.model.Node;
-<<<<<<< HEAD
 import org.motechproject.server.service.ivr.IVRContext;
-=======
 import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> Sushant, Manohar | #75 | Preliminary implementation of Alerts
 import org.springframework.stereotype.Component;
 
 @Component
 public class Regimen1To6Tree extends TamaDecisionTree {
+
+    private Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     private SymptomReportingAlertService service;
@@ -22,6 +22,8 @@ public class Regimen1To6Tree extends TamaDecisionTree {
             service.addAlerts(rootNode);
             return rootNode;
 		} catch (Exception e) {
+            logger.error("Error in getting appropriate tree", e);
+            e.printStackTrace();
 			return null;
 		}
 	}

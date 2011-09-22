@@ -17,7 +17,21 @@ public class FifthPrioritySymptomReportingFilter extends DecisionTreeNodesFilter
     @Override
     public boolean select(Node node) {
         return Lambda.select(node.getPrompts(), having(on(Prompt.class).getName(),
-                anyOf(equalTo("adv_stopmedicineseeclinicasap"),
-                        equalTo("adv_seeclinicasapdepression")))).size() > 0;
+                anyOf(equalTo("adv_tingpainfeetcropanto"),
+                        equalTo("adv_tingpainfeetcro"),
+                        equalTo("adv_crocin02"),
+                        equalTo("adv_crocin03"),
+                        equalTo("adv`_crocinpanto01"),
+                        equalTo("adv_crocinpanto02"),
+                        equalTo("adv_halfhourcontmed01"),
+                        equalTo("adv_halfhourcro01"),
+                        equalTo("adv_halfhourcrocinpanto01"),
+                        equalTo("adv_halfhourpanto01"),
+                        equalTo("adv_levo01"),
+                        equalTo("adv_levopanto01"),
+                        equalTo("adv_panto01"),
+                        equalTo("adv_panto02"),
+                        equalTo("adv_tingpainfeet"),
+                        equalTo("adv_tingpainfeetpanto")))).size() > 0;
     }
 }

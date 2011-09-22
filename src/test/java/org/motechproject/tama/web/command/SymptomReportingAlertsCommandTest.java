@@ -13,6 +13,8 @@ import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRSession;
 
+import java.util.Properties;
+
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +28,8 @@ public class SymptomReportingAlertsCommandTest {
     private IVRSession ivrSession;
     @Mock
     private AlertService alertService;
+    @Mock
+    private Properties properties;
 
     @Before
     public void setup() {
@@ -36,8 +40,8 @@ public class SymptomReportingAlertsCommandTest {
 
     @Test
     public void shouldCallAlertServiceToCreateANewAlert() {
-        SymptomReportingAlertsCommand command = new SymptomReportingAlertsCommand(alertService);
-        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1);
+        SymptomReportingAlertsCommand command = new SymptomReportingAlertsCommand(alertService, properties);
+        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, null);
         iTreeCommand.execute(context);
 
         final ArgumentMatcher<Alert> alertArgumentMatcher = new ArgumentMatcher<Alert>(){

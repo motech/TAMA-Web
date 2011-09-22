@@ -2,12 +2,12 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_org_motechproject_tama_domain_Clinician" object="${alert}" path="/alerts" z="QPzQl/N1tKQbDGik8rgmqstiZ7M=" delete="false">
-        <field:display field="name" id="s_org_motechproject_tama_domain_Alert_name" object="${alert}" z="mEJkaJjR4lg4d9h2I1fE9jUYSME="/>
-        <field:display field="alertType" id="s_org_motechproject_tama_domain_Alert_username" object="${clinician}" z="RECdfYOHjI7dSF9eCC1nBlJnixw="/>
-        <field:display field="contactNumber" id="s_org_motechproject_tama_domain_Alert_contactnumber" object="${clinician}" z="f3Kx2ELmrWVvEZdcWwCM7gaSvfg="/>
-        <field:display field="alternateContactNumber" id="s_org_motechproject_tama_domain_Clinician_alternateContactNumber" object="${clinician}" z="2Dy0mQjf+wq+dUQyvOZRGCjk8W8="/>
-        <field:display field="role" id="s_org_motechproject_tama_domain_Clinician_role" object="${clinician}" z="2Dy0mQjf+wq+dUQyvOZRGCjk8W8=" label="Role"/>
-        <field:display field="clinic" id="s_org_motechproject_tama_domain_Clinician_clinic" object="${clinician}" z="YrORrMBxutlTR2/3LVlW3SvJWVo="/>
+    <page:show id="ps_org_motechproject_tama_alert" object="${alertInfo}" path="/alerts" delete="false" update="false" create="false" list="false">
+        <field:display field="patientId" id="s_org_motechproject_tama_alert_id" object="${alertInfo}" label="Patient Id"/>
+        <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
+        <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time Of Call"/>
+        <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Type"/>
+        <field:display field="symptomReported" id="s_org_motechproject_tama_alert_SymptomReported" object="${alertInfo}" label="Symptoms Reported"/>
+        <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
     </page:show>
 </div>

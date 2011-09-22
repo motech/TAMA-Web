@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.bouncycastle.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -52,7 +51,7 @@ public class SymptomReportingAlertServiceTest {
         when(fourthPriorityNodeFinder.filter(any(Node.class))).thenReturn(java.util.Arrays.asList(rootNode, node1, node2));
         when(fifthPriorityNodeFinder.filter(any(Node.class))).thenReturn(java.util.Arrays.asList(rootNode, node1, node2));
 
-        when(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(Matchers.<Integer>any())).thenReturn(new ITreeCommand() {
+        when(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(Matchers.<Integer>any(), null)).thenReturn(new ITreeCommand() {
             @Override
             public String[] execute(Object o) {
                 return new String[0];

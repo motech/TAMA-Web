@@ -4,7 +4,7 @@
     <definition extends="default" name="alerts/list">
         <put-attribute name="body" value="/WEB-INF/views/alerts/list.jspx"/>
     </definition>
-<definition extends="default" name="clinicians/show">
+<definition extends="default" name="alerts/show">
         <put-attribute name="body" value="/WEB-INF/views/alerts/show.jspx"/>
     </definition>
 </tiles-definitions>

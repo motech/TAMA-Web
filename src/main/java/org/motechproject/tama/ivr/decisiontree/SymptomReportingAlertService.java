@@ -41,7 +41,7 @@ public class SymptomReportingAlertService {
         for (int i = 0; i < finders.size(); i++) {
             final List<Node> nodes = finders.get(i).filter(node);
             for (Node priorityNode : nodes) {
-               priorityNode.setTreeCommands(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(i + 1));
+               priorityNode.setTreeCommands(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(i + 1, priorityNode));
            }
         }
         return node;

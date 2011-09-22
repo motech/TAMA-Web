@@ -1,55 +1,40 @@
 package org.motechproject.tama.repository;
 
-import org.joda.time.DateTime;
+import ch.lambdaj.function.convert.Converter;
 import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.domain.AlertStatus;
-import org.motechproject.server.alerts.domain.AlertType;
+import org.motechproject.server.alerts.service.AlertService;
+import org.motechproject.tama.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
 import java.util.List;
+
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 @Repository
 public class AllAlerts {
 
+    private AlertService alertService;
+
+    private AllPatients allPatients;
+
+    @Autowired
+    public AllAlerts(AlertService alertService, AllPatients allPatients) {
+        this.alertService = alertService;
+        this.allPatients = allPatients;
+    }
 
     public List<Alert> forClinic(String clinicId) {
-        Alert alert1 = new Alert();
-        alert1.setId("1234");
-        alert1.setAlertType(AlertType.HIGH);
-        alert1.setDateTime(new DateTime());
-        alert1.setExternalId("123e");
-        alert1.setName("Hello");
-        alert1.setPriority(1);
-        alert1.setStatus(AlertStatus.NEW);
-        Alert alert2 = new Alert();
-        alert2.setAlertType(AlertType.HIGH);
-        alert2.setDateTime(new DateTime());
-        alert2.setExternalId("123");
-        alert2.setName("Hello");
-        alert2.setId("1234");
-        alert2.setPriority(1);
-        alert2.setStatus(AlertStatus.NEW);
-        Alert alert3 = new Alert();
-        alert3.setAlertType(AlertType.HIGH);
-        alert3.setDateTime(new DateTime());
-        alert3.setExternalId("123");
-        alert3.setId("123w4");
-        alert3.setName("Hello");
-        alert3.setPriority(1);
-        alert3.setStatus(AlertStatus.NEW);
-       return Arrays.asList(alert1, alert2, alert3);
+        return flatten(convert(allPatients.findByClinic(clinicId), new Converter<Patient, List<Alert>>() {
+            @Override
+            public List<Alert> convert(Patient patient) {
+                    return alertService.getBy(patient.getId(), null,null,null,0);
+            }
+        }));
     }
 
     public Alert getAlert(String alertId) {
-        Alert alert3 = new Alert();
-        alert3.setAlertType(AlertType.HIGH);
-        alert3.setDateTime(new DateTime());
-        alert3.setExternalId("123");
-        alert3.setName("Hello");
-        alert3.setPriority(1);
-        alert3.setStatus(AlertStatus.NEW);
-        return alert3;
+        return null;
     }
 }

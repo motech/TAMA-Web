@@ -2,13 +2,13 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:list id="pl_org_motechproject_tama_domain_Clinician" items="${alerts}" z="t5TIqi/YoQJdY2uXAbLJX3xtHPI=">
-        <table:table data="${alerts}" id="l_org_motechproject_tama_Alert" path="/alerts" z="UemM9RpbErXxzViA48L2jXwNLN0=" delete="false" create="false" update="false">
-            <table:column id="c_org_motechproject_tama_Alert_name" property="name" z="wybdweD9FHatbbtDfhfn31K0a7A="/>
-            <table:column id="c_org_motechproject_tama_Alert_type" property="alertType" z="Er2thpAtpuhFK9fFSVmNgq2aNAs="/>
-            <table:column id="c_org_motechproject_tama_Alert_priority" property="priority" z="Er2thpAtpuhFK9fFSVmNgq2aNAs="/>
-            <table:column id="c_org_motechproject_tama_Alert_datetime" property="dateTime" z="Er2thpAtpuhFK9fFSVmNgq2aNAs="/>
-            <table:column id="c_org_motechproject_tama_Alert_status" property="status" z="Er2thpAtpuhFK9fFSVmNgq2aNAs="/>
+    <page:list id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" >
+        <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts" delete="false" create="false" update="false" typeIdFieldName="alertId">
+             <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient Id" />
+             <table:column id="org_motechproject_tama_domain_patientalert" property="patientPhoneNumber" label="Phone Number" />
+             <table:column id="org_motechproject_tama_domain_patientalert" property="alertPriority" label="Alert Priority" />
+             <table:column id="org_motechproject_tama_domain_patientalert" property="type" label="Alert Type" />
+             <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOn" label="Time" />
         </table:table>
     </page:list>
 </div>
