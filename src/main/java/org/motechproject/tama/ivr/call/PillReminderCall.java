@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr.call;
 
 import org.motechproject.eventtracking.service.EventService;
-import org.motechproject.ivr.eventlogging.EventDataBuilder;
+import org.motechproject.ivr.eventlogging.IVRCallEventBuilder;
 import org.motechproject.server.service.ivr.CallRequest;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRService;
@@ -51,7 +51,7 @@ public class PillReminderCall {
         Patient patient = allPatients.get(patientId);
         if (patient == null || patient.isNotActive()) return;
         // TODO: Move this to platform
-        EventDataBuilder eventDataBuilder = new EventDataBuilder(null, "Dial", patient.getId(), new HashMap<String, String>(), DateUtil.now());
+        IVRCallEventBuilder eventDataBuilder = new IVRCallEventBuilder(null, "Dial", patient.getId(), new HashMap<String, String>(), DateUtil.now());
         eventDataBuilder.withCallDirection(IVRRequest.CallDirection.Outbound)
                 .withCallerId(patient.getIVRMobilePhoneNumber());
         eventService.publishEvent(eventDataBuilder.build());
