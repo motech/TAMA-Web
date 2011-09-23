@@ -4,11 +4,10 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.web.command.*;
-import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -44,10 +43,8 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
     @Autowired
     private MessageForMissedPillFeedbackCommand messageForMissedPillFeedbackCommand;
-    @Autowired
-    private ThreadLocalTargetSource threadLocalTargetSource;
 
-    protected Node createRootNode() {
+    protected Node createRootNode(IVRContext ivrContext) {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(messageForMedicines),
@@ -62,7 +59,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                         new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
                                                 )
-                                                .setTransitions(jumpToPreviousDosageTree()))
+                                                .setTransitions(jumpToPreviousDosageTree(ivrContext)))
                         },
                         {"2", new Transition()
                                 .setDestinationNode(
@@ -71,7 +68,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(pillsDelayWarning),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
-                                                .setTransitions(jumpToPreviousDosageTree()))
+                                                .setTransitions(jumpToPreviousDosageTree(ivrContext)))
                         },
                         {"3", new Transition()
                                 .setDestinationNode(
@@ -89,7 +86,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
                                                                         )
-                                                                        .setTransitions(jumpToPreviousDosageTree()))
+                                                                        .setTransitions(jumpToPreviousDosageTree(ivrContext)))
                                                         },
                                                         {"3", new Transition()
                                                                 .setDestinationNode(new Node()
@@ -98,19 +95,18 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
                                                                         )
-                                                                        .setTransitions(jumpToPreviousDosageTree()))
+                                                                        .setTransitions(jumpToPreviousDosageTree(ivrContext)))
                                                         }
                                                 }))
                         }
                 });
     }
 
-    private Map<String, Transition> jumpToPreviousDosageTree() {
-        ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(threadLocalContext.getIvrContext());
+    private Map<String, Transition> jumpToPreviousDosageTree(IVRContext ivrContext) {
+        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
         if (pillRegimenSnapshot.isPreviousDosageCaptured()) return new HashMap<String, Transition>();
 
-        return previousDosageReminderTree.getTree().getRootNode().getTransitions();
+        return previousDosageReminderTree.getTree(ivrContext).getRootNode().getTransitions();
     }
 
 }

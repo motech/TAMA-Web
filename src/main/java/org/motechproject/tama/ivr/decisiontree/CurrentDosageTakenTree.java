@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.decisiontree;
 
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
+import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.web.command.NextCallDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -17,7 +18,7 @@ public class CurrentDosageTakenTree extends TamaDecisionTree {
     private NextCallDetails nextCallDetails;
 
     @Override
-    protected Node createRootNode() {
+    protected Node createRootNode(IVRContext ivrContext) {
         return new Node()
                 .setPrompts(new AudioPrompt().setCommand(nextCallDetails));
     }

@@ -17,7 +17,6 @@ import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.util.TamaSessionUtil;
 import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
-import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
     public TamaAuthenticateAction(PillReminderService pillReminderService,
                                   AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                   TamaRetryAction retryAction, TamaUserNotFoundAction userNotFoundAction,
-                                  ThreadLocalTargetSource threadLocalTargetSource, TamaTreeChooser treeChooser, DecisionTreeBasedResponseBuilder ivrResponseBuilder) {
+                                  TamaTreeChooser treeChooser, DecisionTreeBasedResponseBuilder ivrResponseBuilder) {
         this.pillReminderService = pillReminderService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;

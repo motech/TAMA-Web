@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -27,7 +26,6 @@ public class PillRegimenSnapshot {
     private PillRegimenResponse pillRegimen;
     private final DateTime now;
     private LocalDate today;
-    Logger logger = Logger.getLogger(this.getClass());
 
     public PillRegimenSnapshot(IVRContext ivrContext, DateTime now) {
         this.ivrContext = ivrContext;
@@ -90,7 +88,7 @@ public class PillRegimenSnapshot {
             }
             return getCurrentDosageWithDosageDate(dosageResponses, currentDosage);
         } else {
-            return getDosage((String) ivrRequest.getParameter(PillReminderCall.DOSAGE_ID));
+            return getDosage(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID));
         }
     }
 

@@ -37,10 +37,4 @@
         <constructor-arg value="tama-web"/>
         <constructor-arg ref="tamaCouchDbInstance"/>
     </bean>
-
-    <bean id="threadLocalTargetSource" class="org.springframework.aop.target.ThreadLocalTargetSource" destroy-method="destroy">
-        <property name="targetBeanName" value="threadLocalContext"/>
-    </bean>
-    <bean id="threadLocalContext" class="org.motechproject.tama.ivr.ThreadLocalContext" scope="prototype"></bean>
-     
 </beans>

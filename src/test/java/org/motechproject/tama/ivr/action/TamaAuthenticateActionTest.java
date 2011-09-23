@@ -65,7 +65,7 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         when(request.getParameter("symptoms_reporting")).thenReturn("true");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.CALLER_ID)).thenReturn(MOBILE_NO);
-        authenticateAction = new TamaAuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null, null);
+        authenticateAction = new TamaAuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null);
     }
 
     @Test

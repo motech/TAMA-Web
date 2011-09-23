@@ -12,11 +12,9 @@ import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
-import org.motechproject.tama.ivr.ThreadLocalContext;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
-import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,21 +43,20 @@ public class TamaTreeChooserTest {
     @Qualifier("currentDosageTakenTree")
     private CurrentDosageTakenTree currentDosageTakenTree;
 
+    @Autowired
+    private CurrentDosageConfirmTree currentDosageConfirmTree;
+
+    @Autowired
+    private Regimen1To6Tree regimen1To6Tree;
+
     @Mock
     private IVRSession ivrSession;
 
     @Mock
     private IVRRequest ivrRequest;
 
+    private IVRContext ivrContext;
     private PillRegimenResponse pillRegimenResponse;
-
-    @Autowired
-    private ThreadLocalTargetSource threadLocalTargetSource;
-    @Autowired
-    private CurrentDosageConfirmTree currentDosageConfirmTree;
-
-    @Autowired
-	private Regimen1To6Tree regimen1To6Tree;
 
     @Before
     public void setUp(){
@@ -67,6 +64,8 @@ public class TamaTreeChooserTest {
 
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
+
+        ivrContext = new IVRContext(ivrRequest, ivrSession);
     }
 
     @Test
@@ -77,14 +76,11 @@ public class TamaTreeChooserTest {
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
 
-        ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
-        threadLocalContext.setIvrContext(new IVRContext(ivrRequest, ivrSession));
-
         DosageResponse dosage = dosages.get(0);
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()));
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Outbound);
 
-        assertEquals(currentDosageReminderTree.getTree(), treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
+        assertEquals(currentDosageReminderTree.getTree(ivrContext), treeChooser.getTree(ivrContext));
     }
 
     @Test
@@ -93,7 +89,7 @@ public class TamaTreeChooserTest {
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()));
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
 
-        assertEquals(currentDosageTakenTree.getTree(), treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
+        assertEquals(currentDosageTakenTree.getTree(ivrContext), treeChooser.getTree(ivrContext));
     }
 
     @Test
@@ -102,14 +98,11 @@ public class TamaTreeChooserTest {
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
 
-        ThreadLocalContext threadLocalContext = (ThreadLocalContext) threadLocalTargetSource.getTarget();
-        threadLocalContext.setIvrContext(new IVRContext(ivrRequest, ivrSession));
-
         DosageResponse dosage = dosages.get(0);
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()));
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
 
-        assertEquals(currentDosageConfirmTree.getTree(), treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
+        assertEquals(currentDosageConfirmTree.getTree(ivrContext), treeChooser.getTree(ivrContext));
     }
 
     @Test
@@ -117,6 +110,6 @@ public class TamaTreeChooserTest {
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
         when(ivrSession.get(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
         
-        assertTrue(regimen1To6Tree.getTree() == treeChooser.getTree(new IVRContext(ivrRequest, ivrSession)));
+        assertTrue(regimen1To6Tree.getTree(ivrContext) == treeChooser.getTree(ivrContext));
     }
 }

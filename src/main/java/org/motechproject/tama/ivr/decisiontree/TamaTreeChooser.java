@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class TamaTreeChooser implements TreeChooser {
 
@@ -29,20 +28,22 @@ public class TamaTreeChooser implements TreeChooser {
     private Regimen1To6Tree regimen1To6Tree;
 
     public Tree getTree(IVRContext ivrContext) {
+        TamaDecisionTree chosenTree;
         if (isIncomingCall(ivrContext)) {
             if (TamaSessionUtil.isSymptomsReportingCall(ivrContext)) {
-                return regimen1To6Tree.getTree();
+                chosenTree = regimen1To6Tree;
             } else {
                 PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
                 if (pillRegimenSnapshot.isCurrentDosageTaken()) {
-                    return currentDosageTakenTree.getTree();
+                    chosenTree = currentDosageTakenTree;
                 } else {
-                    return currentDosageConfirmTree.getTree();
+                    chosenTree = currentDosageConfirmTree;
                 }
             }
         } else {
-            return currentDosageReminderTree.getTree();
+            chosenTree = currentDosageReminderTree;
         }
+        return chosenTree.getTree(ivrContext);
     }
 
     private boolean isIncomingCall(IVRContext ivrContext) {
