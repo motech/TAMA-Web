@@ -17,6 +17,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String MINUTES = "timeOfDayMinutes";
     public static final String SIGNATURE_MUSIC_URL = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
+    public static final String OUTBOX_LOCATION_URL = "outbox.location.url";
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
 
     public static final String PILL_CONFIRM_CALL_MENU = "010_03_02_MainMenu2";

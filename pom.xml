@@ -511,6 +511,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
+            <artifactId>motech-outbox-api</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-cmslite-api</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
@@ -840,7 +845,7 @@
                     </execution>
                     <execution>
                         <id>start-activemq</id>
-                        <phase>process-test-classes</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <target name="start.activemq">
                                 <condition property="script.interpreter" value="bash" else="cmd">
