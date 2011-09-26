@@ -1,6 +1,6 @@
 package org.motechproject.tama.user.service;
 
-import org.motechproject.ivr.service.UserService;
+import org.motechproject.ivr.kookoo.service.UserService;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

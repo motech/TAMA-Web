@@ -5,8 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.motechproject.ivr.action.IvrAction;
 import org.motechproject.ivr.kookoo.KookooRequest;
+import org.motechproject.ivr.kookoo.action.IvrAction;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.server.service.ivr.IVRCallState;
@@ -65,7 +65,7 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         when(request.getParameter("symptoms_reporting")).thenReturn("true");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.CALLER_ID)).thenReturn(MOBILE_NO);
-        authenticateAction = new TamaAuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null);
+        authenticateAction = new TamaAuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null, null);
     }
 
     @Test

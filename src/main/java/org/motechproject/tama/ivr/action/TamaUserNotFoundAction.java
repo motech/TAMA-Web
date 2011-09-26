@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr.action;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ivr.action.UserNotFoundAction;
+import org.motechproject.ivr.kookoo.action.UserNotFoundAction;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.tama.domain.IVRCallAudit;
 import org.motechproject.tama.ivr.audit.AuditService;

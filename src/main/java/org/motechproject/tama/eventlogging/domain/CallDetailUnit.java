@@ -1,7 +1,7 @@
 package org.motechproject.tama.eventlogging.domain;
 
 import org.joda.time.DateTime;
-import org.motechproject.ivr.IVRCallEvent;
+import org.motechproject.server.service.ivr.CallEvent;
 import org.motechproject.tama.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 
@@ -18,8 +18,8 @@ public class CallDetailUnit extends CouchEntity {
     public CallDetailUnit() {
     }
 
-    public CallDetailUnit(IVRCallEvent ivrCallEvent) {
-        this.action = ivrCallEvent.getCallEvent();
+    public CallDetailUnit(CallEvent ivrCallEvent) {
+        //this.action = ivrCallEvent.getCallEvent();
         this.data = ivrCallEvent.getData();
         this.dateTime = DateUtil.now();
     }

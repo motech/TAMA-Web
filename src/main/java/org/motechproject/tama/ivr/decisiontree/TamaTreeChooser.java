@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr.decisiontree;
 
 import org.motechproject.decisiontree.model.Tree;
-import org.motechproject.ivr.action.TreeChooser;
+import org.motechproject.ivr.kookoo.action.TreeChooser;
 import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;

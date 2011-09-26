@@ -1,10 +1,10 @@
 package org.motechproject.tama.eventlogging.service;
 
-import org.joda.time.DateTime;
-import org.motechproject.ivr.IVRCallEvent;
-
-import java.util.Map;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.eventlogging.domain.CallLog;
 
 public interface CallLogService {
-    void create(IVRCallEvent ivrCallEvent);
+
+    CallLog create(String callType, Patient patient);
+
 }

@@ -1,13 +1,10 @@
 package org.motechproject.tama.ivr.call;
 
 import org.motechproject.eventtracking.service.EventService;
-import org.motechproject.ivr.eventlogging.IVRCallEventBuilder;
 import org.motechproject.server.service.ivr.CallRequest;
-import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -50,11 +47,7 @@ public class PillReminderCall {
     private void makeCall(String patientId, Map<String, String> params) {
         Patient patient = allPatients.get(patientId);
         if (patient == null || patient.isNotActive()) return;
-        // TODO: Move this to platform
-        IVRCallEventBuilder eventDataBuilder = new IVRCallEventBuilder(null, "Dial", patient.getId(), new HashMap<String, String>(), DateUtil.now());
-        eventDataBuilder.withCallDirection(IVRRequest.CallDirection.Outbound)
-                .withCallerId(patient.getIVRMobilePhoneNumber());
-        eventService.publishEvent(eventDataBuilder.build());
+
         CallRequest callRequest = new CallRequest(patient.getIVRMobilePhoneNumber(), params, getApplicationUrl());
         ivrService.initiateCall(callRequest);
     }

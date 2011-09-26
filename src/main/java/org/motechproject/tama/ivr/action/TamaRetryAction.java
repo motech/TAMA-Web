@@ -1,6 +1,6 @@
 package org.motechproject.tama.ivr.action;
 
-import org.motechproject.ivr.action.BaseAction;
+import org.motechproject.ivr.kookoo.action.BaseAction;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRSession;

@@ -1,8 +1,8 @@
 package org.motechproject.tama.ivr.action;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ivr.action.AuthenticateAction;
-import org.motechproject.ivr.action.IvrAction;
+import org.motechproject.ivr.kookoo.action.AuthenticateAction;
+import org.motechproject.ivr.kookoo.action.IvrAction;
 import org.motechproject.server.decisiontree.DecisionTreeBasedResponseBuilder;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -11,6 +11,8 @@ import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.eventlogging.domain.CallLog;
+import org.motechproject.tama.eventlogging.service.CallLogService;
 import org.motechproject.tama.ivr.decisiontree.TamaTreeChooser;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class TamaAuthenticateAction extends AuthenticateAction {
+
     private PillReminderService pillReminderService;
     private TamaRetryAction retryAction;
     private TamaUserNotFoundAction userNotFoundAction;
@@ -32,12 +35,14 @@ public class TamaAuthenticateAction extends AuthenticateAction {
     private AllTreatmentAdvices allTreatmentAdvices;
     private final TamaTreeChooser treeChooser;
     private DecisionTreeBasedResponseBuilder responseBuilder;
+    private final CallLogService callLogService;
 
     @Autowired
     public TamaAuthenticateAction(PillReminderService pillReminderService,
                                   AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                   TamaRetryAction retryAction, TamaUserNotFoundAction userNotFoundAction,
-                                  TamaTreeChooser treeChooser, DecisionTreeBasedResponseBuilder ivrResponseBuilder) {
+                                  TamaTreeChooser treeChooser,DecisionTreeBasedResponseBuilder ivrResponseBuilder,
+                                  CallLogService callLogService) {
         this.pillReminderService = pillReminderService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -45,6 +50,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
         this.treeChooser = treeChooser;
         this.userNotFoundAction = userNotFoundAction;
         this.responseBuilder = ivrResponseBuilder;
+        this.callLogService = callLogService;
     }
 
     @Override
@@ -62,6 +68,11 @@ public class TamaAuthenticateAction extends AuthenticateAction {
             return userNotFoundAction.handle(ivrRequest, request, response);
 
         patient = allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode);
+
+        String isSymptomsReporting = ivrRequest.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM);
+        String callType = "true".equals(isSymptomsReporting) ? CallLog.CALL_TYPE_SYMPTOM_REPORTING : CallLog.CALL_TYPE_PILL_REMINDER;
+        //CallLog callLog = callLogService.create(callType);
+
 
         if (!isAuthenticatedUser(passcode, patient)) {
             return retryAction.handle(ivrRequest, request, response);
