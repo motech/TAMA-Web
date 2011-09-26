@@ -8,7 +8,7 @@
              <table:column id="org_motechproject_tama_domain_patientalert" property="patientPhoneNumber" label="Phone Number" />
              <table:column id="org_motechproject_tama_domain_patientalert" property="alertPriority" label="Alert Priority" />
              <table:column id="org_motechproject_tama_domain_patientalert" property="type" label="Alert Type" />
-             <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOn" label="Time" />
+             <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOn" label="Alert Generated On" />
         </table:table>
     </page:list>
 </div>

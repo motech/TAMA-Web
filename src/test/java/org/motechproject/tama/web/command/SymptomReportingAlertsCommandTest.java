@@ -91,7 +91,7 @@ public class SymptomReportingAlertsCommandTest {
     public void shouldCreateANewAlertWithCorrectSymptomMappingWithCyPrompt() {
         SymptomReportingAlertsCommand command = new SymptomReportingAlertsCommand(alertService, properties);
         Node stubNode = new Node();
-        stubNode.setPrompts(new MenuAudioPrompt().setName("cy_prompt"), new MenuAudioPrompt().setName("cn_prompt"));
+        stubNode.setPrompts( new MenuAudioPrompt().setName("cn_prompt"), new MenuAudioPrompt().setName("cy_prompt"));
         when(properties.get("cy_prompt")).thenReturn("cy_prompt");
         when(properties.get("cn_prompt")).thenReturn("cn_prompt");
 
@@ -120,7 +120,7 @@ public class SymptomReportingAlertsCommandTest {
             @Override
             public boolean matches(Object testAlert) {
                 Alert alert = (Alert)testAlert;
-                return alert.getDescription().equals("");
+                return alert.getDescription().equals("-");
             }
         };
         verify(alertService).createAlert(argThat(alertArgumentMatcher));

@@ -2,6 +2,7 @@ package org.motechproject.tama.web.command;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
@@ -37,9 +38,11 @@ public class SymptomReportingAlertsCommand {
         this.properties = properties;
     }
 
-    public ITreeCommand symptomReportingAlertWithPriority(final Integer priority, Node node) {
+    public ITreeCommand symptomReportingAlertWithPriority(final Integer priority, final Node node) {
         final String adviceGiven = getAdviceGiven(node);
         final String symptomReported = getSymptomReported(node);
+
+
 
         return new BaseTreeCommand() {
             @Override
@@ -59,10 +62,13 @@ public class SymptomReportingAlertsCommand {
 
     private String getSymptomReported(Node node) {
         if(isN02Node(node))
-            return StringUtils.EMPTY;
-        final Prompt prompt = selectFirst(node.getPrompts(), having(on(Prompt.class).getName(), anyOf(startsWith("ppc_"),
-                startsWith("cy_"),
-                startsWith("cn_"))));
+            return "-";
+        Prompt summaryPrompt = selectFirst(node.getPrompts(), having(on(Prompt.class).getName(), startsWith("ppc_")));
+        Prompt affirmativePrompt = selectFirst(node.getPrompts(), having(on(Prompt.class).getName(), startsWith("cy_")));
+        Prompt negativePrompt = selectFirst(node.getPrompts(), having(on(Prompt.class).getName(), startsWith("cn_")));
+
+        Prompt prompt = selectFirst(java.util.Arrays.asList(summaryPrompt, affirmativePrompt, negativePrompt), Matchers.<Prompt>notNullValue());
+
         if (prompt == null) {
             logger.debug(String.format("No prompt found for node :%s", node.toString()));
             return StringUtils.EMPTY;
