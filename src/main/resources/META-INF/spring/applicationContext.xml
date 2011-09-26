@@ -25,6 +25,7 @@
     <import resource="classpath:applicationIvrKookoo.xml"/>
     <import resource="classpath:applicationOutboxAPI.xml"/>
     <import resource="classpath:applicationContextAlert.xml"/>
+    <import resource="classpath:applicationPlatformScheduler.xml"/>
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
         <property name="algorithm" value="PBEWithMD5AndDES"/>

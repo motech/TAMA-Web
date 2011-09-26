@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.util.DateUtil;
@@ -29,4 +30,70 @@ public class TreatmentAdviceTest {
         assertEquals(DateUtil.today(), firstDrug.getEndDate());
         assertEquals(DateUtil.today(), secondDrug.getEndDate());
     }
+
+    @Test
+    public void getEndDateShouldGiveTheEndDateOfDrugDosageHavingTheLastEndDate() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+
+        LocalDate today = DateUtil.today();
+
+        DrugDosage doseEndingToday = new DrugDosage();
+        doseEndingToday.setEndDate(today);
+        DrugDosage doseEndingTomorrow = new DrugDosage();
+        doseEndingTomorrow.setEndDate(today.plusDays(1));
+        DrugDosage doseEndingDayAfter = new DrugDosage();
+        doseEndingDayAfter.setEndDate(today.plusDays(2));
+
+        treatmentAdvice.addDrugDosage(doseEndingToday);
+        treatmentAdvice.addDrugDosage(doseEndingTomorrow);
+        treatmentAdvice.addDrugDosage(doseEndingDayAfter);
+
+        assertEquals(treatmentAdvice.getEndDate(), doseEndingDayAfter.getEndDateAsDate());
+    }
+
+    @Test
+    public void getEndDateShouldGiveTheEndDateOfDrugDosageHavingNoEndDate() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+
+        LocalDate today = DateUtil.today();
+
+        DrugDosage doseEndingToday = new DrugDosage();
+        doseEndingToday.setEndDate(today);
+        DrugDosage doseEndingTomorrow = new DrugDosage();
+        doseEndingTomorrow.setEndDate(today.plusDays(1));
+        DrugDosage doseWithNoEndCaptured = new DrugDosage();
+        doseWithNoEndCaptured.setEndDate(null);
+
+        treatmentAdvice.addDrugDosage(doseEndingToday);
+        treatmentAdvice.addDrugDosage(doseEndingTomorrow);
+        treatmentAdvice.addDrugDosage(doseWithNoEndCaptured);
+
+        assertEquals(treatmentAdvice.getEndDate(), doseWithNoEndCaptured.getEndDateAsDate());
+    }
+
+    @Test
+    public void getStartDateShouldGiveTheStartDateOfDrugDosageHavingTheLeastStartDate() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+
+        LocalDate today = DateUtil.today();
+
+        DrugDosage doseStartingToday = new DrugDosage();
+        doseStartingToday.setStartDate(today);
+        DrugDosage doseStartingTomorrow = new DrugDosage();
+        doseStartingTomorrow.setStartDate(today.plusDays(1));
+        DrugDosage doseStartingDayAfter = new DrugDosage();
+        doseStartingDayAfter.setStartDate(today.plusDays(2));
+        DrugDosage doseThatDoesNotStart = new DrugDosage();
+        doseThatDoesNotStart.setStartDate(null);
+
+        treatmentAdvice.addDrugDosage(doseStartingToday);
+        treatmentAdvice.addDrugDosage(doseStartingTomorrow);
+        treatmentAdvice.addDrugDosage(doseStartingDayAfter);
+        treatmentAdvice.addDrugDosage(doseThatDoesNotStart);
+
+        assertEquals(treatmentAdvice.getStartDate(), doseStartingToday.getStartDateAsDate());
+    }
+
+
+
 }
