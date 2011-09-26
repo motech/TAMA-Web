@@ -13,6 +13,7 @@ public class TamaSessionUtil {
         public static final String NUMBER_OF_ATTEMPTS = "number_of_retries";
         public static final String SYMPTOMS_REPORTING_PARAM = "symptoms_reporting";
         public static final String PATIENT_DOC_ID = IVRSession.IVRCallAttribute.EXTERNAL_ID;
+        public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
     }
 
     public static String getDosageIdFrom(IVRContext ivrContext) {

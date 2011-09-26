@@ -20,16 +20,17 @@ public class SetupOutboxMessages {
         OutboundVoiceMessageDao outboxRepository = context.getBean(OutboundVoiceMessageDao.class);
         AllPatients patientRepository = context.getBean(AllPatients.class);
 
-        Patient patient = patientRepository.findByPatientId(args[0]).get(0);
-        int messageCount = Integer.parseInt(args[1]);
+        Patient patient = patientRepository.findByPatientId("1111").get(0);
+        int messageCount = Integer.parseInt("4");
 
         for (int count = 0; count < messageCount; count++) {
             OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
             outboundVoiceMessage.setPartyId(patient.getId());
             outboundVoiceMessage.setCreationTime(DateUtil.now().toDate());
+            outboundVoiceMessage.setExpirationDate(DateUtil.tomorrow().toDate());
             outboundVoiceMessage.setStatus(OutboundVoiceMessageStatus.PENDING);
             HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("audioFiles", Arrays.asList("audio1.wav", "audio2.wav"));
+            map.put("audioFiles", Arrays.asList(String.format("Num_00%d", count)));
             outboundVoiceMessage.setParameters(map);
 
             outboxRepository.add(outboundVoiceMessage);
