@@ -51,7 +51,7 @@ public class SymptomReportingAlertServiceTest {
         when(fourthPriorityNodeFinder.filter(any(Node.class))).thenReturn(java.util.Arrays.asList(rootNode, node1, node2));
         when(fifthPriorityNodeFinder.filter(any(Node.class))).thenReturn(java.util.Arrays.asList(rootNode, node1, node2));
 
-        when(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(Matchers.<Integer>any(), null)).thenReturn(new ITreeCommand() {
+        when(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(Matchers.<Integer>any(), Matchers.<Node>any())).thenReturn(new ITreeCommand() {
             @Override
             public String[] execute(Object o) {
                 return new String[0];

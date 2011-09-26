@@ -2,6 +2,7 @@ package org.motechproject.tama.web.command;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 
 @Component
@@ -35,8 +38,8 @@ public class SymptomReportingAlertsCommand {
     }
 
     public ITreeCommand symptomReportingAlertWithPriority(final Integer priority, Node node) {
-        final String symptomReported = getSymptomReported(node);
         final String adviceGiven = getAdviceGiven(node);
+        final String symptomReported = getSymptomReported(node);
 
         return new BaseTreeCommand() {
             @Override
@@ -44,7 +47,8 @@ public class SymptomReportingAlertsCommand {
                 IVRContext ivrContext = (IVRContext) o;
                 String externalId = ivrContext.ivrSession().getExternalId();
                 final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority);
-                symptomsAlert.setDateTime(DateUtil.now());
+                final DateTime now = DateUtil.now();
+                symptomsAlert.setDateTime(now);
                 symptomsAlert.setDescription(symptomReported);
                 symptomsAlert.setName(adviceGiven);
                 alertService.createAlert(symptomsAlert);
@@ -54,14 +58,18 @@ public class SymptomReportingAlertsCommand {
     }
 
     private String getSymptomReported(Node node) {
-        final Prompt prompt = selectUnique(node.getPrompts(), having(on(Prompt.class).getName(), startsWith("ppc_")));
+        if(isN02Node(node))
+            return StringUtils.EMPTY;
+        final Prompt prompt = selectFirst(node.getPrompts(), having(on(Prompt.class).getName(), anyOf(startsWith("ppc_"),
+                startsWith("cy_"),
+                startsWith("cn_"))));
         if (prompt == null) {
-            logger.error(String.format("No prompt found for node :%s", node.toString()));
+            logger.debug(String.format("No prompt found for node :%s", node.toString()));
             return StringUtils.EMPTY;
         }
         final Object label = properties.get(String.valueOf(prompt.getName()));
         if (label == null) {
-            logger.error(String.format("No label found for prompt :%s", prompt.getName()));
+            logger.debug(String.format("No label found for prompt :%s", prompt.getName()));
             return StringUtils.EMPTY;
         }
         return String.valueOf(label);
@@ -72,11 +80,15 @@ public class SymptomReportingAlertsCommand {
         if (prompt != null) {
             final Object label = properties.get(String.valueOf(prompt.getName()));
             if (label == null) {
-                logger.error(String.format("No label found for prompt :%s", prompt.getName()));
+                logger.debug(String.format("No label found for prompt :%s", prompt.getName()));
                 return StringUtils.EMPTY;
             }
             return String.valueOf(label);
         }
         return StringUtils.EMPTY;
+    }
+
+    private boolean isN02Node(Node node) {
+        return select(node.getPrompts(), having(on(Prompt.class).getName(), equalTo("adv_callclinic"))).size() > 0;
     }
 }
