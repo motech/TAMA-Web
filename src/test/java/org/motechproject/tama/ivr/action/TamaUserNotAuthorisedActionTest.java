@@ -30,8 +30,8 @@ public class TamaUserNotAuthorisedActionTest extends BaseActionTest {
 
     @Test
     public void shouldReturnUserNptAuthorisedResponse() {
-    	when(ivrRequest.getSessionId()).thenReturn("sid");
-        when(ivrRequest.getCallerId()).thenReturn("cid");
+    	when(ivrRequest.getSid()).thenReturn("sid");
+        when(ivrRequest.getCid()).thenReturn("cid");
         when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
         when(ivrRequest.getData()).thenReturn("testdata");
         

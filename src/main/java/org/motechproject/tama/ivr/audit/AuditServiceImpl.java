@@ -18,6 +18,6 @@ public class AuditServiceImpl implements AuditService {
 
     @Override
     public void audit(IVRRequest ivrRequest, String patientId, IVRCallAudit.State state) {
-        audits.add(new IVRCallAudit(ivrRequest.getCallerId(), ivrRequest.getSessionId(), patientId, state));
+        audits.add(new IVRCallAudit(ivrRequest.getCid(), ivrRequest.getSid(), patientId, state));
     }
 }

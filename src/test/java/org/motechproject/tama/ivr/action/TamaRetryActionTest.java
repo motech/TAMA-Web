@@ -28,8 +28,8 @@ public class TamaRetryActionTest extends BaseActionTest {
 
     @Test
     public void shouldGoToUserNotAuthorisedActionIfItIsTheLastAttempt() {
-        when(ivrRequest.getSessionId()).thenReturn("sid");
-        when(ivrRequest.getCallerId()).thenReturn("cid");
+        when(ivrRequest.getSid()).thenReturn("sid");
+        when(ivrRequest.getCid()).thenReturn("cid");
         when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
         when(ivrRequest.getData()).thenReturn("1234#");
         when(request.getSession(false)).thenReturn(session);
@@ -44,8 +44,8 @@ public class TamaRetryActionTest extends BaseActionTest {
 
     @Test
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndAlsoIncrementAttemptCount() {
-        when(ivrRequest.getSessionId()).thenReturn("sid");
-        when(ivrRequest.getCallerId()).thenReturn("cid");
+        when(ivrRequest.getSid()).thenReturn("sid");
+        when(ivrRequest.getCid()).thenReturn("cid");
         when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
         when(ivrRequest.getData()).thenReturn("1234#");
         when(request.getSession(false)).thenReturn(session);
@@ -60,8 +60,8 @@ public class TamaRetryActionTest extends BaseActionTest {
 
     @Test
     public void shouldSendRequestForPinAgainIfItIsNotTheLastAttemptAndNotIncrementAttemptCountWhenPassCodeIsNotSent() {
-        when(ivrRequest.getSessionId()).thenReturn("sid");
-        when(ivrRequest.getCallerId()).thenReturn("cid");
+        when(ivrRequest.getSid()).thenReturn("sid");
+        when(ivrRequest.getCid()).thenReturn("cid");
         when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
         when(ivrRequest.getData()).thenReturn(null);
         when(request.getSession(false)).thenReturn(session);
