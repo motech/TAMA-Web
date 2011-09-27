@@ -107,14 +107,14 @@ public class PillRegimenSnapshot {
     }
 
     public int getScheduledDosagesTotalCount() {
-        return calculateScheduledDosagesTotalCount(now);
+        return getScheduledDosagesTotalCount(now);
     }
 
     public int getScheduledDosagesTotalCountTillPreviousWeek() {
-        return calculateScheduledDosagesTotalCount(now.minusDays(7));
+        return getScheduledDosagesTotalCount(now.minusWeeks(1));
     }
 
-    private int calculateScheduledDosagesTotalCount(DateTime toDate) {
+    public int getScheduledDosagesTotalCount(DateTime toDate) {
         int totalCount = 0;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
             DateTime dosageStartDate = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);

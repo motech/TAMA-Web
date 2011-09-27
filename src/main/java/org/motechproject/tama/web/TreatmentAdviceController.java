@@ -1,6 +1,12 @@
  package org.motechproject.tama.web;
 
+import org.joda.time.LocalDate;
+import org.motechproject.model.CronSchedulableJob;
+import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
+import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.DosageType;
@@ -24,7 +30,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RooWebScaffold(path = "treatmentadvices", formBackingObject = TreatmentAdvice.class)
 @RequestMapping("/treatmentadvices")
@@ -85,10 +93,12 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.asMap().clear();
         allTreatmentAdvices.add(treatmentAdvice);
         pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
+        unscheduleJobForAdherenceTrendFeedback(existingTreatmentAdviceId);
+        scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
 
-    private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {
+	private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {
         TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
         existingTreatmentAdvice.setReasonForDiscontinuing(discontinuationReason);
         existingTreatmentAdvice.endTheRegimen();
@@ -110,12 +120,21 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     private void scheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
-//        Map<String, Object> eventParams = null;
-//        MotechEvent motechEvent = new MotechEvent(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER, eventParams);
-//        String cronJobExpression = new CronJobSimpleExpressionBuilder(new Time(0, 0)).build();
-//        CronSchedulableJob schedulableJob = new CronSchedulableJob(motechEvent, cronJobExpression, treatmentAdvice.getStartDate(), treatmentAdvice.getEndDate());
-//        schedulerService.scheduleJob(schedulableJob);
+    	Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getRegimenId())
+        .withPillRegimenId(treatmentAdvice.getRegimenId())
+        .withExternalId(treatmentAdvice.getPatientId())
+        .payload();
+        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
+        MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
+        String cronExpression = new WeeklyCronJobExpressionBuilder(startDate.getDayOfWeek()).build();
+        CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, startDate.toDate(), treatmentAdvice.getEndDate());
+        schedulerService.scheduleJob(adherenceJob);
     }
+    
+    private void unscheduleJobForAdherenceTrendFeedback(String oldTreatmentAdviceId) {
+    	TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(oldTreatmentAdviceId);
+    	schedulerService.unscheduleJob(oldTreatmentAdvice.getRegimenId());
+	}
 
     public void show(String id, Model uiModel) {
         TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(allTreatmentAdvices, allPatients, allRegimens, allDrugs, allDosageTypes, allMealAdviceTypes);

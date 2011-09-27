@@ -199,7 +199,7 @@ public class PillRegimenSnapshotTest {
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
 
         DateTime testCallTime = new DateTime(2011, 8, 1, 12, 0, 0);
-        Mockito.when(ivrSession.getPillRegimen()).thenReturn(getPillRegimenResponse());
+        Mockito.when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(getPillRegimenResponse());
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
 
         int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountTillPreviousWeek();

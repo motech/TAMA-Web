@@ -80,6 +80,15 @@ public class TamaIVRMessage implements IVRMessage {
 
     /*----------Outbox -------------------------*/
     public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1"; // 001_06_04_mayEndThisCallNow1.wav
+	public static final String M02_04_ADHERENCE_COMMENT_GT95_FALLING = "m02_04_adherencecommentgt95falling";
+
+	public static final String M02_05_ADHERENCE_COMMENT_70TO90_FALLING = "m02_05_adherencecomment70to90falling";
+
+	public static final String M02_06_ADHERENCE_COMMENT_70TO90_RISING = "m02_06_adherencecomment70to90rising";
+
+	public static final String M02_07_ADHERENCE_COMMENT_LT70_FALLING = "m02_07_adherencecommentlt70falling";
+	
+	public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
 
 
     /* -------- Adherence Feedback ----------- */
