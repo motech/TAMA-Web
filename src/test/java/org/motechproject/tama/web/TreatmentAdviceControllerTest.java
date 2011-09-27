@@ -5,7 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
+import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
+import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
@@ -69,7 +70,7 @@ public class TreatmentAdviceControllerTest {
 
         controller.create(treatmentAdvice, uiModel);
         verify(requestMapper).map(treatmentAdvice);
-        verify(pillReminderService).createNew(any(PillRegimenRequest.class));
+        verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
     }
 
     @Test
@@ -176,6 +177,6 @@ public class TreatmentAdviceControllerTest {
         assertThat(existingTreatmentAdvice.getReasonForDiscontinuing(), is(discontinuationReason));
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(newTreatmentAdvice);
-        verify(pillReminderService).renew(any(PillRegimenRequest.class));
+        verify(pillReminderService).renew(any(DailyPillRegimenRequest.class));
     }
 }

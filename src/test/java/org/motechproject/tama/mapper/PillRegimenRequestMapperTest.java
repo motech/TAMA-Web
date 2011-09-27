@@ -8,7 +8,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
-import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
+import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.domain.Drug;
@@ -89,7 +89,7 @@ public class PillRegimenRequestMapperTest {
         drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
         treatmentAdvice.setDrugDosages(drugDosages);
 
-        PillRegimenRequest request = pillRegimenRequestMapper.map(treatmentAdvice);
+        DailyPillRegimenRequest request = pillRegimenRequestMapper.map(treatmentAdvice);
         DosageRequest dosageRequest = getByStartHour(9, request.getDosageRequests());
         Assert.assertTrue(Integer.valueOf(reminderTimeLag) == dosageRequest.getStartMinute());
     }
@@ -121,11 +121,11 @@ public class PillRegimenRequestMapperTest {
         drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
         treatmentAdvice.setDrugDosages(drugDosages);
 
-        PillRegimenRequest pillRegimenRequest = pillRegimenRequestMapper.map(treatmentAdvice);
+        DailyPillRegimenRequest pillRegimenRequest = pillRegimenRequestMapper.map(treatmentAdvice);
 
         Assert.assertEquals(treatmentAdvice.getPatientId(), pillRegimenRequest.getExternalId());
         Assert.assertNotNull(pillRegimenRequest.getReminderRepeatIntervalInMinutes());
-        Assert.assertNotNull(pillRegimenRequest.getReminderRepeatWindowInHours());
+        Assert.assertNotNull(pillRegimenRequest.getPillWindowInHours());
 
         Assert.assertEquals(3, pillRegimenRequest.getDosageRequests().size());
 
