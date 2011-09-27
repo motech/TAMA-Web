@@ -4,7 +4,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
-import org.motechproject.server.pillreminder.contract.PillRegimenRequest;
+import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
@@ -41,8 +41,8 @@ public class PillRegimenRequestMapper {
         super();
     }
 
-    public PillRegimenRequest map(TreatmentAdvice treatmentAdvice) {
-        return new PillRegimenRequest(treatmentAdvice.getPatientId(),
+    public DailyPillRegimenRequest map(TreatmentAdvice treatmentAdvice) {
+        return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(),
                 Integer.valueOf(properties.getProperty(TAMAConstants.PILL_WINDOW)),
                 Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL)),
                 mapDosageRequests(treatmentAdvice));
