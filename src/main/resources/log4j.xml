@@ -38,7 +38,7 @@
 
     <!-- Tama Functional logger's additivity is set to false in the TamaFunctionalLoggerFactory -->
     <logger name="org.motechproject.tamafunctional">
-        <level value="info"/>
+        <level value="warn"/>
         <appender-ref ref="functionaltest"/>
         <appender-ref ref="console"/>
     </logger>
