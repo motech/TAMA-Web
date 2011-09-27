@@ -42,12 +42,13 @@
     </target>
 
     <target name="setup.outbox.messages">
-        <echo message="Loading outbox messages for patient 1111 ..."/>
+        <echo message="Loading outbox messages..."/>
         <java fork="false" classname="${outboxmessage.setup.main.class}">
             <classpath>
                 <path location="../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
             </classpath>
+            <arg line="${params}"></arg>
         </java>
     </target>
 
