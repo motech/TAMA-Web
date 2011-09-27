@@ -1,6 +1,8 @@
 package org.motechproject.tama.integration.repository;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.domain.City;
@@ -17,6 +19,21 @@ public class ClinicsTest extends SpringIntegrationTest {
     private AllClinics allClinics;
     @Autowired
     private AllCities allCities;
+
+    @Before
+    public void before() {
+        super.before();
+        markForDeletion(allClinics.getAll().toArray());
+        markForDeletion(allCities.getAll().toArray());
+        deleteAll();
+    }
+
+    @After
+    public void after() {
+        markForDeletion(allClinics.getAll().toArray());
+        markForDeletion(allCities.getAll().toArray());
+        super.after();
+    }
 
     @Test
     public void shouldLoadCorrespondingCityWhenQueryingClinic() {

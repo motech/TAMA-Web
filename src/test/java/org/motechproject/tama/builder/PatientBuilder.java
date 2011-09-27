@@ -2,6 +2,7 @@ package org.motechproject.tama.builder;
 
 import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.util.UniqueMobileNumber;
 import org.motechproject.util.DateUtil;
 
 public class PatientBuilder {
@@ -85,7 +86,7 @@ public class PatientBuilder {
     public PatientBuilder withDefaults() {
         return this.withPatientId("1234_" + DateUtil.now().getMillis()).
                 withDateOfBirth(DateUtil.newDate(1990, 5, 21)).
-                withMobileNumber("9765456789").
+                withMobileNumber(Long.toString(UniqueMobileNumber.generate())).
                 withPasscode("1234").
                 withClinic(Clinic.newClinic()).
                 withTravelTimeToClinicInDays(1).

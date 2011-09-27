@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.testdata;
 
 import org.joda.time.LocalDate;
+import org.motechproject.tama.util.UniqueMobileNumber;
 import org.motechproject.util.DateUtil;
 
 public class TestPatient extends TestEntity {
@@ -13,9 +14,6 @@ public class TestPatient extends TestEntity {
     private TestHIVMedicalHistory hivMedicalHistory;
     private TestPatientPreferences patientPreferences;
 
-    //TODO: when running tests in parallel we might have to come up with something better than this. This doesn't protect you against multiple runs
-    private static long uniquePhoneNumber = 1000000001;
-
     private TestPatient() {
     }
 
@@ -23,7 +21,7 @@ public class TestPatient extends TestEntity {
         TestPatient testPatient = new TestPatient();
         return testPatient.patientId(unique("1234_")).
                 dateOfBirth(DateUtil.newDate(1990, 5, 21)).
-                mobileNumber(Long.toString(uniquePhoneNumber++)).
+                mobileNumber(Long.toString(UniqueMobileNumber.generate())).
                 travelTimeToClinicInDays("1").
                 travelTimeToClinicInHours("2").
                 travelTimeToClinicInHours("3").

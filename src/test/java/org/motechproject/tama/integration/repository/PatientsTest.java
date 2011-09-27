@@ -10,6 +10,7 @@ import org.motechproject.tama.builder.MedicalHistoryBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.util.UniqueMobileNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 
@@ -50,6 +51,7 @@ public class PatientsTest extends SpringIntegrationTest {
     @Before
     public void before() {
         super.before();
+        markForDeletion(allUniquePatientFields.getAll().toArray());
         markForDeletion(allPatients.getAll().toArray());
         deleteAll();
         gender = Gender.newGender("Male");
@@ -62,16 +64,15 @@ public class PatientsTest extends SpringIntegrationTest {
     public void after() {
         markForDeletion(gender);
         markForDeletion(ivrLanguage);
+        markForDeletion(allUniquePatientFields.getAll().toArray());
+        markForDeletion(allPatients.getAll().toArray());
         super.after();
     }
 
     @Test
     public void shouldLoadPatientByPatientId() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("9191919199").withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
         allPatients.add(patient);
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
 
         assertEquals(0, allPatients.findByPatientId("9999").size());
 
@@ -93,9 +94,6 @@ public class PatientsTest extends SpringIntegrationTest {
                 withPatientId("12345678").
                 withClinic(clinic).build();
         allPatients.addToClinic(patient, clinic.getId());
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
 
         Patient similarPatient = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
@@ -103,9 +101,6 @@ public class PatientsTest extends SpringIntegrationTest {
                 withPatientId("12345678").
                 withClinic(clinic).build();
         allPatients.addToClinic(similarPatient, clinic.getId());
-        markForDeletion(similarPatient);
-        markForDeletion(allUniquePatientFields.getAll().get(2));
-        markForDeletion(allUniquePatientFields.getAll().get(3));
     }
 
     @Test
@@ -115,31 +110,26 @@ public class PatientsTest extends SpringIntegrationTest {
         allClinics.add(clinic);
         markForDeletion(clinic);
 
+        long mobileNumber = UniqueMobileNumber.generate();
         Patient patient = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
                 withIVRLanguage(ivrLanguage).
                 withPatientId("rsa").
                 withClinic(clinic).
-                withMobileNumber("0912345679").
+                withMobileNumber(String.valueOf(mobileNumber)).
                 withPasscode("1703").
                 build();
         allPatients.addToClinic(patient, clinic.getId());
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
 
         Patient similarPatient = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
                 withIVRLanguage(ivrLanguage).
                 withPatientId("md5").
                 withClinic(clinic).
-                withMobileNumber("0912345679").
+                withMobileNumber(String.valueOf(mobileNumber)).
                 withPasscode("1703").
                 build();
         allPatients.addToClinic(similarPatient, clinic.getId());
-        markForDeletion(similarPatient);
-        markForDeletion(allUniquePatientFields.getAll().get(2));
-        markForDeletion(allUniquePatientFields.getAll().get(3));
     }
 
     @Test
@@ -152,16 +142,10 @@ public class PatientsTest extends SpringIntegrationTest {
         allClinics.add(anotherClinic);
         markForDeletion(anotherClinic);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("9191919191").withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).build();
         allPatients.add(patient);
         allPatients.add(anotherPatient);
-        markForDeletion(patient);
-        markForDeletion(anotherPatient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
-        markForDeletion(allUniquePatientFields.getAll().get(2));
-        markForDeletion(allUniquePatientFields.getAll().get(3));
 
         List<Patient> dbPatients = allPatients.findByClinic(clinicForPatient.getId());
 
@@ -175,12 +159,9 @@ public class PatientsTest extends SpringIntegrationTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("1234").withClinic(clinic).withGender(gender).withIVRLanguage(ivrLanguage).build();
         allPatients.add(patient);
 
-        String mobilePhoneNumber = "9986573310";
+        String mobilePhoneNumber = String.valueOf(UniqueMobileNumber.generate());
         patient.setMobilePhoneNumber(mobilePhoneNumber);
         allPatients.merge(patient);
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
 
         List<Patient> dbPatients = allPatients.findByPatientId("1234");
         assertEquals(mobilePhoneNumber, dbPatients.get(0).getMobilePhoneNumber());
@@ -190,33 +171,28 @@ public class PatientsTest extends SpringIntegrationTest {
     public void shouldRemovePatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).build();
         allPatients.add(patient);
-        markForDeletion(patient);
 
         allPatients.remove(patient);
         List<Patient> dbPatients = allPatients.findByPatientId("5678");
-        List<UniquePatientField> uniquePatientFields = allUniquePatientFields.getAll();
+        List<UniquePatientField> uniquePatientFields = allUniquePatientFields.get(patient);
 
         assertTrue(dbPatients.isEmpty());
         assertTrue(uniquePatientFields.isEmpty());
-
     }
 
     @Test
     public void shouldAddPatient() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).withClinic(clinic).build();
+        String mobilePhoneNumber = patient.getMobilePhoneNumber();
         allPatients.add(patient);
-        markForDeletion(patient);
 
         List<Patient> dbPatients = allPatients.findByPatientId("5678");
         List<UniquePatientField> uniquePatientFields = allUniquePatientFields.getAll();
 
-        markForDeletion(uniquePatientFields.get(0));
-        markForDeletion(uniquePatientFields.get(1));
-
         assertThat(dbPatients.get(0).getPatientId(), is("5678"));
         assertThat(uniquePatientFields.get(0).getId(), is(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "null/5678"));
-        assertThat(uniquePatientFields.get(1).getId(), is(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + "9765456789/1234"));
+        assertThat(uniquePatientFields.get(1).getId(), is(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + mobilePhoneNumber + "/1234"));
     }
 
     @Test
@@ -225,9 +201,6 @@ public class PatientsTest extends SpringIntegrationTest {
         allPatients.add(patient);
 
         allPatients.activate(patient.getId());
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
 
         List<Patient> dbPatients = allPatients.findByPatientId("6666");
         assertTrue(dbPatients.get(0).isActive());
@@ -239,9 +212,6 @@ public class PatientsTest extends SpringIntegrationTest {
         allPatients.add(patient);
 
         allPatients.deactivate(patient.getId());
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
 
         List<Patient> dbPatients = allPatients.findByPatientId("7890");
         assertTrue(dbPatients.get(0).isNotActive());
@@ -255,55 +225,42 @@ public class PatientsTest extends SpringIntegrationTest {
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         allPatients.add(patient);
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
 
         assertEquals(clinicForPatient.getId(), allPatients.findClinicFor(patient));
     }
 
     @Test
     public void shouldGetPatientByMobileNumber() {
-        String mobileNumber = "9898982323";
         String id = "12345678";
         Patient patient = PatientBuilder.startRecording()
                 .withDefaults()
                 .withPatientId(id)
-                .withMobileNumber(mobileNumber)
                 .withGender(gender).withIVRLanguage(ivrLanguage)
                 .build();
         allPatients.add(patient);
+        String mobileNumber = patient.getMobilePhoneNumber();
 
         Patient loadedPatient = allPatients.findByMobileNumber(mobileNumber);
         assertNotNull(loadedPatient);
         assertEquals(id, loadedPatient.getPatientId());
         assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());
-
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
     }
 
     @Test
     public void shouldGetPatientByIVRMobileNumber() {
-        String mobileNumber = "9898982323";
         String id = "12345678";
         Patient patient = PatientBuilder.startRecording()
                 .withDefaults()
                 .withPatientId(id)
-                .withMobileNumber(mobileNumber)
                 .withGender(gender).withIVRLanguage(ivrLanguage)
                 .build();
+        String mobileNumber = patient.getMobilePhoneNumber();
         allPatients.add(patient);
 
         Patient loadedPatient = allPatients.findByMobileNumber(patient.getIVRMobilePhoneNumber());
         assertNotNull(loadedPatient);
         assertEquals(id, loadedPatient.getPatientId());
         assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());
-
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
     }
 
     @Test
@@ -316,16 +273,10 @@ public class PatientsTest extends SpringIntegrationTest {
         allClinics.add(anotherClinic);
         markForDeletion(anotherClinic);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("9191919191").withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).withGender(gender).withIVRLanguage(ivrLanguage).build();
         allPatients.add(patient);
         allPatients.add(anotherPatient);
-        markForDeletion(patient);
-        markForDeletion(anotherPatient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
-        markForDeletion(allUniquePatientFields.getAll().get(2));
-        markForDeletion(allUniquePatientFields.getAll().get(3));
 
         Patient dbPatient1 = allPatients.findByIdAndClinicId(patient.getId(), clinicForPatient.getId());
         assertEquals(patient.getId(), dbPatient1.getId());
@@ -345,16 +296,10 @@ public class PatientsTest extends SpringIntegrationTest {
         allClinics.add(anotherClinic);
         markForDeletion(anotherClinic);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("9191919191").withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).withGender(gender).withIVRLanguage(ivrLanguage).withPasscode("9998").build();
         allPatients.add(patient);
         allPatients.add(anotherPatient);
-        markForDeletion(patient);
-        markForDeletion(anotherPatient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
-        markForDeletion(allUniquePatientFields.getAll().get(2));
-        markForDeletion(allUniquePatientFields.getAll().get(3));
 
         Patient dbPatient1 = allPatients.findByMobileNumberAndPasscode(patient.getMobilePhoneNumber(), patient.getPatientPreferences().getPasscode());
         assertEquals(patient.getMobilePhoneNumber(), dbPatient1.getMobilePhoneNumber());
@@ -379,10 +324,6 @@ public class PatientsTest extends SpringIntegrationTest {
         Patient loadedPatient = allPatients.findByPatientId(patient.getPatientId()).get(0);
         Assert.assertEquals("Vertical", loadedPatient.getMedicalHistory().getHivMedicalHistory().getModeOfTransmission().getType());
         Assert.assertEquals("STDs", loadedPatient.getMedicalHistory().getHivMedicalHistory().getTestReason().getName());
-
-        markForDeletion(patient);
-        markForDeletion(allUniquePatientFields.getAll().get(0));
-        markForDeletion(allUniquePatientFields.getAll().get(1));
         markForDeletion(testReason);
         markForDeletion(modeOfTransmission);
     }

@@ -27,7 +27,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
         TestClinician clinician = TestClinician.withMandatory();
         new ClinicanDataService(webDriver).createWithClinc(clinician);
 
-        TestPatient patient = TestPatient.withMandatory().mobileNumber("9876543210");
+        TestPatient patient = TestPatient.withMandatory();
         patient.patientPreferences().passcode("5678");
         new PatientDataService(webDriver).registerAndActivate(patient, clinician);
 
