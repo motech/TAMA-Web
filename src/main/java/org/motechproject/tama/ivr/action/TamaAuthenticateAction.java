@@ -11,8 +11,8 @@ import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.eventlogging.domain.CallLog;
-import org.motechproject.tama.eventlogging.service.CallLogService;
+import org.motechproject.tama.ivr.logging.domain.CallLog;
+import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.ivr.decisiontree.TamaTreeChooser;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
@@ -71,7 +71,6 @@ public class TamaAuthenticateAction extends AuthenticateAction {
 
         String isSymptomsReporting = ivrRequest.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM);
         String callType = "true".equals(isSymptomsReporting) ? CallLog.CALL_TYPE_SYMPTOM_REPORTING : CallLog.CALL_TYPE_PILL_REMINDER;
-        //CallLog callLog = callLogService.create(callType);
 
 
         if (!isAuthenticatedUser(passcode, patient)) {
