@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,5 +112,13 @@ public class OutboxControllerTest {
 
         assertTrue(response.contains(SIGNATURE_MUSIC_URL));
         assertTrue(response.contains("hangup"));
+    }
+
+    @Test
+    public void shouldInvalidateSessionOnHangupEvent() {
+        when(request.getParameter(OutboxController.EVENT_REQUEST_PARAM)).thenReturn("hangup");
+        String response = outboxController.play(request);
+        verify(session).invalidate();
+        assertNull(response);
     }
 }

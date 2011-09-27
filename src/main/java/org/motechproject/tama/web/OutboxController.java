@@ -24,6 +24,7 @@ import java.util.List;
 public class OutboxController {
 
     public static final String AUDIO_FILES_KEY = "audioFiles";
+    public static final String EVENT_REQUEST_PARAM = "event";
 
     private VoiceOutboxService outboxService;
 
@@ -38,7 +39,14 @@ public class OutboxController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public String play(HttpServletRequest request) {
+
         HttpSession session = request.getSession();
+
+        if ("hangup".equalsIgnoreCase(request.getParameter(EVENT_REQUEST_PARAM))) {
+            session.invalidate();
+            return null;
+        }
+
         String patientId = (String) session.getAttribute(IVRSession.IVRCallAttribute.EXTERNAL_ID);
 
         markPreviousMessageAsPlayed(session);
