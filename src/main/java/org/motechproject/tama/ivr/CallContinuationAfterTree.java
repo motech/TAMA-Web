@@ -23,6 +23,7 @@ public class CallContinuationAfterTree implements PostTreeCallContinuation {
     public void continueCall(IVRContext ivrContext, IVRResponseBuilder ivrResponseBuilder) {
         final int pendingMessagesCount = voiceOutboxService.getNumberPendingMessages(ivrContext.ivrSession().getExternalId());
         if(pendingMessagesCount != 0) {
+            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.CONTINUE_TO_OUTBOX);
             ivrResponseBuilder.withNextUrl(ivrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL));
         } else {
             ivrResponseBuilder.withPlayAudios(ivrMessage.getSignatureMusic());

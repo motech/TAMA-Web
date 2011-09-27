@@ -1,11 +1,8 @@
 package org.motechproject.tama.ivr;
 
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.service.ivr.*;
 
@@ -64,6 +61,7 @@ public class CallContinuationAfterTreeTest {
         callContinuationAfterTree.continueCall(ivrContext, ivrResponseBuilder);
 
         verify(ivrResponseBuilder, times(1)).withNextUrl(OUTBOX_LOCATION);
+        verify(ivrResponseBuilder, times(1)).withPlayAudios(TamaIVRMessage.CONTINUE_TO_OUTBOX);
     }
 
 }

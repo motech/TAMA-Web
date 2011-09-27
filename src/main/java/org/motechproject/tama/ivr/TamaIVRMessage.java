@@ -78,6 +78,9 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90 = "F04_01_doctorMissedPillFeedback"; // F04_01_doctorMissedPillFeedback.wav
     public static final String MISSED_PILL_FEEDBACK_LESS_THAN_70 = "F05_01_doctorMissedPillFeedback"; // F05_01_doctorMissedPillFeedback.wav
 
+    /*----------Outbox -------------------------*/
+    public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1"; // 001_06_04_mayEndThisCallNow1.wav
+
 
     /* -------- Adherence Feedback ----------- */
     private Properties properties;
