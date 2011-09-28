@@ -4,6 +4,7 @@ import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.server.service.ivr.CallRequest;
 import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,16 +24,18 @@ public class PillReminderCall {
     private AllPatients allPatients;
     private IVRService ivrService;
     private EventService eventService;
+    private CallLogService callLogService;
 
     @Autowired
     @Qualifier("ivrProperties")
     private Properties properties;
 
     @Autowired
-    public PillReminderCall(IVRService callService, EventService eventService, AllPatients allPatients) {
+    public PillReminderCall(IVRService callService, EventService eventService, AllPatients allPatients, CallLogService callLogService) {
         this.ivrService = callService;
         this.allPatients = allPatients;
         this.eventService = eventService;
+        this.callLogService = callLogService;
     }
 
     public void execute(String patientId, final String dosageId, final int timesSent, final int totalTimesToSend) {
@@ -42,6 +45,7 @@ public class PillReminderCall {
             put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
         }};
         makeCall(patientId, params);
+        callLogService.logStartOfOutboundCall(patientId);
     }
 
     private void makeCall(String patientId, Map<String, String> params) {

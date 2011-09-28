@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CallLogMapper {
 
-    public CallLog toCallLog(KookooCallDetailRecord kookooCallDetailRecord) {
+    public CallLog toCallLog(String patientDocumentId, KookooCallDetailRecord kookooCallDetailRecord) {
         CallLog callLog = new CallLog();
         CallDetailRecord callDetailRecord = kookooCallDetailRecord.getCallDetailRecord();
 
+        callLog.setPatientDocumentId(patientDocumentId);
         callLog.setCallId(callDetailRecord.getCallId());
         callLog.setPhoneNumber(callDetailRecord.getPhoneNumber());
         callLog.setCallEvents(callDetailRecord.getCallEvents());

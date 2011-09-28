@@ -27,6 +27,10 @@ public class CallLog extends CouchEntity {
     public CallLog() {
     }
 
+    public CallLog(String patientDocumentId) {
+        this.patientDocumentId = patientDocumentId;
+    }
+
     public String getPatientDocumentId() {
         return patientDocumentId;
     }
@@ -89,5 +93,15 @@ public class CallLog extends CouchEntity {
 
     public void setCallEvents(List<CallEvent> callEvents) {
         this.callEvents = callEvents;
+    }
+
+    public void copy(CallLog callLog) {
+        setPatientDocumentId(callLog.getPatientDocumentId());
+        setCallId(callLog.getCallId());
+        setPhoneNumber(callLog.getPhoneNumber());
+        setCallEvents(callLog.getCallEvents());
+        setStartTime(callLog.getStartTime());
+        setEndTime(callLog.getEndTime());
+        setCallDirection(callLog.getCallDirection());
     }
 }
