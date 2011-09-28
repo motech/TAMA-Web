@@ -24,7 +24,7 @@ public class EndOfCallObserver implements Observer {
     public void update(Observable o, Object event) {
         if (event instanceof EndOfCallEvent) {
             EndOfCallEvent endOfCallEvent = (EndOfCallEvent) event;
-            callLogService.log(endOfCallEvent.getCallId(), endOfCallEvent.getReferenceId());
+            callLogService.log(endOfCallEvent.getCallId(), endOfCallEvent.getExternalId());
         }
     }
 }
