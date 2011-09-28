@@ -772,6 +772,7 @@
                             <value>${test.driver}</value>
                         </property>
                     </systemProperties>
+                    <runOrder>reversealphabetical</runOrder>
                     <includes>
                         <include>**/tamafunctional/**/*Test.java</include>
                         <include>**/integration/**/*.java</include>
