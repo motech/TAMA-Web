@@ -43,6 +43,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
                                   TamaRetryAction retryAction, TamaUserNotFoundAction userNotFoundAction,
                                   TamaTreeChooser treeChooser,DecisionTreeBasedResponseBuilder ivrResponseBuilder,
                                   CallLogService callLogService) {
+        super();
         this.pillReminderService = pillReminderService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
