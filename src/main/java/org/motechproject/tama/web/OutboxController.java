@@ -1,15 +1,20 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.outbox.api.OutboxCommand;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
+import org.motechproject.outbox.api.model.VoiceMessageType;
+import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.server.service.ivr.IVRMessage;
+import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRResponseBuilder;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,10 +30,14 @@ public class OutboxController {
 
     public static final String AUDIO_FILES_KEY = "audioFiles";
     public static final String EVENT_REQUEST_PARAM = "event";
+    static final String VOICE_MESSAGE_COMMAND_AUDIO = "command";
 
     private VoiceOutboxService outboxService;
 
     private IVRMessage ivrMessage;
+    
+    @Autowired
+    ApplicationContext applicationContext;
 
     @Autowired
     public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage) {
@@ -53,18 +62,27 @@ public class OutboxController {
 
         OutboundVoiceMessage outboundVoiceMessage = outboxService.getNextPendingMessage(patientId);
 
-        if (outboundVoiceMessage != null) {
-            markCurrentMessageAsLastPlayed(session, outboundVoiceMessage);
-            return voiceMessageResponse(session, outboundVoiceMessage);
+        if (outboundVoiceMessage == null) {
+        	return hangup();
         }
-
-        return hangup();
+        markCurrentMessageAsLastPlayed(session, outboundVoiceMessage);
+        return voiceMessageResponse(session, outboundVoiceMessage);
     }
 
     private String voiceMessageResponse(HttpSession session, OutboundVoiceMessage outboundVoiceMessage) {
         IVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
 
+        VoiceMessageType voiceMessageType = outboundVoiceMessage.getVoiceMessageType();
+        if (voiceMessageType != null && "AudioCommand".equals(voiceMessageType.getVoiceMessageTypeName())) {
+        	List<String> commands = (List<String>)outboundVoiceMessage.getParameters().get(VOICE_MESSAGE_COMMAND_AUDIO);
+        	for (String command : commands){
+        		OutboxCommand commandObject = (OutboxCommand)applicationContext.getBean(command);
+        		ivrResponseBuilder.withPlayAudios(commandObject.execute(new IVRSession(session)));
+        	}
+        }
+        
         List<String> audioFiles = (List<String>) outboundVoiceMessage.getParameters().get(AUDIO_FILES_KEY);
+        if (audioFiles != null)
         for (String audioFile : audioFiles) {
             ivrResponseBuilder.withPlayAudios(audioFile);
         }

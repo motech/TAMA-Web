@@ -120,8 +120,7 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     private void scheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
-    	Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getRegimenId())
-        .withPillRegimenId(treatmentAdvice.getRegimenId())
+    	Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getId())
         .withExternalId(treatmentAdvice.getPatientId())
         .payload();
         LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);

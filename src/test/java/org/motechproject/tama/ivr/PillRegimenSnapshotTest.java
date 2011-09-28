@@ -187,7 +187,7 @@ public class PillRegimenSnapshotTest {
         Mockito.when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(getPillRegimenResponse());
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
         assertEquals(50, totalCount);
     }
 
@@ -202,7 +202,7 @@ public class PillRegimenSnapshotTest {
         Mockito.when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(getPillRegimenResponse());
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountTillPreviousWeek();
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks(DateUtil.now().minusWeeks(1));
         assertEquals(40, totalCount);
     }
 
@@ -229,7 +229,7 @@ public class PillRegimenSnapshotTest {
         Mockito.when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
         assertEquals(1, totalCount);
     }
 
@@ -251,7 +251,7 @@ public class PillRegimenSnapshotTest {
         Mockito.when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession),testCallTime);
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
         assertEquals(1, totalCount);
     }
 
@@ -266,7 +266,7 @@ public class PillRegimenSnapshotTest {
         Mockito.when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(getPillRegimenResponse());
         pillRegimenSnapshot = new PillRegimenSnapshot(new IVRContext(ivrRequest, ivrSession), testCallTime);
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCount();
+        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
         assertEquals(56, totalCount);
     }
 

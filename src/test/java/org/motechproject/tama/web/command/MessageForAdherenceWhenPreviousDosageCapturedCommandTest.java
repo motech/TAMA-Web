@@ -142,6 +142,6 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
         command.getAdherencePercentage(REGIMEN_ID, 28);
 
-        verify(allDosageAdherenceLogs).findScheduledDosagesSuccessCount(any(String.class), eq(new LocalDate(2011, 7, 22)), eq(toDate));
+        verify(allDosageAdherenceLogs).findScheduledDosagesSuccessCount(any(String.class), eq(new LocalDate(2011, 7, 21)), eq(toDate));
     }
 }

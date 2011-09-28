@@ -1,7 +1,11 @@
 package org.motechproject.tama.ivr;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
@@ -10,16 +14,11 @@ import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
-import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.util.DosageUtil;
 import org.motechproject.tama.util.TamaSessionUtil;
 import org.motechproject.util.DateUtil;
 import org.springframework.util.CollectionUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class PillRegimenSnapshot {
     private IVRContext ivrContext;
@@ -105,28 +104,14 @@ public class PillRegimenSnapshot {
 
         return new MyDosageResponse(currentDosage, today);
     }
-
-    public int getScheduledDosagesTotalCount() {
-        return getScheduledDosagesTotalCount(now);
+    
+    public int getScheduledDosagesTotalCountForLastFourWeeks() {
+    	return getScheduledDosagesTotalCountForLastFourWeeks(now);
     }
 
-    public int getScheduledDosagesTotalCountTillPreviousWeek() {
-        return getScheduledDosagesTotalCount(now.minusWeeks(1));
-    }
-
-    public int getScheduledDosagesTotalCount(DateTime toDate) {
-        int totalCount = 0;
-        for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
-            DateTime dosageStartDate = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
-
-            DateTime fromDate = dosageStartDate.minusHours(pillRegimen.getReminderRepeatWindowInHours());
-            if (toDate.isBefore(fromDate)) continue;
-
-            Days days = Days.daysBetween(fromDate, toDate);
-            int dayCount = days.getDays() + 1;
-            totalCount += Math.min(dayCount, TAMAConstants.DAYS_IN_FOUR_WEEKS);
-        }
-        return totalCount;
+    public int getScheduledDosagesTotalCountForLastFourWeeks(DateTime endDate) {
+    	DateTime startTime = endDate.minusWeeks(4);
+    	return DosageUtil.getScheduledDosagesTotalCount(startTime, endDate, pillRegimen);
     }
 
     public boolean isCurrentDosageTaken() {

@@ -206,7 +206,7 @@ public class TreatmentAdviceControllerTest {
         verify(motechSchedulerService).unscheduleJob(regimenId);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
-        assertEquals("0 0 0 ? * 3", jobCaptor.getValue().getCronExpression());
+        assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
     }
     
 
@@ -221,7 +221,7 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).add(treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
-        assertEquals("0 0 0 ? * 3", jobCaptor.getValue().getCronExpression());
+        assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
     }
 
 	private TreatmentAdvice getTreatmentAdvice() {

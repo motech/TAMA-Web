@@ -23,7 +23,7 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
 
     protected int getAdherencePercentage(String regimenId, int scheduledDosagesTotalCount) {
         LocalDate toDate = DateUtil.today();
-        LocalDate fromDate = toDate.minusDays(TAMAConstants.DAYS_IN_FOUR_WEEKS - 1);
+        LocalDate fromDate = toDate.minusDays(TAMAConstants.DAYS_IN_FOUR_WEEKS);
         int scheduledDosagesSuccessCount = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, fromDate, toDate);
         return scheduledDosagesSuccessCount * 100 / scheduledDosagesTotalCount;
     }
@@ -31,7 +31,7 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
     protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot) {
         return new String[]{
                 TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
-                ivrMessage.getNumberFilename(getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCount())),
+                ivrMessage.getNumberFilename(getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks())),
                 TamaIVRMessage.PERCENT
         };
     }

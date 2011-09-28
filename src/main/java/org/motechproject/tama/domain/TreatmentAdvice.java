@@ -11,8 +11,9 @@ import java.util.*;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity {
+	private static final long serialVersionUID = -8225223281746266068L;
 
-    @NotNull
+	@NotNull
     private String patientId;
 
     @NotNull

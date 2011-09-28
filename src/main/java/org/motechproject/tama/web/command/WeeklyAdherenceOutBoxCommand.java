@@ -3,32 +3,34 @@ package org.motechproject.tama.web.command;
 import java.util.ArrayList;
 
 import org.joda.time.DateTime;
-import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.outbox.api.OutboxCommand;
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
-import org.motechproject.tama.util.TamaSessionUtil;
+import org.motechproject.tama.util.DosageUtil;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class WeeklyAdherenceOutBoxCommand implements ITreeCommand {
+@Component
+public class WeeklyAdherenceOutBoxCommand implements OutboxCommand {
 
 	@Autowired
 	AllDosageAdherenceLogs allDosageAdherenceLogs;
+	@Autowired
+	PillReminderService pillReminderService;
 
 	@Override
-	public String[] execute(Object oContext) {
+	public String[] execute(IVRSession ivrSession) {
 	ArrayList<String> result =  new ArrayList<String>();
-		if (oContext instanceof IVRContext) {
-			IVRContext ivrContext = (IVRContext) oContext;
-			String patientId = ivrContext.ivrSession().getExternalId();
+			String patientId = ivrSession.getExternalId();
 			DateTime now = DateUtil.now();
-			PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, now);
-			String regimenId = TamaSessionUtil.getRegimenIdFrom(ivrContext);
+			PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patientId);
 
-			double adherencePercentageAsOfNow = getAdherencePercentage(regimenId, now, pillRegimenSnapshot);
-			double adherencePercentageAsOfLastWeek = getAdherencePercentage(regimenId, now.minusWeeks(1), pillRegimenSnapshot);
+			double adherencePercentageAsOfNow = getAdherencePercentage(pillRegimen, now);
+			double adherencePercentageAsOfLastWeek = getAdherencePercentage(pillRegimen, now.minusWeeks(1));
 			boolean falling = adherencePercentageAsOfNow < adherencePercentageAsOfLastWeek;
 
 			if (adherencePercentageAsOfNow > 0.9) {
@@ -56,14 +58,20 @@ public class WeeklyAdherenceOutBoxCommand implements ITreeCommand {
 					result.add(TamaIVRMessage.M02_08_ADHERENCE_COMMENT_LT70_RISING);
 				}
 			}
-		}
+		
 		return result.toArray(new String[0]);
 	}
 
-	private double getAdherencePercentage(String regimenId, DateTime asOfDate, PillRegimenSnapshot pillRegimenSnapshot) {
-		int scheduledDosagesTotalCountForLastFourWeeksAsOfNow = pillRegimenSnapshot.getScheduledDosagesTotalCount(asOfDate);
-		int dosagesTakenForLastFourWeeksAsOfNow = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, asOfDate.toLocalDate(), asOfDate
-				.minusWeeks(4).toLocalDate());
-		return dosagesTakenForLastFourWeeksAsOfNow / scheduledDosagesTotalCountForLastFourWeeksAsOfNow;
+	private double getAdherencePercentage(PillRegimenResponse pillRegimen, DateTime asOfDate) {
+        String regimenId = pillRegimen.getPillRegimenId();
+		int scheduledDosagesTotalCountForLastFourWeeksAsOfNow = getScheduledDosagesTotalCount(pillRegimen, asOfDate.minusWeeks(4), asOfDate);
+		int dosagesTakenForLastFourWeeksAsOfNow = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId, 
+				asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate());
+		return ((double)dosagesTakenForLastFourWeeksAsOfNow) / scheduledDosagesTotalCountForLastFourWeeksAsOfNow;
 	}
+	public int getScheduledDosagesTotalCount(PillRegimenResponse pillRegimen, DateTime startDate, DateTime endDate) {
+        return DosageUtil.getScheduledDosagesTotalCount(startDate, endDate, pillRegimen);
+    }
+
+	
 }
