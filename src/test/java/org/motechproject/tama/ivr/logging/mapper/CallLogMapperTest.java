@@ -20,9 +20,11 @@ public class CallLogMapperTest {
 
     @Test
     public void shouldConvertKookooCallDetailRecordToCallLog() {
-        CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("callId", "phoneNumber");
+        CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("phoneNumber");
+        KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord);
+        kookooCallDetailRecord.setId("callId");
 
-        CallLog callLog = callLogMapper.toCallLog("patientDocId", new KookooCallDetailRecord(callDetailRecord));
+        CallLog callLog = callLogMapper.toCallLog("patientDocId", kookooCallDetailRecord);
 
         assertEquals("patientDocId", callLog.getPatientDocumentId());
         assertEquals("callId", callLog.getCallId());

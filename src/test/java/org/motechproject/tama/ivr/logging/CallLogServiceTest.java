@@ -40,11 +40,11 @@ public class CallLogServiceTest {
 
     @Test
     public void shouldCreateInboundCallLog() {
-        CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("callId", "phoneNumber");
+        CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("phoneNumber");
         callDetailRecord.setCallDirection(IVRRequest.CallDirection.Inbound);
         KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord);
 
-        when(kookooCallDetailRecordsService.findByCallId("callId")).thenReturn(kookooCallDetailRecord);
+        when(kookooCallDetailRecordsService.get("callId")).thenReturn(kookooCallDetailRecord);
         callLoggingService.log("callId", "patientDocId");
 
         verify(allCallLogs).add(Matchers.<CallLog>any());
@@ -52,11 +52,12 @@ public class CallLogServiceTest {
 
     @Test
     public void shouldCreateOutboundCallLog() {
-        CallDetailRecord callDetailRecord = CallDetailRecord.newOutgoingCallRecord("callId", "phoneNumber");
+        CallDetailRecord callDetailRecord = CallDetailRecord.newOutgoingCallRecord("phoneNumber");
         callDetailRecord.setCallDirection(IVRRequest.CallDirection.Outbound);
         KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord);
+        kookooCallDetailRecord.setId("callId");
 
-        when(kookooCallDetailRecordsService.findByCallId("callId")).thenReturn(kookooCallDetailRecord);
+        when(kookooCallDetailRecordsService.get("callId")).thenReturn(kookooCallDetailRecord);
         when(allCallLogs.getLatestOpenCallLog("patientDocId")).thenReturn(new CallLog("patientDocId"));
 
         callLoggingService.log("callId", "patientDocId");

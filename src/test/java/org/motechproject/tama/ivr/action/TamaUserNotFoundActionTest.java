@@ -32,7 +32,7 @@ public class TamaUserNotFoundActionTest extends BaseActionTest {
         when(ivrRequest.getCid()).thenReturn("cid");
         when(ivrRequest.getEvent()).thenReturn(IVREvent.GOT_DTMF.name());
         when(ivrRequest.getData()).thenReturn("testdata");
-        String responseXML = userNotFoundAction.handle(ivrRequest, request, response);
+        String responseXML = userNotFoundAction.createResponse(ivrRequest, request, response);
 
         verify(auditService).audit(ivrRequest, StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND);
         assertEquals("<response sid=\"sid\"><hangup/></response>", sanitize(responseXML));

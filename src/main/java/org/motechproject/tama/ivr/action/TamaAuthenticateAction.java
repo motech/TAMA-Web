@@ -55,7 +55,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
     }
 
     @Override
-    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
+    public String createResponse(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         return handle(ivrRequest, request, response, new IvrAction(treeChooser, messages, responseBuilder));
     }
 
@@ -66,7 +66,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
         Patient patient = allPatients.findByMobileNumber(phoneNumber);
 
         if (patient == null)
-            return userNotFoundAction.handle(ivrRequest, request, response);
+            return userNotFoundAction.createResponse(ivrRequest, request, response);
 
         patient = allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode);
 
@@ -75,10 +75,10 @@ public class TamaAuthenticateAction extends AuthenticateAction {
 
 
         if (!isAuthenticatedUser(passcode, patient)) {
-            return retryAction.handle(ivrRequest, request, response);
+            return retryAction.createResponse(ivrRequest, request, response);
         }
         if (!patient.isActive() || (!isSymptomReportingCall(request) && hasNoTreatmentAdvice(patient)))
-            return userNotFoundAction.handle(ivrRequest, request, response);
+            return userNotFoundAction.createResponse(ivrRequest, request, response);
 
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);

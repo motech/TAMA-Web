@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr.logging;
 
 import org.motechproject.eventtracking.service.EventService;
-import org.motechproject.ivr.kookoo.EndOfCallEvent;
+import org.motechproject.ivr.kookoo.CallDetailRecordEvent;
 import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ public class EndOfCallObserver implements Observer {
 
     @Override
     public void update(Observable o, Object event) {
-        if (event instanceof EndOfCallEvent) {
-            EndOfCallEvent endOfCallEvent = (EndOfCallEvent) event;
+        if (event instanceof CallDetailRecordEvent) {
+            CallDetailRecordEvent endOfCallEvent = (CallDetailRecordEvent) event;
             callLogService.log(endOfCallEvent.getCallId(), endOfCallEvent.getExternalId());
         }
     }

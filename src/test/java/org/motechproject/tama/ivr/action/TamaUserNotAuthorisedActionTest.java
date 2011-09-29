@@ -38,7 +38,7 @@ public class TamaUserNotAuthorisedActionTest extends BaseActionTest {
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRSession.IVRCallAttribute.EXTERNAL_ID)).thenReturn(PATIENT_ID);
 
-        String responseXML = userNotAuthorisedAction.handle(ivrRequest, request, response);
+        String responseXML = userNotAuthorisedAction.createResponse(ivrRequest, request, response);
 
         verify(auditService).audit(ivrRequest, PATIENT_ID, IVRCallAudit.State.PASSCODE_ENTRY_FAILED);
         verify(session).invalidate();

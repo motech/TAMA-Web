@@ -72,7 +72,7 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
     public void shouldGoToRetryActionIfPatientPassCodeIsNotValid() {
         IVRRequest ivrRequest = new KookooRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
 
-        when(retryAction.handle(ivrRequest, request, response)).thenReturn("OK");
+        when(retryAction.createResponse(ivrRequest, request, response)).thenReturn("OK");
         when(patient.authenticatedWith(PASSCODE)).thenReturn(false);
         when(patient.isActive()).thenReturn(true);
         when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
@@ -80,7 +80,7 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
 
         String handle = authenticateAction.handle(ivrRequest, request, response, tamaIvrAction);
 
-        verify(retryAction).handle(ivrRequest, request, response);
+        verify(retryAction).createResponse(ivrRequest, request, response);
         assertEquals("OK", handle);
     }
 
@@ -120,8 +120,8 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, "Data")).thenReturn(patient);
         when(patient.isActive()).thenReturn(false);
         when(patient.authenticatedWith("Data")).thenReturn(true);
-        when(userNotFoundAction.handle(ivrRequest, request, response)).thenReturn("hangup response");
-        String responseXML = authenticateAction.handle(ivrRequest, request, response);
+        when(userNotFoundAction.createResponse(ivrRequest, request, response)).thenReturn("hangup response");
+        String responseXML = authenticateAction.createResponse(ivrRequest, request, response);
         assertEquals("hangup response", responseXML);
     }
 }

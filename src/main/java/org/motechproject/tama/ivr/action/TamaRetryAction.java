@@ -29,11 +29,11 @@ public class TamaRetryAction extends BaseAction {
     }
 
     @Override
-    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
+    public String createResponse(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
         Integer attempt = getAttempt(ivrSession);
         if (isLast(attempt))
-            return userNotAuthorisedAction.handle(ivrRequest, request, response);
+            return userNotAuthorisedAction.createResponse(ivrRequest, request, response);
 
         ivrSession.set(IVRCallAttribute.NUMBER_OF_ATTEMPTS, ++attempt);
         

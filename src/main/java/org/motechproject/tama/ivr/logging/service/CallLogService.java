@@ -27,7 +27,7 @@ public class CallLogService {
     }
 
     public void log(String callId, String patientDocumentId) {
-        KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.findByCallId(callId);
+        KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callId);
         if (kookooCallDetailRecord.getCallDetailRecord().getCallDirection() == IVRRequest.CallDirection.Inbound) {
             allCallLogs.add(callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord));
         } else {

@@ -22,7 +22,7 @@ public class TamaUserNotFoundAction extends UserNotFoundAction {
     }
 
     @Override
-    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
+    public String createResponse(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         auditService.audit(ivrRequest, StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND);
         return hangUpResponseWith(ivrRequest);
     }

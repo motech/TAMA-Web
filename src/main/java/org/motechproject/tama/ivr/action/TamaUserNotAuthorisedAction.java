@@ -25,7 +25,7 @@ public class TamaUserNotAuthorisedAction extends BaseAction {
     }
 
     @Override
-    public String handle(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
+    public String createResponse(IVRRequest ivrRequest, HttpServletRequest request, HttpServletResponse response) {
         IVRSession ivrSession = getIVRSession(request);
         String id = TamaSessionUtil.getPatientId(ivrSession);
         auditService.audit(ivrRequest, id, IVRCallAudit.State.PASSCODE_ENTRY_FAILED);

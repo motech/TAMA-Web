@@ -35,10 +35,10 @@ public class TamaRetryActionTest extends BaseActionTest {
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(4);
-        when(userNotAuthorisedAction.handle(ivrRequest, request, response)).thenReturn("OK");
+        when(userNotAuthorisedAction.createResponse(ivrRequest, request, response)).thenReturn("OK");
 
-        String handle = retryAction.handle(ivrRequest, request, response);
-        verify(userNotAuthorisedAction).handle(ivrRequest, request, response);
+        String handle = retryAction.createResponse(ivrRequest, request, response);
+        verify(userNotAuthorisedAction).createResponse(ivrRequest, request, response);
         assertEquals("OK", handle);
     }
 
@@ -52,7 +52,7 @@ public class TamaRetryActionTest extends BaseActionTest {
         when(session.getAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
         when(messages.getWav(SIGNATURE_MUSIC, "en")).thenReturn(SIGNATURE_MUSIC);
-        String responseXML = retryAction.handle(ivrRequest, request, response);
+        String responseXML = retryAction.createResponse(ivrRequest, request, response);
 
         verify(session).setAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS, 1);
         assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", sanitize(responseXML));
@@ -69,7 +69,7 @@ public class TamaRetryActionTest extends BaseActionTest {
         when(session.getAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS)).thenReturn(null);
         when(messages.getWav(SIGNATURE_MUSIC, "en")).thenReturn(SIGNATURE_MUSIC);
 
-        String responseXML = retryAction.handle(ivrRequest, request, response);
+        String responseXML = retryAction.createResponse(ivrRequest, request, response);
 
         verify(session, never()).setAttribute(IVRCallAttribute.NUMBER_OF_ATTEMPTS, 0);
         assertEquals("<response sid=\"sid\"><collectdtmf><playaudio>http://music</playaudio></collectdtmf></response>", sanitize(responseXML));
