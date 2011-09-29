@@ -66,13 +66,6 @@ public class CallLogServiceTest {
         verify(allCallLogs).update(callLogCaptor.capture());
         CallLog updatedCallLog = callLogCaptor.getValue();
         assertEquals("callId", updatedCallLog.getCallId());
-
     }
 
-    @Test
-    public void shouldLogTheStartOfAnOutboundCall() {
-        CallLog callLog = new CallLog("patientDocId");
-        callLoggingService.logStartOfOutboundCall("patientDocId");
-        verify(allCallLogs).add(callLog);
-    }
 }

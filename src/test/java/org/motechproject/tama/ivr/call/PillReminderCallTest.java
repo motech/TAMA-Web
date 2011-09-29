@@ -72,18 +72,6 @@ public class PillReminderCallTest {
         verify(callService).initiateCall(any(CallRequest.class));
     }
 
-    @Test
-    public void shouldCreateCallLog() {
-        Patient patient = mock(Patient.class);
-        when(patient.isNotActive()).thenReturn(false);
-        when(patient.getIVRMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
-        when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
-
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND);
-
-        verify(callLogService).logStartOfOutboundCall(PATIENT_DOC_ID);
-    }
-
     public class IntermediateCallParametersMatcher extends ArgumentMatcher<Map> {
         @Override
         public boolean matches(Object o) {

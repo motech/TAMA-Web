@@ -45,7 +45,6 @@ public class PillReminderCall {
             put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
         }};
         makeCall(patientId, params);
-        callLogService.logStartOfOutboundCall(patientId);
     }
 
     private void makeCall(String patientId, Map<String, String> params) {
