@@ -30,7 +30,7 @@ public class PatientBuilder {
     }
 
     public PatientBuilder withIVRLanguage(IVRLanguage language) {
-        patient.setIvrLanguage(language);
+        patient.getPatientPreferences().setIvrLanguage(language);
         return this;
     }
 

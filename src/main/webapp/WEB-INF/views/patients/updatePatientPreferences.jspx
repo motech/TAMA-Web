@@ -7,8 +7,8 @@
         <table>
             <tr>
                 <td>Medicine Adherence Report Calls* :</td>
-                <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_daily_reminderCall" path="patientPreferences.reminderCall" value="Daily" label="Activate Daily Pill Reminder Call"/></td></tr>
-                <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_weekly_reminderCall" path="patientPreferences.reminderCall" value="Weekly" label="Activate Weekly Adherence Calls"/></td></tr>
+                <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_daily_reminderCall" path="patientPreferences.callPreference" value="DailyPillReminder" label="Activate Daily Pill Reminder Call"/></td></tr>
+                <tr><td><springform:radiobutton id="c_org_motechproject_tama_domain_Patient_weekly_reminderCall" path="patientPreferences.callPreference" value="FourDayRecall" label="Activate Weekly Adherence Calls"/></td></tr>
             </tr>
         </table>
     </util:panel>

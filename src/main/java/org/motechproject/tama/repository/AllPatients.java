@@ -9,10 +9,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.TamaException;
-import org.motechproject.tama.domain.HIVMedicalHistory;
-import org.motechproject.tama.domain.MedicalHistory;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.UniquePatientField;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -176,8 +173,9 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
         if (patient == null) return;
         if (!StringUtils.isBlank(patient.getGenderId()))
             patient.setGender(allGenders.get(patient.getGenderId()));
-        if (!StringUtils.isBlank(patient.getIvrLanguageId()))
-            patient.setIvrLanguage(allIVRLanguages.get(patient.getIvrLanguageId()));
+        PatientPreferences patientPreferences = patient.getPatientPreferences();
+        if (!StringUtils.isBlank(patientPreferences.getIvrLanguageId()))
+            patientPreferences.setIvrLanguage(allIVRLanguages.get(patientPreferences.getIvrLanguageId()));
         if (!StringUtils.isBlank(patient.getClinic_id()))
             patient.setClinic(allClinics.get(patient.getClinic_id()));
         MedicalHistory medicalHistory = patient.getMedicalHistory();

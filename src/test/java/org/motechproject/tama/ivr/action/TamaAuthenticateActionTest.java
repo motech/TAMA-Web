@@ -16,6 +16,7 @@ import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
 import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientPreferences;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
@@ -59,7 +60,10 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         super.setUp();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
-        when(patient.getIvrLanguage()).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
+        PatientPreferences patientPreferences = new PatientPreferences();
+        patientPreferences.setIvrLanguage(IVRLanguage.newIVRLanguage("English", "en"));
+        patientPreferences.setPasscode(PASSCODE);
+        when(patient.getPatientPreferences()).thenReturn(patientPreferences);
         when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(new TreatmentAdvice());
         when(session.getAttribute(TamaSessionAttribute.PATIENT_DOC_ID)).thenReturn(PATIENT_ID);
         when(request.getParameter("symptoms_reporting")).thenReturn("true");
@@ -71,9 +75,12 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
     @Test
     public void shouldGoToRetryActionIfPatientPassCodeIsNotValid() {
         IVRRequest ivrRequest = new KookooRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
-
         when(retryAction.createResponse(ivrRequest, request, response)).thenReturn("OK");
-        when(patient.authenticatedWith(PASSCODE)).thenReturn(false);
+
+        PatientPreferences patientPreferences = new PatientPreferences();
+        patientPreferences.setPasscode("invalid_passcode");
+        when(patient.getPatientPreferences()).thenReturn(patientPreferences);
+
         when(patient.isActive()).thenReturn(true);
         when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
         when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
@@ -90,7 +97,6 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         DateTime now = new DateTime(2010, 10, 10, 16, 00, 00);
 
         when(request.getSession()).thenReturn(session);
-        when(patient.authenticatedWith(PASSCODE)).thenReturn(true);
         when(patient.isActive()).thenReturn(true);
         when(patient.getPatientId()).thenReturn(PATIENT_ID);
         when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
@@ -115,13 +121,14 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
 
     @Test
     public void shouldHangupIfPatientIsNotActive() {
-        IVRRequest ivrRequest = new KookooRequest("unique-call-id", MOBILE_NO, IVREvent.NEW_CALL.key(), "Data");
+        IVRRequest ivrRequest = new KookooRequest("unique-call-id", MOBILE_NO, IVREvent.NEW_CALL.key(), PASSCODE);
         when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
-        when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, "Data")).thenReturn(patient);
+        when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
         when(patient.isActive()).thenReturn(false);
-        when(patient.authenticatedWith("Data")).thenReturn(true);
         when(userNotFoundAction.createResponse(ivrRequest, request, response)).thenReturn("hangup response");
+
         String responseXML = authenticateAction.createResponse(ivrRequest, request, response);
+
         assertEquals("hangup response", responseXML);
     }
 }

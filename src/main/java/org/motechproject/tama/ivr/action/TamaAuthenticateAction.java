@@ -83,7 +83,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
         ivrSession.renew(request);
         ivrSession.setState(IVRCallState.AUTH_SUCCESS);
         ivrSession.set(TamaSessionAttribute.PATIENT_DOC_ID, patient.getId());
-        ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getIvrLanguage().getCode());
+        ivrSession.set(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, patient.getPatientPreferences().getIvrLanguage().getCode());
 
         ivrSession.setCallTime(DateUtil.now());
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
@@ -94,7 +94,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
     }
 
     private boolean isAuthenticatedUser(String passcode, Patient patient) {
-        return patient != null && patient.authenticatedWith(passcode);
+        return patient != null && patient.getPatientPreferences().getPasscode().equals(passcode);
     }
 
     private boolean hasNoTreatmentAdvice(Patient patient) {

@@ -62,10 +62,6 @@ public class Patient extends CouchEntity {
         return this.status.equals(Status.Inactive);
     }
 
-    public boolean authenticatedWith(String passcode) {
-        return this.patientPreferences.getPasscode().equals(passcode);
-    }
-
     @JsonIgnore
     public String getIVRMobilePhoneNumber() {
         return String.format("0%s", mobilePhoneNumber);
@@ -224,21 +220,6 @@ public class Patient extends CouchEntity {
 
     public void setClinic_id(String clinic_id) {
         this.clinic_id = clinic_id;
-    }
-
-    @JsonIgnore
-    public IVRLanguage getIvrLanguage() {
-        return this.patientPreferences.getIvrLanguage();
-    }
-
-    @JsonIgnore
-    public void setIvrLanguage(IVRLanguage ivrLanguage) {
-        this.patientPreferences.setIvrLanguage(ivrLanguage);
-    }
-
-    @JsonIgnore
-    public String getIvrLanguageId() {
-        return this.patientPreferences.getIvrLanguageId();
     }
 
     public List<String> uniqueFields() {

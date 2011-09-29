@@ -32,8 +32,8 @@ public class TAMAConstants {
         }
     }
 
-    public enum ReminderCall {
-        Daily, Weekly
+    public enum CallPreference {
+        DailyPillReminder, FourDayRecall
     }
 
     public enum DayOfWeek {

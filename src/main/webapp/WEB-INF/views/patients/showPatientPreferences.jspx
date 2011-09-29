@@ -4,7 +4,7 @@
     <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="${tama_preferences}" openPane="true" update="true">
         <field:display field="passcode" id="c_org_motechproject_tama_domain_patient_passcode" object="${patient.patientPreferences}" />
         <field:display field="ivrLanguage" id="s_org_motechproject_tama_domain_patient_ivrLanguage" object="${patient.patientPreferences}" />
-        <field:display field="reminderCall" id="c_org_motechproject_tama_domain_Patient_reminderCall" object="${patient.patientPreferences}" />
+        <field:display field="displayCallPreference" id="c_org_motechproject_tama_domain_Patient_reminderCall" object="${patient.patientPreferences}" />
         <c:if test="${not empty patient.patientPreferences.dayOfWeeklyCall}">
             <field:display field="dayOfWeeklyCall" id="patientPreferencesDayOfWeeklyCall" object="${patient.patientPreferences}" label="Day of Week for Weekly Adherence Call"/>
         </c:if>

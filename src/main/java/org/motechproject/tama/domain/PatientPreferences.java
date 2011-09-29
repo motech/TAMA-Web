@@ -2,7 +2,7 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.TAMAConstants.ReminderCall;
+import org.motechproject.tama.TAMAConstants.CallPreference;
 import org.motechproject.tama.TAMAMessages;
 
 import javax.persistence.ManyToOne;
@@ -16,22 +16,26 @@ public class PatientPreferences extends BaseEntity {
     protected String passcode;
 
     @ManyToOne
-    private IVRLanguage ivrLanguage;
+    private IVRLanguage ivrLanguage; // TODO: should probably be removed since Id is present
 
     private String ivrLanguageId;
 
-    private ReminderCall reminderCall = ReminderCall.Daily;
+    private TAMAConstants.CallPreference callPreference = CallPreference.DailyPillReminder;
 
     private TAMAConstants.DayOfWeek dayOfWeeklyCall;
 
     private TimeOfDay bestCallTime;
 
-    public ReminderCall getReminderCall() {
-        return this.reminderCall;
+    public TAMAConstants.CallPreference getCallPreference() {
+        return this.callPreference;
     }
 
-    public void setReminderCall(ReminderCall reminderCall) {
-        this.reminderCall = reminderCall;
+    public String getDisplayCallPreference() {
+        return this.callPreference == CallPreference.DailyPillReminder? "Daily" : "Weekly";
+    }
+
+    public void setCallPreference(CallPreference callPreference) {
+        this.callPreference = callPreference;
     }
 
     public String getPasscode() {
@@ -75,4 +79,6 @@ public class PatientPreferences extends BaseEntity {
     public void setBestCallTime(TimeOfDay bestCallTime) {
         this.bestCallTime = bestCallTime;
     }
+
+
 }

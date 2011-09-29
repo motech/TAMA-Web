@@ -10,7 +10,7 @@ dojo.addOnLoad(function() {
     var ampmElement = dojo.byId('ampm');
 
     var toggleSelectDayElement = function(element) {
-        if (element.value == 'Weekly'){
+        if (element.value == 'FourDayRecall'){
             selectDayElementWidget.set('required', true);
             showElement([selectDayContainer]);
             bestCallTimeYes.click();

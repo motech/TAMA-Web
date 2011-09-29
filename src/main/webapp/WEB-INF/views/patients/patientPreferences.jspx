@@ -16,10 +16,10 @@
             </label>
             <div class='right_pane'>
                 <div class='radio_group'>
-                    <springform:radiobutton id="dailyReminderCall" path="patientPreferences.reminderCall" value="Daily" label="Activate Daily Pill Reminder Call"/>
+                    <springform:radiobutton id="dailyReminderCall" path="patientPreferences.callPreference" value="DailyPillReminder" label="Activate Daily Pill Reminder Call"/>
                 </div>
                 <div class='radio_group'>
-                    <springform:radiobutton id="weeklyReminderCall" path="patientPreferences.reminderCall" value="Weekly" label="Activate Weekly Adherence Calls"/>
+                    <springform:radiobutton id="weeklyReminderCall" path="patientPreferences.callPreference" value="FourDayRecall" label="Activate Weekly Adherence Calls"/>
                 </div>
             </div>
         </div>
