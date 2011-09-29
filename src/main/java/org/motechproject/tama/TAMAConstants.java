@@ -12,8 +12,9 @@ public class TAMAConstants {
     public static final String DOSAGE_INTERVAL = "dosage.interval";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
     public static final int DAYS_IN_FOUR_WEEKS = 28;
-    public static final String IS_OUTBOUND_CALL = "is_outbound";
-    public static final String ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT = "org.motechproject.server" + ".adherence.weeklyTrendFeedback";
+    public static final String BASE_SUBJECT = "org.motechproject.server";
+    public static final String ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT = BASE_SUBJECT + ".adherence.weeklyTrendFeedback";
+    public static final String FOUR_DAY_RECALL_SUBJECT = BASE_SUBJECT + ".fourDayRecall";
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),
@@ -30,14 +31,6 @@ public class TAMAConstants {
             for (int i = 0; i <= value; i++) items.add(i);
             return items;
         }
-    }
-
-    public enum CallPreference {
-        DailyPillReminder, FourDayRecall
-    }
-
-    public enum DayOfWeek {
-        Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
     }
 
     public enum TimeMeridiem {

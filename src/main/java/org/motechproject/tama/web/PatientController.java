@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.joda.time.format.DateTimeFormat;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.AilmentState;
@@ -8,8 +9,6 @@ import org.motechproject.tama.domain.MedicalHistoryQuestions;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.SystemCategoryDefiniton;
 import org.motechproject.tama.repository.*;
-import org.motechproject.tama.security.AuthenticatedUser;
-import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IvrLanguagesView;
@@ -220,7 +219,7 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("systemCategories", SystemCategoryDefiniton.all());
         uiModel.addAttribute("options", AilmentState.values());
         uiModel.addAttribute("questions", MedicalHistoryQuestions.all());
-        uiModel.addAttribute("daysOfWeek", Arrays.asList(TAMAConstants.DayOfWeek.values()));
+        uiModel.addAttribute("daysOfWeek", Arrays.asList(DayOfWeek.values()));
         uiModel.addAttribute("timeMeridiems", Arrays.asList(TAMAConstants.TimeMeridiem.values()));
     }
 

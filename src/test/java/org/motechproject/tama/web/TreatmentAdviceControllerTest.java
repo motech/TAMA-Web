@@ -1,23 +1,5 @@
 package org.motechproject.tama.web;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import junitx.util.PrivateAccessor;
-
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,24 +7,19 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
+import org.motechproject.model.DayOfWeek;
+import org.motechproject.model.Time;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.CallPreference;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.domain.DrugDosage;
-import org.motechproject.tama.domain.MealAdviceType;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.Regimen;
-import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
-import org.motechproject.tama.repository.AllDosageTypes;
-import org.motechproject.tama.repository.AllMealAdviceTypes;
-import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.repository.AllRegimens;
-import org.motechproject.tama.repository.AllTreatmentAdvices;
+import org.motechproject.tama.repository.*;
+import org.motechproject.tama.service.SchedulerService;
 import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -50,12 +27,24 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DateUtil.class)
 public class TreatmentAdviceControllerTest {
-
-    private TreatmentAdviceController controller;
-
     @Mock
     private Model uiModel;
     @Mock
@@ -76,34 +65,52 @@ public class TreatmentAdviceControllerTest {
     private PillRegimenRequestMapper requestMapper;
     @Mock
     private MotechSchedulerService motechSchedulerService;
+    @Mock
+    private SchedulerService schedulerService;
+
+    private TreatmentAdviceController controller;
+    private TreatmentAdvice treatmentAdvice;
+    private static String PATIENT_ID = "PATIENT_ID";
 
     @Before
     public void setUp() throws Exception{
         initMocks(this);
-        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, pillReminderService, requestMapper);
-        PrivateAccessor.setField(controller, "schedulerService", motechSchedulerService);
-        
+
+        treatmentAdvice = getTreatmentAdvice();
+
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+
+        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, pillReminderService, requestMapper, motechSchedulerService, schedulerService);
     }
 
     @Test
-    public void shouldCreatePillRegimenRequest() {
-        TreatmentAdvice treatmentAdvice = getTreatmentAdvice();
-
+    public void shouldCreatePillRegimenRequestForPatientsOnDailyCalls() {
         controller.create(treatmentAdvice, uiModel);
-        verify(requestMapper).map(treatmentAdvice);
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
     }
 
     @Test
+    public void shouldCreatePillRegimenRequestForPatientsOnFourDayRecall() {
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+
+        controller.create(treatmentAdvice, uiModel);
+        verify(schedulerService).scheduleJobsForFourDayRecall(any(String.class), any(String.class), any(LocalDate.class), any(DayOfWeek.class), any(Time.class));
+    }
+
+    @Test
     public void shouldCreateNewTreatmentAdviceFormGivenAPatientWithNoTreatmentAdvice() {
-        String patientId = "patientId";
+        String patientId = this.PATIENT_ID;
         TreatmentAdvice treatmentAdviceAttr = TreatmentAdvice.newDefault();
-        treatmentAdviceAttr.setPatientId("patientId");
+        treatmentAdviceAttr.setPatientId(this.PATIENT_ID);
         treatmentAdviceAttr.setDrugCompositionGroupId("");
 
         Patient patient = PatientBuilder.startRecording().withPatientId(patientId).build();
 
-        when(allPatients.get("patientId")).thenReturn(patient);
+        when(allPatients.get(this.PATIENT_ID)).thenReturn(patient);
         when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
         controller.createForm(patientId, uiModel);
 
@@ -113,7 +120,6 @@ public class TreatmentAdviceControllerTest {
     @Test
     public void shouldCreateNewTreatmentAdvice() {
         BindingResult bindingResult = mock(BindingResult.class);
-        TreatmentAdvice treatmentAdvice = getTreatmentAdvice();
 
         when(bindingResult.hasErrors()).thenReturn(false);
         when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
@@ -167,10 +173,10 @@ public class TreatmentAdviceControllerTest {
 
     @Test
     public void shouldCreateAChangeRegimenForm() {
-        String patientId = "patientId";
+        String patientId = this.PATIENT_ID;
         String treatmentAdviceId = "treatmentAdviceId";
         TreatmentAdvice treatmentAdviceAttr = TreatmentAdvice.newDefault();
-        treatmentAdviceAttr.setPatientId("patientId");
+        treatmentAdviceAttr.setPatientId(this.PATIENT_ID);
         treatmentAdviceAttr.setDrugCompositionGroupId("");
         Patient patient = PatientBuilder.startRecording().withPatientId(patientId).build();
 
@@ -193,15 +199,14 @@ public class TreatmentAdviceControllerTest {
         String discontinuationReason = "bad medicine";
         String regimenId = "existingTreatmentRegimenId";
 		TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
-        TreatmentAdvice newTreatmentAdvice = getTreatmentAdvice();
 
         when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
-        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, newTreatmentAdvice, uiModel, request);
+        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, uiModel, request);
 
         assertThat(redirectURL, is("redirect:/clinicvisits/treatmentAdviceId"));
         assertThat(existingTreatmentAdvice.getReasonForDiscontinuing(), is(discontinuationReason));
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
-        verify(allTreatmentAdvices).add(newTreatmentAdvice);
+        verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService).renew(any(DailyPillRegimenRequest.class));
         verify(motechSchedulerService).unscheduleJob(regimenId);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
@@ -209,11 +214,9 @@ public class TreatmentAdviceControllerTest {
         assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
     }
     
-
     @Test
     public void shouldCreateNewTreatmentAdviceAlongWithWeeklyAdherenceTrendJob() throws Exception{
         BindingResult bindingResult = mock(BindingResult.class);
-        TreatmentAdvice treatmentAdvice = getTreatmentAdvice();
         when(bindingResult.hasErrors()).thenReturn(false);
         when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
 
@@ -227,7 +230,7 @@ public class TreatmentAdviceControllerTest {
 	private TreatmentAdvice getTreatmentAdvice() {
 		TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
 		treatmentAdvice.setId("treatmentAdviceId");
-        treatmentAdvice.setPatientId("patientId");
+        treatmentAdvice.setPatientId(PATIENT_ID);
         ArrayList<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
         DrugDosage drugDosage = new DrugDosage();
         treatmentAdvice.setDrugCompositionGroupId("");

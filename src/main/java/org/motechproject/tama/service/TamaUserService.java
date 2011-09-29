@@ -1,4 +1,4 @@
-package org.motechproject.tama.user.service;
+package org.motechproject.tama.service;
 
 import org.motechproject.ivr.kookoo.service.UserService;
 import org.motechproject.tama.repository.AllPatients;

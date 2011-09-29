@@ -1,8 +1,9 @@
 package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.CallPreference;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.TAMAConstants.CallPreference;
 import org.motechproject.tama.TAMAMessages;
 
 import javax.persistence.ManyToOne;
@@ -20,13 +21,13 @@ public class PatientPreferences extends BaseEntity {
 
     private String ivrLanguageId;
 
-    private TAMAConstants.CallPreference callPreference = CallPreference.DailyPillReminder;
+    private CallPreference callPreference = CallPreference.DailyPillReminder;
 
-    private TAMAConstants.DayOfWeek dayOfWeeklyCall;
+    private DayOfWeek dayOfWeeklyCall;
 
     private TimeOfDay bestCallTime;
 
-    public TAMAConstants.CallPreference getCallPreference() {
+    public CallPreference getCallPreference() {
         return this.callPreference;
     }
 
@@ -64,11 +65,11 @@ public class PatientPreferences extends BaseEntity {
         this.ivrLanguageId = ivrLanguageId;
     }
 
-    public TAMAConstants.DayOfWeek getDayOfWeeklyCall() {
+    public DayOfWeek getDayOfWeeklyCall() {
         return dayOfWeeklyCall;
     }
 
-    public void setDayOfWeeklyCall(TAMAConstants.DayOfWeek dayOfWeeklyCall) {
+    public void setDayOfWeeklyCall(DayOfWeek dayOfWeeklyCall) {
         this.dayOfWeeklyCall = dayOfWeeklyCall;
     }
 
