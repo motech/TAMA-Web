@@ -80,7 +80,7 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("001_07_02_yesterdays", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfYesterdays", messages.get(0));
         assertEquals("001_07_02_doseTimeOfMorning", messages.get(1));
     }
 
@@ -100,7 +100,7 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("001_07_02_yesterdays", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfYesterdays", messages.get(0));
         assertEquals("001_07_02_doseTimeOfAfternoon", messages.get(1));
     }
 
@@ -110,7 +110,7 @@ public class IVRDayMessageBuilderTest {
 
         List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
         assertEquals(2, messages.size());
-        assertEquals("001_07_02_yesterdays", messages.get(0));
+        assertEquals("001_07_02_doseTimeOfYesterdays", messages.get(0));
         assertEquals("001_07_02_doseTimeOfEvening", messages.get(1));
     }
 

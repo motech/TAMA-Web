@@ -63,6 +63,6 @@ public class NextCallDetailsTest {
         assertEquals("Num_005", messages[3]);
         assertEquals("001_07_04_doseTimeAtEvening", messages[4]);
         assertEquals("timeOfDayToday", messages[5]);
-        assertEquals("010_04_01_nextDoseIs2", messages[6]);
+        assertEquals("010_04_06_nextDoseIs2", messages[6]);
     }
 }
