@@ -30,7 +30,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String DOSE_TAKEN_ON_TIME = "001_04_01_tookOnTime";
     public static final String PLEASE_CARRY_SMALL_BOX = "004_05_01_doctorNoPillsAdvice";
     public static final String YOUR_NEXT_DOSE_IS = "010_04_01_nextDoseIs1";
-    public static final String YOUR_NEXT_DOSE_IS_PADDING = "010_04_01_nextDoseIs2";
+    public static final String YOUR_NEXT_DOSE_IS_PADDING = "010_04_06_nextDoseIs2";
     public static final String AT = "timeOfDayAt";
     public static final String DOSE_CANNOT_BE_TAKEN_MENU = "004_04_04_MissedPillMenu";
     public static final String LAST_REMINDER_WARNING = "005_04_01_CannotDelayPillsNow";
@@ -38,7 +38,7 @@ public class TamaIVRMessage implements IVRMessage {
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "001_07_01_your";
 
-    public static final String YESTERDAYS   = "001_07_02_yesterdays";
+    public static final String YESTERDAYS   = "001_07_02_doseTimeOfYesterdays";
     public static final String MORNING      = "001_07_02_doseTimeOfMorning";
     public static final String AFTERNOON    = "001_07_02_doseTimeOfAfternoon";
     public static final String EVENING      = "001_07_02_doseTimeOfEvening";
