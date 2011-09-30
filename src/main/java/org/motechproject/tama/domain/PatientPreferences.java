@@ -2,7 +2,6 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.tama.CallPreference;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
 

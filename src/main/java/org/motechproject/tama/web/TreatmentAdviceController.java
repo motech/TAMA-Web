@@ -1,16 +1,11 @@
 package org.motechproject.tama.web;
 
-import org.joda.time.LocalDate;
-import org.motechproject.model.CronSchedulableJob;
-import org.motechproject.model.DayOfWeek;
-import org.motechproject.model.MotechEvent;
-import org.motechproject.scheduler.MotechSchedulerService;
-import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
-import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.CallPreference;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.domain.*;
+import org.motechproject.tama.domain.DosageType;
+import org.motechproject.tama.domain.MealAdviceType;
+import org.motechproject.tama.domain.Regimen;
+import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.service.SchedulerService;
@@ -30,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RooWebScaffold(path = "treatmentadvices", formBackingObject = TreatmentAdvice.class)
 @RequestMapping("/treatmentadvices")
@@ -53,8 +47,6 @@ public class TreatmentAdviceController extends BaseController {
     @Autowired
     private PillReminderService pillReminderService;
     @Autowired
-    private MotechSchedulerService motechSchedulerService;
-    @Autowired
     private PillRegimenRequestMapper pillRegimenRequestMapper;
     @Autowired
     private SchedulerService schedulerService;
@@ -62,7 +54,7 @@ public class TreatmentAdviceController extends BaseController {
     protected TreatmentAdviceController() {
     }
 
-    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper, MotechSchedulerService motechSchedulerService, SchedulerService schedulerService) {
+    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper, SchedulerService schedulerService) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
@@ -71,7 +63,6 @@ public class TreatmentAdviceController extends BaseController {
         this.allMealAdviceTypes = allMealAdviceTypes;
         this.pillReminderService = pillReminderService;
         this.pillRegimenRequestMapper = requestMapper;
-        this.motechSchedulerService = motechSchedulerService;
         this.schedulerService = schedulerService;
     }
 
@@ -97,8 +88,9 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.asMap().clear();
         allTreatmentAdvices.add(treatmentAdvice);
         pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
-        unscheduleJobForAdherenceTrendFeedback(existingTreatmentAdviceId);
-        scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
+        schedulerService.unscheduleJobForAdherenceTrendFeedback(oldTreatmentAdvice);
+        schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
 
@@ -119,29 +111,7 @@ public class TreatmentAdviceController extends BaseController {
     public void create(TreatmentAdvice treatmentAdvice, Model uiModel) {
         uiModel.asMap().clear();
         allTreatmentAdvices.add(treatmentAdvice);
-        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
-        if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall)) {
-            schedulerService.scheduleJobsForFourDayRecall("", "", DateUtil.today(), DayOfWeek.Friday, null);
-        } else {
-            pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
-            scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
-        }
-    }
-
-    private void scheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
-        Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getId())
-                .withExternalId(treatmentAdvice.getPatientId())
-                .payload();
-        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
-        MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
-        String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
-        CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, startDate.toDate(), treatmentAdvice.getEndDate());
-        motechSchedulerService.scheduleJob(adherenceJob);
-    }
-
-    private void unscheduleJobForAdherenceTrendFeedback(String oldTreatmentAdviceId) {
-        TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(oldTreatmentAdviceId);
-        motechSchedulerService.unscheduleJob(oldTreatmentAdvice.getRegimenId());
+        schedulerService.scheduleJobsForTreatmentAdviceCalls(treatmentAdvice);
     }
 
     public void show(String id, Model uiModel) {

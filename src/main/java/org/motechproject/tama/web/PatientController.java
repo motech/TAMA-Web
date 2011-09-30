@@ -4,10 +4,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TamaException;
-import org.motechproject.tama.domain.AilmentState;
-import org.motechproject.tama.domain.MedicalHistoryQuestions;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.SystemCategoryDefiniton;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
@@ -220,7 +217,7 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("options", AilmentState.values());
         uiModel.addAttribute("questions", MedicalHistoryQuestions.all());
         uiModel.addAttribute("daysOfWeek", Arrays.asList(DayOfWeek.values()));
-        uiModel.addAttribute("timeMeridiems", Arrays.asList(TAMAConstants.TimeMeridiem.values()));
+        uiModel.addAttribute("timeMeridiems", Arrays.asList(TimeMeridiem.values()));
     }
 
     private void addDateTimeFormat(Model uiModel) {

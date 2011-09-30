@@ -7,6 +7,7 @@ public class TAMAConstants {
     public static final String MOBILE_NUMBER_REGEX = "^\\d{10}$";
     public static final String PASSCODE_REGEX = "^\\d{4,10}$";
     public static final String RETRY_INTERVAL = "retry.interval.mins";
+    public static final String MAX_OUTBOUND_RETRIES = "max.outbound.retries";
     public static final String PILL_WINDOW = "pill.window.hrs";
     public static final String REMINDER_LAG = "reminder.lag.mins";
     public static final String DOSAGE_INTERVAL = "dosage.interval";
@@ -31,10 +32,6 @@ public class TAMAConstants {
             for (int i = 0; i <= value; i++) items.add(i);
             return items;
         }
-    }
-
-    public enum TimeMeridiem {
-        AM, PM
     }
 
     public enum AUTH_STATUS {

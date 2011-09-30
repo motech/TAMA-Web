@@ -4,15 +4,9 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.model.CronSchedulableJob;
-import org.motechproject.model.DayOfWeek;
-import org.motechproject.model.Time;
-import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.CallPreference;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
@@ -33,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -64,8 +57,6 @@ public class TreatmentAdviceControllerTest {
     @Mock
     private PillRegimenRequestMapper requestMapper;
     @Mock
-    private MotechSchedulerService motechSchedulerService;
-    @Mock
     private SchedulerService schedulerService;
 
     private TreatmentAdviceController controller;
@@ -82,23 +73,13 @@ public class TreatmentAdviceControllerTest {
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, pillReminderService, requestMapper, motechSchedulerService, schedulerService);
+        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, pillReminderService, requestMapper, schedulerService);
     }
 
     @Test
-    public void shouldCreatePillRegimenRequestForPatientsOnDailyCalls() {
+    public void shouldScheduleCallsForTreatmentAdvice() {
         controller.create(treatmentAdvice, uiModel);
-        verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
-    }
-
-    @Test
-    public void shouldCreatePillRegimenRequestForPatientsOnFourDayRecall() {
-        Patient patient = new Patient();
-        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-
-        controller.create(treatmentAdvice, uiModel);
-        verify(schedulerService).scheduleJobsForFourDayRecall(any(String.class), any(String.class), any(LocalDate.class), any(DayOfWeek.class), any(Time.class));
+        verify(schedulerService).scheduleJobsForTreatmentAdviceCalls(treatmentAdvice);
     }
 
     @Test
@@ -208,23 +189,8 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService).renew(any(DailyPillRegimenRequest.class));
-        verify(motechSchedulerService).unscheduleJob(regimenId);
-        ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
-        assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
-    }
-    
-    @Test
-    public void shouldCreateNewTreatmentAdviceAlongWithWeeklyAdherenceTrendJob() throws Exception{
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
-
-        controller.create(treatmentAdvice, uiModel);
-        verify(allTreatmentAdvices).add(treatmentAdvice);
-        ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
-        assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
+        verify(schedulerService).unscheduleJobForAdherenceTrendFeedback(existingTreatmentAdvice);
+        verify(schedulerService).scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
     }
 
 	private TreatmentAdvice getTreatmentAdvice() {

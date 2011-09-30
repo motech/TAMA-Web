@@ -11,8 +11,6 @@ import java.util.*;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity {
-	private static final long serialVersionUID = -8225223281746266068L;
-
 	@NotNull
     private String patientId;
 
@@ -95,6 +93,7 @@ public class TreatmentAdvice extends CouchEntity {
         }
     }
 
+    // TODO: Should use Joda Date instead of Java Date.
     @JsonIgnore
     public Date getEndDate() {
         DrugDosage dosageWithMaxEndDate = Collections.max(getDrugDosages(), new DrugDosage.EndDateBasedComparator());
