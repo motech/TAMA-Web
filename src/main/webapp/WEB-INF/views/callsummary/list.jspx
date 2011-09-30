@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_org_motechproject_tama_ivr_logging_domain_CallLog" items="${callsummary}">
+        <c:forEach items="${callsummary}" var="calllog" varStatus="logIndex">
+            <util:panel id="title[${logIndex.index}]" title="${calllog.title}" openPane="false">
+                <field:display field="patientId" label="Patient Id" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_id[${logIndex.index}]" object="${calllog}"/>
+                <field:display field="callType" label="Call Type" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_calltype[${logIndex.index}]" object="${calllog}"/>
+                <field:display field="startTime" label="Start Time" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_starttime[${logIndex.index}]" object="${calllog}"/>
+                <field:display field="endTime" label="End Time" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_endtime[${logIndex.index}]" object="${calllog}"/>
+                <util:panel id="sub-title[${logIndex.index}]" title="Events" openPane="false">
+                    <c:forEach items="${calllog.callEvents}" var="callEvent" varStatus="eventIndex">
+                        <c:out value="${callEvent.content}"/>
+                    </c:forEach>
+                </util:panel>
+            </util:panel>
+        </c:forEach>
+    </page:list>
+</div>

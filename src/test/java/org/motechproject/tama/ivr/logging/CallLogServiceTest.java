@@ -2,7 +2,6 @@ package org.motechproject.tama.ivr.logging;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
@@ -14,7 +13,6 @@ import org.motechproject.tama.ivr.logging.mapper.CallLogMapper;
 import org.motechproject.tama.ivr.logging.repository.AllCallLogs;
 import org.motechproject.tama.ivr.logging.service.CallLogService;
 
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -51,21 +49,9 @@ public class CallLogServiceTest {
     }
 
     @Test
-    public void shouldCreateOutboundCallLog() {
-        CallDetailRecord callDetailRecord = CallDetailRecord.newOutgoingCallRecord("phoneNumber");
-        callDetailRecord.setCallDirection(IVRRequest.CallDirection.Outbound);
-        KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord);
-        kookooCallDetailRecord.setId("callId");
-
-        when(kookooCallDetailRecordsService.get("callId")).thenReturn(kookooCallDetailRecord);
-        when(allCallLogs.getLatestOpenCallLog("patientDocId")).thenReturn(new CallLog("patientDocId"));
-
-        callLoggingService.log("callId", "patientDocId");
-
-        ArgumentCaptor<CallLog> callLogCaptor = ArgumentCaptor.forClass(CallLog.class);
-        verify(allCallLogs).update(callLogCaptor.capture());
-        CallLog updatedCallLog = callLogCaptor.getValue();
-        assertEquals("callId", updatedCallLog.getCallId());
+    public void shouldReturnAllCallLogs() {
+        callLoggingService.getAll();
+        verify(allCallLogs).getAll();
     }
 
 }

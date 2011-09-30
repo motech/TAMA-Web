@@ -2,12 +2,13 @@ package org.motechproject.tama.ivr.logging.service;
 
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.tama.ivr.logging.mapper.CallLogMapper;
 import org.motechproject.tama.ivr.logging.repository.AllCallLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class CallLogService {
@@ -28,17 +29,10 @@ public class CallLogService {
 
     public void log(String callId, String patientDocumentId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callId);
-        if (kookooCallDetailRecord.getCallDetailRecord().getCallDirection() == IVRRequest.CallDirection.Inbound) {
-            allCallLogs.add(callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord));
-        } else {
-            CallLog openCallLog = allCallLogs.getLatestOpenCallLog(patientDocumentId);
-            CallLog newCallLog = callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord);
-            openCallLog.copy(newCallLog);
-            allCallLogs.update(openCallLog);
-        }
+        allCallLogs.add(callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord));
     }
 
-    public void logStartOfOutboundCall(String patientDocumentId) {
-        allCallLogs.add(new CallLog(patientDocumentId));
+    public List<CallLog> getAll() {
+        return allCallLogs.getAll();
     }
 }
