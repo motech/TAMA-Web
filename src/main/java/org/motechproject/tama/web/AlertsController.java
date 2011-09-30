@@ -1,7 +1,18 @@
 package org.motechproject.tama.web;
 
-import ch.lambdaj.Lambda;
-import ch.lambdaj.function.convert.Converter;
+import static ch.lambdaj.Lambda.convert;
+import static ch.lambdaj.Lambda.flatten;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectUnique;
+import static ch.lambdaj.Lambda.sort;
+import static java.util.Collections.reverseOrder;
+import static org.hamcrest.CoreMatchers.equalTo;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.service.AlertService;
@@ -9,20 +20,15 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientAlert;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.List;
-
-import static ch.lambdaj.Lambda.*;
-import static java.util.Collections.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-
+import ch.lambdaj.Lambda;
+import ch.lambdaj.function.convert.Converter;
 @RequestMapping("/alerts")
 @Controller
 public class AlertsController extends BaseController {
@@ -42,7 +48,7 @@ public class AlertsController extends BaseController {
         final String clinicId = loggedInClinic(request);
         final List<PatientAlert> alerts = getAlerts(clinicId, AlertStatus.NEW);
         uiModel.addAttribute("alerts", alerts);
-        return "alerts/list";
+        return "alerts/unread";
     }
 
     @RequestMapping(value = "/read", method = RequestMethod.GET)
@@ -50,7 +56,7 @@ public class AlertsController extends BaseController {
         final String clinicId = loggedInClinic(request);
         final List<PatientAlert> alerts = getAlerts(clinicId, AlertStatus.READ);
         uiModel.addAttribute("alerts", alerts);
-        return "alerts/list";
+        return "alerts/read";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
