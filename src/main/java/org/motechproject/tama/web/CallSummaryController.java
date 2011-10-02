@@ -29,8 +29,7 @@ public class CallSummaryController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model uiModel) {
-        List<CallLog> allCallLogs = callLogService.getAll();
-        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(allCallLogs);
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(callLogService.getAll());
         uiModel.addAttribute("callsummary", callLogViews);
         return "callsummary/list";
     }

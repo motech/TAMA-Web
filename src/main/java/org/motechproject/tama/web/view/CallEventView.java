@@ -30,13 +30,19 @@ public class CallEventView {
 
     public String getContent(){
         String responseXML = data.get(CallEventConstants.RESPONSE_XML);
-        Response response = KooKooResponseParser.fromXml(responseXML);
-        if(name.equals("NewCall")){
-            return response.audioPlayed() + " was played.";
-        }
-        else {
-            return data.get(CallEventConstants.DTMF_DATA) + " was pressed and " + response.audioPlayed() + " was played.";
+        if(responseXML == null){
+            return "";
         }
 
+        Response response = KooKooResponseParser.fromXml(responseXML);
+        if(name.equalsIgnoreCase("newcall")){
+            return response.audioPlayed() + " was played.";
+        }
+        else if (name.equalsIgnoreCase("gotdtmf")){
+            return data.get(CallEventConstants.DTMF_DATA) + " was pressed and " + response.audioPlayed() + " was played.";
+        }
+        else {
+            return "";
+        }
     }
 }
