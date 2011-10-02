@@ -39,7 +39,7 @@ public class CallSummaryControllerTest {
     @Test
     public void shouldShowAllCallLogs() {
         List<CallLog> callLogs = Arrays.asList(new CallLog());
-        List<CallLogView> callLogViews = Arrays.asList(new CallLogView());
+        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", new CallLog()));
 
         when(callLogService.getAll()).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);

@@ -3,6 +3,7 @@ package org.motechproject.tama.web.view.callevent;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
+import org.motechproject.server.service.ivr.CallEvent;
 import org.motechproject.tama.web.view.CallEventView;
 
 import java.util.HashMap;
@@ -18,15 +19,13 @@ public class CallEventViewTest {
 
     @Before
     public void setUp() {
-        callEventView = new CallEventView();
         data = new HashMap<String, String>();
     }
 
     @Test
     public void shouldDisplayAudioPlayedForNewCallEventAction() {
-        callEventView.setName("NewCall");
+        callEventView = new CallEventView(new CallEvent("NewCall", data));
         data.put(CallEventConstants.RESPONSE_XML, "<response sid=\"123\"><collectdtmf><playaudio>signature_music.wav</playaudio></collectdtmf></response>");
-        callEventView.setData(data);
 
         String content = callEventView.getContent();
 
@@ -35,10 +34,9 @@ public class CallEventViewTest {
 
     @Test
     public void shouldDisplayKeyPressedAndAudioPlayedForGotDTMFAction() {
-        callEventView.setName("gotDtmf");
+        callEventView = new CallEventView(new CallEvent("gotdtmf", data));
         data.put(CallEventConstants.DTMF_DATA, "1");
         data.put(CallEventConstants.RESPONSE_XML, "<response sid=\"123\"><collectdtmf><playaudio>drpujari's_clinic.wav</playaudio></collectdtmf></response>");
-        callEventView.setData(data);
 
         String content = callEventView.getContent();
 

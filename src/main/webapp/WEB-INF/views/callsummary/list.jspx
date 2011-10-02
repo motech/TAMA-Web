@@ -9,9 +9,9 @@
         <c:forEach items="${callsummary}" var="calllog" varStatus="logIndex">
             <util:panel id="title[${logIndex.index}]" title="${calllog.title}" openPane="false">
                 <field:display field="patientId" label="Patient Id" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_id[${logIndex.index}]" object="${calllog}"/>
-                <field:display field="callType" label="Call Type" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_calltype[${logIndex.index}]" object="${calllog}"/>
-                <field:display field="startTime" label="Start Time" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_starttime[${logIndex.index}]" object="${calllog}"/>
-                <field:display field="endTime" label="End Time" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_endtime[${logIndex.index}]" object="${calllog}"/>
+                <field:display field="callType" label="Call Type" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_calltype[${logIndex.index}]" object="${calllog.callLog}"/>
+                <field:display field="startTime" label="Start Time" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_starttime[${logIndex.index}]" object="${calllog.callLog}"/>
+                <field:display field="endTime" label="End Time" id="s_org_motechproject_tama_ivr_logging_domain_CallLog_endtime[${logIndex.index}]" object="${calllog.callLog}"/>
                 <util:panel id="sub-title[${logIndex.index}]" title="Events" openPane="false">
                     <c:forEach items="${calllog.callEvents}" var="callEvent" varStatus="eventIndex">
                         <c:out value="${callEvent.content}"/>
