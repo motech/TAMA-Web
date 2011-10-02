@@ -3,6 +3,7 @@ package org.motechproject.tama.ivr.action;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.action.AuthenticateAction;
 import org.motechproject.ivr.kookoo.action.IvrAction;
+import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.server.decisiontree.DecisionTreeBasedResponseBuilder;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class TamaAuthenticateAction extends AuthenticateAction {
@@ -41,7 +44,7 @@ public class TamaAuthenticateAction extends AuthenticateAction {
     public TamaAuthenticateAction(PillReminderService pillReminderService,
                                   AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                   TamaRetryAction retryAction, TamaUserNotFoundAction userNotFoundAction,
-                                  TamaTreeChooser treeChooser,DecisionTreeBasedResponseBuilder ivrResponseBuilder,
+                                  TamaTreeChooser treeChooser, DecisionTreeBasedResponseBuilder ivrResponseBuilder,
                                   CallLogService callLogService) {
         super();
         this.pillReminderService = pillReminderService;
@@ -69,10 +72,6 @@ public class TamaAuthenticateAction extends AuthenticateAction {
             return userNotFoundAction.createResponse(ivrRequest, request, response);
 
         patient = allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode);
-
-        String isSymptomsReporting = ivrRequest.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM);
-        String callType = "true".equals(isSymptomsReporting) ? CallLog.CALL_TYPE_SYMPTOM_REPORTING : CallLog.CALL_TYPE_PILL_REMINDER;
-
 
         if (!isAuthenticatedUser(passcode, patient)) {
             return retryAction.createResponse(ivrRequest, request, response);
@@ -105,4 +104,13 @@ public class TamaAuthenticateAction extends AuthenticateAction {
         return StringUtils.isNotBlank(request.getParameter(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM));
     }
 
+    @Override
+    protected Map<String, String> callEventData(IVRRequest ivrRequest) {
+        Map<String, String> eventData = new HashMap<String, String>();
+        String isSymptomsReporting = ivrRequest.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM);
+        String callType = "true".equals(isSymptomsReporting) ? CallLog.CALL_TYPE_SYMPTOM_REPORTING : CallLog.CALL_TYPE_PILL_REMINDER;
+        eventData.put(CallEventConstants.CALL_TYPE, callType);
+        eventData.put(CallEventConstants.DTMF_DATA, "Authenticated");
+        return eventData;
+    }
 }

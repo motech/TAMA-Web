@@ -26,9 +26,9 @@ public class CallEventView {
 
         Response response = KooKooResponseParser.fromXml(responseXML);
         if (callEventName.equalsIgnoreCase("newcall")) {
-            return response.audioPlayed() + " was played.";
+            return response.responsePlayed() + " was played.";
         } else if (callEventName.equalsIgnoreCase("gotdtmf")) {
-            return callEventData.get(CallEventConstants.DTMF_DATA) + " was pressed and " + response.audioPlayed() + " was played.";
+            return callEventData.get(CallEventConstants.DTMF_DATA) + " was pressed and " + response.responsePlayed() + " was played.";
         } else {
             return "";
         }

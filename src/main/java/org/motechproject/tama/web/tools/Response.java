@@ -18,13 +18,9 @@ public class Response {
         return collectdtmf != null;
     }
 
-    public boolean audioPlayed(String... name) {
-        return collectDtmf() && collectdtmf.hasAudio(name);
-    }
-
-    public String audioPlayed() {
+    public String responsePlayed() {
         if (collectDtmf()) {
-            return collectdtmf.playAudio();
+            return collectdtmf.responsePlayed();
         }
         return "";
     }
