@@ -41,4 +41,8 @@ public class CallLogService {
     public List<CallLog> getAll() {
         return allCallLogs.getAll();
     }
+
+    public List<CallLog> getByClinicId(String clinicId) {
+        return allCallLogs.findByClinic(clinicId);
+    }
 }

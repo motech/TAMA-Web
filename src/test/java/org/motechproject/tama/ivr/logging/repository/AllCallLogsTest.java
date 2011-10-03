@@ -23,7 +23,7 @@ public class AllCallLogsTest extends SpringIntegrationTest {
         callLog.setClinicId("clinicId");
         allCallLogs.add(callLog);
 
-        assertEquals("clinicId", allCallLogs.findByClinic("clinicId").getClinicId());
+        assertEquals("clinicId", allCallLogs.findByClinic("clinicId").get(0).getClinicId());
         markForDeletion(callLog);
     }
 }

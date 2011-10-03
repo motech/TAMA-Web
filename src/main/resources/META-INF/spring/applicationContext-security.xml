@@ -14,6 +14,7 @@
         <logout logout-url="/resources/j_spring_security_logout" logout-success-url="/login" invalidate-session="true" />
 
         <intercept-url pattern="/changePassword/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/callsummary/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/passwordReset/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/ivrlanguages/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/genders/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>

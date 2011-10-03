@@ -22,10 +22,9 @@ public class AllCallLogs extends CouchDbRepositorySupport<CallLog> {
     }
 
     @View(name = "find_by_clinic_id", map = "function(doc) {if (doc.documentType =='CallLog' && doc.clinicId) {emit(doc.clinicId, doc._id);}}")
-    public CallLog findByClinic(String clinicId) {
+    public List<CallLog> findByClinic(String clinicId) {
         ViewQuery byClinicId = createQuery("find_by_clinic_id").key(clinicId).includeDocs(true);
-        List<CallLog> callLogs = db.queryView(byClinicId, CallLog.class);
-        return singleResult(callLogs);
+        return db.queryView(byClinicId, CallLog.class);
     }
 
     private CallLog singleResult(List<CallLog> callLogs) {
