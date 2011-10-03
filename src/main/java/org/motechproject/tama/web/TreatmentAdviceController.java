@@ -2,10 +2,7 @@ package org.motechproject.tama.web;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.domain.MealAdviceType;
-import org.motechproject.tama.domain.Regimen;
-import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.service.TamaSchedulerService;
@@ -111,7 +108,14 @@ public class TreatmentAdviceController extends BaseController {
     public void create(TreatmentAdvice treatmentAdvice, Model uiModel) {
         uiModel.asMap().clear();
         allTreatmentAdvices.add(treatmentAdvice);
-        schedulerService.scheduleJobsForTreatmentAdviceCalls(treatmentAdvice);
+        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
+        PatientPreferences patientPreferences = patient.getPatientPreferences();
+        if (patientPreferences.getCallPreference().equals(CallPreference.FourDayRecall)) {
+            schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+        } else {
+            pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
+            schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        }
     }
 
     public void show(String id, Model uiModel) {

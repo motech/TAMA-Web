@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.PatientBuilder;
@@ -62,14 +63,15 @@ public class TreatmentAdviceControllerTest {
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
     private static String PATIENT_ID = "PATIENT_ID";
+    private Patient patient;
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         initMocks(this);
 
         treatmentAdvice = getTreatmentAdvice();
 
-        Patient patient = new Patient();
+        patient = new Patient();
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
@@ -77,9 +79,23 @@ public class TreatmentAdviceControllerTest {
     }
 
     @Test
-    public void shouldScheduleCallsForTreatmentAdvice() {
+    public void shouldScheduleCallsForPatientsOnDailyPillReminder() {
         controller.create(treatmentAdvice, uiModel);
-        verify(schedulerService).scheduleJobsForTreatmentAdviceCalls(treatmentAdvice);
+        verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
+        verify(schedulerService).scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+    }
+
+    @Test
+    public void shouldScheduleCallsForPatientsOnWeeklyAdherence() {
+        DayOfWeek dayOfWeek = DayOfWeek.Friday;
+        TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
+
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setBestCallTime(bestCallTime);
+        patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
+        
+        controller.create(treatmentAdvice, uiModel);
+        verify(schedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
 
     @Test
@@ -179,7 +195,7 @@ public class TreatmentAdviceControllerTest {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
         String regimenId = "existingTreatmentRegimenId";
-		TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
+        TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
 
         when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, uiModel, request);
@@ -193,16 +209,16 @@ public class TreatmentAdviceControllerTest {
         verify(schedulerService).scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
     }
 
-	private TreatmentAdvice getTreatmentAdvice() {
-		TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
-		treatmentAdvice.setId("treatmentAdviceId");
+    private TreatmentAdvice getTreatmentAdvice() {
+        TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
+        treatmentAdvice.setId("treatmentAdviceId");
         treatmentAdvice.setPatientId(PATIENT_ID);
         ArrayList<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
         DrugDosage drugDosage = new DrugDosage();
         treatmentAdvice.setDrugCompositionGroupId("");
         drugDosage.setStartDate(DateUtil.newDate(2012, 12, 12));
-		drugDosages.add(drugDosage);
-		treatmentAdvice.setDrugDosages(drugDosages);
-		return treatmentAdvice;
-	}
+        drugDosages.add(drugDosage);
+        treatmentAdvice.setDrugDosages(drugDosages);
+        return treatmentAdvice;
+    }
 }

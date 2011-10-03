@@ -7,7 +7,8 @@ public class TAMAConstants {
     public static final String MOBILE_NUMBER_REGEX = "^\\d{10}$";
     public static final String PASSCODE_REGEX = "^\\d{4,10}$";
     public static final String RETRY_INTERVAL = "retry.interval.mins";
-    public static final String MAX_OUTBOUND_RETRIES = "max.outbound.retries";
+    public static final String RETRIES_PER_DAY = "retries.per.day";
+    public static final String FOUR_DAY_RECALL_DAYS_TO_RETRY = "four.day.recall.days.to.retry";
     public static final String PILL_WINDOW = "pill.window.hrs";
     public static final String REMINDER_LAG = "reminder.lag.mins";
     public static final String DOSAGE_INTERVAL = "dosage.interval";

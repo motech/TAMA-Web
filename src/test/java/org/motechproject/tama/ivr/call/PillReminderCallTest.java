@@ -2,7 +2,6 @@ package org.motechproject.tama.ivr.call;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.eventtracking.service.EventService;
@@ -11,8 +10,6 @@ import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.repository.AllPatients;
-
-import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -72,19 +69,4 @@ public class PillReminderCallTest {
         verify(callService).initiateCall(any(CallRequest.class));
     }
 
-    public class IntermediateCallParametersMatcher extends ArgumentMatcher<Map> {
-        @Override
-        public boolean matches(Object o) {
-            Map map = (Map) o;
-            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID);
-        }
-    }
-
-    public class LastCallParametersMatcher extends ArgumentMatcher<Map> {
-        @Override
-        public boolean matches(Object o) {
-            Map map = (Map) o;
-            return map.get(PillReminderCall.DOSAGE_ID).equals(DOSAGE_ID);
-        }
-    }
 }
