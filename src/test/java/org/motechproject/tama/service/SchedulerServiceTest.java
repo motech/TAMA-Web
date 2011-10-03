@@ -8,7 +8,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -28,7 +27,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class SchedulerServiceTest {
-    private SchedulerService schedulerService;
+    private TamaSchedulerService schedulerService;
     private TreatmentAdvice treatmentAdvice;
     private LocalDate treatmentAdviceStartDate = DateUtil.newDate(2012, 12, 12);
     private LocalDate treatmentAdviceEndDate = DateUtil.newDate(2012, 12, 24);
@@ -40,7 +39,6 @@ public class SchedulerServiceTest {
     private PillReminderService pillReminderService;
     @Mock
     private AllPatients allPatients;
-
     @Mock
     private PillRegimenRequestMapper pillRegimenRequestMapper;
     @Mock
@@ -56,7 +54,7 @@ public class SchedulerServiceTest {
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        schedulerService = new SchedulerService(motechSchedulerService, pillReminderService, allPatients, pillRegimenRequestMapper, properties);
+        schedulerService = new TamaSchedulerService(motechSchedulerService, pillReminderService, allPatients, pillRegimenRequestMapper, properties);
     }
 
     @Test
@@ -85,11 +83,6 @@ public class SchedulerServiceTest {
         assertEquals("0 30 10 ? * 6", cronSchedulableJobArgumentCaptor.getValue().getCronExpression());
         assertEquals(treatmentAdviceStartDate.plusDays(4).toDate(), cronSchedulableJobArgumentCaptor.getValue().getStartTime());
         assertEquals(treatmentAdviceEndDate.toDate(), cronSchedulableJobArgumentCaptor.getValue().getEndTime());
-
-        ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
-        verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
-        assertEquals(15, repeatingSchedulableJobArgumentCaptor.getValue().getRepeatInterval());
-        assertEquals(new Integer(3), repeatingSchedulableJobArgumentCaptor.getValue().getRepeatCount());
     }
 
     @Test
