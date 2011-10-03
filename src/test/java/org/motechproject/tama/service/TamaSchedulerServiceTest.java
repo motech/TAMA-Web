@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-public class SchedulerServiceTest {
+public class TamaSchedulerServiceTest {
     private TamaSchedulerService schedulerService;
     private TreatmentAdvice treatmentAdvice;
     private LocalDate treatmentAdviceStartDate = DateUtil.newDate(2012, 12, 12);
@@ -83,6 +84,23 @@ public class SchedulerServiceTest {
         assertEquals("0 30 10 ? * 6", cronSchedulableJobArgumentCaptor.getValue().getCronExpression());
         assertEquals(treatmentAdviceStartDate.plusDays(4).toDate(), cronSchedulableJobArgumentCaptor.getValue().getStartTime());
         assertEquals(treatmentAdviceEndDate.toDate(), cronSchedulableJobArgumentCaptor.getValue().getEndTime());
+    }
+
+    @Test
+    public void shouldScheduleRepeatingJobsForFourDayRecall() {
+        when(properties.getProperty(TAMAConstants.MAX_OUTBOUND_RETRIES)).thenReturn("5");
+        when(properties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("15");
+
+        LocalDate today = DateUtil.today();
+        LocalDate tenDaysLater = today.plusDays(10);
+        schedulerService.scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, today, tenDaysLater);
+
+        ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
+        verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
+        assertEquals(new Integer(5), repeatingSchedulableJobArgumentCaptor.getValue().getRepeatCount());
+        assertEquals(15, repeatingSchedulableJobArgumentCaptor.getValue().getRepeatInterval());
+        assertEquals(today.toDate(), repeatingSchedulableJobArgumentCaptor.getValue().getStartTime());
+        assertEquals(tenDaysLater.toDate(), repeatingSchedulableJobArgumentCaptor.getValue().getEndTime());
     }
 
     @Test

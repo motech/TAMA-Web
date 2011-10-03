@@ -1,6 +1,14 @@
 package org.motechproject.tama.listener;
 
-/*@Component
+import org.joda.time.LocalDate;
+import org.motechproject.model.MotechEvent;
+import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.service.TamaSchedulerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class FourDayRecallListener {
     public static final String PATIENT_ID_KEY = "patient_id";
     public static final String START_DATE = "start_date";
@@ -23,4 +31,4 @@ public class FourDayRecallListener {
         LocalDate endDate = (LocalDate) motechEvent.getParameters().get(END_DATE);
         schedulerService.scheduleRepeatingJobsForFourDayRecall(patientId, startDate, endDate);
     }
-}*/
+}

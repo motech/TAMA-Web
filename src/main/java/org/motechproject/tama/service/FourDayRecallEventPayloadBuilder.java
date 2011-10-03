@@ -2,6 +2,7 @@ package org.motechproject.tama.service;
 
 import org.joda.time.LocalDate;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.tama.listener.FourDayRecallListener;
 
 import java.util.HashMap;
 
@@ -14,17 +15,17 @@ public class FourDayRecallEventPayloadBuilder {
     }
 
     public FourDayRecallEventPayloadBuilder withPatientId(String patientId) {
-//        params.put(FourDayRecallListener.PATIENT_ID_KEY, patientId);
+        params.put(FourDayRecallListener.PATIENT_ID_KEY, patientId);
         return this;
     }
 
     public FourDayRecallEventPayloadBuilder withStartDate(LocalDate startDate) {
-//        params.put(FourDayRecallListener.START_DATE, startDate);
+        params.put(FourDayRecallListener.START_DATE, startDate);
         return this;
     }
 
     public FourDayRecallEventPayloadBuilder withEndDate(LocalDate startDate) {
-//        params.put(FourDayRecallListener.END_DATE, startDate);
+        params.put(FourDayRecallListener.END_DATE, startDate);
         return this;
     }
 
