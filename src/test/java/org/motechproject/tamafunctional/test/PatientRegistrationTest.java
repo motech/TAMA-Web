@@ -37,9 +37,6 @@ public class PatientRegistrationTest extends BaseTest {
         Assert.assertEquals(TAMAConstants.NNRTIRash.DRD.getValue(), showPatientPage.getRashText());
 
         Assert.assertEquals(patient.patientPreferences().passcode(), showPatientPage.getPasscode());
-        Assert.assertEquals(patient.patientPreferences().dayOfWeeklyCall(), showPatientPage.getDayOfWeeklyCall());
-        String bestCallTimeAsString = String.format("%s %s", patient.patientPreferences().bestCallTime(), patient.patientPreferences().timeMeridiem());
-        Assert.assertEquals(bestCallTimeAsString, showPatientPage.getBestCallTime());
         showPatientPage.logout();
     }
 

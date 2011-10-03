@@ -31,8 +31,5 @@ public class CreatePatientPreferencesSection {
     public void enterDetails(TestPatient patient) {
         passcode.clear();
         passcode.sendKeys(String.valueOf(patient.patientPreferences().passcode()));
-        weeklyReminderCall.click();
-        dayOfWeeklyCall.sendKeys(patient.patientPreferences().dayOfWeeklyCall());
-        bestCallTime.sendKeys(patient.patientPreferences().bestCallTime());
     }
 }
