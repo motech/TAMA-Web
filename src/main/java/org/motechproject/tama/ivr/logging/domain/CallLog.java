@@ -1,6 +1,8 @@
 package org.motechproject.tama.ivr.logging.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
+import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.server.service.ivr.CallEvent;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.tama.domain.CouchEntity;
@@ -14,7 +16,6 @@ public class CallLog extends CouchEntity {
     public static final String CALL_TYPE_PILL_REMINDER = "Pill Reminder";
 
     private String patientDocumentId;
-    private String callType;
 
     private DateTime startTime;
     private DateTime endTime;
@@ -23,6 +24,8 @@ public class CallLog extends CouchEntity {
     private String callId;
     private IVRRequest.CallDirection callDirection;
     private List<CallEvent> callEvents = new ArrayList<CallEvent>();
+
+    private String clinicId;
 
     public CallLog() {
     }
@@ -39,12 +42,14 @@ public class CallLog extends CouchEntity {
         this.patientDocumentId = patientDocumentId;
     }
 
+    @JsonIgnore
     public String getCallType() {
-        return callType;
-    }
-
-    public void setCallType(String callType) {
-        this.callType = callType;
+        for(CallEvent callEvent : callEvents){
+            if(callEvent.getData().get(CallEventConstants.AUTHENTICATION_EVENT)!=null){
+                return callEvent.getData().get(CallEventConstants.CALL_TYPE);
+            }
+        }
+        return "";
     }
 
     public DateTime getStartTime() {
@@ -88,11 +93,18 @@ public class CallLog extends CouchEntity {
     }
 
     public List<CallEvent> getCallEvents() {
-        return callEvents;
+        return this.callEvents;
     }
 
     public void setCallEvents(List<CallEvent> callEvents) {
         this.callEvents = callEvents;
     }
 
+    public String getClinicId() {
+        return clinicId;
+    }
+
+    public void setClinicId(String clinicId) {
+        this.clinicId = clinicId;
+    }
 }

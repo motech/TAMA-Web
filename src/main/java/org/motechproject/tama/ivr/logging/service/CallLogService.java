@@ -5,6 +5,7 @@ import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.tama.ivr.logging.mapper.CallLogMapper;
 import org.motechproject.tama.ivr.logging.repository.AllCallLogs;
+import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,17 +20,22 @@ public class CallLogService {
 
     private final CallLogMapper callDetailRecordMapper;
 
+    private final AllPatients allPatients;
+
     @Autowired
     public CallLogService(AllCallLogs allCallDetails, KookooCallDetailRecordsService kookooCallDetailRecordsService,
-                          CallLogMapper callDetailRecordMapper) {
+                          CallLogMapper callDetailRecordMapper, AllPatients allPatients) {
         this.allCallLogs = allCallDetails;
         this.kookooCallDetailRecordsService = kookooCallDetailRecordsService;
         this.callDetailRecordMapper = callDetailRecordMapper;
+        this.allPatients = allPatients;
     }
 
     public void log(String callId, String patientDocumentId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callId);
-        allCallLogs.add(callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord));
+        CallLog callLog = callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord);
+        callLog.setClinicId(allPatients.get(patientDocumentId).getClinic_id());
+        allCallLogs.add(callLog);
     }
 
     public List<CallLog> getAll() {

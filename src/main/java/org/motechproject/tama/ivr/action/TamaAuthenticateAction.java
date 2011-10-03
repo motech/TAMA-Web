@@ -105,12 +105,13 @@ public class TamaAuthenticateAction extends AuthenticateAction {
     }
 
     @Override
-    protected Map<String, String> callEventData(IVRRequest ivrRequest) {
+    protected Map<String, String> callEventData(IVRRequest ivrRequest, HttpServletRequest request) {
         Map<String, String> eventData = new HashMap<String, String>();
-        String isSymptomsReporting = ivrRequest.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM);
+        String isSymptomsReporting = request.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM);
         String callType = "true".equals(isSymptomsReporting) ? CallLog.CALL_TYPE_SYMPTOM_REPORTING : CallLog.CALL_TYPE_PILL_REMINDER;
+        eventData.put(CallEventConstants.AUTHENTICATION_EVENT, "true");
         eventData.put(CallEventConstants.CALL_TYPE, callType);
-        eventData.put(CallEventConstants.DTMF_DATA, "Authenticated");
+        eventData.put(CallEventConstants.DTMF_DATA, "-****-");
         return eventData;
     }
 }

@@ -7,9 +7,11 @@ import org.motechproject.server.service.ivr.CallEvent;
 import org.motechproject.tama.web.view.CallEventView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class CallEventViewTest {
 
@@ -23,23 +25,31 @@ public class CallEventViewTest {
     }
 
     @Test
-    public void shouldDisplayAudioPlayedForNewCallEventAction() {
-        callEventView = new CallEventView(new CallEvent("NewCall", data));
-        data.put(CallEventConstants.RESPONSE_XML, "<response sid=\"123\"><collectdtmf><playaudio>signature_music.wav</playaudio></collectdtmf></response>");
-
-        String content = callEventView.getContent();
-
-        assertEquals("signature_music.wav was played.", content);
+    public void hasInputWhenEventTypeIsGotDtmf() {
+        callEventView = new CallEventView(new CallEvent("gotDtmf", data));
+        assertTrue(callEventView.isUserInputAvailable());
     }
 
     @Test
-    public void shouldDisplayKeyPressedAndAudioPlayedForGotDTMFAction() {
-        callEventView = new CallEventView(new CallEvent("gotdtmf", data));
+    public void shouldReturnInputDtmf_IfDtmfDataAvilable() {
         data.put(CallEventConstants.DTMF_DATA, "1");
-        data.put(CallEventConstants.RESPONSE_XML, "<response sid=\"123\"><collectdtmf><playaudio>drpujari's_clinic.wav</playaudio></collectdtmf></response>");
+        callEventView = new CallEventView(new CallEvent("gotDtmf", data));
+        assertEquals("1", callEventView.getUserInput());
+    }
 
-        String content = callEventView.getContent();
+    @Test
+    public void shouldReturnEmpty_WhenEventTypeNotDtmf() {
+        callEventView = new CallEventView(new CallEvent("NewCall", data));
+        assertEquals("", callEventView.getUserInput());
+    }
 
-        assertEquals("1 was pressed and drpujari's_clinic.wav was played.", content);
+    @Test
+    public void shouldReturnAListOfAllResponsesPlayed() {
+        callEventView = new CallEventView(new CallEvent("NewCall", data));
+        data.put(CallEventConstants.RESPONSE_XML, "<response sid=\"123\"><collectdtmf><playaudio>signature_music.wav</playaudio></collectdtmf></response>");
+
+        List<String> content = callEventView.getResponses();
+
+        assertEquals("signature_music.wav", content.get(0));
     }
 }

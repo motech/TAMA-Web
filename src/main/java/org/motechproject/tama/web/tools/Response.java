@@ -3,6 +3,9 @@ package org.motechproject.tama.web.tools;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
+import java.util.Collections;
+import java.util.List;
+
 @XStreamAlias("response")
 public class Response {
     @XStreamAsAttribute
@@ -18,11 +21,11 @@ public class Response {
         return collectdtmf != null;
     }
 
-    public String responsePlayed() {
+    public List<String> responsePlayed() {
         if (collectDtmf()) {
             return collectdtmf.responsePlayed();
         }
-        return "";
+        return Collections.emptyList();
     }
 }
 
