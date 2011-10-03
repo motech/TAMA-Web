@@ -6,6 +6,7 @@ import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.server.service.ivr.CallEvent;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.tama.domain.CouchEntity;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class CallLog extends CouchEntity {
     }
 
     public DateTime getStartTime() {
-        return startTime;
+        return DateUtil.setTimeZone(startTime);
     }
 
     public void setStartTime(DateTime startTime) {
@@ -61,7 +62,7 @@ public class CallLog extends CouchEntity {
     }
 
     public DateTime getEndTime() {
-        return endTime;
+        return DateUtil.setTimeZone(endTime);
     }
 
     public void setEndTime(DateTime endTime) {

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,6 +22,8 @@ public class AllCallLogsTest extends SpringIntegrationTest {
     public void shouldFindCallLogByClinicId() {
         CallLog callLog = new CallLog("patientDocId");
         callLog.setClinicId("clinicId");
+        callLog.setStartTime(DateUtil.now());
+        callLog.setEndTime(DateUtil.now().plusMinutes(5));
         allCallLogs.add(callLog);
 
         assertEquals("clinicId", allCallLogs.findByClinic("clinicId").get(0).getClinicId());

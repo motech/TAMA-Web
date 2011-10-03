@@ -7,6 +7,8 @@ import org.motechproject.server.service.ivr.CallDetailRecord;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.util.DateUtil;
 
+import java.util.Date;
+
 import static junit.framework.Assert.assertEquals;
 
 public class CallLogMapperTest {
@@ -22,7 +24,9 @@ public class CallLogMapperTest {
     public void shouldConvertKookooCallDetailRecordToCallLog() {
         CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("phoneNumber");
         KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord);
+        callDetailRecord.setEndDate(new Date());
         kookooCallDetailRecord.setId("callId");
+
 
         CallLog callLog = callLogMapper.toCallLog("patientDocId", kookooCallDetailRecord);
 
