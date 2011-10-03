@@ -1,5 +1,14 @@
 package org.motechproject.tama.web.command;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.Map;
+
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +22,7 @@ import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
-
-import java.util.Map;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import org.motechproject.util.DateUtil;
 
 public class UpdateAdherenceCommandTest {
 
@@ -65,7 +69,7 @@ public class UpdateAdherenceCommandTest {
 
     @Test
     public void shouldUpdateAnAdherenceLogIfThereIsAlreadyOneForTheCurrentDate() {
-        log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN);
+        log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN, DateUtil.today());
 
         when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(log);
 
@@ -81,7 +85,7 @@ public class UpdateAdherenceCommandTest {
         userInput = "3";
         when(req.getInput()).thenReturn(userInput);
 
-        log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN);
+        log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN, DateUtil.today());
 
         when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(log);
 

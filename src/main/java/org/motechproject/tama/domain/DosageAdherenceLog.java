@@ -22,11 +22,11 @@ public class DosageAdherenceLog extends CouchEntity {
     public DosageAdherenceLog() {
     }
 
-    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, DosageStatus dosageStatus) {
+    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, DosageStatus dosageStatus, LocalDate dosageDate) {
         this.patientId = patientId;
         this.regimenId = regimenId;
         this.dosageId = dosageId;
-        this.dosageDate = new LocalDate(DateTimeZone.UTC);
+        this.dosageDate = dosageDate;
         this.dosageStatus = dosageStatus;
     }
 

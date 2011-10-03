@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.LocalDate;
 import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
@@ -26,23 +27,27 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
         DosageStatus newStatus = DosageStatus.from(ivrContext.ivrRequest().getInput());
         String dosageId = getDosageId(ivrContext);
 
-        DosageAdherenceLog todayLog = logs.findByDosageIdAndDate(dosageId, DateUtil.today());
+        DosageAdherenceLog log = logs.findByDosageIdAndDate(dosageId, getDosageDate(ivrContext));
         DosageAdherenceLog newLog = new DosageAdherenceLog(TamaSessionUtil.getPatientId(ivrContext),
         		TamaSessionUtil.getRegimenIdFrom(ivrContext),
                 dosageId,
-                newStatus);
+                newStatus, getDosageDate(ivrContext));
 
-        if (todayLog == null) {
+        if (log == null) {
             logs.add(newLog);
-        } else if(!todayLog.equals(newLog)) {
-            todayLog.setDosageStatus(newStatus);
-            logs.update(todayLog);
+        } else if(!log.equals(newLog)) {
+            log.setDosageStatus(newStatus);
+            logs.update(log);
         }
 
         return new String[0];
     }
 
-    protected String getDosageId(IVRContext ivrContext) {
+    protected LocalDate getDosageDate(IVRContext ivrContext) {
+    	return DateUtil.today();
+	}
+
+	protected String getDosageId(IVRContext ivrContext) {
         return TamaSessionUtil.getDosageIdFrom(ivrContext);
     }
 }

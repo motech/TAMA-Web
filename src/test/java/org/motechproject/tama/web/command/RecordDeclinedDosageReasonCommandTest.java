@@ -21,6 +21,7 @@ import org.motechproject.tama.domain.DosageStatus;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
+import org.motechproject.util.DateUtil;
 
 public class RecordDeclinedDosageReasonCommandTest {
     private String pillRegimenId;
@@ -56,7 +57,7 @@ public class RecordDeclinedDosageReasonCommandTest {
 
      @Test
      public void shouldUpdateTheDeclinedDosageAdherenceLogWithReason() {
-         log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN);
+         log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN, DateUtil.today());
          when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(log);
 
          RecordDeclinedDosageReasonCommand command = new RecordDeclinedDosageReasonCommand(logs);

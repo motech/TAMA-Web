@@ -16,6 +16,7 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.TamaSessionUtil;
 import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
+import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class UpdatePreviousPillAdherenceCommandTest {
 
     @Test
     public void shouldUpdateAnAdherenceLogIfThereIsAlreadyOneForTheCurrentDate() {
-        DosageAdherenceLog log = new DosageAdherenceLog(PATIENT_ID, REGIMEN_ID, PREVIOUS_DOSAGE_ID, DosageStatus.NOT_TAKEN);
+        DosageAdherenceLog log = new DosageAdherenceLog(PATIENT_ID, REGIMEN_ID, PREVIOUS_DOSAGE_ID, DosageStatus.NOT_TAKEN, DateUtil.today());
 
         when(ivrRequest.getInput()).thenReturn("1");
         when(logs.findByDosageIdAndDate(eq(PREVIOUS_DOSAGE_ID), any(LocalDate.class))).thenReturn(log);
@@ -86,7 +87,7 @@ public class UpdatePreviousPillAdherenceCommandTest {
 
     @Test
     public void shouldNotUpdateOrCreateIfThereAreNotAnyChanges() {
-        DosageAdherenceLog log = new DosageAdherenceLog(PATIENT_ID, REGIMEN_ID, PREVIOUS_DOSAGE_ID, DosageStatus.NOT_TAKEN);
+        DosageAdherenceLog log = new DosageAdherenceLog(PATIENT_ID, REGIMEN_ID, PREVIOUS_DOSAGE_ID, DosageStatus.NOT_TAKEN, DateUtil.today());
 
         when(ivrRequest.getInput()).thenReturn("3");
         when(logs.findByDosageIdAndDate(eq(PREVIOUS_DOSAGE_ID), any(LocalDate.class))).thenReturn(log);
