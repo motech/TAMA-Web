@@ -30,6 +30,7 @@ public class PatientPreferences extends BaseEntity {
         return this.callPreference;
     }
 
+    @JsonIgnore
     public String getDisplayCallPreference() {
         return this.callPreference == CallPreference.DailyPillReminder? "Daily" : "Weekly";
     }
