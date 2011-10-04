@@ -4,7 +4,9 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.URLTransition;
 import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.command.*;
@@ -37,7 +39,11 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     private MessageFromPreviousDosage messageFromPreviousDosage;
     @Autowired
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
-
+    @Autowired
+    private SymptomReportingTransitionsUtility symptomReportingTransitionsUtility;
+    @Autowired
+    private OutboxTransitionsUtility outboxTransitionsUtility;
+    
     protected Node createRootNode(IVRContext ivrContext) {
         return new Node()
                 .setPrompts(
@@ -54,7 +60,9 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
                                                 )
                                                 .setTransitions(jumpToPreviousDosageTree(ivrContext)))
-                        }
+                        },
+                        {"2", symptomReportingTransitionsUtility.newInstance() },
+                        {"3", outboxTransitionsUtility.newInstance() }
                 });
     }
 

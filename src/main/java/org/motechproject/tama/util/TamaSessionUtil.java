@@ -47,13 +47,4 @@ public class TamaSessionUtil {
     public static PillRegimenResponse getPillRegimen(IVRSession ivrSession) {
         return (PillRegimenResponse) ivrSession.get(TamaSessionUtil.TamaSessionAttribute.REGIMEN_FOR_PATIENT);
     }
-
-    public static boolean isSymptomsReportingCall(IVRContext ivrContext) {
-        return "true".equals(ivrContext.ivrSession().get(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM));
-    }
-
-    public static boolean isSymptomsReportingCall(IVRSession ivrSession) {
-        return "true".equals(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM));
-    }
-
 }

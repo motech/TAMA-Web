@@ -43,7 +43,9 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
     @Autowired
     private MessageForMissedPillFeedbackCommand messageForMissedPillFeedbackCommand;
-
+    @Autowired
+    private SymptomReportingTransitionsUtility symptomReportingTransitionsUtility;
+    
     protected Node createRootNode(IVRContext ivrContext) {
         return new Node()
                 .setPrompts(
@@ -78,6 +80,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                         new AudioPrompt().setCommand(messageForMissedPillFeedbackCommand),
                                                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU))
                                                 .setTransitions(new Object[][]{
+                                                		{"1", symptomReportingTransitionsUtility.newInstance() },
                                                         {"2", new Transition()
                                                                 .setDestinationNode(new Node()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)

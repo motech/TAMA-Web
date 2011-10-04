@@ -5,7 +5,6 @@ import org.motechproject.ivr.kookoo.action.TreeChooser;
 import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -24,21 +23,14 @@ public class TamaTreeChooser implements TreeChooser {
     @Autowired
     private CurrentDosageConfirmTree currentDosageConfirmTree;
 
-    @Autowired
-    private Regimen1To6Tree regimen1To6Tree;
-
     public Tree getTree(IVRContext ivrContext) {
         TamaDecisionTree chosenTree;
         if (isIncomingCall(ivrContext)) {
-            if (TamaSessionUtil.isSymptomsReportingCall(ivrContext)) {
-                chosenTree = regimen1To6Tree;
+            PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+            if (pillRegimenSnapshot.isCurrentDosageTaken()) {
+                chosenTree = currentDosageTakenTree;
             } else {
-                PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-                if (pillRegimenSnapshot.isCurrentDosageTaken()) {
-                    chosenTree = currentDosageTakenTree;
-                } else {
-                    chosenTree = currentDosageConfirmTree;
-                }
+                chosenTree = currentDosageConfirmTree;
             }
         } else {
             chosenTree = currentDosageReminderTree;
