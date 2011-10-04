@@ -44,28 +44,40 @@ public class PillRegimenRequestMapper {
     }
 
     public DailyPillRegimenRequest map(final TreatmentAdvice treatmentAdvice) {
-        final Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest = new Converter<DrugDosage, MedicineRequest>() {
-            @Override
-            public MedicineRequest convert(DrugDosage drugDosage) {
-                return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
-                        drugDosage.getStartDate(),
-                        drugDosage.getEndDate());
-            }
-        };
-        final Converter<String, DosageRequest> dosageRequestFromSchedule = new Converter<String, DosageRequest>() {
-            @Override
-            public DosageRequest convert(String dosageTime) {
-                TimeUtil timeUtil = new TimeUtil(dosageTime).withReminderLagTime(reminderLag);
-                return new DosageRequest(timeUtil.getHours(),
-                        timeUtil.getMinutes(),
-                        Lambda.convert(treatmentAdvice.groupDosagesByTime().get(dosageTime),
-                                drugDosageToMedicineRequest));
-            }
-        };
+        final Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest = new DrugDosageMedicineRequestConverter();
+        final Converter<String, DosageRequest> dosageRequestFromSchedule = new DosageTimeDosageRequestConverter(treatmentAdvice, drugDosageToMedicineRequest);
         final Set<String> dosageSchedule = treatmentAdvice.groupDosagesByTime().keySet();
         return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(),
                 pillWindow,
                 retryInterval,
                 convert(dosageSchedule, dosageRequestFromSchedule));
+    }
+
+    private class DrugDosageMedicineRequestConverter implements Converter<DrugDosage, MedicineRequest> {
+        @Override
+        public MedicineRequest convert(DrugDosage drugDosage) {
+            return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
+                    drugDosage.getStartDate(),
+                    drugDosage.getEndDate());
+        }
+    }
+
+    private class DosageTimeDosageRequestConverter implements Converter<String, DosageRequest> {
+        private final TreatmentAdvice treatmentAdvice;
+        private final Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest;
+
+        public DosageTimeDosageRequestConverter(TreatmentAdvice treatmentAdvice, Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest) {
+            this.treatmentAdvice = treatmentAdvice;
+            this.drugDosageToMedicineRequest = drugDosageToMedicineRequest;
+        }
+
+        @Override
+        public DosageRequest convert(String dosageTime) {
+            TimeUtil timeUtil = new TimeUtil(dosageTime).withReminderLagTime(reminderLag);
+            return new DosageRequest(timeUtil.getHours(),
+                    timeUtil.getMinutes(),
+                    Lambda.convert(treatmentAdvice.groupDosagesByTime().get(dosageTime),
+                            drugDosageToMedicineRequest));
+        }
     }
 }
