@@ -22,10 +22,4 @@ public class TamaSessionUtilTest {
         initMocks(this);
         ivrSession = new IVRSession(session);
     }
-
-    @Test
-    public void shouldReturnCallType() {
-        when(session.getAttribute(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
-        Assert.assertTrue(TamaSessionUtil.isSymptomsReportingCall(ivrSession));
-    }
 }

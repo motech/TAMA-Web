@@ -85,6 +85,7 @@ public class TamaIVRMessage implements IVRMessage {
 	
 	public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
 
+	public static final String MENU_010_05_01_MAINMENU4 = "010_05_01_MainMenu4";
     /* -------- Adherence Feedback ----------- */
 
     /*----------Outbox -------------------------*/

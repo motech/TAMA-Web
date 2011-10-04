@@ -1,5 +1,13 @@
 package org.motechproject.tama.ivr.decisiontree;
 
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,14 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationTestContext.xml")
@@ -78,7 +78,6 @@ public class TamaTreeChooserTest {
         List<DosageResponse> dosages = Arrays.asList(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, DateUtil.today().minusDays(1), null));
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
-
         DosageResponse dosage = dosages.get(0);
         when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()));
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Outbound);
@@ -106,14 +105,6 @@ public class TamaTreeChooserTest {
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
 
         assertEquals(currentDosageConfirmTree.getTree(ivrContext), treeChooser.getTree(ivrContext));
-    }
-
-    @Test
-    public void shouldGetRegimen6TreeIfKookooCallsWithSymptomsReportingCallType() {
-        when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
-        when(ivrSession.get(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
-        
-        assertTrue(regimen1To6Tree.getTree(ivrContext) == treeChooser.getTree(ivrContext));
     }
 
     @Test

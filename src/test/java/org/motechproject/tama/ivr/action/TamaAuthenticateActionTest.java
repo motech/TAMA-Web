@@ -67,7 +67,7 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         when(request.getParameter("symptoms_reporting")).thenReturn("true");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(IVRCallAttribute.CALLER_ID)).thenReturn(MOBILE_NO);
-        authenticateAction = new TamaAuthenticateAction(pillReminderService, allPatients, allTreatmentAdvices, retryAction, userNotFoundAction, null, null, null);
+        authenticateAction = new TamaAuthenticateAction(pillReminderService, allPatients, retryAction, userNotFoundAction, null, null);
     }
 
     @Test
@@ -113,7 +113,6 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         verify(session).setAttribute(TamaSessionAttribute.PATIENT_DOC_ID, PATIENT_ID);
         verify(session).setAttribute(TamaSessionAttribute.REGIMEN_FOR_PATIENT, pillRegimenResponse);
         verify(session).setAttribute(IVRCallAttribute.PREFERRED_LANGUAGE_CODE, "en");
-        verify(session).setAttribute(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM, "true");
         verify(tamaIvrAction).handle(any(IVRRequest.class), any(IVRSession.class));
     }
 

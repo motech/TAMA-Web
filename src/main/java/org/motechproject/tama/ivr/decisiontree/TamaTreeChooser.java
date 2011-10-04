@@ -33,15 +33,11 @@ public class TamaTreeChooser implements TreeChooser {
     public Tree getTree(IVRContext ivrContext) {
         TamaDecisionTree chosenTree;
         if (isIncomingCall(ivrContext)) {
-            if (TamaSessionUtil.isSymptomsReportingCall(ivrContext)) {
-                chosenTree = regimen1To6Tree;
+            PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+            if (pillRegimenSnapshot.isCurrentDosageTaken()) {
+                chosenTree = currentDosageTakenTree;
             } else {
-                PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-                if (pillRegimenSnapshot.isCurrentDosageTaken()) {
-                    chosenTree = currentDosageTakenTree;
-                } else {
-                    chosenTree = currentDosageConfirmTree;
-                }
+                chosenTree = currentDosageConfirmTree;
             }
         } else {
             if (TamaSessionUtil.patientOnFourDayRecall(ivrContext.ivrSession())) chosenTree = fourDayRecallTree;
