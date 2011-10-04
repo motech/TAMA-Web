@@ -5,8 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static junit.framework.Assert.*;
 
 public class TreatmentAdviceTest {
 
@@ -94,6 +97,31 @@ public class TreatmentAdviceTest {
         assertEquals(treatmentAdvice.getStartDate(), doseStartingToday.getStartDateAsDate());
     }
 
+    @Test
+    public void shouldGroupDosagesByTime() {
+        final String morningTime = "10:00am";
+        final String eveningTime = "10:00pm";
+
+        TreatmentAdvice advice = new TreatmentAdvice() {{
+            addDrugDosage(new DrugDosage() {{
+                setDosageSchedules(Arrays.asList(morningTime, eveningTime));
+            }});
+            addDrugDosage(new DrugDosage() {{
+                setDosageSchedules(Arrays.asList(morningTime));
+            }});
+            addDrugDosage(new DrugDosage() {{
+                setDosageSchedules(Arrays.asList(eveningTime));
+            }});
+        }};
+        final Map<String, List<DrugDosage>> dosageGroups = advice.groupDosagesByTime();
+        assertFalse(dosageGroups.isEmpty());
+        assertEquals(2, dosageGroups.size());
+        assertTrue(dosageGroups.containsKey(morningTime));
+        assertTrue(dosageGroups.containsKey(eveningTime));
+
+        assertEquals(2, dosageGroups.get(morningTime).size());
+        assertEquals(2, dosageGroups.get(eveningTime).size());
+    }
 
 
 }

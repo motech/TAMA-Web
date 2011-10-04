@@ -1,22 +1,21 @@
 package org.motechproject.tama.mapper;
 
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
+import ch.lambdaj.Lambda;
+import ch.lambdaj.function.convert.Converter;
+import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
-import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
-import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.tama.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Set;
 
-import static org.apache.commons.collections.CollectionUtils.*;
+import static ch.lambdaj.Lambda.convert;
 
 @Component
 public class PillRegimenRequestMapper {
@@ -24,86 +23,50 @@ public class PillRegimenRequestMapper {
     @Autowired
     private AllDrugs allDrugs;
 
-    @Autowired
-    @Qualifier("ivrProperties")
-    private Properties properties;
+    @Value("#{ivrProperties['pill.window.hrs']}")
+    private Integer pillWindow;
 
-    public PillRegimenRequestMapper(AllDrugs allDrugs) {
-        this.allDrugs = allDrugs;
-    }
+    @Value("#{ivrProperties['retry.interval.mins']}")
+    private Integer retryInterval;
 
-    public PillRegimenRequestMapper(AllDrugs allDrugs, Properties properties) {
+    @Value("#{ivrProperties['reminder.lag.mins']}")
+    private Integer reminderLag;
+
+    public PillRegimenRequestMapper(AllDrugs allDrugs, Integer pillWindow, Integer retryInterval, Integer reminderLag) {
         this.allDrugs = allDrugs;
-        this.properties = properties;
+        this.pillWindow = pillWindow;
+        this.retryInterval = retryInterval;
+        this.reminderLag = reminderLag;
     }
 
     public PillRegimenRequestMapper() {
         super();
     }
 
-    public DailyPillRegimenRequest map(TreatmentAdvice treatmentAdvice) {
-        return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(),
-                Integer.valueOf(properties.getProperty(TAMAConstants.PILL_WINDOW)),
-                Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL)),
-                mapDosageRequests(treatmentAdvice));
-    }
-
-    private List<DosageRequest> mapDosageRequests(TreatmentAdvice treatmentAdvice) {
-        Map<String, List<DrugDosage>> drugDosagesMap = createDosageMap(treatmentAdvice);
-        return createDosageRequests(drugDosagesMap);
-    }
-
-    private List<DosageRequest> createDosageRequests(Map<String, List<DrugDosage>> drugDosagesMap) {
-        List<DosageRequest> dosageRequests = new ArrayList<DosageRequest>();
-        for (Iterator<String> it = drugDosagesMap.keySet().iterator(); it.hasNext(); ) {
-            String schedule = it.next();
-            List<DrugDosage> drugDosages = drugDosagesMap.get(schedule);
-            DosageRequest dosageRequest = createDosageRequest(schedule, drugDosages);
-            dosageRequests.add(dosageRequest);
-        }
-        return dosageRequests;
-    }
-
-    private Map<String, List<DrugDosage>> createDosageMap(TreatmentAdvice treatmentAdvice) {
-        Map<String, List<DrugDosage>> drugDosagesMap = new HashMap<String, List<DrugDosage>>();
-        for (DrugDosage drug : treatmentAdvice.getDrugDosages()) {
-            List<String> dosageSchedules = drug.getDosageSchedules();
-            filter(dosageSchedules, new Predicate() {
-                @Override
-                public boolean evaluate(Object o) {
-                    String dosageSchedule = (String) o;
-                    return StringUtils.isNotBlank(dosageSchedule);
-                }
-            });
-            for (String dosageSchedule : dosageSchedules) {
-                List<DrugDosage> drugList = getExistingDrugsForDosageSchedule(drugDosagesMap, dosageSchedule);
-                drugList.add(drug);
-                drugDosagesMap.put(dosageSchedule, drugList);
+    public DailyPillRegimenRequest map(final TreatmentAdvice treatmentAdvice) {
+        final Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest = new Converter<DrugDosage, MedicineRequest>() {
+            @Override
+            public MedicineRequest convert(DrugDosage drugDosage) {
+                return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
+                        drugDosage.getStartDate(),
+                        drugDosage.getEndDate());
             }
-        }
-        return drugDosagesMap;
+        };
+        final Converter<String, DosageRequest> dosageRequestFromSchedule = new Converter<String, DosageRequest>() {
+            @Override
+            public DosageRequest convert(String dosageTime) {
+                TimeUtil timeUtil = new TimeUtil(dosageTime).withReminderLagTime(reminderLag);
+                return new DosageRequest(timeUtil.getHours(),
+                        timeUtil.getMinutes(),
+                        Lambda.convert(treatmentAdvice.groupDosagesByTime().get(dosageTime),
+                                drugDosageToMedicineRequest));
+            }
+        };
+        final Set<String> dosageSchedule = treatmentAdvice.groupDosagesByTime().keySet();
+        return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(),
+                pillWindow,
+                retryInterval,
+                convert(dosageSchedule, dosageRequestFromSchedule));
     }
 
-    private List<DrugDosage> getExistingDrugsForDosageSchedule(Map<String, List<DrugDosage>> drugDosagesMap, String dosageSchedule) {
-        List<DrugDosage> drugList = drugDosagesMap.get(dosageSchedule);
-        return drugList == null ? new ArrayList<DrugDosage>() : drugList;
-    }
-
-    private DosageRequest createDosageRequest(String schedule, List<DrugDosage> drugDosages) {
-        int reminderLagTime = Integer.valueOf(properties.getProperty(TAMAConstants.REMINDER_LAG));
-        TimeUtil timeUtil = new TimeUtil(schedule).withReminderLagTime(reminderLagTime);
-        List<MedicineRequest> medicineRequests = createMedicineRequests(drugDosages);
-        return new DosageRequest(timeUtil.getHours(), timeUtil.getMinutes(), medicineRequests);
-    }
-
-    private List<MedicineRequest> createMedicineRequests(List<DrugDosage> drugDosages) {
-        List<MedicineRequest> medicineRequests = new ArrayList<MedicineRequest>();
-        for (DrugDosage drugDosage : drugDosages) {
-            MedicineRequest medicineRequest = new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
-                    drugDosage.getStartDate(),
-                    drugDosage.getEndDate());
-            medicineRequests.add(medicineRequest);
-        }
-        return medicineRequests;
-    }
 }

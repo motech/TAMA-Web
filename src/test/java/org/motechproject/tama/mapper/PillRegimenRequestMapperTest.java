@@ -6,10 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
-import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
-import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.DrugBuilder;
 import org.motechproject.tama.domain.Drug;
 import org.motechproject.tama.domain.DrugDosage;
@@ -17,9 +16,13 @@ import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.util.DateUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PillRegimenRequestMapperTest {
@@ -36,45 +39,12 @@ public class PillRegimenRequestMapperTest {
     }
 
     @Test
-    public void shouldGetRetryIntervalAndPillWindowFromProperties() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, properties);
-        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
-
-        Drug drug = mock(Drug.class);
-        when(drug.fullName(Matchers.<String>any())).thenReturn("");
-
-        treatmentAdvice.setPatientId("123");
-        when(properties.getProperty(TAMAConstants.PILL_WINDOW)).thenReturn("10");
-        when(properties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("10");
-        when(properties.getProperty(TAMAConstants.REMINDER_LAG)).thenReturn("10");
-        when(allDrugs.get(Matchers.<String>any())).thenReturn(drug);
-
-
-        List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
-        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
-        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
-        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 02, 10);
-        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 06, 10);
-        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
-        drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
-        treatmentAdvice.setDrugDosages(drugDosages);
-
-        pillRegimenRequestMapper.map(treatmentAdvice);
-
-        verify(properties, times(1)).getProperty(TAMAConstants.PILL_WINDOW);
-        verify(properties, times(1)).getProperty(TAMAConstants.RETRY_INTERVAL);
-
-    }
-
-    @Test
     public void shouldAddReminderLagToDosageMinutes() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, properties);
+        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, 5);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
 
         Drug drug = mock(Drug.class);
-        String reminderTimeLag = "5";
         when(drug.fullName(Matchers.<String>any())).thenReturn("");
-        propertiesExpectations(reminderTimeLag);
 
         treatmentAdvice.setPatientId("123");
         when(allDrugs.get(Matchers.<String>any())).thenReturn(drug);
@@ -83,40 +53,32 @@ public class PillRegimenRequestMapperTest {
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
         LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
         LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
-        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 02, 10);
-        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 06, 10);
+        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 2, 10);
+        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 6, 10);
         drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
         drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
         treatmentAdvice.setDrugDosages(drugDosages);
 
         DailyPillRegimenRequest request = pillRegimenRequestMapper.map(treatmentAdvice);
         DosageRequest dosageRequest = getByStartHour(9, request.getDosageRequests());
-        Assert.assertTrue(Integer.valueOf(reminderTimeLag) == dosageRequest.getStartMinute());
-    }
-
-    private void propertiesExpectations(String reminderTimeLag) {
-        when(properties.getProperty(TAMAConstants.PILL_WINDOW)).thenReturn("10");
-        when(properties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("10");
-        when(properties.getProperty(TAMAConstants.REMINDER_LAG)).thenReturn(reminderTimeLag);
+        Assert.assertEquals(5, dosageRequest.getStartMinute());
     }
 
 
     @Test
     public void shouldMapTreatmentAdvicesToPillRegimenRequest() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, properties);
+        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, 5);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
         treatmentAdvice.setPatientId("123");
 
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
         LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
         LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
-        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 02, 10);
-        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 06, 10);
+        LocalDate startDateForDrug2 = DateUtil.newDate(2011, 2, 10);
+        LocalDate endDateForDrug2 = DateUtil.newDate(2011, 6, 10);
 
         when(allDrugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
         when(allDrugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
-        String reminderTimeLag = "5";
-        propertiesExpectations(reminderTimeLag);
         drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
         drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
         treatmentAdvice.setDrugDosages(drugDosages);
@@ -147,8 +109,7 @@ public class PillRegimenRequestMapperTest {
     }
 
     private DosageRequest getByStartHour(int startHour, List<DosageRequest> dosageRequests) {
-        for (Iterator<DosageRequest> it = dosageRequests.iterator(); it.hasNext(); ) {
-            DosageRequest dosageRequest = it.next();
+        for (DosageRequest dosageRequest : dosageRequests) {
             if (dosageRequest.getStartHour() == startHour)
                 return dosageRequest;
         }

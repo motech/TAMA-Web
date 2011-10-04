@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import ch.lambdaj.Lambda;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.util.DateUtil;
@@ -9,14 +10,17 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.hasItem;
+
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity {
-	@NotNull
+    @NotNull
     private String patientId;
 
     @NotNull
     private String regimenId;
-    
+
     @NotNull
     private String drugCompositionId;
 
@@ -28,35 +32,35 @@ public class TreatmentAdvice extends CouchEntity {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
-    
+
     public String getPatientId() {
         return this.patientId;
     }
-    
+
     public void setPatientId(String patientId) {
         this.patientId = patientId;
     }
-    
+
     public String getRegimenId() {
         return this.regimenId;
     }
-    
+
     public void setRegimenId(String regimenId) {
         this.regimenId = regimenId;
     }
-    
+
     public String getDrugCompositionId() {
         return this.drugCompositionId;
     }
-    
+
     public void setDrugCompositionId(String drugCompositionId) {
         this.drugCompositionId = drugCompositionId;
     }
-    
+
     public List<DrugDosage> getDrugDosages() {
         return this.drugDosages;
     }
-    
+
     public void setDrugDosages(List<DrugDosage> drugDosages) {
         this.drugDosages = drugDosages;
     }
@@ -104,5 +108,16 @@ public class TreatmentAdvice extends CouchEntity {
     public Date getStartDate() {
         DrugDosage dosageWithMinStartDate = Collections.min(getDrugDosages(), new DrugDosage.StartDateBasedComparator());
         return dosageWithMinStartDate.getStartDateAsDate();
+    }
+
+    @JsonIgnore
+    public Map<String, List<DrugDosage>> groupDosagesByTime() {
+        Map<String, List<DrugDosage>> drugDosagesGroupedAccordingToSameTime = new HashMap<String, List<DrugDosage>>();
+        Collection<String> distinctTimes = selectDistinct(Lambda.<String>flatten(extract(getDrugDosages(), on(DrugDosage.class).getNonEmptyDosageSchedules())));
+        for (String time : distinctTimes) {
+            drugDosagesGroupedAccordingToSameTime.put(time, select(getDrugDosages(), having(on(DrugDosage.class).getNonEmptyDosageSchedules(), hasItem(time))));
+        }
+        return drugDosagesGroupedAccordingToSameTime;
+
     }
 }

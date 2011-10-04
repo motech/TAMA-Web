@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.TAMAConstants;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.*;
 
 public class DrugDosage extends BaseEntity {
 
@@ -136,6 +140,12 @@ public class DrugDosage extends BaseEntity {
 
     public void setMealAdviceId(String mealAdviceId) {
         this.mealAdviceId = mealAdviceId;
+    }
+
+    @JsonIgnore
+    public List<String> getNonEmptyDosageSchedules() {
+        return select(getDosageSchedules(), having(on(String.class), allOf(notNullValue(),
+                not(equalToIgnoringWhiteSpace(StringUtils.EMPTY)))));
     }
 
     public static DrugDosage dosageStartingToday() {
