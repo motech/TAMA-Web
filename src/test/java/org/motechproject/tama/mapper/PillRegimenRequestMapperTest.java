@@ -113,8 +113,6 @@ public class PillRegimenRequestMapperTest {
             if (dosageRequest.getStartHour() == startHour)
                 return dosageRequest;
         }
-
-        Assert.assertFalse(true);
         return null;
     }
 
