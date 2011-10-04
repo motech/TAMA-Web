@@ -14,7 +14,7 @@
             <menu:item id="i_alert_list" messageCode="read_menu" url="/alerts/read" />
         </menu:category>
         <menu:category id="c_summary">
-            <menu:item id="i_logs_list" messageCode="global_menu_list" url="/callsummary"/>
+            <menu:item id="i_logs_list" messageCode="global_menu_list" url="/callsummary?form"/>
         </menu:category>
     </menu:menu>
 </div>

@@ -11,6 +11,7 @@ import org.motechproject.tama.domain.LabResult;
 import org.motechproject.tama.domain.LabTest;
 import org.motechproject.tama.repository.AllLabResults;
 import org.motechproject.tama.repository.AllLabTests;
+import org.motechproject.tama.web.LabResultsController;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;

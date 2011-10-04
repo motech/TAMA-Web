@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -9,14 +10,17 @@ import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.view.CallLogView;
+import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -53,16 +57,16 @@ public class CallSummaryControllerTest {
     }
 
     @Test
-    public void shouldShowAllCallLogs() {
+    public void shouldShowAllCallLogsBetweenEnteredDates() {
         List<CallLog> callLogs = Arrays.asList(new CallLog());
         List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", new CallLog()));
 
 
         when(user.isAdministrator()).thenReturn(true);
-        when(callLogService.getAll()).thenReturn(callLogs);
+        when(callLogService.getLogsBetweenDates(any(DateTime.class), any(DateTime.class))).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
 
-        String view = callSummaryController.list(request, uiModel);
+        String view = callSummaryController.list(new Date(), new Date() ,request, uiModel);
 
         verify(uiModel).addAttribute("callsummary", callLogViews);
         assertEquals("callsummary/list", view);
@@ -72,13 +76,15 @@ public class CallSummaryControllerTest {
     public void shouldShowOnlyLogsOfPatientsBelongingToTheClinic() {
         List<CallLog> callLogs = Arrays.asList(new CallLog());
         List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", new CallLog()));
+        Date callLogStartDate = DateUtil.now().toDate();
+        Date callLogEndDate = DateUtil.now().plusDays(1).toDate();
 
         when(user.isAdministrator()).thenReturn(false);
         when(user.getClinicId()).thenReturn("clinicId");
-        when(callLogService.getByClinicId("clinicId")).thenReturn(callLogs);
+        when(callLogService.getByClinicId(DateUtil.newDateTime(callLogStartDate), DateUtil.newDateTime(callLogEndDate), "clinicId")).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
 
-        String view = callSummaryController.list(request, uiModel);
+        String view = callSummaryController.list(callLogStartDate, callLogEndDate, request, uiModel);
 
         verify(uiModel).addAttribute("callsummary", callLogViews);
         assertEquals("callsummary/list", view);

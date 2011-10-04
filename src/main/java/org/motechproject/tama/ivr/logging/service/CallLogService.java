@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr.logging.service;
 
+import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
@@ -42,7 +43,11 @@ public class CallLogService {
         return allCallLogs.getAll();
     }
 
-    public List<CallLog> getByClinicId(String clinicId) {
-        return allCallLogs.findByClinic(clinicId);
+    public List<CallLog> getByClinicId(DateTime fromDate, DateTime toDate, String clinicId) {
+        return allCallLogs.findByClinic(fromDate, toDate, clinicId);
+    }
+
+    public List<CallLog> getLogsBetweenDates(DateTime fromDate, DateTime toDate){
+        return allCallLogs.findCallLogsBetweenGivenDates(fromDate, toDate);
     }
 }

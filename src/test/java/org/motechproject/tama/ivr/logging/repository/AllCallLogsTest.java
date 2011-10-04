@@ -26,7 +26,7 @@ public class AllCallLogsTest extends SpringIntegrationTest {
         callLog.setEndTime(DateUtil.now().plusMinutes(5));
         allCallLogs.add(callLog);
 
-        assertEquals("clinicId", allCallLogs.findByClinic("clinicId").get(0).getClinicId());
+        assertEquals("clinicId", allCallLogs.findByClinic(DateUtil.now().minusDays(1), DateUtil.now().plusDays(1), "clinicId").get(0).getClinicId());
         markForDeletion(callLog);
     }
 }

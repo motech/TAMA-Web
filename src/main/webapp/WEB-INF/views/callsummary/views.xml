@@ -4,4 +4,7 @@
     <definition extends="default" name="callsummary/list">
         <put-attribute name="body" value="/WEB-INF/views/callsummary/list.jspx"/>
     </definition>
+    <definition extends="default" name="callsummary/create">
+        <put-attribute name="body" value="/WEB-INF/views/callsummary/create.jspx"/>
+    </definition>
 </tiles-definitions>
