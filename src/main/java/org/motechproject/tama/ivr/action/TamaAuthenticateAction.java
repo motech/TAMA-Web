@@ -11,10 +11,11 @@ import org.motechproject.server.service.ivr.IVRCallState;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
+import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.decisiontree.TamaTreeChooser;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.tama.ivr.logging.service.CallLogService;
-import org.motechproject.tama.ivr.decisiontree.TamaTreeChooser;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.util.TamaSessionUtil;
@@ -88,6 +89,8 @@ public class TamaAuthenticateAction extends AuthenticateAction {
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
         ivrSession.set(TamaSessionAttribute.REGIMEN_FOR_PATIENT, pillRegimen);
         ivrSession.set(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM, request.getParameter(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM));
+        if(CallPreference.FourDayRecall.equals(patient.getPatientPreferences().getCallPreference())) 
+            ivrSession.set(TamaSessionAttribute.FOUR_DAY_RECALL, "true");
         ivrRequest.setData("");
         return tamaIvrAction.handle(ivrRequest, ivrSession);
     }

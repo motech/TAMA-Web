@@ -1,6 +1,8 @@
 package org.motechproject.tama.domain;
 
 import ch.lambdaj.Lambda;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.util.DateUtil;
@@ -12,6 +14,7 @@ import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.hasItem;
+import static org.apache.commons.collections.CollectionUtils.filter;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity {
@@ -97,7 +100,36 @@ public class TreatmentAdvice extends CouchEntity {
         }
     }
 
-    // TODO: Should use Joda Date instead of Java Date.
+    public boolean hasMultipleDosages() {
+        return (groupDosagesByTime().size() > 1);
+    }
+
+//    public Map<String, List<DrugDosage>> dosagesMap() {
+//        Map<String, List<DrugDosage>> drugDosagesMap = new HashMap<String, List<DrugDosage>>();
+//        for (DrugDosage drug : getDrugDosages()) {
+//            List<String> dosageSchedules = drug.getDosageSchedules();
+//            filter(dosageSchedules, new Predicate() {
+//                @Override
+//                public boolean evaluate(Object o) {
+//                    String dosageSchedule = (String) o;
+//                    return StringUtils.isNotBlank(dosageSchedule);
+//                }
+//            });
+//            for (String dosageSchedule : dosageSchedules) {
+//                List<DrugDosage> drugList = getExistingDrugsForDosageSchedule(drugDosagesMap, dosageSchedule);
+//                drugList.add(drug);
+//                drugDosagesMap.put(dosageSchedule, drugList);
+//            }
+//        }
+//        return drugDosagesMap;
+//    }
+
+//    private List<DrugDosage> getExistingDrugsForDosageSchedule(Map<String, List<DrugDosage>> drugDosagesMap, String dosageSchedule) {
+//        List<DrugDosage> drugList = drugDosagesMap.get(dosageSchedule);
+//        return drugList == null ? new ArrayList<DrugDosage>() : drugList;
+//    }
+
+
     @JsonIgnore
     public Date getEndDate() {
         DrugDosage dosageWithMaxEndDate = Collections.max(getDrugDosages(), new DrugDosage.EndDateBasedComparator());
@@ -112,12 +144,11 @@ public class TreatmentAdvice extends CouchEntity {
 
     @JsonIgnore
     public Map<String, List<DrugDosage>> groupDosagesByTime() {
-        Map<String, List<DrugDosage>> drugDosagesGroupedAccordingToSameTime = new HashMap<String, List<DrugDosage>>();
+        Map<String, List<DrugDosage>> drugDosagesGroupedAccordingToTime = new HashMap<String, List<DrugDosage>>();
         Collection<String> distinctTimes = selectDistinct(Lambda.<String>flatten(extract(getDrugDosages(), on(DrugDosage.class).getNonEmptyDosageSchedules())));
         for (String time : distinctTimes) {
-            drugDosagesGroupedAccordingToSameTime.put(time, select(getDrugDosages(), having(on(DrugDosage.class).getNonEmptyDosageSchedules(), hasItem(time))));
+            drugDosagesGroupedAccordingToTime.put(time, select(getDrugDosages(), having(on(DrugDosage.class).getNonEmptyDosageSchedules(), hasItem(time))));
         }
-        return drugDosagesGroupedAccordingToSameTime;
-
+        return drugDosagesGroupedAccordingToTime;
     }
 }

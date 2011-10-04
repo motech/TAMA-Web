@@ -49,6 +49,9 @@ public class TamaTreeChooserTest {
     @Autowired
     private Regimen1To6Tree regimen1To6Tree;
 
+    @Autowired
+    private FourDayRecallTree fourDayRecallTree;
+    
     @Mock
     private IVRSession ivrSession;
 
@@ -111,5 +114,11 @@ public class TamaTreeChooserTest {
         when(ivrSession.get(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM)).thenReturn("true");
         
         assertTrue(regimen1To6Tree.getTree(ivrContext) == treeChooser.getTree(ivrContext));
+    }
+
+    @Test
+    public void shouldGetFourDayRecallTreeForPatientsOnWeeklyAdherence() {
+        when(ivrSession.get(TamaSessionAttribute.FOUR_DAY_RECALL)).thenReturn("true");
+        assertTrue(fourDayRecallTree.getTree(ivrContext) == treeChooser.getTree(ivrContext));
     }
 }

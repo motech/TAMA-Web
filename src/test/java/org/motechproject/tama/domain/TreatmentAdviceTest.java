@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -123,5 +124,43 @@ public class TreatmentAdviceTest {
         assertEquals(2, dosageGroups.get(eveningTime).size());
     }
 
+    public void shouldReturnTrueIfTreatmentAdviceHasMultipleDosages() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+        treatmentAdvice.setPatientId("123");
 
+        List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
+        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
+
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
+        treatmentAdvice.setDrugDosages(drugDosages);
+
+        assertTrue(treatmentAdvice.hasMultipleDosages());
+    }
+
+    @Test
+    public void shouldReturnFalseIfTreatmentAdviceHasSingleDosage() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+        treatmentAdvice.setPatientId("123");
+
+        List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
+        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
+
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am")));
+        drugDosages.add(drugDosage("Drug2Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am")));
+        treatmentAdvice.setDrugDosages(drugDosages);
+
+        assertFalse(treatmentAdvice.hasMultipleDosages());
+    }
+
+    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final List<String> dosageSchedules) {
+        return new DrugDosage() {{
+            setDrugId(drugId);
+            setBrandId("brandId");
+            setStartDate(startDate);
+            setEndDate(endDate);
+            setDosageSchedules(dosageSchedules);
+        }};
+    }
 }

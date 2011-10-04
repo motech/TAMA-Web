@@ -30,12 +30,12 @@ public class PillReminderCall extends IvrCall {
         this.callLogService = callLogService;
     }
 
-    public void execute(String patientId, final String dosageId, final int timesSent, final int totalTimesToSend) {
+    public void execute(String patientDocId, final String dosageId, final int timesSent, final int totalTimesToSend) {
         Map<String, String> params = new HashMap<String, String>() {{
             put(DOSAGE_ID, dosageId);
             put(TIMES_SENT, String.valueOf(timesSent));
             put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
         }};
-        makeCall(patientId, params);
+        makeCall(patientDocId, params);
     }
 }

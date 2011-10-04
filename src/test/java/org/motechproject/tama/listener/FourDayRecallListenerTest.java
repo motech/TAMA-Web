@@ -38,7 +38,7 @@ public class FourDayRecallListenerTest {
 
         Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
-                .withPatientId(PATIENT_ID)
+                .withPatientDocId(PATIENT_ID)
                 .withStartDate(startDate)
                 .withEndDate(endDate)
                 .payload();

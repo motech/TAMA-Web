@@ -68,5 +68,4 @@ public class PillRegimenRequestMapper {
                 retryInterval,
                 convert(dosageSchedule, dosageRequestFromSchedule));
     }
-
 }

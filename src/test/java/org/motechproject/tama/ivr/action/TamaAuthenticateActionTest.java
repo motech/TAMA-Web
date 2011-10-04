@@ -14,10 +14,7 @@ import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.server.service.ivr.IVRSession.IVRCallAttribute;
-import org.motechproject.tama.domain.IVRLanguage;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientPreferences;
-import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
@@ -54,13 +51,14 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
     private static final String PATIENT_ID = "12345";
     public static final String MOBILE_NO = "9876543210";
     public static final String PASSCODE = "1234";
+    private PatientPreferences patientPreferences;
 
     @Before
     public void setUp() {
         super.setUp();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(patient.getId()).thenReturn(PATIENT_ID);
-        PatientPreferences patientPreferences = new PatientPreferences();
+        patientPreferences = new PatientPreferences();
         patientPreferences.setIvrLanguage(IVRLanguage.newIVRLanguage("English", "en"));
         patientPreferences.setPasscode(PASSCODE);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
@@ -118,6 +116,25 @@ public class TamaAuthenticateActionTest extends BaseActionTest {
         verify(session).setAttribute(TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM, "true");
         verify(tamaIvrAction).handle(any(IVRRequest.class), any(IVRSession.class));
     }
+
+    @Test
+    public void shouldSetSessionAttributeForFourDayRecall() {
+        IVRRequest ivrRequest = new KookooRequest("sid", MOBILE_NO, IVREvent.GOT_DTMF.key(), PASSCODE);
+        
+        patientPreferences.setCallPreference(CallPreference.FourDayRecall);
+        when(patient.isActive()).thenReturn(true);
+        when(patient.getPatientPreferences()).thenReturn(patientPreferences);
+        when(patient.getPatientId()).thenReturn(PATIENT_ID);
+        when(allPatients.findByMobileNumberAndPasscode(MOBILE_NO, PASSCODE)).thenReturn(patient);
+        when(allPatients.findByMobileNumber(MOBILE_NO)).thenReturn(patient);
+        when(request.getSession()).thenReturn(session);
+
+        authenticateAction.handle(ivrRequest, request, response, tamaIvrAction);
+
+        verify(session).setAttribute(TamaSessionAttribute.FOUR_DAY_RECALL, "true");
+        verify(tamaIvrAction).handle(any(IVRRequest.class), any(IVRSession.class));
+    }
+
 
     @Test
     public void shouldHangupIfPatientIsNotActive() {

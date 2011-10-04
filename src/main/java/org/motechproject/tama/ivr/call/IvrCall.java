@@ -29,8 +29,8 @@ public abstract class IvrCall {
         this.ivrService = ivrService;
     }
 
-    protected void makeCall(String patientId, Map<String, String> params) {
-        Patient patient = allPatients.get(patientId);
+    protected void makeCall(String patientDocId, Map<String, String> params) {
+        Patient patient = allPatients.get(patientDocId);
         if (patient == null || patient.isNotActive()) return;
 
         CallRequest callRequest = new CallRequest(patient.getIVRMobilePhoneNumber(), params, getApplicationUrl());

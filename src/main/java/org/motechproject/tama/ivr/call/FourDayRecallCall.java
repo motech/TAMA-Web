@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class FourDayRecallCall extends IvrCall {
@@ -15,9 +14,7 @@ public class FourDayRecallCall extends IvrCall {
         super(allPatients, callService);
     }
 
-    public void execute(String patientId) {
-        Map<String, String> params = new HashMap<String, String>() {{
-        }};
-        makeCall(patientId, params);
+    public void execute(String patientDocId) {
+        makeCall(patientDocId, new HashMap<String, String>());
     }
 }

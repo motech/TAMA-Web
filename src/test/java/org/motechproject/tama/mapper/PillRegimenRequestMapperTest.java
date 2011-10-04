@@ -49,7 +49,6 @@ public class PillRegimenRequestMapperTest {
         treatmentAdvice.setPatientId("123");
         when(allDrugs.get(Matchers.<String>any())).thenReturn(drug);
 
-
         List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
         LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
         LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);

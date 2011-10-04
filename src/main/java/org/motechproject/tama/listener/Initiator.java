@@ -27,6 +27,7 @@ public class Initiator implements ServletContextListener{
         beans.put(PillReminderListener.class.getName(), webApplicationContext.getBean(PillReminderListener.class));
         beans.put(ReminderEventHandler.class.getName(), webApplicationContext.getBean(ReminderEventHandler.class));
         beans.put(AdherenceTrendListener.class.getName(), webApplicationContext.getBean(AdherenceTrendListener.class));
+        beans.put(FourDayRecallListener.class.getName(), webApplicationContext.getBean(FourDayRecallListener.class));
         return beans;
     }
 

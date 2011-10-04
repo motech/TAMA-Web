@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
@@ -36,38 +37,40 @@ public class TamaSchedulerService {
     }
 
     public void scheduleJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
-        String patientId = patient.getPatientId();
-        LocalDate startDate = new LocalDate(treatmentAdvice.getStartDate()).plusDays(4);
-        LocalDate endDate =  new LocalDate(treatmentAdvice.getEndDate());
+        String patientDocId = patient.getId();
+        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4);
+        LocalDate endDate = DateUtil.newDate(treatmentAdvice.getEndDate());
         DayOfWeek dayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
         for (int count = 0; count < daysToRetry; count++) {
             Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
-                    .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + patientId)
-                    .withPatientId(patientId)
+                    .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + count + patientDocId)
+                    .withPatientDocId(patientDocId)
                     .withStartDate(startDate)
                     .withEndDate(endDate)
                     .payload();
             MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
-            DayOfWeek dayOfWeekForReminder = DayOfWeek.getDayOfWeek(dayOfWeek.getValue() + count);
+            DayOfWeek dayOfWeekForReminder = DayOfWeek.getDayOfWeek((dayOfWeek.getValue() + count) % 7);
             String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeekForReminder).withTime(callTime).build();
-            CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, startDate.plusDays(count).toDate(), endDate.toDate());
+            Date jobEndDate = endDate == null ? null : endDate.toDate();
+            CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, startDate.plusDays(count).toDate(), jobEndDate);
             motechSchedulerService.scheduleJob(cronJobForForDayRecall);
         }
     }
 
-    public void scheduleRepeatingJobsForFourDayRecall(String patientId, LocalDate startDate, LocalDate endDate) {
+    public void scheduleRepeatingJobsForFourDayRecall(String patientDocId, LocalDate startDate, LocalDate endDate) {
         Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.RETRIES_PER_DAY));
         Integer retryInterval = Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL));
 
         Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
                 .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + UUIDUtil.newUUID())
-                .withPatientId(patientId)
+                .withPatientDocId(patientDocId)
                 .payload();
         MotechEvent fourDayRecallRepeatingEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
-        RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, startDate.toDate(), endDate.toDate(), maxOutboundRetries, retryInterval);
+        Date jobEndDate = endDate == null ? startDate.plusDays(1).toDate() : endDate.toDate();
+        RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, startDate.toDate(), jobEndDate, maxOutboundRetries, retryInterval);
         motechSchedulerService.scheduleRepeatingJob(repeatingSchedulableJob);
     }
 

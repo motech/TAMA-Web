@@ -14,8 +14,8 @@ public class FourDayRecallEventPayloadBuilder {
         return this;
     }
 
-    public FourDayRecallEventPayloadBuilder withPatientId(String patientId) {
-        params.put(FourDayRecallListener.PATIENT_ID_KEY, patientId);
+    public FourDayRecallEventPayloadBuilder withPatientDocId(String patientId) {
+        params.put(FourDayRecallListener.PATIENT_DOC_ID_KEY, patientId);
         return this;
     }
 

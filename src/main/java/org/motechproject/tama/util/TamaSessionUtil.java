@@ -12,6 +12,7 @@ public class TamaSessionUtil {
         public static final String REGIMEN_FOR_PATIENT = "regimen_for_patient";
         public static final String NUMBER_OF_ATTEMPTS = "number_of_retries";
         public static final String SYMPTOMS_REPORTING_PARAM = "symptoms_reporting";
+        public static final String FOUR_DAY_RECALL = "four_day_recall";
         public static final String PATIENT_DOC_ID = IVRSession.IVRCallAttribute.EXTERNAL_ID;
         public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
     }
@@ -56,4 +57,7 @@ public class TamaSessionUtil {
         return "true".equals(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.SYMPTOMS_REPORTING_PARAM));
     }
 
+    public static boolean patientOnFourDayRecall(IVRSession ivrSession) {
+        return "true".equals(ivrSession.get(TamaSessionAttribute.FOUR_DAY_RECALL));
+    }
 }

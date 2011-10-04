@@ -25,6 +25,9 @@ public class TamaTreeChooser implements TreeChooser {
     private CurrentDosageConfirmTree currentDosageConfirmTree;
 
     @Autowired
+    private FourDayRecallTree fourDayRecallTree;
+
+    @Autowired
     private Regimen1To6Tree regimen1To6Tree;
 
     public Tree getTree(IVRContext ivrContext) {
@@ -41,7 +44,8 @@ public class TamaTreeChooser implements TreeChooser {
                 }
             }
         } else {
-            chosenTree = currentDosageReminderTree;
+            if (TamaSessionUtil.patientOnFourDayRecall(ivrContext.ivrSession())) chosenTree = fourDayRecallTree;
+            else chosenTree = currentDosageReminderTree;
         }
         return chosenTree.getTree(ivrContext);
     }

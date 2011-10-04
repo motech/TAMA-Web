@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr;
 
-import org.apache.log4j.Logger;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import java.util.Properties;
 public class TamaIVRMessage implements IVRMessage {
     public static final String WAV = ".wav";
 
-    Logger logger = Logger.getLogger(this.getClass());
-    public static final String MINUTES = "timeOfDayMinutes";
     public static final String SIGNATURE_MUSIC_URL = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
     public static final String OUTBOX_LOCATION_URL = "outbox.location.url";
@@ -78,9 +75,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90 = "F04_01_doctorMissedPillFeedback"; // F04_01_doctorMissedPillFeedback.wav
     public static final String MISSED_PILL_FEEDBACK_LESS_THAN_70 = "F05_01_doctorMissedPillFeedback"; // F05_01_doctorMissedPillFeedback.wav
 
-    /*----------Outbox -------------------------*/
-    public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1"; // 001_06_04_mayEndThisCallNow1.wav
-	public static final String M02_04_ADHERENCE_COMMENT_GT95_FALLING = "m02_04_adherencecommentgt95falling";
+    public static final String M02_04_ADHERENCE_COMMENT_GT95_FALLING = "m02_04_adherencecommentgt95falling";
 
 	public static final String M02_05_ADHERENCE_COMMENT_70TO90_FALLING = "m02_05_adherencecomment70to90falling";
 
@@ -90,8 +85,21 @@ public class TamaIVRMessage implements IVRMessage {
 	
 	public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
 
-
     /* -------- Adherence Feedback ----------- */
+
+    /*----------Outbox -------------------------*/
+    public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1"; // 001_06_04_mayEndThisCallNow1.wav
+    
+    /*----------Outbox -------------------------*/
+
+    /* ---------- Four Day Recall ----------*/
+    public static final String FDR_MENU_FOR_SINGLE_DOSAGE = "025_03_01_fourDoseRecallMenuA";
+    public static final String FDR_MENU_FOR_MULTIPLE_DOSAGES = "025_06_01_fourDoseRecallMenuA";
+    public static final String FDR_ALL_DOSAGES_TAKEN = "025_10_01_ haveBeenTakingWell";
+    public static final String FDR_MISSED_ONE_DOSAGE_ON_ONE_DAY = "025_04_01_MissedDose1";
+    public static final String FDR_TAKE_DOSAGES_REGULARLY = "025_11_01_takeRegularly";
+    /* ---------- Four Day Recall ----------*/
+
     private Properties properties;
     private FileUtil fileUtil;
 
