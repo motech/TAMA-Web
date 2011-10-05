@@ -60,7 +60,7 @@ public class TamaSchedulerServiceTest {
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(numDaysToRetry)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(numDaysToRetry + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
         CronSchedulableJob cronSchedulableJob1 = cronSchedulableJobList.get(0);
         assertEquals("0 30 10 ? * 6", cronSchedulableJob1.getCronExpression());
@@ -70,6 +70,10 @@ public class TamaSchedulerServiceTest {
         assertEquals("0 30 10 ? * 7", cronSchedulableJob2.getCronExpression());
         assertEquals(treatmentAdviceStartDate.plusDays(5).toDate(), cronSchedulableJob2.getStartTime());
         assertEquals(treatmentAdviceEndDate.toDate(), cronSchedulableJob2.getEndTime());
+        CronSchedulableJob cronSchedulableJob3 = cronSchedulableJobList.get(2);
+        assertEquals("0 30 10 ? * 1", cronSchedulableJob3.getCronExpression());
+        assertEquals(treatmentAdviceStartDate.plusDays(6).toDate(), cronSchedulableJob3.getStartTime());
+        assertEquals(treatmentAdviceEndDate.toDate(), cronSchedulableJob3.getEndTime());
     }
 
     @Test

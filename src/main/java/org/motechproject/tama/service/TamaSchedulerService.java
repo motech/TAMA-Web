@@ -40,24 +40,30 @@ public class TamaSchedulerService {
         String patientDocId = patient.getId();
         LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4);
         LocalDate endDate = DateUtil.newDate(treatmentAdvice.getEndDate());
-        DayOfWeek dayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
+        DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        for (int count = 0; count < daysToRetry; count++) {
+        for (int count = 0; count <= daysToRetry; count++) {
             Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
                     .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + count + patientDocId)
                     .withPatientDocId(patientDocId)
+                    .withTreatmentAdviceId(treatmentAdvice.getId())
                     .withStartDate(startDate)
                     .withEndDate(endDate)
                     .payload();
             MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
-            DayOfWeek dayOfWeekForReminder = DayOfWeek.getDayOfWeek((dayOfWeek.getValue() + count) % 7);
-            String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeekForReminder).withTime(callTime).build();
+            String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, count)).withTime(callTime).build();
             Date jobEndDate = endDate == null ? null : endDate.toDate();
             CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, startDate.plusDays(count).toDate(), jobEndDate);
             motechSchedulerService.scheduleJob(cronJobForForDayRecall);
         }
+    }
+
+    private DayOfWeek dayOfWeek(DayOfWeek dayOfWeek, int count) {
+        int dayOfWeekNum = (dayOfWeek.getValue() + count) % 7;
+        dayOfWeekNum = (dayOfWeekNum == 0) ? 7 : dayOfWeekNum;
+        return DayOfWeek.getDayOfWeek(dayOfWeekNum);
     }
 
     public void scheduleRepeatingJobsForFourDayRecall(String patientDocId, LocalDate startDate, LocalDate endDate) {

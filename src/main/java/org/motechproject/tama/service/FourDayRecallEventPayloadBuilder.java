@@ -29,6 +29,11 @@ public class FourDayRecallEventPayloadBuilder {
         return this;
     }
 
+    public FourDayRecallEventPayloadBuilder withTreatmentAdviceId(String treatmentAdviceId) {
+        params.put(FourDayRecallListener.TREATMENT_ADVICE_DOC_ID_KEY, treatmentAdviceId);
+        return this;
+    }
+
     public HashMap<String, Object> payload() {
         return params;
     }
