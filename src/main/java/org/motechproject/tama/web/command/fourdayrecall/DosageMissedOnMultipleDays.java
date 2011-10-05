@@ -13,23 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class DosagesMissedOnOneDay implements ITreeCommand {
+public class DosageMissedOnMultipleDays implements ITreeCommand {
+
     @Autowired
     private AllTreatmentAdvices allTreatmentAdvices;
+
+    @Autowired
+    private TamaIVRMessage iVRMessage;
 
     @Override
     public String[] execute(Object o) {
         IVRContext ivrContext = (IVRContext) o;
         List<String> messages = new ArrayList<String>();
 
+        int numDaysMissed = Integer.parseInt(ivrContext.ivrRequest().getData());
+
         String patientId = TamaSessionUtil.getPatientId(ivrContext);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
 
-        if (treatmentAdvice.hasMultipleDosages())
-            messages.add(TamaIVRMessage.FDR_MISSED_MULTIPLE_DOSAGES_ON_ONE_DAY);
-        else
-            messages.add(TamaIVRMessage.FDR_MISSED_ONE_DOSAGE_ON_ONE_DAY);
-
+        if (treatmentAdvice.hasMultipleDosages()) {
+            messages.add(TamaIVRMessage.FDR_MISSED_ONE_DOSAGE_ON_MULTIPLE_DAYS_PART_1);
+            messages.add(iVRMessage.getNumberFilename(numDaysMissed));
+            messages.add(TamaIVRMessage.FDR_MISSED_ONE_DOSAGE_ON_MULTIPLE_DAYS_PART_2);
+        } else {
+            messages.add(TamaIVRMessage.FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_1);
+            messages.add(iVRMessage.getNumberFilename(numDaysMissed));
+            messages.add(TamaIVRMessage.FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_2);
+        }
         messages.add(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY);
         return messages.toArray(new String[messages.size()]);
     }

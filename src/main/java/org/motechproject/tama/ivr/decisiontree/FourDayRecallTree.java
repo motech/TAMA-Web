@@ -1,11 +1,11 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.*;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.MenuAudioPrompt;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.tama.web.command.fourdayrecall.AllDosagesTaken;
-import org.motechproject.tama.web.command.fourdayrecall.DosagesMissedOnOneDay;
-import org.motechproject.tama.web.command.fourdayrecall.MainMenu;
-import org.motechproject.tama.web.command.fourdayrecall.WelcomeGreetingMessage;
+import org.motechproject.tama.web.command.fourdayrecall.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,14 +14,21 @@ public class FourDayRecallTree extends TamaDecisionTree {
     @Autowired
     private WelcomeGreetingMessage welcomeGreetingMessage;
     @Autowired
+    private MainMenu mainMenu;
+    @Autowired
     private AllDosagesTaken allDosagesTaken;
     @Autowired
     private DosagesMissedOnOneDay dosagesMissedOnOneDay;
     @Autowired
-    private MainMenu mainMenu;
+    private DosageMissedOnMultipleDays dosageMissedOnMultipleDays;
 
     @Override
     protected Node createRootNode(IVRContext ivrContext) {
+        Transition missedMultiplePillsTransition = new Transition()
+                .setDestinationNode(
+                        new Node()
+                                .setPrompts(new AudioPrompt().setCommand(dosageMissedOnMultipleDays))
+                );
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
@@ -40,11 +47,13 @@ public class FourDayRecallTree extends TamaDecisionTree {
                                                 .setPrompts(new AudioPrompt().setCommand(dosagesMissedOnOneDay))
                                 )
                         },
-                        {"2", new Transition()},
-                        {"3", new Transition()},
-                        {"4", new Transition()}
-                }
-                );
+                        {"2", missedMultiplePillsTransition
+                        },
+                        {"3", missedMultiplePillsTransition
+                        },
+                        {"4", missedMultiplePillsTransition
+                        }
+                });
     }
 }
 

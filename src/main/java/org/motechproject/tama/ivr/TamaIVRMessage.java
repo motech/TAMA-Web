@@ -93,11 +93,19 @@ public class TamaIVRMessage implements IVRMessage {
     /*----------Outbox -------------------------*/
 
     /* ---------- Four Day Recall ----------*/
-    public static final String FDR_MENU_FOR_SINGLE_DOSAGE = "025_03_01_fourDoseRecallMenuA";
-    public static final String FDR_MENU_FOR_MULTIPLE_DOSAGES = "025_06_01_fourDoseRecallMenuA";
+    // Common
     public static final String FDR_ALL_DOSAGES_TAKEN = "025_10_01_ haveBeenTakingWell";
-    public static final String FDR_MISSED_ONE_DOSAGE_ON_ONE_DAY = "025_04_01_MissedDose1";
     public static final String FDR_TAKE_DOSAGES_REGULARLY = "025_11_01_takeRegularly";
+    // Single Dosage
+    public static final String FDR_MENU_FOR_SINGLE_DOSAGE = "025_03_01_fourDoseRecallMenuA";
+    public static final String FDR_MISSED_ONE_DOSAGE_ON_ONE_DAY = "025_04_01_MissedDose1";
+    public static final String FDR_MISSED_ONE_DOSAGE_ON_MULTIPLE_DAYS_PART_1 = "025_05_01_MissedDose1";
+    public static final String FDR_MISSED_ONE_DOSAGE_ON_MULTIPLE_DAYS_PART_2 = "025_05_03_MissedDose2";
+    // Multiple Dosages
+    public static final String FDR_MENU_FOR_MULTIPLE_DOSAGES = "025_06_01_fourDoseRecallMenuA";
+    public static final String FDR_MISSED_MULTIPLE_DOSAGES_ON_ONE_DAY = "025_07_01_MissedDose1";
+    public static final String FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_1 = "025_08_01_MissedDose1";
+    public static final String FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_2 = "025_08_03_MissedDose2";
     /* ---------- Four Day Recall ----------*/
 
     private Properties properties;

@@ -108,5 +108,4 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
 
         return previousDosageReminderTree.getTree(ivrContext).getRootNode().getTransitions();
     }
-
 }
