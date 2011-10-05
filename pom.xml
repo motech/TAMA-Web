@@ -61,6 +61,21 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+        	<id>buildNode</id>
+        	<repositories>
+        		<repository>
+		            <id>motech.nexus</id>
+		            <name>Motech Snapshots Repository</name>
+		            <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
+		            <snapshots>
+		            	<enabled>true</enabled>
+		            	<checksumPolicy>warn</checksumPolicy>
+		            	<updatePolicy>always</updatePolicy>
+		            </snapshots>
+		        </repository>
+        	</repositories>
+        </profile>
     </profiles>
     <repositories>
         <repository>
@@ -75,11 +90,6 @@
             <id>motech.nexus</id>
             <name>Motech Snapshots Repository</name>
             <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
-            <snapshots>
-            	<enabled>true</enabled>
-            	<checksumPolicy>warn</checksumPolicy>
-            	<updatePolicy>always</updatePolicy>
-            </snapshots>
         </repository>
         <repository>
             <id>spring-maven-release</id>
