@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
-import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.util.TamaSessionUtil;
@@ -32,16 +31,21 @@ public class OutboxControllerTest {
     public static final String OUTBOX_URL = "http://localhost/tama/outbox";
     public static final String VOICE_MESSAGE_ID = "VMID";
     public static final String SIGNATURE_MUSIC_URL = "http://localhost/wav/signature_music.wav";
-    private static final String LAST_PLAYED_VM_ID = "lastVMID";
+    public static final String HANGUP_OR_MAIN_MENU_URL = "http://localhost/wav/en/hangUpCall.wav";
+    public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "lastVMID";
 
     @Mock
     private HttpServletRequest request;
+
     @Mock
     private HttpSession session;
+
     @Mock
     private VoiceOutboxService outboxService;
+
     @Mock
-    private IVRMessage ivrMessage;
+    private TamaIVRMessage tamaIvrMessage;
+
     private OutboxController outboxController;
 
     @Before
@@ -51,11 +55,11 @@ public class OutboxControllerTest {
         when(session.getAttribute(IVRSession.IVRCallAttribute.EXTERNAL_ID)).thenReturn(PATIENT_ID);
         when(session.getAttribute(IVRSession.IVRCallAttribute.PREFERRED_LANGUAGE_CODE)).thenReturn("en");
 
-        when(ivrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL)).thenReturn(OUTBOX_URL);
-        when(ivrMessage.getWav(WAV1, "en")).thenReturn(WAV1_URL);
-        when(ivrMessage.getWav("something_else", "en")).thenReturn(WAV2_URL);
+        when(tamaIvrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL)).thenReturn(OUTBOX_URL);
+        when(tamaIvrMessage.getWav(WAV1, "en")).thenReturn(WAV1_URL);
+        when(tamaIvrMessage.getWav("something_else", "en")).thenReturn(WAV2_URL);
 
-        outboxController = new OutboxController(outboxService, ivrMessage);
+        outboxController = new OutboxController(outboxService, tamaIvrMessage);
     }
 
     private OutboundVoiceMessage voiceMessage() {
@@ -73,7 +77,7 @@ public class OutboxControllerTest {
     }
 
     @Test
-    public void shouldRespondWithNextPendingMessage() {
+    public void shouldPlayNextPendingMessageToPatient_WhenPatientListensToOutbox() {
         OutboundVoiceMessage voiceMessage = voiceMessage();
         when(outboxService.getNextPendingMessage(PATIENT_ID)).thenReturn(voiceMessage);
 
@@ -85,7 +89,15 @@ public class OutboxControllerTest {
     }
 
     @Test
-    public void shouldPersistTheCurrentMessagesIDInSession() {
+    public void shouldMarkThePreviousMessageAsRead_BeforePlayingNextPendingMessage() {
+        when(session.getAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn(LAST_PLAYED_VOICE_MESSAGE_ID);
+
+        outboxController.play(request);
+        verify(outboxService).setMessageStatus(LAST_PLAYED_VOICE_MESSAGE_ID, OutboundVoiceMessageStatus.PLAYED);
+    }
+
+    @Test
+    public void shouldMarkCurrentMessageAsLastRead_BeforePlayingNextPendingMessage() {
         OutboundVoiceMessage voiceMessage = voiceMessage();
         when(outboxService.getNextPendingMessage(PATIENT_ID)).thenReturn(voiceMessage);
 
@@ -94,31 +106,40 @@ public class OutboxControllerTest {
     }
 
     @Test
-    public void shouldMarkThePreviousMessageAsRead() {
-        OutboundVoiceMessage voiceMessage = voiceMessage();
-        when(outboxService.getNextPendingMessage(PATIENT_ID)).thenReturn(voiceMessage);
+    public void shouldPlayHangUpOrMainMenu_AfterPatientHasListenedToAllOutboxMessages() {
+        when(tamaIvrMessage.getWav(TamaIVRMessage.HANGUP_OR_MAIN_MENU, "en")).thenReturn(HANGUP_OR_MAIN_MENU_URL);
+        setUpAllOutboxMessagesPlayedScenario();
 
-        when(session.getAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn(LAST_PLAYED_VM_ID);
-        outboxController.play(request);
-        verify(outboxService).setMessageStatus(LAST_PLAYED_VM_ID, OutboundVoiceMessageStatus.PLAYED);
-    }
-
-    @Test
-    public void shouldPlaySignatureMusicAndHangupIfNoMorePendingOutboxMessages() {
-        when(ivrMessage.getSignatureMusic()).thenReturn(TamaIVRMessage.SIGNATURE_MUSIC_URL);
-        when(ivrMessage.getWav(TamaIVRMessage.SIGNATURE_MUSIC_URL, "en")).thenReturn(SIGNATURE_MUSIC_URL);
-        when(outboxService.getNextPendingMessage(PATIENT_ID)).thenReturn(null);
         String response = outboxController.play(request);
 
-        assertTrue(response.contains(SIGNATURE_MUSIC_URL));
+        assertTrue(response.contains(HANGUP_OR_MAIN_MENU_URL));
         assertTrue(response.contains("hangup"));
     }
 
     @Test
-    public void shouldInvalidateSessionOnHangupEvent() {
+    public void shouldPlaySignatureMusic_AfterPatientHasListenedToHangUpOrMainMenu() {
+        when(tamaIvrMessage.getSignatureMusic()).thenReturn(TamaIVRMessage.SIGNATURE_MUSIC);
+        when(tamaIvrMessage.getWav(TamaIVRMessage.SIGNATURE_MUSIC, "en")).thenReturn(SIGNATURE_MUSIC_URL);
+        setUpAllOutboxMessagesPlayedScenario();
+
+        String response = outboxController.play(request);
+
+        assertTrue(response.indexOf(SIGNATURE_MUSIC_URL) > response.indexOf(HANGUP_OR_MAIN_MENU_URL));
+        assertTrue(response.contains("hangup"));
+    }
+
+    @Test
+    public void shouldInvalidateSession_AfterPatientHangsUp() {
         when(request.getParameter(OutboxController.EVENT_REQUEST_PARAM)).thenReturn("hangup");
+
         String response = outboxController.play(request);
         verify(session).invalidate();
         assertNull(response);
     }
+
+    private void setUpAllOutboxMessagesPlayedScenario() {
+        when(session.getAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn(LAST_PLAYED_VOICE_MESSAGE_ID);
+        when(outboxService.getNextPendingMessage(PATIENT_ID)).thenReturn(null);
+    }
+
 }
