@@ -22,6 +22,7 @@ public class DosagesTest extends SpringIntegrationTest {
         allDosageTypes.add(twice);
         allDosageTypes.add(morning);
         allDosageTypes.add(evening);
+        allDosageTypes.add(variable);
 
         List<DosageType> all = allDosageTypes.getAll();
         Assert.assertEquals("Evening Daily", all.get(0).getType());
