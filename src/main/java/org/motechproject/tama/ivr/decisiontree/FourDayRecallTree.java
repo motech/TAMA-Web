@@ -24,11 +24,13 @@ public class FourDayRecallTree extends TamaDecisionTree {
 
     @Override
     protected Node createRootNode(IVRContext ivrContext) {
-        Transition missedMultiplePillsTransition = new Transition()
+
+        Transition missedMultipleDosagesTransition = new Transition()
                 .setDestinationNode(
                         new Node()
                                 .setPrompts(new AudioPrompt().setCommand(dosageMissedOnMultipleDays))
                 );
+
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
@@ -47,11 +49,11 @@ public class FourDayRecallTree extends TamaDecisionTree {
                                                 .setPrompts(new AudioPrompt().setCommand(dosagesMissedOnOneDay))
                                 )
                         },
-                        {"2", missedMultiplePillsTransition
+                        {"2", missedMultipleDosagesTransition
                         },
-                        {"3", missedMultiplePillsTransition
+                        {"3", missedMultipleDosagesTransition
                         },
-                        {"4", missedMultiplePillsTransition
+                        {"4", missedMultipleDosagesTransition
                         }
                 });
     }

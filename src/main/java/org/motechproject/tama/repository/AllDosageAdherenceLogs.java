@@ -26,8 +26,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
     @View(name = "find_by_dosage_id", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.dosageId) {emit(doc.dosageId, doc._id);}}")
     public List<DosageAdherenceLog> findByDosageId(String dosageId) {
         ViewQuery q = createQuery("find_by_dosage_id").key(dosageId).includeDocs(true);
-        List<DosageAdherenceLog> adherenceLogs = db.queryView(q, DosageAdherenceLog.class);
-        return adherenceLogs;
+        return db.queryView(q, DosageAdherenceLog.class);
     }
 
     @View(name = "find_success_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
@@ -47,7 +46,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         ComplexKey key = ComplexKey.of(regimenId, DosageStatus.WILL_TAKE_LATER, DateUtil.today());
         ViewQuery q = createQuery("find_whether_current_dosage_will_be_taken_later").key(key);
         ViewResult viewResult = db.queryView(q);
-        return rowCount(viewResult) == 1 ? true : false;
+        return rowCount(viewResult) == 1;
     }
 
     @View(name = "find_failure_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus], doc._id);}}", reduce = "_count")

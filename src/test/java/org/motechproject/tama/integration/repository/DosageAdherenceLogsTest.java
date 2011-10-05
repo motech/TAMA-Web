@@ -1,6 +1,7 @@
 package org.motechproject.tama.integration.repository;
 
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -151,5 +152,4 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
 
         Assert.assertEquals(2, count);
     }
-
 }
