@@ -18,16 +18,18 @@ public class DosagesTest extends SpringIntegrationTest {
         DosageType twice = new DosageType("Twice Daily");
         DosageType morning = new DosageType("Morning Daily");
         DosageType evening = new DosageType("Evening Daily");
+        DosageType variable = new DosageType("Variable Dosage");
         allDosageTypes.add(twice);
         allDosageTypes.add(morning);
         allDosageTypes.add(evening);
 
         List<DosageType> all = allDosageTypes.getAll();
         Assert.assertEquals("Evening Daily", all.get(0).getType());
-        Assert.assertEquals("Twice Daily", all.get(all.size() -1).getType());
+        Assert.assertEquals("Variable Dosage", all.get(all.size() - 1).getType());
 
         markForDeletion(evening);
         markForDeletion(morning);
         markForDeletion(twice);
+        markForDeletion(variable);
     }
 }
