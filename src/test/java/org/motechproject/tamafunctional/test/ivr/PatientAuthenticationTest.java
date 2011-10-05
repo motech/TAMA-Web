@@ -33,10 +33,10 @@ public class PatientAuthenticationTest extends BaseIVRTest {
 
         Caller caller = caller(patient);
         IVRResponse ivrResponse = caller.call();
-        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC_URL);
+        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("1234#");
-        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC_URL);
+        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
     }
 }
 

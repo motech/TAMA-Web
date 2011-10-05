@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CallContinuationAfterTree implements PostTreeCallContinuation {
+
     private IVRMessage ivrMessage;
+
     private VoiceOutboxService voiceOutboxService;
 
     @Autowired
@@ -26,6 +28,7 @@ public class CallContinuationAfterTree implements PostTreeCallContinuation {
             ivrResponseBuilder.withPlayAudios(TamaIVRMessage.CONTINUE_TO_OUTBOX);
             ivrResponseBuilder.withNextUrl(ivrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL));
         } else {
+            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NO_MESSAGES_FOR_NOW);
             ivrResponseBuilder.withPlayAudios(ivrMessage.getSignatureMusic());
             ivrResponseBuilder.withHangUp();
         }

@@ -12,7 +12,8 @@ import java.util.Properties;
 public class TamaIVRMessage implements IVRMessage {
     public static final String WAV = ".wav";
 
-    public static final String SIGNATURE_MUSIC_URL = "signature_music";
+    public static final String MINUTES = "timeOfDayMinutes";
+    public static final String SIGNATURE_MUSIC = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
     public static final String OUTBOX_LOCATION_URL = "outbox.location.url";
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
@@ -86,6 +87,11 @@ public class TamaIVRMessage implements IVRMessage {
 	public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
 
 	public static final String MENU_010_05_01_MAINMENU4 = "010_05_01_MainMenu4";
+
+    public static final String HANGUP_OR_MAIN_MENU = "010_08_01_HangUpOrMainMenu";
+
+    public static final String NO_MESSAGES_FOR_NOW = "010_07_03_NoOutboxMessages";
+
     /* -------- Adherence Feedback ----------- */
 
     /*----------Outbox -------------------------*/
@@ -145,6 +151,6 @@ public class TamaIVRMessage implements IVRMessage {
     }
     @Override
     public String getSignatureMusic() {
-    	return SIGNATURE_MUSIC_URL;
+    	return SIGNATURE_MUSIC;
     }
 }

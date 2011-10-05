@@ -6,9 +6,6 @@ import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
 import org.motechproject.outbox.api.model.VoiceMessageType;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRMessage;
-import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRResponseBuilder;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -34,23 +31,21 @@ public class OutboxController {
 
     private VoiceOutboxService outboxService;
 
-    private IVRMessage ivrMessage;
-    
+    private TamaIVRMessage tamaIvrMessage;
+
     @Autowired
     ApplicationContext applicationContext;
 
     @Autowired
-    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage) {
+    public OutboxController(VoiceOutboxService outboxService, TamaIVRMessage tamaIvrMessage) {
         this.outboxService = outboxService;
-        this.ivrMessage = ivrMessage;
+        this.tamaIvrMessage = tamaIvrMessage;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public String play(HttpServletRequest request) {
-
         HttpSession session = request.getSession();
-
         if ("hangup".equalsIgnoreCase(request.getParameter(EVENT_REQUEST_PARAM))) {
             session.invalidate();
             return null;
@@ -63,53 +58,67 @@ public class OutboxController {
         OutboundVoiceMessage outboundVoiceMessage = outboxService.getNextPendingMessage(patientId);
 
         if (outboundVoiceMessage == null) {
-        	return hangup();
+            return responseAfterListeningToAllOutboxMessages();
+        } else {
+            setLastPlayedMessage(session, outboundVoiceMessage);
+            return voiceMessageResponse(session, outboundVoiceMessage);
         }
-        markCurrentMessageAsLastPlayed(session, outboundVoiceMessage);
-        return voiceMessageResponse(session, outboundVoiceMessage);
     }
 
     private String voiceMessageResponse(HttpSession session, OutboundVoiceMessage outboundVoiceMessage) {
         IVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-
         VoiceMessageType voiceMessageType = outboundVoiceMessage.getVoiceMessageType();
+
         if (voiceMessageType != null && "AudioCommand".equals(voiceMessageType.getVoiceMessageTypeName())) {
-        	List<String> commands = (List<String>)outboundVoiceMessage.getParameters().get(VOICE_MESSAGE_COMMAND_AUDIO);
-        	for (String command : commands){
-        		OutboxCommand commandObject = (OutboxCommand)applicationContext.getBean(command);
-        		ivrResponseBuilder.withPlayAudios(commandObject.execute(new IVRSession(session)));
-        	}
+            addAudiosToBePlayedToResponse(session, outboundVoiceMessage, ivrResponseBuilder);
         }
-        
-        List<String> audioFiles = (List<String>) outboundVoiceMessage.getParameters().get(AUDIO_FILES_KEY);
-        if (audioFiles != null)
-        for (String audioFile : audioFiles) {
-            ivrResponseBuilder.withPlayAudios(audioFile);
-        }
+        addAudioFilesToBePlayedToResponse(outboundVoiceMessage, ivrResponseBuilder);
 
-        ivrResponseBuilder.withNextUrl(ivrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL));
-
+        ivrResponseBuilder.withNextUrl(tamaIvrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL));
         String preferredLanguage = (String) session.getAttribute(IVRSession.IVRCallAttribute.PREFERRED_LANGUAGE_CODE);
-        return ivrResponseBuilder.create(ivrMessage, null, preferredLanguage);
+        return ivrResponseBuilder.create(tamaIvrMessage, null, preferredLanguage);
     }
 
-    private void markCurrentMessageAsLastPlayed(HttpSession session, OutboundVoiceMessage outboundVoiceMessage) {
-        session.setAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID, outboundVoiceMessage.getId());
+    private void addAudiosToBePlayedToResponse(HttpSession session, OutboundVoiceMessage outboundVoiceMessage, IVRResponseBuilder ivrResponseBuilder) {
+        List<String> commands = (List<String>) outboundVoiceMessage.getParameters().get(VOICE_MESSAGE_COMMAND_AUDIO);
+        for (String command : commands) {
+            OutboxCommand commandObject = (OutboxCommand) applicationContext.getBean(command);
+            ivrResponseBuilder.withPlayAudios(commandObject.execute(new IVRSession(session)));
+        }
+    }
+
+    private void addAudioFilesToBePlayedToResponse(OutboundVoiceMessage outboundVoiceMessage, IVRResponseBuilder ivrResponseBuilder) {
+        List<String> audioFiles = (List<String>) outboundVoiceMessage.getParameters().get(AUDIO_FILES_KEY);
+        if (audioFiles != null){
+            for (String audioFile : audioFiles) {
+                ivrResponseBuilder.withPlayAudios(audioFile);
+            }
+        }
     }
 
     private void markPreviousMessageAsPlayed(HttpSession session) {
-        String lastPlayedMessageId = (String) session.getAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID);
+        String lastPlayedMessageId = getLastPlayedMessage(session);
         if (lastPlayedMessageId != null) {
             outboxService.setMessageStatus(lastPlayedMessageId, OutboundVoiceMessageStatus.PLAYED);
         }
     }
 
-    private String hangup() {
+    private String responseAfterListeningToAllOutboxMessages() {
         IVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-
-        ivrResponseBuilder.withPlayAudios(ivrMessage.getSignatureMusic());
+        ivrResponseBuilder.withPlayAudios(TamaIVRMessage.HANGUP_OR_MAIN_MENU);
+        ivrResponseBuilder.withPlayAudios(tamaIvrMessage.getSignatureMusic());
         ivrResponseBuilder.withHangUp();
 
-        return ivrResponseBuilder.createWithDefaultLanguage(ivrMessage, null);
+        return ivrResponseBuilder.createWithDefaultLanguage(tamaIvrMessage, null);
+
+    }
+
+
+    private void setLastPlayedMessage(HttpSession session, OutboundVoiceMessage outboundVoiceMessage) {
+        session.setAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID, outboundVoiceMessage.getId());
+    }
+
+    private String getLastPlayedMessage(HttpSession session) {
+        return (String) session.getAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID);
     }
 }
