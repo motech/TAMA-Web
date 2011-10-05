@@ -53,11 +53,11 @@ public class PillRegimenRequestMapper {
                 convert(dosageSchedule, dosageRequestFromSchedule));
     }
 
-    private class DrugDosageMedicineRequestConverter implements Converter<DrugDosage, MedicineRequest> {
+    protected class DrugDosageMedicineRequestConverter implements Converter<DrugDosage, MedicineRequest> {
         @Override
         public MedicineRequest convert(DrugDosage drugDosage) {
             return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
-                    drugDosage.getStartDate(),
+                    drugDosage.getStartDate().plusDays(drugDosage.getOffsetDays()),
                     drugDosage.getEndDate());
         }
     }

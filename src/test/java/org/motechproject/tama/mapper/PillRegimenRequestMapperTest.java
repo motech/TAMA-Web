@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -107,6 +108,32 @@ public class PillRegimenRequestMapperTest {
         assertMedicineRequest(dosageRequest3.getMedicineRequests().get(1), "Drug2_brandName", startDateForDrug2, endDateForDrug2);
     }
 
+    @Test
+    public void shouldConvertDosageRequestToMedicine() {
+        final LocalDate startDate = DateUtil.newDate(2011, 12, 12);
+        final int offsetDays = 15;
+        final String testBrandName = "testBrand";
+
+        when(allDrugs.get(Matchers.<String>any())).thenReturn(new Drug() {
+            @Override
+            public String fullName(String brandId) {
+                return testBrandName;
+            }
+        });
+
+        final PillRegimenRequestMapper.DrugDosageMedicineRequestConverter drugDosageMedicineRequestConverter = new PillRegimenRequestMapper(allDrugs, 1, 1, 1).new DrugDosageMedicineRequestConverter();
+        DrugDosage drugDosage = new DrugDosage() {{
+            setDosageSchedules(Arrays.asList("10:00am", "10:00pm"));
+            setOffsetDays(offsetDays);
+            setStartDate(startDate);
+        }};
+
+        final MedicineRequest medicineRequest = drugDosageMedicineRequestConverter.convert(drugDosage);
+
+        assertEquals(startDate.plusDays(offsetDays), medicineRequest.getStartDate());
+    }
+
+
     private DosageRequest getByStartHour(int startHour, List<DosageRequest> dosageRequests) {
         for (DosageRequest dosageRequest : dosageRequests) {
             if (dosageRequest.getStartHour() == startHour)
@@ -126,13 +153,13 @@ public class PillRegimenRequestMapperTest {
         Assert.assertEquals(endDate, medicineRequest.getEndDate());
     }
 
-    private DrugDosage drugDosage(String drugId, LocalDate startDate, LocalDate endDate, List<String> dosageSchedules) {
-        DrugDosage drugDosage = new DrugDosage();
-        drugDosage.setDrugId(drugId);
-        drugDosage.setBrandId("brandId");
-        drugDosage.setStartDate(startDate);
-        drugDosage.setEndDate(endDate);
-        drugDosage.setDosageSchedules(dosageSchedules);
-        return drugDosage;
+    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final List<String> dosageSchedules) {
+        return new DrugDosage() {{
+            setDrugId(drugId);
+            setBrandId("brandId");
+            setStartDate(startDate);
+            setEndDate(endDate);
+            setDosageSchedules(dosageSchedules);
+        }};
     }
 }

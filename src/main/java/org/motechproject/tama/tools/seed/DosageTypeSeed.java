@@ -16,5 +16,6 @@ public class DosageTypeSeed extends Seed {
         allDosageTypes.add(new DosageType("Morning Daily"));
         allDosageTypes.add(new DosageType("Evening Daily"));
         allDosageTypes.add(new DosageType("Twice Daily"));
+        allDosageTypes.add(new DosageType("Variable Dosage"));
     }
 }

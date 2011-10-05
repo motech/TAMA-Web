@@ -32,6 +32,8 @@ public class DrugDosage extends BaseEntity {
     @NotNull
     private String dosageTypeId;
 
+    private Integer offsetDays = new Integer(0);
+
     @NotNull
     private List<String> dosageSchedules = new ArrayList<String>();
 
@@ -140,6 +142,14 @@ public class DrugDosage extends BaseEntity {
 
     public void setMealAdviceId(String mealAdviceId) {
         this.mealAdviceId = mealAdviceId;
+    }
+
+    public Integer getOffsetDays() {
+        return offsetDays;
+    }
+
+    public void setOffsetDays(Integer offsetDays) {
+        this.offsetDays = offsetDays;
     }
 
     @JsonIgnore

@@ -11,7 +11,7 @@ dojo.addOnLoad(function() {
     var composition_groups = dijit.byId('_treatmentAdvice.drugCompositionGroupId_id');
     var compositions = dijit.byId('_treatmentAdvice.drugCompositionId_id');
 
-    var drug2_name =  dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id');
+    var drug2_name = dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id');
 
     var init = function() {
         var options = new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}});
@@ -44,18 +44,18 @@ dojo.addOnLoad(function() {
 
         var drug_brands = [dijit.byId('_treatmentAdvice.drugDosages[0].brandId_id'), dijit.byId('_treatmentAdvice.drugDosages[1].brandId_id')];
 
-        var secondDosageWidgets = dijit.registry.filter(function(w){
+        var secondDosageWidgets = dijit.registry.filter(function(w) {
             return w.id.indexOf("_treatmentAdvice.drugDosages[1]") !== -1;
         });
 
         dojo.connect(compositions, "onChange", function(composition_id) {
             var selected_drug = null;
             var other_drug = null;
-            dojo.forEach(compositions_data_hash[composition_id].drugs, function(drug, i){
-               if (compositions_data_hash[composition_id].displayName === drug.name)
-                 selected_drug = drug;
-               else
-                 other_drug = drug;
+            dojo.forEach(compositions_data_hash[composition_id].drugs, function(drug, i) {
+                if (compositions_data_hash[composition_id].displayName === drug.name)
+                    selected_drug = drug;
+                else
+                    other_drug = drug;
             });
 
             var composition_drugs = dojo.filter([selected_drug, other_drug], function(drug) {
@@ -65,7 +65,7 @@ dojo.addOnLoad(function() {
             var drugIds = [dojo.byId("drugDosages[0].drugId"), dojo.byId("drugDosages[1].drugId")];
 
             options = [ new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}}),
-                        new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}})];
+                new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}})];
             dojo.forEach(composition_drugs, function(drug, i) {
                 dojo.forEach(drug.brands, function(brand, j) {
                     options[i].newItem({name: brand.name, id: brand.companyId });
@@ -87,7 +87,7 @@ dojo.addOnLoad(function() {
                     widget.set("disabled", true);
                     widget.set("required", false);
                     dojo.query(".dosage:last-child").style("display", "none");
-                    dojo.forEach(dojo.query(".dosage:last-child input"), function(element, i){
+                    dojo.forEach(dojo.query(".dosage:last-child input"), function(element, i) {
                         element.disabled = true;
                     });
                 } else {
@@ -95,7 +95,7 @@ dojo.addOnLoad(function() {
                     if (dojo.indexOf(nonRequiredWidgets, widget.id) === -1)
                         widget.set("required", true);
                     dojo.query(".dosage:last-child").style("display", "block");
-                    dojo.forEach(dojo.query(".dosage:last-child input"), function(element, i){
+                    dojo.forEach(dojo.query(".dosage:last-child input"), function(element, i) {
                         element.disabled = false;
                     });
                     _changeSecondDosage();
@@ -105,7 +105,7 @@ dojo.addOnLoad(function() {
 
         });
 
-        var changeDosageType = function(dosage){
+        var changeDosageType = function(dosage) {
             return function() {
                 var morning_label = dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules' + dosage + '0_id');
                 var morning_time = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].dosageSchedules[0]_id');
@@ -126,28 +126,37 @@ dojo.addOnLoad(function() {
                     morning_time.set('disabled', true);
                     morning_time.set('required', false);
                     morning_label.style.display = 'none';
-                    morning_time.set('value','');
+                    morning_time.set('value', '');
                 };
                 var hideEveningTime = function() {
                     evening_time.set('disabled', true);
                     evening_time.set('required', false);
                     evening_label.style.display = 'none';
-                    evening_time.set('value','');
+                    evening_time.set('value', '');
                 };
 
                 var schedule = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].dosageTypeId_id');
                 if (schedule._lastDisplayedValue === 'Morning Daily') {
                     showMorningTime();
                     hideEveningTime();
-                } else if (schedule._lastDisplayedValue === 'Evening Daily'){
+                } else if (schedule._lastDisplayedValue === 'Evening Daily') {
                     showEveningTime();
                     hideMorningTime();
                 } else {
                     showMorningTime();
                     showEveningTime();
                 }
+
+                showOffSet(dosage);
             };
         };
+
+        var showOffSet = function(dosage) {
+            var schedule = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].dosageTypeId_id');
+            var id = "_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules_" + dosage + "_offsetDays_id";
+            dojo.byId(id).style.display = schedule._lastDisplayedValue === 'Variable Dosage' ? 'block' : 'none';
+            dijit.byId("_treatmentAdvice.drugDosages[" + dosage + "].offsetDays_id").set('required', schedule._lastDisplayedValue === 'Variable Dosage');
+        }
 
         var _changeFirstDosage = changeDosageType(0);
         var _changeSecondDosage = changeDosageType(1);
@@ -185,18 +194,25 @@ dojo.addOnLoad(function() {
             };
 
             var conditions = [
-            {
-                execute: function(){ return getProperties(amTimes).length > 1 && getProperties(pmTimes).length > 1; },
-                message : "You have entered different times for morning and evening doses. Please change the times to the same time for both dosages."
-            },
-            {
-                execute: function(){ return getProperties(amTimes).length > 1; },
-                message : "You have entered different times for morning dose. Please change the times to the same time for both morning dosages."
-            },
-            {
-                execute: function(){ return getProperties(pmTimes).length > 1; },
-                message : "You have entered different times for evening dose. Please change the times to the same time for both evening dosages."
-            }];
+                {
+                    execute: function() {
+                        return getProperties(amTimes).length > 1 && getProperties(pmTimes).length > 1;
+                    },
+                    message : "You have entered different times for morning and evening doses. Please change the times to the same time for both dosages."
+                },
+                {
+                    execute: function() {
+                        return getProperties(amTimes).length > 1;
+                    },
+                    message : "You have entered different times for morning dose. Please change the times to the same time for both morning dosages."
+                },
+                {
+                    execute: function() {
+                        return getProperties(pmTimes).length > 1;
+                    },
+                    message : "You have entered different times for evening dose. Please change the times to the same time for both evening dosages."
+                }
+            ];
 
 //        Disabled in lieu of #494, for usability testing.
 //            for (var i = 0; i < conditions.length; i++){
@@ -224,7 +240,7 @@ dojo.addOnLoad(function() {
                         item.value = item.value + 'am';
                 });
                 dojo.forEach(pmTimesArray, function(item) {
-                    if(item != null && item != undefined && item.value !== "")
+                    if (item != null && item != undefined && item.value !== "")
                         item.value = item.value + 'pm';
                 });
             }
@@ -236,7 +252,7 @@ dojo.addOnLoad(function() {
             regimens_data_hash[regimens_data[i]._id] = regimens_data[i];
             for (var j = 0; j < regimens_data[i].drugCompositionGroups.length; j++) {
                 groups_data_hash[regimens_data[i].drugCompositionGroups[j]._id] = regimens_data[i].drugCompositionGroups[j];
-                for (var k =0; k < regimens_data[i].drugCompositionGroups[j].drugCompositions.length; k++){
+                for (var k = 0; k < regimens_data[i].drugCompositionGroups[j].drugCompositions.length; k++) {
                     compositions_data_hash[regimens_data[i].drugCompositionGroups[j].drugCompositions[k].id] = regimens_data[i].drugCompositionGroups[j].drugCompositions[k];
                 }
             }
@@ -252,7 +268,7 @@ dojo.addOnLoad(function() {
             build_regimens_hash();
             init();
         },
-        error: function(result, args){
+        error: function(result, args) {
         }
     });
 });
