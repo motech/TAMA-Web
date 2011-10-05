@@ -49,7 +49,6 @@ public class CurrentDosageTakenTreeTest {
     public void shouldGetPillTakenCommand() {
         Node nextNode = testConfirmTree.getTree(ivrContext).nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(1, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof NextCallDetails);
     }
 }
