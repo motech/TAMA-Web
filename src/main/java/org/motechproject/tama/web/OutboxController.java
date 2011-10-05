@@ -58,7 +58,7 @@ public class OutboxController {
         OutboundVoiceMessage outboundVoiceMessage = outboxService.getNextPendingMessage(patientId);
 
         if (outboundVoiceMessage == null) {
-            return responseAfterListeningToAllOutboxMessages();
+            return postOutboxForwardResponse();
         } else {
             setLastPlayedMessage(session, outboundVoiceMessage);
             return voiceMessageResponse(session, outboundVoiceMessage);
@@ -103,12 +103,9 @@ public class OutboxController {
         }
     }
 
-    private String responseAfterListeningToAllOutboxMessages() {
+    private String postOutboxForwardResponse() {
         IVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        ivrResponseBuilder.withPlayAudios(TamaIVRMessage.HANGUP_OR_MAIN_MENU);
-        ivrResponseBuilder.withPlayAudios(tamaIvrMessage.getSignatureMusic());
-        ivrResponseBuilder.withHangUp();
-
+        ivrResponseBuilder.withNextUrl(tamaIvrMessage.getText(TamaIVRMessage.POST_OUTBOX_URL));
         return ivrResponseBuilder.createWithDefaultLanguage(tamaIvrMessage, null);
 
     }

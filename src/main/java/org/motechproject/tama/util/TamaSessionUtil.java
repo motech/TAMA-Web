@@ -15,6 +15,7 @@ public class TamaSessionUtil {
         public static final String FOUR_DAY_RECALL = "four_day_recall";
         public static final String PATIENT_DOC_ID = IVRSession.IVRCallAttribute.EXTERNAL_ID;
         public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
+        public static final String CALL_DIRECTION = "CallDirection";
     }
 
     public static String getDosageIdFrom(IVRContext ivrContext) {

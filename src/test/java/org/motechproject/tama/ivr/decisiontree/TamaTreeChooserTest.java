@@ -1,13 +1,5 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationTestContext.xml")
@@ -59,6 +60,7 @@ public class TamaTreeChooserTest {
     private IVRRequest ivrRequest;
 
     private IVRContext ivrContext;
+
     private PillRegimenResponse pillRegimenResponse;
 
     @Before
@@ -73,7 +75,6 @@ public class TamaTreeChooserTest {
 
     @Test
     public void shouldGetCurrentDosageReminderTreeIfTAMACallsPatient() {
-
     	when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
         List<DosageResponse> dosages = Arrays.asList(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, DateUtil.today().minusDays(1), null));
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
@@ -111,5 +112,17 @@ public class TamaTreeChooserTest {
     public void shouldGetFourDayRecallTreeForPatientsOnWeeklyAdherence() {
         when(ivrSession.get(TamaSessionAttribute.FOUR_DAY_RECALL)).thenReturn("true");
         assertTrue(fourDayRecallTree.getTree(ivrContext) == treeChooser.getTree(ivrContext));
+    }
+
+    @Test
+    public void shouldSetCallDirectionAsInboundInSession_WhenPatientCallsTama() {
+        List<DosageResponse> dosages = Arrays.asList(new DosageResponse("dosageId", new Time(10, 5), DateUtil.today(), null, DateUtil.today().minusDays(1), null));
+        pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
+        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
+        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosages.get(0).getDosageHour()));
+        when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
+
+        treeChooser.getTree(ivrContext);
+        verify(ivrSession).set(TamaSessionAttribute.CALL_DIRECTION, CallDirection.Inbound);
     }
 }

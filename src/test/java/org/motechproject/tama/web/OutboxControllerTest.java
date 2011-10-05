@@ -33,6 +33,7 @@ public class OutboxControllerTest {
     public static final String SIGNATURE_MUSIC_URL = "http://localhost/wav/signature_music.wav";
     public static final String HANGUP_OR_MAIN_MENU_URL = "http://localhost/wav/en/hangUpCall.wav";
     public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "lastVMID";
+    private static final String POST_OUTBOX_URL = "http://localhost/tama/postoutbox";
 
     @Mock
     private HttpServletRequest request;
@@ -106,26 +107,12 @@ public class OutboxControllerTest {
     }
 
     @Test
-    public void shouldPlayHangUpOrMainMenu_AfterPatientHasListenedToAllOutboxMessages() {
-        when(tamaIvrMessage.getWav(TamaIVRMessage.HANGUP_OR_MAIN_MENU, "en")).thenReturn(HANGUP_OR_MAIN_MENU_URL);
-        setUpAllOutboxMessagesPlayedScenario();
-
+    public void shouldForwardToPostOutboxURL_WhenPatientHasListenedToAllMessages() {
+        when(tamaIvrMessage.getText(TamaIVRMessage.POST_OUTBOX_URL)).thenReturn(POST_OUTBOX_URL);
+        when(outboxService.getNextPendingMessage(PATIENT_ID)).thenReturn(null);
         String response = outboxController.play(request);
 
-        assertTrue(response.contains(HANGUP_OR_MAIN_MENU_URL));
-        assertTrue(response.contains("hangup"));
-    }
-
-    @Test
-    public void shouldPlaySignatureMusic_AfterPatientHasListenedToHangUpOrMainMenu() {
-        when(tamaIvrMessage.getSignatureMusic()).thenReturn(TamaIVRMessage.SIGNATURE_MUSIC);
-        when(tamaIvrMessage.getWav(TamaIVRMessage.SIGNATURE_MUSIC, "en")).thenReturn(SIGNATURE_MUSIC_URL);
-        setUpAllOutboxMessagesPlayedScenario();
-
-        String response = outboxController.play(request);
-
-        assertTrue(response.indexOf(SIGNATURE_MUSIC_URL) > response.indexOf(HANGUP_OR_MAIN_MENU_URL));
-        assertTrue(response.contains("hangup"));
+        assertTrue(response.contains(POST_OUTBOX_URL));
     }
 
     @Test
