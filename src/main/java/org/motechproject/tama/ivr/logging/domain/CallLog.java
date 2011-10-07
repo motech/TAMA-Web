@@ -15,6 +15,8 @@ public class CallLog extends CouchEntity {
 
     public static final String CALL_TYPE_SYMPTOM_REPORTING = "Symptom Reporting";
     public static final String CALL_TYPE_PILL_REMINDER = "Pill Reminder";
+    public static final String CALL_TYPE_UNAUTHENTICATED = "Unauthenticated";
+
 
     private String patientDocumentId;
 
@@ -50,7 +52,7 @@ public class CallLog extends CouchEntity {
                 return callEvent.getData().get(CallEventConstants.CALL_TYPE);
             }
         }
-        return "";
+        return CALL_TYPE_UNAUTHENTICATED;
     }
 
     public DateTime getStartTime() {

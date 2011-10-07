@@ -23,7 +23,8 @@ public class CallLogViewMapper {
         List<CallLogView> callLogViews = new ArrayList<CallLogView>();
         for (CallLog callLog : callLogs) {
             String patientId = allPatients.get(callLog.getPatientDocumentId()).getPatientId();
-            CallLogView callLogView = new CallLogView(patientId, callLog);
+            String clinicName = allPatients.get(callLog.getPatientDocumentId()).getClinic().getName();
+            CallLogView callLogView = new CallLogView(patientId, callLog, clinicName);
             callLogViews.add(callLogView);
         }
         return callLogViews;

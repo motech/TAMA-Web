@@ -12,15 +12,15 @@ public class ResponseTest {
     public void shouldPlayAudiosInCollectDtmf() {
         Response ivrResponse = KooKooResponseParser.fromXml("<response sid=\"123\"><collectdtmf><playaudio>foo.wav</playaudio><playaudio>bar.wav</playaudio></collectdtmf></response>");
         List<String> responses = ivrResponse.responsePlayed();
-        assertEquals("foo.wav", responses.get(0));
-        assertEquals("bar.wav", responses.get(1));
+        assertEquals("foo", responses.get(0));
+        assertEquals("bar", responses.get(1));
     }
 
     @Test
     public void shouldPlayAudiosInResponse_WhenDtmfIsNotCollected() {
         Response ivrResponse = KooKooResponseParser.fromXml("<response sid=\"123\"><playaudio>foo.wav</playaudio><playaudio>bar.wav</playaudio><hangup/></response>");
         List<String> responses = ivrResponse.responsePlayed();
-        assertEquals("foo.wav", responses.get(0));
-        assertEquals("bar.wav", responses.get(1));
+        assertEquals("foo", responses.get(0));
+        assertEquals("bar", responses.get(1));
     }
 }

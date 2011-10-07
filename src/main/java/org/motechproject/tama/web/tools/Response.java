@@ -24,6 +24,9 @@ public class Response {
 
     @XStreamAlias("hangup")
     private HangUp hangUp;
+    public static final int EXCLUDING_FACTOR = 1;
+    public static final String LEFT_BOUNDING_SUBSEQUENCE = "/";
+    public static final String RIGHT_BOUNDING_SUBSEQUENCE = ".wav";
 
     public String sid() {
         return sid;
@@ -35,19 +38,38 @@ public class Response {
 
     public List<String> responsePlayed() {
         if (collectDtmf()) {
-            return collectdtmf.responsePlayed();
+            List<String> responsesPlayed = collectdtmf.responsePlayed();
+            if(collectdtmf.isPlayAudio()){
+                List<String> parsedResponses = parsePlayedResponsesToFormat(responsesPlayed);
+                return parsedResponses;
+            }
+            else{
+                return responsesPlayed;
+            }
         }
         return getResponsesPlayed();
     }
 
     private List<String> getResponsesPlayed(){
         if(playaudios!= null && !playaudios.isEmpty()){
-            return playaudios;
+            List<String> parsedResponses = parsePlayedResponsesToFormat(playaudios);
+            return parsedResponses;
         }
         if(playtexts!= null && !playtexts.isEmpty()){
             return playtexts;
         }
         return Collections.emptyList();
     }
+
+    private List<String> parsePlayedResponsesToFormat(List<String> playAudios) {
+        List<String> parsedResponses = new ArrayList<String>();
+        String responseToBeDisplayed;
+        for(String responsePlayed : playAudios){
+            responseToBeDisplayed = responsePlayed.substring(responsePlayed.lastIndexOf(LEFT_BOUNDING_SUBSEQUENCE)+ EXCLUDING_FACTOR, responsePlayed.indexOf(RIGHT_BOUNDING_SUBSEQUENCE));
+            parsedResponses.add(responseToBeDisplayed);
+        }
+        return parsedResponses;
+    }
+
 }
 

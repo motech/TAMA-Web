@@ -50,6 +50,6 @@ public class CallEventViewTest {
 
         List<String> content = callEventView.getResponses();
 
-        assertEquals("signature_music.wav", content.get(0));
+        assertEquals("signature_music", content.get(0));
     }
 }

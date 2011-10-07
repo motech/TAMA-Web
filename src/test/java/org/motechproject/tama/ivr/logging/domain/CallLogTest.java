@@ -46,7 +46,7 @@ public class CallLogTest {
         Map<String, String> eventParams = Collections.emptyMap();
         callLog.setCallEvents(Arrays.asList(new CallEvent("NewCall",eventParams), new CallEvent("HangUp", eventParams)));
 
-        assertEquals("", callLog.getCallType());
+        assertEquals("Unauthenticated", callLog.getCallType());
     }
 
     private CallLog callWithOneAuthenticationEvent() {

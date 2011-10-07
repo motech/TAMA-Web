@@ -9,20 +9,20 @@ import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
+import org.motechproject.tama.web.view.CallLogPreferencesFilter;
 import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CallSummaryControllerTest {
@@ -47,6 +47,10 @@ public class CallSummaryControllerTest {
     @Mock
     private AuthenticatedUser user;
 
+    @Mock
+    BindingResult bindingResult;
+
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -58,15 +62,17 @@ public class CallSummaryControllerTest {
 
     @Test
     public void shouldShowAllCallLogsBetweenEnteredDates() {
-        List<CallLog> callLogs = Arrays.asList(new CallLog());
-        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", new CallLog()));
-
+        CallLog callLog = setUpCallLogs();
+        List<CallLog> callLogs = Arrays.asList(callLog);
+        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic"));
+        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
 
         when(user.isAdministrator()).thenReturn(true);
         when(callLogService.getLogsBetweenDates(any(DateTime.class), any(DateTime.class))).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
+        when(bindingResult.hasErrors()).thenReturn(false);
 
-        String view = callSummaryController.list(new Date(), new Date() ,request, uiModel);
+        String view = callSummaryController.list(callLogPreferencesFilter, bindingResult, request, uiModel);
 
         verify(uiModel).addAttribute("callsummary", callLogViews);
         assertEquals("callsummary/list", view);
@@ -74,19 +80,35 @@ public class CallSummaryControllerTest {
 
     @Test
     public void shouldShowOnlyLogsOfPatientsBelongingToTheClinic() {
-        List<CallLog> callLogs = Arrays.asList(new CallLog());
-        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", new CallLog()));
-        Date callLogStartDate = DateUtil.now().toDate();
-        Date callLogEndDate = DateUtil.now().plusDays(1).toDate();
+        CallLog callLog = setUpCallLogs();
+        List<CallLog> callLogs = Arrays.asList(callLog);
+        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic"));
+        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
 
         when(user.isAdministrator()).thenReturn(false);
         when(user.getClinicId()).thenReturn("clinicId");
-        when(callLogService.getByClinicId(DateUtil.newDateTime(callLogStartDate), DateUtil.newDateTime(callLogEndDate), "clinicId")).thenReturn(callLogs);
+        when(callLogService.getByClinicId(DateUtil.newDateTime(callLogPreferencesFilter.getCallLogStartDate()), DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).
+                plusHours(23).plusMinutes(59).plusSeconds(59), "clinicId")).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
+        when(bindingResult.hasErrors()).thenReturn(false);
 
-        String view = callSummaryController.list(callLogStartDate, callLogEndDate, request, uiModel);
+        String view = callSummaryController.list(callLogPreferencesFilter, bindingResult, request, uiModel);
 
         verify(uiModel).addAttribute("callsummary", callLogViews);
         assertEquals("callsummary/list", view);
+    }
+
+    private CallLogPreferencesFilter setUpCallLogPreferencesFilter() {
+        CallLogPreferencesFilter callLogPreferencesFilter = new CallLogPreferencesFilter();
+        callLogPreferencesFilter.setCallLogStartDate(DateUtil.today().toDate());
+        callLogPreferencesFilter.setCallLogEndDate(DateUtil.tomorrow().toDate());
+        return callLogPreferencesFilter;
+    }
+
+    private CallLog setUpCallLogs() {
+        CallLog callLog = new CallLog();
+        callLog.setStartTime(DateUtil.now());
+        callLog.setEndTime(DateUtil.now().plusMinutes(2));
+        return callLog;
     }
 }

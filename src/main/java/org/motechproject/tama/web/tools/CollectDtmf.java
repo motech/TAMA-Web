@@ -14,10 +14,31 @@ public class CollectDtmf {
     @XStreamImplicit(itemFieldName="playtext")
     private List<String> playtexts = new ArrayList<String>();
 
+    private boolean isPlayAudio;
+    private boolean isPlayText;
+
+    public boolean isPlayAudio() {
+        return isPlayAudio;
+    }
+
+    public void setPlayAudio(boolean playAudio) {
+        isPlayAudio = playAudio;
+    }
+
+    public boolean isPlayText() {
+        return isPlayText;
+    }
+
+    public void setPlayText(boolean playText) {
+        isPlayText = playText;
+    }
+
     public List<String> responsePlayed() {
         if(playaudios != null){
+            setPlayAudio(true);
             return playaudios;
         }else if(playtexts != null){
+            setPlayText(true);
             return playtexts;
         }else {
             return Collections.emptyList();
