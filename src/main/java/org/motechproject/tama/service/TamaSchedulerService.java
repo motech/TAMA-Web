@@ -44,7 +44,7 @@ public class TamaSchedulerService {
 
     public void scheduleJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
         String patientDocId = patient.getId();
-        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4);
+        LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
         LocalDate endDate = DateUtil.newDate(treatmentAdvice.getEndDate());
         DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
@@ -55,13 +55,12 @@ public class TamaSchedulerService {
                     .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + count + patientDocId)
                     .withPatientDocId(patientDocId)
                     .withTreatmentAdviceId(treatmentAdvice.getId())
-                    .withStartDate(startDate)
-                    .withEndDate(endDate)
+                    .withTreatmentAdviceStartDate(treatmentAdviceStartDate)
                     .payload();
             MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
             String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, count)).withTime(callTime).build();
             Date jobEndDate = endDate == null ? null : endDate.toDate();
-            CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, startDate.plusDays(count).toDate(), jobEndDate);
+            CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, treatmentAdviceStartDate.plusDays(4 + count).toDate(), jobEndDate);
             motechSchedulerService.scheduleJob(cronJobForForDayRecall);
         }
     }
@@ -72,7 +71,7 @@ public class TamaSchedulerService {
         return DayOfWeek.getDayOfWeek(dayOfWeekNum);
     }
 
-    public void scheduleRepeatingJobsForFourDayRecall(String patientDocId) {
+    public void scheduleRepeatingJobsForFourDayRecall(String patientDocId, String treatmentAdviceId, LocalDate treatmentAdviceStartDate) {
         Patient patient = allPatients.get(patientDocId);
         Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.RETRIES_PER_DAY));
         Integer retryInterval = Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL));
@@ -83,8 +82,10 @@ public class TamaSchedulerService {
 
         Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
                 .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + UUIDUtil.newUUID())
-                .withRetryFlag(true)
                 .withPatientDocId(patientDocId)
+                .withTreatmentAdviceId(treatmentAdviceId)
+                .withTreatmentAdviceStartDate(treatmentAdviceStartDate)
+                .withRetryFlag(true)
                 .payload();
         MotechEvent fourDayRecallRepeatingEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
         RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, jobStartTime.toDate(), jobEndTime.toDate(), maxOutboundRetries, retryInterval * 60 * 1000);

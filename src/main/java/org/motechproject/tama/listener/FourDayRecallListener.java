@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 public class FourDayRecallListener {
     public static final String PATIENT_DOC_ID_KEY = "patient_id";
     public static final String TREATMENT_ADVICE_DOC_ID_KEY = "treatment_advice_id";
-    public static final String START_DATE_KEY = "start_date";
-    public static final String END_DATE_KEY = "end_date";
+    public static final String TREATMENT_ADVICE_START_DATE_KEY = "start_date";
     public static final String RETRY_EVENT_KEY = "retry_event";
 
     private FourDayRecallCall fourDayRecallCall;
@@ -33,13 +32,12 @@ public class FourDayRecallListener {
     public void handle(MotechEvent motechEvent) {
         String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
         String treatmentAdviceId = motechEvent.getParameters().get(TREATMENT_ADVICE_DOC_ID_KEY).toString();
-        LocalDate startDate = (LocalDate) motechEvent.getParameters().get(START_DATE_KEY);
-        LocalDate endDate = (LocalDate) motechEvent.getParameters().get(END_DATE_KEY);
+        LocalDate treatmentAdviceStartDate = (LocalDate) motechEvent.getParameters().get(TREATMENT_ADVICE_START_DATE_KEY);
         Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
 
-        if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdviceId, startDate)) return;
-        if (!isRetryEvent) schedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId);
-        
+        if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdviceId, treatmentAdviceStartDate)) return;
+        if (!isRetryEvent) schedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId, treatmentAdviceId, treatmentAdviceStartDate);
+
         fourDayRecallCall.execute(patientDocId);
     }
 }

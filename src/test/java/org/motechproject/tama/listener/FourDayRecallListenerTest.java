@@ -36,7 +36,6 @@ public class FourDayRecallListenerTest {
     @Test
     public void shouldScheduleRetryCalls() {
         LocalDate startDate = DateUtil.today();
-        LocalDate endDate = startDate.plusDays(10);
         String PATIENT_ID = "patient_id";
         String TREATMENT_ADVICE_ID = "TA_ID";
 
@@ -44,21 +43,19 @@ public class FourDayRecallListenerTest {
                 .withJobId("job_id")
                 .withPatientDocId(PATIENT_ID)
                 .withTreatmentAdviceId(TREATMENT_ADVICE_ID)
-                .withStartDate(startDate)
-                .withEndDate(endDate)
+                .withTreatmentAdviceStartDate(startDate)
                 .payload();
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, data);
         fourDayRecallListener.handle(motechEvent);
         when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID, startDate)).thenReturn(false);
 
-        verify(schedulerService).scheduleRepeatingJobsForFourDayRecall(PATIENT_ID);
+        verify(schedulerService).scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, TREATMENT_ADVICE_ID, startDate);
         verify(fourDayRecallCall).execute(PATIENT_ID);
     }
 
     @Test
     public void shouldNotScheduleRetryCallsIfAdherenceIsAlreadyCaptured() {
         LocalDate startDate = DateUtil.today();
-        LocalDate endDate = startDate.plusDays(10);
         String PATIENT_ID = "patient_id";
         String TREATMENT_ADVICE_ID = "TA_ID";
         when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID, startDate)).thenReturn(true);
@@ -67,8 +64,7 @@ public class FourDayRecallListenerTest {
                 .withJobId("job_id")
                 .withPatientDocId(PATIENT_ID)
                 .withTreatmentAdviceId(TREATMENT_ADVICE_ID)
-                .withStartDate(startDate)
-                .withEndDate(endDate)
+                .withTreatmentAdviceStartDate(startDate)
                 .payload();
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, data);
         fourDayRecallListener.handle(motechEvent);
@@ -79,7 +75,6 @@ public class FourDayRecallListenerTest {
     @Test
     public void shouldNotCreateRetryJobsOnlyForSubsequentRetryCalls() {
         LocalDate startDate = DateUtil.today();
-        LocalDate endDate = startDate.plusDays(10);
         String PATIENT_ID = "patient_id";
         String TREATMENT_ADVICE_ID = "TA_ID";
 
@@ -87,8 +82,7 @@ public class FourDayRecallListenerTest {
                 .withJobId("job_id")
                 .withPatientDocId(PATIENT_ID)
                 .withTreatmentAdviceId(TREATMENT_ADVICE_ID)
-                .withStartDate(startDate)
-                .withEndDate(endDate)
+                .withTreatmentAdviceStartDate(startDate)
                 .withRetryFlag(true)
                 .payload();
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, data);

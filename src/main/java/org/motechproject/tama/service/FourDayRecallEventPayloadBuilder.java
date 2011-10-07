@@ -23,13 +23,8 @@ public class FourDayRecallEventPayloadBuilder {
         return this;
     }
 
-    public FourDayRecallEventPayloadBuilder withStartDate(LocalDate startDate) {
-        params.put(FourDayRecallListener.START_DATE_KEY, startDate);
-        return this;
-    }
-
-    public FourDayRecallEventPayloadBuilder withEndDate(LocalDate startDate) {
-        params.put(FourDayRecallListener.END_DATE_KEY, startDate);
+    public FourDayRecallEventPayloadBuilder withTreatmentAdviceStartDate(LocalDate startDate) {
+        params.put(FourDayRecallListener.TREATMENT_ADVICE_START_DATE_KEY, startDate);
         return this;
     }
 

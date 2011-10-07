@@ -29,13 +29,15 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TamaSchedulerServiceTest {
+    private final LocalDate TREATMENT_ADVICE_START_DATE = DateUtil.newDate(2012, 12, 12);
+    private final LocalDate TREATMENT_ADVICE_END_DATE = DateUtil.newDate(2012, 12, 24);
+    private static final String PATIENT_ID = "patient_id";
+    private final String TREATMENT_ADVICE_ID = "treatmentAdviceId";
+
     private TamaSchedulerService schedulerService;
     private TreatmentAdvice treatmentAdvice;
-    private LocalDate treatmentAdviceStartDate = DateUtil.newDate(2012, 12, 12);
-    private LocalDate treatmentAdviceEndDate = DateUtil.newDate(2012, 12, 24);
     private Patient patient;
 
-    private static final String PATIENT_ID = "patient_id";
     @Mock
     MotechSchedulerService motechSchedulerService;
     @Mock
@@ -50,6 +52,7 @@ public class TamaSchedulerServiceTest {
         treatmentAdvice = getTreatmentAdvice();
         final TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
         patient = new Patient() {{
+            setId(PATIENT_ID);
             getPatientPreferences().setBestCallTime(bestCallTime);
         }};
         schedulerService = new TamaSchedulerService(motechSchedulerService, properties, allPatients);
@@ -69,15 +72,18 @@ public class TamaSchedulerServiceTest {
         verify(motechSchedulerService, times(numDaysToRetry + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
-        assertCronSchedulableJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6", treatmentAdviceStartDate.plusDays(4).toDate(), treatmentAdviceEndDate.toDate());
-        assertCronSchedulableJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7", treatmentAdviceStartDate.plusDays(5).toDate(), treatmentAdviceEndDate.toDate());
-        assertCronSchedulableJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1", treatmentAdviceStartDate.plusDays(6).toDate(), treatmentAdviceEndDate.toDate());
+        assertCronSchedulableJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6", TREATMENT_ADVICE_START_DATE.plusDays(4).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
+        assertCronSchedulableJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7", TREATMENT_ADVICE_START_DATE.plusDays(5).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
+        assertCronSchedulableJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1", TREATMENT_ADVICE_START_DATE.plusDays(6).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
     }
 
     private void assertCronSchedulableJob(CronSchedulableJob cronSchedulableJob, String cronExpression, Date startTime, Date endTime) {
         assertEquals(cronExpression, cronSchedulableJob.getCronExpression());
         assertEquals(startTime, cronSchedulableJob.getStartTime());
         assertEquals(endTime, cronSchedulableJob.getEndTime());
+        assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
+        assertEquals(TREATMENT_ADVICE_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.TREATMENT_ADVICE_DOC_ID_KEY));
+        assertEquals(TREATMENT_ADVICE_START_DATE, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.TREATMENT_ADVICE_START_DATE_KEY));
         assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
@@ -87,17 +93,16 @@ public class TamaSchedulerServiceTest {
         when(properties.getProperty(TAMAConstants.RETRIES_PER_DAY)).thenReturn("5");
         when(properties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("15");
 
-        LocalDate today = DateUtil.today();
-        LocalDate tenDaysLater = today.plusDays(10);
-        schedulerService.scheduleRepeatingJobsForFourDayRecall(PATIENT_ID);
+        schedulerService.scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, TREATMENT_ADVICE_ID, TREATMENT_ADVICE_START_DATE);
 
         ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
         verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
         RepeatingSchedulableJob repeatingSchedulableJob = repeatingSchedulableJobArgumentCaptor.getValue();
         assertEquals(new Integer(5), repeatingSchedulableJob.getRepeatCount());
         assertEquals(15 * 60 * 1000, repeatingSchedulableJob.getRepeatInterval());
-        assertDates(DateUtil.newDateTime(today, 10, 45, 0), DateUtil.newDateTime(repeatingSchedulableJob.getStartTime()));
-        assertDates(DateUtil.newDateTime(today, 10, 45, 0).plusDays(1), DateUtil.newDateTime(repeatingSchedulableJob.getEndTime()));
+        assertDates(DateUtil.newDateTime(DateUtil.today(), 10, 45, 0), DateUtil.newDateTime(repeatingSchedulableJob.getStartTime()));
+        assertDates(DateUtil.newDateTime(DateUtil.today(), 10, 45, 0).plusDays(1), DateUtil.newDateTime(repeatingSchedulableJob.getEndTime()));
+        assertEquals(PATIENT_ID, repeatingSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
         assertEquals(true, repeatingSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
@@ -117,16 +122,15 @@ public class TamaSchedulerServiceTest {
 
     private TreatmentAdvice getTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
-        treatmentAdvice.setId("treatmentAdviceId");
+        treatmentAdvice.setId(TREATMENT_ADVICE_ID);
         treatmentAdvice.setPatientId(PATIENT_ID);
         ArrayList<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
         DrugDosage drugDosage = new DrugDosage();
         treatmentAdvice.setDrugCompositionGroupId("");
-        drugDosage.setStartDate(treatmentAdviceStartDate);
-        drugDosage.setEndDate(treatmentAdviceEndDate);
+        drugDosage.setStartDate(TREATMENT_ADVICE_START_DATE);
+        drugDosage.setEndDate(TREATMENT_ADVICE_END_DATE);
         drugDosages.add(drugDosage);
         treatmentAdvice.setDrugDosages(drugDosages);
         return treatmentAdvice;
     }
-
 }
