@@ -1,8 +1,6 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.ivr.kookoo.KookooRequest;
-import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRResponseBuilder;
 import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -16,10 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static org.motechproject.server.service.ivr.IVRRequest.CallDirection;
-
 @Controller
-@RequestMapping("/post_outbox")
+@RequestMapping("/postoutbox")
 public class PostOutboxController {
 
     private TamaIVRMessage tamaIvrMessage;
@@ -33,14 +29,20 @@ public class PostOutboxController {
     @ResponseBody
     public String play(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        KookooRequest.CallDirection callDirection = (IVRRequest.CallDirection) session.getAttribute(TamaSessionUtil.TamaSessionAttribute.CALL_DIRECTION);
         IVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        if(callDirection == CallDirection.Outbound){
-            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NO_MESSAGES_FOR_NOW);
-        }else{
+
+        String redirectedAfterTree = (String) session.getAttribute(TamaSessionUtil.TamaSessionAttribute.POST_TREE_CALL_CONTINUE);
+        if ("true".equals(redirectedAfterTree)) {
+            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.THOSE_WERE_YOUR_MESSAGES);
+        } else {
+            String lastPlayedMessageInSession = (String) session.getAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID);
+            if (lastPlayedMessageInSession == null)
+                ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NO_MESSAGES);
+
             ivrResponseBuilder.withPlayAudios(TamaIVRMessage.HANGUP_OR_MAIN_MENU);
             ivrResponseBuilder.withHangUp();
         }
+        ivrResponseBuilder.withPlayAudios(tamaIvrMessage.getSignatureMusic());
         String preferredLanguage = (String) session.getAttribute(IVRSession.IVRCallAttribute.PREFERRED_LANGUAGE_CODE);
         return ivrResponseBuilder.create(tamaIvrMessage, null, preferredLanguage);
     }

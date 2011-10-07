@@ -16,6 +16,7 @@ public class TamaSessionUtil {
         public static final String PATIENT_DOC_ID = IVRSession.IVRCallAttribute.EXTERNAL_ID;
         public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
         public static final String CALL_DIRECTION = "CallDirection";
+        public static final String POST_TREE_CALL_CONTINUE = "callContinue";
     }
 
     public static String getDosageIdFrom(IVRContext ivrContext) {

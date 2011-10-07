@@ -92,11 +92,12 @@ public class TamaIVRMessage implements IVRMessage {
 
     public static final String HANGUP_OR_MAIN_MENU = "010_08_01_HangUpOrMainMenu";
 
-    public static final String NO_MESSAGES_FOR_NOW = "010_07_03_NoOutboxMessages";
+    public static final String NO_MESSAGES = "010_07_03_NoOutboxMessages";
 
     /* -------- Adherence Feedback ----------- */
     /*----------Outbox -------------------------*/
     public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1";
+    public static final String THOSE_WERE_YOUR_MESSAGES = "001_06_05_mayEndThisCallNow2";
 
 
     /* ---------- Four Day Recall ----------*/

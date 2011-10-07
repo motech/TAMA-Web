@@ -145,7 +145,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void previousDosageIsNotTakenWhenNotTakenTheLastNightDoseWasNotTaken() {
+    public void previousDosageIsNotTakenWhenTheLastNightDoseWasNotTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate currentDosageLastTakenDate = DateUtil.today();
         LocalDate previousDosageLastTakenDate = currentDosageLastTakenDate.minusDays(2);

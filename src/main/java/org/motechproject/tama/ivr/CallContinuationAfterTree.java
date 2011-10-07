@@ -5,6 +5,7 @@ import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.server.service.ivr.IVRResponseBuilder;
 import org.motechproject.server.service.ivr.PostTreeCallContinuation;
+import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +25,11 @@ public class CallContinuationAfterTree implements PostTreeCallContinuation {
     @Override
     public void continueCall(IVRContext ivrContext, IVRResponseBuilder ivrResponseBuilder) {
         final int pendingMessagesCount = voiceOutboxService.getNumberPendingMessages(ivrContext.ivrSession().getExternalId());
-        if(pendingMessagesCount != 0) {
+        ivrContext.ivrSession().set(TamaSessionUtil.TamaSessionAttribute.POST_TREE_CALL_CONTINUE, "true");
+        if (pendingMessagesCount != 0) {
             ivrResponseBuilder.withPlayAudios(TamaIVRMessage.CONTINUE_TO_OUTBOX);
             ivrResponseBuilder.withNextUrl(ivrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL));
         } else {
-            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NO_MESSAGES_FOR_NOW);
             ivrResponseBuilder.withPlayAudios(ivrMessage.getSignatureMusic());
             ivrResponseBuilder.withHangUp();
         }

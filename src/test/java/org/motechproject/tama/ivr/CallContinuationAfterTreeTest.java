@@ -5,9 +5,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.service.ivr.*;
+import org.motechproject.tama.util.TamaSessionUtil;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,25 +44,14 @@ public class CallContinuationAfterTreeTest {
         initMocks(this);
 
         when(ivrSession.getExternalId()).thenReturn(patient_id);
+        when(ivrMessage.getSignatureMusic()).thenReturn(TamaIVRMessage.SIGNATURE_MUSIC);
         ivrContext = new IVRContext(ivrRequest, ivrSession);
         callContinuationAfterTree = new CallContinuationAfterTree(ivrMessage, voiceOutboxService);
     }
 
     @Test
-    public void shouldPlayNoOutboxMessagesForNow_WhenThereAreNoPendingOutboxMessages() {
+    public void shouldPlaySignatureMusic_WhenThereAreNoPendingOutboxMessages() {
         when(voiceOutboxService.getNumberPendingMessages(patient_id)).thenReturn(0);
-        when(ivrMessage.getWav(same(TamaIVRMessage.NO_MESSAGES_FOR_NOW), anyString())).thenReturn(NO_MESSAGES_FOR_NOW_URL);
-
-        callContinuationAfterTree.continueCall(ivrContext, ivrResponseBuilder);
-
-        verify(ivrResponseBuilder, times(1)).withPlayAudios(TamaIVRMessage.NO_MESSAGES_FOR_NOW);
-        verify(ivrResponseBuilder, times(1)).withHangUp();
-    }
-
-    @Test
-    public void shouldPlaySignatureMusic_AfterPlayingNoOutboxMessagesForNow() {
-        when(voiceOutboxService.getNumberPendingMessages(patient_id)).thenReturn(0);
-        when(ivrMessage.getSignatureMusic()).thenReturn(TamaIVRMessage.SIGNATURE_MUSIC);
 
         callContinuationAfterTree.continueCall(ivrContext, ivrResponseBuilder);
 
@@ -80,6 +68,7 @@ public class CallContinuationAfterTreeTest {
 
         verify(ivrResponseBuilder, times(1)).withNextUrl(OUTBOX_LOCATION);
         verify(ivrResponseBuilder, times(1)).withPlayAudios(TamaIVRMessage.CONTINUE_TO_OUTBOX);
+        verify(ivrSession).set(TamaSessionUtil.TamaSessionAttribute.POST_TREE_CALL_CONTINUE, "true");
     }
 
 }
