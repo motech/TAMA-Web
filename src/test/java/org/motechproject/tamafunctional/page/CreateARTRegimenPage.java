@@ -42,7 +42,7 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageTypeId_id")
     private WebElement drug2DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].e_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].eveningTime_id")
     private WebElement drug2DosageTimeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
@@ -78,7 +78,7 @@ public class CreateARTRegimenPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForDojoElementToLoad(REGIMEN_ID,"dijitInputInner");
+        waitForDojoElementToLoad(REGIMEN_ID, "dijitInputInner");
     }
 
     public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
@@ -116,7 +116,7 @@ public class CreateARTRegimenPage extends Page {
     }
 
     private void tabOut(WebElement webElement) {
-        ((ExtendedWebElement)webElement).sendKey(Keys.TAB);
+        ((ExtendedWebElement) webElement).sendKey(Keys.TAB);
     }
 
     private void selectRegimenAndWaitTillTheCompositionGroupsShow(TestTreatmentAdvice treatmentAdvice) {
