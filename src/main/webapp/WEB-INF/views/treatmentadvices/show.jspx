@@ -31,6 +31,9 @@
                             <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[1]}">
                                 <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[1]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{1}" label="Evening Time" />
                             </c:if>
+                            <c:if test="${drugDosage.dosageType == 'Variable Dosage'}">
+                                      <field:display object="${drugDosage.offsetDays}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageOffset${item.index}{1}" label="Change After (days)" />
+                            </c:if>
                         </td>
                 </c:forEach>
             </tr>

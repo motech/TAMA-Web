@@ -22,6 +22,8 @@ public class DrugDosageView extends TamaView {
     private String advice;
 
     private String mealAdviceType;
+    
+    private Integer offsetDays;
 
     public String getDrugName() {
         return drugName;
@@ -86,4 +88,13 @@ public class DrugDosageView extends TamaView {
     public void setMealAdviceType(String mealAdviceType) {
         this.mealAdviceType = mealAdviceType;
     }
+
+	public Integer getOffsetDays() {
+		return offsetDays;
+	}
+
+	public void setOffsetDays(Integer offsetDays) {
+		this.offsetDays = offsetDays;
+	}
+    
 }

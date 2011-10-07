@@ -28,6 +28,7 @@ public class DrugDosageViewMapper {
         drugDosageView.setDrugName(drug.getName());
         drugDosageView.setBrandName(brand.getName());
         drugDosageView.setDosageType(dosageType.getType());
+        drugDosageView.setOffsetDays(drugDosage.getOffsetDays());
         drugDosageView.setDosageSchedules(drugDosage.getDosageSchedules());
         drugDosageView.setStartDate(drugDosage.getStartDate());
         drugDosageView.setAdvice(drugDosage.getAdvice());
