@@ -21,6 +21,8 @@ public class FourDayRecallTree extends TamaDecisionTree {
     private DosagesMissedOnOneDay dosagesMissedOnOneDay;
     @Autowired
     private DosageMissedOnMultipleDays dosageMissedOnMultipleDays;
+    @Autowired
+    private CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs;
 
     @Override
     protected Node createRootNode(IVRContext ivrContext) {
@@ -28,6 +30,7 @@ public class FourDayRecallTree extends TamaDecisionTree {
         Transition missedMultipleDosagesTransition = new Transition()
                 .setDestinationNode(
                         new Node()
+                                .setTreeCommands(createWeeklyAdherenceLogs)
                                 .setPrompts(new AudioPrompt().setCommand(dosageMissedOnMultipleDays))
                 );
 
@@ -40,12 +43,14 @@ public class FourDayRecallTree extends TamaDecisionTree {
                         {"0", new Transition()
                                 .setDestinationNode(
                                         new Node()
+                                                .setTreeCommands(createWeeklyAdherenceLogs)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(allDosagesTaken)))
                         },
                         {"1", new Transition()
                                 .setDestinationNode(
                                         new Node()
+                                                .setTreeCommands(createWeeklyAdherenceLogs)
                                                 .setPrompts(new AudioPrompt().setCommand(dosagesMissedOnOneDay))
                                 )
                         },
