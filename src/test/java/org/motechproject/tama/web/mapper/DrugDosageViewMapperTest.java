@@ -58,7 +58,6 @@ public class DrugDosageViewMapperTest {
         drugDosage.setDrugId("drugId");
         drugDosage.setBrandId("brandId");
         drugDosage.setDosageTypeId("dosageTypeId");
-        drugDosage.setDosageSchedules(new ArrayList<String>());
         drugDosage.setAdvice("advice");
         drugDosage.setMealAdviceId("mealAdviceTypeId");
         return drugDosage;

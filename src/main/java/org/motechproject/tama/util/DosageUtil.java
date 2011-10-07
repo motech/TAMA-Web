@@ -22,4 +22,7 @@ public class DosageUtil {
         }
         return totalCount;
 	}
+	public static boolean isEveningDosage(String schedule) {
+		return schedule != null && schedule.toLowerCase().indexOf("pm")>=0;
+	}
 }

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,8 +56,9 @@ public class PillRegimenSnapshotPreviousDosageTest {
     @Test
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsYesterday_AndCurrentDoseIsInTheMorning() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("previousDosageId", new Time(20, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        LocalDate startDate = new LocalDate(2010, 1,1);
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);
@@ -77,8 +79,9 @@ public class PillRegimenSnapshotPreviousDosageTest {
     @Test
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsToday_AndCurrentDoseIsInTheEvening() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        dosages.add(new DosageResponse("currentDosageId", new Time(20, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        LocalDate startDate = new LocalDate(2010, 1,1);
+        dosages.add(new DosageResponse("currentDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);
@@ -99,7 +102,8 @@ public class PillRegimenSnapshotPreviousDosageTest {
     @Test
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsYesterday_AndCurrentDoseIsInTheMorningForDailyDosage() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        LocalDate startDate = new LocalDate(2010, 1,1);
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);

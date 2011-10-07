@@ -3,7 +3,7 @@ package org.motechproject.tama.web.command;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -41,13 +41,18 @@ public class NextCallDetailsTest {
     @Before
     public void setup() {
         initMocks(this);
+        
+
         nextCallDetails = new NextCallDetails(new IVRDayMessageBuilder(new TamaIVRMessage(null, new FileUtil())));
 
         context = new IVRContext(request, ivrSession);
+        
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
+
+
     }
 
      @Test

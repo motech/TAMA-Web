@@ -67,7 +67,7 @@ public class MessageFromPreviousDosageTest {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate dosageLastTakenDate = DateUtil.today().minusDays(2);
         ArrayList<MedicineResponse> medicines = new ArrayList<MedicineResponse>();
-        medicines.add(new MedicineResponse("medicine1", null, null));
+        medicines.add(new MedicineResponse("medicine1", DateUtil.today().minusDays(1), null));
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, dosageLastTakenDate, medicines));
 
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));

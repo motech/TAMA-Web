@@ -105,13 +105,14 @@ public class TreatmentAdviceTest {
 
         TreatmentAdvice advice = new TreatmentAdvice() {{
             addDrugDosage(new DrugDosage() {{
-                setDosageSchedules(Arrays.asList(morningTime, eveningTime));
+            	setMorningTime(morningTime);
+            	setEveningTime(eveningTime);
             }});
             addDrugDosage(new DrugDosage() {{
-                setDosageSchedules(Arrays.asList(morningTime));
+                setMorningTime(morningTime);
             }});
             addDrugDosage(new DrugDosage() {{
-                setDosageSchedules(Arrays.asList(eveningTime));
+                setEveningTime(eveningTime);
             }});
         }};
         final Map<String, List<DrugDosage>> dosageGroups = advice.groupDosagesByTime();
@@ -132,7 +133,7 @@ public class TreatmentAdviceTest {
         LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
         LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
 
-        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, "09:00am", "08:30pm"));
         treatmentAdvice.setDrugDosages(drugDosages);
 
         assertTrue(treatmentAdvice.hasMultipleDosages());
@@ -147,20 +148,22 @@ public class TreatmentAdviceTest {
         LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
         LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
 
-        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am")));
-        drugDosages.add(drugDosage("Drug2Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am")));
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, "09:00am",""));
+        drugDosages.add(drugDosage("Drug2Id", startDateForDrug1, endDateForDrug1, "09:00am",""));
+        
         treatmentAdvice.setDrugDosages(drugDosages);
 
         assertFalse(treatmentAdvice.hasMultipleDosages());
     }
 
-    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final List<String> dosageSchedules) {
+    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final String morningTime, final String eveningTime) {
         return new DrugDosage() {{
             setDrugId(drugId);
             setBrandId("brandId");
             setStartDate(startDate);
             setEndDate(endDate);
-            setDosageSchedules(dosageSchedules);
+            setMorningTime(morningTime);
+            setEveningTime(eveningTime);
         }};
     }
 }

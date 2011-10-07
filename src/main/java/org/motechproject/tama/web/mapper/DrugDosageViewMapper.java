@@ -1,6 +1,10 @@
 package org.motechproject.tama.web.mapper;
 
-import org.motechproject.tama.domain.*;
+import org.motechproject.tama.domain.Brand;
+import org.motechproject.tama.domain.DosageType;
+import org.motechproject.tama.domain.Drug;
+import org.motechproject.tama.domain.DrugDosage;
+import org.motechproject.tama.domain.MealAdviceType;
 import org.motechproject.tama.repository.AllDosageTypes;
 import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.tama.repository.AllMealAdviceTypes;
@@ -18,22 +22,24 @@ public class DrugDosageViewMapper {
         this.allMealAdviceTypes = allMealAdviceTypes;
     }
 
-    public DrugDosageView map(DrugDosage drugDosage) {
-        Drug drug = allDrugs.get(drugDosage.getDrugId());
-        Brand brand = drug.getBrand(drugDosage.getBrandId());
-        DosageType dosageType = allDosageTypes.get(drugDosage.getDosageTypeId());
-        MealAdviceType mealAdviceType = allMealAdviceTypes.get(drugDosage.getMealAdviceId());
+    public DrugDosageView map(final DrugDosage drugDosage) {
+        final Drug drug = allDrugs.get(drugDosage.getDrugId());
+        final Brand brand = drug.getBrand(drugDosage.getBrandId());
+        final DosageType dosageType = allDosageTypes.get(drugDosage.getDosageTypeId());
+        final MealAdviceType mealAdviceType = allMealAdviceTypes.get(drugDosage.getMealAdviceId());
 
-        DrugDosageView drugDosageView = new DrugDosageView();
-        drugDosageView.setDrugName(drug.getName());
-        drugDosageView.setBrandName(brand.getName());
-        drugDosageView.setDosageType(dosageType.getType());
-        drugDosageView.setOffsetDays(drugDosage.getOffsetDays());
-        drugDosageView.setDosageSchedules(drugDosage.getDosageSchedules());
-        drugDosageView.setStartDate(drugDosage.getStartDate());
-        drugDosageView.setAdvice(drugDosage.getAdvice());
-        drugDosageView.setMealAdviceType(mealAdviceType.getType());
-        return drugDosageView;
+        return new DrugDosageView() {{
+	        setDrugName(drug.getName());
+	        setBrandName(brand.getName());
+	        setDosageType(dosageType.getType());
+	        setOffsetDays(drugDosage.getOffsetDays());
+	        setMorningTime(drugDosage.getMorningTime());
+	        setEveningTime(drugDosage.getEveningTime());
+	        setStartDate(drugDosage.getStartDate());
+	        setAdvice(drugDosage.getAdvice());
+	        setMealAdviceType(mealAdviceType.getType());
+        }};
+
     }
 
 }

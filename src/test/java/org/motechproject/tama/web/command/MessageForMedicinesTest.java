@@ -67,8 +67,8 @@ public class MessageForMedicinesTest {
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
 
-        today = DateUtil.today();
-        now = DateUtil.now();
+        today = new LocalDate(2010,10,10);
+        now = DateUtil.newDateTime(today, 10, 0, 0);
 
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(today);

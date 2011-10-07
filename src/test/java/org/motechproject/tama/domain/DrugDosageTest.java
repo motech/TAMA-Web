@@ -22,13 +22,14 @@ public class DrugDosageTest {
     @Test
     public void shouldReturnNonEmptySchedules() {
         DrugDosage dosageWithoutEveningTime = new DrugDosage() {{
-            setDosageSchedules(Arrays.asList("10:00am", ""));
+        	setMorningTime("10:00am");
         }};
         DrugDosage dosageWithoutMorningTime = new DrugDosage() {{
-            setDosageSchedules(Arrays.asList("10:00pm", ""));
+        	setEveningTime("10:00pm");
         }};
         DrugDosage dosage = new DrugDosage() {{
-            setDosageSchedules(Arrays.asList("10:00pm", "10:00am"));
+        	setMorningTime("10:00am");
+        	setEveningTime("10:00pm");
         }};
 
         assertEquals(1, dosageWithoutEveningTime.getNonEmptyDosageSchedules().size());

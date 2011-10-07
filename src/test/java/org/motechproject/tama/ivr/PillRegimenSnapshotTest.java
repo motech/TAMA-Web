@@ -276,9 +276,9 @@ public class PillRegimenSnapshotTest {
         LocalDate currentDosageLastTakenDate = DateUtil.today().minusDays(1);
         LocalDate previousDosageLastTakenDate = currentDosageLastTakenDate;
         DateTime testCallTime = DateUtil.now().withHourOfDay(8).withMinuteOfHour(6).withSecondOfMinute(0);
-
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        LocalDate startDate = new LocalDate(2010, 1,1);
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), startDate, null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -359,8 +359,8 @@ public class PillRegimenSnapshotTest {
     public void isTimeToTakeCurrentPillShouldReturnTrueIfNowBeforeDosageHour_WithinPillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -377,8 +377,8 @@ public class PillRegimenSnapshotTest {
     public void isTimeToTakeCurrentPillShouldReturnTrueIfNowAfterDosageHour_WithinPillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -413,8 +413,8 @@ public class PillRegimenSnapshotTest {
     public void isTimeToTakeCurrentPillShouldReturnFalseIfNowAfterDosageHour_OutsidePillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -431,8 +431,8 @@ public class PillRegimenSnapshotTest {
     public void isEarlyToTakeDosageShouldReturnTrueIfNowBeforeDosageHour_OutSideDosageInterval_WithinPillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -467,8 +467,8 @@ public class PillRegimenSnapshotTest {
     public void isEarlyToTakeDosageShouldReturnFalseIfNowBeforeDosageHour_WithinDosageInterval() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -485,7 +485,7 @@ public class PillRegimenSnapshotTest {
     public void isEarlyToTakeDosageShouldReturnTrue_DosageDateIsTomorrow_NowBeforeDosageHour_WithinDosageInterval() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("currentDosageId", new Time(1, 0), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(1, 0), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -502,8 +502,8 @@ public class PillRegimenSnapshotTest {
     public void isLateToTakeDosageShouldReturnTrueIfNowAfterDosageHour_OutsidePillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -520,8 +520,8 @@ public class PillRegimenSnapshotTest {
     public void isLateToTakeDosageShouldReturnFalseIfNowAfterDosageHour_WithinPillWindow() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), null, null, null, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -538,7 +538,7 @@ public class PillRegimenSnapshotTest {
     public void isLateToTakeTheDosageShouldReturnTrue_WhenDosageDateIsYesterday() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("currentDosageId", new Time(23, 0), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(23, 0), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -555,7 +555,7 @@ public class PillRegimenSnapshotTest {
     public void shouldReturnTrueIfCallTimeIsWithinDosageInterval() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("currentDosageId", new Time(21, 0), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(21, 0), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -572,7 +572,7 @@ public class PillRegimenSnapshotTest {
     public void shouldReturnFalseIfCallTimeIsNotWithinDosageInterval() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("currentDosageId", new Time(21, 0), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(21, 0), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 
@@ -589,7 +589,7 @@ public class PillRegimenSnapshotTest {
     public void getNextDosageTimeShouldReturnToday_WhenCallMadeBeforeVeryFirstDosage() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
-        dosages.add(new DosageResponse("currentDosageId", new Time(21, 0), null, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(21, 0), new LocalDate(2010, 1,1), null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
 

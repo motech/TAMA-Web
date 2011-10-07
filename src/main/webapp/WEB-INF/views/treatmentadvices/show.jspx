@@ -25,14 +25,14 @@
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                         <td>
                             <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="dosageType" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage" />
-                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[0]}">
-                                <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[0]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{0}" label="Morning Time" />
+                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].morningTime}">
+                                <field:display object="${treatmentAdvice.drugDosages[item.index].morningTime}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{0}" label="Morning Time" />
                             </c:if>
-                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].dosageSchedules[1]}">
-                                <field:display object="${treatmentAdvice.drugDosages[item.index].dosageSchedules[1]}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{1}" label="Evening Time" />
+                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].eveningTime}">
+                                <field:display object="${treatmentAdvice.drugDosages[item.index].eveningTime}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{1}" label="Evening Time" />
                             </c:if>
                             <c:if test="${drugDosage.dosageType == 'Variable Dosage'}">
-                                      <field:display object="${drugDosage.offsetDays}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageOffset${item.index}{1}" label="Change After (days)" />
+                                      <field:display object="${drugDosage.offsetDays}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageOffset${item.index}{1}" label="Start evening dose after (days)" />
                             </c:if>
                         </td>
                 </c:forEach>

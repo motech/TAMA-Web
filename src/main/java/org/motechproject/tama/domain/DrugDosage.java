@@ -11,6 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -32,10 +33,16 @@ public class DrugDosage extends BaseEntity {
     @NotNull
     private String dosageTypeId;
 
-    private Integer offsetDays = new Integer(0);
+    private Integer offsetDays = 0;
 
+//    @NotNull
+//    private List<String> dosageSchedules = new ArrayList<String>();
+    
     @NotNull
-    private List<String> dosageSchedules = new ArrayList<String>();
+    private String morningTime;
+    
+    @NotNull
+    private String eveningTime;
 
     @NotNull
     @Temporal(TemporalType.DATE)
@@ -83,15 +90,28 @@ public class DrugDosage extends BaseEntity {
         this.dosageTypeId = dosageTypeId;
     }
 
+    @JsonIgnore
     public List<String> getDosageSchedules() {
-        return dosageSchedules;
+        return Arrays.asList(morningTime, eveningTime);
     }
 
-    public void setDosageSchedules(List<String> dosageSchedules) {
-        this.dosageSchedules = dosageSchedules;
-    }
+    public String getMorningTime() {
+		return morningTime;
+	}
 
-    public LocalDate getStartDate() {
+	public void setMorningTime(String morningTime) {
+		this.morningTime = morningTime;
+	}
+
+	public String getEveningTime() {
+		return eveningTime;
+	}
+
+	public void setEveningTime(String eveningTime) {
+		this.eveningTime = eveningTime;
+	}
+
+	public LocalDate getStartDate() {
         return DateUtil.newDate(startDateAsDate);
     }
 

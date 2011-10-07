@@ -33,8 +33,8 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageTypeId_id")
     private WebElement drug1DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id")
-    private WebElement drug1DosageTimeElement;
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].eveningTime_id")
+    private WebElement drug1EveningDosageTimeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].mealAdviceId_id")
     private WebElement drug1MealAdviceTypeElement;
@@ -42,7 +42,7 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageTypeId_id")
     private WebElement drug2DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id")
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].e_id")
     private WebElement drug2DosageTimeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
@@ -66,7 +66,7 @@ public class CreateARTRegimenPage extends Page {
         regimenElement = WebDriverFactory.createWebElement(regimenElement);
         drugCompositionGroupElement = WebDriverFactory.createWebElement(drugCompositionGroupElement);
         drug1DosageTypeElement = WebDriverFactory.createWebElement(drug1DosageTypeElement);
-        drug1DosageTimeElement = WebDriverFactory.createWebElement(drug1DosageTimeElement);
+        drug1EveningDosageTimeElement = WebDriverFactory.createWebElement(drug1EveningDosageTimeElement);
         drug1MealAdviceTypeElement = WebDriverFactory.createWebElement(drug1MealAdviceTypeElement);
         drug2DosageTypeElement = WebDriverFactory.createWebElement(drug2DosageTypeElement);
         drug2DosageTimeElement = WebDriverFactory.createWebElement(drug2DosageTimeElement);
@@ -103,7 +103,7 @@ public class CreateARTRegimenPage extends Page {
         TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
         drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
         tabOut(drug1DosageTypeElement);
-        drug1DosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
+        drug1EveningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
         drug1MealAdviceTypeElement.sendKeys(drugDosage1.mealAdvice());
 
         TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);

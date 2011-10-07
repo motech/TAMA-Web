@@ -108,9 +108,9 @@ dojo.addOnLoad(function() {
         var changeDosageType = function(dosage) {
             return function() {
                 var morning_label = dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules' + dosage + '0_id');
-                var morning_time = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].dosageSchedules[0]_id');
+                var morning_time = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].morningTime_id');
                 var evening_label = dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules' + dosage + '1_id');
-                var evening_time = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].dosageSchedules[1]_id');
+                var evening_time = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].eveningTime_id');
 
                 var showMorningTime = function() {
                     morning_time.set('disabled', false);
@@ -165,10 +165,10 @@ dojo.addOnLoad(function() {
         dojo.connect(dijit.byId('_treatmentAdvice.drugDosages[1].dosageTypeId_id'), 'onChange', _changeSecondDosage);
 
         var validateDosageTimes = function() {
-            var drug1AmTime = dijit.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
-            var drug1PmTime = dijit.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
-            var drug2AmTime = dijit.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
-            var drug2PmTime = dijit.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
+            var drug1AmTime = dijit.byId("_treatmentAdvice.drugDosages[0].morningTime_id");
+            var drug1PmTime = dijit.byId("_treatmentAdvice.drugDosages[0].eveningTime_id");
+            var drug2AmTime = dijit.byId("_treatmentAdvice.drugDosages[1].morningTime_id");
+            var drug2PmTime = dijit.byId("_treatmentAdvice.drugDosages[1].eveningTime_id");
             var amTimesArray = dojo.filter([drug1AmTime, drug2AmTime], function(element) {
                 return element.required;
             });
@@ -229,10 +229,10 @@ dojo.addOnLoad(function() {
                 dojo.html.set(error, validation_error);
                 evt.preventDefault();
             } else {
-                var drug1AmTime = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[0]_id");
-                var drug1PmTime = dojo.byId("_treatmentAdvice.drugDosages[0].dosageSchedules[1]_id");
-                var drug2AmTime = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[0]_id");
-                var drug2PmTime = dojo.byId("_treatmentAdvice.drugDosages[1].dosageSchedules[1]_id");
+                var drug1AmTime = dojo.byId("_treatmentAdvice.drugDosages[0].morningTime_id");
+                var drug1PmTime = dojo.byId("_treatmentAdvice.drugDosages[0].eveningTime_id");
+                var drug2AmTime = dojo.byId("_treatmentAdvice.drugDosages[1].morningTime_id");
+                var drug2PmTime = dojo.byId("_treatmentAdvice.drugDosages[1].eveningTime_id");
                 var amTimesArray = [drug1AmTime, drug2AmTime];
                 var pmTimesArray = [drug1PmTime, drug2PmTime];
                 dojo.forEach(amTimesArray, function(item) {

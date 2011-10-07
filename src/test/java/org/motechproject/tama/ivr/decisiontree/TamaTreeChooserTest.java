@@ -88,7 +88,7 @@ public class TamaTreeChooserTest {
     @Test
     public void shouldGetCurrentDosageTakenTreeIfPatientHasTakenTheDosage() {
         DosageResponse dosage = pillRegimenResponse.getDosages().get(1);
-        when(ivrSession.getCallTime()).thenReturn(DateUtil.now().withHourOfDay(dosage.getDosageHour()));
+        when(ivrSession.getCallTime()).thenReturn(DateUtil.newDateTime(DateUtil.newDate(2010, 10, 10),dosage.getDosageHour(),0,0));
         when(ivrRequest.getCallDirection()).thenReturn(CallDirection.Inbound);
 
         assertEquals(currentDosageTakenTree.getTree(ivrContext), treeChooser.getTree(ivrContext));

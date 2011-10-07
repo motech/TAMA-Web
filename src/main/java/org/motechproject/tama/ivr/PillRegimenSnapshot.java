@@ -1,10 +1,18 @@
 package org.motechproject.tama.ivr;
 
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
@@ -23,8 +31,8 @@ import org.springframework.util.CollectionUtils;
 public class PillRegimenSnapshot {
     private IVRContext ivrContext;
     private PillRegimenResponse pillRegimen;
-    private final DateTime now;
     private LocalDate today;
+    private final DateTime now;
 
     public PillRegimenSnapshot(IVRContext ivrContext, DateTime now) {
         this.ivrContext = ivrContext;
@@ -189,7 +197,7 @@ public class PillRegimenSnapshot {
         return today.minusDays(1).isAfter(previousDosage.getResponseLastCapturedDate());
     }
 
-    private List<DosageResponse> getSortedDosages() {
+    protected List<DosageResponse> getSortedDosages() {
         if (CollectionUtils.isEmpty(pillRegimen.getDosages())) return null;
         List<DosageResponse> sortedDosages = pillRegimen.getDosages();
         Collections.sort(sortedDosages, new Comparator<DosageResponse>() {
@@ -200,14 +208,27 @@ public class PillRegimenSnapshot {
                 return d1Minutes - d2Minutes;
             }
         });
-        return sortedDosages;
+        
+        return filter(new TypeSafeMatcher<DosageResponse>() {
+        	@Override
+        	public boolean matchesSafely(DosageResponse resp) {
+        		
+        		return !resp.getStartDate().isAfter(today);
+        	}
+        	@Override
+        	public void describeTo(Description description) {}
+		}, sortedDosages);
     }
 
-    private List<String> medicinesFor(DosageResponse dosage) {
+    private List<String> medicinesFor(MyDosageResponse dosage) {
         if (dosage == null) return new ArrayList<String>();
         List<String> medicines = new ArrayList<String>();
-        for (MedicineResponse medicine : dosage.getMedicines())
-            medicines.add(String.format("pill%s", medicine.getName()));
+        
+        for (MedicineResponse medicine : dosage.getMedicines()) {
+        	if (!dosage.getDosageDate().isBefore(medicine.getStartDate()) && 
+        			(medicine.getEndDate() == null || !dosage.getDosageDate().isAfter(medicine.getEndDate())))
+        			medicines.add(String.format("pill%s", medicine.getName()));
+        }
         return medicines;
     }
 

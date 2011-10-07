@@ -15,7 +15,9 @@ public class DrugDosageView extends TamaView {
 
     private String dosageType;
 
-    private List<String> dosageSchedules = new ArrayList<String>();
+    private String morningTime;
+    
+    private String eveningTime;
 
     private Date startDateAsDate;
 
@@ -47,14 +49,6 @@ public class DrugDosageView extends TamaView {
 
     public void setDosageType(String dosageType) {
         this.dosageType = dosageType;
-    }
-
-    public List<String> getDosageSchedules() {
-        return dosageSchedules;
-    }
-
-    public void setDosageSchedules(List<String> dosageSchedules) {
-        this.dosageSchedules = dosageSchedules;
     }
 
     public LocalDate getStartDate() {
@@ -96,5 +90,20 @@ public class DrugDosageView extends TamaView {
 	public void setOffsetDays(Integer offsetDays) {
 		this.offsetDays = offsetDays;
 	}
-    
+
+	public String getMorningTime() {
+		return morningTime;
+	}
+
+	public void setMorningTime(String morningTime) {
+		this.morningTime = morningTime;
+	}
+
+	public String getEveningTime() {
+		return eveningTime;
+	}
+
+	public void setEveningTime(String eveningTime) {
+		this.eveningTime = eveningTime;
+	}
 }

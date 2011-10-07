@@ -54,18 +54,18 @@
                                       label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}"
                                       path="/treatmentadvices/dosageTypes"/>
 
-                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[0]"
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].morningTime"
                                      id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0"
                                      label="Morning Time (hh:mm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$"
                                      required="true"/>
-                        <field:input field="treatmentAdvice.drugDosages[${item.index}].dosageSchedules[1]"
+                        <field:input field="treatmentAdvice.drugDosages[${item.index}].eveningTime"
                                      id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1"
                                      label="Evening Time (hh:mm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$"
                                      required="true"/>
                         <field:input
                                 id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules_${item.index}_offsetDays"
                                 field="treatmentAdvice.drugDosages[${item.index}].offsetDays"
-                                label="Change After (days)"/>
+                                label="Start evening dose after (days)"/>
 
                         <field:datetime dateTimePattern="dd/MM/yyyy"
                                         field="treatmentAdvice.drugDosages[${item.index}].startDateAsDate"

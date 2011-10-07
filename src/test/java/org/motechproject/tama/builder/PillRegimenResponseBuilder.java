@@ -29,16 +29,16 @@ public class PillRegimenResponseBuilder {
         ArrayList<MedicineResponse> currentDosagesMedicines = new ArrayList<MedicineResponse>();
         ArrayList<MedicineResponse> previousDosagesMedicines = new ArrayList<MedicineResponse>();
         ArrayList<MedicineResponse> nextDosagesMedicines = new ArrayList<MedicineResponse>();
-        LocalDate date = DateUtil.today();
+        LocalDate date = new LocalDate(2010,10,10);
 
-        previousDosagesMedicines.add(new MedicineResponse("medicine3", date, date));
-        currentDosagesMedicines.add(new MedicineResponse("medicine1", date, date));
-        currentDosagesMedicines.add(new MedicineResponse("medicine2", date, date));
-        nextDosagesMedicines.add(new MedicineResponse("medicine4", date, date));
+        previousDosagesMedicines.add(new MedicineResponse("medicine3", date, null));
+        currentDosagesMedicines.add(new MedicineResponse("medicine1", date, null));
+        currentDosagesMedicines.add(new MedicineResponse("medicine2", date, null));
+        nextDosagesMedicines.add(new MedicineResponse("medicine4", date, null));
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), date, date, date, previousDosagesMedicines));
-        dosages.add(new DosageResponse("currentDosageId", new Time(16, 5), date, date, date, currentDosagesMedicines));
-        dosages.add(new DosageResponse("nextDosageId", new Time(22, 5), date, date, date, nextDosagesMedicines));
+        dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), date, null, date, previousDosagesMedicines));
+        dosages.add(new DosageResponse("currentDosageId", new Time(16, 5), date, null, date, currentDosagesMedicines));
+        dosages.add(new DosageResponse("nextDosageId", new Time(22, 5), date, null, date, nextDosagesMedicines));
 
         return this;
     }

@@ -19,8 +19,13 @@ public class DrugDosageViewBuilder {
         return this;
     }
 
-    public DrugDosageViewBuilder withDosageSchedules(List<String> dosageSchedules){
-        this.drugDosage.setDosageSchedules(dosageSchedules);
+    public DrugDosageViewBuilder withDosageScheduleMorning(String morningTime){
+        this.drugDosage.setMorningTime(morningTime);
+        return this;
+    }
+    
+    public DrugDosageViewBuilder withDosageScheduleEvening(String eveningTime){
+        this.drugDosage.setMorningTime(eveningTime);
         return this;
     }
 
@@ -38,8 +43,7 @@ public class DrugDosageViewBuilder {
     }
 
     public DrugDosageViewBuilder withDefaults(){
-        List<String> dosageSchedules = new ArrayList<String>();
-        dosageSchedules.add("10:00");
-        return this.withBrandName("Efferven").withDosageType("Evening Daily").withDosageSchedules(dosageSchedules).withMealAdviceType("After Meal");
+        String morningTime = "10:00";
+        return this.withBrandName("Efferven").withDosageType("Evening Daily").withDosageScheduleMorning(morningTime).withMealAdviceType("After Meal");
     }
 }

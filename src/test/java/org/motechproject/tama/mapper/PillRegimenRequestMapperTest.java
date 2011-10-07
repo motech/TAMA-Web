@@ -17,7 +17,6 @@ import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -55,8 +54,8 @@ public class PillRegimenRequestMapperTest {
         LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
         LocalDate startDateForDrug2 = DateUtil.newDate(2011, 2, 10);
         LocalDate endDateForDrug2 = DateUtil.newDate(2011, 6, 10);
-        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
-        drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, "09:00am", "08:30pm"));
+        drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, "09:00am", "05:45pm"));
         treatmentAdvice.setDrugDosages(drugDosages);
 
         DailyPillRegimenRequest request = pillRegimenRequestMapper.map(treatmentAdvice);
@@ -79,8 +78,8 @@ public class PillRegimenRequestMapperTest {
 
         when(allDrugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
         when(allDrugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
-        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, Arrays.asList("09:00am", "08:30pm")));
-        drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, Arrays.asList("09:00am", "05:45pm")));
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, "09:00am", "08:30pm"));
+        drugDosages.add(drugDosage("Drug2Id", startDateForDrug2, endDateForDrug2, "09:00am", "05:45pm"));
         treatmentAdvice.setDrugDosages(drugDosages);
 
         DailyPillRegimenRequest pillRegimenRequest = pillRegimenRequestMapper.map(treatmentAdvice);
@@ -121,9 +120,10 @@ public class PillRegimenRequestMapperTest {
             }
         });
 
-        final PillRegimenRequestMapper.DrugDosageMedicineRequestConverter drugDosageMedicineRequestConverter = new PillRegimenRequestMapper(allDrugs, 1, 1, 1).new DrugDosageMedicineRequestConverter();
+        final PillRegimenRequestMapper.DrugDosageMedicineRequestConverter drugDosageMedicineRequestConverter = new PillRegimenRequestMapper(allDrugs, 1, 1, 1).new DrugDosageMedicineRequestConverter(true);
         DrugDosage drugDosage = new DrugDosage() {{
-            setDosageSchedules(Arrays.asList("10:00am", "10:00pm"));
+        	setMorningTime("10:00am");
+        	setEveningTime("10:00pm");
             setOffsetDays(offsetDays);
             setStartDate(startDate);
         }};
@@ -153,13 +153,14 @@ public class PillRegimenRequestMapperTest {
         Assert.assertEquals(endDate, medicineRequest.getEndDate());
     }
 
-    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final List<String> dosageSchedules) {
+    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final String morningTime, final String eveningTime) {
         return new DrugDosage() {{
             setDrugId(drugId);
             setBrandId("brandId");
             setStartDate(startDate);
             setEndDate(endDate);
-            setDosageSchedules(dosageSchedules);
+            setEveningTime(eveningTime);
+            setMorningTime(morningTime);
         }};
     }
 }
