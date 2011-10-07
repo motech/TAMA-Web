@@ -1,5 +1,6 @@
 package org.motechproject.tama.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,9 +13,12 @@ import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.listener.FourDayRecallListener;
+import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -36,61 +40,70 @@ public class TamaSchedulerServiceTest {
     MotechSchedulerService motechSchedulerService;
     @Mock
     private Properties properties;
+    @Mock
+    private AllPatients allPatients;
 
     @Before
     public void setUp() {
         initMocks(this);
 
         treatmentAdvice = getTreatmentAdvice();
-        patient = new Patient();
-        schedulerService = new TamaSchedulerService(motechSchedulerService, properties);
+        final TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
+        patient = new Patient() {{
+            getPatientPreferences().setBestCallTime(bestCallTime);
+        }};
+        schedulerService = new TamaSchedulerService(motechSchedulerService, properties, allPatients);
     }
 
     @Test
     public void shouldScheduleFourDayRecallJobs() {
         DayOfWeek dayOfWeek = DayOfWeek.Friday;
-        TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
         int numDaysToRetry = 2;
-
-        patient.getPatientPreferences().setBestCallTime(bestCallTime);
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
 
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
-        
+
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService, times(numDaysToRetry + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
-        CronSchedulableJob cronSchedulableJob1 = cronSchedulableJobList.get(0);
-        assertEquals("0 30 10 ? * 6", cronSchedulableJob1.getCronExpression());
-        assertEquals(treatmentAdviceStartDate.plusDays(4).toDate(), cronSchedulableJob1.getStartTime());
-        assertEquals(treatmentAdviceEndDate.toDate(), cronSchedulableJob1.getEndTime());
-        CronSchedulableJob cronSchedulableJob2 = cronSchedulableJobList.get(1);
-        assertEquals("0 30 10 ? * 7", cronSchedulableJob2.getCronExpression());
-        assertEquals(treatmentAdviceStartDate.plusDays(5).toDate(), cronSchedulableJob2.getStartTime());
-        assertEquals(treatmentAdviceEndDate.toDate(), cronSchedulableJob2.getEndTime());
-        CronSchedulableJob cronSchedulableJob3 = cronSchedulableJobList.get(2);
-        assertEquals("0 30 10 ? * 1", cronSchedulableJob3.getCronExpression());
-        assertEquals(treatmentAdviceStartDate.plusDays(6).toDate(), cronSchedulableJob3.getStartTime());
-        assertEquals(treatmentAdviceEndDate.toDate(), cronSchedulableJob3.getEndTime());
+
+        assertCronSchedulableJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6", treatmentAdviceStartDate.plusDays(4).toDate(), treatmentAdviceEndDate.toDate());
+        assertCronSchedulableJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7", treatmentAdviceStartDate.plusDays(5).toDate(), treatmentAdviceEndDate.toDate());
+        assertCronSchedulableJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1", treatmentAdviceStartDate.plusDays(6).toDate(), treatmentAdviceEndDate.toDate());
+    }
+
+    private void assertCronSchedulableJob(CronSchedulableJob cronSchedulableJob, String cronExpression, Date startTime, Date endTime) {
+        assertEquals(cronExpression, cronSchedulableJob.getCronExpression());
+        assertEquals(startTime, cronSchedulableJob.getStartTime());
+        assertEquals(endTime, cronSchedulableJob.getEndTime());
+        assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
     @Test
     public void shouldScheduleRepeatingJobsForFourDayRecall() {
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(properties.getProperty(TAMAConstants.RETRIES_PER_DAY)).thenReturn("5");
         when(properties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("15");
 
         LocalDate today = DateUtil.today();
         LocalDate tenDaysLater = today.plusDays(10);
-        schedulerService.scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, today, tenDaysLater);
+        schedulerService.scheduleRepeatingJobsForFourDayRecall(PATIENT_ID);
 
         ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
         verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
-        assertEquals(new Integer(5), repeatingSchedulableJobArgumentCaptor.getValue().getRepeatCount());
-        assertEquals(15, repeatingSchedulableJobArgumentCaptor.getValue().getRepeatInterval());
-        assertEquals(today.toDate(), repeatingSchedulableJobArgumentCaptor.getValue().getStartTime());
-        assertEquals(tenDaysLater.toDate(), repeatingSchedulableJobArgumentCaptor.getValue().getEndTime());
+        RepeatingSchedulableJob repeatingSchedulableJob = repeatingSchedulableJobArgumentCaptor.getValue();
+        assertEquals(new Integer(5), repeatingSchedulableJob.getRepeatCount());
+        assertEquals(15 * 60 * 1000, repeatingSchedulableJob.getRepeatInterval());
+        assertDates(DateUtil.newDateTime(today, 10, 45, 0), DateUtil.newDateTime(repeatingSchedulableJob.getStartTime()));
+        assertDates(DateUtil.newDateTime(today, 10, 45, 0).plusDays(1), DateUtil.newDateTime(repeatingSchedulableJob.getEndTime()));
+        assertEquals(true, repeatingSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
+    }
+
+    private void assertDates(DateTime dateTime1, DateTime dateTime2) {
+        String pattern = "yyyy-MM-dd HH:mm";
+        assertEquals(dateTime1.toString(pattern), dateTime2.toString(pattern));
     }
 
     @Test

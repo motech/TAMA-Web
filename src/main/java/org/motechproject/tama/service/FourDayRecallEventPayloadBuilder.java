@@ -9,6 +9,10 @@ import java.util.HashMap;
 public class FourDayRecallEventPayloadBuilder {
     private HashMap<String, Object> params = new HashMap<String, Object>();
 
+    public FourDayRecallEventPayloadBuilder() {
+        params.put(FourDayRecallListener.RETRY_EVENT_KEY, false);
+    }
+
     public FourDayRecallEventPayloadBuilder withJobId(String id) {
         params.put(MotechSchedulerService.JOB_ID_KEY, id);
         return this;
@@ -20,17 +24,22 @@ public class FourDayRecallEventPayloadBuilder {
     }
 
     public FourDayRecallEventPayloadBuilder withStartDate(LocalDate startDate) {
-        params.put(FourDayRecallListener.START_DATE, startDate);
+        params.put(FourDayRecallListener.START_DATE_KEY, startDate);
         return this;
     }
 
     public FourDayRecallEventPayloadBuilder withEndDate(LocalDate startDate) {
-        params.put(FourDayRecallListener.END_DATE, startDate);
+        params.put(FourDayRecallListener.END_DATE_KEY, startDate);
         return this;
     }
 
     public FourDayRecallEventPayloadBuilder withTreatmentAdviceId(String treatmentAdviceId) {
         params.put(FourDayRecallListener.TREATMENT_ADVICE_DOC_ID_KEY, treatmentAdviceId);
+        return this;
+    }
+
+    public FourDayRecallEventPayloadBuilder withRetryFlag(boolean isRetryEvent) {
+        params.put(FourDayRecallListener.RETRY_EVENT_KEY, isRetryEvent);
         return this;
     }
 
