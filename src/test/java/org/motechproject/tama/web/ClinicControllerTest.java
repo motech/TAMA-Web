@@ -6,16 +6,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.tama.domain.City;
+import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.repository.AllCities;
 import org.motechproject.tama.repository.AllClinics;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClinicControllerTest {
@@ -25,6 +26,12 @@ public class ClinicControllerTest {
 
     @Mock
     private AllClinics allClinics;
+
+    @Mock
+    private BindingResult bindingResult;
+
+    @Mock
+    private Model uiModel;
 
     private ClinicController clinicController;
 
@@ -70,5 +77,39 @@ public class ClinicControllerTest {
         clinicController.updateForm(clinicId, uiModel);
 
         verify(uiModel).addAttribute("mode", "update");
+    }
+
+    @Test
+    public void shouldReturnAllCities() {
+        final ArrayList<Clinic> clinics = new ArrayList<Clinic>() {{
+            add(new Clinic("testId"));
+        }};
+        when(allClinics.getAll()).thenReturn(clinics);
+
+        assertEquals(clinics, clinicController.populateClinics());
+    }
+
+    @Test
+    public void shouldReturnToUpdateFormIfUpdateHasErrors() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        Clinic clinic = new Clinic("testClinicId");
+
+        final String controllerReturnValue = clinicController.update(clinic, bindingResult, uiModel, null);
+        verify(uiModel).addAttribute("clinic", clinic);
+        assertEquals("clinics/clinicForm", controllerReturnValue);
+
+    }
+
+    @Test
+    public void shouldReturnToUpdateFormIfCreateHasErrors() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        Clinic clinic = new Clinic("testClinicId");
+
+        final String controllerReturnValue = clinicController.create(clinic, bindingResult, uiModel, null);
+        verify(uiModel).addAttribute("clinic", clinic);
+        assertEquals("clinics/clinicForm", controllerReturnValue);
+
     }
 }
