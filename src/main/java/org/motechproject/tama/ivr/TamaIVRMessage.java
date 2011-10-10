@@ -102,6 +102,7 @@ public class TamaIVRMessage implements IVRMessage {
 
     /* ---------- Four Day Recall ----------*/
     // Common
+    public static final String FDR_GREETING = "025_02_02_4DayRecallGreeting";
     public static final String FDR_ALL_DOSAGES_TAKEN = "025_10_01_ haveBeenTakingWell";
     public static final String FDR_TAKE_DOSAGES_REGULARLY = "025_11_01_takeRegularly";
     // Single Dosage

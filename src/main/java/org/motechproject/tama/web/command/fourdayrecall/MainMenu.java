@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class MainMenu implements ITreeCommand {
@@ -20,7 +19,7 @@ public class MainMenu implements ITreeCommand {
     @Override
     public String[] execute(Object o) {
         IVRContext ivrContext = (IVRContext) o;
-        List<String> messages = new ArrayList<String>();
+        ArrayList<String> messages = new ArrayList<String>();
         String patientId = TamaSessionUtil.getPatientId(ivrContext);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
 
@@ -28,7 +27,7 @@ public class MainMenu implements ITreeCommand {
             messages.add(TamaIVRMessage.FDR_MENU_FOR_MULTIPLE_DOSAGES);
         else
             messages.add(TamaIVRMessage.FDR_MENU_FOR_SINGLE_DOSAGE);
-        
+
         return messages.toArray(new String[messages.size()]);
     }
 }
