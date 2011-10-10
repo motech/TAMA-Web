@@ -10,7 +10,7 @@ import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 
 import static org.junit.Assert.assertEquals;
@@ -19,9 +19,9 @@ public class ClinicianSecurityTest extends BaseTest {
     @Test
     public void shouldVerifyIfCorrectPatientsAreSeenByLoggedInClinician() {
         TestClinician clinician1 = TestClinician.withMandatory().clinic(TestClinic.withMandatory().name(unique("securityTest")));
-        new ClinicanDataService(webDriver).createWithClinc(clinician1);
+        new ClinicianDataService(webDriver).createWithClinc(clinician1);
         TestClinician clinician2 = TestClinician.withMandatory().clinic(TestClinic.withMandatory().name(unique("securityTest")));
-        new ClinicanDataService(webDriver).createWithClinc(clinician2);
+        new ClinicianDataService(webDriver).createWithClinc(clinician2);
 
         TestPatient patientUnderClinican1 = TestPatient.withMandatory();
         new PatientDataService(webDriver).register(patientUnderClinican1, clinician1);

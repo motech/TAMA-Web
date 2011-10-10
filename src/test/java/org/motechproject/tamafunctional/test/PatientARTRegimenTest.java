@@ -6,7 +6,7 @@ import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
-import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 
 import static junit.framework.Assert.assertEquals;
@@ -16,7 +16,7 @@ public class PatientARTRegimenTest extends BaseTest {
     @Test
     public void testCreateARTRegimenForPatient() {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicanDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
@@ -33,7 +33,7 @@ public class PatientARTRegimenTest extends BaseTest {
     @Test
     public void saveRegimenForPatient() {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicanDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);

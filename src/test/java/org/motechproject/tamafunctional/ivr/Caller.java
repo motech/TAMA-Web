@@ -34,24 +34,33 @@ public class Caller extends FunctionalTestObject {
         return String.format("%s&tamaData=%s", url, callInfo.asQueryParameter());
     }
 
-    public IVRResponse enter(String number) {
-        String completeUrl = urlFor("GotDTMF", number);
-        return invoke(completeUrl);
-    }
-
-    private IVRResponse invoke(String completeUrl) {
-        logInfo("{Caller} {Invoking} {Url=%s}", completeUrl);
-        Page page = webClient.getPage(completeUrl);
-        return KooKooResponseParser.fromXml(page.getWebResponse().getContentAsString());
-    }
-
     private String urlFor(String event, String data) {
         return urlFor(sid, phoneNumber, event, data);
+    }
+
+    private IVRResponse invokeAndGetResponse(String completeUrl) {
+        return KooKooResponseParser.fromXml(invoke(completeUrl));
+    }
+
+    private String invoke(String completeUrl) {
+        logInfo("{Caller} {Invoking} {Url=%s}", completeUrl);
+        Page page = webClient.getPage(completeUrl);
+        return page.getWebResponse().getContentAsString();
     }
 
     public IVRResponse replyToCall(CallInfo callInfo) {
         this.callInfo = callInfo;
         String completeUrl = urlFor("NewCall", "");
+        return invokeAndGetResponse(completeUrl);
+    }
+
+    public IVRResponse enter(String number) {
+        String completeUrl = urlFor("GotDTMF", number);
+        return invokeAndGetResponse(completeUrl);
+    }
+
+    public String disconnect() {
+        String completeUrl = urlFor("Disconnect", "");
         return invoke(completeUrl);
     }
 }

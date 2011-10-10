@@ -60,7 +60,7 @@ public class PatientDataService extends EntityDataService {
     }
 
     public void setupARTRegimenWithDependents(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
-        new ClinicanDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
         registerAndActivate(patient, clinician);
         createARTRegimen(treatmentAdvice, patient, clinician);
     }

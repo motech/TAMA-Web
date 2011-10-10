@@ -2,12 +2,11 @@ package org.motechproject.tamafunctional.testdataservice;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
-import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;
 
-public class ClinicanDataService extends EntityDataService {
-    public ClinicanDataService(WebDriver webDriver) {
+public class ClinicianDataService extends EntityDataService {
+    public ClinicianDataService(WebDriver webDriver) {
         super(webDriver);
     }
 

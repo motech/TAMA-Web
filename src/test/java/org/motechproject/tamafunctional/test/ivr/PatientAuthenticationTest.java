@@ -6,7 +6,7 @@ import org.motechproject.tamafunctional.ivr.Caller;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
-import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
     @Test
     public void shouldTestConversationForActivatedPatientAndWrongPasscode() throws IOException {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicanDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         patient.patientPreferences().passcode("5678");

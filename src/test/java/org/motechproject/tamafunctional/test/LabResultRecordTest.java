@@ -10,7 +10,7 @@ import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.openqa.selenium.By;
 
@@ -105,8 +105,8 @@ public class LabResultRecordTest extends BaseTest {
         clinician = TestClinician.withMandatory();
         clinician.clinic(clinic);
 
-        ClinicanDataService clinicanDataService = new ClinicanDataService(webDriver);
-        clinicanDataService.createWithClinc(clinician);
+        ClinicianDataService clinicianDataService = new ClinicianDataService(webDriver);
+        clinicianDataService.createWithClinc(clinician);
     }
 
 

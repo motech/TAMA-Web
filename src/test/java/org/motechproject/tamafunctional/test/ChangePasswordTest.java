@@ -12,7 +12,7 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.PasswordSuccessPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
-import org.motechproject.tamafunctional.testdataservice.ClinicanDataService;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -59,7 +59,7 @@ public class ChangePasswordTest extends BaseTest {
         TestClinic testClinic = TestClinic.withMandatory().name("clinicForPasswordChangeTest");
         String clinicianName = unique("clinicianForPasswordChangeTest");
         TestClinician testClinician = TestClinician.withMandatory().name(clinicianName).userName(clinicianName).password("clinicianPassword").clinic(testClinic);
-        new ClinicanDataService(webDriver).createWithClinc(testClinician);
+        new ClinicianDataService(webDriver).createWithClinc(testClinician);
 
         ChangePasswordPage changePasswordPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianName, testClinician.password()).goToChangePasswordPage();
