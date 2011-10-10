@@ -155,6 +155,46 @@ public class TreatmentAdviceTest {
 
         assertFalse(treatmentAdvice.hasMultipleDosages());
     }
+    
+    @Test
+    public void shouldReturnFalseIfTreatmentAdviceHasVariableDoseAndEveningDoseIsNotStartedYet() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+        treatmentAdvice.setPatientId("123");
+
+        List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
+        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
+
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, "09:00am",""));
+        drugDosages.add(drugDosage("Drug2Id", startDateForDrug1, endDateForDrug1, "09:00am",""));
+        DrugDosage drugDosage = drugDosage("Drug2Id", DateUtil.today(), null, "", "09:00pm");
+        drugDosage.setOffsetDays(10);
+		drugDosages.add(drugDosage);
+        
+        treatmentAdvice.setDrugDosages(drugDosages);
+
+        assertFalse(treatmentAdvice.hasMultipleDosages());
+    }
+    
+    @Test
+    public void shouldReturnTrueIfTreatmentAdviceHasVariableDoseAndEveningDoseIsNotStartedYet() {
+        TreatmentAdvice treatmentAdvice = new TreatmentAdvice();
+        treatmentAdvice.setPatientId("123");
+
+        List<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
+        LocalDate startDateForDrug1 = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDateForDrug1 = DateUtil.newDate(2010, 12, 10);
+
+        drugDosages.add(drugDosage("Drug1Id", startDateForDrug1, endDateForDrug1, "09:00am",""));
+        drugDosages.add(drugDosage("Drug2Id", startDateForDrug1, endDateForDrug1, "09:00am",""));
+        DrugDosage drugDosage = drugDosage("Drug2Id", DateUtil.today().minusDays(10), null, "", "09:00pm");
+        drugDosage.setOffsetDays(10);
+		drugDosages.add(drugDosage);
+        
+        treatmentAdvice.setDrugDosages(drugDosages);
+
+        assertTrue(treatmentAdvice.hasMultipleDosages());
+    }
 
     private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final String morningTime, final String eveningTime) {
         return new DrugDosage() {{

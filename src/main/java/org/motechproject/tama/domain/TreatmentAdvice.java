@@ -1,20 +1,32 @@
 package org.motechproject.tama.domain;
 
-import ch.lambdaj.Lambda;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.util.DateUtil;
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+import static ch.lambdaj.Lambda.selectDistinct;
+import static org.hamcrest.Matchers.hasItem;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-import java.util.*;
 
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.hasItem;
-import static org.apache.commons.collections.CollectionUtils.filter;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.LocalDate;
+import org.motechproject.util.DateUtil;
+
+import ch.lambdaj.Lambda;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity {
@@ -101,7 +113,19 @@ public class TreatmentAdvice extends CouchEntity {
     }
 
     public boolean hasMultipleDosages() {
-        return (groupDosagesByTime().size() > 1);
+    	LocalDate today = DateUtil.today();
+    	int count = 0;
+    	
+        Map<String, List<DrugDosage>> groupedDosagesByTime = groupDosagesByTime();
+    	for (String key : groupedDosagesByTime.keySet()){
+    		boolean isDoseValidToday = false;
+    		for (DrugDosage dosage :groupedDosagesByTime.get(key)) {
+    			int offsetDays = key.equals(dosage.getEveningTime())?dosage.getOffsetDays():0;
+    			if (!today.isBefore(dosage.getStartDate().plusDays(offsetDays))) { isDoseValidToday = true; break;}
+    		}
+    		if (isDoseValidToday) count++;
+    	} 
+		return (count > 1);
     }
 
 //    public Map<String, List<DrugDosage>> dosagesMap() {
