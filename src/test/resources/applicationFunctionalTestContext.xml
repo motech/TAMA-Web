@@ -12,4 +12,5 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tamafunctional"/>
+    <context:component-scan base-package="org.motechproject.tama.util"/>
 </beans>

@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.test.pillreminder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.util.FileUtil;
 import org.motechproject.tamafunctional.ivr.Caller;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
@@ -27,6 +28,9 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
     @Autowired
     private ScheduledJobDataService scheduledJobDataService;
 
+    @Autowired
+    private FileUtil util;
+
     @Before
     public void testSetUp() {
         scheduledJobDataService.clearJobs();
@@ -46,6 +50,6 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         Caller caller = caller(patient);
         caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, YOUR_NEXT_DOSE_IS);
+        asksForCollectDtmfWith(ivrResponse, util.sanitizeFilename(YOUR_NEXT_DOSE_IS), util.sanitizeFilename(AT), util.sanitizeFilename(MENU_010_05_01_MAINMENU4));
     }
 }
