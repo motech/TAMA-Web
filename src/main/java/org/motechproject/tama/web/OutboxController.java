@@ -89,7 +89,7 @@ public class OutboxController {
 
     private void addAudioFilesToBePlayedToResponse(OutboundVoiceMessage outboundVoiceMessage, IVRResponseBuilder ivrResponseBuilder) {
         List<String> audioFiles = (List<String>) outboundVoiceMessage.getParameters().get(AUDIO_FILES_KEY);
-        if (audioFiles != null){
+        if (audioFiles != null) {
             for (String audioFile : audioFiles) {
                 ivrResponseBuilder.withPlayAudios(audioFile);
             }
