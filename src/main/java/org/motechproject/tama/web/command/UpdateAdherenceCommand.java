@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.TamaSessionUtil;
 import org.motechproject.util.DateUtil;
@@ -44,7 +45,7 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
     }
 
     protected LocalDate getDosageDate(IVRContext ivrContext) {
-    	return DateUtil.today();
+    	return new PillRegimenSnapshot(ivrContext).getCurrentDosage().getDosageDate();
 	}
 
 	protected String getDosageId(IVRContext ivrContext) {

@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.command;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -7,18 +8,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.ArrayList;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.model.Time;
+import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.server.pillreminder.contract.MedicineResponse;
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRRequest.CallDirection;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
@@ -96,5 +106,30 @@ public class UpdateAdherenceCommandTest {
         verify(logs, never()).update(log);
     }
 
+    @Test
+    public void testShouldRecordDosageForYesterdayDoseIfPatientCallsBeforePillWindowOfTodaysDosage() {
+    	ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
+        dosages.add(new DosageResponse("currentDosageId", new Time(19, 0), new LocalDate(2010, 10,10), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("nextDosageId", new Time(9, 0), new LocalDate(2010, 10,10), null, null, new ArrayList<MedicineResponse>()));
+        
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+
+        when(session.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);
+        when(req.getCallDirection()).thenReturn(CallDirection.Inbound);
+        when(logs.findByDosageIdAndDate("currentDosageId",new LocalDate(2010, 10,10))).thenReturn(null);
+
+        DateTime testCallTime = DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11),6,59, 0);
+        when(session.getCallTime()).thenReturn(testCallTime);
+        
+        UpdateAdherenceCommand command = new UpdateAdherenceCommand(logs);
+        command.execute(context);
+        
+        ArgumentCaptor<DosageAdherenceLog> logCapture = ArgumentCaptor.forClass(DosageAdherenceLog.class);
+        verify(logs).add(logCapture.capture());
+        
+        DosageAdherenceLog capturedLog = logCapture.getValue();
+        assertEquals("currentDosageId",capturedLog.getDosageId());
+        assertEquals(new LocalDate(2010, 10,10),capturedLog.getDosageDate());
+    }
 }
