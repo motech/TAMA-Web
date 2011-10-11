@@ -8,6 +8,8 @@ import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 
 public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
@@ -30,6 +32,16 @@ public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
     public void shouldFindLogCountForGivenDateRange() {
         int numLogs = allWeeklyAdherenceLogs.findLogCountByPatientIDAndTreatmentAdviceIdAndDateRange("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 5), DateUtil.newDate(2000, 10, 15));
         assertEquals(2, numLogs);
+    }
+
+    @Test
+    public void shouldFindLogsByDateRange() {
+        List<WeeklyAdherenceLog> weeklyAdherenceLogs = allWeeklyAdherenceLogs.findByDateRange("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 5), DateUtil.newDate(2000, 10, 13));
+        assertEquals(2, weeklyAdherenceLogs.size());
+        assertEquals("Patient1", weeklyAdherenceLogs.get(0).getPatientId());
+        assertEquals("Patient1", weeklyAdherenceLogs.get(1).getPatientId());
+        assertEquals("TADocID1", weeklyAdherenceLogs.get(0).getTreatmentAdviceId());
+        assertEquals("TADocID1", weeklyAdherenceLogs.get(1).getTreatmentAdviceId());
     }
 
     @After
