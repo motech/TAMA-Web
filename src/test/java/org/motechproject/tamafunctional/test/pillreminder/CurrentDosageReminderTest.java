@@ -46,6 +46,6 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         Caller caller = caller(patient);
         caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, YOUR_NEXT_DOSE_IS);
     }
 }
