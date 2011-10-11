@@ -40,7 +40,7 @@ public class FourDayRecallServiceTest {
 
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(today);
-        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), 4)).thenReturn(startDateForWeek);
+        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), startDateOfTreatmentAdvice.plusDays(4))).thenReturn(startDateForWeek);
         when(allWeeklyAdherenceLogs.findLogCountByPatientIDAndTreatmentAdviceIdAndDateRange(patientId, treatmentAdviceId, startDateForWeek, today)).thenReturn(1);
 
         fourDayRecallService = new FourDayRecallService(allWeeklyAdherenceLogs);
@@ -59,7 +59,7 @@ public class FourDayRecallServiceTest {
 
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(today);
-        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), 4)).thenReturn(startDateForWeek);
+        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), startDateOfTreatmentAdvice.plusDays(4))).thenReturn(startDateForWeek);
         when(allWeeklyAdherenceLogs.findLogCountByPatientIDAndTreatmentAdviceIdAndDateRange(patientId, treatmentAdviceId, startDateForWeek, today)).thenReturn(0);
 
         fourDayRecallService = new FourDayRecallService(allWeeklyAdherenceLogs);

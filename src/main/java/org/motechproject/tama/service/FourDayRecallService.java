@@ -24,6 +24,6 @@ public class FourDayRecallService {
 
     public LocalDate getStartDateForCurrentWeek(LocalDate startDateOfTreatmentAdvice) {
         DayOfWeek startDayForTreatmentAdvice = DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice);
-        return DateUtil.pastDateWith(startDayForTreatmentAdvice, 4);
+        return DateUtil.pastDateWith(startDayForTreatmentAdvice, startDateOfTreatmentAdvice.plusDays(4));
     }
 }

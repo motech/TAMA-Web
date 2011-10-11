@@ -16,7 +16,6 @@ public class SetupOutboxMessages {
     public static final String APPLICATION_CONTEXT_XML = "META-INF/spring/applicationContext-tools.xml";
 
     public static void main(String[] args) {
-
         System.out.println("Args length: " + args.length);
 
         if (args.length < 2) {
