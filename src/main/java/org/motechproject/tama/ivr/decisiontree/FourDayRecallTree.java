@@ -1,9 +1,6 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.MenuAudioPrompt;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.*;
 import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.web.command.fourdayrecall.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,8 @@ public class FourDayRecallTree extends TamaDecisionTree {
     private DosageMissedOnMultipleDays dosageMissedOnMultipleDays;
     @Autowired
     private CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs;
+    @Autowired
+    private WeeklyAdherencePercentage weeklyAdherencePercentage;
 
     @Override
     protected Node createRootNode(IVRContext ivrContext) {
@@ -31,7 +30,10 @@ public class FourDayRecallTree extends TamaDecisionTree {
                 .setDestinationNode(
                         new Node()
                                 .setTreeCommands(createWeeklyAdherenceLogs)
-                                .setPrompts(new AudioPrompt().setCommand(dosageMissedOnMultipleDays))
+                                .setPrompts(
+                                        new AudioPrompt().setCommand(dosageMissedOnMultipleDays),
+                                        new AudioPrompt().setCommand(weeklyAdherencePercentage)
+                                )
                 );
 
         return new Node()
@@ -45,13 +47,18 @@ public class FourDayRecallTree extends TamaDecisionTree {
                                         new Node()
                                                 .setTreeCommands(createWeeklyAdherenceLogs)
                                                 .setPrompts(
-                                                        new AudioPrompt().setCommand(allDosagesTaken)))
+                                                        new AudioPrompt().setCommand(allDosagesTaken),
+                                                        new AudioPrompt().setCommand(weeklyAdherencePercentage)
+                                                        ))
                         },
                         {"1", new Transition()
                                 .setDestinationNode(
                                         new Node()
                                                 .setTreeCommands(createWeeklyAdherenceLogs)
-                                                .setPrompts(new AudioPrompt().setCommand(dosagesMissedOnOneDay))
+                                                .setPrompts(
+                                                        new AudioPrompt().setCommand(dosagesMissedOnOneDay),
+                                                        new AudioPrompt().setCommand(weeklyAdherencePercentage)
+                                                )
                                 )
                         },
                         {"2", missedMultipleDosagesTransition

@@ -105,6 +105,9 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String FDR_GREETING = "025_02_02_4DayRecallGreeting";
     public static final String FDR_ALL_DOSAGES_TAKEN = "025_10_01_ haveBeenTakingWell";
     public static final String FDR_TAKE_DOSAGES_REGULARLY = "025_11_01_takeRegularly";
+    public static final String FDR_YOUR_WEEKLY_ADHERENCE_IS = "M02_01_adherence1";
+    public static final String FDR_PERCENT = "M02_03_adherenceLow2";
+
     // Single Dosage
     public static final String FDR_MENU_FOR_SINGLE_DOSAGE = "025_03_01_fourDoseRecallMenuA";
     public static final String FDR_MISSED_ONE_DOSAGE_ON_ONE_DAY = "025_04_01_MissedDose1";
