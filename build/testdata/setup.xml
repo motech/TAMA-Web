@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="tama" basedir=".">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="../lib/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <path id="lib.path">
+        <fileset dir="../../target/tama-0.3-SNAPSHOT/WEB-INF/lib" includes="**/*.jar"/>
+    </path>
+
+    <target name="setup.clinic">
+        <java fork="false" classname="org.motechproject.tama.tools.SetupClinic">
+            <classpath>
+                <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>
+            <arg line="${params}"></arg>
+        </java>
+    </target>
+
+    <target name="setup.clinician">
+        <java fork="false" classname="org.motechproject.tama.tools.SetupClinician">
+            <classpath>
+                <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>
+            <arg line="${params}"></arg>
+        </java>
+    </target>
+
+    <target name="setup.patient">
+        <java fork="false" classname="org.motechproject.tama.tools.SetupPatient">
+            <classpath>
+                <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>
+            <arg line="${params}"></arg>
+        </java>
+    </target>
+
+    <target name="update.treatment.advice">
+        <java fork="false" classname="org.motechproject.tama.tools.UpdateTreatmentAdvice">
+            <classpath>
+                <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>
+            <arg line="${params}"></arg>
+        </java>
+    </target>
+
+</project>

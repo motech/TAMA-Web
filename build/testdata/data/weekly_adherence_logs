@@ -1,0 +1,8 @@
+patientId=patientFoo
+treatmentAdviceId=fooBar
+logDate=16/09/2011;numberOfDaysMissed=1
+logDate=23/09/2011;numberOfDaysMissed=1
+logDate=30/09/2011;numberOfDaysMissed=1
+logDate=6/10/2011;numberOfDaysMissed=2
+
+
