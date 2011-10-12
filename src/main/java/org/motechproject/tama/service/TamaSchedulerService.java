@@ -60,7 +60,9 @@ public class TamaSchedulerService {
             MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
             String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, count)).withTime(callTime).build();
             Date jobEndDate = endDate == null ? null : endDate.toDate();
-            CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, treatmentAdviceStartDate.plusDays(4 + count).toDate(), jobEndDate);
+            LocalDate startDate = treatmentAdviceStartDate.plusDays(4 + count);
+            Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now())?DateUtil.now().toDate():startDate.toDate();
+            CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
             motechSchedulerService.scheduleJob(cronJobForForDayRecall);
         }
     }
@@ -99,7 +101,8 @@ public class TamaSchedulerService {
         LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
         MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
-        CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, startDate.toDate(), treatmentAdvice.getEndDate());
+        Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
+        CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, jobStartDate, treatmentAdvice.getEndDate());
         motechSchedulerService.scheduleJob(adherenceJob);
     }
 
