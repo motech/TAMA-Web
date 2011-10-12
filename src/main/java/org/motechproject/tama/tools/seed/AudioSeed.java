@@ -59,8 +59,10 @@ public class AudioSeed extends Seed {
                                 File wav = new File(wavFilePath);
                                 ResourceQuery resourceQuery = new ResourceQuery(FileUtil.sanitizeFilename(wav.getName()), new File(language_dir).getName());
                                 FileInputStream inputStream = new FileInputStream(wav);
-                                cmsLiteService.addContent(resourceQuery, inputStream);
+                                String md5Checksum = new MD5Checksum().getMD5Checksum(wavFilePath);
+                                cmsLiteService.addContent(resourceQuery, inputStream, md5Checksum);
                                 logger.info("loaded " + wavFilePath);
+                                inputStream.close();
                             } catch (Exception e) {
                                 logger.error("Could not load wav file : " + wavFilePath, e);
                             }
