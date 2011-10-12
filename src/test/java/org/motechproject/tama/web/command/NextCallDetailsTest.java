@@ -43,7 +43,7 @@ public class NextCallDetailsTest {
         initMocks(this);
         
 
-        nextCallDetails = new NextCallDetails(new IVRDayMessageBuilder(new TamaIVRMessage(null, new FileUtil())));
+        nextCallDetails = new NextCallDetails(new IVRDayMessageBuilder(new TamaIVRMessage(null)));
 
         context = new IVRContext(request, ivrSession);
         

@@ -67,7 +67,7 @@ public class MessageForAdherenceWhenPreviousDosageNotCapturedCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse(REGIMEN_ID, "p1", 0, 0, dosageResponses);
 
         Mockito.when(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
-        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(allDosageAdherenceLogs, new TamaIVRMessage(null, new FileUtil()));
+        command = new MessageForAdherenceWhenPreviousDosageNotCapturedCommand(allDosageAdherenceLogs, new TamaIVRMessage(null));
     }
 
     @Test

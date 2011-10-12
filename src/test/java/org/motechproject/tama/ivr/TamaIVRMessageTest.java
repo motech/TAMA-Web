@@ -15,7 +15,7 @@ public class TamaIVRMessageTest {
     @Before
     public void setUp() {
         properties = new Properties();
-        messages = new TamaIVRMessage(properties, new FileUtil());
+        messages = new TamaIVRMessage(properties);
     }
 
     @Test

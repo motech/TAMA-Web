@@ -28,9 +28,6 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
     @Autowired
     private ScheduledJobDataService scheduledJobDataService;
 
-    @Autowired
-    private FileUtil util;
-
     @Before
     public void testSetUp() {
         scheduledJobDataService.clearJobs();
@@ -50,6 +47,6 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         Caller caller = caller(patient);
         caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, util.sanitizeFilename(YOUR_NEXT_DOSE_IS), util.sanitizeFilename(AT), util.sanitizeFilename(MENU_010_05_01_MAINMENU4));
+        asksForCollectDtmfWith(ivrResponse, FileUtil.sanitizeFilename(YOUR_NEXT_DOSE_IS), FileUtil.sanitizeFilename(AT), FileUtil.sanitizeFilename(MENU_010_05_01_MAINMENU4));
     }
 }

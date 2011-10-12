@@ -50,7 +50,7 @@ public class PillsDelayWarningTest {
         Properties stubProperties = new Properties();
         retryInterval = "15";
         stubProperties.put(TAMAConstants.RETRY_INTERVAL, retryInterval);
-        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new TamaIVRMessage(null, new FileUtil())), new TamaIVRMessage(null, new FileUtil()),stubProperties);
+        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new TamaIVRMessage(null)), new TamaIVRMessage(null),stubProperties);
         when(context.ivrRequest()).thenReturn(request);
         when(context.ivrSession()).thenReturn(ivrSession);
         when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());

@@ -39,7 +39,7 @@ public class MessageOnPreviousPillNotTakenTest {
     @Before
     public void setup() {
         initMocks(this);
-        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken(new IVRDayMessageBuilder(new TamaIVRMessage(null, new FileUtil())));
+        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken(new IVRDayMessageBuilder(new TamaIVRMessage(null)));
         when(context.ivrRequest()).thenReturn(request);
     }
 

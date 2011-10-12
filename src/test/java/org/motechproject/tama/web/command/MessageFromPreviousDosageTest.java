@@ -47,7 +47,7 @@ public class MessageFromPreviousDosageTest {
     public void setup() {
         initMocks(this);
 
-        messageFromPreviousDosage = new MessageFromPreviousDosage(new IVRDayMessageBuilder(new TamaIVRMessage(null, new FileUtil())));
+        messageFromPreviousDosage = new MessageFromPreviousDosage(new IVRDayMessageBuilder(new TamaIVRMessage(null)));
         when(context.ivrSession()).thenReturn(ivrSession);
         when(context.ivrRequest()).thenReturn(ivrRequest);
         when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");

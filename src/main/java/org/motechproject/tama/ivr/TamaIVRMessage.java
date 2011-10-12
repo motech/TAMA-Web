@@ -118,12 +118,10 @@ public class TamaIVRMessage implements IVRMessage {
     /* ---------- Four Day Recall ----------*/
 
     private Properties properties;
-    private FileUtil fileUtil;
 
     @Autowired
-    public TamaIVRMessage(@Qualifier("ivrProperties") Properties properties, FileUtil fileUtil) {
+    public TamaIVRMessage(@Qualifier("ivrProperties") Properties properties) {
         this.properties = properties;
-        this.fileUtil = fileUtil;
     }
 
     public String get(String key) {
@@ -144,7 +142,7 @@ public class TamaIVRMessage implements IVRMessage {
 	 */
     @Override
 	public String getWav(String key, String preferredLangCode) {
-        String file = get(key) != null ? get(key) : fileUtil.sanitizeFilename(key);
+        String file = get(key) != null ? get(key) : FileUtil.sanitizeFilename(key);
         return properties.get(CONTENT_LOCATION_URL) + preferredLangCode + "/" + file + WAV;
     }
 

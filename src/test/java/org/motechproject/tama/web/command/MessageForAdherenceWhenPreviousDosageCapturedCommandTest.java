@@ -67,7 +67,7 @@ public class MessageForAdherenceWhenPreviousDosageCapturedCommandTest {
 
         Mockito.when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
 
-        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(allDosageAdherenceLogs, new TamaIVRMessage(null, new FileUtil()));
+        command = new MessageForAdherenceWhenPreviousDosageCapturedCommand(allDosageAdherenceLogs, new TamaIVRMessage(null));
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2011, 8, 4, 12, 0));
         when(DateUtil.today()).thenReturn(new LocalDate(2011, 7, 1));

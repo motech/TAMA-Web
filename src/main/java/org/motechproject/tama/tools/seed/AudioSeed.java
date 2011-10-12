@@ -25,14 +25,12 @@ public class AudioSeed extends Seed {
 
     CMSLiteService cmsLiteService;
     private String wavFilesLocation;
-    private FileUtil fileUtil;
     private int poolSize =  10;
 
     @Autowired
-    public AudioSeed(CMSLiteService cmsLiteService, @Qualifier("ivrProperties") Properties ivrProperties, FileUtil fileUtil) {
+    public AudioSeed(CMSLiteService cmsLiteService, @Qualifier("ivrProperties") Properties ivrProperties) {
         this.cmsLiteService = cmsLiteService;
         this.wavFilesLocation = (String) ivrProperties.get(WAV_FILES_LOCATION);
-        this.fileUtil = fileUtil;
     }
 
     @Override
@@ -59,7 +57,7 @@ public class AudioSeed extends Seed {
                         public void run() {
                             try {
                                 File wav = new File(wavFilePath);
-                                ResourceQuery resourceQuery = new ResourceQuery(fileUtil.sanitizeFilename(wav.getName()), new File(language_dir).getName());
+                                ResourceQuery resourceQuery = new ResourceQuery(FileUtil.sanitizeFilename(wav.getName()), new File(language_dir).getName());
                                 FileInputStream inputStream = new FileInputStream(wav);
                                 cmsLiteService.addContent(resourceQuery, inputStream);
                                 logger.info("loaded " + wavFilePath);
