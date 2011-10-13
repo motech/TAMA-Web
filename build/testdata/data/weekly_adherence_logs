@@ -1,8 +1,7 @@
-patientId=patientFoo
-treatmentAdviceId=fooBar
-logDate=16/09/2011;numberOfDaysMissed=1
-logDate=23/09/2011;numberOfDaysMissed=1
-logDate=30/09/2011;numberOfDaysMissed=1
-logDate=6/10/2011;numberOfDaysMissed=2
-
+-- patient_id logDateYear logDateMonth logDateDay num_days_missed  --
+P1 2011 9 16 1
+P1 2011 9 23 1
+P1 2011 9 30 1
+P1 2011 9 6 3
+-- end --
 

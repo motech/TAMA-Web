@@ -16,7 +16,7 @@
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
             </classpath>
-            <arg line="${params}"></arg>
+            <arg line="${params}"/>
         </java>
     </target>
 
@@ -26,7 +26,7 @@
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
             </classpath>
-            <arg line="${params}"></arg>
+            <arg line="${params}"/>
         </java>
     </target>
 
@@ -36,7 +36,17 @@
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
             </classpath>
-            <arg line="${params}"></arg>
+            <arg line="${params}"/>
+        </java>
+    </target>
+
+    <target name="setup.weekly.adherence.logs">
+        <java fork="false" classname="org.motechproject.tama.tools.SetupPatient">
+            <classpath>
+                <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>
+            <arg line="${params}"/>
         </java>
     </target>
 
@@ -46,7 +56,26 @@
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
             </classpath>
-            <arg line="${params}"></arg>
+            <arg line="${params}"/>
+        </java>
+    </target>
+
+    <target name="drop.all.weekly.logs">
+        <java fork="false" classname="org.motechproject.tama.tools.DeleteAllWeeklyAdherenceLogs">
+            <classpath>
+                <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>>
+        </java>
+    </target>
+
+    <target name="trigger.four.day.recall.event">
+        <java fork="false" classname="org.motechproject.tama.tools.TriggerFourDayRecallEvent">
+            <classpath>
+                <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>
+            <arg line="${params}"/>
         </java>
     </target>
 

@@ -54,7 +54,7 @@ public class SetupPatient {
         else
             patientPreferences.setCallPreference(CallPreference.FourDayRecall);
 
-        patientPreferences.setBestCallTime(new TimeOfDay(Integer.parseInt(bestCallHour), Integer.parseInt(bestCallMinute), null));
+        patientPreferences.setBestCallTime(new TimeOfDay(Integer.parseInt(bestCallHour), Integer.parseInt(bestCallMinute), TimeMeridiem.AM));
         patientPreferences.setIvrLanguage(allIVRLanguages.findByLanguageCode(languageCode));
         patientPreferences.setDayOfWeeklyCall(DayOfWeek.valueOf(dayOfWeeklyCall));
         patient.setPatientPreferences(patientPreferences);
