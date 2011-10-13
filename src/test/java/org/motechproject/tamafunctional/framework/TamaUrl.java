@@ -2,9 +2,12 @@ package org.motechproject.tamafunctional.framework;
 
 import org.motechproject.tamafunctional.testdata.TestEntity;
 
+import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverName;
+import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverPort;
+
 public class TamaUrl {
     public static String base() {
-        return String.format("http://localhost:%s/tama/", System.getProperty("jetty.port", "8080"));
+        return String.format("http://%s:%s/tama/", webserverName(), webserverPort());
     }
 
     public static String baseFor(String resource) {

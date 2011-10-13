@@ -1,8 +1,9 @@
 package org.motechproject.tama.web.command.fourdayrecall;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
@@ -22,12 +23,16 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
 
     @Override
     public String[] execute(Object o) {
-        IVRContext ivrContext = (IVRContext) o;
+        KooKooIVRContext ivrContext = (KooKooIVRContext) o;
+        TAMAIVRContext tamaivrContext = new TAMAIVRContext(ivrContext);
 
-        String patientId = ivrContext.ivrSession().getExternalId();
+        return executeCommand(tamaivrContext);
+    }
+
+    String[] executeCommand(TAMAIVRContext tamaivrContext) {
+        String patientId = tamaivrContext.patientId();
         String treatmentAdviceDocId = allTreatmentAdvices.findByPatientId(patientId).getId();
-        int numberOfDaysMissed = Integer.parseInt(ivrContext.ivrRequest().getData());
-        
+        int numberOfDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
         WeeklyAdherenceLog adherenceLog = new WeeklyAdherenceLog(patientId, DateUtil.today(), numberOfDaysMissed, treatmentAdviceDocId);
         allWeeklyAdherenceLogs.add(adherenceLog);
 

@@ -1,11 +1,11 @@
 package org.motechproject.tama.web.command.fourdayrecall;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
-import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +19,13 @@ public class DosagesMissedOnOneDay implements ITreeCommand {
 
     @Override
     public String[] execute(Object o) {
-        IVRContext ivrContext = (IVRContext) o;
-        List<String> messages = new ArrayList<String>();
+        TAMAIVRContext tamaivrContext = new TAMAIVRContext((KooKooIVRContext) o);
+        return executeCommand(tamaivrContext);
+    }
 
-        String patientId = TamaSessionUtil.getPatientId(ivrContext);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
+    String[] executeCommand(TAMAIVRContext tamaivrContext) {
+        List<String> messages = new ArrayList<String>();
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(tamaivrContext.patientId());
 
         if (treatmentAdvice.hasMultipleDosages())
             messages.add(TamaIVRMessage.FDR_MISSED_MULTIPLE_DOSAGES_ON_ONE_DAY);

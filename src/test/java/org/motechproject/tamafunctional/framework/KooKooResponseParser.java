@@ -23,4 +23,8 @@ public class KooKooResponseParser {
             throw exception;
         }
     }
+
+    public static String fromObject(IVRResponse ivrResponse) {
+        return xStream.toXML(ivrResponse);
+    }
 }

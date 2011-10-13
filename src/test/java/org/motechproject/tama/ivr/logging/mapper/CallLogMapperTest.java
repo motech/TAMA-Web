@@ -25,7 +25,7 @@ public class CallLogMapperTest {
         CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("phoneNumber");
         KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord);
         callDetailRecord.setEndDate(new Date());
-        kookooCallDetailRecord.setId("callId");
+        kookooCallDetailRecord.setVendorCallId("callId");
 
 
         CallLog callLog = callLogMapper.toCallLog("patientDocId", kookooCallDetailRecord);

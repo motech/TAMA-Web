@@ -17,17 +17,8 @@ public class PillReminderCall extends IvrCall {
     public static final String TOTAL_TIMES_TO_SEND = "total_times_to_send";
 
     @Autowired
-    private EventService eventService;
-    @Autowired
-    private CallLogService callLogService;
-
-    public PillReminderCall() {
-    }
-
-    public PillReminderCall(IVRService ivrService, EventService eventService, AllPatients allPatients, CallLogService callLogService) {
+    public PillReminderCall(IVRService ivrService, AllPatients allPatients) {
         super(allPatients, ivrService);
-        this.eventService = eventService;
-        this.callLogService = callLogService;
     }
 
     public void execute(String patientDocId, final String dosageId, final int timesSent, final int totalTimesToSend) {

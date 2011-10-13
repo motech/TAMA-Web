@@ -15,12 +15,6 @@ import java.io.IOException;
 import static junit.framework.Assert.assertEquals;
 
 public class RegisterClinicianTest extends BaseTest {
-
-    @Before
-    public void setUp() {
-        super.setUp();
-    }
-
     @Test
     public void testClinicianRegistration() {
         ClinicContext clinicContext = new ClinicContext();
@@ -37,10 +31,4 @@ public class RegisterClinicianTest extends BaseTest {
         assertEquals(clinician.userName(), showClinicianPage.getUsername());
         showClinicianPage.logout();
     }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-    }
-
 }

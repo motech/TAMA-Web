@@ -6,11 +6,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
-import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
@@ -30,13 +28,8 @@ public class CreateWeeklyAdherenceLogsTest {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
-    @Mock
-    private IVRSession ivrSession;
-    @Mock
-    private IVRRequest ivrRequest;
-    
-    private IVRContext ivrContext;
-    private final String PATIENT_ID = "patient_id";
+
+    private TAMAIVRContextForTest context;
     private final String TREATMENT_ADVICE_ID = "treatmentAdviceId";
 
 
@@ -44,6 +37,7 @@ public class CreateWeeklyAdherenceLogsTest {
     public void setUp() {
         initMocks(this);
         mockStatic(DateUtil.class);
+        context = new TAMAIVRContextForTest();
     }
 
     @Test
@@ -53,20 +47,18 @@ public class CreateWeeklyAdherenceLogsTest {
             setId(TREATMENT_ADVICE_ID);
         }};
 
-        when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(treatmentAdvice);
+        String patientId = "patient_id";
+        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
         when(DateUtil.today()).thenReturn(today);
-        when(ivrSession.getExternalId()).thenReturn(PATIENT_ID);
-        when(ivrRequest.getData()).thenReturn("1");
-
-        ivrContext = new IVRContext(ivrRequest, ivrSession);
+        context.patientId(patientId).dtmfInput("1");
         CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs = new CreateWeeklyAdherenceLogs(allWeeklyAdherenceLogs, allTreatmentAdvices);
-        createWeeklyAdherenceLogs.execute(ivrContext);
+        createWeeklyAdherenceLogs.executeCommand(context);
 
         ArgumentCaptor<WeeklyAdherenceLog> weeklyAdherenceLogArgumentCaptor = ArgumentCaptor.forClass(WeeklyAdherenceLog.class);
         verify(allWeeklyAdherenceLogs).add(weeklyAdherenceLogArgumentCaptor.capture());
         assertEquals(today, weeklyAdherenceLogArgumentCaptor.getValue().getLogDate());
         assertEquals(1, weeklyAdherenceLogArgumentCaptor.getValue().getNumberOfDaysMissed());
-        assertEquals(PATIENT_ID, weeklyAdherenceLogArgumentCaptor.getValue().getPatientId());
+        assertEquals(patientId, weeklyAdherenceLogArgumentCaptor.getValue().getPatientId());
         assertEquals(TREATMENT_ADVICE_ID, weeklyAdherenceLogArgumentCaptor.getValue().getTreatmentAdviceId());
     }
 }

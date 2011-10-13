@@ -8,17 +8,12 @@ import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
-import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageReminderTree;
-import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.tama.web.command.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,24 +25,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationTestContext.xml"})
 public class CurrentDosageReminderTreeTest {
     @Autowired
     private TestTree currentDosageReminderTree;
-
-    private IVRContext ivrContext;
-    private IVRSession ivrSession;
+    private TAMAIVRContextForTest context;
 
     @Before
     public void setUp() {
-        ivrSession = mock(IVRSession.class);
-        IVRRequest ivrRequest = new KookooRequest();
-        ivrRequest.setParameter(PillReminderCall.DOSAGE_ID, "currentDosageId");
-        ivrContext = new IVRContext(ivrRequest, ivrSession);
+        context = new TAMAIVRContextForTest().dosageId("currentDosageId");
     }
 
     @After
@@ -59,7 +47,7 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetCurrentDosageMessagePrompt() {
         setUpDataForPreviousDosage(true);
 
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("", "");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals(TamaIVRMessage.PILL_REMINDER_RESPONSE_MENU, prompts.get(1).getName());
@@ -71,7 +59,7 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPillTakenCommand() {
         setUpDataForPreviousDosage(true);
 
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("/", "1");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "1");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(3, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof MessageOnPillTaken);
@@ -84,7 +72,7 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPillGettingLateCommandAndPrompt() {
         setUpDataForPreviousDosage(true);
 
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("/", "2");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "2");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals(PillsDelayWarning.class, prompts.get(0).getCommand().getClass());
@@ -95,7 +83,7 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPromptForRecordingReasonForNotTakingPill() {
         setUpDataForPreviousDosage(true);
 
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("/", "3");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "3");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof MessageForMissedPillFeedbackCommand);
@@ -109,7 +97,7 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetPromptForCarryingExtraPills() {
         setUpDataForPreviousDosage(true);
 
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("/3", "2");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "2");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(3, prompts.size());
         assertEquals(TamaIVRMessage.PLEASE_CARRY_SMALL_BOX, prompts.get(0).getName());
@@ -122,7 +110,7 @@ public class CurrentDosageReminderTreeTest {
     public void shouldGetRecordResponseInTamaCommandIfPatientHasNotTakenThePillForUnknownReason() {
         setUpDataForPreviousDosage(true);
 
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("/3", "3");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "3");
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals(RecordDeclinedDosageReasonCommand.class, nextNode.getTreeCommands().get(0).getClass());
@@ -134,16 +122,8 @@ public class CurrentDosageReminderTreeTest {
     public void shouldNotJumpToPreviousDosageTreeIfPreviousDosageCaptured() {
         setUpDataForPreviousDosage(true);
 
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("/3", "2");
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "2");
         assertFalse(nextNode.hasTransitions());
-    }
-
-    @Test
-    public void shouldJumpToPreviousDosageTreeIfPreviousDosageNotCaptured() {
-        setUpDataForPreviousDosage(false);
-
-        Node nextNode = currentDosageReminderTree.getTree(ivrContext).nextNode("/3", "2");
-        assertTrue(nextNode.hasTransitions());
     }
 
     private void setUpDataForPreviousDosage(boolean isCaptured) {
@@ -155,8 +135,7 @@ public class CurrentDosageReminderTreeTest {
         List<DosageResponse> dosageResponses = Arrays.asList(currentDosage, previousDosage);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
 
-        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
-        when(ivrSession.getCallTime()).thenReturn(DateUtil.newDateTime(DateUtil.today(), 14, 0, 0));
+        context.pillRegimen(pillRegimenResponse).callStartTime(DateUtil.newDateTime(DateUtil.today(), 14, 0, 0));
     }
 }
 

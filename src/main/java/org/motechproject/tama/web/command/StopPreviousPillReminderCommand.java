@@ -1,26 +1,22 @@
 package org.motechproject.tama.web.command;
 
-import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.DosageResponseWithDate;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StopPreviousPillReminderCommand extends StopTodaysRemindersCommand {
+public class StopPreviousPillReminderCommand extends BaseTreeCommand {
     @Autowired
     public StopPreviousPillReminderCommand(PillReminderService pillReminderService) {
         super(pillReminderService);
     }
 
-    protected LocalDate getLastCaptureDate(IVRContext ivrContext) {
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        return pillRegimenSnapshot.getPreviousDosage().getDosageDate();
-    }
-
     @Override
-    protected String getDosageId(IVRContext ivrContext) {
-        return new PillRegimenSnapshot(ivrContext).getPreviousDosage().getDosageId();
+    public String[] executeCommand(TAMAIVRContext ivrContext) {
+        DosageResponseWithDate currentDosage = pillRegimenSnapshot(ivrContext).getPreviousDosage();
+        pillReminderService.dosageStatusKnown(pillRegimen(ivrContext).getPillRegimenId(), currentDosage.getDosageId(), currentDosage.getDosageDate());
+        return new String[0];
     }
 }

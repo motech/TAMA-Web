@@ -19,12 +19,6 @@ import org.openqa.selenium.WebElement;
 import static junit.framework.Assert.*;
 
 public class ChangePasswordTest extends BaseTest {
-
-    @Before
-    public void setUp() {
-        super.setUp();
-    }
-
     @Test
     public void testChangePasswordLinkShouldNotBeShownOnTheLoginPage() {
         WebElement navigationLinks = WebDriverFactory.createWebElement(MyPageFactory.initElements(webDriver, LoginPage.class).getNavigationLinks());

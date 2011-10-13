@@ -25,6 +25,7 @@ public abstract class BaseTest extends FunctionalTestObject {
     @Before
     public void setUp() {
         webDriver = WebDriverFactory.getInstance();
+        logInfo("Using login URL as %s", LoginPage.LOGIN_URL);
         webDriver.get(LoginPage.LOGIN_URL);
     }
 

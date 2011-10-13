@@ -5,4 +5,14 @@ public class NoCallInfo implements CallInfo {
     public String asQueryParameter() {
         return "";
     }
+
+    @Override
+    public CallInfo outgoingCall() {
+        return this;
+    }
+
+    @Override
+    public String appendDataMapTo(String url) {
+        return url;
+    }
 }

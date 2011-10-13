@@ -1,124 +1,91 @@
 package org.motechproject.tama.ivr;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
-import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
-import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
-import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
+import java.util.ArrayList;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 public class PillRegimenSnapshotPreviousDosageTest {
-    @Mock
-    private IVRSession ivrSession;
-    @Mock
-    private IVRRequest ivrRequest;
-
-    private IVRContext ivrContext;
+    private TAMAIVRContextForTest ivrContext;
     private PillRegimenResponse pillRegimen;
+    @Mock
     private PillRegimenSnapshot pillRegimenSnapshot;
+    private String currentDosageId;
 
     @Before
     public void setUp() {
         initMocks(this);
 
         pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        ivrContext = new IVRContext(ivrRequest, ivrSession);
+        ivrContext = new TAMAIVRContextForTest();
 
-        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);
-        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
+        currentDosageId = "currentDosageId";
     }
 
     @Test
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsYesterday_AndCurrentDoseIsInTheMorning() {
+        ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate startDate = new LocalDate(2010, 1,1);
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("previousDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
-
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
-        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);
         int dayOfTheMonth = 10;
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 01, dayOfTheMonth, 9, 00, 00));
-
-        mockStatic(DateUtil.class);
-
-        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+        ivrContext.callStartTime(new DateTime(2010, 1, dayOfTheMonth, 9, 0, 0)).dosageId(currentDosageId);
+        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();
 
-        verifyStatic();
         assertEquals(20, previousDosageTime.getHourOfDay());
-        assertEquals(05, previousDosageTime.getMinuteOfHour());
-        assertEquals(dayOfTheMonth -1, previousDosageTime.getDayOfMonth());
+        assertEquals(5, previousDosageTime.getMinuteOfHour());
+        assertEquals(dayOfTheMonth - 1, previousDosageTime.getDayOfMonth());
     }
 
     @Test
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsToday_AndCurrentDoseIsInTheEvening() {
+        ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate startDate = new LocalDate(2010, 1,1);
-        dosages.add(new DosageResponse("currentDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse(currentDosageId, new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
-        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);
-        mockStatic(DateUtil.class);
         int dayOfTheMonth = 10;
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 21, 00, 00));
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 21, 00, 00));
-
-        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+        ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 21, 0, 0)).dosageId(currentDosageId);
+        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();
 
-        verifyStatic();
         assertEquals(10, previousDosageTime.getHourOfDay());
-        assertEquals(05, previousDosageTime.getMinuteOfHour());
+        assertEquals(5, previousDosageTime.getMinuteOfHour());
         assertEquals(dayOfTheMonth, previousDosageTime.getDayOfMonth());
     }
 
     @Test
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsYesterday_AndCurrentDoseIsInTheMorningForDailyDosage() {
+        ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate startDate = new LocalDate(2010, 1,1);
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
-        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimen);
-        mockStatic(DateUtil.class);
         int dayOfTheMonth = 10;
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 9, 00, 00));
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, dayOfTheMonth, 9, 00, 00));
-
-        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+        ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 9, 0, 0)).dosageId(currentDosageId);
+        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
         DateTime previousDosageTime = pillRegimenSnapshot.getPreviousDosageTime();
 
-        verifyStatic();
         assertEquals(10, previousDosageTime.getHourOfDay());
-        assertEquals(05, previousDosageTime.getMinuteOfHour());
+        assertEquals(5, previousDosageTime.getMinuteOfHour());
         assertEquals(dayOfTheMonth - 1, previousDosageTime.getDayOfMonth());
     }
-
 }

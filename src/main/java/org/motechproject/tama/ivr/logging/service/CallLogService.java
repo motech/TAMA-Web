@@ -35,7 +35,8 @@ public class CallLogService {
     public void log(String callId, String patientDocumentId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callId);
         CallLog callLog = callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord);
-        callLog.setClinicId(allPatients.get(patientDocumentId).getClinic_id());
+        if (patientDocumentId != null)
+            callLog.setClinicId(allPatients.get(patientDocumentId).getClinic_id());
         allCallLogs.add(callLog);
     }
 

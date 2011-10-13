@@ -1,12 +1,12 @@
 package org.motechproject.tama.web.command.fourdayrecall;
 
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.util.TamaSessionUtil;
 import org.motechproject.tama.web.command.BaseTreeCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,18 +19,17 @@ public class WelcomeGreetingMessage extends BaseTreeCommand {
     private AllClinics allClinics;
 
     @Autowired
-    public WelcomeGreetingMessage(AllPatients allPatients, AllClinics allClinics) {
+    public WelcomeGreetingMessage(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
+        super(pillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
     }
-    
+
     @Override
-    public String[] execute(Object obj) {
-        IVRContext ivrContext = (IVRContext) obj;
-        
+    public String[] executeCommand(TAMAIVRContext ivrContext) {
         ArrayList<String> messages = new ArrayList<String>();
-        
-        Patient patient = allPatients.get(TamaSessionUtil.getPatientId(ivrContext));
+
+        Patient patient = allPatients.get(ivrContext.patientId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         messages.add(clinic.getName());

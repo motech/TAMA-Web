@@ -7,6 +7,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
+import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverName;
+import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverPort;
+
 public class ChangePasswordPage extends Page {
 
     private static final String OLD_PASSWORD_ID = "j_oldPassword";
@@ -15,9 +18,7 @@ public class ChangePasswordPage extends Page {
 
     private static final String CONFIRM_PASSWORD_ID = "j_newPasswordConfirm";
 
-    public static final String CHANGE_PWD_SUCCESS_URL = "http://localhost:" + System.getProperty("jetty.port", "8080") + "/tama/passwordReset";
-
-    public static final String CHANGE_PASSWORD_URL = "http://localhost:" + System.getProperty("jetty.port", "8080") + "/tama/changePassword";
+    public static final String CHANGE_PASSWORD_URL = String.format("http://%s:%s/tama/changePassword", webserverName(), webserverPort());
 
     @FindBy(how = How.ID, using = OLD_PASSWORD_ID)
     private WebElement oldPassword;

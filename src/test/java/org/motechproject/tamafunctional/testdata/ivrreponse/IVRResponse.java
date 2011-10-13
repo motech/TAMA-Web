@@ -25,14 +25,24 @@ public class IVRResponse {
         return collectdtmf != null;
     }
 
-    public boolean audioPlayed(String ... name) {
-        return collectDtmf() && collectdtmf.hasAudio(name);
+    public boolean audioPlayed(String ... names) {
+        return collectDtmf() && collectdtmf.hasAudio(names);
     }
 
-    public String audioPlayed() {
+    public String audiosPlayed() {
         if (collectDtmf()) {
-            return collectdtmf.playAudio();
+            return collectdtmf.audiosPlayed();
         }
         return "";
+    }
+
+    public boolean isEmpty() {
+        return !collectDtmf() && !isHangedUp();
+    }
+
+    public IVRResponse addAudio(String audioLocation) {
+        if (collectdtmf == null) collectdtmf = new CollectDtmf();
+        collectdtmf.playAudios(audioLocation);
+        return this;
     }
 }

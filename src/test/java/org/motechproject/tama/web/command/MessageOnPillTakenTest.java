@@ -2,36 +2,25 @@ package org.motechproject.tama.web.command;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.call.PillReminderCall;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class MessageOnPillTakenTest {
-
-    IVRContext context;
-    IVRRequest request;
     MessageOnPillTaken messageOnPillTaken;
+    private TAMAIVRContextForTest context;
 
     @Before
     public void setup() {
-        messageOnPillTaken = new MessageOnPillTaken();
-        context = mock(IVRContext.class);
-        request = mock(IVRRequest.class);
-        when(context.ivrRequest()).thenReturn(request);
+        messageOnPillTaken = new MessageOnPillTaken(null);
+        context = new TAMAIVRContextForTest();
     }
 
     @Test
     public void shouldReturnDoseTakenMessageForTheFirstReminder() {
-        when(request.getParameter(PillReminderCall.TIMES_SENT)).thenReturn("0");
-        String[] messages = messageOnPillTaken.execute(context);
+        context.numberOfTimesReminderSent(0);
+        String[] messages = messageOnPillTaken.executeCommand(context);
         assertEquals(2, messages.length);
         assertEquals(TamaIVRMessage.DOSE_TAKEN_ON_TIME, messages[0]);
         assertEquals(TamaIVRMessage.DOSE_RECORDED, messages[1]);
@@ -39,8 +28,8 @@ public class MessageOnPillTakenTest {
 
     @Test
     public void shouldNotReturnDoseTakenMessageForSubsequentReminders() {
-        when(request.getParameter(PillReminderCall.TIMES_SENT)).thenReturn("2");
-        String[] messages = messageOnPillTaken.execute(context);
+        context.numberOfTimesReminderSent(2);
+        String[] messages = messageOnPillTaken.executeCommand(context);
         assertEquals(1, messages.length);
         assertEquals(TamaIVRMessage.DOSE_RECORDED, messages[0]);
     }

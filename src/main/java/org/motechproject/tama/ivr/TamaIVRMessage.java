@@ -15,8 +15,6 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String MINUTES = "timeOfDayMinutes";
     public static final String SIGNATURE_MUSIC = "signature_music";
     public static final String CONTENT_LOCATION_URL = "content.location.url";
-    public static final String OUTBOX_LOCATION_URL = "outbox.location.url";
-    public static final String POST_OUTBOX_URL = "post.outbox.url";
 
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
 
@@ -37,18 +35,18 @@ public class TamaIVRMessage implements IVRMessage {
 
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "001_07_01_your";
-    public static final String YESTERDAYS   = "001_07_02_doseTimeOfYesterdays";
-    public static final String MORNING      = "001_07_02_doseTimeOfMorning";
-    public static final String AFTERNOON    = "001_07_02_doseTimeOfAfternoon";
-    public static final String EVENING      = "001_07_02_doseTimeOfEvening";
+    public static final String YESTERDAYS = "001_07_02_doseTimeOfYesterdays";
+    public static final String MORNING = "001_07_02_doseTimeOfMorning";
+    public static final String AFTERNOON = "001_07_02_doseTimeOfAfternoon";
+    public static final String EVENING = "001_07_02_doseTimeOfEvening";
 
-    public static final String LAST_NIGHT   = "001_07_02_doseTimeOfLastnight";
+    public static final String LAST_NIGHT = "001_07_02_doseTimeOfLastnight";
 
     public static final String DOSE_NOT_RECORDED = "001_07_03_doseNotRecorded";
-    public static final String YESTERDAY         = "001_07_04_doseTimeAtYesterday";
-    public static final String IN_THE_MORNING    = "001_07_04_doseTimeAtMorning";
-    public static final String IN_THE_AFTERNOON  = "001_07_04_doseTimeAtAfternoon";
-    public static final String IN_THE_EVENING    = "001_07_04_doseTimeAtEvening";
+    public static final String YESTERDAY = "001_07_04_doseTimeAtYesterday";
+    public static final String IN_THE_MORNING = "001_07_04_doseTimeAtMorning";
+    public static final String IN_THE_AFTERNOON = "001_07_04_doseTimeAtAfternoon";
+    public static final String IN_THE_EVENING = "001_07_04_doseTimeAtEvening";
 
     public static final String IN_THE_LAST_NIGHT = "001_07_04_doseTimeAtLastnight";
     public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
@@ -80,15 +78,15 @@ public class TamaIVRMessage implements IVRMessage {
 
     public static final String M02_04_ADHERENCE_COMMENT_GT95_FALLING = "m02_04_adherencecommentgt95falling";
 
-	public static final String M02_05_ADHERENCE_COMMENT_70TO90_FALLING = "m02_05_adherencecomment70to90falling";
+    public static final String M02_05_ADHERENCE_COMMENT_70TO90_FALLING = "m02_05_adherencecomment70to90falling";
 
-	public static final String M02_06_ADHERENCE_COMMENT_70TO90_RISING = "m02_06_adherencecomment70to90rising";
+    public static final String M02_06_ADHERENCE_COMMENT_70TO90_RISING = "m02_06_adherencecomment70to90rising";
 
-	public static final String M02_07_ADHERENCE_COMMENT_LT70_FALLING = "m02_07_adherencecommentlt70falling";
+    public static final String M02_07_ADHERENCE_COMMENT_LT70_FALLING = "m02_07_adherencecommentlt70falling";
 
-	public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
+    public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
 
-	public static final String MENU_010_05_01_MAINMENU4 = "010_05_01_MainMenu4";
+    public static final String MENU_010_05_01_MAINMENU4 = "010_05_01_MainMenu4";
 
     public static final String HANGUP_OR_MAIN_MENU = "010_08_01_HangUpOrMainMenu";
 
@@ -131,18 +129,19 @@ public class TamaIVRMessage implements IVRMessage {
         return (String) properties.get(key.toLowerCase());
     }
 
-    
+
     /* (non-Javadoc)
-	 * @see org.motechproject.tama.ivr.IVRMessage#getText(java.lang.String)
-	 */
+      * @see org.motechproject.tama.ivr.IVRMessage#getText(java.lang.String)
+      */
     @Override
-	public String getText(String key) {
-    	String text = get(key);
-        return (String) (text == null?key:text);
+    public String getText(String key) {
+        String text = get(key);
+        return text == null ? key : text;
     }
+
     /* (non-Javadoc)
-	 * @see org.motechproject.tama.ivr.IVRMessage#getWav(java.lang.String, java.lang.String)
-	 */
+      * @see org.motechproject.tama.ivr.IVRMessage#getWav(java.lang.String, java.lang.String)
+      */
     @Override
 	public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : FileUtil.sanitizeFilename(key);
@@ -152,8 +151,9 @@ public class TamaIVRMessage implements IVRMessage {
     public String getNumberFilename(int n) {
         return String.format("Num_%03d", n);
     }
+
     @Override
     public String getSignatureMusic() {
-    	return SIGNATURE_MUSIC;
+        return SIGNATURE_MUSIC;
     }
 }

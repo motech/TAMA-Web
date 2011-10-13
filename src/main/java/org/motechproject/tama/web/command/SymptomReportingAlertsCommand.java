@@ -7,11 +7,13 @@ import org.joda.time.DateTime;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,7 +22,6 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 
@@ -31,24 +32,28 @@ public class SymptomReportingAlertsCommand {
     private AlertService alertService;
 
     private Properties properties;
+    private TAMAIVRContextFactory contextFactory;
 
     @Autowired
     public SymptomReportingAlertsCommand(AlertService alertService, @Qualifier("symptomProperties") Properties properties) {
+        this(alertService, properties, new TAMAIVRContextFactory());
+    }
+
+    SymptomReportingAlertsCommand(AlertService alertService, Properties properties, TAMAIVRContextFactory contextFactory) {
         this.alertService = alertService;
         this.properties = properties;
+        this.contextFactory = contextFactory;
     }
 
     public ITreeCommand symptomReportingAlertWithPriority(final Integer priority, final Node node) {
         final String adviceGiven = getAdviceGiven(node);
         final String symptomReported = getSymptomReported(node);
 
-
-
-        return new BaseTreeCommand() {
+        return new ITreeCommand() {
             @Override
             public String[] execute(Object o) {
-                IVRContext ivrContext = (IVRContext) o;
-                String externalId = ivrContext.ivrSession().getExternalId();
+                TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) o);
+                String externalId = ivrContext.patientId();
                 final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority);
                 final DateTime now = DateUtil.now();
                 symptomsAlert.setDateTime(now);
@@ -61,7 +66,7 @@ public class SymptomReportingAlertsCommand {
     }
 
     private String getSymptomReported(Node node) {
-        if(isN02Node(node))
+        if (isN02Node(node))
             return "-";
         Prompt summaryPrompt = selectFirst(node.getPrompts(), having(on(Prompt.class).getName(), startsWith("ppc_")));
         Prompt affirmativePrompt = selectFirst(node.getPrompts(), having(on(Prompt.class).getName(), startsWith("cy_")));

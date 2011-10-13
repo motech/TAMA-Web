@@ -1,121 +1,65 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.outbox.api.OutboxCommand;
+import org.motechproject.ivr.kookoo.KookooResponseFactory;
+import org.motechproject.ivr.kookoo.controller.SafeIVRController;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
-import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
-import org.motechproject.outbox.api.model.VoiceMessageType;
-import org.motechproject.server.service.ivr.IVRResponseBuilder;
-import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.IVRMessage;
+import org.motechproject.tama.ivr.TAMACallFlowController;
+import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.util.TamaSessionUtil;
+import org.motechproject.tama.ivr.VoiceMessageResponseFactory;
+import org.motechproject.tama.outbox.OutboxContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
-@RequestMapping("/outbox")
-public class OutboxController {
-
-    public static final String AUDIO_FILES_KEY = "audioFiles";
-    public static final String EVENT_REQUEST_PARAM = "event";
-    static final String VOICE_MESSAGE_COMMAND_AUDIO = "command";
+@RequestMapping(TAMACallFlowController.OUTBOX_URL)
+public class OutboxController extends SafeIVRController {
+    public static final String VOICE_MESSAGE_COMMAND_AUDIO = "AudioCommand";
+    public static final String VOICE_MESSAGE_COMMAND = "command";
 
     private VoiceOutboxService outboxService;
-
-    private TamaIVRMessage tamaIvrMessage;
+    private TAMAIVRContextFactory contextFactory;
+    private VoiceMessageResponseFactory messageResponseFactory;
 
     @Autowired
     ApplicationContext applicationContext;
 
     @Autowired
-    public OutboxController(VoiceOutboxService outboxService, TamaIVRMessage tamaIvrMessage) {
+    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, VoiceMessageResponseFactory messageResponseFactory) {
+        this(outboxService, ivrMessage, new TAMAIVRContextFactory(), messageResponseFactory);
+    }
+
+    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, TAMAIVRContextFactory contextFactory, VoiceMessageResponseFactory messageResponseFactory) {
+        super(ivrMessage, null);
         this.outboxService = outboxService;
-        this.tamaIvrMessage = tamaIvrMessage;
+        this.contextFactory = contextFactory;
+        this.messageResponseFactory = messageResponseFactory;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
-    public String play(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        if ("hangup".equalsIgnoreCase(request.getParameter(EVENT_REQUEST_PARAM))) {
-            session.invalidate();
-            return null;
+    @Override
+    public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
+        OutboxContext outboxContext = contextFactory.createOutboxContext(kooKooIVRContext);
+        KookooIVRResponseBuilder ivrResponseBuilder = KookooResponseFactory.empty(outboxContext.callId()).language(outboxContext.preferredLanguage()).withHangUp();
+        OutboundVoiceMessage nextMessage = outboxService.nextMessage(outboxContext.lastPlayedMessageId(), outboxContext.partyId());
+        if (nextMessage == null && outboxContext.lastPlayedMessageId() == null) {
+            return ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NO_MESSAGES);
+        }
+        if (nextMessage == null) {
+            return ivrResponseBuilder.withPlayAudios(TamaIVRMessage.THOSE_WERE_YOUR_MESSAGES);
         }
 
-        String patientId = (String) session.getAttribute(IVRSession.IVRCallAttribute.EXTERNAL_ID);
-
-        markPreviousMessageAsPlayed(session);
-
-        OutboundVoiceMessage outboundVoiceMessage = outboxService.getNextPendingMessage(patientId);
-
-        if (outboundVoiceMessage == null) {
-            return postOutboxForwardResponse();
-        } else {
-            setLastPlayedMessage(session, outboundVoiceMessage);
-            return voiceMessageResponse(session, outboundVoiceMessage);
+        if (outboxContext.lastPlayedMessageId() == null) {
+            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.CONTINUE_TO_OUTBOX);
         }
+        outboxContext.lastPlayedMessageId(nextMessage.getId());
+        messageResponseFactory.voiceMessageResponse(outboxContext, nextMessage, ivrResponseBuilder);
+        return ivrResponseBuilder;
     }
 
-    private String voiceMessageResponse(HttpSession session, OutboundVoiceMessage outboundVoiceMessage) {
-        IVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        VoiceMessageType voiceMessageType = outboundVoiceMessage.getVoiceMessageType();
-
-        if (voiceMessageType != null && "AudioCommand".equals(voiceMessageType.getVoiceMessageTypeName())) {
-            addAudiosToBePlayedToResponse(session, outboundVoiceMessage, ivrResponseBuilder);
-        }
-        addAudioFilesToBePlayedToResponse(outboundVoiceMessage, ivrResponseBuilder);
-
-        ivrResponseBuilder.withNextUrl(tamaIvrMessage.getText(TamaIVRMessage.OUTBOX_LOCATION_URL));
-        String preferredLanguage = (String) session.getAttribute(IVRSession.IVRCallAttribute.PREFERRED_LANGUAGE_CODE);
-        return ivrResponseBuilder.create(tamaIvrMessage, null, preferredLanguage);
-    }
-
-    private void addAudiosToBePlayedToResponse(HttpSession session, OutboundVoiceMessage outboundVoiceMessage, IVRResponseBuilder ivrResponseBuilder) {
-        List<String> commands = (List<String>) outboundVoiceMessage.getParameters().get(VOICE_MESSAGE_COMMAND_AUDIO);
-        for (String command : commands) {
-            OutboxCommand commandObject = (OutboxCommand) applicationContext.getBean(command);
-            ivrResponseBuilder.withPlayAudios(commandObject.execute(new IVRSession(session)));
-        }
-    }
-
-    private void addAudioFilesToBePlayedToResponse(OutboundVoiceMessage outboundVoiceMessage, IVRResponseBuilder ivrResponseBuilder) {
-        List<String> audioFiles = (List<String>) outboundVoiceMessage.getParameters().get(AUDIO_FILES_KEY);
-        if (audioFiles != null) {
-            for (String audioFile : audioFiles) {
-                ivrResponseBuilder.withPlayAudios(audioFile);
-            }
-        }
-    }
-
-    private void markPreviousMessageAsPlayed(HttpSession session) {
-        String lastPlayedMessageId = getLastPlayedMessage(session);
-        if (lastPlayedMessageId != null) {
-            outboxService.setMessageStatus(lastPlayedMessageId, OutboundVoiceMessageStatus.PLAYED);
-        }
-    }
-
-    private String postOutboxForwardResponse() {
-        IVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        ivrResponseBuilder.withNextUrl(tamaIvrMessage.getText(TamaIVRMessage.POST_OUTBOX_URL));
-        return ivrResponseBuilder.createWithDefaultLanguage(tamaIvrMessage, null);
-
-    }
-
-
-    private void setLastPlayedMessage(HttpSession session, OutboundVoiceMessage outboundVoiceMessage) {
-        session.setAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID, outboundVoiceMessage.getId());
-    }
-
-    private String getLastPlayedMessage(HttpSession session) {
-        return (String) session.getAttribute(TamaSessionUtil.TamaSessionAttribute.LAST_PLAYED_VOICE_MESSAGE_ID);
-    }
 }

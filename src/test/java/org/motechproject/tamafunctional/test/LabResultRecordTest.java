@@ -76,12 +76,6 @@ public class LabResultRecordTest extends BaseTest {
 
     }
 
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-    }
-
-
     private ShowLabResultsPage setUpALabResult_AfterActivatingAPatient() {
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         return createNewLabResult(loginPage);

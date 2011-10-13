@@ -1,8 +1,9 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,21 +16,18 @@ public class MessageOnPreviousPillNotTaken extends BaseTreeCommand {
     private IVRDayMessageBuilder ivrDayMessageBuilder;
 
     @Autowired
-    public MessageOnPreviousPillNotTaken(IVRDayMessageBuilder ivrDayMessageBuilder) {
+    public MessageOnPreviousPillNotTaken(IVRDayMessageBuilder ivrDayMessageBuilder, PillReminderService pillReminderService) {
+        super(pillReminderService);
         this.ivrDayMessageBuilder = ivrDayMessageBuilder;
     }
 
     @Override
-    public String[] execute(Object context) {
-
-        IVRContext ivrContext = (IVRContext) context;
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-
+    public String[] executeCommand(TAMAIVRContext ivrContext) {
         ArrayList<String> messages = new ArrayList<String>();
         messages.add(TamaIVRMessage.YOU_SAID_YOU_DID_NOT_TAKE);
-        messages.addAll(ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(pillRegimenSnapshot.getPreviousDosageTime()));
+        messages.addAll(ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(pillRegimenSnapshot(ivrContext).getPreviousDosageTime()));
         messages.add(TamaIVRMessage.DOSE);
         messages.add(TamaIVRMessage.TRY_NOT_TO_MISS);
-        return messages.toArray(new String[]{});
+        return messages.toArray(new String[messages.size()]);
     }
 }

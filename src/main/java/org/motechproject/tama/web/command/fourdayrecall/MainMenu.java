@@ -1,11 +1,11 @@
 package org.motechproject.tama.web.command.fourdayrecall;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
-import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +18,13 @@ public class MainMenu implements ITreeCommand {
 
     @Override
     public String[] execute(Object o) {
-        IVRContext ivrContext = (IVRContext) o;
+        TAMAIVRContext tamaivrContext = new TAMAIVRContext((KooKooIVRContext) o);
+        return executeCommand(tamaivrContext);
+    }
+
+    String[] executeCommand(TAMAIVRContext tamaivrContext) {
         ArrayList<String> messages = new ArrayList<String>();
-        String patientId = TamaSessionUtil.getPatientId(ivrContext);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(tamaivrContext.patientId());
 
         if (treatmentAdvice.hasMultipleDosages())
             messages.add(TamaIVRMessage.FDR_MENU_FOR_MULTIPLE_DOSAGES);

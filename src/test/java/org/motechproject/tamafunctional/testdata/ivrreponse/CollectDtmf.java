@@ -2,6 +2,7 @@ package org.motechproject.tamafunctional.testdata.ivrreponse;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +28,8 @@ public class CollectDtmf {
         return true;
     }
 
-    public String playAudio() {
-        return playaudios.get(0);
+    public String audiosPlayed() {
+        return StringUtils.join(playaudios, ", ");
     }
 
     public CollectDtmf playAudios(String... playAudios) {

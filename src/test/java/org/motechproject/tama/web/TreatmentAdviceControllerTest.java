@@ -62,7 +62,7 @@ public class TreatmentAdviceControllerTest {
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
-    private static String PATIENT_ID = "PATIENT_ID";
+    private static String PATIENT_ID = "patientId";
     private Patient patient;
 
     @Before

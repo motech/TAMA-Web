@@ -1,28 +1,25 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
-import org.motechproject.tama.util.TamaSessionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand {
-
-    public MessageForMissedPillFeedbackCommand() {
-    }
-
-    public MessageForMissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs) {
-        super(allDosageAdherenceLogs);
+    @Autowired
+    public MessageForMissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, PillReminderService pillReminderService) {
+        super(allDosageAdherenceLogs, ivrMessage, pillReminderService);
     }
 
     @Override
-    public String[] execute(Object o) {
-        IVRContext ivrContext = (IVRContext) o;
-        String regimenId = TamaSessionUtil.getRegimenIdFrom(ivrContext);
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        int dosagesFailureCount = allDosageAdherenceLogs.findScheduledDosagesFailureCount(regimenId);
+    public String[] executeCommand(TAMAIVRContext ivrContext) {
+        PillRegimenResponse pillRegimenResponse = pillRegimen(ivrContext);
+        int dosagesFailureCount = allDosageAdherenceLogs.findScheduledDosagesFailureCount(pillRegimenResponse.getPillRegimenId());
 
         switch (dosagesFailureCount) {
             case 1:
@@ -32,7 +29,8 @@ public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand 
             case 4:
                 return new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME};
             default:
-                int adherencePercentage = getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks());
+                int adherencePercentage = getAdherencePercentage(pillRegimenResponse.getPillRegimenId(),
+                        pillRegimenSnapshot(ivrContext).getScheduledDosagesTotalCountForLastFourWeeks());
                 return new String[]{getMissedPillFeedbackMessageFor(adherencePercentage)};
         }
     }

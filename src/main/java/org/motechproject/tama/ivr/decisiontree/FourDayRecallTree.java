@@ -1,7 +1,9 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.*;
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.MenuAudioPrompt;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.web.command.fourdayrecall.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,8 +26,7 @@ public class FourDayRecallTree extends TamaDecisionTree {
     private WeeklyAdherencePercentage weeklyAdherencePercentage;
 
     @Override
-    protected Node createRootNode(IVRContext ivrContext) {
-
+    protected Node createRootNode() {
         Transition missedMultipleDosagesTransition = new Transition()
                 .setDestinationNode(
                         new Node()
@@ -49,7 +50,7 @@ public class FourDayRecallTree extends TamaDecisionTree {
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(allDosagesTaken),
                                                         new AudioPrompt().setCommand(weeklyAdherencePercentage)
-                                                        ))
+                                                ))
                         },
                         {"1", new Transition()
                                 .setDestinationNode(

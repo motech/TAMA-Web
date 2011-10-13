@@ -1,23 +1,23 @@
 package org.motechproject.tama.web.command;
 
 import org.joda.time.LocalDate;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class DosageAdherenceCommand extends BaseTreeCommand {
-    @Autowired
     protected AllDosageAdherenceLogs allDosageAdherenceLogs;
-    @Autowired
     protected TamaIVRMessage ivrMessage;
 
-    protected DosageAdherenceCommand() {
-    }
-
-    public DosageAdherenceCommand(AllDosageAdherenceLogs allDosageAdherenceLogs) {
+    @Autowired
+    public DosageAdherenceCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage tamaIVRMessage, PillReminderService pillReminderService) {
+        super(pillReminderService);
+        this.ivrMessage = tamaIVRMessage;
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
     }
 
@@ -28,10 +28,11 @@ public abstract class DosageAdherenceCommand extends BaseTreeCommand {
         return scheduledDosagesSuccessCount * 100 / scheduledDosagesTotalCount;
     }
 
-    protected String[] getAdherenceMessage(String regimenId, PillRegimenSnapshot pillRegimenSnapshot) {
+    protected String[] getAdherenceMessage(TAMAIVRContext ivrContext) {
         return new String[]{
                 TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
-                ivrMessage.getNumberFilename(getAdherencePercentage(regimenId, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks())),
+                ivrMessage.getNumberFilename(getAdherencePercentage(pillRegimen(ivrContext).getPillRegimenId(),
+                        pillRegimenSnapshot(ivrContext).getScheduledDosagesTotalCountForLastFourWeeks())),
                 TamaIVRMessage.PERCENT
         };
     }

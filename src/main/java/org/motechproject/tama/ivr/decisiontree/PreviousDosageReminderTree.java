@@ -3,16 +3,11 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.server.service.ivr.IVRContext;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
 
 @Component
-@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class PreviousDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private StopPreviousPillReminderCommand stopPreviousPillReminderCommand;
@@ -26,7 +21,7 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
     private UpdatePreviousPillAdherenceCommand updatePreviousPillAdherenceCommand;
 
     @Override
-    protected Node createRootNode(IVRContext ivrContext) {
+    protected Node createRootNode() {
         return new Node().setTransitions(new Object[][]{
                 {"1", new Transition()
                         .setDestinationNode(

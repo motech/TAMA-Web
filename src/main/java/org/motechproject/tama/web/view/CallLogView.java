@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.view;
 
 import org.joda.time.LocalTime;
+import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.server.service.ivr.CallEvent;
-import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.util.DateUtil;
 
@@ -78,7 +78,7 @@ public class CallLogView {
     }
 
     public String getTitle() {
-        if (callLog.getCallDirection() == IVRRequest.CallDirection.Outbound) {
+        if (callLog.getCallDirection() == CallDirection.Outbound) {
             return "Tama called " + patientId + " || Clinic :" + clinicName;
         } else {
             return patientId + " called Tama" + " || Clinic :" + clinicName;

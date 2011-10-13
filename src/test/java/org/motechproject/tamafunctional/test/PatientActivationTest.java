@@ -15,12 +15,6 @@ import org.motechproject.tamafunctional.testdata.TestPatient;
 import java.io.IOException;
 
 public class PatientActivationTest extends BaseTest {
-
-    @Before
-    public void setUp(){
-        super.setUp();
-    }
-
     @Test
     public void testSuccessfulPatientActivation() {
         ClinicianContext clinicianContext = new ClinicianContext();
@@ -38,10 +32,4 @@ public class PatientActivationTest extends BaseTest {
 
         pageAfterActivation.logout();
     }
-
-    @After
-    public void  tearDown() throws IOException {
-       super.tearDown();
-    }
-
 }

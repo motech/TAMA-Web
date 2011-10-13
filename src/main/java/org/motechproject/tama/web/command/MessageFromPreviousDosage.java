@@ -1,8 +1,10 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,19 +14,17 @@ import java.util.List;
 
 @Component
 public class MessageFromPreviousDosage extends BaseTreeCommand {
-
     private IVRDayMessageBuilder ivrDayMessageBuilder;
 
     @Autowired
-    public MessageFromPreviousDosage(IVRDayMessageBuilder ivrDayMessageBuilder) {
+    public MessageFromPreviousDosage(IVRDayMessageBuilder ivrDayMessageBuilder, PillReminderService pillReminderService) {
+        super(pillReminderService);
         this.ivrDayMessageBuilder = ivrDayMessageBuilder;
     }
 
     @Override
-    public String[] execute(Object o) {
-        IVRContext ivrContext = (IVRContext) o;
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-
+    public String[] executeCommand(TAMAIVRContext ivrContext) {
+        PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(ivrContext);
         if (pillRegimenSnapshot.isPreviousDosageCaptured()) {
             return new String[0];
         }
@@ -39,6 +39,6 @@ public class MessageFromPreviousDosage extends BaseTreeCommand {
         messages.add(TamaIVRMessage.FROM_THE_BOTTLE);
         messages.add(TamaIVRMessage.PREVIOUS_DOSE_MENU);
 
-        return messages.toArray(new String[0]);
+        return messages.toArray(new String[messages.size()]);
     }
 }

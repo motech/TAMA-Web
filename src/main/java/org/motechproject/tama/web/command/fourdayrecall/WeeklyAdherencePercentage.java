@@ -1,10 +1,10 @@
 package org.motechproject.tama.web.command.fourdayrecall;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.service.FourDayRecallService;
-import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,12 +25,16 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
 
     @Override
     public String[] execute(Object o) {
-        IVRContext ivrContext = (IVRContext) o;
+        TAMAIVRContext ivrContext = new TAMAIVRContext((KooKooIVRContext) o);
+        return executeCommand(ivrContext);
+    }
+
+    String[] executeCommand(TAMAIVRContext ivrContext) {
         List<String> messages = new ArrayList<String>();
 
-        String patientId = TamaSessionUtil.getPatientId(ivrContext);
+        String patientId = ivrContext.patientId();
 
-        int currentWeekAdherencePercentage = fourDayRecallService.adherencePercentageFor(Integer.parseInt(ivrContext.ivrRequest().getData()));
+        int currentWeekAdherencePercentage = fourDayRecallService.adherencePercentageFor(Integer.parseInt(ivrContext.dtmfInput()));
         int previousWeekAdherencePercentage = fourDayRecallService.adherencePercentageForPreviousWeek(patientId);
         boolean falling = currentWeekAdherencePercentage < previousWeekAdherencePercentage;
 

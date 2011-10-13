@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.ivr.Caller;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
@@ -43,11 +42,10 @@ public class CallLogsTest extends BaseIVRTest{
 
         String dosageId = scheduledJobDataService.currentJobId();
         logInfo("{Regimen}{Id={%s}}", dosageId);
-        Caller caller = caller(patient);
+        caller = caller(patient);
         caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
         caller.enter("1234");
-        caller.disconnect();
-
+        caller.hangup();
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).goToFilterCallLogsPage().filterCallLogs(new Date(), new Date());
     }

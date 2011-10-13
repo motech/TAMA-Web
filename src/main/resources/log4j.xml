@@ -16,31 +16,40 @@
         <param name="MaxFileSize" value="4096KB"/>
         <param name="maxBackupIndex" value="5"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[%d{ISO8601}] [%c] [%p] [ThreadId:%t] - %m%n"/>
+            <param name="ConversionPattern" value="[%d{ISO8601}] - %m%n"/>
         </layout>
     </appender>
-    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+    <appender name="production-console" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] [%c] [%p] [ThreadId:%t] - %m%n"/>
+        </layout>
+    </appender>
+    <appender name="functionaltest-console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{ISO8601}] - %m%n"/>
         </layout>
     </appender>
 
     <logger name="org.springframework">
         <level value="warn"/>
     </logger>
+    <logger name="org.springframework.jms.listener">
+        <level value="fatal"/>
+    </logger>
     <logger name="org.ektorp">
         <level value="warn"/>
     </logger>
     <logger name="org.motechproject">
-        <level value="warn"/>
+        <level value="info"/>
     </logger>
 
     <!-- Tama Functional logger's additivity is set to false in the TamaFunctionalLoggerFactory -->
     <logger name="org.motechproject.tamafunctional">
-        <level value="warn"/>
+        <level value="info"/>
         <appender-ref ref="functionaltest"/>
-        <appender-ref ref="console"/>
+        <appender-ref ref="functionaltest-console"/>
     </logger>
     <logger name="com.gargoylesoftware">
         <level value="fatal"/>
@@ -50,6 +59,6 @@
     <root>
         <priority value="warn"/>
         <appender-ref ref="production"/>
-        <appender-ref ref="console"/>
+        <appender-ref ref="production-console"/>
     </root>
 </log4j:configuration>

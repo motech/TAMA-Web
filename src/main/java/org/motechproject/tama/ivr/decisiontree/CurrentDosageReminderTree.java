@@ -4,22 +4,12 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
-@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CurrentDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private MessageOnPillTaken messageOnPillTaken;
@@ -29,14 +19,10 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
     private PillsDelayWarning pillsDelayWarning;
     @Autowired
     private RecordDeclinedDosageReasonCommand recordDeclinedDosageReasonCommand;
-    @Qualifier("stopTodaysRemindersCommand")
     @Autowired
     private StopTodaysRemindersCommand stopTodaysRemindersCommand;
-    @Qualifier("updateAdherenceCommand")
     @Autowired
     private UpdateAdherenceCommand updateAdherenceCommand;
-    @Autowired
-    private PreviousDosageReminderTree previousDosageReminderTree;
     @Autowired
     private MessageFromPreviousDosage messageFromPreviousDosage;
     @Autowired
@@ -44,9 +30,9 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private MessageForMissedPillFeedbackCommand messageForMissedPillFeedbackCommand;
     @Autowired
-    private SymptomReportingTransitionsUtility symptomReportingTransitionsUtility;
+    private Regimen1To6Tree regimen1To6Tree;
     
-    protected Node createRootNode(IVRContext ivrContext) {
+    protected Node createRootNode() {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(messageForMedicines),
@@ -60,8 +46,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
                                                         new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                         new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
-                                                )
-                                                .setTransitions(jumpToPreviousDosageTree(ivrContext)))
+                                                ))
                         },
                         {"2", new Transition()
                                 .setDestinationNode(
@@ -69,8 +54,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                 .setTreeCommands(updateAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(pillsDelayWarning),
-                                                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage))
-                                                .setTransitions(jumpToPreviousDosageTree(ivrContext)))
+                                                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage)))
                         },
                         {"3", new Transition()
                                 .setDestinationNode(
@@ -80,7 +64,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                         new AudioPrompt().setCommand(messageForMissedPillFeedbackCommand),
                                                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU))
                                                 .setTransitions(new Object[][]{
-                                                		{"1", symptomReportingTransitionsUtility.newInstance() },
+                                                		{"1", new Transition().setDestinationNode(regimen1To6Tree.getTree().getRootNode())},
                                                         {"2", new Transition()
                                                                 .setDestinationNode(new Node()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
@@ -88,8 +72,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                                                 new AudioPrompt().setName(TamaIVRMessage.PLEASE_CARRY_SMALL_BOX),
                                                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
-                                                                        )
-                                                                        .setTransitions(jumpToPreviousDosageTree(ivrContext)))
+                                                                        ))
                                                         },
                                                         {"3", new Transition()
                                                                 .setDestinationNode(new Node()
@@ -97,18 +80,10 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                                         .setPrompts(
                                                                                 new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
                                                                                 new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
-                                                                        )
-                                                                        .setTransitions(jumpToPreviousDosageTree(ivrContext)))
+                                                                        ))
                                                         }
                                                 }))
                         }
                 });
-    }
-
-    private Map<String, Transition> jumpToPreviousDosageTree(IVRContext ivrContext) {
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
-        if (pillRegimenSnapshot.isPreviousDosageCaptured()) return new HashMap<String, Transition>();
-
-        return previousDosageReminderTree.getTree(ivrContext).getRootNode().getTransitions();
     }
 }

@@ -3,8 +3,6 @@ package org.motechproject.tama.web;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.ivr.decisiontree.PreviousDosageReminderTree;
 import org.motechproject.tama.web.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class PreviousDosageReminderTreeTest {
 
     @Test
     public void shouldGetCommandsToExecuteOnTakingPreviousPill() {
-        Node nextNode = previousDosageReminderTree.getTree(null).nextNode("/", "1");
+        Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "1");
         assertEquals(2, nextNode.getTreeCommands().size());
         assertEquals(StopPreviousPillReminderCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(UpdatePreviousPillAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
@@ -32,7 +30,7 @@ public class PreviousDosageReminderTreeTest {
 
     @Test
     public void shouldGetCommandsToExecuteOnNotTakingPreviousPill() {
-        Node nextNode = previousDosageReminderTree.getTree(null).nextNode("/", "3");
+        Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "3");
         assertEquals(2, nextNode.getTreeCommands().size());
         assertEquals(StopPreviousPillReminderCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(UpdatePreviousPillAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());

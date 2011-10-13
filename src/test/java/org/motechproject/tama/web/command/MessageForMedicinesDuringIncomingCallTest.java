@@ -10,26 +10,20 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
-import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.util.TamaSessionUtil;
-import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -40,23 +34,16 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DateUtil.class)
 public class MessageForMedicinesDuringIncomingCallTest {
-
     @Mock
     private AllPatients allPatients;
     @Mock
     private AllClinics allClinics;
-    @Mock
-    private IVRContext context;
-    @Mock
-    private IVRRequest ivrRequest;
-    @Mock
-    private IVRSession ivrSession;
-
     private MessageForMedicinesDuringIncomingCall messageForMedicinesDuringIncomingCall;
 
     private LocalDate today;
 
     private DateTime now;
+    private TAMAIVRContextForTest context;
 
     @Before
     public void setup() {
@@ -65,12 +52,8 @@ public class MessageForMedicinesDuringIncomingCallTest {
         patient.setClinic_id("clinicId");
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
 
-        messageForMedicinesDuringIncomingCall = new MessageForMedicinesDuringIncomingCall(allPatients, allClinics);
-
-        when(context.ivrSession()).thenReturn(ivrSession);
-        when(TamaSessionUtil.getPillRegimen(ivrSession)).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
-        when(context.ivrRequest()).thenReturn(ivrRequest);
-        when(TamaSessionUtil.getPatientId(ivrSession)).thenReturn("patientId");
+        messageForMedicinesDuringIncomingCall = new MessageForMedicinesDuringIncomingCall(allPatients, allClinics, null);
+        context = new TAMAIVRContextForTest().pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).patientId("patientId");
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
 
@@ -80,7 +63,6 @@ public class MessageForMedicinesDuringIncomingCallTest {
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(today);
         when(DateUtil.now()).thenReturn(now);
-
     }
 
     @Test
@@ -88,10 +70,9 @@ public class MessageForMedicinesDuringIncomingCallTest {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
 
-        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
-        when(ivrSession.getCallTime()).thenReturn(timeWithinPillWindow);
+        context.dosageId("currentDosageId").callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
 
-        String[] messages = messageForMedicinesDuringIncomingCall.execute(context);
+        String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
 
         assertEquals(5, messages.length);
         assertEquals("welcome_to_clinicName", messages[0]);
@@ -101,12 +82,11 @@ public class MessageForMedicinesDuringIncomingCallTest {
         assertEquals("001_07_07_fromTheBottle1", messages[4]);
     }
 
-
     @Test
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeAfterDosagePillWindow() {
-        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
         int dosageHour = 10;
         DateTime timeAfterPillWindow = now.withHourOfDay(dosageHour + 3).withMinuteOfHour(5);
+        context.dosageId("currentDosageId").callStartTime(timeAfterPillWindow);
         List<DosageResponse> dosages = Arrays.asList(new DosageResponse("currentDosageId", new Time(dosageHour, 5), today.minusDays(2),
                 today.plusDays(1), today.minusDays(1),
                 Arrays.asList(new MedicineResponse("medicine3", today, today))));
@@ -115,11 +95,9 @@ public class MessageForMedicinesDuringIncomingCallTest {
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(today);
 
-        when(ivrRequest.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
-        when(ivrSession.getCallTime()).thenReturn(timeAfterPillWindow);
-        when(ivrSession.get(TamaSessionUtil.TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(pillRegimenResponse);
+        context.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound);
 
-        String[] messages = messageForMedicinesDuringIncomingCall.execute(context);
+        String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
 
         assertEquals(4, messages.length);
         assertEquals("welcome_to_clinicName", messages[0]);

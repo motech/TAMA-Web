@@ -4,9 +4,7 @@ package org.motechproject.tama.web.command.fourdayrecall;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
-import org.motechproject.server.service.ivr.IVRSession;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.service.FourDayRecallService;
 
@@ -24,34 +22,25 @@ public class WeeklyAdherencePercentageTest {
     private FourDayRecallService fourDayRecallService;
     @Mock
     private TamaIVRMessage ivrMessage;
-    @Mock
-    private IVRContext ivrContext;
-    @Mock
-    private IVRSession ivrSession;
-    @Mock
-    private IVRRequest ivrRequest;
 
     private WeeklyAdherencePercentage weeklyAdherencePercentage;
+    private TAMAIVRContextForTest ivrContext;
 
     @Before
     public void setUp() {
         initMocks(this);
-
-        when(ivrContext.ivrSession()).thenReturn(ivrSession);
-        when(ivrSession.get(IVRSession.IVRCallAttribute.EXTERNAL_ID)).thenReturn(PATIENT_ID);
-        when(ivrContext.ivrRequest()).thenReturn(ivrRequest);
-
-        weeklyAdherencePercentage = new WeeklyAdherencePercentage(ivrMessage,fourDayRecallService);
+        ivrContext = new TAMAIVRContextForTest().patientId(PATIENT_ID);
+        weeklyAdherencePercentage = new WeeklyAdherencePercentage(ivrMessage, fourDayRecallService);
     }
 
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan90() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(100);
         when(fourDayRecallService.adherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(50);
-        when(ivrRequest.getData()).thenReturn("0");
+        ivrContext.dtmfInput("0");
         when(ivrMessage.getNumberFilename(100)).thenReturn("Num_100");
 
-        String[] audios = weeklyAdherencePercentage.execute(ivrContext);
+        String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
         assertEquals(4, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_100"));
@@ -63,10 +52,10 @@ public class WeeklyAdherencePercentageTest {
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan70_AndFalling() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(80);
         when(fourDayRecallService.adherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(100);
-        when(ivrRequest.getData()).thenReturn("1");
+        ivrContext.dtmfInput("1");
         when(ivrMessage.getNumberFilename(80)).thenReturn("Num_80");
 
-        String[] audios = weeklyAdherencePercentage.execute(ivrContext);
+        String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
         assertEquals(4, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_80"));
@@ -78,10 +67,10 @@ public class WeeklyAdherencePercentageTest {
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan70_AndRising() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(80);
         when(fourDayRecallService.adherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(60);
-        when(ivrRequest.getData()).thenReturn("1");
+        ivrContext.dtmfInput("1");
         when(ivrMessage.getNumberFilename(80)).thenReturn("Num_80");
 
-        String[] audios = weeklyAdherencePercentage.execute(ivrContext);
+        String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
         assertEquals(4, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_80"));
@@ -94,10 +83,10 @@ public class WeeklyAdherencePercentageTest {
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndFalling() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(60);
         when(fourDayRecallService.adherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(80);
-        when(ivrRequest.getData()).thenReturn("2");
+        ivrContext.dtmfInput("2");
         when(ivrMessage.getNumberFilename(60)).thenReturn("Num_60");
 
-        String[] audios = weeklyAdherencePercentage.execute(ivrContext);
+        String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
         assertEquals(4, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_60"));
@@ -110,10 +99,10 @@ public class WeeklyAdherencePercentageTest {
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndRising() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(60);
         when(fourDayRecallService.adherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(40);
-        when(ivrRequest.getData()).thenReturn("2");
+        ivrContext.dtmfInput("2");
         when(ivrMessage.getNumberFilename(60)).thenReturn("Num_60");
 
-        String[] audios = weeklyAdherencePercentage.execute(ivrContext);
+        String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
         assertEquals(4, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_60"));

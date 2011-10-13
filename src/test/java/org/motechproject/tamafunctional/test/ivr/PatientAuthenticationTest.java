@@ -16,7 +16,7 @@ import static junit.framework.Assert.*;
 public class PatientAuthenticationTest extends BaseIVRTest {
     @Test
     public void shouldTestConversationForNonExistentPatient() throws IOException {
-        Caller caller = new Caller("123", "1234567890", webClient);
+        caller = new Caller("123", "1234567890", webClient);
         IVRResponse ivrResponse = caller.call();
         assertEquals("123", ivrResponse.sid());
         assertNotNull(ivrResponse.isHangedUp());
@@ -31,7 +31,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
         patient.patientPreferences().passcode("5678");
         new PatientDataService(webDriver).registerAndActivate(patient, clinician);
 
-        Caller caller = caller(patient);
+        caller = caller(patient);
         IVRResponse ivrResponse = caller.call();
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 

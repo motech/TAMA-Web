@@ -18,12 +18,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LoginTest extends BaseTest {
-
-    @Before
-    public void setUp() {
-        super.setUp();
-    }
-
     @Test
     public void testLoginFailure() {
         LoginPage page = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithIncorrectAdminUserNamePassword();
@@ -36,10 +30,4 @@ public class LoginTest extends BaseTest {
         assertTrue(StringUtils.contains(homePage.getListClinicsPane(), ListClinicsPage.WELCOME_MESSAGE));
         homePage.logout();
     }
-
-    @After
-    public void  tearDown() throws IOException {
-       super.tearDown();
-    }
-
 }

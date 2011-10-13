@@ -34,7 +34,7 @@ public class PillReminderCallTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pillReminderCall = Mockito.spy(new PillReminderCall(callService, eventService, allPatients, callLogService));
+        pillReminderCall = Mockito.spy(new PillReminderCall(callService, allPatients));
         Mockito.doReturn("").when(pillReminderCall).getApplicationUrl();
     }
 

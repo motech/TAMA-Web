@@ -39,9 +39,4 @@ public class PatientRegistrationTest extends BaseTest {
         Assert.assertEquals(patient.patientPreferences().passcode(), showPatientPage.getPasscode());
         showPatientPage.logout();
     }
-
-    @After
-    public void  tearDown() throws IOException {
-       super.tearDown();
-    }
 }

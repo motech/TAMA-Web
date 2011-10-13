@@ -57,10 +57,4 @@ public class SearchPatientByIdTest extends BaseTest {
         assertEquals(listPatientPage.getPatientSearchErrorMessage(), String.format("Patient with id: %s not found", non_existing_id));
         listPatientPage.logout();
     }
-
-    @After
-    public void  tearDown() throws IOException {
-       super.tearDown();
-    }
-
 }

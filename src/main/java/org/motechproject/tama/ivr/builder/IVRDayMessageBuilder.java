@@ -11,7 +11,6 @@ import java.util.List;
 
 @Component
 public class IVRDayMessageBuilder {
-
     private TamaIVRMessage iVRMessage;
 
     @Autowired

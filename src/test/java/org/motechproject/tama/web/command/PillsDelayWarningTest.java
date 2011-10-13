@@ -1,48 +1,34 @@
 package org.motechproject.tama.web.command;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.motechproject.server.service.ivr.CallDirection;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.builder.PillRegimenResponseBuilder;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
+import org.motechproject.util.DateUtil;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.Properties;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
-import org.motechproject.server.service.ivr.IVRSession;
-import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.builder.PillRegimenResponseBuilder;
-import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
-import org.motechproject.tama.ivr.call.PillReminderCall;
-import org.motechproject.tama.util.FileUtil;
-import org.motechproject.tama.util.TamaSessionUtil.TamaSessionAttribute;
-import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DateUtil.class)
 public class PillsDelayWarningTest {
-
-    @Mock
-    private IVRContext context;
-    @Mock
-    private IVRRequest request;
-    @Mock
-    private IVRSession ivrSession;
-
     private PillsDelayWarning pillsDelayWarning;
     private String retryInterval;
+    private TAMAIVRContextForTest context;
 
     @Before
     public void setup() {
@@ -50,33 +36,27 @@ public class PillsDelayWarningTest {
         Properties stubProperties = new Properties();
         retryInterval = "15";
         stubProperties.put(TAMAConstants.RETRY_INTERVAL, retryInterval);
-        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new TamaIVRMessage(null)), new TamaIVRMessage(null),stubProperties);
-        when(context.ivrRequest()).thenReturn(request);
-        when(context.ivrSession()).thenReturn(ivrSession);
-        when(ivrSession.get(TamaSessionAttribute.REGIMEN_FOR_PATIENT)).thenReturn(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new TamaIVRMessage(null)), new TamaIVRMessage(null), stubProperties, null);
+        context = new TAMAIVRContextForTest().pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0));
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
-        when(ivrSession.getCallTime()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
     }
 
     @Test
     public void shouldReturnPleaseTakeDoseMessageForNonLastReminder() {
-        when(request.getParameter(PillReminderCall.TIMES_SENT)).thenReturn("0");
-        when(request.getParameter(PillReminderCall.TOTAL_TIMES_TO_SEND)).thenReturn("2");
+        context.numberOfTimesReminderSent(0).totalNumberOfTimesToSendReminder(2);
         assertArrayEquals(new String[]{
                 TamaIVRMessage.PLEASE_TAKE_DOSE,
-                String.format("Num_%03d",Integer.valueOf(retryInterval)),
+                String.format("Num_%03d", Integer.valueOf(retryInterval)),
                 TamaIVRMessage.CALL_AFTER_SOME_TIME},
-                pillsDelayWarning.execute(context));
+                pillsDelayWarning.executeCommand(context));
     }
 
     @Test
     public void shouldReturnLastReminderWarningMessageNonLastReminder() {
-        when(request.getParameter(PillReminderCall.DOSAGE_ID)).thenReturn("currentDosageId");
-        when(request.getParameter(PillReminderCall.TIMES_SENT)).thenReturn("1");
-        when(request.getParameter(PillReminderCall.TOTAL_TIMES_TO_SEND)).thenReturn("1");
+        context.dosageId("currentDosageId").numberOfTimesReminderSent(1).totalNumberOfTimesToSendReminder(1).callDirection(CallDirection.Outbound);
 
-        String[] messages = pillsDelayWarning.execute(context);
+        String[] messages = pillsDelayWarning.executeCommand(context);
         assertEquals(6, messages.length);
         assertEquals(TamaIVRMessage.LAST_REMINDER_WARNING, messages[0]);
         assertEquals("Num_010", messages[1]);

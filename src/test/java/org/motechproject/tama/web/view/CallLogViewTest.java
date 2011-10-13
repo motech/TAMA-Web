@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.motechproject.server.service.ivr.IVRRequest;
+import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 
 import static junit.framework.Assert.assertEquals;
@@ -15,7 +15,7 @@ public class CallLogViewTest {
     public void titleShouldBeTamaCalledPatientId_WhenCallDirectionIsOutbound() {
         CallLog callLog = setUpCallLogs();
 
-        callLog.setCallDirection(IVRRequest.CallDirection.Outbound);
+        callLog.setCallDirection(CallDirection.Outbound);
         callLogView = new CallLogView("patientId", callLog, "clinicName");
 
         assertEquals("Tama called patientId || Clinic :clinicName", callLogView.getTitle());
@@ -25,7 +25,7 @@ public class CallLogViewTest {
     public void titleShouldBePatientIdCalledTama_WhenCallDirectionIsInbound() {
         CallLog callLog = setUpCallLogs();
 
-        callLog.setCallDirection(IVRRequest.CallDirection.Inbound);
+        callLog.setCallDirection(CallDirection.Inbound);
         callLogView = new CallLogView("patientId", callLog, "clinicName");
 
         assertEquals("patientId called Tama || Clinic :clinicName", callLogView.getTitle());

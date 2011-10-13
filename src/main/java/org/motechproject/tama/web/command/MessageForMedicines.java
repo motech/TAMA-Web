@@ -1,13 +1,12 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.server.service.ivr.IVRContext;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.util.TamaSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,30 +19,30 @@ public class MessageForMedicines extends BaseTreeCommand {
     private AllClinics allClinics;
 
     @Autowired
-    public MessageForMedicines(AllPatients allPatients, AllClinics allClinics) {
+    public MessageForMedicines(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
+        super(pillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
     }
 
     @Override
-    public String[] execute(Object obj) {
-        IVRContext ivrContext = (IVRContext) obj;
+    public String[] executeCommand(TAMAIVRContext tamaivrContext) {
         List<String> messages = new ArrayList<String>();
 
-        Patient patient = allPatients.get(TamaSessionUtil.getPatientId(ivrContext));
+        Patient patient = allPatients.get(tamaivrContext.patientId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         messages.add(clinic.getName());
         messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
 
-        for (String medicine : getMedicines(ivrContext)) {
+        for (String medicine : getMedicines(tamaivrContext)) {
             messages.add(medicine);
         }
         messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);
         return messages.toArray(new String[messages.size()]);
     }
 
-    private List<String> getMedicines(IVRContext ivrContext) {
-        return new PillRegimenSnapshot(ivrContext).medicinesForCurrentDosage();
+    private List<String> getMedicines(TAMAIVRContext ivrContext) {
+        return pillRegimenSnapshot(ivrContext).medicinesForCurrentDosage();
     }
 }

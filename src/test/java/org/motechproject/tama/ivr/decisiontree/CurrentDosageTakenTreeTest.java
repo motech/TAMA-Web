@@ -4,12 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.server.service.ivr.IVRRequest;
-import org.motechproject.server.service.ivr.IVRSession;
 import org.motechproject.tama.web.command.NextCallDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,16 +24,9 @@ public class CurrentDosageTakenTreeTest {
     @Autowired
     private TestConfirmTree testConfirmTree;
 
-    @Mock
-    private IVRSession ivrSession;
-
-    private IVRContext ivrContext;
-    private IVRRequest ivrRequest;
-
     @Before
     public void setUp() {
         initMocks(this);
-        ivrContext = new IVRContext(ivrRequest, ivrSession);
     }
 
     @After
@@ -47,7 +36,7 @@ public class CurrentDosageTakenTreeTest {
 
     @Test
     public void shouldGetPillTakenCommand() {
-        Node nextNode = testConfirmTree.getTree(ivrContext).nextNode("", "");
+        Node nextNode = testConfirmTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
         assertTrue(prompts.get(0).getCommand() instanceof NextCallDetails);
     }

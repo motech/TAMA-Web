@@ -14,12 +14,6 @@ import java.io.IOException;
 import static junit.framework.Assert.assertEquals;
 
 public class RegisterClinicTest extends BaseTest {
-
-    @Before
-    public void setUp() {
-        super.setUp();
-    }
-
     @Test
     public void testClinicRegistration() {
         TestClinic clinic = TestClinic.withMandatory();
@@ -32,10 +26,4 @@ public class RegisterClinicTest extends BaseTest {
         assertEquals(clinic.address(), showClinicPage.getAddress());
         showClinicPage.logout();
     }
-
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-    }
-
 }

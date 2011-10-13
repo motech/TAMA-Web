@@ -3,8 +3,8 @@ package org.motechproject.tama.ivr.logging.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
+import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.server.service.ivr.CallEvent;
-import org.motechproject.server.service.ivr.IVRRequest;
 import org.motechproject.tama.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 
@@ -25,7 +25,7 @@ public class CallLog extends CouchEntity {
     private String phoneNumber;
 
     private String callId;
-    private IVRRequest.CallDirection callDirection;
+    private CallDirection callDirection;
     private List<CallEvent> callEvents = new ArrayList<CallEvent>();
 
     private String clinicId;
@@ -47,8 +47,8 @@ public class CallLog extends CouchEntity {
 
     @JsonIgnore
     public String getCallType() {
-        for(CallEvent callEvent : callEvents){
-            if(callEvent.getData().get(CallEventConstants.AUTHENTICATION_EVENT)!=null){
+        for (CallEvent callEvent : callEvents) {
+            if (callEvent.getData().get(CallEventConstants.AUTHENTICATION_EVENT) != null) {
                 return callEvent.getData().get(CallEventConstants.CALL_TYPE);
             }
         }
@@ -87,11 +87,11 @@ public class CallLog extends CouchEntity {
         this.callId = callId;
     }
 
-    public IVRRequest.CallDirection getCallDirection() {
+    public CallDirection getCallDirection() {
         return callDirection;
     }
 
-    public void setCallDirection(IVRRequest.CallDirection callDirection) {
+    public void setCallDirection(CallDirection callDirection) {
         this.callDirection = callDirection;
     }
 

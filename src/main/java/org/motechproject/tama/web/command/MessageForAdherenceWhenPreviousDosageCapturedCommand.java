@@ -1,33 +1,27 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.server.service.ivr.IVRContext;
-import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
-import org.motechproject.tama.util.TamaSessionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageForAdherenceWhenPreviousDosageCapturedCommand extends DosageAdherenceCommand {
-
-    public MessageForAdherenceWhenPreviousDosageCapturedCommand() {
-    }
-
-    public MessageForAdherenceWhenPreviousDosageCapturedCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage) {
-        super(allDosageAdherenceLogs);
-        this.ivrMessage = ivrMessage;
+    @Autowired
+    public MessageForAdherenceWhenPreviousDosageCapturedCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, PillReminderService pillReminderService) {
+        super(allDosageAdherenceLogs, ivrMessage, pillReminderService);
     }
 
     @Override
-    public String[] execute(Object o) {
-        IVRContext ivrContext = (IVRContext) o;
-
-        String regimenId = TamaSessionUtil.getRegimenIdFrom(ivrContext);
-        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext);
+    public String[] executeCommand(TAMAIVRContext tamaivrContext) {
+        PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(tamaivrContext);
         if (pillRegimenSnapshot.isPreviousDosageCaptured()) {
-            return getAdherenceMessage(regimenId, pillRegimenSnapshot);
+            return getAdherenceMessage(tamaivrContext);
         }
         return new String[0];
     }
-
 }

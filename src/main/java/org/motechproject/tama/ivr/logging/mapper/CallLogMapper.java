@@ -14,7 +14,7 @@ public class CallLogMapper {
         CallDetailRecord callDetailRecord = kookooCallDetailRecord.getCallDetailRecord();
 
         callLog.setPatientDocumentId(patientDocumentId);
-        callLog.setCallId(kookooCallDetailRecord.getCallId());
+        callLog.setCallId(kookooCallDetailRecord.getVendorCallId());
         callLog.setPhoneNumber(callDetailRecord.getPhoneNumber());
         callLog.setCallEvents(callDetailRecord.getCallEvents());
         callLog.setStartTime(DateUtil.newDateTime(callDetailRecord.getStartDate()));

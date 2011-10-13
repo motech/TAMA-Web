@@ -28,7 +28,7 @@ public class IVRDayMessageBuilderTest {
     public void setup() {
         ivrDayMessageBuilder = new IVRDayMessageBuilder(new TamaIVRMessage(null));
         mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 00, 00, 00));
+        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 0, 00, 00));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
     }
 

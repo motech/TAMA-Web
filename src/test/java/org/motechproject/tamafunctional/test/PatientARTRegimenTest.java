@@ -12,7 +12,6 @@ import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import static junit.framework.Assert.assertEquals;
 
 public class PatientARTRegimenTest extends BaseTest {
-
     @Test
     public void testCreateARTRegimenForPatient() {
         TestClinician clinician = TestClinician.withMandatory();

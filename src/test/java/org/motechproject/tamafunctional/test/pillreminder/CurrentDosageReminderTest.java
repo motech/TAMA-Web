@@ -1,10 +1,9 @@
 package org.motechproject.tamafunctional.test.pillreminder;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.util.FileUtil;
-import org.motechproject.tamafunctional.ivr.Caller;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
@@ -20,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
+import static junit.framework.Assert.assertEquals;
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,24 +29,42 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
     private ScheduledJobDataService scheduledJobDataService;
 
     @Before
-    public void testSetUp() {
-        scheduledJobDataService.clearJobs();
+    public void testSetUp() throws Exception {
+        try {
+            scheduledJobDataService.clearJobs();
+
+            TestClinician clinician = TestClinician.withMandatory();
+            TestPatient patient = TestPatient.withMandatory();
+            TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
+
+            PatientDataService patientDataService = new PatientDataService(webDriver);
+            patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+            caller = caller(patient);
+        } catch (Exception e) {
+            tearDown();
+            throw e;
+        }
+    }
+
+    @Test
+    public void currentDosageReminder() throws IOException {
+        String dosageId = scheduledJobDataService.currentJobId();
+        logInfo("{Regimen}{Id={%s}}", dosageId);
+
+        caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
+        IVRResponse ivrResponse = caller.enter("1234");
+        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+//        ivrResponse = caller.enter("3");
+//        assertEquals(false, ivrResponse.isEmpty());
+//        assertEquals(false, ivrResponse.isHangedUp());
     }
 
     @Test
     public void dosageTakenFlow() throws IOException {
-        TestClinician clinician = TestClinician.withMandatory();
-        TestPatient patient = TestPatient.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
-
-        PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
-
-        String dosageId = scheduledJobDataService.currentJobId();
-        logInfo("{Regimen}{Id={%s}}", dosageId);
-        Caller caller = caller(patient);
-        caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
+        caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, FileUtil.sanitizeFilename(YOUR_NEXT_DOSE_IS), FileUtil.sanitizeFilename(AT), FileUtil.sanitizeFilename(MENU_010_05_01_MAINMENU4));
+        asksForCollectDtmfWith(ivrResponse, MENU_010_05_01_MAINMENU4, YOUR_NEXT_DOSE_IS, AT, YOUR_NEXT_DOSE_IS_PADDING);
+        ivrResponse = caller.enter("3");
+        assertEquals(true, StringUtils.isNotEmpty(ivrResponse.audiosPlayed()));
     }
 }

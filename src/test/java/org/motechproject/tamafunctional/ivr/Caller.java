@@ -1,7 +1,8 @@
 package org.motechproject.tamafunctional.ivr;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.util.Cookie;
+import org.junit.Assert;
+import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.tamafunctional.framework.FunctionalTestObject;
 import org.motechproject.tamafunctional.framework.KooKooResponseParser;
 import org.motechproject.tamafunctional.framework.MyWebClient;
@@ -10,12 +11,18 @@ import org.motechproject.tamafunctional.testdata.ivrrequest.CallInfo;
 import org.motechproject.tamafunctional.testdata.ivrrequest.NoCallInfo;
 
 import java.io.IOException;
+import java.util.Set;
 
+import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverName;
+import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverPort;
+
+//TODO Probably we need a URL builder to not duplicate URLs
 public class Caller extends FunctionalTestObject {
     private String sid;
     private String phoneNumber;
     private MyWebClient webClient;
     private CallInfo callInfo = new NoCallInfo();
+    private boolean hangedUp;
 
     public Caller(String sid, String phoneNumber, MyWebClient webClient) {
         this.sid = sid;
@@ -24,18 +31,16 @@ public class Caller extends FunctionalTestObject {
     }
 
     public IVRResponse call() throws IOException {
-        Page page = webClient.getPage(urlFor("NewCall", ""));
-        WebResponse webResponse = page.getWebResponse();
-        return KooKooResponseParser.fromXml(webResponse.getContentAsString().toLowerCase());
+        return invokeAndGetResponse(String.format("http://%s:%s/tama/ivr/reply?sid=%s&cid=%s&event=%s", webserverName(), webserverPort(), sid, phoneNumber, IVREvent.NewCall.toString()));
     }
 
-    protected String urlFor(String sid, String cid, String event, String data) {
-        String url = String.format("http://localhost:%s/tama/ivr/reply?sid=%s&cid=%s&event=%s&data=%s", System.getProperty("jetty.port", "8080"), sid, cid, event, data);
-        return String.format("%s&tamaData=%s", url, callInfo.asQueryParameter());
+    private String urlFor(IVREvent event, String sid, String data) {
+        String url = String.format("http://%s:%s/tama/ivr/reply?sid=%s&event=%s&data=%s", webserverName(), webserverPort(), sid, event.toString(), data);
+        return callInfo.appendDataMapTo(url);
     }
 
-    private String urlFor(String event, String data) {
-        return urlFor(sid, phoneNumber, event, data);
+    private String urlFor(IVREvent event, String data) {
+        return urlFor(event, sid, data);
     }
 
     private IVRResponse invokeAndGetResponse(String completeUrl) {
@@ -43,24 +48,42 @@ public class Caller extends FunctionalTestObject {
     }
 
     private String invoke(String completeUrl) {
-        logInfo("{Caller} {Invoking} {Url=%s}", completeUrl);
-        Page page = webClient.getPage(completeUrl);
-        return page.getWebResponse().getContentAsString();
+        return webClient.getResponse(completeUrl).toLowerCase();
     }
 
     public IVRResponse replyToCall(CallInfo callInfo) {
-        this.callInfo = callInfo;
-        String completeUrl = urlFor("NewCall", "");
+        this.callInfo = callInfo.outgoingCall();
+        String completeUrl = String.format("http://%s:%s/tama/ivr/reply?sid=%s&cid=%s&event=%s&dataMap=%s", webserverName(), webserverPort(), sid, phoneNumber, "NewCall", callInfo.asQueryParameter());
         return invokeAndGetResponse(completeUrl);
     }
 
     public IVRResponse enter(String number) {
-        String completeUrl = urlFor("GotDTMF", number);
-        return invokeAndGetResponse(completeUrl);
+        IVRResponse ivrResponse = invokeAndGetResponse(urlFor(IVREvent.GotDTMF, number));
+        if (ivrResponse.isEmpty()) {
+            String url = String.format("http://%s:%s/tama/ivr/reply?", webserverName(), webserverPort());
+            ivrResponse = invokeAndGetResponse(callInfo.appendDataMapTo(url));
+        }
+        return ivrResponse;
     }
 
-    public String disconnect() {
-        String completeUrl = urlFor("Disconnect", "");
-        return invoke(completeUrl);
+    public void hangup() {
+        if (hangedUp) return;
+        IVRResponse ivrResponse = invokeAndGetResponse(urlFor(IVREvent.Hangup, ""));
+        hangedUp = true;
+        Assert.assertNotNull(ivrResponse);
+    }
+
+    public void logCookies() {
+        StringBuilder buffer = new StringBuilder();
+        Set<Cookie> cookies = webClient.cookies();
+        for (Cookie cookie : cookies) {
+            buffer.append(String.format("%s=%s|", cookie.getName(), cookie.getValue()));
+
+        }
+        logger.info(buffer.toString());
+    }
+
+    public void tearDown() {
+        hangedUp = false;
     }
 }

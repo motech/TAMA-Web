@@ -1,0 +1,46 @@
+At the begining of the call store everything required in cookie
+why is caller_id, call_id kept in session, is it not passed with every request
+AUTH_SUCCESS is not required as once authenticated one doesn't need to check it anymore, so this would be set in request
+If the request is still coming to authentication then it is for collecting the PIN. the number of retries should be set in cookie. after authentication we should remove it.
+PillRegimen snapshot is created by putting the time, but it is also provided IVRContext. Calltime can be session.
+ExternalId to go to response cookie
+
+org.motechproject.tama.ivr.PillRegimenSnapshot#getCurrentDosage, what is this used for
+
+For outgoing call can we use cookie?
+
+Clarify
+- How come only two transitions in PreviousDosageReminderTree
+- Why signature music with hangup? org.motechproject.tama.ivr.CallContinuationAfterTree
+
+TAMA session util is a smell. We are using session as global.
+1. Service is a service and should not be kept in ivr package. IVR and Web are different presentation mechanism, but are domain services.
+2. Domain package should be subdivided into smaller parts.
+3. Use composition over inheritance, any class hierarchy bigger than two probably is a smell. org.motechproject.tama.web.command.StopPreviousPillReminderCommand
+
+Find out:
+- no pin sent scenario should the call audits be created or not
+- when should and when shouldn't the music must be played
+
+Test
+- outbox
+
+Do
+- make sure all events are logged
+
+Share:
+KooKooIVRContext made testable.
+IVR response builder should be testable, any convinience method should return the build. Only two methods for returning xml.
+Avoid Power mocks
+DateUtil.today should also be power mocked
+OutboxControllerTest (check history) these are not constants.
+Test code is also like production code its in production all time.
+The dynamic command tests are missing
+Overriding what is done in setup: StopPreviousPillReminderCommandTest, just an example its there in a lot of places in code
+IVREvent and use of the key to decouple kookoo value from ours
+UniquePhoneNumber based on file, calling disconnect at the end of test
+base.teardown and base.setup
+use of exception to keep TAMA unaware of callrecord details stuff
+
+Write tests for:
+AuthenticationService
