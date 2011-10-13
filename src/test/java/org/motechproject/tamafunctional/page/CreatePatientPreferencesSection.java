@@ -32,7 +32,10 @@ public class CreatePatientPreferencesSection {
     public void enterDetails(TestPatient patient) {
         passcode.clear();
         passcode.sendKeys(String.valueOf(patient.patientPreferences().passcode()));
-        if (patient.patientPreferences().callPreference().equals(TestPatientPreferences.CallPreference.WEEKLY_CALL))
+        if (patient.patientPreferences().callPreference().equals(TestPatientPreferences.CallPreference.WEEKLY_CALL)) {
             weeklyReminderCall.click();
+            dayOfWeeklyCall.sendKeys(patient.patientPreferences().dayOfWeeklyCall());
+            bestCallTime.sendKeys(patient.patientPreferences().bestCallTime());
+        }
     }
 }
