@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
+import org.motechproject.tamafunctional.testdata.TestPatientPreferences;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -31,5 +32,7 @@ public class CreatePatientPreferencesSection {
     public void enterDetails(TestPatient patient) {
         passcode.clear();
         passcode.sendKeys(String.valueOf(patient.patientPreferences().passcode()));
+        if (patient.patientPreferences().callPreference().equals(TestPatientPreferences.CallPreference.WEEKLY_CALL))
+            weeklyReminderCall.click();
     }
 }

@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.testdata.TestPatientPreferences;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -52,6 +53,9 @@ public class ShowPatientPage extends Page {
 
     @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_status_status_id")
     private WebElement status;
+
+    @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_reminderCall_displayCallPreference_id")
+    private WebElement callPreference;
 
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")
     private WebElement listPatientsLink;
@@ -168,5 +172,9 @@ public class ShowPatientPage extends Page {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public TestPatientPreferences.CallPreference getCallPreference() {
+        return callPreference.getText().equals("Daily") ? TestPatientPreferences.CallPreference.DAILY_CALL : TestPatientPreferences.CallPreference.WEEKLY_CALL;
     }
 }

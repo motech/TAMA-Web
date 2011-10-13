@@ -5,13 +5,18 @@ public class TestPatientPreferences {
     private String dayOfWeeklyCall;
     private String bestCallTime;
     private String timeMeridiem;
+    private CallPreference callPreference;
+
+    public enum CallPreference{
+        DAILY_CALL, WEEKLY_CALL
+    }
 
     private TestPatientPreferences() {
     }
 
     public static TestPatientPreferences withMandatory() {
         TestPatientPreferences testPatientPreferences = new TestPatientPreferences();
-        return testPatientPreferences.passcode("1234").dayOfWeeklyCall("Tuesday").bestCallTime("09:05").timeMeridiem("AM");
+        return testPatientPreferences.passcode("1234").dayOfWeeklyCall("Tuesday").bestCallTime("09:05").timeMeridiem("AM").callPreference(CallPreference.DAILY_CALL);
     }
 
     public String passcode() {
@@ -47,6 +52,15 @@ public class TestPatientPreferences {
 
     public TestPatientPreferences timeMeridiem(String timeMeridiem) {
         this.timeMeridiem = timeMeridiem;
+        return this;
+    }
+
+    public CallPreference callPreference() {
+        return callPreference;
+    }
+
+    public TestPatientPreferences callPreference(CallPreference callPreference) {
+        this.callPreference = callPreference;
         return this;
     }
 }

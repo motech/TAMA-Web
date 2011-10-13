@@ -37,6 +37,7 @@ public class PatientRegistrationTest extends BaseTest {
         Assert.assertEquals(TAMAConstants.NNRTIRash.DRD.getValue(), showPatientPage.getRashText());
 
         Assert.assertEquals(patient.patientPreferences().passcode(), showPatientPage.getPasscode());
+        Assert.assertEquals(patient.patientPreferences().callPreference(), showPatientPage.getCallPreference());
         showPatientPage.logout();
     }
 }
