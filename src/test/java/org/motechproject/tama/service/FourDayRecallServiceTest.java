@@ -90,7 +90,7 @@ public class FourDayRecallServiceTest {
         mockStatic(DateUtil.class);
 
         when(DateUtil.today()).thenReturn(today);
-        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), 4)).thenReturn(startDateForWeek);
+        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), startDateOfTreatmentAdvice.plusDays(4))).thenReturn(startDateForWeek);
         when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
         when(allWeeklyAdherenceLogs.findByDateRange(PATIENT_ID, treatmentAdviceID, new LocalDate(2011, 10, 9), today.minusDays(1))).thenReturn(logs);
         when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(treatmentAdvice);
@@ -103,5 +103,40 @@ public class FourDayRecallServiceTest {
         assertEquals(logDate, logForPreviousWeek.getLogDate());
         assertEquals(PATIENT_ID, logForPreviousWeek.getPatientId());
         assertEquals(treatmentAdviceID, logForPreviousWeek.getTreatmentAdviceId());
+    }
+    
+    
+    @Test
+    public void shouldReturnTrueIfLogsAreBeingCapturedForFirstWeek(){
+        LocalDate startDateOfTreatmentAdvice = new LocalDate(2011, 10, 5);
+        LocalDate today = new LocalDate(2011, 10, 10);
+        mockStatic(DateUtil.class);
+
+        when(DateUtil.today()).thenReturn(today);
+        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), startDateOfTreatmentAdvice.plusDays(4))).thenReturn(startDateOfTreatmentAdvice);
+        when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
+
+        when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(treatmentAdvice);
+        when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice.toDate());
+        boolean adherenceBeingCapturedForFirstWeek = fourDayRecallService.isAdherenceBeingCapturedForFirstWeek(PATIENT_ID);
+        assertTrue(adherenceBeingCapturedForFirstWeek);
+    }
+
+
+    @Test
+    public void shouldReturnFalseIfLogsAreBeingCapturedForFirstWeek(){
+        LocalDate startDateOfTreatmentAdvice = new LocalDate(2011, 10, 5);
+        LocalDate startDateOfCurrentWeek = new LocalDate(2011, 10, 12);
+        LocalDate today = new LocalDate(2011, 10, 15);
+        mockStatic(DateUtil.class);
+
+        when(DateUtil.today()).thenReturn(today);
+        when(DateUtil.pastDateWith(DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice.dayOfWeek().get()), startDateOfTreatmentAdvice.plusDays(4))).thenReturn(startDateOfCurrentWeek);
+        when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
+
+        when(allTreatmentAdvices.findByPatientId(PATIENT_ID)).thenReturn(treatmentAdvice);
+        when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice.toDate());
+        boolean adherenceBeingCapturedForFirstWeek = fourDayRecallService.isAdherenceBeingCapturedForFirstWeek(PATIENT_ID);
+        assertFalse(adherenceBeingCapturedForFirstWeek);
     }
 }

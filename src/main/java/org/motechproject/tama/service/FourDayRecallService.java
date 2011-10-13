@@ -33,7 +33,7 @@ public class FourDayRecallService {
 
     public LocalDate getStartDateForCurrentWeek(LocalDate startDateOfTreatmentAdvice) {
         DayOfWeek startDayForTreatmentAdvice = DayOfWeek.getDayOfWeek(startDateOfTreatmentAdvice);
-        return DateUtil.pastDateWith(startDayForTreatmentAdvice, startDateOfTreatmentAdvice.plusDays(4));
+        return DateUtil.pastDateWith(startDayForTreatmentAdvice, startDateOfTreatmentAdvice.plusDays(DAYS_TO_RECALL));
     }
 
     public int adherencePercentageForPreviousWeek(String patientId) {
@@ -46,7 +46,7 @@ public class FourDayRecallService {
     }
 
     public int adherencePercentageFor(int numDaysMissed) {
-        return ((DAYS_TO_RECALL - numDaysMissed) / DAYS_TO_RECALL) * 100;
+        return (DAYS_TO_RECALL - numDaysMissed) * 100 / DAYS_TO_RECALL;
     }
 
     protected int adherencePercentageFor(WeeklyAdherenceLog weeklyAdherenceLog) {
@@ -61,5 +61,11 @@ public class FourDayRecallService {
 
         List<WeeklyAdherenceLog> logs = allWeeklyAdherenceLogs.findByDateRange(patientId, treatmentAdvice.getId(), lastPossibleAdherenceLogDate, yesterday);
         return logs.size() == 0 ? null : logs.get(0);
+    }
+
+    public boolean isAdherenceBeingCapturedForFirstWeek(String patientId) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
+        LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
+        return getStartDateForCurrentWeek(treatmentAdviceStartDate).equals(treatmentAdviceStartDate);
     }
 }

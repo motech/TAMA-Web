@@ -38,6 +38,13 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
         messages.add(ivrMessage.getNumberFilename(currentWeekAdherencePercentage));
         messages.add(TamaIVRMessage.FDR_PERCENT);
 
+        if (!fourDayRecallService.isAdherenceBeingCapturedForFirstWeek(patientId))
+            addTrendMessages(messages, currentWeekAdherencePercentage, falling);
+
+        return messages.toArray(new String[messages.size()]);
+    }
+
+    private void addTrendMessages(List<String> messages, int currentWeekAdherencePercentage, boolean falling) {
         if (currentWeekAdherencePercentage > 90) {
             messages.add(TamaIVRMessage.M02_04_ADHERENCE_COMMENT_GT95_FALLING);
         } else if (currentWeekAdherencePercentage > 70) {
@@ -53,7 +60,5 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
                 messages.add(TamaIVRMessage.M02_08_ADHERENCE_COMMENT_LT70_RISING);
             }
         }
-
-        return messages.toArray(new String[messages.size()]);
     }
 }
