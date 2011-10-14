@@ -3,7 +3,6 @@ package org.motechproject.tama.repository;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
 import org.ektorp.support.View;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.WeeklyAdherenceLog;
@@ -21,19 +20,10 @@ public class AllWeeklyAdherenceLogs extends AbstractCouchRepository<WeeklyAdhere
         super(WeeklyAdherenceLog.class, db);
     }
 
-    @View(name = "find_log_count_by_patient_id_and_treatment_advice_id_and_start_date", map = "function(doc) {if (doc.documentType =='WeeklyAdherenceLog') {emit([doc.patientId, doc.treatmentAdviceId, doc.logDate], doc._id);}}", reduce="_count")
-    public boolean logExistsFor(String patientDocId, String treatmentAdviceId, LocalDate weekStartDate) {
+    @View(name = "find_log_count_by_patient_id_and_treatment_advice_id_and_start_date", map = "function(doc) {if (doc.documentType =='WeeklyAdherenceLog') {emit([doc.patientId, doc.treatmentAdviceId, doc.weekStartDate], doc._id);}}")
+    public List<WeeklyAdherenceLog> findLogsByWeekStartDate(String patientDocId, String treatmentAdviceId, LocalDate weekStartDate) {
         ComplexKey key = ComplexKey.of(patientDocId, treatmentAdviceId, weekStartDate);
-        ViewQuery q = createQuery("find_log_count_by_patient_id_and_treatment_advice_id_and_start_date").key(key);
-        ViewResult viewResult = db.queryView(q);
-        return rowCount(viewResult) > 0;
-    }
-
-    @View(name = "find_by_date_range", map = "function(doc) {if (doc.documentType =='WeeklyAdherenceLog') {emit([doc.patientId, doc.treatmentAdviceId, doc.logDate], doc._id);}}")
-    public List<WeeklyAdherenceLog> findByDateRange(String patientDocId, String treatmentAdviceId, LocalDate fromDate, LocalDate toDate) {
-        ComplexKey startKey = ComplexKey.of(patientDocId, treatmentAdviceId, fromDate);
-        ComplexKey endKey = ComplexKey.of(patientDocId, treatmentAdviceId, toDate);
-        ViewQuery q = createQuery("find_by_date_range").startKey(startKey).endKey(endKey).includeDocs(true);
+        ViewQuery q = createQuery("find_log_count_by_patient_id_and_treatment_advice_id_and_start_date").key(key).includeDocs(true);
         return db.queryView(q, WeeklyAdherenceLog.class);
     }
 }

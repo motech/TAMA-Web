@@ -62,7 +62,10 @@ public class FourDayRecallServiceTest {
         when(DateUtil.newDate(treatmentAdvice.getStartDate())).thenReturn(treatmentAdviceStartDate);
         when(allPatients.get(patientId)).thenReturn(patient);
         when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
-        when(allWeeklyAdherenceLogs.logExistsFor(patientId, treatmentAdviceId, startDateForWeek)).thenReturn(true);
+        ArrayList<WeeklyAdherenceLog> adherenceLogs = new ArrayList<WeeklyAdherenceLog>() {{
+            this.add(new WeeklyAdherenceLog());
+        }};
+        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceId, startDateForWeek)).thenReturn(adherenceLogs);
 
         boolean capturedForCurrentWeek = fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientId, treatmentAdviceId);
 
@@ -82,7 +85,8 @@ public class FourDayRecallServiceTest {
         when(DateUtil.newDate(treatmentAdvice.getStartDate())).thenReturn(treatmentAdviceStartDate);
         when(allPatients.get(patientId)).thenReturn(patient);
         when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
-        when(allWeeklyAdherenceLogs.logExistsFor(patientId, treatmentAdviceId, startDateForWeek)).thenReturn(false);
+        ArrayList<WeeklyAdherenceLog> adherenceLogs = new ArrayList<WeeklyAdherenceLog>();
+        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceId, startDateForWeek)).thenReturn(adherenceLogs);
 
         boolean capturedForCurrentWeek = fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientId, treatmentAdviceId);
 
@@ -105,7 +109,7 @@ public class FourDayRecallServiceTest {
         when(DateUtil.today()).thenReturn(today);
         when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allWeeklyAdherenceLogs.findByDateRange(patientId, treatmentAdviceID, new LocalDate(2011, 10, 9), today.minusDays(1))).thenReturn(logs);
+        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceID, new LocalDate(2011, 10, 5))).thenReturn(logs);
         when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice.toDate());
         when(treatmentAdvice.getId()).thenReturn(treatmentAdviceID);

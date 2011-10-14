@@ -34,7 +34,7 @@ public class FourDayRecallService {
 
     public boolean isAdherenceCapturedForCurrentWeek(String patientDocId, String treatmentAdviceId) {
         LocalDate startDateForCurrentWeek = getStartDateForCurrentWeek(patientDocId);
-        return allWeeklyAdherenceLogs.logExistsFor(patientDocId, treatmentAdviceId, startDateForCurrentWeek);
+        return 1 == allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientDocId, treatmentAdviceId, startDateForCurrentWeek).size();
     }
 
     public LocalDate getStartDateForCurrentWeek(String patientDocId) {
@@ -98,10 +98,9 @@ public class FourDayRecallService {
 
     protected WeeklyAdherenceLog getAdherenceLogForPreviousWeek(String patientId) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
-        LocalDate lastPossibleAdherenceLogDate = getStartDateForCurrentWeek(patientId).minusWeeks(1).plusDays(DAYS_TO_RECALL);
-        LocalDate yesterday = DateUtil.today().minusDays(1);
+        LocalDate startDateForPreviousWeek = getStartDateForCurrentWeek(patientId).minusWeeks(1);
 
-        List<WeeklyAdherenceLog> logs = allWeeklyAdherenceLogs.findByDateRange(patientId, treatmentAdvice.getId(), lastPossibleAdherenceLogDate, yesterday);
+        List<WeeklyAdherenceLog> logs = allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdvice.getId(), startDateForPreviousWeek);
         return logs.size() == 0 ? null : logs.get(0);
     }
 
