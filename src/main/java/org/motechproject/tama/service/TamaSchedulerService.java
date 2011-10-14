@@ -61,7 +61,7 @@ public class TamaSchedulerService {
             String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, count)).withTime(callTime).build();
             Date jobEndDate = endDate == null ? null : endDate.toDate();
             LocalDate startDate = treatmentAdviceStartDate.plusDays(4 + count);
-            Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now())?DateUtil.now().toDate():startDate.toDate();
+            Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
             CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
             motechSchedulerService.scheduleJob(cronJobForForDayRecall);
         }

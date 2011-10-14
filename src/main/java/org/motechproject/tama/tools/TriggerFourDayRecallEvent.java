@@ -15,7 +15,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.Map;
 
 public class TriggerFourDayRecallEvent {
-    public static final String APPLICATION_CONTEXT_XML = "META-INF/spring/applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "META-INF/spring/applicationContext.xml";
 
     public static void main(String[] args) {
         String patientId = args[0];

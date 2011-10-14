@@ -11,6 +11,7 @@ import org.motechproject.tama.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.service.FourDayRecallService;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -28,9 +29,11 @@ public class CreateWeeklyAdherenceLogsTest {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private FourDayRecallService fourDayRecallService;
 
     private TAMAIVRContextForTest context;
-    private final String TREATMENT_ADVICE_ID = "treatmentAdviceId";
+    private String treatmentAdviceId = "treatmentAdviceId";
 
 
     @Before
@@ -42,16 +45,19 @@ public class CreateWeeklyAdherenceLogsTest {
 
     @Test
     public void shouldCreateWeeklyAdherenceLog() {
+        String patientId = "patient_id";
         LocalDate today = new LocalDate(2011, 10, 7);
+        LocalDate startDateOfTreatmentAdvice = new LocalDate(2011, 10, 2);
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
-            setId(TREATMENT_ADVICE_ID);
+            setId(treatmentAdviceId);
         }};
 
-        String patientId = "patient_id";
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
         when(DateUtil.today()).thenReturn(today);
         context.patientId(patientId).dtmfInput("1");
-        CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs = new CreateWeeklyAdherenceLogs(allWeeklyAdherenceLogs, allTreatmentAdvices);
+        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(fourDayRecallService.getStartDateForCurrentWeek(patientId)).thenReturn(startDateOfTreatmentAdvice);
+
+        CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs = new CreateWeeklyAdherenceLogs(allTreatmentAdvices, fourDayRecallService, allWeeklyAdherenceLogs);
         createWeeklyAdherenceLogs.executeCommand(context);
 
         ArgumentCaptor<WeeklyAdherenceLog> weeklyAdherenceLogArgumentCaptor = ArgumentCaptor.forClass(WeeklyAdherenceLog.class);
@@ -59,6 +65,7 @@ public class CreateWeeklyAdherenceLogsTest {
         assertEquals(today, weeklyAdherenceLogArgumentCaptor.getValue().getLogDate());
         assertEquals(1, weeklyAdherenceLogArgumentCaptor.getValue().getNumberOfDaysMissed());
         assertEquals(patientId, weeklyAdherenceLogArgumentCaptor.getValue().getPatientId());
-        assertEquals(TREATMENT_ADVICE_ID, weeklyAdherenceLogArgumentCaptor.getValue().getTreatmentAdviceId());
+        assertEquals(treatmentAdviceId, weeklyAdherenceLogArgumentCaptor.getValue().getTreatmentAdviceId());
+        assertEquals(startDateOfTreatmentAdvice, weeklyAdherenceLogArgumentCaptor.getValue().getWeekStartDate());
     }
 }

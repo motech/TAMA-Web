@@ -7,18 +7,20 @@ import org.joda.time.LocalDate;
 public class WeeklyAdherenceLog extends CouchEntity {
 
     private String patientId;
+    private String treatmentAdviceId;
+    private LocalDate weekStartDate;
     private LocalDate logDate;
     private int numberOfDaysMissed;
-    private String treatmentAdviceId;
 
     public WeeklyAdherenceLog() {
     }
 
-    public WeeklyAdherenceLog(String patientId, LocalDate logDate, int numberOfDaysMissed, String treatmentAdviceDocId) {
+    public WeeklyAdherenceLog(String patientId, String treatmentAdviceDocId, LocalDate weekStartDate, LocalDate logDate, int numberOfDaysMissed) {
         this.patientId = patientId;
+        this.treatmentAdviceId = treatmentAdviceDocId;
+        this.weekStartDate = weekStartDate;
         this.logDate = logDate;
         this.numberOfDaysMissed = numberOfDaysMissed;
-        this.treatmentAdviceId = treatmentAdviceDocId;
     }
 
     public String getPatientId() {
@@ -51,5 +53,13 @@ public class WeeklyAdherenceLog extends CouchEntity {
 
     public void setTreatmentAdviceId(String treatmentAdviceId) {
         this.treatmentAdviceId = treatmentAdviceId;
+    }
+
+    public LocalDate getWeekStartDate() {
+        return weekStartDate;
+    }
+
+    public void setWeekStartDate(LocalDate weekStartDate) {
+        this.weekStartDate = weekStartDate;
     }
 }

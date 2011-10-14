@@ -35,7 +35,7 @@ public class FourDayRecallListener {
         LocalDate treatmentAdviceStartDate = (LocalDate) motechEvent.getParameters().get(TREATMENT_ADVICE_START_DATE_KEY);
         Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
 
-        if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdviceId, treatmentAdviceStartDate)) return;
+        if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdviceId)) return;
         if (!isRetryEvent) schedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId, treatmentAdviceId, treatmentAdviceStartDate);
 
         fourDayRecallCall.execute(patientDocId);

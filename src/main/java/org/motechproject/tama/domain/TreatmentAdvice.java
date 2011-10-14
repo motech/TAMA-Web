@@ -1,32 +1,18 @@
 package org.motechproject.tama.domain;
 
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
-import static ch.lambdaj.Lambda.selectDistinct;
-import static org.hamcrest.Matchers.hasItem;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang.StringUtils;
+import ch.lambdaj.Lambda;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
 import org.motechproject.util.DateUtil;
 
-import ch.lambdaj.Lambda;
+import javax.persistence.CascadeType;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.hasItem;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity {
@@ -113,46 +99,23 @@ public class TreatmentAdvice extends CouchEntity {
     }
 
     public boolean hasMultipleDosages() {
-    	LocalDate today = DateUtil.today();
-    	int count = 0;
-    	
+        LocalDate today = DateUtil.today();
+        int count = 0;
+
         Map<String, List<DrugDosage>> groupedDosagesByTime = groupDosagesByTime();
-    	for (String key : groupedDosagesByTime.keySet()){
-    		boolean isDoseValidToday = false;
-    		for (DrugDosage dosage :groupedDosagesByTime.get(key)) {
-    			int offsetDays = key.equals(dosage.getEveningTime())?dosage.getOffsetDays():0;
-    			if (!today.isBefore(dosage.getStartDate().plusDays(offsetDays))) { isDoseValidToday = true; break;}
-    		}
-    		if (isDoseValidToday) count++;
-    	} 
-		return (count > 1);
+        for (String key : groupedDosagesByTime.keySet()) {
+            boolean isDoseValidToday = false;
+            for (DrugDosage dosage : groupedDosagesByTime.get(key)) {
+                int offsetDays = key.equals(dosage.getEveningTime()) ? dosage.getOffsetDays() : 0;
+                if (!today.isBefore(dosage.getStartDate().plusDays(offsetDays))) {
+                    isDoseValidToday = true;
+                    break;
+                }
+            }
+            if (isDoseValidToday) count++;
+        }
+        return (count > 1);
     }
-
-//    public Map<String, List<DrugDosage>> dosagesMap() {
-//        Map<String, List<DrugDosage>> drugDosagesMap = new HashMap<String, List<DrugDosage>>();
-//        for (DrugDosage drug : getDrugDosages()) {
-//            List<String> dosageSchedules = drug.getDosageSchedules();
-//            filter(dosageSchedules, new Predicate() {
-//                @Override
-//                public boolean evaluate(Object o) {
-//                    String dosageSchedule = (String) o;
-//                    return StringUtils.isNotBlank(dosageSchedule);
-//                }
-//            });
-//            for (String dosageSchedule : dosageSchedules) {
-//                List<DrugDosage> drugList = getExistingDrugsForDosageSchedule(drugDosagesMap, dosageSchedule);
-//                drugList.add(drug);
-//                drugDosagesMap.put(dosageSchedule, drugList);
-//            }
-//        }
-//        return drugDosagesMap;
-//    }
-
-//    private List<DrugDosage> getExistingDrugsForDosageSchedule(Map<String, List<DrugDosage>> drugDosagesMap, String dosageSchedule) {
-//        List<DrugDosage> drugList = drugDosagesMap.get(dosageSchedule);
-//        return drugList == null ? new ArrayList<DrugDosage>() : drugList;
-//    }
-
 
     @JsonIgnore
     public Date getEndDate() {

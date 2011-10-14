@@ -47,7 +47,7 @@ public class FourDayRecallListenerTest {
                 .payload();
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, data);
         fourDayRecallListener.handle(motechEvent);
-        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID, startDate)).thenReturn(false);
+        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(false);
 
         verify(schedulerService).scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, TREATMENT_ADVICE_ID, startDate);
         verify(fourDayRecallCall).execute(PATIENT_ID);
@@ -58,7 +58,7 @@ public class FourDayRecallListenerTest {
         LocalDate startDate = DateUtil.today();
         String PATIENT_ID = "patient_id";
         String TREATMENT_ADVICE_ID = "TA_ID";
-        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID, startDate)).thenReturn(true);
+        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(true);
 
         Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
