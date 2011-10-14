@@ -26,7 +26,6 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
 
     protected Node createRootNode() {
-
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),

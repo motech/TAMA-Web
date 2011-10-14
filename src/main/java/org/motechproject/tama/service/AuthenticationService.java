@@ -18,9 +18,6 @@ public class AuthenticationService {
     @Value("#{ivrProperties['max.number.of.attempts']}")
     Integer maxNoOfAttempts;
 
-    protected AuthenticationService() {
-    }
-
     @Autowired
     public AuthenticationService(AllPatients allPatients, AllIVRCallAudits ivrCallAudits) {
         this.allPatients = allPatients;

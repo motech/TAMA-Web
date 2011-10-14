@@ -4,6 +4,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooResponseFactory;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
+import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.server.service.ivr.IVRMessage;
@@ -31,12 +32,12 @@ public class OutboxController extends SafeIVRController {
     ApplicationContext applicationContext;
 
     @Autowired
-    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, VoiceMessageResponseFactory messageResponseFactory) {
-        this(outboxService, ivrMessage, new TAMAIVRContextFactory(), messageResponseFactory);
+    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, VoiceMessageResponseFactory messageResponseFactory, KookooCallDetailRecordsService callDetailRecordsService) {
+        this(outboxService, ivrMessage, new TAMAIVRContextFactory(), messageResponseFactory, callDetailRecordsService);
     }
 
-    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, TAMAIVRContextFactory contextFactory, VoiceMessageResponseFactory messageResponseFactory) {
-        super(ivrMessage, null);
+    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, TAMAIVRContextFactory contextFactory, VoiceMessageResponseFactory messageResponseFactory, KookooCallDetailRecordsService callDetailRecordsService) {
+        super(ivrMessage, callDetailRecordsService);
         this.outboxService = outboxService;
         this.contextFactory = contextFactory;
         this.messageResponseFactory = messageResponseFactory;
@@ -54,9 +55,6 @@ public class OutboxController extends SafeIVRController {
             return ivrResponseBuilder.withPlayAudios(TamaIVRMessage.THOSE_WERE_YOUR_MESSAGES);
         }
 
-        if (outboxContext.lastPlayedMessageId() == null) {
-            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.CONTINUE_TO_OUTBOX);
-        }
         outboxContext.lastPlayedMessageId(nextMessage.getId());
         messageResponseFactory.voiceMessageResponse(outboxContext, nextMessage, ivrResponseBuilder);
         return ivrResponseBuilder;

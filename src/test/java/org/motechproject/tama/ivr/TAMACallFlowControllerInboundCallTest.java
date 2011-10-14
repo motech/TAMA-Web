@@ -78,6 +78,6 @@ public class TAMACallFlowControllerInboundCallTest {
         when(voiceOutboxService.getNumberPendingMessages(any(String.class))).thenReturn(1);
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.REGIMEN_1_TO_6);
         tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
-        assertEquals(TAMACallFlowController.OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+        assertEquals(TAMACallFlowController.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 }

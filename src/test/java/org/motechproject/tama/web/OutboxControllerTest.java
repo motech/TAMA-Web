@@ -2,10 +2,10 @@ package org.motechproject.tama.web;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
@@ -14,7 +14,6 @@ import org.motechproject.tama.ivr.VoiceMessageResponseFactory;
 import org.motechproject.tama.outbox.OutboxContextForTest;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -28,6 +27,8 @@ public class OutboxControllerTest {
     private TamaIVRMessage tamaIvrMessage;
     @Mock
     private VoiceMessageResponseFactory messageResponseFactory;
+    @Mock
+    private KookooCallDetailRecordsService callDetailRecordsService;
 
     private OutboxController outboxController;
     private OutboxContextForTest outboxContextForTest;
@@ -39,19 +40,7 @@ public class OutboxControllerTest {
         TAMAIVRContextFactory contextFactory = mock(TAMAIVRContextFactory.class);
 
         when(contextFactory.createOutboxContext(any(KooKooIVRContext.class))).thenReturn(outboxContextForTest);
-        outboxController = new OutboxController(outboxService, tamaIvrMessage, contextFactory, messageResponseFactory);
-    }
-
-    @Test
-    public void shouldPlayTheFirstMessage() {
-        String lastPlayedMessageId = null;
-        outboxContextForTest.lastPlayedMessageId(lastPlayedMessageId);
-        OutboundVoiceMessage voiceMessage = voiceMessage("123");
-        when(outboxService.nextMessage(lastPlayedMessageId, patientId)).thenReturn(voiceMessage);
-
-        KookooIVRResponseBuilder ivrResponseBuilder = outboxController.gotDTMF(any(KooKooIVRContext.class));
-        assertEquals(voiceMessage.getId(), outboxContextForTest.lastPlayedMessageId());
-        assertTrue(ivrResponseBuilder.getPlayAudios().contains(TamaIVRMessage.CONTINUE_TO_OUTBOX));
+        outboxController = new OutboxController(outboxService, tamaIvrMessage, contextFactory, messageResponseFactory, callDetailRecordsService);
     }
 
     @Test

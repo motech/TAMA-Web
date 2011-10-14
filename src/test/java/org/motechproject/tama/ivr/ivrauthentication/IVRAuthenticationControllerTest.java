@@ -3,7 +3,6 @@ package org.motechproject.tama.ivr.ivrauthentication;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.ivr.kookoo.HangupException;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
@@ -41,16 +40,17 @@ public class IVRAuthenticationControllerTest {
         tamaivrContext = new TAMAIVRContextForTest().callId(callId);
     }
 
-    @Test(expected = HangupException.class)
-    public void hangupNewCallIfUserIsNotAllowedAccess() throws HangupException {
+    @Test
+    public void hangupNewCallIfUserIsNotAllowedAccess() {
         tamaivrContext.requestedCallerId(callerId);
         when(tamaivrContextFactory.initialize(kooKooIVRContext)).thenReturn(tamaivrContext);
         when(authenticationService.allowAccess(callerId, callId)).thenReturn(false);
-        ivrAuthenticationController.newCall(kooKooIVRContext);
+        KookooIVRResponseBuilder ivrResponseBuilder = ivrAuthenticationController.newCall(kooKooIVRContext);
+        assertEquals(true, ivrResponseBuilder.isHangUp());
     }
 
     @Test
-    public void acceptNewCallWhenUserIsAllowedAccess() throws HangupException {
+    public void acceptNewCallWhenUserIsAllowedAccess() {
         tamaivrContext.requestedCallerId(callerId);
         when(tamaivrContextFactory.initialize(kooKooIVRContext)).thenReturn(tamaivrContext);
         when(authenticationService.allowAccess(callerId, callId)).thenReturn(true);
@@ -59,7 +59,7 @@ public class IVRAuthenticationControllerTest {
     }
 
     @Test
-    public void retryWhenPasswordIsWrong() throws HangupException {
+    public void retryWhenPasswordIsWrong() {
         String dtmfInput = "1234";
         int numberOfLoginAttempts = 0;
         tamaivrContext.dtmfInput(dtmfInput).callerId(callerId);

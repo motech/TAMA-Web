@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class TAMAIVRContext {
-    public static final String CALLER_ID = "caller_id";
-    public static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
+    static final String CALLER_ID = "caller_id";
+    static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
     private static final String CALL_STATE = "call_state";
     public static final String PATIENT_ID = "patient_id";
     public static final String PATIENT = "Patient";
@@ -50,12 +50,16 @@ public class TAMAIVRContext {
 
     void initialize() {
         callerId(requestedCallerId());
-        cookies.add(NUMBER_OF_ATTEMPTS, "0");
+        setInSession(NUMBER_OF_ATTEMPTS, "0");
         cookies.add(NUMBER_OF_TIMES_REMINDER_SENT, "0");
     }
 
+    private void setInSession(String name, String value) {
+        httpRequest.getSession().setAttribute(name, value);
+    }
+
     protected void callerId(String callerId) {
-        cookies.add(CALLER_ID, callerId);
+        setInSession(CALLER_ID, callerId);
     }
 
     public String dtmfInput() {
@@ -63,28 +67,32 @@ public class TAMAIVRContext {
     }
 
     public String callerId() {
-        return cookies.getValue(CALLER_ID);
+        return fromSession(CALLER_ID);
+    }
+
+    private String fromSession(String name) {
+        return (String) httpRequest.getSession().getAttribute(name);
     }
 
     public int numberOfLoginAttempts() {
-        String numberOfAttempts = cookies.getValue(NUMBER_OF_ATTEMPTS);
+        String numberOfAttempts = fromSession(NUMBER_OF_ATTEMPTS);
         return Integer.parseInt(numberOfAttempts);
     }
 
     public void userAuthenticated(IVRAuthenticationStatus authenticationStatus) {
         callState(CallState.AUTHENTICATED);
-        cookies.add(PATIENT_ID, authenticationStatus.patientId());
-        cookies.add(KooKooIVRContext.EXTERNAL_ID, authenticationStatus.patientId());
+        setInSession(PATIENT_ID, authenticationStatus.patientId());
+        setInSession(KooKooIVRContext.EXTERNAL_ID, authenticationStatus.patientId());
         httpRequest.getSession().setAttribute(CALL_START_TIME, DateUtil.now());
     }
 
     public CallState callState() {
-        String value = cookies.getValue(CALL_STATE);
+        String value = fromSession(CALL_STATE);
         return (value == null) ? CallState.STARTED : Enum.valueOf(CallState.class, value);
     }
 
     public void numberOfLoginAttempts(int numberOfAttempts) {
-        cookies.add(NUMBER_OF_ATTEMPTS, Integer.toString(numberOfAttempts));
+        setInSession(NUMBER_OF_ATTEMPTS, Integer.toString(numberOfAttempts));
     }
 
     public String callId() {
@@ -108,7 +116,7 @@ public class TAMAIVRContext {
     }
 
     public String patientId() {
-        return cookies.getValue(PATIENT_ID);
+        return fromSession(PATIENT_ID);
     }
 
     public PillRegimenResponse pillRegimen(PillReminderService pillReminderService) {
@@ -139,7 +147,7 @@ public class TAMAIVRContext {
     }
 
     public void callState(CallState callState) {
-        cookies.add(CALL_STATE, callState.toString());
+        setInSession(CALL_STATE, callState.toString());
     }
 
     public void lastCompletedTree(String treeName) {

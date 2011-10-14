@@ -45,7 +45,7 @@ public class TAMACallFlowControllerTest {
         String patientId = "1234";
         tamaIVRContextForTest.patientId(patientId);
         when(voiceOutboxService.getNumberPendingMessages(patientId)).thenReturn(3);
-        assertEquals(TAMACallFlowController.OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+        assertEquals(TAMACallFlowController.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test(expected = TamaException.class)

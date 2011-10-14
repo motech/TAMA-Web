@@ -44,10 +44,13 @@ public abstract class BaseIVRTest extends BaseTest {
     }
 
     protected void asksForCollectDtmfWith(IVRResponse ivrResponse, String ... names) {
-        FileUtil fileUtil = new FileUtil();
         assertTrue(ivrResponse.collectDtmf());
+        audioFilePresent(ivrResponse, names);
+    }
+
+    protected void audioFilePresent(IVRResponse ivrResponse, String... names) {
         for (String name : names) {
-            name = fileUtil.sanitizeFilename(name);
+            name = FileUtil.sanitizeFilename(name);
             assertTrue(String.format("%s not found. %s", name, ivrResponse.audiosPlayed()), ivrResponse.audioPlayed(name));
         }
     }

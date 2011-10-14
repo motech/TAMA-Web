@@ -4,11 +4,15 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.util.Cookies;
 
+import javax.servlet.http.HttpServletRequest;
+
+// This class is created instead of using TAMAIVRContext because we might want to move Outbox IVR to platform
 public class OutboxContext {
     private Cookies cookies;
 
     private static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
     private KooKooIVRContext kooKooIVRContext;
+    private HttpServletRequest request;
 
     protected OutboxContext() {
     }
@@ -16,10 +20,11 @@ public class OutboxContext {
     public OutboxContext(KooKooIVRContext kooKooIVRContext) {
         this.kooKooIVRContext = kooKooIVRContext;
         this.cookies = kooKooIVRContext.cookies();
+        this.request = kooKooIVRContext.httpRequest();
     }
 
     public String partyId() {
-        return cookies.getValue(TAMAIVRContext.PATIENT_ID);
+        return (String) request.getSession().getAttribute(TAMAIVRContext.PATIENT_ID);
     }
 
     public String lastPlayedMessageId() {

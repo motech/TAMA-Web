@@ -65,6 +65,6 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         IVRResponse ivrResponse = caller.enter("1234");
         asksForCollectDtmfWith(ivrResponse, MENU_010_05_01_MAINMENU4, YOUR_NEXT_DOSE_IS, AT, YOUR_NEXT_DOSE_IS_PADDING);
         ivrResponse = caller.enter("3");
-        assertEquals(true, StringUtils.isNotEmpty(ivrResponse.audiosPlayed()));
+        audioFilePresent(ivrResponse, NO_MESSAGES);
     }
 }

@@ -74,13 +74,13 @@ public class Caller extends FunctionalTestObject {
     }
 
     public void logCookies() {
-        StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = new StringBuilder("Cookies {");
         Set<Cookie> cookies = webClient.cookies();
         for (Cookie cookie : cookies) {
             buffer.append(String.format("%s=%s|", cookie.getName(), cookie.getValue()));
 
         }
-        logger.info(buffer.toString());
+        logger.info(buffer.append("}").toString());
     }
 
     public void tearDown() {
