@@ -3,19 +3,23 @@ package org.motechproject.tama.ivr;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.server.service.ivr.CallDirection;
+import org.motechproject.tama.domain.CallPreference;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientPreferences;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
-import static org.mockito.Mockito.*;
 
 public class TAMACallFlowControllerInboundCallTest {
     private TAMACallFlowController tamaCallFlowController;
@@ -44,16 +48,30 @@ public class TAMACallFlowControllerInboundCallTest {
     @Test
     public void currentDosageTakeTreeShouldBeReturnedWhenPatientHasTakenTheDosage() {
         pillRegimenSnapshot = mock(PillRegimenSnapshot.class);
+        Patient patient = Mockito.mock(Patient.class);
+        PatientPreferences patientPreferences = Mockito.mock(PatientPreferences.class);
         tamaIVRContextForTest.pillRegimenSnapshot(pillRegimenSnapshot);
+        tamaIVRContextForTest.patient(patient);
+
+        when(patient.getPatientPreferences()).thenReturn(patientPreferences);
+        when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
         when(pillRegimenSnapshot.isCurrentDosageTaken()).thenReturn(true);
+
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
 
     @Test
     public void currentDosageConfirmTreeShouldBeReturnedWhenPatientHasNotTakenTheDosage() {
+        Patient patient = Mockito.mock(Patient.class);
+        PatientPreferences patientPreferences = Mockito.mock(PatientPreferences.class);
         pillRegimenSnapshot = mock(PillRegimenSnapshot.class);
+        tamaIVRContextForTest.patient(patient);
         tamaIVRContextForTest.pillRegimenSnapshot(pillRegimenSnapshot);
+
+        when(patient.getPatientPreferences()).thenReturn(patientPreferences);
+        when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
         when(pillRegimenSnapshot.isCurrentDosageTaken()).thenReturn(false);
+
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
 

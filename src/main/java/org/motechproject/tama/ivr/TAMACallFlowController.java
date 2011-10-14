@@ -76,7 +76,12 @@ public class TAMACallFlowController implements CallFlowController {
     }
 
     private String getStartingTree(TAMAIVRContext tamaivrContext) {
+        Patient patient = tamaivrContext.patient(allPatients);
+        boolean isPatientOnDailyPillReminder = CallPreference.DailyPillReminder.equals(patient.getPatientPreferences().getCallPreference());
         if (tamaivrContext.isIncomingCall()) {
+            if(!isPatientOnDailyPillReminder){
+                return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
+            }
             PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(tamaivrContext);
             if (pillRegimenSnapshot.isCurrentDosageTaken()) {
                 return TAMATreeRegistry.CURRENT_DOSAGE_TAKEN;
@@ -84,8 +89,8 @@ public class TAMACallFlowController implements CallFlowController {
                 return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM;
             }
         }
-        Patient patient = tamaivrContext.patient(allPatients);
-        if (CallPreference.DailyPillReminder.equals(patient.getPatientPreferences().getCallPreference()))
+
+        if (isPatientOnDailyPillReminder)
             return TAMATreeRegistry.CURRENT_DOSAGE_REMINDER;
         else
             return TAMATreeRegistry.FOUR_DAY_RECALL;
