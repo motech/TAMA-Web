@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.decisiontree;
 
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.CallState;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.command.fourdayrecall.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class FourDayRecallIncomingCallTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
-                        new TextToSpeechPrompt().setName("press 2 to report symptoms and 3 to listen to outbox")
+                        new AudioPrompt().setName(TamaIVRMessage.MENU_010_05_01_MAINMENU4)
                 )
                 .setTransitions(new Object[][]{
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
