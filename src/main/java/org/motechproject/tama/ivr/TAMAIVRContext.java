@@ -51,7 +51,6 @@ public class TAMAIVRContext {
     void initialize() {
         callerId(requestedCallerId());
         setInSession(NUMBER_OF_ATTEMPTS, "0");
-        cookies.add(NUMBER_OF_TIMES_REMINDER_SENT, "0");
     }
 
     private void setInSession(String name, String value) {
@@ -139,11 +138,11 @@ public class TAMAIVRContext {
     }
 
     public int numberOfTimesReminderSent() {
-        return Integer.parseInt(httpRequest.getParameter(NUMBER_OF_TIMES_REMINDER_SENT));
+        return Integer.parseInt(kookooRequest.getParameter(NUMBER_OF_TIMES_REMINDER_SENT));
     }
 
     public int totalNumberOfTimesToSendReminder() {
-        return Integer.parseInt(httpRequest.getParameter(TOTAL_NUMBER_OF_TIMES_TO_SEND_REMINDER));
+        return Integer.parseInt(kookooRequest.getParameter(TOTAL_NUMBER_OF_TIMES_TO_SEND_REMINDER));
     }
 
     public void callState(CallState callState) {

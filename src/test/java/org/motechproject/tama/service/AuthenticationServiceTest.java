@@ -10,6 +10,7 @@ import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -81,5 +82,21 @@ public class AuthenticationServiceTest {
         int attemptNumber = 2;
         IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, invalidPassCode, attemptNumber, "123");
         assertEquals(attemptNumber - 1, ivrAuthenticationStatus.loginAttemptNumber());
+    }
+
+    @Test
+    public void multiplePatientsWithSamePin() {
+        Patient firstPatient = patient("p1");
+        Patient secondPatient = patient("p2");
+        when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(firstPatient);
+        when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(secondPatient);
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123");
+        assertEquals(secondPatient.getId(), ivrAuthenticationStatus.patientId());
+    }
+
+    private Patient patient(String id) {
+        Patient patient = new Patient();
+        patient.setId(id);
+        return patient;
     }
 }

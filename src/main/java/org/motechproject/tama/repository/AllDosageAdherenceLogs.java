@@ -29,6 +29,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return db.queryView(q, DosageAdherenceLog.class);
     }
 
+    //TODO: Should be renamed to findByRegimenDosageStatusAndDosageDate. This should not call willCurrentDosageBeTakenLater instead should be called by service/command.
     @View(name = "find_success_log_count_for_a_given_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
     public int findScheduledDosagesSuccessCount(String regimenId, LocalDate fromDate, LocalDate toDate) {
         ComplexKey startDosageDatekey = ComplexKey.of(regimenId, DosageStatus.TAKEN, fromDate.plusDays(1)); //exclude start Day 
@@ -41,6 +42,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return successLogCount;
     }
 
+    //TODO: Should be renamed to findByRegimenDosageStatusAndDosageDate.
     @View(name = "find_whether_current_dosage_will_be_taken_later", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
     public boolean willCurrentDosageBeTakenLater(String regimenId) {
         ComplexKey key = ComplexKey.of(regimenId, DosageStatus.WILL_TAKE_LATER, DateUtil.today());

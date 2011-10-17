@@ -54,6 +54,8 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
         IVRResponse ivrResponse = caller.enter("1234");
         asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        ivrResponse = caller.enter("1");
+        audioFilePresent(ivrResponse, DOSE_RECORDED);
 //        ivrResponse = caller.enter("3");
 //        assertEquals(false, ivrResponse.isEmpty());
 //        assertEquals(false, ivrResponse.isHangedUp());

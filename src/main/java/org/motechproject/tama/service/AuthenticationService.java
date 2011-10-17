@@ -31,14 +31,15 @@ public class AuthenticationService {
     }
 
     public IVRAuthenticationStatus checkAccess(String phoneNumber, String passcode, int attemptNumber, String sid) {
-        Patient patient = allPatients.findByMobileNumber(phoneNumber);
-        if (patient == null) {
+        Patient likelyPatient = allPatients.findByMobileNumber(phoneNumber);
+        if (likelyPatient == null) {
             ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, "", IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
             return IVRAuthenticationStatus.notFound();
         }
 
-        if (allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode) == null) {
-            ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, patient.getId(), IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
+        Patient patient = allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode);
+        if (patient == null) {
+            ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, likelyPatient.getId(), IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
             IVRAuthenticationStatus ivrAuthenticationStatus = IVRAuthenticationStatus.notAuthenticated();
             ivrAuthenticationStatus.allowRetry(StringUtils.isEmpty(passcode) || !maxNoOfAttempts.equals(attemptNumber));
             ivrAuthenticationStatus.loginAttemptNumber(StringUtils.isEmpty(passcode) ? --attemptNumber : attemptNumber);
