@@ -1,6 +1,5 @@
 package org.motechproject.tamafunctional.test.pillreminder;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
-import static junit.framework.Assert.assertEquals;
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,20 +28,15 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
 
     @Before
     public void testSetUp() throws Exception {
-        try {
-            scheduledJobDataService.clearJobs();
+        scheduledJobDataService.clearJobs();
 
-            TestClinician clinician = TestClinician.withMandatory();
-            TestPatient patient = TestPatient.withMandatory();
-            TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
+        TestClinician clinician = TestClinician.withMandatory();
+        TestPatient patient = TestPatient.withMandatory();
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
 
-            PatientDataService patientDataService = new PatientDataService(webDriver);
-            patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
-            caller = caller(patient);
-        } catch (Exception e) {
-            tearDown();
-            throw e;
-        }
+        PatientDataService patientDataService = new PatientDataService(webDriver);
+        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        caller = caller(patient);
     }
 
     @Test
@@ -54,11 +47,11 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
         IVRResponse ivrResponse = caller.enter("1234");
         asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
-        ivrResponse = caller.enter("1");
-        audioFilePresent(ivrResponse, DOSE_RECORDED);
-//        ivrResponse = caller.enter("3");
-//        assertEquals(false, ivrResponse.isEmpty());
-//        assertEquals(false, ivrResponse.isHangedUp());
+//        ivrResponse = caller.enter("1");
+//        audioFilePresent(ivrResponse, DOSE_RECORDED);
+////        ivrResponse = caller.enter("3");
+////        assertEquals(false, ivrResponse.isEmpty());
+////        assertEquals(false, ivrResponse.isHangedUp());
     }
 
     @Test

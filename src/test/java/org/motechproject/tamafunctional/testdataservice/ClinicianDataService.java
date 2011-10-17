@@ -11,7 +11,7 @@ public class ClinicianDataService extends EntityDataService {
     }
 
     public void create(TestClinician clinician) {
-        MyPageFactory.initElements(webDriver, LoginPage.class)
+        page(LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicianRegistrationPage()
                 .registerClinician(clinician)

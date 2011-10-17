@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.framework;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -42,6 +43,7 @@ public abstract class BaseTest extends FunctionalTestObject {
     @After
     public void tearDown() throws IOException {
         String testMethodName = testName.getMethodName();
+        testMethodName = StringUtils.isEmpty(testMethodName) ? DateUtil.today().toString() : testMethodName;
         String pageSource = webDriver.getPageSource();
 
         File file = new File(System.getProperty("base.dir"), String.format("target/%s.html", testMethodName));
@@ -49,6 +51,7 @@ public abstract class BaseTest extends FunctionalTestObject {
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(pageSource);
+            logInfo("HTML Output logged to %s", file.getName());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
