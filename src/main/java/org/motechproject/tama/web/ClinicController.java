@@ -57,7 +57,7 @@ public class ClinicController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        uiModel.addAttribute("clinics", new ClinicsView(allClinics).getAll());
+        uiModel.addAttribute("clinics", new ClinicsView(allClinics).getAll().subList(0, 2));
         return "clinics/list";
     }
 

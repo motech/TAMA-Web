@@ -1,0 +1,12 @@
+.field {
+    overflow: auto;
+    margin-top: 5px;
+}
+
+.field label {
+    width: 200px;
+}
+
+.field input[type='text'] {
+    float: left;
+}

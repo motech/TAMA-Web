@@ -14,9 +14,15 @@
                   <spring:param name="form"/>
                   <spring:param name="patientId" value="${patient.id}"/>
               </spring:url>
+              <spring:url value="/vital_statistics" var="vital_statistics_url">
+                  <spring:param name="form"/>
+                  <spring:param name="patientId" value="${patient.id}"/>
+              </spring:url>
               <a id="clinic_visits" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a>
               <c:out value=" "/>
               <a id="lab_results" href="${lab_results_url}">Lab Results</a>
+              <c:out value=" "/>
+              <a id="vital_statistics" href="${vital_statistics_url}">Vital Statistics</a>
               <br/>
               <br/>
               <div class="update_patient">

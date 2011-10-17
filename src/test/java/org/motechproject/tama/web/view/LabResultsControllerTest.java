@@ -135,7 +135,6 @@ public class LabResultsControllerTest {
         assertEquals(labTest, labTestCapture.getValue().get(0));
     }
 
-
     @Test
     public void createShouldSaveLabResultsForPatient() {
         String patientId = "patientId";

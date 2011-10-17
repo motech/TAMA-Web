@@ -63,6 +63,9 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.ID, using = "lab_results")
     private WebElement labResultsLink;
 
+    @FindBy(how = How.ID, using = "vital_statistics")
+    private WebElement showOrCreateVitalStatisticsLink;
+
     public ShowPatientPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -139,15 +142,15 @@ public class ShowPatientPage extends Page {
         return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
     }
 
-    public ViewARTRegimenPage goToViewARTRegimenPage() {
+    public ShowARTRegimenPage goToViewARTRegimenPage() {
         this.clinicVisitsLink.click();
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(ViewARTRegimenPage.REGIMEN_TEXT_ID)) != null;
+                return webDriver.findElement(By.id(ShowARTRegimenPage.REGIMEN_TEXT_ID)) != null;
             }
         });
-        return MyPageFactory.initElements(webDriver, ViewARTRegimenPage.class);
+        return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
     }
 
     public CreateLabResultsPage goToLabResultsPage() {
@@ -176,5 +179,41 @@ public class ShowPatientPage extends Page {
 
     public TestPatientPreferences.CallPreference getCallPreference() {
         return callPreference.getText().equals("Daily") ? TestPatientPreferences.CallPreference.DAILY_CALL : TestPatientPreferences.CallPreference.WEEKLY_CALL;
+    }
+
+    public FormVitalStatisticsPage clickVitalStatisticsLink_WhenPatientHasNone() {
+        this.showOrCreateVitalStatisticsLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = webDriver.findElement(By.id(FormVitalStatisticsPage.PAGE_LOAD_MARKER));
+                return element != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, FormVitalStatisticsPage.class);
+    }
+
+    public ShowVitalStatisticsPage clickVitalStatisticsLink_WhenPatientHasOne() {
+        this.showOrCreateVitalStatisticsLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = webDriver.findElement(By.id(ShowVitalStatisticsPage.PAGE_LOAD_MARKER));
+                return element != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
+    }
+
+    public ShowVitalStatisticsPage goToShowVitalStatisticsPage() {
+        this.showOrCreateVitalStatisticsLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = webDriver.findElement(By.id(ShowVitalStatisticsPage.PAGE_LOAD_MARKER));
+                return element != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
     }
 }

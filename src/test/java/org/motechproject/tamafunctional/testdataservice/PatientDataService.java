@@ -1,12 +1,10 @@
 package org.motechproject.tamafunctional.testdataservice;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.page.ListPatientsPage;
-import org.motechproject.tamafunctional.page.LoginPage;
-import org.motechproject.tamafunctional.page.ShowPatientPage;
-import org.motechproject.tamafunctional.page.ViewARTRegimenPage;
+import org.motechproject.tamafunctional.page.*;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
+import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
 
@@ -53,9 +51,9 @@ public class PatientDataService extends EntityDataService {
     }
 
     public TestTreatmentAdvice getTreatmentAdvice(TestPatient patient, TestClinician clinician) {
-        ViewARTRegimenPage viewARTRegimenPage = viewPatient(patient, clinician).goToViewARTRegimenPage();
-        TestTreatmentAdvice treatmentAdvice = new TestTreatmentAdvice().regimenName(viewARTRegimenPage.getRegimenName()).drugCompositionName(viewARTRegimenPage.getDrugCompositionGroupName());
-        viewARTRegimenPage.logout();
+        ShowARTRegimenPage showARTRegimenPage = viewPatient(patient, clinician).goToViewARTRegimenPage();
+        TestTreatmentAdvice treatmentAdvice = new TestTreatmentAdvice().regimenName(showARTRegimenPage.getRegimenName()).drugCompositionName(showARTRegimenPage.getDrugCompositionGroupName());
+        showARTRegimenPage.logout();
         return treatmentAdvice;
     }
 
@@ -63,5 +61,26 @@ public class PatientDataService extends EntityDataService {
         new ClinicianDataService(webDriver).createWithClinc(clinician);
         registerAndActivate(patient, clinician);
         createARTRegimen(treatmentAdvice, patient, clinician);
+    }
+
+    public void setInitialVitalStatistics(TestVitalStatistics testVitalStatistics, TestPatient patient, TestClinician clinician) {
+        viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasNone().enterVitalStatistics(testVitalStatistics).logout();
+    }
+
+    public void updateVitalStatistics(TestVitalStatistics testVitalStatistics, TestPatient patient, TestClinician clinician) {
+        viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasOne().goToEditVitalStatisticsPage().enterVitalStatistics(testVitalStatistics).logout();
+    }
+
+    public TestVitalStatistics getInitialVitalStatistics(TestPatient patient, TestClinician clinician) {
+        ShowVitalStatisticsPage showVitalStatisticsPage = viewPatient(patient, clinician).goToShowVitalStatisticsPage();
+        TestVitalStatistics testVitalStatistics = new TestVitalStatistics()
+                                                        .weightInKg(showVitalStatisticsPage.getWeight())
+                                                        .heightInCm(showVitalStatisticsPage.getHeight())
+                                                        .systolicBp(showVitalStatisticsPage.getSystolicBp())
+                                                        .diastolicBp(showVitalStatisticsPage.getDiastolicBp())
+                                                        .temperatureInFahrenheit(showVitalStatisticsPage.getTemperature())
+                                                        .pulse(showVitalStatisticsPage.getPulse());
+        showVitalStatisticsPage.logout();
+        return testVitalStatistics;
     }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div version="2.0"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:springform="http://www.springframework.org/tags/form"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:field="http://www.springframework.org/tags/form"
+     xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields">
+
+    <spring:url value="/resources/images/favicon.ico" var="favicon"/>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/resources/styles/vital-statistics-form.css" var="vital_statistics_form_css_url" />
+    <link rel="stylesheet" type="text/css" media="screen" href="${vital_statistics_form_css_url}"></link>
+
+    <util:panel id="vital_statistics_panel" title="Vital Statistics" openPane="true">
+
+        <spring:url value="/vital_statistics/create" var="form_url"/>
+        <springform:form action="${form_url}" modelAttribute="vitalStatistics" method="${_method}" id="vital_statistics_form">
+
+            <c:if test='${_method == "put"}'>
+                <field:hidden path="id" value="${vitalStatistics.id}"/>
+            </c:if>
+            <field:hidden path="patientId" value="${vitalStatistics.patientId}"/>
+
+            <formfield:input field="weightInKg" label="Weight (in kg)" id="weight" required="true" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+            <formfield:input field="heightInCm" label="Height (in cm)" id="height" required="true"  validationRegex="^[0-9]*(\.[0-9]+)?$" />
+            <formfield:input field="systolicBp" label="Systolic Blood Pressure" id="systolic_bp" required="true"  validationRegex="^[0-9]*" />
+            <formfield:input field="diastolicBp" label="Diastolic Blood Pressure" id="diastolic_bp" required="true" validationRegex="^[0-9]*" />
+            <formfield:input field="temperatureInFahrenheit" label="Temperature (in F)" id="temperature" required="true" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+            <formfield:input field="pulse" label="Pulse" id="body_pulse" required="true" validationRegex="^[0-9]*" />
+
+            <br/>
+            <input type="submit" id="proceed" value="Save"/>
+            <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+        </springform:form>
+    </util:panel>
+    <div id="page_load_marker"></div>
+</div>

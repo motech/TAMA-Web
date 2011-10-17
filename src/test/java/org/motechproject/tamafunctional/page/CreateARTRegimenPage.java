@@ -91,12 +91,12 @@ public class CreateARTRegimenPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
-    public ViewARTRegimenPage reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice) {
+    public ShowARTRegimenPage reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         discontinuationReasonElement.sendKeys(treatmentAdvice.discontinuationReason());
         nextToRegisterNewTreatmentAdvice.click();
         setupNewARTRegimen(treatmentAdvice);
-        this.waitForElementWithIdToLoad(ViewARTRegimenPage.REGIMEN_TEXT_ID);
-        return MyPageFactory.initElements(webDriver, ViewARTRegimenPage.class);
+        this.waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
+        return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
     }
 
     private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
