@@ -8,7 +8,6 @@ import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -42,8 +41,7 @@ public class FourDayRecallWelcomeGreetingMessageTest {
     @Test
     public void shouldReturnMessageBasedOnClinicAndPlayGreetingMessage() {
         String[] messages = welcomeGreetingMessage.executeCommand(context);
-        assertEquals(2, messages.length);
-        assertEquals("clinicName", messages[0]);
-        assertEquals(TamaIVRMessage.FDR_GREETING, messages[1]);
+        assertEquals(1, messages.length);
+        assertEquals("welcome_to_clinicName", messages[0]);
     }
 }
