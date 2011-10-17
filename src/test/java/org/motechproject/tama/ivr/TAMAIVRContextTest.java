@@ -39,6 +39,5 @@ public class TAMAIVRContextTest {
 
         verify(session).setAttribute(TAMAIVRContext.CALLER_ID, callerId);
         verify(session).setAttribute(TAMAIVRContext.NUMBER_OF_ATTEMPTS, "0");
-        verify(cookies).add(TAMAIVRContext.NUMBER_OF_TIMES_REMINDER_SENT, "0");
     }
 }
