@@ -1,0 +1,65 @@
+dialect "mvel"
+import org.motechproject.tama.domain.PatientStats;
+
+global org.motechproject.tama.service.SymptomReportingRuleService.Transition transition;
+
+rule "DefaultRuleRegimen4"
+  when
+      s : PatientStats(regimen == 4);
+  then
+end
+
+rule "Rule Thirty Seven" extends "DefaultRuleRegimen4"
+  when
+        $patient : PatientStats(pychiatricIllnessHistoryPresent == true && baseLineCD4Count > 50) from s
+  then
+      transition.setEntryPoint(new String("37"));
+      retract($patient)
+end
+
+rule "Rule Thirty Six"
+
+  when
+        $patient : PatientStats(pychiatricIllnessHistoryPresent ==true && baseLineCD4Count < 50   && regimen == 4)
+  then
+      transition.setEntryPoint(new String("36"));
+      retract($patient)
+end
+
+rule "Rule Thirty Five"
+
+  when
+        $patient : PatientStats(pychiatricIllnessHistoryPresent == false && baseLineHB4 < 10 && baseLineCD4Count > 50   && regimen == 4)
+  then
+      transition.setEntryPoint(new String("35"));
+      retract($patient)
+end
+
+rule "Rule Thirty Four"
+
+  when
+        $patient : PatientStats(pychiatricIllnessHistoryPresent == false && baseLineHB4 < 10 && baseLineCD4Count < 50   && regimen == 4)
+  then
+      transition.setEntryPoint(new String("34"));
+      retract($patient)
+end
+
+rule "Rule Thirty Three"
+
+  when
+        $patient : PatientStats(pychiatricIllnessHistoryPresent == true && baseLineHB4 < 10 && baseLineCD4Count > 50  && regimen == 4)
+  then
+      transition.setEntryPoint(new String("33"));
+      retract($patient)
+end
+
+rule "Rule Thirty Two"
+
+  when
+        $patient : PatientStats(pychiatricIllnessHistoryPresent == true && baseLineHB4 < 10 &&  baseLineCD4Count < 50   && regimen == 4)
+  then
+      transition.setEntryPoint(new String("32"));
+      retract($patient)
+end
+
+

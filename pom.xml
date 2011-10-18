@@ -9,6 +9,7 @@
     <name>tama</name>
     <properties>
         <roo.version>1.1.4.RELEASE</roo.version>
+        <drools.version>5.2.0.Final</drools.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,19 +63,19 @@
             </build>
         </profile>
         <profile>
-        	<id>buildNode</id>
-        	<repositories>
-        		<repository>
-		            <id>motech.nexus</id>
-		            <name>Motech Snapshots Repository</name>
-		            <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
-		            <snapshots>
-		            	<enabled>true</enabled>
-		            	<checksumPolicy>warn</checksumPolicy>
-		            	<updatePolicy>always</updatePolicy>
-		            </snapshots>
-		        </repository>
-        	</repositories>
+            <id>buildNode</id>
+            <repositories>
+                <repository>
+                    <id>motech.nexus</id>
+                    <name>Motech Snapshots Repository</name>
+                    <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <checksumPolicy>warn</checksumPolicy>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
         </profile>
     </profiles>
     <repositories>
@@ -543,7 +544,7 @@
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-scheduler</artifactId>
             <version>0.3-SNAPSHOT</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-cmslite-api</artifactId>
@@ -581,21 +582,32 @@
             <version>2.3.1</version>
         </dependency>
         <dependency>
-			<groupId>junit-addons</groupId>
-			<artifactId>junit-addons</artifactId>
-			<version>1.4</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>xerces</groupId>
-     				<artifactId>xercesImpl</artifactId>
-				</exclusion>
-				<exclusion>
-				    <groupId>xerces</groupId>
-      				<artifactId>xmlParserAPIs</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-distribution</artifactId>
+            <version>5.2.0.Final</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-spring</artifactId>
+            <version>5.2.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>junit-addons</groupId>
+            <artifactId>junit-addons</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xmlParserAPIs</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -630,7 +642,7 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>    
+                <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.6</version>
                 <executions>
                     <execution>
