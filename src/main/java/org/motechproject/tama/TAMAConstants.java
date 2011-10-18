@@ -16,6 +16,7 @@ public class TAMAConstants {
     public static final int DAYS_IN_FOUR_WEEKS = 28;
     public static final String BASE_SUBJECT = "org.motechproject.server";
     public static final String ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT = BASE_SUBJECT + ".adherence.weeklyTrendFeedback";
+    public static final String OUTBOX_CALL_SCHEDULER_SUBJECT = BASE_SUBJECT + ".outboxCall";
     public static final String FOUR_DAY_RECALL_SUBJECT = BASE_SUBJECT + ".fourDayRecall";
 
     public enum Time {

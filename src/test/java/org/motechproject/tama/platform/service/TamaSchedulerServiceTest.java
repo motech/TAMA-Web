@@ -153,6 +153,14 @@ public class TamaSchedulerServiceTest {
 
         assertTrue(now.minusMinutes(1).isBefore(new DateTime(jobCaptor.getValue().getStartTime())));
     }
+    
+    @Test
+    public void shouldScheduleOutboxCall() {
+    	schedulerService.scheduleJobForOutboxCall(patient);
+    	 ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
+         Assert.assertEquals("0 30 10 * * ?", jobCaptor.getValue().getCronExpression());
+    }
 
     private TreatmentAdvice getTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();

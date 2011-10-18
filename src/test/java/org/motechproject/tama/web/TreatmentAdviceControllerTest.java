@@ -97,7 +97,7 @@ public class TreatmentAdviceControllerTest {
         controller.create(treatmentAdvice, uiModel);
         verify(schedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
-
+    
     @Test
     public void shouldCreateNewTreatmentAdviceFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = this.PATIENT_ID;
@@ -208,6 +208,7 @@ public class TreatmentAdviceControllerTest {
         verify(schedulerService).unscheduleJobForAdherenceTrendFeedback(existingTreatmentAdvice);
         verify(schedulerService).scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
     }
+    
 
     private TreatmentAdvice getTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();

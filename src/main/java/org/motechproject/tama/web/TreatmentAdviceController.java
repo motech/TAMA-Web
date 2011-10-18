@@ -88,6 +88,8 @@ public class TreatmentAdviceController extends BaseController {
         TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
         schedulerService.unscheduleJobForAdherenceTrendFeedback(oldTreatmentAdvice);
         schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
+        
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
 

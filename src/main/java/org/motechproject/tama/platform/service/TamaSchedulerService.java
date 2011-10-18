@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.model.*;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.TAMAConstants;
@@ -23,7 +24,8 @@ import java.util.Properties;
 
 @Component
 public class TamaSchedulerService {
-    @Autowired
+    private static final String OUTBOX_CALL_JOB_ID_PREFIX = "outbox-";
+	@Autowired
     private MotechSchedulerService motechSchedulerService;
     @Qualifier("ivrProperties")
     @Autowired
@@ -62,7 +64,7 @@ public class TamaSchedulerService {
             Date jobEndDate = endDate == null ? null : endDate.toDate();
 
             LocalDate startDate = treatmentAdviceStartDate.plusDays(4 + count);
-            Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
+            Date jobStartDate = getJobStartDate(startDate);
             CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
             motechSchedulerService.scheduleJob(cronJobForForDayRecall);
         }
@@ -100,15 +102,30 @@ public class TamaSchedulerService {
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getId())
                 .withExternalId(treatmentAdvice.getPatientId())
                 .payload();
-        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
         MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
+        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
-        Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
+        Date jobStartDate = getJobStartDate(startDate);
         CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, jobStartDate, treatmentAdvice.getEndDate());
         motechSchedulerService.scheduleJob(adherenceJob);
     }
 
+	private Date getJobStartDate(LocalDate startDate) {
+		Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
+		return jobStartDate;
+	}
+
     public void unscheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
         motechSchedulerService.unscheduleJob(treatmentAdvice.getId());
     }
+
+	public void scheduleJobForOutboxCall(Patient patient) {
+		String outboxCallJobCronExpression = new CronJobSimpleExpressionBuilder(patient.getPatientPreferences().getBestCallTime().toTime()).build();
+		Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(OUTBOX_CALL_JOB_ID_PREFIX + patient.getId())
+                .withExternalId(patient.getId())
+                .payload();
+        MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
+		CronSchedulableJob outboxCallJob = new CronSchedulableJob(outboxCallEvent, outboxCallJobCronExpression, DateUtil.now().toDate(), null);
+		motechSchedulerService.scheduleJob(outboxCallJob);		
+	}
 }
