@@ -662,13 +662,6 @@
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/motech-cmslite"/>
-                                </exec>
-                                <exec executable="curl">
-                                    <arg value="-s"/>
-                                    <arg value="-S"/>
-                                    <arg value="-X"/>
-                                    <arg value="DELETE"/>
                                     <arg value="http://${couchdb.server}:${couchdb.port}/motech-pillreminder"/>
                                 </exec>
                                 <exec executable="curl">
