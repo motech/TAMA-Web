@@ -19,7 +19,7 @@ public class Regimen1To6Tree extends TamaDecisionTree {
             Class builderClass = Class.forName("org.motechproject.tama.ivr.decisiontree.Regimen1To6TreeBuilder");
             final Node rootNode = (Node) builderClass.getMethod("getRootNode", new Class[0]).invoke(null);
             service.addAlerts(rootNode);
-            return null;
+            return rootNode;
         } catch (Exception e) {
             logger.error("Error in getting appropriate tree", e);
             e.printStackTrace();
