@@ -9,7 +9,6 @@
     <name>tama</name>
     <properties>
         <roo.version>1.1.4.RELEASE</roo.version>
-        <drools.version>5.2.0.Final</drools.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -106,6 +105,13 @@
             <id>spring-roo-repository</id>
             <name>Spring Roo Repository</name>
             <url>http://spring-roo-repository.springsource.org/release</url>
+        </repository>
+        <repository>
+            <id>repository.jboss.org</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -543,7 +549,7 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-spring</artifactId>
-            <version>${drools.version}</version>
+            <version>5.1.1</version>
         </dependency>
         <dependency>
             <groupId>junit-addons</groupId>
