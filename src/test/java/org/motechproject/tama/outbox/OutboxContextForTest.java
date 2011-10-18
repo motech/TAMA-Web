@@ -5,6 +5,7 @@ public class OutboxContextForTest extends OutboxContext {
     private String lastPlayedMessageId;
     private String preferredLanguage;
     private String callId;
+    private boolean outboxCompleted;
 
     @Override
     public String partyId() {
@@ -44,5 +45,15 @@ public class OutboxContextForTest extends OutboxContext {
     public OutboxContextForTest callId(String callId) {
         this.callId = callId;
         return this;
+    }
+
+    @Override
+    public boolean hasOutboxCompleted() {
+        return outboxCompleted;
+    }
+
+    @Override
+    public void outboxCompleted() {
+        outboxCompleted = true;
     }
 }

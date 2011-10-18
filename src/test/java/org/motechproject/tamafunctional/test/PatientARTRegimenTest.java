@@ -22,7 +22,7 @@ public class PatientARTRegimenTest extends BaseTest {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);
 
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
         patientDataService.createARTRegimen(treatmentAdvice, patient, clinician);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);
@@ -42,7 +42,7 @@ public class PatientARTRegimenTest extends BaseTest {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);
 
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
         patientDataService.createARTRegimen(treatmentAdvice, patient, clinician);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);
@@ -59,7 +59,7 @@ public class PatientARTRegimenTest extends BaseTest {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);
 
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
         patientDataService.reCreateARTRegimen(treatmentAdvice, patient, clinician);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);

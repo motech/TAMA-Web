@@ -43,7 +43,7 @@ public abstract class BaseTest extends FunctionalTestObject {
     @After
     public void tearDown() throws IOException {
         String testMethodName = testName.getMethodName();
-        testMethodName = StringUtils.isEmpty(testMethodName) ? DateUtil.today().toString() : testMethodName;
+        testMethodName = StringUtils.isEmpty(testMethodName) ? DateUtil.now().toString("yyyy-MM-dd HH-mm") : testMethodName;
         String pageSource = webDriver.getPageSource();
 
         File file = new File(System.getProperty("base.dir"), String.format("target/%s.html", testMethodName));

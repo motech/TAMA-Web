@@ -9,6 +9,7 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.call.PillReminderCall;
+import org.motechproject.tama.outbox.OutboxContext;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.Cookies;
 import org.motechproject.util.DateUtil;
@@ -53,7 +54,7 @@ public class TAMAIVRContext {
         setInSession(NUMBER_OF_ATTEMPTS, "0");
     }
 
-    private void setInSession(String name, String value) {
+    private void setInSession(String name, Object value) {
         httpRequest.getSession().setAttribute(name, value);
     }
 
@@ -82,7 +83,8 @@ public class TAMAIVRContext {
         callState(CallState.AUTHENTICATED);
         setInSession(PATIENT_ID, authenticationStatus.patientId());
         setInSession(KooKooIVRContext.EXTERNAL_ID, authenticationStatus.patientId());
-        httpRequest.getSession().setAttribute(CALL_START_TIME, DateUtil.now());
+        setInSession(CALL_START_TIME, DateUtil.now());
+        kooKooIVRContext.preferredLanguage(authenticationStatus.language());
     }
 
     public CallState callState() {
@@ -163,5 +165,14 @@ public class TAMAIVRContext {
 
     public String requestedCallerId() {
         return kookooRequest.getCid();
+    }
+
+    public boolean hasOutboxCompleted() {
+        OutboxContext outboxContext = new OutboxContext(kooKooIVRContext);
+        return outboxContext.hasOutboxCompleted();
+    }
+
+    public String preferredLanguage() {
+        return kooKooIVRContext.preferredLanguage();
     }
 }

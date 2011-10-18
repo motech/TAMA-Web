@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.FunctionalTestObject;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.openqa.selenium.By;
@@ -13,9 +14,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public abstract class Page {
+public abstract class Page extends FunctionalTestObject {
     protected WebDriver webDriver;
-    private static final long MaxPageLoadTime = 60;
+    private static final long MaxPageLoadTime = 15;
     protected WebDriverWait wait;
 
     public Page(WebDriver webDriver) {

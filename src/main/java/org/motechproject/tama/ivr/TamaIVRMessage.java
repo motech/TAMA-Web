@@ -96,6 +96,8 @@ public class TamaIVRMessage implements IVRMessage {
     /*----------Outbox -------------------------*/
     public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1";
     public static final String THOSE_WERE_YOUR_MESSAGES = "001_06_05_mayEndThisCallNow2";
+    public static final String MORE_OPTIONS = "001_06_05_moreOptions";
+    public static final String THESE_WERE_YOUR_MESSAGES_FOR_NOW = "001_06_05_thoseWereYourMessages";
 
 
     /* ---------- Four Day Recall ----------*/

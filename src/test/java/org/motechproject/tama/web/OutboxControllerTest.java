@@ -52,6 +52,7 @@ public class OutboxControllerTest {
 
         outboxController.gotDTMF(any(KooKooIVRContext.class));
         assertEquals(voiceMessage.getId(), outboxContextForTest.lastPlayedMessageId());
+        assertEquals(false, outboxContextForTest.hasOutboxCompleted());
     }
 
     @Test
@@ -62,6 +63,7 @@ public class OutboxControllerTest {
 
         KookooIVRResponseBuilder ivrResponseBuilder = outboxController.gotDTMF(any(KooKooIVRContext.class));
         ivrResponseBuilder.getPlayAudios().contains(TamaIVRMessage.NO_MESSAGES);
+        assertEquals(true, outboxContextForTest.hasOutboxCompleted());
     }
 
     @Test
@@ -71,7 +73,8 @@ public class OutboxControllerTest {
         when(outboxService.nextMessage(lastPlayedMessageId, patientId)).thenReturn(null);
 
         KookooIVRResponseBuilder ivrResponseBuilder = outboxController.gotDTMF(any(KooKooIVRContext.class));
-        ivrResponseBuilder.getPlayAudios().contains(TamaIVRMessage.THOSE_WERE_YOUR_MESSAGES);
+        ivrResponseBuilder.getPlayAudios().contains(TamaIVRMessage.THESE_WERE_YOUR_MESSAGES_FOR_NOW);
+        assertEquals(true, outboxContextForTest.hasOutboxCompleted());
     }
 
     private OutboundVoiceMessage voiceMessage(String messageId) {

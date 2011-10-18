@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.test.pillreminder;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
@@ -32,7 +33,7 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
 
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
@@ -47,19 +48,17 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
         IVRResponse ivrResponse = caller.enter("1234");
         asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
-//        ivrResponse = caller.enter("1");
-//        audioFilePresent(ivrResponse, DOSE_RECORDED);
-////        ivrResponse = caller.enter("3");
-////        assertEquals(false, ivrResponse.isEmpty());
-////        assertEquals(false, ivrResponse.isHangedUp());
+        ivrResponse = caller.enter("1");
+        audioFilePresent(ivrResponse, DOSE_RECORDED);
     }
 
     @Test
+    @Ignore
     public void dosageTakenFlow() throws IOException {
         caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
         asksForCollectDtmfWith(ivrResponse, MENU_010_05_01_MAINMENU4, YOUR_NEXT_DOSE_IS, AT, YOUR_NEXT_DOSE_IS_PADDING);
         ivrResponse = caller.enter("3");
-        audioFilePresent(ivrResponse, NO_MESSAGES);
+        audioFilePresent(ivrResponse, NO_MESSAGES, MORE_OPTIONS, THESE_WERE_YOUR_MESSAGES_FOR_NOW);
     }
 }

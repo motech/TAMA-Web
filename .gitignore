@@ -21,3 +21,4 @@ Error_log/
 tama.log*
 test-output/
 servers.bat
+src/main/webapp/emulator/*

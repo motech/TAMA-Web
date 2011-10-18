@@ -47,6 +47,6 @@ public class AuthenticationService {
         }
 
         IVRAuthenticationStatus status = IVRAuthenticationStatus.authenticated(patient.getId());
-        return status.active(patient.isActive());
+        return status.active(patient.isActive()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
     }
 }

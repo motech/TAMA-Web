@@ -35,7 +35,7 @@ public class CallLogsTest extends BaseIVRTest{
     public void shouldLogCallLogForPillReminderCall(){
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);

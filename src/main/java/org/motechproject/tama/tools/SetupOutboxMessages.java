@@ -1,10 +1,13 @@
 package org.motechproject.tama.tools;
 
 import org.motechproject.outbox.api.dao.OutboundVoiceMessageDao;
+import org.motechproject.outbox.api.model.MessagePriority;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
+import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.web.OutboxController;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -13,7 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class SetupOutboxMessages {
-    public static final String APPLICATION_CONTEXT_XML = "META-INF/spring/applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "META-INF/spring/applicationContext.xml";
 
     public static void main(String[] args) {
         System.out.println("Args length: " + args.length);
@@ -34,12 +37,16 @@ public class SetupOutboxMessages {
             System.out.println(String.format("Adding message %s", args[i]));
 
             OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
+            VoiceMessageType voiceMessageType = new VoiceMessageType();
+            voiceMessageType.setPriority(MessagePriority.MEDIUM);
+            voiceMessageType.setVoiceMessageTypeName(OutboxController.VOICE_MESSAGE_COMMAND_AUDIO);
+            outboundVoiceMessage.setVoiceMessageType(voiceMessageType);
             outboundVoiceMessage.setPartyId(patient.getId());
             outboundVoiceMessage.setCreationTime(DateUtil.now().toDate());
             outboundVoiceMessage.setExpirationDate(DateUtil.tomorrow().toDate());
             outboundVoiceMessage.setStatus(OutboundVoiceMessageStatus.PENDING);
             HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("audioFiles", Arrays.asList(args[i]));
+            map.put(OutboxController.VOICE_MESSAGE_COMMAND, Arrays.asList(args[i]));
             outboundVoiceMessage.setParameters(map);
 
             outboxRepository.add(outboundVoiceMessage);

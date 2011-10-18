@@ -4,13 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
+import org.motechproject.tama.domain.IVRLanguage;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientPreferences;
 import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -35,10 +36,9 @@ public class AuthenticationServiceTest {
 
     @Test
     public void patientIsNotActiveWhenItDoesntHaveTreatmentAdvice() {
-        Patient patient = new Patient();
-        patient.setStatus(Patient.Status.Inactive);
         String patientId = "43245454354";
-        patient.setId(patientId);
+        Patient patient = patient(patientId);
+        patient.setStatus(Patient.Status.Inactive);
 
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
@@ -50,7 +50,7 @@ public class AuthenticationServiceTest {
 
     @Test
     public void patientIsAllowedRetryWhenPasscodeFails() {
-        Patient patient = new Patient();
+        Patient patient = patient("foo");
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(null);
 
@@ -61,7 +61,7 @@ public class AuthenticationServiceTest {
 
     @Test
     public void donotAllowRetriesAfterMaxLimit() {
-        Patient patient = new Patient();
+        Patient patient = patient("foo");
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(null);
 
@@ -75,7 +75,7 @@ public class AuthenticationServiceTest {
     @Test
     public void allowIncrementLoginAttemptCountWhenNoInputIsSent() {
         String invalidPassCode = "";
-        Patient patient = new Patient();
+        Patient patient = patient("foo");
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, invalidPassCode)).thenReturn(null);
 
@@ -94,9 +94,25 @@ public class AuthenticationServiceTest {
         assertEquals(secondPatient.getId(), ivrAuthenticationStatus.patientId());
     }
 
+    @Test
+    public void successfulLogin() {
+        Patient patient = patient("p1");
+        patient.activate();
+        when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
+        when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123");
+        assertEquals(true, ivrAuthenticationStatus.isAuthenticated());
+        assertEquals(patient.getPatientPreferences().getIvrLanguage().getCode(), ivrAuthenticationStatus.language());
+    }
+
     private Patient patient(String id) {
         Patient patient = new Patient();
         patient.setId(id);
+        PatientPreferences patientPreferences = new PatientPreferences();
+        IVRLanguage ivrLanguage = new IVRLanguage();
+        ivrLanguage.setCode("tl");
+        patientPreferences.setIvrLanguage(ivrLanguage);
+        patient.setPatientPreferences(patientPreferences);
         return patient;
     }
 }

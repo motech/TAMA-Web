@@ -20,6 +20,7 @@ public class TAMACallFlowController implements CallFlowController {
     public static final String AUTHENTICATION_URL = "/ivr/authentication";
     public static final String OUTBOX_URL = "/ivr/outbox";
     public static final String PRE_OUTBOX_URL = "/ivr/preoutbox";
+    public static final String HANG_UP_URL = "/ivr/hangup";
     private TAMATreeRegistry treeRegistry;
     private PillReminderService pillReminderService;
     private VoiceOutboxService voiceOutboxService;
@@ -45,9 +46,14 @@ public class TAMACallFlowController implements CallFlowController {
         CallState callState = tamaivrContext.callState();
         if (callState.equals(CallState.STARTED)) return AUTHENTICATION_URL;
         if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING)) return AllIVRURLs.DECISION_TREE_URL;
-        if (callState.equals(CallState.OUTBOX)) return TAMACallFlowController.OUTBOX_URL;
-        if (callState.equals(CallState.ALL_TREES_COMPLETED) && voiceOutboxService.getNumberPendingMessages(tamaivrContext.patientId()) != 0) return PRE_OUTBOX_URL;
+        if (tamaivrContext.hasOutboxCompleted()) return HANG_UP_URL;
+        if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
+        if (callState.equals(CallState.ALL_TREES_COMPLETED)) return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : HANG_UP_URL;
         throw new TamaException("No URL found");
+    }
+
+    private boolean hasPendingOutboxMessages(TAMAIVRContext tamaivrContext) {
+        return voiceOutboxService.getNumberPendingMessages(tamaivrContext.patientId()) != 0;
     }
 
     @Override

@@ -7,6 +7,7 @@ public class IVRAuthenticationStatus {
     private boolean active;
     private String patientId;
     private int loginAttemptNumber;
+    private String languageCode;
 
     private IVRAuthenticationStatus() {
     }
@@ -85,5 +86,14 @@ public class IVRAuthenticationStatus {
     public String toString() {
         return String.format("{Found=%s, AllowRetry=%s, Authenticated=%s, Active=%s, PatientId='%s\', LoginAttemptNumber=%d}",
                 found, allowRetry, authenticated, active, patientId, loginAttemptNumber);
+    }
+
+    public String language() {
+        return languageCode;
+    }
+
+    public IVRAuthenticationStatus language(String languageCode) {
+        this.languageCode = languageCode;
+        return this;
     }
 }

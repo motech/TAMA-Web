@@ -46,13 +46,15 @@ public class OutboxController extends SafeIVRController {
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         OutboxContext outboxContext = contextFactory.createOutboxContext(kooKooIVRContext);
-        KookooIVRResponseBuilder ivrResponseBuilder = KookooResponseFactory.empty(outboxContext.callId()).language(outboxContext.preferredLanguage()).withHangUp();
+        KookooIVRResponseBuilder ivrResponseBuilder = KookooResponseFactory.empty(outboxContext.callId()).language(outboxContext.preferredLanguage());
         OutboundVoiceMessage nextMessage = outboxService.nextMessage(outboxContext.lastPlayedMessageId(), outboxContext.partyId());
         if (nextMessage == null && outboxContext.lastPlayedMessageId() == null) {
+            outboxContext.outboxCompleted();
             return ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NO_MESSAGES);
         }
         if (nextMessage == null) {
-            return ivrResponseBuilder.withPlayAudios(TamaIVRMessage.THOSE_WERE_YOUR_MESSAGES);
+            outboxContext.outboxCompleted();
+            return ivrResponseBuilder.withPlayAudios(TamaIVRMessage.THESE_WERE_YOUR_MESSAGES_FOR_NOW);
         }
 
         outboxContext.lastPlayedMessageId(nextMessage.getId());

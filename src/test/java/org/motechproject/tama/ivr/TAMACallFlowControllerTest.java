@@ -48,13 +48,13 @@ public class TAMACallFlowControllerTest {
         assertEquals(TAMACallFlowController.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
-    @Test(expected = TamaException.class)
+    @Test
     public void hangupURLShouldBeReturnedWhenThereAreNoMessagesInOutbox() {
         tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
         tamaIVRContextForTest.patientId(patientId);
         when(voiceOutboxService.getNumberPendingMessages(patientId)).thenReturn(0);
-        tamaCallFlowController.urlFor(kooKooIVRContext);
+        assertEquals(TAMACallFlowController.HANG_UP_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test
@@ -77,5 +77,14 @@ public class TAMACallFlowControllerTest {
         when(pillRegimenSnapshot.isPreviousDosageCaptured()).thenReturn(true);
         tamaCallFlowController.treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, kooKooIVRContext);
         assertEquals(CallState.ALL_TREES_COMPLETED, tamaIVRContextForTest.callState());
+    }
+
+    @Test
+    public void completionOfOutboxShouldLeadToHangup() {
+        tamaIVRContextForTest.callState(CallState.OUTBOX);
+        tamaIVRContextForTest.outboxCompleted(true);
+        String patientId = "1234";
+        tamaIVRContextForTest.patientId(patientId);
+        assertEquals(TAMACallFlowController.HANG_UP_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 }

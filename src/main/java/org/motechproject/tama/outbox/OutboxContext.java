@@ -11,6 +11,7 @@ public class OutboxContext {
     private Cookies cookies;
 
     private static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
+    private static final String OUTBOX_COMPLETED = "true";
     private KooKooIVRContext kooKooIVRContext;
     private HttpServletRequest request;
 
@@ -21,6 +22,7 @@ public class OutboxContext {
         this.kooKooIVRContext = kooKooIVRContext;
         this.cookies = kooKooIVRContext.cookies();
         this.request = kooKooIVRContext.httpRequest();
+        cookies.add(OUTBOX_COMPLETED, Boolean.toString(false));
     }
 
     public String partyId() {
@@ -41,5 +43,13 @@ public class OutboxContext {
 
     public String callId() {
         return kooKooIVRContext.callId();
+    }
+
+    public boolean hasOutboxCompleted() {
+        return Boolean.parseBoolean(cookies.getValue(OUTBOX_COMPLETED));
+    }
+
+    public void outboxCompleted() {
+        cookies.add(OUTBOX_COMPLETED, Boolean.toString(true));
     }
 }

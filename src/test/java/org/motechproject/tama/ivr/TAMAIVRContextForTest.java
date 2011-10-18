@@ -26,6 +26,8 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private int numberOfTimesReminderSent;
     private int totalNumberOfTimesToSendReminder;
     private String requestedCallerId;
+    private boolean outboxCompleted;
+    private String preferredLanguage;
 
     @Override
     public String dtmfInput() {
@@ -191,6 +193,26 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
 
     public TAMAIVRContextForTest requestedCallerId(String requestedCallerId) {
         this.requestedCallerId = requestedCallerId;
+        return this;
+    }
+
+    @Override
+    public boolean hasOutboxCompleted() {
+        return outboxCompleted;
+    }
+
+    public TAMAIVRContextForTest outboxCompleted(boolean outboxCompleted) {
+        this.outboxCompleted = outboxCompleted;
+        return this;
+    }
+
+    @Override
+    public String preferredLanguage() {
+        return preferredLanguage;
+    }
+
+    public TAMAIVRContextForTest preferredLanguage(String preferredLanguage) {
+        this.preferredLanguage = preferredLanguage;
         return this;
     }
 }

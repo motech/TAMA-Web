@@ -85,7 +85,6 @@ public class CreateARTRegimenPage extends Page {
 //        These calls are problematic because of ajax based implementation, using the default composition and regimen instead
 //        selectRegimenAndWaitTillTheCompositionGroupsShow(treatmentAdvice);
 //        selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
-
         setupNewARTRegimen(treatmentAdvice);
         this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
@@ -105,14 +104,20 @@ public class CreateARTRegimenPage extends Page {
         tabOut(drug1DosageTypeElement);
         drug1EveningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
         drug1MealAdviceTypeElement.sendKeys(drugDosage1.mealAdvice());
+        logDosage(drugDosage1);
 
         TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);
         drug2DosageTypeElement.sendKeys(drugDosage2.dosageType());
         tabOut(drug2DosageTypeElement);
         drug2DosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
+        logDosage(drugDosage2);
 
         saveElement.click();
+    }
+
+    private void logDosage(TestDrugDosage drugDosage) {
+        logInfo("%s Dosage at %s", drugDosage.dosageType(), drugDosage.dosageSchedule());
     }
 
     private void tabOut(WebElement webElement) {
