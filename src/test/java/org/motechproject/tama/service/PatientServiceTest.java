@@ -54,7 +54,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void shouldUnschedulePillReminderCallsWhenCallPreferenceIsChangedToFourDayRecall() {
+    public void shouldUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         patientService.update(patient);
@@ -62,7 +62,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void shouldNotUnschedulePillReminderCallsWhenCallPreferenceIsNotChanged() {
+    public void shouldNotUnschedulePillReminderCalls_WhenCallPreferenceIsNotChanged() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
         patientService.update(patient);
         verify(pillReminderService, never()).unscheduleJobs(patient.getId());
@@ -75,5 +75,15 @@ public class PatientServiceTest {
         when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
         verify(tamaSchedulerService).unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+    }
+
+    @Test
+    public void shouldScheduleFourDayRecallJobs_WhenCallPreferenceIsChangedToFourDayRecall() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
+        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
+        patientService.update(patient);
+        verify(tamaSchedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
 }

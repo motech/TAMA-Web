@@ -53,11 +53,22 @@ public class PatientService {
 
     private void postUpdate(Patient patient, Patient dbPatient) {
         if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
-            pillReminderService.unscheduleJobs(patient.getId());
-            TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
-            if (treatmentAdvice != null)
-                tamaSchedulerService.unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+            unscheduleDailyReminderJobs(patient);
+            scheduleFourDayRecallJobs(patient);
         }
+    }
+
+    private void scheduleFourDayRecallJobs(Patient patient) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
+        if (treatmentAdvice != null)
+            tamaSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+    }
+
+    private void unscheduleDailyReminderJobs(Patient patient) {
+        pillReminderService.unscheduleJobs(patient.getId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
+        if (treatmentAdvice != null)
+            tamaSchedulerService.unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
     }
 
     private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
