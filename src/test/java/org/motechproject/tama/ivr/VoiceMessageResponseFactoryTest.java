@@ -5,7 +5,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.web.OutboxController;
-import org.motechproject.tama.web.command.WeeklyAdherenceOutBoxCommand;
+import org.motechproject.tama.web.command.PlayAdherenceTrendFeedbackCommand;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,8 +19,8 @@ public class VoiceMessageResponseFactoryTest {
     @Test
     public void voiceMessageResponse() {
         KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        WeeklyAdherenceOutBoxCommand weeklyAdherenceOutBoxCommand = mock(WeeklyAdherenceOutBoxCommand.class);
-        VoiceMessageResponseFactory voiceMessageResponseFactory = new VoiceMessageResponseFactory(weeklyAdherenceOutBoxCommand);
+        PlayAdherenceTrendFeedbackCommand playAdherenceTrendFeedbackCommand = mock(PlayAdherenceTrendFeedbackCommand.class);
+        VoiceMessageResponseFactory voiceMessageResponseFactory = new VoiceMessageResponseFactory(playAdherenceTrendFeedbackCommand);
 
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         VoiceMessageType voiceMessageType = new VoiceMessageType();
@@ -32,7 +32,7 @@ public class VoiceMessageResponseFactoryTest {
             }
         });
 
-        when(weeklyAdherenceOutBoxCommand.execute(null)).thenReturn(new String[]{"abc"});
+        when(playAdherenceTrendFeedbackCommand.execute(null)).thenReturn(new String[]{"abc"});
         voiceMessageResponseFactory.voiceMessageResponse(null, outboundVoiceMessage, ivrResponseBuilder);
         assertEquals(1, ivrResponseBuilder.getPlayAudios().size());
     }

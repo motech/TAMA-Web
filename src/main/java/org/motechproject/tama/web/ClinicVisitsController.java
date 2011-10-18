@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ClinicVisitsController extends BaseController {
 
+
     @Qualifier("treatmentAdviceController")
     @Autowired
     private TreatmentAdviceController treatmentAdviceController;

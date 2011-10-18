@@ -8,8 +8,10 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
-import org.motechproject.tama.TamaException;
-import org.motechproject.tama.domain.*;
+import org.motechproject.tama.domain.HIVMedicalHistory;
+import org.motechproject.tama.domain.MedicalHistory;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientPreferences;
 import org.motechproject.tama.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -126,30 +128,6 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
         Patient patient = get(id);
         patient.activate();
         update(patient);
-    }
-
-    public void merge(Patient patient) {
-        Patient dbPatient = get(patient.getId());
-        patient.setPatientId(dbPatient.getPatientId());
-        patient.setClinic_id(dbPatient.getClinic_id());
-        patient.setRevision(dbPatient.getRevision());
-        if (dbPatient.isActive()) patient.activate();
-        update(patient);
-    }
-
-    @Override
-    public void update(Patient entity) {
-        List<UniquePatientField> oldUniquePatientFields = allUniquePatientFields.get(entity);
-        allUniquePatientFields.remove(entity);
-        try {
-            allUniquePatientFields.add(entity);
-        } catch (TamaException e) {
-            for (UniquePatientField uniquePatientField : oldUniquePatientFields) {
-                allUniquePatientFields.add(new UniquePatientField(uniquePatientField.getId(), uniquePatientField.getPrimaryDocId()));
-            }
-            throw e;
-        }
-        super.update(entity);
     }
 
     public void remove(String id) {

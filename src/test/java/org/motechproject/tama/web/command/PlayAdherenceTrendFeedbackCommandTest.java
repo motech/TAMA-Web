@@ -22,9 +22,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DosageUtil.class)
-public class WeeklyAdherenceOutBoxCommandTest {
+public class PlayAdherenceTrendFeedbackCommandTest {
 
-    WeeklyAdherenceOutBoxCommand weeklyAdherenceOutBoxCommand;
+    PlayAdherenceTrendFeedbackCommand playAdherenceTrendFeedbackCommand;
 
     @Mock
     PillReminderService pillReminderService;
@@ -38,9 +38,9 @@ public class WeeklyAdherenceOutBoxCommandTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         PowerMockito.mockStatic(DosageUtil.class);
-        weeklyAdherenceOutBoxCommand = new WeeklyAdherenceOutBoxCommand(null, null);
-        PrivateAccessor.setField(weeklyAdherenceOutBoxCommand, "pillReminderService", pillReminderService);
-        PrivateAccessor.setField(weeklyAdherenceOutBoxCommand, "allDosageAdherenceLogs", allDosageAdherenceLogs);
+        playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(null, null);
+        PrivateAccessor.setField(playAdherenceTrendFeedbackCommand, "pillReminderService", pillReminderService);
+        PrivateAccessor.setField(playAdherenceTrendFeedbackCommand, "allDosageAdherenceLogs", allDosageAdherenceLogs);
         context = new OutboxContextForTest();
     }
 
@@ -62,7 +62,7 @@ public class WeeklyAdherenceOutBoxCommandTest {
         PowerMockito.when(DosageUtil.getScheduledDosagesTotalCount(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
 
 
-        result = weeklyAdherenceOutBoxCommand.execute(context);
+        result = playAdherenceTrendFeedbackCommand.execute(context);
 
         Assert.assertEquals(result[0], TamaIVRMessage.M02_06_ADHERENCE_COMMENT_70TO90_RISING);
 

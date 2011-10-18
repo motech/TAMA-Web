@@ -4,7 +4,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.service.FourDayRecallService;
+import org.motechproject.tama.platform.service.FourDayRecallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package org.motechproject.tama.service;
+package org.motechproject.tama.platform.service;
 
 import org.joda.time.LocalDate;
 import org.motechproject.scheduler.MotechSchedulerService;

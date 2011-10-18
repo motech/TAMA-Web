@@ -14,6 +14,11 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withId(String id) {
+        this.patient.setId(id);
+        return this;
+    }
+
     public PatientBuilder withMobileNumber(String mobileNumber) {
         patient.setMobilePhoneNumber(mobileNumber);
         return this;
@@ -93,5 +98,15 @@ public class PatientBuilder {
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3).
                 withMedicalHistory(MedicalHistoryBuilder.startRecording().withDefaults().build());
+    }
+
+    public PatientBuilder withCallPreference(CallPreference callPreference) {
+        patient.getPatientPreferences().setCallPreference(callPreference);
+        return this;
+    }
+
+    public PatientBuilder withRevision(String revision) {
+        patient.setRevision(revision);
+        return this;
     }
 }

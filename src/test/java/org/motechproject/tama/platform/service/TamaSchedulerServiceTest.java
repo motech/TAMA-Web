@@ -1,9 +1,7 @@
-package org.motechproject.tama.service;
+package org.motechproject.tama.platform.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

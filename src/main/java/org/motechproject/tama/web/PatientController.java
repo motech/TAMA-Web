@@ -6,6 +6,7 @@ import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.service.PatientService;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IvrLanguagesView;
@@ -54,15 +55,17 @@ public class PatientController extends BaseController {
     private AllIVRLanguages allIVRLanguages;
     private AllHIVTestReasons allTestReasons;
     private AllModesOfTransmission allModesOfTransmission;
+    private PatientService patientService;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission) {
+    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, PatientService patientService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
         this.allIVRLanguages = allIVRLanguages;
         this.allTestReasons = allTestReasons;
         this.allModesOfTransmission = allModesOfTransmission;
+        this.patientService = patientService;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -157,7 +160,7 @@ public class PatientController extends BaseController {
             return UPDATE_VIEW;
         }
         try {
-            allPatients.merge(patient);
+            patientService.update(patient);
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();

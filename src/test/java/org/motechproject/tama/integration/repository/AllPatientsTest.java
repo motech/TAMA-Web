@@ -22,9 +22,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PatientsTest extends SpringIntegrationTest {
-    @Autowired
+public class AllPatientsTest extends SpringIntegrationTest {
+
     private AllPatients allPatients;
 
     @Autowired
@@ -51,6 +52,8 @@ public class PatientsTest extends SpringIntegrationTest {
     @Before
     public void before() {
         super.before();
+        initMocks(this);
+        allPatients = new AllPatients(tamaDbConnector, allClinics, allGenders, allIVRLanguages, allUniquePatientFields, allHIVTestReasons, allModesOfTransmission);
         markForDeletion(allUniquePatientFields.getAll().toArray());
         markForDeletion(allPatients.getAll().toArray());
         deleteAll();
@@ -151,20 +154,6 @@ public class PatientsTest extends SpringIntegrationTest {
 
         assertTrue(dbPatients.contains(patient));
         assertFalse(dbPatients.contains(anotherPatient));
-    }
-
-    @Test
-    public void shouldUpdatePatient() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("1234").withClinic(clinic).withGender(gender).withIVRLanguage(ivrLanguage).build();
-        allPatients.add(patient);
-
-        String mobilePhoneNumber = String.valueOf(UniqueMobileNumber.generate());
-        patient.setMobilePhoneNumber(mobilePhoneNumber);
-        allPatients.merge(patient);
-
-        List<Patient> dbPatients = allPatients.findByPatientId("1234");
-        assertEquals(mobilePhoneNumber, dbPatients.get(0).getMobilePhoneNumber());
     }
 
     @Test

@@ -14,12 +14,13 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class WeeklyAdherenceOutBoxCommand {
+/* applicable only when patient is on daily call */
+public class PlayAdherenceTrendFeedbackCommand {
     AllDosageAdherenceLogs allDosageAdherenceLogs;
     PillReminderService pillReminderService;
 
     @Autowired
-    public WeeklyAdherenceOutBoxCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, PillReminderService pillReminderService) {
+    public PlayAdherenceTrendFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, PillReminderService pillReminderService) {
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.pillReminderService = pillReminderService;
     }

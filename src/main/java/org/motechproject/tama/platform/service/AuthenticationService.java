@@ -1,4 +1,4 @@
-package org.motechproject.tama.service;
+package org.motechproject.tama.platform.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;

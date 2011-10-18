@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.service.FourDayRecallService;
+import org.motechproject.tama.platform.service.FourDayRecallService;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;

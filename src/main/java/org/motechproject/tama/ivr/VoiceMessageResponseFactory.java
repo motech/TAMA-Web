@@ -5,7 +5,7 @@ import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.outbox.OutboxContext;
 import org.motechproject.tama.web.OutboxController;
-import org.motechproject.tama.web.command.WeeklyAdherenceOutBoxCommand;
+import org.motechproject.tama.web.command.PlayAdherenceTrendFeedbackCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +13,10 @@ import java.util.List;
 
 @Component
 public class VoiceMessageResponseFactory {
-    private WeeklyAdherenceOutBoxCommand command;
+    private PlayAdherenceTrendFeedbackCommand command;
 
     @Autowired
-    public VoiceMessageResponseFactory(WeeklyAdherenceOutBoxCommand command) {
+    public VoiceMessageResponseFactory(PlayAdherenceTrendFeedbackCommand command) {
         this.command = command;
     }
 

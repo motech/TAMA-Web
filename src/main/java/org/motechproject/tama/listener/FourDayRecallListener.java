@@ -5,8 +5,8 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.call.FourDayRecallCall;
-import org.motechproject.tama.service.FourDayRecallService;
-import org.motechproject.tama.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.FourDayRecallService;
+import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -11,6 +11,7 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
+import org.motechproject.tama.service.PatientService;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.ui.Model;
@@ -54,11 +55,13 @@ public class PatientControllerTest {
     private AllHIVTestReasons allTestReasons;
     @Mock
     private AllModesOfTransmission allModesOfTransmission;
+    @Mock
+    private PatientService patientService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, patientService);
     }
 
     @Test
@@ -179,6 +182,23 @@ public class PatientControllerTest {
         verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
                     new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
         assertEquals("patients/create", createPage);
+    }
+
+    @Test
+    public void shouldUpdatePatient() {
+        Patient patientFromUI = mock(Patient.class);
+        when(patientFromUI.getId()).thenReturn("123");
+        BindingResult bindingResult = mock(BindingResult.class);
+        Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put("dummyKey", "dummyValue");
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(uiModel.asMap()).thenReturn(modelMap);
+
+        String updatePage = controller.update(patientFromUI, bindingResult, uiModel, request);
+
+        assertEquals("redirect:/patients/123", updatePage);
+        verify(patientService).update(patientFromUI);
     }
 
 }
