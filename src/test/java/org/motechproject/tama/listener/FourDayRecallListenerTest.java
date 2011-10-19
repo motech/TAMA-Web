@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.ivr.call.FourDayRecallCall;
 import org.motechproject.tama.platform.service.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tama.platform.service.FourDayRecallService;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.util.DateUtil;
 
 import java.util.Map;
@@ -23,14 +23,14 @@ public class FourDayRecallListenerTest {
     @Mock
     TamaSchedulerService schedulerService;
     @Mock
-    FourDayRecallCall fourDayRecallCall;
+    IvrCall ivrCall;
     @Mock
     private FourDayRecallService fourDayRecallService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        fourDayRecallListener = new FourDayRecallListener(fourDayRecallCall, schedulerService, fourDayRecallService);
+        fourDayRecallListener = new FourDayRecallListener(ivrCall, schedulerService, fourDayRecallService);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class FourDayRecallListenerTest {
         when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(false);
 
         verify(schedulerService).scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, TREATMENT_ADVICE_ID, startDate);
-        verify(fourDayRecallCall).execute(PATIENT_ID);
+        verify(ivrCall).makeCall(PATIENT_ID);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class FourDayRecallListenerTest {
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, data);
         fourDayRecallListener.handle(motechEvent);
 
-        verifyZeroInteractions(schedulerService, fourDayRecallCall);
+        verifyZeroInteractions(schedulerService, ivrCall);
     }
 
     @Test
@@ -89,6 +89,6 @@ public class FourDayRecallListenerTest {
         fourDayRecallListener.handle(motechEvent);
 
         verifyZeroInteractions(schedulerService);
-        verify(fourDayRecallCall).execute(PATIENT_ID);
+        verify(ivrCall).makeCall(PATIENT_ID);
     }
 }

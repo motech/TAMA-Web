@@ -1,14 +1,14 @@
 package org.motechproject.tama.ivr.call;
 
-import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.server.service.ivr.IVRService;
-import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 @Component
 public class PillReminderCall extends IvrCall {
@@ -17,8 +17,8 @@ public class PillReminderCall extends IvrCall {
     public static final String TOTAL_TIMES_TO_SEND = "total_times_to_send";
 
     @Autowired
-    public PillReminderCall(IVRService ivrService, AllPatients allPatients) {
-        super(allPatients, ivrService);
+    public PillReminderCall(IVRService ivrService, AllPatients allPatients, @Qualifier("ivrProperties")Properties properties) {
+        super(allPatients, ivrService, properties);
     }
 
     public void execute(String patientDocId, final String dosageId, final int timesSent, final int totalTimesToSend) {

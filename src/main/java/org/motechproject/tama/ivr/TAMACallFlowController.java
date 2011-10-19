@@ -96,6 +96,10 @@ public class TAMACallFlowController implements CallFlowController {
             } else {
                 return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM;
             }
+        } else {
+            if (tamaivrContext.isOutBoxCall()) {
+                return TAMATreeRegistry.OUTBOX_CALL;
+            }
         }
 
         if (isPatientOnDailyPillReminder)

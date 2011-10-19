@@ -28,6 +28,7 @@ public class TAMAIVRContext {
     private static final String PILL_REGIMEN = "PillRegimen";
     public static final String NUMBER_OF_TIMES_REMINDER_SENT = PillReminderCall.TIMES_SENT;
     private static final String TOTAL_NUMBER_OF_TIMES_TO_SEND_REMINDER = PillReminderCall.TOTAL_TIMES_TO_SEND;
+    public static final String IS_OUTBOX_CALL = "outbox_call";
     private static final String LAST_COMPLETED_TREE = "LastCompletedTree";
 
     private KookooRequest kookooRequest;
@@ -137,6 +138,10 @@ public class TAMAIVRContext {
             httpRequest.setAttribute(PATIENT, patient);
         }
         return patient;
+    }
+
+    public boolean isOutBoxCall() {
+        return "true".equals(kookooRequest.getParameter(IS_OUTBOX_CALL));
     }
 
     public int numberOfTimesReminderSent() {

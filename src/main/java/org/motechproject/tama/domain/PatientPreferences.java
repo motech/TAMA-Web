@@ -82,4 +82,7 @@ public class PatientPreferences extends BaseEntity {
     }
 
 
+    public boolean hasAgreedToBeCalledAtBestCallTime() {
+        return bestCallTime != null && bestCallTime.getHour() != null;
+    }
 }

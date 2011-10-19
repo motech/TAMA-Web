@@ -70,10 +70,10 @@ public class PatientControllerTest {
     public void setUp() {
         initMocks(this);
         controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, schedulerService, patientService);
-    	when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
-    
-    
+
+
     @Test
     public void shouldActivatePatientsByPost() {
         String id = "1234";
@@ -105,7 +105,7 @@ public class PatientControllerTest {
         when(patientFromDb.getId()).thenReturn("couchDbId");
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        
+
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
@@ -123,7 +123,7 @@ public class PatientControllerTest {
         when(request.getHeader("Referer")).thenReturn(previousPage);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        
+
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
@@ -142,7 +142,7 @@ public class PatientControllerTest {
         when(request.getHeader("Referer")).thenReturn(previousPage);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        
+
 
         String nextPage = controller.findByPatientId(patientId, uiModel, request);
 
@@ -154,6 +154,9 @@ public class PatientControllerTest {
     public void shouldCreateAPatientIfThereAreNoErrors() {
         String clinicId = "456";
         Patient patientFromUI = mock(Patient.class);
+        when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences(){{
+                                                        setCallPreference(CallPreference.DailyPillReminder);
+                                                    }});
         BindingResult bindingResult = mock(BindingResult.class);
         Map<String, Object> modelMap = new HashMap<String, Object>();
         modelMap.put("dummyKey", "dummyValue");
@@ -163,7 +166,6 @@ public class PatientControllerTest {
         when(uiModel.asMap()).thenReturn(modelMap);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
-        
 
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
@@ -184,39 +186,53 @@ public class PatientControllerTest {
         when(patientFromUI.getId()).thenReturn("123");
         when(uiModel.asMap()).thenReturn(modelMap);
         when(request.getSession()).thenReturn(session);
-        
+
         when(user.getClinicId()).thenThrow(new TamaException(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "some STUFF", new UpdateConflictException()));
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
         verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
-                    new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
+                new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
         assertEquals("patients/create", createPage);
     }
-    
+
     @Test
-    public void shouldScheduleJobForOutbox(){
-    	final TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
-        
-    	BindingResult bindingResult = mock(BindingResult.class);
-    	
-    	when(bindingResult.hasErrors()).thenReturn(false);
-    	when(request.getSession()).thenReturn(session);
-    	
+    public void shouldNeverScheduleJobForOutbox_whenPatientHasNotAgreedToBeCalledAtBestCallTime() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(request.getSession()).thenReturn(session);
         Patient patient = new Patient();
         patient.setId("patientId");
-        patient.setPatientPreferences(new PatientPreferences(){{
-        	setBestCallTime(bestCallTime);
-        	setCallPreference(CallPreference.DailyPillReminder);
+        patient.setPatientPreferences(new PatientPreferences() {{
+            setCallPreference(CallPreference.DailyPillReminder);
         }});
         controller.create(patient, bindingResult, uiModel, request);
-        
         controller.update(patient, bindingResult, uiModel, request);
-        
+        verify(schedulerService, never()).scheduleJobForOutboxCall(patient);
+    }
+
+    @Test
+    public void shouldScheduleJobForOutbox_whenPatientHasAgreedToBeCalledAtBestCallTime() {
+        final TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
+
+        BindingResult bindingResult = mock(BindingResult.class);
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(request.getSession()).thenReturn(session);
+
+        Patient patient = new Patient();
+        patient.setId("patientId");
+        patient.setPatientPreferences(new PatientPreferences() {{
+            setBestCallTime(bestCallTime);
+            setCallPreference(CallPreference.DailyPillReminder);
+        }});
+        controller.create(patient, bindingResult, uiModel, request);
+
+        controller.update(patient, bindingResult, uiModel, request);
+
         verify(schedulerService, new Times(2)).scheduleJobForOutboxCall(patient);
     }
 
-    
 
     @Test
     public void shouldUpdatePatient() {

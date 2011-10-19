@@ -8,6 +8,7 @@ import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.TimeOfDay;
 import org.motechproject.tama.domain.TreatmentAdvice;
@@ -25,7 +26,9 @@ import java.util.Properties;
 @Component
 public class TamaSchedulerService {
     private static final String OUTBOX_CALL_JOB_ID_PREFIX = "outbox-";
-	@Autowired
+    private static final String OUTBOX_CALL_RETRYJOB_ID_PREFIX = "outbox-retry-";
+    public static final String IS_RETRY = "isRetry";
+    @Autowired
     private MotechSchedulerService motechSchedulerService;
     @Qualifier("ivrProperties")
     @Autowired
@@ -34,6 +37,7 @@ public class TamaSchedulerService {
     private AllPatients allPatients;
 
     private String FOUR_DAY_RECALL_JOB_ID_PREFIX = "four_day_recall_";
+
 
     public TamaSchedulerService() {
     }
@@ -105,7 +109,7 @@ public class TamaSchedulerService {
         MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
         LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
-        Date jobStartDate = getJobStartDate(startDate);
+        Date jobStartDate = startDate.toDate();//getJobStartDate(startDate);
         CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, jobStartDate, treatmentAdvice.getEndDate());
         motechSchedulerService.scheduleJob(adherenceJob);
     }
@@ -126,6 +130,18 @@ public class TamaSchedulerService {
                 .payload();
         MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
 		CronSchedulableJob outboxCallJob = new CronSchedulableJob(outboxCallEvent, outboxCallJobCronExpression, DateUtil.now().toDate(), null);
-		motechSchedulerService.scheduleJob(outboxCallJob);		
+		motechSchedulerService.scheduleJob(outboxCallJob);
 	}
+
+    public void scheduleRepeatingJobForOutBoxCall(Patient patient) {
+         if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) {
+		Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(OUTBOX_CALL_RETRYJOB_ID_PREFIX + patient.getId())
+                .withExternalId(patient.getId())
+                .payload();
+        eventParams.put(IS_RETRY, "true");
+        MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
+		RepeatingSchedulableJob outboxCallJob = new RepeatingSchedulableJob(outboxCallEvent, DateUtil.now().toDate(), null, 3, 15*60);
+		motechSchedulerService.scheduleRepeatingJob(outboxCallJob);
+        }
+    }
 }

@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -153,13 +154,26 @@ public class TamaSchedulerServiceTest {
 
         assertTrue(now.minusMinutes(1).isBefore(new DateTime(jobCaptor.getValue().getStartTime())));
     }
-    
+
     @Test
     public void shouldScheduleOutboxCall() {
-    	schedulerService.scheduleJobForOutboxCall(patient);
-    	 ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
-         Assert.assertEquals("0 30 10 * * ?", jobCaptor.getValue().getCronExpression());
+        PatientPreferences patientPreferences = patient.getPatientPreferences();
+        CallPreference callPreference = CallPreference.DailyPillReminder;
+        patientPreferences.setCallPreference(callPreference);
+        schedulerService.scheduleJobForOutboxCall(patient);
+        ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+        verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
+        Assert.assertEquals("0 30 10 * * ?", jobCaptor.getValue().getCronExpression());
+    }
+
+    @Test
+    public void shouldNotScheduleOutboxCallForPatientOnWeeklyRecall() {
+        PatientPreferences patientPreferences = patient.getPatientPreferences();
+        CallPreference callPreference = CallPreference.FourDayRecall;
+        patientPreferences.setCallPreference(callPreference);
+        schedulerService.scheduleJobForOutboxCall(patient);
+        ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+        verify(motechSchedulerService, never()).scheduleJob(jobCaptor.capture());
     }
 
     private TreatmentAdvice getTreatmentAdvice() {

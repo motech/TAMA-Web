@@ -98,6 +98,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String THOSE_WERE_YOUR_MESSAGES = "001_06_05_mayEndThisCallNow2";
     public static final String MORE_OPTIONS = "001_06_05_moreOptions";
     public static final String THESE_WERE_YOUR_MESSAGES_FOR_NOW = "001_06_05_thoseWereYourMessages";
+    public static final String FILE_050_03_01_ITS_TIME_FOR_BEST_CALL_TIME = "050_03_01_itsTimeForBestCallTime";
 
 
     /* ---------- Four Day Recall ----------*/
@@ -118,9 +119,11 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String FDR_MISSED_MULTIPLE_DOSAGES_ON_ONE_DAY = "025_07_01_MissedDose1";
     public static final String FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_1 = "025_08_01_MissedDose1";
     public static final String FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_2 = "025_08_03_MissedDose2";
-    /* ---------- Four Day Recall ----------*/
 
+
+    /* ---------- Four Day Recall ----------*/
     private Properties properties;
+
 
     @Autowired
     public TamaIVRMessage(@Qualifier("ivrProperties") Properties properties) {

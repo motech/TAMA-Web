@@ -8,7 +8,6 @@ import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.service.PatientService;
-import org.motechproject.tama.service.TamaSchedulerService;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IvrLanguagesView;
@@ -126,7 +125,10 @@ public class PatientController extends BaseController {
         }
         try {
             allPatients.addToClinic(patient, loggedInClinic(request));
-            schedulerService.scheduleJobForOutboxCall(patient);
+            if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
+                    patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
+                schedulerService.scheduleJobForOutboxCall(patient);
+            }
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();
@@ -167,6 +169,10 @@ public class PatientController extends BaseController {
         try {
             patientService.update(patient);
             schedulerService.scheduleJobForOutboxCall(patient);
+            if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
+                patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
+                schedulerService.scheduleJobForOutboxCall(patient);
+             }
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();

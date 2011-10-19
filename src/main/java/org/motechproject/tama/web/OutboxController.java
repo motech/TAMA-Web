@@ -14,7 +14,6 @@ import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.VoiceMessageResponseFactory;
 import org.motechproject.tama.outbox.OutboxContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,8 +27,6 @@ public class OutboxController extends SafeIVRController {
     private TAMAIVRContextFactory contextFactory;
     private VoiceMessageResponseFactory messageResponseFactory;
 
-    @Autowired
-    ApplicationContext applicationContext;
 
     @Autowired
     public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, VoiceMessageResponseFactory messageResponseFactory, KookooCallDetailRecordsService callDetailRecordsService) {
