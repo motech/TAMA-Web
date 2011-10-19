@@ -1,25 +1,26 @@
 package org.motechproject.tama.ivr.logging.domain;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.server.service.ivr.CallEvent;
+import org.motechproject.server.service.ivr.CallEventCustomData;
 import org.motechproject.tama.domain.CouchEntity;
+import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@TypeDiscriminator("doc.documentType == 'CallLog'")
 public class CallLog extends CouchEntity {
-
-    public static final String CALL_TYPE_SYMPTOM_REPORTING = "Symptom Reporting";
-    public static final String CALL_TYPE_PILL_REMINDER = "Pill Reminder";
     public static final String CALL_TYPE_UNAUTHENTICATED = "Unauthenticated";
-
-
+    public static final String CALL_TYPE_AUTHENTICATED = "Authenticated";
     private String patientDocumentId;
-
     private DateTime startTime;
     private DateTime endTime;
     private String phoneNumber;
@@ -48,8 +49,10 @@ public class CallLog extends CouchEntity {
     @JsonIgnore
     public String getCallType() {
         for (CallEvent callEvent : callEvents) {
-            if (callEvent.getData().get(CallEventConstants.AUTHENTICATION_EVENT) != null) {
-                return callEvent.getData().get(CallEventConstants.CALL_TYPE);
+            List<String> responses = callEvent.getData().getAll(CallEventConstants.CUSTOM_DATA_LIST);
+            for (String response : responses) {
+                if (StringUtils.isNotEmpty(response) && !response.contains(FileUtil.sanitizeFilename(TamaIVRMessage.SIGNATURE_MUSIC)))
+                    return CALL_TYPE_AUTHENTICATED;
             }
         }
         return CALL_TYPE_UNAUTHENTICATED;
@@ -109,5 +112,15 @@ public class CallLog extends CouchEntity {
 
     public void setClinicId(String clinicId) {
         this.clinicId = clinicId;
+    }
+
+    public void maskAuthenticationPin() {
+        for (CallEvent callEvent : callEvents) {
+            CallEventCustomData customData = callEvent.getData();
+            String dtmfData = customData.getFirst(CallEventConstants.DTMF_DATA);
+            if (StringUtils.isNotEmpty(dtmfData) && dtmfData.length() > 2) {
+                customData.update(CallEventConstants.DTMF_DATA, "****");
+            }
+        }
     }
 }

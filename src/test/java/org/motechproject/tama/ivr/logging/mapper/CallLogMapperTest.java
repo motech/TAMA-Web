@@ -23,7 +23,7 @@ public class CallLogMapperTest {
     @Test
     public void shouldConvertKookooCallDetailRecordToCallLog() {
         CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("phoneNumber");
-        KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord);
+        KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord, "dfdsfsd");
         callDetailRecord.setEndDate(new Date());
         kookooCallDetailRecord.setVendorCallId("callId");
 

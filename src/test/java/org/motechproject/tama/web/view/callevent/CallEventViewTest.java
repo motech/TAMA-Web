@@ -1,55 +1,51 @@
 package org.motechproject.tama.web.view.callevent;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.server.service.ivr.CallEvent;
+import org.motechproject.server.service.ivr.IVREvent;
+import org.motechproject.tama.ivr.StandardIVRResponse;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.view.CallEventView;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class CallEventViewTest {
-
-    private CallEventView callEventView;
-
-    private Map<String, String> data;
-
-    @Before
-    public void setUp() {
-        data = new HashMap<String, String>();
-    }
-
     @Test
     public void hasInputWhenEventTypeIsGotDtmf() {
-        callEventView = new CallEventView(new CallEvent("gotDtmf", data));
+        CallEventView callEventView = new CallEventView(new CallEvent(IVREvent.GotDTMF.toString()));
         assertTrue(callEventView.isUserInputAvailable());
     }
 
     @Test
     public void shouldReturnInputDtmf_IfDtmfDataAvilable() {
-        data.put(CallEventConstants.DTMF_DATA, "1");
-        callEventView = new CallEventView(new CallEvent("gotDtmf", data));
+        CallEvent callEvent = new CallEvent(IVREvent.GotDTMF.toString());
+        callEvent.appendData(CallEventConstants.DTMF_DATA, "1");
+        CallEventView callEventView = new CallEventView(callEvent);
         assertEquals("1", callEventView.getUserInput());
     }
 
     @Test
     public void shouldReturnEmpty_WhenEventTypeNotDtmf() {
-        callEventView = new CallEventView(new CallEvent("NewCall", data));
+        CallEvent callEvent = new CallEvent(IVREvent.GotDTMF.toString());
+        CallEventView callEventView = new CallEventView(callEvent);
         assertEquals("", callEventView.getUserInput());
     }
 
     @Test
     public void shouldReturnAListOfAllResponsesPlayed() {
-        callEventView = new CallEventView(new CallEvent("NewCall", data));
-        data.put(CallEventConstants.RESPONSE_XML, "<response sid=\"123\"><collectdtmf><playaudio>signature_music.wav</playaudio></collectdtmf></response>");
+        TamaIVRMessage ivrMessage = new TamaIVRMessage(new Properties());
+        KookooIVRResponseBuilder responseBuilder = StandardIVRResponse.signatureTuneAndCollectDTMF("123");
+        CallEvent callEvent = new CallEvent(IVREvent.NewCall.toString());
+        callEvent.appendData(CallEventConstants.CUSTOM_DATA_LIST, responseBuilder.create(ivrMessage));
+        CallEventView callEventView = new CallEventView(callEvent);
 
         List<String> content = callEventView.getResponses();
-
         assertEquals("signature_music", content.get(0));
     }
 }

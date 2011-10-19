@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.mapper;
 
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.web.view.CallLogView;
@@ -11,7 +12,6 @@ import java.util.List;
 
 @Component
 public class CallLogViewMapper {
-
     private AllPatients allPatients;
 
     @Autowired
@@ -22,10 +22,11 @@ public class CallLogViewMapper {
     public List<CallLogView> toCallLogView(List<CallLog> callLogs) {
         List<CallLogView> callLogViews = new ArrayList<CallLogView>();
         for (CallLog callLog : callLogs) {
-            String patientId = allPatients.get(callLog.getPatientDocumentId()).getPatientId();
-            String clinicName = allPatients.get(callLog.getPatientDocumentId()).getClinic().getName();
-            CallLogView callLogView = new CallLogView(patientId, callLog, clinicName);
-            callLogViews.add(callLogView);
+            String patientDocumentId = callLog.getPatientDocumentId();
+            Patient patient = patientDocumentId == null ? null : allPatients.get(patientDocumentId);
+            String patientId = patient == null ? "" : patient.getPatientId();
+            String clinicName = patient == null ? "" : patient.getClinic().getName();
+            callLogViews.add(new CallLogView(patientId, callLog, clinicName));
         }
         return callLogViews;
 

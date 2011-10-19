@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CallLogMapper {
-
     public CallLog toCallLog(String patientDocumentId, KookooCallDetailRecord kookooCallDetailRecord) {
         CallLog callLog = new CallLog();
         CallDetailRecord callDetailRecord = kookooCallDetailRecord.getCallDetailRecord();

@@ -40,6 +40,7 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         caller = caller(patient);
     }
 
+    @Ignore
     @Test
     public void currentDosageReminder() throws IOException {
         String dosageId = scheduledJobDataService.currentJobId();
@@ -52,12 +53,12 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         audioFilePresent(ivrResponse, DOSE_RECORDED);
     }
 
-    @Test
     @Ignore
+    @Test
     public void dosageTakenFlow() throws IOException {
         caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, MENU_010_05_01_MAINMENU4, YOUR_NEXT_DOSE_IS, AT, YOUR_NEXT_DOSE_IS_PADDING);
+        asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, PILL_CONFIRM_CALL_MENU);
         ivrResponse = caller.enter("3");
         audioFilePresent(ivrResponse, NO_MESSAGES, MORE_OPTIONS, THESE_WERE_YOUR_MESSAGES_FOR_NOW);
     }

@@ -14,13 +14,9 @@ import java.util.List;
 
 @Component
 public class CallLogService {
-
     private final AllCallLogs allCallLogs;
-
     private final KookooCallDetailRecordsService kookooCallDetailRecordsService;
-
     private final CallLogMapper callDetailRecordMapper;
-
     private final AllPatients allPatients;
 
     @Autowired
@@ -35,6 +31,7 @@ public class CallLogService {
     public void log(String callId, String patientDocumentId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callId);
         CallLog callLog = callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord);
+        callLog.maskAuthenticationPin();
         if (patientDocumentId != null)
             callLog.setClinicId(allPatients.get(patientDocumentId).getClinic_id());
         allCallLogs.add(callLog);
@@ -48,7 +45,7 @@ public class CallLogService {
         return allCallLogs.findByClinic(fromDate, toDate, clinicId);
     }
 
-    public List<CallLog> getLogsBetweenDates(DateTime fromDate, DateTime toDate){
+    public List<CallLog> getLogsBetweenDates(DateTime fromDate, DateTime toDate) {
         return allCallLogs.findCallLogsBetweenGivenDates(fromDate, toDate);
     }
 }

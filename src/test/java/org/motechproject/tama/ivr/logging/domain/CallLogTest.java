@@ -2,81 +2,64 @@ package org.motechproject.tama.ivr.logging.domain;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.server.service.ivr.CallEvent;
+import org.motechproject.server.service.ivr.CallEventCustomData;
+import org.motechproject.server.service.ivr.IVREvent;
+import org.motechproject.tama.ivr.StandardIVRResponse;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 
 public class CallLogTest {
-
-    private CallLog callLog;
-    private Map<String, String> authenticationEventParams;
-    private Map<String, String> dtmfEventParams;
+    private TamaIVRMessage ivrMessage;
 
     @Before
     public void setUp() {
-        callLog = new CallLog();
-
-        authenticationEventParams = sampleAuthenticationEventParams();
-        dtmfEventParams = sampleDtmfEventParams();
+        Properties properties = new Properties();
+        properties.put(TamaIVRMessage.CONTENT_LOCATION_URL, "http://locallhost/");
+        ivrMessage = new TamaIVRMessage(properties);
     }
 
     @Test
-    public void shouldReturnCallTypeForACallWithOneAuthenticationEvent() {
-        CallLog callLog = callWithOneAuthenticationEvent();
-
-        assertEquals("symptomsReporting", callLog.getCallType());
+    public void callTypeIsAuthenticatedWhenThereIsAResponseWhichIsNotSignatureMusic() {
+        CallLog callLog = callWhichGoesBeyondAuthentication();
+        assertEquals(CallLog.CALL_TYPE_AUTHENTICATED, callLog.getCallType());
+        List<CallEvent> callEvents = callLog.getCallEvents();
+        assertEquals(2, callEvents.size());
     }
 
     @Test
-    public void shouldReturnCallTypeForACall_WithMultipleUnsuccessfulAuthenticationEvents_AndOneSuccessfulEvent() {
-        CallLog callLog = callWithMultipleAuthenticationEvents();
-
-        assertEquals("symptomsReporting", callLog.getCallType());
+    public void maskAuthenticationDTMFData() {
+        CallLog callLog = callWhichGoesBeyondAuthentication();
+        callLog.maskAuthenticationPin();
+        List<CallEvent> callEvents = callLog.getCallEvents();
+        CallEventCustomData customData = callEvents.get(0).getData();
+        assertEquals("****", customData.getFirst(CallEventConstants.DTMF_DATA));
     }
 
-    @Test
-    public void shouldReturnEmptyCallTypeForACall_NotAuthenticated() {
+    private CallLog callWhichGoesBeyondAuthentication() {
         CallLog callLog = new CallLog();
-        Map<String, String> eventParams = Collections.emptyMap();
-        callLog.setCallEvents(Arrays.asList(new CallEvent("NewCall",eventParams), new CallEvent("HangUp", eventParams)));
-
-        assertEquals("Unauthenticated", callLog.getCallType());
-    }
-
-    private CallLog callWithOneAuthenticationEvent() {
-
-        callLog.setCallEvents(Arrays.asList(new CallEvent("gotDtmf", authenticationEventParams), new CallEvent("gotDtmf", dtmfEventParams)));
+        callLog.setCallEvents(Arrays.asList(addAuthenticationEventCustomData(new CallEvent(IVREvent.GotDTMF.toString())),
+                                            appendNonAuthenticationEventParams(new CallEvent(IVREvent.GotDTMF.toString()))));
         return callLog;
-
     }
 
-    private CallLog callWithMultipleAuthenticationEvents() {
-
-        callLog.setCallEvents(Arrays.asList(new CallEvent("gotDtmf", authenticationEventParams), new CallEvent("gotDtmf", authenticationEventParams), new CallEvent("gotDtmf", authenticationEventParams), new CallEvent("gotDtmf", dtmfEventParams)));
-        return callLog;
-
+    private CallEvent addAuthenticationEventCustomData(CallEvent callEvent) {
+        final KookooIVRResponseBuilder ivrResponseBuilder = StandardIVRResponse.signatureTuneAndCollectDTMF("3423434");
+        callEvent.appendData(CallEventConstants.DTMF_DATA, "1234");
+        callEvent.appendData(CallEventConstants.CUSTOM_DATA_LIST, ivrResponseBuilder.create(ivrMessage));
+        return callEvent;
     }
 
-    private HashMap<String, String> sampleAuthenticationEventParams() {
-        return new HashMap<String, String>() {
-            {
-                put(CallEventConstants.AUTHENTICATION_EVENT, "true");
-                put(CallEventConstants.CALL_TYPE, "symptomsReporting");
-            }
-        };
-    }
-
-    private HashMap<String, String> sampleDtmfEventParams() {
-        return new HashMap<String, String>() {
-            {
-                put(CallEventConstants.DTMF_DATA, "2");
-            }
-        };
+    private CallEvent appendNonAuthenticationEventParams(CallEvent callEvent) {
+        final KookooIVRResponseBuilder responseBuilder = new KookooIVRResponseBuilder();
+        responseBuilder.withPlayAudios("foo");
+        callEvent.appendData(CallEventConstants.DTMF_DATA, "2");
+        callEvent.appendData(CallEventConstants.CUSTOM_DATA_LIST, responseBuilder.create(ivrMessage));
+        return callEvent;
     }
 }

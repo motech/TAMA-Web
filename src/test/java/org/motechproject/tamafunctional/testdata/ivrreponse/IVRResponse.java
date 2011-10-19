@@ -2,12 +2,19 @@ package org.motechproject.tamafunctional.testdata.ivrreponse;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @XStreamAlias("response")
 public class IVRResponse {
 
     @XStreamAsAttribute
     private String sid;
+
+    @XStreamImplicit(itemFieldName="playaudio")
+    private List<String> playaudios = new ArrayList<String>();
 
     private Hangup hangup;
 

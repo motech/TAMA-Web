@@ -100,18 +100,18 @@ public class CreateARTRegimenPage extends Page {
 
     private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
+        logDosage(drugDosage1);
         drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
         tabOut(drug1DosageTypeElement);
         drug1EveningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
         drug1MealAdviceTypeElement.sendKeys(drugDosage1.mealAdvice());
-        logDosage(drugDosage1);
 
         TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);
+        logDosage(drugDosage2);
         drug2DosageTypeElement.sendKeys(drugDosage2.dosageType());
         tabOut(drug2DosageTypeElement);
         drug2DosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
-        logDosage(drugDosage2);
 
         saveElement.click();
     }

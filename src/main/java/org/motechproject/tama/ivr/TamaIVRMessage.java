@@ -147,7 +147,7 @@ public class TamaIVRMessage implements IVRMessage {
     @Override
 	public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : FileUtil.sanitizeFilename(key);
-        return properties.get(CONTENT_LOCATION_URL) + preferredLangCode + "/" + file + WAV;
+        return String.format("%s%s/%s%s", properties.get(CONTENT_LOCATION_URL), preferredLangCode, file, WAV);
     }
 
     public String getNumberFilename(int n) {

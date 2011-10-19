@@ -55,7 +55,7 @@ public class IVRAuthenticationControllerTest {
         when(tamaivrContextFactory.initialize(kooKooIVRContext)).thenReturn(tamaivrContext);
         when(authenticationService.allowAccess(callerId, callId)).thenReturn(true);
         KookooIVRResponseBuilder kookooIVRResponseBuilder = ivrAuthenticationController.newCall(kooKooIVRContext);
-        assertEquals(true, kookooIVRResponseBuilder.isCollectDtmf());
+        assertEquals(true, kookooIVRResponseBuilder.isCollectDTMF());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class IVRAuthenticationControllerTest {
         when(authenticationService.checkAccess(callerId, dtmfInput, numberOfLoginAttempts + 1, callId)).thenReturn(IVRAuthenticationStatus.allowRetry(1));
         when(tamaivrContextFactory.create(kooKooIVRContext)).thenReturn(tamaivrContext);
         KookooIVRResponseBuilder kookooIVRResponseBuilder = ivrAuthenticationController.gotDTMF(kooKooIVRContext);
-        assertEquals(true, kookooIVRResponseBuilder.isCollectDtmf());
+        assertEquals(true, kookooIVRResponseBuilder.isCollectDTMF());
         assertEquals(1, tamaivrContext.numberOfLoginAttempts());
     }
 }

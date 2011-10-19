@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.framework;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,10 +10,7 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.util.DateUtil;
 import org.openqa.selenium.WebDriver;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 
 public abstract class BaseTest extends FunctionalTestObject {

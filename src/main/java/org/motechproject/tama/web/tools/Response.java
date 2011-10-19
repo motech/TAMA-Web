@@ -40,8 +40,7 @@ public class Response {
         if (collectDtmf()) {
             List<String> responsesPlayed = collectdtmf.responsePlayed();
             if(collectdtmf.isPlayAudio()){
-                List<String> parsedResponses = parsePlayedResponsesToFormat(responsesPlayed);
-                return parsedResponses;
+                return parsePlayedResponsesToFormat(responsesPlayed);
             }
             else{
                 return responsesPlayed;
@@ -52,8 +51,7 @@ public class Response {
 
     private List<String> getResponsesPlayed(){
         if(playaudios!= null && !playaudios.isEmpty()){
-            List<String> parsedResponses = parsePlayedResponsesToFormat(playaudios);
-            return parsedResponses;
+            return parsePlayedResponsesToFormat(playaudios);
         }
         if(playtexts!= null && !playtexts.isEmpty()){
             return playtexts;

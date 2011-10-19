@@ -11,11 +11,36 @@ org.motechproject.tama.ivr.PillRegimenSnapshot#getCurrentDosage, what is this us
 2. Domain package should be subdivided into smaller parts.
 3. Use composition over inheritance, any class hierarchy bigger than two probably is a smell. org.motechproject.tama.web.command.StopPreviousPillReminderCommand
 
-Find out:
-- no pin sent scenario should the call audits be created or not
+Find out
+- is the pin number set to 4 or it can change. where is this limit
+- how to handle outbox
+- calllog would we add more to it
 
 Test
 - outbox
 
 Share:
 The dynamic command tests are missing
+classpath for outbox message
+use service to setup outbox messages
+should be able to run it from the ide
+emulator should provide feedback on hangup and till response is not received
+should throw exception when the language is not set
+write test for marathi
+entire call log should be passed instead of part of it, as the original can be deleted
+why clinic_id
+use constants in the tests also
+org.motechproject.tama.ivr.TamaIVRMessage.getWav, why is the message picked from the ivrproperties
+
+Tooling issues
+daily pill reminder adherenece data
+set the patient regimen in past
+outbox setup
+changing date
+firing the outgoing call for weekly adherenence
+manually setup the clinic/clician/patient/regimen data
+kookoo emulator
+best call time
+ability to writing functional test for these kind of scenarios
+integration tests deleting the data which is required in functional tests
+constraint:
