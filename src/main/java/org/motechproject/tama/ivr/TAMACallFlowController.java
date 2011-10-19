@@ -45,10 +45,12 @@ public class TAMACallFlowController implements CallFlowController {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         CallState callState = tamaivrContext.callState();
         if (callState.equals(CallState.STARTED)) return AUTHENTICATION_URL;
-        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING)) return AllIVRURLs.DECISION_TREE_URL;
+        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING))
+            return AllIVRURLs.DECISION_TREE_URL;
         if (tamaivrContext.hasOutboxCompleted()) return HANG_UP_URL;
         if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
-        if (callState.equals(CallState.ALL_TREES_COMPLETED)) return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : HANG_UP_URL;
+        if (callState.equals(CallState.ALL_TREES_COMPLETED))
+            return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : HANG_UP_URL;
         throw new TamaException("No URL found");
     }
 
@@ -61,7 +63,7 @@ public class TAMACallFlowController implements CallFlowController {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         if (StringUtils.isEmpty(tamaivrContext.lastCompletedTree())) return getStartingTree(tamaivrContext);
         if (tamaivrContext.callState().equals(CallState.SYMPTOM_REPORTING)) return TAMATreeRegistry.REGIMEN_1_TO_6;
-        if (onCurrentDosage(kooKooIVRContext.treeName()) && !previousDosageCaptured(tamaivrContext)) {
+        if (onCurrentDosage(tamaivrContext.lastCompletedTree()) && !previousDosageCaptured(tamaivrContext)) {
             return TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER;
         }
         throw new TamaException("No trees to serve.");
@@ -85,7 +87,7 @@ public class TAMACallFlowController implements CallFlowController {
         Patient patient = tamaivrContext.patient(allPatients);
         boolean isPatientOnDailyPillReminder = CallPreference.DailyPillReminder.equals(patient.getPatientPreferences().getCallPreference());
         if (tamaivrContext.isIncomingCall()) {
-            if(!isPatientOnDailyPillReminder){
+            if (!isPatientOnDailyPillReminder) {
                 return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
             }
             PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(tamaivrContext);
@@ -111,8 +113,7 @@ public class TAMACallFlowController implements CallFlowController {
     public void treeComplete(String treeName, KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         tamaivrContext.lastCompletedTree(treeName);
-        if ((onCurrentDosage(treeName) && previousDosageCaptured(tamaivrContext)) ||
-                treeRegistry.isLeafTree(treeName))
+        if (treeRegistry.isLeafTree(treeName))
             tamaivrContext.callState(CallState.ALL_TREES_COMPLETED);
     }
 }
