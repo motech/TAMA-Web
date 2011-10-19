@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
-import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
@@ -29,29 +28,29 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
     @Before
     public void testSetUp() throws Exception {
         scheduledJobDataService.clearJobs();
-
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.forEvening().brandName("Efferven"), TestDrugDosage.forEvening().brandName("Combivir"));
-
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.inTwoMinutes().brandName("Efferven"), TestDrugDosage.inTwoMinutes().brandName("Combivir"));
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
         caller = caller(patient);
     }
 
     @Test
-    public void currentDosageReminder() throws IOException {
+    public void currentDosageReminder() throws IOException, InterruptedException {
         String dosageId = scheduledJobDataService.currentJobId();
         logInfo("{Regimen}{Id={%s}}", dosageId);
-
-        caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
-        IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
-//        ivrResponse = caller.enter("1");
-//        audioFilePresent(ivrResponse, DOSE_RECORDED);
-////        ivrResponse = caller.enter("3");
-////        assertEquals(false, ivrResponse.isEmpty());
-////        assertEquals(false, ivrResponse.isHangedUp());
+        assertIsCalled();
+        /*caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
+                  IVRResponse ivrResponse = caller.enter("1234");
+                asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);*/
+        /*
+                ivrResponse = caller.enter("1");
+                audioFilePresent(ivrResponse, DOSE_RECORDED);
+                ivrResponse = caller.enter("3");
+                assertEquals(false, ivrResponse.isEmpty());
+                assertEquals(false, ivrResponse.isHangedUp());
+                */
     }
 
     @Test
@@ -61,5 +60,16 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         asksForCollectDtmfWith(ivrResponse, MENU_010_05_01_MAINMENU4, YOUR_NEXT_DOSE_IS, AT, YOUR_NEXT_DOSE_IS_PADDING);
         ivrResponse = caller.enter("3");
         audioFilePresent(ivrResponse, NO_MESSAGES);
+    }
+
+    private void assertIsCalled() throws IOException, InterruptedException {
+        phone.switchOn();
+        phone.assertIfCalled(150);
+        phone.switchOff();
+    }
+
+    @Override
+    public void tearDown() throws IOException {
+        webClient.shutDown();
     }
 }

@@ -1,10 +1,9 @@
 package org.motechproject.tamafunctional.framework;
 
 import org.motechproject.tamafunctional.page.Page;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.ie.TimedOutException;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.TimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 

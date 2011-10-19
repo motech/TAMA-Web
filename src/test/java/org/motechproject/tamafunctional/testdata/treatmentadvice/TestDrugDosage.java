@@ -1,9 +1,10 @@
 package org.motechproject.tamafunctional.testdata.treatmentadvice;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.joda.time.DateTime;
 import org.motechproject.tamafunctional.testdata.TestEntity;
 
-public class TestDrugDosage  extends TestEntity {
+public class TestDrugDosage extends TestEntity {
     private String dosageSchedule;
     private String mealAdvice;
     private String brandName;
@@ -18,6 +19,18 @@ public class TestDrugDosage  extends TestEntity {
 
     public static TestDrugDosage forMorning() {
         return withExtrinsic().dosageType("Morning Daily").dosageSchedule("10:00");
+    }
+
+    public static TestDrugDosage inTwoMinutes() {
+        String meridian;
+        DateTime twoMinutesFromNow = new DateTime().plusMinutes(2);
+        if (isMorningTime(twoMinutesFromNow)) {
+            meridian = "Morning Daily";
+        } else {
+            meridian = "Evening Daily";
+        }
+        int hourOfDay = hourIn12HourFormat(twoMinutesFromNow);
+        return withExtrinsic().dosageType(meridian).dosageSchedule(getTimeString(twoMinutesFromNow, hourOfDay));
     }
 
     public static TestDrugDosage forEvening() {
@@ -63,5 +76,28 @@ public class TestDrugDosage  extends TestEntity {
     @Override
     public String resourceName() {
         throw new NotImplementedException();
+    }
+
+    private static int hourIn12HourFormat(DateTime twoMinutesFromNow) {
+        int hourOfDay = twoMinutesFromNow.getHourOfDay();
+        hourOfDay %= 12;
+        hourOfDay = (hourOfDay == 0) ? 12 : hourOfDay;
+        return hourOfDay;
+    }
+
+    private static String getTimeString(DateTime twoMinutesFromNow, int hourOfDay) {
+        return toTimeString(hourOfDay) + ":" + toTimeString(twoMinutesFromNow.getMinuteOfHour());
+    }
+
+    private static String toTimeString(int timeUnit) {
+        if (timeUnit < 10) {
+            return "0" + timeUnit;
+        } else {
+            return timeUnit + "";
+        }
+    }
+
+    private static boolean isMorningTime(DateTime twoMinutesFromNow) {
+        return twoMinutesFromNow.getHourOfDay() <= 12;
     }
 }

@@ -1,10 +1,6 @@
 package org.motechproject.tamafunctional.framework;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-import org.springframework.util.StringUtils;
+import org.openqa.selenium.*;
 
 import java.util.List;
 
@@ -26,15 +22,14 @@ public class TamaWebElement implements ExtendedWebElement {
         webElement.submit();
     }
 
-    @Override
     public String getValue() {
-        return webElement.getValue();
+        return webElement.getAttribute("value");
     }
 
     @Override
     public void sendKeys(CharSequence... charSequences) {
         click();
-        if (webElement.getText().length() != 0 || webElement.getValue().length() != 0)
+        if (webElement.getText().length() != 0 || getValue().length() != 0)
             clear();
         webElement.sendKeys(charSequences);
     }
@@ -55,18 +50,8 @@ public class TamaWebElement implements ExtendedWebElement {
     }
 
     @Override
-    public boolean toggle() {
-        return webElement.toggle();
-    }
-
-    @Override
     public boolean isSelected() {
         return webElement.isSelected();
-    }
-
-    @Override
-    public void setSelected() {
-        webElement.setSelected();
     }
 
     @Override
@@ -91,6 +76,26 @@ public class TamaWebElement implements ExtendedWebElement {
         } catch (NoSuchElementException e) {
             return null;
         }
+    }
+
+    @Override
+    public boolean isDisplayed() {
+        return webElement.isDisplayed();
+    }
+
+    @Override
+    public Point getLocation() {
+        return webElement.getLocation();
+    }
+
+    @Override
+    public Dimension getSize() {
+        return webElement.getSize();
+    }
+
+    @Override
+    public String getCssValue(String s) {
+        return webElement.getCssValue(s);
     }
 
     @Override
