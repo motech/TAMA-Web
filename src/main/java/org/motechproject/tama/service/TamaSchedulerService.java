@@ -60,6 +60,7 @@ public class TamaSchedulerService {
             MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
             String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, count)).withTime(callTime).build();
             Date jobEndDate = endDate == null ? null : endDate.toDate();
+
             LocalDate startDate = treatmentAdviceStartDate.plusDays(4 + count);
             Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
             CronSchedulableJob cronJobForForDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
@@ -76,10 +77,11 @@ public class TamaSchedulerService {
     public void scheduleRepeatingJobsForFourDayRecall(String patientDocId, String treatmentAdviceId, LocalDate treatmentAdviceStartDate) {
         Patient patient = allPatients.get(patientDocId);
         Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.RETRIES_PER_DAY));
-        Integer retryInterval = Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL));
+        int repeatIntervalInMinutes = Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL));
 
         TimeOfDay callTime = patient.getPatientPreferences().getBestCallTime();
-        DateTime jobStartTime = DateUtil.newDateTime(DateUtil.today(), callTime.getHour(), callTime.getMinute(), 0).plusMinutes(retryInterval);
+        DateTime todayCallTime = DateUtil.now().withHourOfDay(callTime.toTime().getHour()).withMinuteOfHour(callTime.toTime().getMinute());
+        DateTime jobStartTime = todayCallTime.plusMinutes(repeatIntervalInMinutes);
         DateTime jobEndTime = jobStartTime.plusDays(1);
 
         Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
@@ -90,7 +92,7 @@ public class TamaSchedulerService {
                 .withRetryFlag(true)
                 .payload();
         MotechEvent fourDayRecallRepeatingEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
-        RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, jobStartTime.toDate(), jobEndTime.toDate(), maxOutboundRetries, retryInterval * 60 * 1000);
+        RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, jobStartTime.toDate(), jobEndTime.toDate(), maxOutboundRetries, repeatIntervalInMinutes * 60 * 1000);
         motechSchedulerService.scheduleRepeatingJob(repeatingSchedulableJob);
     }
 
