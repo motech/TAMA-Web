@@ -15,21 +15,11 @@ public class CollectDtmf {
     private List<String> playtexts = new ArrayList<String>();
 
     public boolean hasAudio(String... audioResourceNames) {
-        for (String audioResource : audioResourceNames) {
-            boolean found = false;
-            for (String audioUrl : playaudios) {
-                if (audioUrl.endsWith(String.format("%s.wav", audioResource))) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) return false;
-        }
-        return true;
+        return new Audios(playaudios).hasAudio(audioResourceNames);
     }
 
     public String audiosPlayed() {
-        return StringUtils.join(playaudios, ", ");
+        return new Audios(playaudios).toString();
     }
 
     public CollectDtmf playAudios(String... playAudios) {

@@ -53,13 +53,14 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         audioFilePresent(ivrResponse, DOSE_RECORDED);
     }
 
-    @Ignore
     @Test
     public void dosageTakenFlow() throws IOException {
         caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
         asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, PILL_CONFIRM_CALL_MENU);
         ivrResponse = caller.enter("3");
-        audioFilePresent(ivrResponse, NO_MESSAGES, MORE_OPTIONS, THESE_WERE_YOUR_MESSAGES_FOR_NOW);
+        audioFilePresent(ivrResponse, NO_MESSAGES);
+        ivrResponse = caller.listenMore();
+        audioFilePresent(ivrResponse, SIGNATURE_MUSIC, MORE_OPTIONS);
     }
 }

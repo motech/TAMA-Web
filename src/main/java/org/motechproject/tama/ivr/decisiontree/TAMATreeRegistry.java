@@ -16,7 +16,7 @@ public class TAMATreeRegistry {
     public static final String CURRENT_DOSAGE_CONFIRM = "CurrentDosageConfirm";
     public static final String REGIMEN_1_TO_6 = "Regimen_1_To_6";
     public static final String FOUR_DAY_RECALL = "FourDayRecall";
-    private final List<String> leafTreeNames;
+    private List<String> leafTreeNames;
     public static final String FOUR_DAY_RECALL_INCOMING_CALL = "FourDayRecallIncomingCallTree";
 
     @Autowired

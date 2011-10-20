@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.testdata.ivrreponse;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +34,11 @@ public class IVRResponse {
     }
 
     public boolean audioPlayed(String ... names) {
-        return collectDtmf() && collectdtmf.hasAudio(names);
+        return (collectDtmf() && collectdtmf.hasAudio(names)) || new Audios(playaudios).hasAudio(names);
     }
 
     public String audiosPlayed() {
-        if (collectDtmf()) {
-            return collectdtmf.audiosPlayed();
-        }
-        return "";
+        return collectDtmf() ? collectdtmf.audiosPlayed() : new Audios(playaudios).toString();
     }
 
     public boolean isEmpty() {

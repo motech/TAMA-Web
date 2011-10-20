@@ -111,9 +111,10 @@ public class TAMACallFlowController implements CallFlowController {
 
     @Override
     public void treeComplete(String treeName, KooKooIVRContext kooKooIVRContext) {
-        TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
-        tamaivrContext.lastCompletedTree(treeName);
-        if (treeRegistry.isLeafTree(treeName))
-            tamaivrContext.callState(CallState.ALL_TREES_COMPLETED);
+        TAMAIVRContext ivrContext = factory.create(kooKooIVRContext);
+        ivrContext.lastCompletedTree(treeName);
+        if ((onCurrentDosage(treeName) && previousDosageCaptured(ivrContext) && CallState.AUTHENTICATED.equals(ivrContext.callState())) ||
+                treeRegistry.isLeafTree(treeName))
+            ivrContext.callState(CallState.ALL_TREES_COMPLETED);
     }
 }

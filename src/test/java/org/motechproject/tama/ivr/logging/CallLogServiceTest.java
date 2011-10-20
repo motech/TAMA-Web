@@ -1,16 +1,11 @@
 package org.motechproject.tama.ivr.logging;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
-import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.server.service.ivr.CallDetailRecord;
-import org.motechproject.server.service.ivr.CallEvent;
-import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinic;
@@ -20,11 +15,8 @@ import org.motechproject.tama.ivr.logging.mapper.CallLogMapper;
 import org.motechproject.tama.ivr.logging.repository.AllCallLogs;
 import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.repository.AllPatients;
-import java.util.HashMap;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
@@ -71,7 +63,7 @@ public class CallLogServiceTest {
 
         ArgumentCaptor<CallLog> logCapture = ArgumentCaptor.forClass(CallLog.class);
         verify(allCallLogs).add(logCapture.capture());
-        assertEquals(clinic.getId(), logCapture.getValue().getClinicId());
+        assertEquals(clinic.getId(), logCapture.getValue().clinicId());
     }
 
     private KookooCallDetailRecord callDetailRecord() {
@@ -91,6 +83,6 @@ public class CallLogServiceTest {
         ArgumentCaptor<CallLog> logCapture = ArgumentCaptor.forClass(CallLog.class);
         verify(allCallLogs).add(logCapture.capture());
 
-        assertEquals(null, logCapture.getValue().getClinicId());
+        assertEquals(null, logCapture.getValue().clinicId());
     }
 }

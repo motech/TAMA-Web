@@ -43,4 +43,50 @@ kookoo emulator
 best call time
 ability to writing functional test for these kind of scenarios
 integration tests deleting the data which is required in functional tests
-constraint:
+constraint
+
+
+projects
+--------
+motech
+motech-delivery-tools
+motech-deploy
+
+impl
+impl-delivery-tools
+impl-deploy
+
+modularizing delivery tools and deploy
+--------------------------------------
+- master ant xml
+- task specific ant xml
+- master includes all the task xml
+- use naming convention based namespacing of the tasks
+
+motech-delivery-tools
+---------------------
+- Create a new github project called motech-delivery-tools
+- This would be home for generic parts of the delivery tools. The specific tools should be part of corresponding implementations e.g. tama-delivery-tools
+- It would contain common code required at the time of development, manual testing, automated testing, deployment, migration, backup and monitoring.
+
+service-invoker
+---------------
+- required for development, migration, deployment, manual testing)
+- ability to invoke any service using a url and passing data in query params as JSON. The return data should be diplayed in JSON in the browser.
+
+Data Migration
+--------------
+- Snapshot/dump from production (mysql, kahadb & couch)
+- Should we use KahaDb or switch to mysql?
+- Ensure the locale of production and test environments are same. The deploy script should assert for this. Ensure the mysql locale is also same.
+- Add shutdown/start activemq to the deploy script
+- Deployment script to apply the dump
+- This should be all testable on development machine (unless there is linux specific thing we are doing)
+- Write a utility to change the patient's phone number to make it invalid and deactivate the patient. This utility should separately invocable and should
+not be present in deploy.xml, may be in a file called deployment-tools.xml. The utility should be based on service-invoker and invoke PatientService.
+- Stop the webserver and then delete the tama-delivery-tools
+
+tama snapshot based backup
+--------------------------
+- since the system would not be used at the night we can take the back-up nightly
+- ant based script to stop data servers,

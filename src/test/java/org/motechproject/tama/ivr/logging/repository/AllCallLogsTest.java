@@ -21,12 +21,12 @@ public class AllCallLogsTest extends SpringIntegrationTest {
     @Test
     public void shouldFindCallLogByClinicId() {
         CallLog callLog = new CallLog("patientDocId");
-        callLog.setClinicId("clinicId");
+        callLog.clinicId("clinicId");
         callLog.setStartTime(DateUtil.now());
         callLog.setEndTime(DateUtil.now().plusMinutes(5));
         allCallLogs.add(callLog);
 
-        assertEquals("clinicId", allCallLogs.findByClinic(DateUtil.now().minusDays(1), DateUtil.now().plusDays(1), "clinicId").get(0).getClinicId());
+        assertEquals("clinicId", allCallLogs.findByClinic(DateUtil.now().minusDays(1), DateUtil.now().plusDays(1), "clinicId").get(0).clinicId());
         markForDeletion(callLog);
     }
 }

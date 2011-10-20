@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.logging.domain;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
@@ -29,6 +30,7 @@ public class CallLog extends CouchEntity {
     private CallDirection callDirection;
     private List<CallEvent> callEvents = new ArrayList<CallEvent>();
 
+    @JsonProperty
     private String clinicId;
 
     public CallLog() {
@@ -106,12 +108,13 @@ public class CallLog extends CouchEntity {
         this.callEvents = callEvents;
     }
 
-    public String getClinicId() {
+    public String clinicId() {
         return clinicId;
     }
 
-    public void setClinicId(String clinicId) {
+    public CallLog clinicId(String clinicId) {
         this.clinicId = clinicId;
+        return this;
     }
 
     public void maskAuthenticationPin() {

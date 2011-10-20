@@ -33,7 +33,7 @@ public class CallLogService {
         CallLog callLog = callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord);
         callLog.maskAuthenticationPin();
         if (patientDocumentId != null)
-            callLog.setClinicId(allPatients.get(patientDocumentId).getClinic_id());
+            callLog.clinicId(allPatients.get(patientDocumentId).getClinic_id());
         allCallLogs.add(callLog);
     }
 

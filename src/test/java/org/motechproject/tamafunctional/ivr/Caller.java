@@ -60,10 +60,14 @@ public class Caller extends FunctionalTestObject {
     public IVRResponse enter(String number) {
         IVRResponse ivrResponse = invokeAndGetResponse(urlFor(IVREvent.GotDTMF, number));
         if (ivrResponse.isEmpty()) {
-            String url = String.format("http://%s:%s/tama/ivr/reply?", webserverName(), webserverPort());
-            ivrResponse = invokeAndGetResponse(callInfo.appendDataMapTo(url));
+            ivrResponse = listenMore();
         }
         return ivrResponse;
+    }
+
+    public IVRResponse listenMore() {
+        String url = String.format("http://%s:%s/tama/ivr/reply?", webserverName(), webserverPort());
+        return invokeAndGetResponse(callInfo.appendDataMapTo(url));
     }
 
     public void hangup() {

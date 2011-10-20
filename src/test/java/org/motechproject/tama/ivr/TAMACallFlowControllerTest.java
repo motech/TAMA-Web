@@ -10,6 +10,7 @@ import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -65,6 +66,15 @@ public class TAMACallFlowControllerTest {
     public void completionOfSymptomReportingTreeOrPreviousDosageReminderTreeShouldCompleteTheTrees() {
         when(treeRegistry.isLeafTree(TAMATreeRegistry.REGIMEN_1_TO_6)).thenReturn(true);
         tamaCallFlowController.treeComplete(TAMATreeRegistry.REGIMEN_1_TO_6, kooKooIVRContext);
+        assertEquals(CallState.ALL_TREES_COMPLETED, tamaIVRContextForTest.callState());
+    }
+
+    @Test
+    public void whenCurrentDosageIsConfirmedAllTreesAreCompleted() {
+        PillRegimenSnapshot pillRegimenSnapshot = mock(PillRegimenSnapshot.class);
+        tamaIVRContextForTest.pillRegimenSnapshot(pillRegimenSnapshot);
+        when(pillRegimenSnapshot.isPreviousDosageCaptured()).thenReturn(true);
+        tamaCallFlowController.treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, kooKooIVRContext);
         assertEquals(CallState.ALL_TREES_COMPLETED, tamaIVRContextForTest.callState());
     }
 
