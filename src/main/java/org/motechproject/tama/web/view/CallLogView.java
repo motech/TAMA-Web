@@ -1,10 +1,11 @@
 package org.motechproject.tama.web.view;
 
 import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.server.service.ivr.CallEvent;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
-import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,6 @@ public class CallLogView {
     private String callDateFromCallLogDateTime;
     private LocalTime callStartTimeFromCallLogStartDateTime;
     private LocalTime callEndTimeFromCallLogEndDateTime;
-    public static final int STRING_BEGIN_INDEX = 0;
-    public static final String RIGHT_BOUNDING_SUBSEQUENCE = "00:00:00";
-    public final String LEFT_BOUNDING_SUBSEQUENCE = "IST";
-    public final int EXCLUDING_FACTOR = 3;
 
     public CallLogView(String patientId, CallLog callLog, String clinicName) {
         this.patientId = patientId;
@@ -52,9 +49,8 @@ public class CallLogView {
     }
 
     public void setCallDateFromCallLogDateTime(){
-        String dateToBeFormatted = DateUtil.newDate(callLog.getStartTime().toDate()).toDate().toString();
-        callDateFromCallLogDateTime = dateToBeFormatted.substring(STRING_BEGIN_INDEX,dateToBeFormatted.indexOf(RIGHT_BOUNDING_SUBSEQUENCE)).trim()
-                                    + dateToBeFormatted.substring(dateToBeFormatted.indexOf(LEFT_BOUNDING_SUBSEQUENCE)+ EXCLUDING_FACTOR, dateToBeFormatted.length());
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE MMM dd YYYY");
+        callDateFromCallLogDateTime = formatter.print(callLog.getStartTime());
     }
 
     public String getPatientId() {
