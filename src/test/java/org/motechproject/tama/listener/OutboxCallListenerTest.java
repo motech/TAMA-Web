@@ -12,8 +12,8 @@ import org.motechproject.server.service.ivr.CallRequest;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.service.TamaSchedulerService;
 
 import java.util.HashMap;
 import java.util.Map;

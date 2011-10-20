@@ -168,7 +168,6 @@ public class PatientController extends BaseController {
         }
         try {
             patientService.update(patient);
-            schedulerService.scheduleJobForOutboxCall(patient);
             if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
                 patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
                 schedulerService.scheduleJobForOutboxCall(patient);

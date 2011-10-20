@@ -64,6 +64,7 @@ public class PatientControllerTest {
     private AllModesOfTransmission allModesOfTransmission;
     @Mock
     private PatientService patientService;
+    @Mock
 	private TamaSchedulerService schedulerService;
 
     @Before
@@ -237,6 +238,9 @@ public class PatientControllerTest {
     @Test
     public void shouldUpdatePatient() {
         Patient patientFromUI = mock(Patient.class);
+        when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
+                    setCallPreference(CallPreference.DailyPillReminder);
+                }});
         when(patientFromUI.getId()).thenReturn("123");
         BindingResult bindingResult = mock(BindingResult.class);
         Map<String, Object> modelMap = new HashMap<String, Object>();

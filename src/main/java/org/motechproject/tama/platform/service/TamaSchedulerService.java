@@ -25,7 +25,6 @@ import java.util.Properties;
 
 @Component
 public class TamaSchedulerService {
-    private static final String OUTBOX_CALL_JOB_ID_PREFIX = "outbox-";
     private static final String OUTBOX_CALL_RETRYJOB_ID_PREFIX = "outbox-retry-";
     public static final String IS_RETRY = "isRetry";
     @Autowired
@@ -35,8 +34,6 @@ public class TamaSchedulerService {
     private Properties properties;
     @Autowired
     private AllPatients allPatients;
-
-    private String FOUR_DAY_RECALL_JOB_ID_PREFIX = "four_day_recall_";
 
 
     public TamaSchedulerService() {
@@ -58,7 +55,7 @@ public class TamaSchedulerService {
 
         for (int count = 0; count <= daysToRetry; count++) {
             Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
-                    .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + count + patientDocId)
+                    .withJobId(count + patientDocId)
                     .withPatientDocId(patientDocId)
                     .withTreatmentAdviceId(treatmentAdvice.getId())
                     .withTreatmentAdviceStartDate(treatmentAdviceStartDate)
@@ -91,7 +88,7 @@ public class TamaSchedulerService {
         DateTime jobEndTime = jobStartTime.plusDays(1);
 
         Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
-                .withJobId(FOUR_DAY_RECALL_JOB_ID_PREFIX + UUIDUtil.newUUID())
+                .withJobId(patientDocId)
                 .withPatientDocId(patientDocId)
                 .withTreatmentAdviceId(treatmentAdviceId)
                 .withTreatmentAdviceStartDate(treatmentAdviceStartDate)
@@ -103,7 +100,7 @@ public class TamaSchedulerService {
     }
 
     public void scheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
-        Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getId())
+        Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getPatientId())
                 .withExternalId(treatmentAdvice.getPatientId())
                 .payload();
         MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
@@ -120,18 +117,22 @@ public class TamaSchedulerService {
 	}
 
     public void unscheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
-        motechSchedulerService.unscheduleJob(treatmentAdvice.getId());
+        motechSchedulerService.unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, treatmentAdvice.getPatientId());
     }
 
 	public void scheduleJobForOutboxCall(Patient patient) {
 		String outboxCallJobCronExpression = new CronJobSimpleExpressionBuilder(patient.getPatientPreferences().getBestCallTime().toTime()).build();
-		Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(OUTBOX_CALL_JOB_ID_PREFIX + patient.getId())
+		Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patient.getId())
                 .withExternalId(patient.getId())
                 .payload();
         MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
 		CronSchedulableJob outboxCallJob = new CronSchedulableJob(outboxCallEvent, outboxCallJobCronExpression, DateUtil.now().toDate(), null);
 		motechSchedulerService.scheduleJob(outboxCallJob);
 	}
+
+    public void unscheduleJobForOutboxCall(Patient patient) {
+          motechSchedulerService.unscheduleJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
+    }
 
     public void scheduleRepeatingJobForOutBoxCall(Patient patient) {
          if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) {
