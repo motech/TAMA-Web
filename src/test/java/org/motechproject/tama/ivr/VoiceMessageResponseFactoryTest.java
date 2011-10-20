@@ -6,6 +6,7 @@ import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.web.OutboxController;
 import org.motechproject.tama.web.command.PlayAdherenceTrendFeedbackCommand;
+import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class VoiceMessageResponseFactoryTest {
         VoiceMessageType voiceMessageType = new VoiceMessageType();
         voiceMessageType.setVoiceMessageTypeName(OutboxController.VOICE_MESSAGE_COMMAND_AUDIO);
         outboundVoiceMessage.setVoiceMessageType(voiceMessageType);
+        outboundVoiceMessage.setCreationTime(DateUtil.now().toDate());
         outboundVoiceMessage.setParameters(new HashMap<String, Object>() {
             {
                 put(OutboxController.VOICE_MESSAGE_COMMAND, Arrays.asList("whatever"));

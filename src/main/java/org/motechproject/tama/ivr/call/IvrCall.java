@@ -7,29 +7,35 @@ import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public abstract class IvrCall {
+public class IvrCall {
     public static final String APPLICATION_URL = "application.url";
     @Autowired
     protected AllPatients allPatients;
     @Autowired
     protected IVRService ivrService;
-
     @Autowired
     @Qualifier("ivrProperties")
     private Properties properties;
 
-    public IvrCall() {
+    public IvrCall(Properties properties) {
+        this.properties = properties;
     }
 
-    protected IvrCall(AllPatients allPatients, IVRService ivrService) {
+    public IvrCall(AllPatients allPatients, IVRService ivrService, Properties properties) {
         this.allPatients = allPatients;
         this.ivrService = ivrService;
+        this.properties = properties;
     }
 
-    protected void makeCall(String patientDocId, Map<String, String> params) {
+    public void makeCall(String patientDocId) {
+        makeCall(patientDocId, new HashMap<String, String>());
+    }
+
+    public void makeCall(String patientDocId, Map<String, String> params) {
         Patient patient = allPatients.get(patientDocId);
         if (patient == null || patient.isNotActive()) return;
 

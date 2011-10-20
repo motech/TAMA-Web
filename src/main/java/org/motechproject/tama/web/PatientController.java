@@ -5,6 +5,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.service.PatientService;
 import org.motechproject.tama.web.view.ClinicsView;
@@ -56,9 +57,10 @@ public class PatientController extends BaseController {
     private AllHIVTestReasons allTestReasons;
     private AllModesOfTransmission allModesOfTransmission;
     private PatientService patientService;
+    private TamaSchedulerService schedulerService;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, PatientService patientService) {
+    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, TamaSchedulerService schedulerService, PatientService patientService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -66,6 +68,7 @@ public class PatientController extends BaseController {
         this.allTestReasons = allTestReasons;
         this.allModesOfTransmission = allModesOfTransmission;
         this.patientService = patientService;
+        this.schedulerService = schedulerService;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -122,6 +125,10 @@ public class PatientController extends BaseController {
         }
         try {
             allPatients.addToClinic(patient, loggedInClinic(request));
+            if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
+                    patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
+                schedulerService.scheduleJobForOutboxCall(patient);
+            }
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();
@@ -175,29 +182,20 @@ public class PatientController extends BaseController {
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("id") String id,
-                         @RequestParam(value = "page", required = false) Integer page,
-                         @RequestParam(value = "size", required = false) Integer size, Model uiModel,
-                         HttpServletRequest request) {
-        allPatients.remove(id);
-        uiModel.asMap().clear();
-        uiModel.addAttribute(PAGE, (page == null) ? "1" : page.toString());
-        uiModel.addAttribute(SIZE, (size == null) ? "10" : size.toString());
-        uiModel.addAttribute(PATIENTS, allPatients.findByClinic(loggedInClinic(request)));
-        return REDIRECT_TO_LIST_VIEW;
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
     public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest request) {
         List<Patient> patientsByClinic = allPatients.findByPatientIdAndClinicId(patientId, loggedInClinic(request));
 
         if (patientsByClinic == null || patientsByClinic.isEmpty()) {
             uiModel.addAttribute(PATIENT_ID, patientId);
-            return "redirect:" + getReferrer(request);
+            return redirectToListPatientsPage(request);
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patientsByClinic.get(0).getId(), request);
     }
+
+	private String redirectToListPatientsPage(HttpServletRequest request) {
+		return "redirect:" + getReferrer(request);
+	}
 
     private String getReferrer(HttpServletRequest request) {
         String referrer = request.getHeader("Referer");

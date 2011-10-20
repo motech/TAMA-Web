@@ -28,6 +28,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private String requestedCallerId;
     private boolean outboxCompleted;
     private String preferredLanguage;
+    private String isOutboundCall;
 
     @Override
     public String dtmfInput() {
@@ -189,6 +190,16 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     @Override
     public String requestedCallerId() {
         return requestedCallerId;
+    }
+
+    @Override
+    public boolean isOutBoxCall() {
+        return "true".equals(isOutboundCall);
+    }
+
+    public TAMAIVRContextForTest isOutBoxCall(String isOutboundCall) {
+        this.isOutboundCall = isOutboundCall;
+        return this;
     }
 
     public TAMAIVRContextForTest requestedCallerId(String requestedCallerId) {

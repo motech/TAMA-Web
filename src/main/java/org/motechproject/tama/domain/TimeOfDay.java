@@ -66,4 +66,26 @@ public class TimeOfDay extends BaseEntity {
             hour = (hour + 12) % 24;
         return new Time(hour, getMinute());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TimeOfDay timeOfDay = (TimeOfDay) o;
+
+        if (hour != null ? !hour.equals(timeOfDay.hour) : timeOfDay.hour != null) return false;
+        if (minute != null ? !minute.equals(timeOfDay.minute) : timeOfDay.minute != null) return false;
+        if (timeMeridiem != timeOfDay.timeMeridiem) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = hour != null ? hour.hashCode() : 0;
+        result = 31 * result + (minute != null ? minute.hashCode() : 0);
+        result = 31 * result + (timeMeridiem != null ? timeMeridiem.hashCode() : 0);
+        return result;
+    }
 }

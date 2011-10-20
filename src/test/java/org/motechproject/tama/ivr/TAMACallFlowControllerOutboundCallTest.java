@@ -2,6 +2,9 @@ package org.motechproject.tama.ivr;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.server.service.ivr.CallDirection;
@@ -21,20 +24,20 @@ public class TAMACallFlowControllerOutboundCallTest {
 
     @Before
     public void setUp() {
-        TAMATreeRegistry TAMATreeChooser = mock(TAMATreeRegistry.class);
+        TAMATreeRegistry tamaTreeRegistry = mock(TAMATreeRegistry.class);
         PillReminderService pillReminderService = mock(PillReminderService.class);
         VoiceOutboxService voiceOutboxService = mock(VoiceOutboxService.class);
         TAMAIVRContextFactory contextFactory = mock(TAMAIVRContextFactory.class);
         AllPatients allPatients = mock(AllPatients.class);
 
-        tamaCallFlowController = new TAMACallFlowController(TAMATreeChooser, pillReminderService, voiceOutboxService, allPatients, contextFactory);
+        tamaCallFlowController = new TAMACallFlowController(tamaTreeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory);
         TAMAIVRContextForTest tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Outbound);
 
         Patient patient = new Patient();
         patientPreferences = new PatientPreferences();
         patient.setPatientPreferences(patientPreferences);
         tamaIVRContextForTest.patient(patient);
-        when(contextFactory.create(null)).thenReturn(tamaIVRContextForTest);
+        when(contextFactory.create(Matchers.<KooKooIVRContext>any())).thenReturn(tamaIVRContextForTest);
     }
 
     @Test

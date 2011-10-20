@@ -11,6 +11,8 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.repository.AllPatients;
 
+import java.util.Properties;
+
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -34,7 +36,7 @@ public class PillReminderCallTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pillReminderCall = Mockito.spy(new PillReminderCall(callService, allPatients));
+        pillReminderCall = Mockito.spy(new PillReminderCall(callService, allPatients , new Properties()));
         Mockito.doReturn("").when(pillReminderCall).getApplicationUrl();
     }
 

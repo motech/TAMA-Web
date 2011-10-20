@@ -109,4 +109,9 @@ public class PatientBuilder {
         patient.setRevision(revision);
         return this;
     }
+
+    public PatientBuilder withBestCallTime(TimeOfDay bestCallTime) {
+        patient.getPatientPreferences().setBestCallTime(bestCallTime);
+        return this;
+    }
 }

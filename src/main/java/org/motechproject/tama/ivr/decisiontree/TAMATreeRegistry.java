@@ -18,11 +18,12 @@ public class TAMATreeRegistry {
     public static final String FOUR_DAY_RECALL = "FourDayRecall";
     private List<String> leafTreeNames;
     public static final String FOUR_DAY_RECALL_INCOMING_CALL = "FourDayRecallIncomingCallTree";
+    public static final String OUTBOX_CALL = "OutboxCallTree";
 
     @Autowired
     public TAMATreeRegistry(CurrentDosageTakenTree currentDosageTakenTree, CurrentDosageReminderTree currentDosageReminderTree,
                             CurrentDosageConfirmTree currentDosageConfirmTree, Regimen1To6Tree regimen1To6Tree, PreviousDosageReminderTree previousDosageReminderTree,
-                            FourDayRecallTree fourDayRecallTree, FourDayRecallIncomingCallTree fourDayRecallIncomingCallTree) {
+                            FourDayRecallTree fourDayRecallTree, FourDayRecallIncomingCallTree fourDayRecallIncomingCallTree, OutboxCallTree outboxCallTree) {
         decisionTrees.put(CURRENT_DOSAGE_TAKEN, currentDosageTakenTree);
         decisionTrees.put(CURRENT_DOSAGE_REMINDER, currentDosageReminderTree);
         decisionTrees.put(CURRENT_DOSAGE_CONFIRM, currentDosageConfirmTree);
@@ -30,6 +31,7 @@ public class TAMATreeRegistry {
         decisionTrees.put(REGIMEN_1_TO_6, regimen1To6Tree);
         decisionTrees.put(FOUR_DAY_RECALL, fourDayRecallTree);
         decisionTrees.put(FOUR_DAY_RECALL_INCOMING_CALL, fourDayRecallIncomingCallTree);
+        decisionTrees.put(OUTBOX_CALL, outboxCallTree);
         leafTreeNames = Arrays.asList(PREVIOUS_DOSAGE_REMINDER, REGIMEN_1_TO_6);
     }
 
