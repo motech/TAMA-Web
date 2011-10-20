@@ -124,7 +124,9 @@ public class PatientController extends BaseController {
             return CREATE_VIEW;
         }
         try {
+            //TODO: This code should be moved to PatientService
             allPatients.addToClinic(patient, loggedInClinic(request));
+            //TODO: Instead of calling patient to get data and checking on that, patient should have method like hasAgreedToBeCalledAtBestCallTime
             if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
                     patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
                 schedulerService.scheduleJobForOutboxCall(patient);
