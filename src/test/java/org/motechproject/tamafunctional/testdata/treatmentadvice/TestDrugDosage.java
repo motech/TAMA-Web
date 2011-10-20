@@ -8,7 +8,6 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 
 public class TestDrugDosage  extends TestEntity {
-    public static String MORNING_DAILY = "Morning Daily";
     public static String EVENING_DAILY = "Evening Daily";
     private String dosageSchedule;
     private String mealAdvice;
@@ -24,12 +23,11 @@ public class TestDrugDosage  extends TestEntity {
 
     public static TestDrugDosage[] create(String... brandNames) {
         DateTime now = DateUtil.now();
-        String dosageType = now.getHourOfDay() <= 11 ? MORNING_DAILY : EVENING_DAILY;
         DateTime temp = now.getHourOfDay() > 12 ? now.minusHours(12) : now;
         String dosageSchedule = temp.toString("HH:mm");
         ArrayList<TestDrugDosage> drugDosages = new ArrayList<TestDrugDosage>();
         for (String brandName : brandNames) {
-            drugDosages.add(withExtrinsic().dosageType(dosageType).dosageSchedule(dosageSchedule).brandName(brandName));
+            drugDosages.add(withExtrinsic().dosageType(EVENING_DAILY).dosageSchedule(dosageSchedule).brandName(brandName));
         }
         return drugDosages.toArray(new TestDrugDosage[brandNames.length]);
     }

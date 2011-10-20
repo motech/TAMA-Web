@@ -43,7 +43,7 @@ public class CreateARTRegimenPage extends Page {
     private WebElement drug2DosageTypeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].eveningTime_id")
-    private WebElement drug2DosageTimeElement;
+    private WebElement drug2EveningDosageTimeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
     private WebElement drug2MealAdviceTypeElement;
@@ -69,7 +69,7 @@ public class CreateARTRegimenPage extends Page {
         drug1EveningDosageTimeElement = WebDriverFactory.createWebElement(drug1EveningDosageTimeElement);
         drug1MealAdviceTypeElement = WebDriverFactory.createWebElement(drug1MealAdviceTypeElement);
         drug2DosageTypeElement = WebDriverFactory.createWebElement(drug2DosageTypeElement);
-        drug2DosageTimeElement = WebDriverFactory.createWebElement(drug2DosageTimeElement);
+        drug2EveningDosageTimeElement = WebDriverFactory.createWebElement(drug2EveningDosageTimeElement);
         drug2MealAdviceTypeElement = WebDriverFactory.createWebElement(drug2MealAdviceTypeElement);
 
         discontinuationReasonElement = WebDriverFactory.createWebElement(discontinuationReasonElement);
@@ -110,7 +110,7 @@ public class CreateARTRegimenPage extends Page {
         logDosage(drugDosage2);
         drug2DosageTypeElement.sendKeys(drugDosage2.dosageType());
         tabOut(drug2DosageTypeElement);
-        drug2DosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
+        drug2EveningDosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
 
         saveElement.click();
