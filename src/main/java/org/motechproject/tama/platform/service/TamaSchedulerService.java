@@ -92,7 +92,7 @@ public class TamaSchedulerService {
                 .withRetryFlag(true)
                 .payload();
         MotechEvent fourDayRecallRepeatingEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
-        RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, jobStartTime.toDate(), jobEndTime.toDate(), maxOutboundRetries, repeatIntervalInMinutes * 60 * 1000);
+        RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, jobStartTime.toDate(), jobEndTime.toDate(), maxOutboundRetries - 1, repeatIntervalInMinutes * 60 * 1000);
         motechSchedulerService.scheduleRepeatingJob(repeatingSchedulableJob);
     }
 

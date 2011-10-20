@@ -118,7 +118,8 @@ public class TamaSchedulerServiceTest {
         ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
         verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
         RepeatingSchedulableJob repeatingSchedulableJob = repeatingSchedulableJobArgumentCaptor.getValue();
-        assertEquals(new Integer(5), repeatingSchedulableJob.getRepeatCount());
+        // 4 because repeatingSchedulableJobs are intern scheduled 1 + repeatCount number of times
+        assertEquals(new Integer(4), repeatingSchedulableJob.getRepeatCount());
         assertEquals(15 * 60 * 1000, repeatingSchedulableJob.getRepeatInterval());
         assertDates(DateUtil.newDateTime(DateUtil.today(), 10, 45, 0), DateUtil.newDateTime(repeatingSchedulableJob.getStartTime()));
         assertDates(DateUtil.newDateTime(DateUtil.today(), 10, 45, 0).plusDays(1), DateUtil.newDateTime(repeatingSchedulableJob.getEndTime()));
