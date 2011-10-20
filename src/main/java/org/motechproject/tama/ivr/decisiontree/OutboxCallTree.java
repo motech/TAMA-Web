@@ -15,6 +15,8 @@ public class OutboxCallTree extends TamaDecisionTree {
     @Autowired
     private WelcomeGreetingMessage welcomeGreetingMessage;
 
+    @Autowired DisableOutboxCallRetryCommand disableOutboxCallRetryCommand;
+
     @Override
     protected Node createRootNode() {
         TAMAIVRContextFactory contextFactory = new TAMAIVRContextFactory();
@@ -24,6 +26,7 @@ public class OutboxCallTree extends TamaDecisionTree {
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
                         new AudioPrompt().setName(TamaIVRMessage.FILE_050_03_01_ITS_TIME_FOR_BEST_CALL_TIME)
                 )
-                .setTreeCommands(new CallStateCommand(CallState.OUTBOX, contextFactory));
+                .setTreeCommands(new CallStateCommand(CallState.OUTBOX, contextFactory),
+                                 disableOutboxCallRetryCommand);
     }
 }

@@ -231,7 +231,7 @@ public class PatientControllerTest {
 
         controller.update(patient, bindingResult, uiModel, request);
 
-        verify(schedulerService, new Times(2)).scheduleJobForOutboxCall(patient);
+        verify(schedulerService, new Times(1)).scheduleJobForOutboxCall(patient);
     }
 
 

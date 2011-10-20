@@ -25,7 +25,6 @@ import java.util.Properties;
 
 @Component
 public class TamaSchedulerService {
-    private static final String OUTBOX_CALL_RETRYJOB_ID_PREFIX = "outbox-retry-";
     public static final String IS_RETRY = "isRetry";
     @Autowired
     private MotechSchedulerService motechSchedulerService;
@@ -136,13 +135,24 @@ public class TamaSchedulerService {
 
     public void scheduleRepeatingJobForOutBoxCall(Patient patient) {
          if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) {
-		Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(OUTBOX_CALL_RETRYJOB_ID_PREFIX + patient.getId())
+		Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patient.getId())
                 .withExternalId(patient.getId())
                 .payload();
         eventParams.put(IS_RETRY, "true");
         MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
 		RepeatingSchedulableJob outboxCallJob = new RepeatingSchedulableJob(outboxCallEvent, DateUtil.now().toDate(), null, 3, 15*60);
 		motechSchedulerService.scheduleRepeatingJob(outboxCallJob);
+        }
+    }
+
+    public void unscheduleRepeatingJobForOutboxCall(String externalId) {
+        motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, externalId);
+    }
+
+    public void unScheduleFourDayRecallJobs(Patient patient) {
+        Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
+        for (int count = 0; count <= daysToRetry; count++) {
+                motechSchedulerService.unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, count + patient.getId());
         }
     }
 }

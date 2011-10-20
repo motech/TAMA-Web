@@ -53,9 +53,48 @@ public class PatientService {
 
     private void postUpdate(Patient patient, Patient dbPatient) {
         if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
+            tamaSchedulerService.unscheduleJobForOutboxCall(dbPatient);
+            tamaSchedulerService.unscheduleRepeatingJobForOutboxCall(dbPatient.getId());
             unscheduleDailyReminderJobs(patient);
             scheduleFourDayRecallJobs(patient);
+            return;
         }
+
+        if (bestCallTimeChanged(patient, dbPatient)) {
+            rescheduleOutboxCalls(patient, dbPatient);
+        }
+
+        if (bestCallTimeChanged(patient, dbPatient) || dayOfWeekForWeeklyAdherenceCallChanged(patient, dbPatient)) {
+            rescheduleFourDayRecallJobs(patient);
+        }
+    }
+
+    private void rescheduleOutboxCalls(Patient updatedPatient, Patient patient) {
+        boolean shouldUnScheduleOldOutboxJobs = shouldScheduleOutboxCallsFor(patient);
+        if (shouldUnScheduleOldOutboxJobs) {
+            tamaSchedulerService.unscheduleJobForOutboxCall(patient);
+            tamaSchedulerService.unscheduleRepeatingJobForOutboxCall(patient.getId());
+        }
+        if (shouldScheduleOutboxCallsFor(updatedPatient)) {
+            tamaSchedulerService.scheduleJobForOutboxCall(updatedPatient);
+        }
+    }
+
+    boolean shouldScheduleOutboxCallsFor(Patient patient) {
+        return patient.getPatientPreferences().getCallPreference() == CallPreference.DailyPillReminder && patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime();
+    }
+
+    private void rescheduleFourDayRecallJobs(Patient patient) {
+        tamaSchedulerService.unScheduleFourDayRecallJobs(patient);
+        scheduleFourDayRecallJobs(patient);
+    }
+
+    private boolean dayOfWeekForWeeklyAdherenceCallChanged(Patient patient, Patient dbPatient) {
+        return patient.getPatientPreferences().getDayOfWeeklyCall() != dbPatient.getPatientPreferences().getDayOfWeeklyCall();
+    }
+
+    private boolean bestCallTimeChanged(Patient patient, Patient dbPatient) {
+        return !(patient.getPatientPreferences().getBestCallTime().equals(dbPatient.getPatientPreferences().getBestCallTime()));
     }
 
     private void scheduleFourDayRecallJobs(Patient patient) {

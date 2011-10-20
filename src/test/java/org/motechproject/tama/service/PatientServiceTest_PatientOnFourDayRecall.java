@@ -6,19 +6,19 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.domain.CallPreference;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllUniquePatientFields;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PatientServiceTest {
+public class PatientServiceTest_PatientOnFourDayRecall {
 
     private PatientService patientService;
 
@@ -38,52 +38,51 @@ public class PatientServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(allPatients, allUniquePatientFields, tamaSchedulerService, allTreatmentAdvices, pillReminderService);
-        dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").build();
+        dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.FourDayRecall)
+                .withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
+        patientService = new PatientService(allPatients, allUniquePatientFields, tamaSchedulerService, allTreatmentAdvices, pillReminderService);
     }
 
     @Test
     public void shouldUpdatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
+        CallPreference callPreference = dbPatient.getPatientPreferences().getCallPreference();
+        TimeOfDay bestCallTime = dbPatient.getPatientPreferences().getBestCallTime();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("7777777777").withId("patient_id").withCallPreference(callPreference).withBestCallTime(bestCallTime).build();
         patientService.update(patient);
 
         ArgumentCaptor<Patient> captor = ArgumentCaptor.forClass(Patient.class);
         verify(allPatients).update(captor.capture());
-        assertEquals(captor.getValue().getRevision(), "revision");
-    }
-
-    @Test
-    public void shouldUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
-        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
-        patientService.update(patient);
-        verify(pillReminderService).unscheduleJobs(patient.getId());
+        assertEquals(captor.getValue().getMobilePhoneNumber(), "7777777777");
     }
 
     @Test
     public void shouldNotUnschedulePillReminderCalls_WhenCallPreferenceIsNotChanged() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
+        PatientPreferences patientPreferences = dbPatient.getPatientPreferences();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(patientPreferences.getCallPreference()).withBestCallTime(patientPreferences.getBestCallTime()).withId("patient_id").build();
         patientService.update(patient);
         verify(pillReminderService, never()).unscheduleJobs(patient.getId());
     }
 
+
     @Test
-    public void shouldUnscheduleJobsForAdherenceTrendFeedbackOutboxMessage() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).build();
+    public void shouldScheduleOutboxJobs_WhenPatientChangedFromWeeklyToDailyPillReminder() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
         when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
-        verify(tamaSchedulerService).unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        verify(tamaSchedulerService).scheduleJobForOutboxCall(patient);
     }
 
     @Test
-    public void shouldScheduleFourDayRecallJobs_WhenCallPreferenceIsChangedToFourDayRecall() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
+    public void shouldNotScheduleOutboxJobs_WhenCallPreferenceIsWeekly_AndBestCallTimeChanged() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withBestCallTime(new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
         when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
-        verify(tamaSchedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+        verify(tamaSchedulerService, never()).scheduleJobForOutboxCall(patient);
     }
+
 }

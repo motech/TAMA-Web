@@ -168,10 +168,6 @@ public class PatientController extends BaseController {
         }
         try {
             patientService.update(patient);
-            if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
-                patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
-                schedulerService.scheduleJobForOutboxCall(patient);
-             }
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();
@@ -184,19 +180,6 @@ public class PatientController extends BaseController {
         }
 
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("id") String id,
-                         @RequestParam(value = "page", required = false) Integer page,
-                         @RequestParam(value = "size", required = false) Integer size, Model uiModel,
-                         HttpServletRequest request) {
-        allPatients.remove(id);
-        uiModel.asMap().clear();
-        uiModel.addAttribute(PAGE, (page == null) ? "1" : page.toString());
-        uiModel.addAttribute(SIZE, (size == null) ? "10" : size.toString());
-        uiModel.addAttribute(PATIENTS, allPatients.findByClinic(loggedInClinic(request)));
-        return REDIRECT_TO_LIST_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
