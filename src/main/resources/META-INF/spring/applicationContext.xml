@@ -35,7 +35,6 @@
     <import resource="classpath:applicationContextAlert.xml"/>
     <import resource="classpath:applicationPlatformScheduler.xml"/>
 
-
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
         <property name="algorithm" value="PBEWithMD5AndDES"/>
         <property name="password" value="jasypt"/>
@@ -50,7 +49,7 @@
         <constructor-arg ref="tamaCouchDbInstance"/>
     </bean>
     <drools:kbase id="symptomReportingRules">
-        <drools:resources>
+    <drools:resources>
             <drools:resource source="classpath:symptom-reporting.drl" type="DRL"/>
         </drools:resources>
     </drools:kbase>

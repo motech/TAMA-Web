@@ -91,6 +91,7 @@ public class LabResult extends CouchEntity {
         return new LabResult();
     }
 
+    @JsonIgnore
     public boolean isCD4() {
         LabTest labTest = getLabTest();
         return labTest != null && labTest.getName().toLowerCase().equals("cd4");
