@@ -4,11 +4,14 @@ import org.motechproject.decisiontree.model.Tree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class TAMATreeRegistry {
-    private Map<String, TamaDecisionTree> decisionTrees = new HashMap();
+    private Map<String, TamaDecisionTree> decisionTrees = new HashMap<String, TamaDecisionTree>();
 
     public static final String CURRENT_DOSAGE_TAKEN = "CurrentDosageTaken";
     public static final String CURRENT_DOSAGE_REMINDER = "CurrentDosageReminder";
@@ -22,7 +25,7 @@ public class TAMATreeRegistry {
 
     @Autowired
     public TAMATreeRegistry(CurrentDosageTakenTree currentDosageTakenTree, CurrentDosageReminderTree currentDosageReminderTree,
-                            CurrentDosageConfirmTree currentDosageConfirmTree, Regimen1To6Tree regimen1To6Tree, PreviousDosageReminderTree previousDosageReminderTree,
+                            CurrentDosageConfirmTree currentDosageConfirmTree, SymptomReportingTree regimen1To6Tree, PreviousDosageReminderTree previousDosageReminderTree,
                             FourDayRecallTree fourDayRecallTree, FourDayRecallIncomingCallTree fourDayRecallIncomingCallTree, OutboxCallTree outboxCallTree) {
         decisionTrees.put(CURRENT_DOSAGE_TAKEN, currentDosageTakenTree);
         decisionTrees.put(CURRENT_DOSAGE_REMINDER, currentDosageReminderTree);
@@ -39,7 +42,12 @@ public class TAMATreeRegistry {
         return decisionTrees.get(treeName).getTree();
     }
 
-    public boolean isLeafTree(String treeName){
+    public Tree getSymptomReportingTree(String treeName, String symptomReportingTreeName) {
+        SymptomReportingTree tamaDecisionTree = (SymptomReportingTree) decisionTrees.get(treeName);
+        return tamaDecisionTree.getTree(symptomReportingTreeName);
+    }
+
+    public boolean isLeafTree(String treeName) {
         return leafTreeNames.contains(treeName);
     }
 }

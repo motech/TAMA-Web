@@ -15,6 +15,7 @@ import org.motechproject.tama.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -90,5 +91,25 @@ public class TAMACallFlowControllerTest {
         String patientId = "1234";
         ivrContext.patientId(patientId);
         assertEquals(TAMACallFlowController.HANG_UP_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldReturnSymptomReportingTreeBasedOnCallState() {
+        ivrContext.callState(CallState.SYMPTOM_REPORTING_TREE);
+        String symptomReportingTreeName = "Regimen1_1";
+        ivrContext.symptomReportingTree(symptomReportingTreeName);
+
+        tamaCallFlowController.getTree(TAMATreeRegistry.REGIMEN_1_TO_6, kooKooIVRContext);
+
+        verify(treeRegistry).getSymptomReportingTree(TAMATreeRegistry.REGIMEN_1_TO_6, symptomReportingTreeName);
+    }
+
+    @Test
+    public void shouldReturnDecisionTree() {
+        ivrContext.callState(CallState.AUTHENTICATED);
+
+        tamaCallFlowController.getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, kooKooIVRContext);
+
+        verify(treeRegistry).getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
     }
 }

@@ -51,7 +51,8 @@ public class TAMACallFlowController implements CallFlowController {
         CallState callState = tamaivrContext.callState();
         if (callState.equals(CallState.STARTED)) return AUTHENTICATION_URL;
         if (callState.equals(CallState.SYMPTOM_REPORTING)) return SYMPTOM_REPORTING_URL;
-        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE)) return AllIVRURLs.DECISION_TREE_URL;
+        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE))
+            return AllIVRURLs.DECISION_TREE_URL;
         if (tamaivrContext.hasOutboxCompleted()) return HANG_UP_URL;
         if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
@@ -115,6 +116,11 @@ public class TAMACallFlowController implements CallFlowController {
 
     @Override
     public Tree getTree(String treeName, KooKooIVRContext kooKooIVRContext) {
+        TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
+        if (tamaivrContext.callState().equals(CallState.SYMPTOM_REPORTING_TREE)) {
+            return treeRegistry.getSymptomReportingTree(treeName, tamaivrContext.symptomReportingTree());
+        }
+
         return treeRegistry.getTree(treeName);
     }
 
