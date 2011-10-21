@@ -31,7 +31,7 @@ public class WelcomeGreetingMessage extends BaseTreeCommand {
         Patient patient = allPatients.get(ivrContext.patientId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
-        messages.add(String.format("welcome_to_%s", clinic.getName()));
+        messages.add(clinic.getName());
         return messages.toArray(new String[messages.size()]);
     }
 }

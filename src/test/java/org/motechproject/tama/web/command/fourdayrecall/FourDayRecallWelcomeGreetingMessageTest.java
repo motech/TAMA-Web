@@ -42,6 +42,6 @@ public class FourDayRecallWelcomeGreetingMessageTest {
     public void shouldReturnMessageBasedOnClinicAndPlayGreetingMessage() {
         String[] messages = welcomeGreetingMessage.executeCommand(context);
         assertEquals(1, messages.length);
-        assertEquals("welcome_to_clinicName", messages[0]);
+        assertEquals("clinicName", messages[0]);
     }
 }
