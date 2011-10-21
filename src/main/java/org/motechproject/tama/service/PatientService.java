@@ -138,7 +138,7 @@ public class PatientService {
 
     private void scheduleFourDayRecallJobs(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
-        if (treatmentAdvice != null)
+        if (treatmentAdvice != null && patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall)
             tamaSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
 

@@ -11,7 +11,7 @@ public class OutboxContext {
     private Cookies cookies;
 
     private static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
-    private static final String OUTBOX_COMPLETED = "true";
+    private static final String OUTBOX_COMPLETED = "outboxCompleted";
     private KooKooIVRContext kooKooIVRContext;
     private HttpServletRequest request;
 
