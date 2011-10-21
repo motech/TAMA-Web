@@ -70,6 +70,10 @@ public class TestDrugDosage  extends TestEntity {
         return dosageSchedule;
     }
 
+    public boolean isMorningDosage() {
+        return dosageType.equals(MORNING_DAILY);
+    }
+
     @Override
     public String resourceName() {
         throw new NotImplementedException();
