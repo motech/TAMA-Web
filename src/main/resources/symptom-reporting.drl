@@ -1,65 +1,54 @@
 dialect "mvel"
-import org.motechproject.tama.domain.PatientStats;
+import org.motechproject.tama.domain.PatientMedicalConditions;
 
-global org.motechproject.tama.service.SymptomReportingRuleService.Transition transition;
+global java.util.List tree;
 
-rule "DefaultRuleRegimen4"
-  when
-      s : PatientStats(regimen == 4);
-  then
+rule "Regimen1"
+    when
+        PatientMedicalConditions(regimenName == "Regimen I");
+    then
 end
 
-rule "Rule Thirty Seven" extends "DefaultRuleRegimen4"
-  when
-        $patient : PatientStats(pychiatricIllnessHistoryPresent == true && baseLineCD4Count > 50) from s
-  then
-      transition.setEntryPoint(new String("37"));
-      retract($patient)
+rule "N1" extends "Regimen1"
+    when
+        $n1 : PatientMedicalConditions(age > 50);
+    then
 end
 
-rule "Rule Thirty Six"
-
-  when
-        $patient : PatientStats(pychiatricIllnessHistoryPresent ==true && baseLineCD4Count < 50   && regimen == 4)
-  then
-      transition.setEntryPoint(new String("36"));
-      retract($patient)
+rule "N2" extends "Regimen1"
+    when
+        not(PatientMedicalConditions(age > 50)) && PatientMedicalConditions(cd4Count <= 50);
+    then
 end
 
-rule "Rule Thirty Five"
-
-  when
-        $patient : PatientStats(pychiatricIllnessHistoryPresent == false && baseLineHB4 < 10 && baseLineCD4Count > 50   && regimen == 4)
-  then
-      transition.setEntryPoint(new String("35"));
-      retract($patient)
+rule "N3" extends "N1"
+    when
+        PatientMedicalConditions(cd4Count <= 50);
+    then
 end
 
-rule "Rule Thirty Four"
-
-  when
-        $patient : PatientStats(pychiatricIllnessHistoryPresent == false && baseLineHB4 < 10 && baseLineCD4Count < 50   && regimen == 4)
-  then
-      transition.setEntryPoint(new String("34"));
-      retract($patient)
+rule "Tree_Regimen1_1" extends "N2"
+    when
+    then
+        tree.add("Regimen1_1");
 end
 
-rule "Rule Thirty Three"
-
-  when
-        $patient : PatientStats(pychiatricIllnessHistoryPresent == true && baseLineHB4 < 10 && baseLineCD4Count > 50  && regimen == 4)
-  then
-      transition.setEntryPoint(new String("33"));
-      retract($patient)
+rule "Tree_Regimen1_2" extends "Regimen1"
+    when
+        not(PatientMedicalConditions(cd4Count <= 50))
+    then
+        tree.add("Regimen1_2");
 end
 
-rule "Rule Thirty Two"
-
-  when
-        $patient : PatientStats(pychiatricIllnessHistoryPresent == true && baseLineHB4 < 10 &&  baseLineCD4Count < 50   && regimen == 4)
-  then
-      transition.setEntryPoint(new String("32"));
-      retract($patient)
+rule "Tree_Regimen1_3" extends "N3"
+    when
+    then
+        tree.add("Regimen1_3");
 end
 
-
+rule "Tree_Regimen1_4" extends "N1"
+    when
+        not(PatientMedicalConditions(cd4Count <= 50))
+    then
+        tree.add("Regimen1_4");
+end

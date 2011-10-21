@@ -39,7 +39,7 @@ public class TreatmentAdviceViewMapperTest {
                 .withDefaults()
                 .build();
         Patient patient = PatientBuilder.startRecording().withPatientId("patientId").build();
-        DrugCompositionGroup group = (DrugCompositionGroup) (new ArrayList(regimen.getDrugCompositionGroups()).get(0));
+        DrugCompositionGroup group = new ArrayList<DrugCompositionGroup>(regimen.getDrugCompositionGroups()).get(0);
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording()
                                                                 .withRegimenId(regimen.getId())
                                                                 .withDrugCompositionGroupId(group.getId())

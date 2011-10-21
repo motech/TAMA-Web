@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr;
+package org.motechproject.tama.ivr.controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +12,10 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
+import org.motechproject.tama.ivr.CallState;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -76,10 +80,10 @@ public class TAMACallFlowControllerInboundCallTest {
     }
 
     @Test
-    public void whenCallStateIsSymptomReporting() {
+    public void whenCallStateIsSymptomReportingTree() {
         tamaIVRContextForTest.pillRegimenSnapshot(pillRegimenSnapshot);
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
-        tamaIVRContextForTest.callState(CallState.SYMPTOM_REPORTING);
+        tamaIVRContextForTest.callState(CallState.SYMPTOM_REPORTING_TREE);
         assertEquals(AllIVRURLs.DECISION_TREE_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
         assertEquals(TAMATreeRegistry.REGIMEN_1_TO_6, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
@@ -89,6 +93,12 @@ public class TAMACallFlowControllerInboundCallTest {
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
         tamaIVRContextForTest.callState(CallState.OUTBOX);
         assertEquals(TAMACallFlowController.OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
+    public void whenCallStateIsSymptomReporting() {
+        tamaIVRContextForTest.callState(CallState.SYMPTOM_REPORTING);
+        assertEquals(TAMACallFlowController.SYMPTOM_REPORTING_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test

@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr;
+package org.motechproject.tama.ivr.controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,6 +6,10 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.ivr.CallState;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 

@@ -8,20 +8,14 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
-import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.repository.AllTreatmentAdvices;
-import org.motechproject.tama.repository.AllUniquePatientFields;
+import org.motechproject.tama.repository.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest_PatientOnDailyPillReminder {
-
     private PatientService patientService;
-
     private Patient dbPatient;
 
     @Mock
@@ -34,6 +28,10 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     private TamaSchedulerService tamaSchedulerService;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllLabResults allLabResults;
+    @Mock
+    private AllRegimens allRegimens;
 
     @Before
     public void setUp() {
@@ -41,12 +39,12 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(allPatients, allUniquePatientFields, tamaSchedulerService, allTreatmentAdvices, pillReminderService);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields);
     }
 
     @Test
     public void shouldUpdatePatient() {
-        CallPreference callPreference= dbPatient.getPatientPreferences().getCallPreference();
+        CallPreference callPreference = dbPatient.getPatientPreferences().getCallPreference();
         TimeOfDay bestCallTime = dbPatient.getPatientPreferences().getBestCallTime();
         Patient patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("7777777777").withId("patient_id").withCallPreference(callPreference).withBestCallTime(bestCallTime).build();
         patientService.update(patient);

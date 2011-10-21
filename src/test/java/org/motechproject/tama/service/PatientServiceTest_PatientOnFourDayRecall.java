@@ -8,11 +8,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
-import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.repository.AllTreatmentAdvices;
-import org.motechproject.tama.repository.AllUniquePatientFields;
-
-import java.util.Arrays;
+import org.motechproject.tama.repository.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -34,6 +30,10 @@ public class PatientServiceTest_PatientOnFourDayRecall {
     private TamaSchedulerService tamaSchedulerService;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllLabResults allLabResults;
+    @Mock
+    private AllRegimens allRegimens;
 
     @Before
     public void setUp() {
@@ -41,7 +41,7 @@ public class PatientServiceTest_PatientOnFourDayRecall {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.FourDayRecall)
                 .withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(allPatients, allUniquePatientFields, tamaSchedulerService, allTreatmentAdvices, pillReminderService);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields);
     }
 
     @Test

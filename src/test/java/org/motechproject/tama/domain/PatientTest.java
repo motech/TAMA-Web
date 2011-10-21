@@ -1,23 +1,32 @@
 package org.motechproject.tama.domain;
 
 import junit.framework.Assert;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.util.DateUtil;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.motechproject.tama.testutil.ValidationUtil.assertConstraintViolation;
+import static org.powermock.api.mockito.PowerMockito.when;
 
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(DateUtil.class)
 public class PatientTest {
 
     private Validator validator;
@@ -108,5 +117,22 @@ public class PatientTest {
         assertEquals(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + "1234567890/1234", uniqueFields.get(1));
     }
 
+    @Test
+    public void shouldReturnCorrectAgeOfPatient() {
+        PowerMockito.mockStatic(DateUtil.class);
+        LocalDate dateOfBirth = new LocalDate(2000, 10, 1);
+        Patient patient = PatientBuilder.startRecording().withDateOfBirth(dateOfBirth).build();
 
+        when(DateUtil.today()).thenReturn(new LocalDate(2011, 10, 19));
+        when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
+        assertEquals(11, patient.getAge());
+
+        when(DateUtil.today()).thenReturn(new LocalDate(2011, 10, 1));
+        when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
+        assertEquals(11, patient.getAge());
+
+        when(DateUtil.today()).thenReturn(new LocalDate(2011, 9, 30));
+        when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
+        assertEquals(10, patient.getAge());
+    }
 }

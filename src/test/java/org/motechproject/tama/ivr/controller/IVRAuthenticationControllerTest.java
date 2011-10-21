@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.ivrauthentication;
+package org.motechproject.tama.ivr.controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +28,8 @@ public class IVRAuthenticationControllerTest {
     @Mock
     private KooKooIVRContext kooKooIVRContext;
 
-    private static String callId = "123";
-    private static String callerId = "9999";
+    private String callId = "123";
+    private String callerId = "9999";
     private IVRAuthenticationController ivrAuthenticationController;
     private TAMAIVRContextForTest tamaivrContext;
 

@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr;
+package org.motechproject.tama.ivr.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.decisiontree.model.Tree;
@@ -10,6 +10,10 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.CallState;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ public class TAMACallFlowController implements CallFlowController {
     public static final String OUTBOX_URL = "/ivr/outbox";
     public static final String PRE_OUTBOX_URL = "/ivr/preoutbox";
     public static final String HANG_UP_URL = "/ivr/hangup";
+    public static final String SYMPTOM_REPORTING_URL = "/ivr/symptomreporting";
     private TAMATreeRegistry treeRegistry;
     private PillReminderService pillReminderService;
     private VoiceOutboxService voiceOutboxService;
@@ -45,8 +50,8 @@ public class TAMACallFlowController implements CallFlowController {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         CallState callState = tamaivrContext.callState();
         if (callState.equals(CallState.STARTED)) return AUTHENTICATION_URL;
-        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING))
-            return AllIVRURLs.DECISION_TREE_URL;
+        if (callState.equals(CallState.SYMPTOM_REPORTING)) return SYMPTOM_REPORTING_URL;
+        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE)) return AllIVRURLs.DECISION_TREE_URL;
         if (tamaivrContext.hasOutboxCompleted()) return HANG_UP_URL;
         if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
@@ -62,7 +67,7 @@ public class TAMACallFlowController implements CallFlowController {
     public String decisionTreeName(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         if (StringUtils.isEmpty(tamaivrContext.lastCompletedTree())) return getStartingTree(tamaivrContext);
-        if (tamaivrContext.callState().equals(CallState.SYMPTOM_REPORTING)) return TAMATreeRegistry.REGIMEN_1_TO_6;
+        if (tamaivrContext.callState().equals(CallState.SYMPTOM_REPORTING_TREE)) return TAMATreeRegistry.REGIMEN_1_TO_6;
         if (onCurrentDosage(tamaivrContext.lastCompletedTree()) && !previousDosageCaptured(tamaivrContext)) {
             return TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER;
         }

@@ -3,6 +3,8 @@ package org.motechproject.tama.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
 import org.motechproject.util.DateUtil;
@@ -232,5 +234,11 @@ public class Patient extends CouchEntity {
 
     public String phoneNumberAndPasscode() {
         return PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + this.getMobilePhoneNumber() + "/" + this.getPatientPreferences().getPasscode();
+    }
+
+    @JsonIgnore
+    public int getAge() {
+        Period period = new Period(getDateOfBirth(), DateUtil.today(), PeriodType.years());
+        return period.getYears();
     }
 }

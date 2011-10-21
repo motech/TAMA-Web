@@ -29,6 +29,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private boolean outboxCompleted;
     private String preferredLanguage;
     private String isOutboundCall;
+    private String symptomReportingTree;
 
     @Override
     public String dtmfInput() {
@@ -225,5 +226,15 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     public TAMAIVRContextForTest preferredLanguage(String preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
         return this;
+    }
+
+    @Override
+    public String symptomReportingTree() {
+        return symptomReportingTree;
+    }
+
+    @Override
+    public void symptomReportingTree(String symptomReportingTree) {
+        this.symptomReportingTree  = symptomReportingTree;
     }
 }

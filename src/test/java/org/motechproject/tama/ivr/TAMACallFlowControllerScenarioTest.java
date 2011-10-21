@@ -11,12 +11,13 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
+import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.any;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TAMACallFlowControllerScenarioTest {
@@ -99,6 +100,9 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
 
         callState(CallState.SYMPTOM_REPORTING);
+        assertURL(TAMACallFlowController.SYMPTOM_REPORTING_URL);
+
+        callState(CallState.SYMPTOM_REPORTING_TREE);
         treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
         assertURL(AllIVRURLs.DECISION_TREE_URL);
         assertTree(TAMATreeRegistry.REGIMEN_1_TO_6);

@@ -2,17 +2,13 @@ package org.motechproject.tama.service;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TamaException;
-import org.motechproject.tama.domain.CallPreference;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.domain.UniquePatientField;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
-import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.repository.AllTreatmentAdvices;
-import org.motechproject.tama.repository.AllUniquePatientFields;
+import org.motechproject.tama.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -23,14 +19,18 @@ public class PatientService {
     private PillReminderService pillReminderService;
     private AllTreatmentAdvices allTreatmentAdvices;
     private TamaSchedulerService tamaSchedulerService;
+    private AllLabResults allLabResults;
+    private AllRegimens allRegimens;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllUniquePatientFields allUniquePatientFields, TamaSchedulerService tamaSchedulerService, AllTreatmentAdvices allTreatmentAdvices, PillReminderService pillReminderService) {
+    public PatientService(TamaSchedulerService tamaSchedulerService, PillReminderService pillReminderService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllRegimens allRegimens, AllUniquePatientFields allUniquePatientFields) {
         this.allPatients = allPatients;
         this.allUniquePatientFields = allUniquePatientFields;
         this.tamaSchedulerService = tamaSchedulerService;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.pillReminderService = pillReminderService;
+        this.allLabResults = allLabResults;
+        this.allRegimens = allRegimens;
     }
 
     public void update(Patient patient) {
@@ -49,6 +49,45 @@ public class PatientService {
         }
         allPatients.update(patient);
         postUpdate(patient, dbPatient);
+    }
+
+    public Patient getPatient(String patientId) {
+        return allPatients.findByPatientId(patientId).get(0);
+    }
+
+    public List<LabResult> getLabResults(String patientId) {
+        return allLabResults.findByPatientId(patientId);
+    }
+
+    public TreatmentAdvice getTreatmentAdvice(String patientId) {
+        return allTreatmentAdvices.findByPatientId(patientId);
+    }
+
+    public Regimen getRegimen(String regimenId) {
+        return allRegimens.get(regimenId);
+    }
+
+    public PatientMedicalConditions getPatientMedicalConditions(String patientId) {
+        Patient patient = getPatient(patientId);
+        List<LabResult> labResults = getLabResults(patientId);
+        TreatmentAdvice treatmentAdvice = getTreatmentAdvice(patientId);
+        Regimen regimen = getRegimen(treatmentAdvice.getRegimenId());
+
+        PatientMedicalConditions patientMedicalConditions = new PatientMedicalConditions();
+        patientMedicalConditions.setRegimenName(regimen.getName());
+        patientMedicalConditions.setGender(patient.getGender().getType());
+        patientMedicalConditions.setAge(patient.getAge());
+
+        Collections.sort(labResults, new LabResult.LabResultComparator());
+
+        for (LabResult result : labResults) {
+            if (result.isCD4()) {
+                patientMedicalConditions.setCd4Count(Integer.parseInt(result.getResult()));
+                break;
+            }
+        }
+
+        return patientMedicalConditions;
     }
 
     private void postUpdate(Patient patient, Patient dbPatient) {

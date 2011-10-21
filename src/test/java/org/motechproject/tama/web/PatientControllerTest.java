@@ -168,7 +168,6 @@ public class PatientControllerTest {
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
 
-
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
         verify(allPatients).addToClinic(patientFromUI, clinicId);

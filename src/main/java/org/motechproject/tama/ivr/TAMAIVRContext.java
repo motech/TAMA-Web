@@ -21,6 +21,7 @@ public class TAMAIVRContext {
     static final String CALLER_ID = "caller_id";
     static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
     private static final String CALL_STATE = "call_state";
+    private static final String SYMPTOM_REPORTING_TREE = "symptom_reporting_tree";
     public static final String PATIENT_ID = "patient_id";
     public static final String PATIENT = "Patient";
     private static final String CALL_START_TIME = "call_time";
@@ -179,5 +180,13 @@ public class TAMAIVRContext {
 
     public String preferredLanguage() {
         return kooKooIVRContext.preferredLanguage();
+    }
+
+    public void symptomReportingTree(String symptomReportingTree) {
+        setInSession(SYMPTOM_REPORTING_TREE, symptomReportingTree);
+    }
+
+    public String symptomReportingTree() {
+        return fromSession(SYMPTOM_REPORTING_TREE);
     }
 }

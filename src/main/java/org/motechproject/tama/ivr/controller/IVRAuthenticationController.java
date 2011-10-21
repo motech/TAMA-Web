@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.ivrauthentication;
+package org.motechproject.tama.ivr.controller;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;

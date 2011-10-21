@@ -8,7 +8,7 @@ import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.server.service.ivr.IVRMessage;
-import org.motechproject.tama.ivr.TAMACallFlowController;
+import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.VoiceMessageResponseFactory;
