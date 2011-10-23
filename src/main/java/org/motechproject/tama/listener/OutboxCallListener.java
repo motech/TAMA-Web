@@ -8,7 +8,7 @@ import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.call.IvrCall;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,10 +27,10 @@ public class OutboxCallListener {
     private AllPatients allPatients;
     private Properties properties;
 
-    private TamaSchedulerService tamaSchedulerService;
+    private TAMASchedulerService tamaSchedulerService;
 
     @Autowired
-    public OutboxCallListener(VoiceOutboxService voiceOutboxService, IVRService ivrService, AllPatients allPatients, @Qualifier("ivrProperties") Properties properties, TamaSchedulerService tamaSchedulerService) {
+    public OutboxCallListener(VoiceOutboxService voiceOutboxService, IVRService ivrService, AllPatients allPatients, @Qualifier("ivrProperties") Properties properties, TAMASchedulerService tamaSchedulerService) {
         this.voiceOutboxService = voiceOutboxService;
         this.ivrService = ivrService;
         this.allPatients = allPatients;
@@ -48,7 +48,7 @@ public class OutboxCallListener {
             Map<String, String> callParams = new HashMap<String, String>();
             callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
             ivrCall.makeCall(externalId, callParams);
-            if (!"true".equals(event.getParameters().get(TamaSchedulerService.IS_RETRY)))
+            if (!"true".equals(event.getParameters().get(TAMASchedulerService.IS_RETRY)))
                 tamaSchedulerService.scheduleRepeatingJobForOutBoxCall(allPatients.get(externalId));
         }
     }

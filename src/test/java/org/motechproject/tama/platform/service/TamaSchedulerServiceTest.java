@@ -24,19 +24,18 @@ import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-public class TamaSchedulerServiceTest {
+public class TAMASchedulerServiceTest {
     private final LocalDate TREATMENT_ADVICE_START_DATE = DateUtil.newDate(2012, 12, 12);
     private final LocalDate TREATMENT_ADVICE_END_DATE = DateUtil.newDate(2012, 12, 24);
     private static final String PATIENT_ID = "patient_id";
     private final String TREATMENT_ADVICE_ID = "treatmentAdviceId";
 
-    private TamaSchedulerService schedulerService;
+    private TAMASchedulerService schedulerService;
     private TreatmentAdvice treatmentAdvice;
     private Patient patient;
 
@@ -57,7 +56,7 @@ public class TamaSchedulerServiceTest {
             setId(PATIENT_ID);
             getPatientPreferences().setBestCallTime(bestCallTime);
         }};
-        schedulerService = new TamaSchedulerService(motechSchedulerService, properties, allPatients);
+        schedulerService = new TAMASchedulerService(motechSchedulerService, properties, allPatients);
     }
 
     @Test

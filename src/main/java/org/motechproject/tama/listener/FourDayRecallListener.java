@@ -5,7 +5,7 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.platform.service.FourDayRecallService;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.ivr.call.IvrCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ public class FourDayRecallListener {
     public static final String RETRY_EVENT_KEY = "retry_event";
 
     private IvrCall ivrCall;
-    private TamaSchedulerService schedulerService;
+    private TAMASchedulerService schedulerService;
     private FourDayRecallService fourDayRecallService;
 
     @Autowired
-    public FourDayRecallListener(IvrCall ivrCall, TamaSchedulerService schedulerService, FourDayRecallService fourDayRecallService) {
+    public FourDayRecallListener(IvrCall ivrCall, TAMASchedulerService schedulerService, FourDayRecallService fourDayRecallService) {
         this.ivrCall = ivrCall;
         this.schedulerService = schedulerService;
         this.fourDayRecallService = fourDayRecallService;

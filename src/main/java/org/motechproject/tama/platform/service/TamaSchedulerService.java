@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Component
-public class TamaSchedulerService {
+public class TAMASchedulerService {
     public static final String IS_RETRY = "isRetry";
     @Autowired
     private MotechSchedulerService motechSchedulerService;
@@ -35,10 +35,10 @@ public class TamaSchedulerService {
     private AllPatients allPatients;
 
 
-    public TamaSchedulerService() {
+    public TAMASchedulerService() {
     }
 
-    public TamaSchedulerService(MotechSchedulerService motechSchedulerService, Properties properties, AllPatients allPatients) {
+    public TAMASchedulerService(MotechSchedulerService motechSchedulerService, Properties properties, AllPatients allPatients) {
         this.motechSchedulerService = motechSchedulerService;
         this.properties = properties;
         this.allPatients = allPatients;

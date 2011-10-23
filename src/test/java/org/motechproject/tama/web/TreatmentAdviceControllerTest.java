@@ -13,7 +13,7 @@ import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.util.DateUtil;
@@ -58,7 +58,7 @@ public class TreatmentAdviceControllerTest {
     @Mock
     private PillRegimenRequestMapper requestMapper;
     @Mock
-    private TamaSchedulerService schedulerService;
+    private TAMASchedulerService schedulerService;
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;

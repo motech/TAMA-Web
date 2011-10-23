@@ -8,7 +8,7 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.platform.service.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tama.platform.service.FourDayRecallService;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.util.DateUtil;
 
@@ -21,7 +21,7 @@ public class FourDayRecallListenerTest {
     FourDayRecallListener fourDayRecallListener;
 
     @Mock
-    TamaSchedulerService schedulerService;
+    TAMASchedulerService schedulerService;
     @Mock
     IvrCall ivrCall;
     @Mock

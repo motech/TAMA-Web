@@ -2,11 +2,9 @@ package org.motechproject.tama.service;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TamaException;
-import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.domain.UniquePatientField;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllUniquePatientFields;
@@ -21,22 +19,28 @@ public class PatientService {
     private AllPatients allPatients;
     private AllUniquePatientFields allUniquePatientFields;
     private PillReminderService pillReminderService;
+    private PatientCallServices patientCallServices;
     private AllTreatmentAdvices allTreatmentAdvices;
-    private TamaSchedulerService tamaSchedulerService;
+    private TAMASchedulerService tamaSchedulerService;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllUniquePatientFields allUniquePatientFields, TamaSchedulerService tamaSchedulerService, AllTreatmentAdvices allTreatmentAdvices, PillReminderService pillReminderService) {
+    public PatientService(AllPatients allPatients, AllUniquePatientFields allUniquePatientFields, TAMASchedulerService tamaSchedulerService, AllTreatmentAdvices allTreatmentAdvices, PillReminderService pillReminderService) {
         this.allPatients = allPatients;
         this.allUniquePatientFields = allUniquePatientFields;
         this.tamaSchedulerService = tamaSchedulerService;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.pillReminderService = pillReminderService;
+        this.patientCallServices = new PatientCallServices(tamaSchedulerService, pillReminderService, allTreatmentAdvices);
+    }
+
+    public void create(Patient patient, String clinicName) {
+        allPatients.addToClinic(patient, clinicName);
+        this.patientCallServices.patientCreated(patient);
     }
 
     public void update(Patient patient) {
         Patient dbPatient = allPatients.get(patient.getId());
         patient.setRevision(dbPatient.getRevision());
-
         List<UniquePatientField> oldUniquePatientFields = allUniquePatientFields.get(patient);
         allUniquePatientFields.remove(patient);
         try {
@@ -48,69 +52,6 @@ public class PatientService {
             throw e;
         }
         allPatients.update(patient);
-        postUpdate(patient, dbPatient);
-    }
-
-    private void postUpdate(Patient patient, Patient dbPatient) {
-        if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
-            tamaSchedulerService.unscheduleJobForOutboxCall(dbPatient);
-            tamaSchedulerService.unscheduleRepeatingJobForOutboxCall(dbPatient.getId());
-            unscheduleDailyReminderJobs(patient);
-            scheduleFourDayRecallJobs(patient);
-            return;
-        }
-
-        if (bestCallTimeChanged(patient, dbPatient)) {
-            rescheduleOutboxCalls(patient, dbPatient);
-        }
-
-        if (bestCallTimeChanged(patient, dbPatient) || dayOfWeekForWeeklyAdherenceCallChanged(patient, dbPatient)) {
-            rescheduleFourDayRecallJobs(patient);
-        }
-    }
-
-    private void rescheduleOutboxCalls(Patient updatedPatient, Patient patient) {
-        boolean shouldUnScheduleOldOutboxJobs = shouldScheduleOutboxCallsFor(patient);
-        if (shouldUnScheduleOldOutboxJobs) {
-            tamaSchedulerService.unscheduleJobForOutboxCall(patient);
-            tamaSchedulerService.unscheduleRepeatingJobForOutboxCall(patient.getId());
-        }
-        if (shouldScheduleOutboxCallsFor(updatedPatient)) {
-            tamaSchedulerService.scheduleJobForOutboxCall(updatedPatient);
-        }
-    }
-
-    boolean shouldScheduleOutboxCallsFor(Patient patient) {
-        return patient.getPatientPreferences().getCallPreference() == CallPreference.DailyPillReminder && patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime();
-    }
-
-    private void rescheduleFourDayRecallJobs(Patient patient) {
-        tamaSchedulerService.unScheduleFourDayRecallJobs(patient);
-        scheduleFourDayRecallJobs(patient);
-    }
-
-    private boolean dayOfWeekForWeeklyAdherenceCallChanged(Patient patient, Patient dbPatient) {
-        return patient.getPatientPreferences().getDayOfWeeklyCall() != dbPatient.getPatientPreferences().getDayOfWeeklyCall();
-    }
-
-    private boolean bestCallTimeChanged(Patient patient, Patient dbPatient) {
-        return !(patient.getPatientPreferences().getBestCallTime().equals(dbPatient.getPatientPreferences().getBestCallTime()));
-    }
-
-    private void scheduleFourDayRecallJobs(Patient patient) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
-        if (treatmentAdvice != null)
-            tamaSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
-    }
-
-    private void unscheduleDailyReminderJobs(Patient patient) {
-        pillReminderService.unscheduleJobs(patient.getId());
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
-        if (treatmentAdvice != null)
-            tamaSchedulerService.unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
-    }
-
-    private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
-        return dbPatient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) && patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall);
+        this.patientCallServices.patientUpdated(dbPatient, patient);
     }
 }

@@ -2,7 +2,7 @@ package org.motechproject.tama.ivr.decisiontree;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class DisableOutboxCallRetryCommand implements ITreeCommand {
 
     @Autowired
-    TamaSchedulerService tamaSchedulerService;
+    TAMASchedulerService tamaSchedulerService;
 
     @Override
     public String[] execute(Object obj) {

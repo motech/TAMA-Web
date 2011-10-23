@@ -97,7 +97,8 @@ public class PatientBuilder {
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3).
-                withMedicalHistory(MedicalHistoryBuilder.startRecording().withDefaults().build());
+                withMedicalHistory(MedicalHistoryBuilder.startRecording().withDefaults().build()).
+                withBestCallTime(new TimeOfDay(null, null, null));
     }
 
     public PatientBuilder withCallPreference(CallPreference callPreference) {

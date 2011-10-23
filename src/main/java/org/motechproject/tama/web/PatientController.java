@@ -5,7 +5,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.*;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.service.PatientService;
 import org.motechproject.tama.web.view.ClinicsView;
@@ -43,8 +43,7 @@ public class PatientController extends BaseController {
     public static final String PATIENT = "patient";
     public static final String PATIENTS = "patients";
     public static final String ITEM_ID = "itemId";
-    public static final String PAGE = "page";
-    public static final String SIZE = "size";
+
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
     public static final String CLINIC_AND_PATIENT_ID_ALREADY_IN_USE = "Sorry, the entered patient-id already in use.";
@@ -57,10 +56,10 @@ public class PatientController extends BaseController {
     private AllHIVTestReasons allTestReasons;
     private AllModesOfTransmission allModesOfTransmission;
     private PatientService patientService;
-    private TamaSchedulerService schedulerService;
+    private TAMASchedulerService schedulerService;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, TamaSchedulerService schedulerService, PatientService patientService) {
+    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, TAMASchedulerService schedulerService, PatientService patientService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -124,13 +123,7 @@ public class PatientController extends BaseController {
             return CREATE_VIEW;
         }
         try {
-            //TODO: This code should be moved to PatientService
-            allPatients.addToClinic(patient, loggedInClinic(request));
-            //TODO: Instead of calling patient to get data and checking on that, patient should have method like hasAgreedToBeCalledAtBestCallTime
-            if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
-                    patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
-                schedulerService.scheduleJobForOutboxCall(patient);
-            }
+            patientService.create(patient, loggedInClinic(request));
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();

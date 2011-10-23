@@ -5,16 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.internal.verification.Times;
-import org.mockito.verification.VerificationMode;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Gender;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
-import org.motechproject.tama.domain.TimeMeridiem;
-import org.motechproject.tama.domain.TimeOfDay;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -65,7 +61,7 @@ public class PatientControllerTest {
     @Mock
     private PatientService patientService;
     @Mock
-	private TamaSchedulerService schedulerService;
+	private TAMASchedulerService schedulerService;
 
     @Before
     public void setUp() {
@@ -171,7 +167,7 @@ public class PatientControllerTest {
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-        verify(allPatients).addToClinic(patientFromUI, clinicId);
+        verify(patientService).create(patientFromUI, clinicId);
         assertTrue(modelMap.isEmpty());
         assertEquals("redirect:/patients/123", createPage);
     }
@@ -197,42 +193,6 @@ public class PatientControllerTest {
         assertEquals("patients/create", createPage);
     }
 
-    @Test
-    public void shouldNeverScheduleJobForOutbox_whenPatientHasNotAgreedToBeCalledAtBestCallTime() {
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(request.getSession()).thenReturn(session);
-        Patient patient = new Patient();
-        patient.setId("patientId");
-        patient.setPatientPreferences(new PatientPreferences() {{
-            setCallPreference(CallPreference.DailyPillReminder);
-        }});
-        controller.create(patient, bindingResult, uiModel, request);
-        controller.update(patient, bindingResult, uiModel, request);
-        verify(schedulerService, never()).scheduleJobForOutboxCall(patient);
-    }
-
-    @Test
-    public void shouldScheduleJobForOutbox_whenPatientHasAgreedToBeCalledAtBestCallTime() {
-        final TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
-
-        BindingResult bindingResult = mock(BindingResult.class);
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(request.getSession()).thenReturn(session);
-
-        Patient patient = new Patient();
-        patient.setId("patientId");
-        patient.setPatientPreferences(new PatientPreferences() {{
-            setBestCallTime(bestCallTime);
-            setCallPreference(CallPreference.DailyPillReminder);
-        }});
-        controller.create(patient, bindingResult, uiModel, request);
-
-        controller.update(patient, bindingResult, uiModel, request);
-
-        verify(schedulerService, new Times(1)).scheduleJobForOutboxCall(patient);
-    }
 
 
     @Test

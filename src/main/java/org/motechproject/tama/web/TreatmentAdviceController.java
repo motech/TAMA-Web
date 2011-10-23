@@ -4,7 +4,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
-import org.motechproject.tama.platform.service.TamaSchedulerService;
+import org.motechproject.tama.platform.service.TAMASchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
@@ -46,12 +46,12 @@ public class TreatmentAdviceController extends BaseController {
     @Autowired
     private PillRegimenRequestMapper pillRegimenRequestMapper;
     @Autowired
-    private TamaSchedulerService schedulerService;
+    private TAMASchedulerService schedulerService;
 
     protected TreatmentAdviceController() {
     }
 
-    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper, TamaSchedulerService schedulerService) {
+    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper, TAMASchedulerService schedulerService) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
