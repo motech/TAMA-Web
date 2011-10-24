@@ -130,7 +130,8 @@ public class TamaSchedulerService {
 	}
 
     public void unscheduleJobForOutboxCall(Patient patient) {
-          motechSchedulerService.unscheduleJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
+        motechSchedulerService.unscheduleJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
+        motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
     }
 
     public void scheduleRepeatingJobForOutBoxCall(Patient patient) {
