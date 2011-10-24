@@ -8,20 +8,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SymptomReportingTree extends TamaDecisionTree {
-    @Autowired
+
     private SymptomReportingAlertService service;
 
     private Logger logger = Logger.getLogger(this.getClass());
 
+    @Autowired
+    public SymptomReportingTree(SymptomReportingAlertService service) {
+        this.service = service;
+    }
+
     public Tree getTree(String symptomReportingTreeName) {
         try {
-            Class builderClass = Class.forName("org.motechproject.tama.ivr.decisiontree.Regimen1To6TreeBuilder");
-            Tree symtomReportingTree = (Tree) builderClass.getMethod("getTree", new Class[0]).invoke(symptomReportingTreeName);
+            Tree symtomReportingTree = RegimenTreeChooser.getTree(symptomReportingTreeName);
             service.addAlerts(symtomReportingTree.getRootNode());
             return symtomReportingTree;
         } catch (Exception e) {
             logger.error("Error in getting appropriate tree", e);
-            e.printStackTrace();
             return null;
         }
     }
