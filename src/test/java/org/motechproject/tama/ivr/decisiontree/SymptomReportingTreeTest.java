@@ -27,7 +27,7 @@ public class SymptomReportingTreeTest  {
     }
 
     @Test
-    public void shouldReturn_TheRightRegimenTree_ForGivenSymtpomReportingTreeName(){
+    public void shouldReturn_TheRightRegimenTree_ForGivenSymptomReportingTreeName(){
         Tree regimen1_1Tree = symptomReportingTree.getTree("Regimen1_1");
 
         assertEquals("Regimen1_1", regimen1_1Tree.getName());

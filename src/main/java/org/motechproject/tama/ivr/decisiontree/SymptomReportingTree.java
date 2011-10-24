@@ -19,14 +19,12 @@ public class SymptomReportingTree extends TamaDecisionTree {
     }
 
     public Tree getTree(String symptomReportingTreeName) {
-        try {
-            Tree symtomReportingTree = RegimenTreeChooser.getTree(symptomReportingTreeName);
-            service.addAlerts(symtomReportingTree.getRootNode());
-            return symtomReportingTree;
-        } catch (Exception e) {
-            logger.error("Error in getting appropriate tree", e);
+        Tree symptomReportingTree = RegimenTreeChooser.getTree(symptomReportingTreeName);
+        if (symptomReportingTree == null) {
             return null;
         }
+        service.addAlerts(symptomReportingTree.getRootNode());
+        return symptomReportingTree;
     }
 
     @Override

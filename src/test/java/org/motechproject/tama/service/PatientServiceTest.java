@@ -54,7 +54,7 @@ public class PatientServiceTest {
     @Test
     public void shouldReturnPatientForGivenId() {
         Patient expectedPatient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
-        when(allPatients.findByPatientId(patientId)).thenReturn(Arrays.asList(expectedPatient));
+        when(allPatients.get(patientId)).thenReturn(expectedPatient);
 
         Patient patient = patientService.getPatient(patientId);
 
@@ -108,7 +108,7 @@ public class PatientServiceTest {
         PowerMockito.when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
 
         Patient patient = PatientBuilder.startRecording().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
-        when(allPatients.findByPatientId(patientId)).thenReturn(Arrays.asList(patient));
+        when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
@@ -136,7 +136,7 @@ public class PatientServiceTest {
     public void shouldReturnTheLatestTestResultInCaseThereAreMultipleTestResultsForALabTest() {
         LocalDate dateOfBirth = new LocalDate(2000, 10, 1);
         Patient patient = PatientBuilder.startRecording().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
-        when(allPatients.findByPatientId(patientId)).thenReturn(Arrays.asList(patient));
+        when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();

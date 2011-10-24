@@ -52,7 +52,7 @@ public class PatientService {
     }
 
     public Patient getPatient(String patientId) {
-        return allPatients.findByPatientId(patientId).get(0);
+        return allPatients.get(patientId);
     }
 
     public List<LabResult> getLabResults(String patientId) {
