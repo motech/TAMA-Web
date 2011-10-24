@@ -5,20 +5,16 @@ import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class CreateARTRegimenPage extends Page {
 
     public static final String REGIMEN_ID = "_treatmentAdvice.regimenId_id";
     public static final String DISCONTINUATION_REASON_ID = "_discontinuationReason_id";
 
-    public static final String DRUG1_BRAND_ID = "_treatmentAdvice.drugDosages[0].brandId_id";
     public static final String DRUG_BRAND1_ID = "_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id";
 
     @FindBy(how = How.ID, using = REGIMEN_ID)
@@ -26,9 +22,6 @@ public class CreateARTRegimenPage extends Page {
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugCompositionGroupId_id")
     private WebElement drugCompositionGroupElement;
-
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugCompositionId_id")
-    private WebElement drugCompositionElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageTypeId_id")
     private WebElement drug1DosageTypeElement;
@@ -90,9 +83,6 @@ public class CreateARTRegimenPage extends Page {
     }
 
     public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
-//        These calls are problematic because of ajax based implementation, using the default composition and regimen instead
-//        selectRegimenAndWaitTillTheCompositionGroupsShow(treatmentAdvice);
-//        selectDrugCompositionAndWaitTillTheDrugDosagesShow(treatmentAdvice);
         setupNewARTRegimen(treatmentAdvice);
         this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
@@ -109,7 +99,7 @@ public class CreateARTRegimenPage extends Page {
     private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
         logDosage(drugDosage1);
-        drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
+        ((ExtendedWebElement) drug1DosageTypeElement).select(drugDosage1.dosageType());
         drug1MealAdviceTypeElement.click();
         if (drugDosage1.isMorningDosage())
             drug1MorningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
@@ -119,7 +109,7 @@ public class CreateARTRegimenPage extends Page {
 
         TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);
         logDosage(drugDosage2);
-        drug2DosageTypeElement.sendKeys(drugDosage2.dosageType());
+        ((ExtendedWebElement) drug2DosageTypeElement).select(drugDosage2.dosageType());
         drug2MealAdviceTypeElement.click();
         if (drugDosage2.isMorningDosage())
             drug2MorningDosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
@@ -132,29 +122,5 @@ public class CreateARTRegimenPage extends Page {
 
     private void logDosage(TestDrugDosage drugDosage) {
         logInfo("%s Dosage at %s", drugDosage.dosageType(), drugDosage.dosageSchedule());
-    }
-
-    private void tabOut(WebElement webElement) {
-        ((ExtendedWebElement) webElement).sendKey(Keys.TAB);
-    }
-
-    private void selectRegimenAndWaitTillTheCompositionGroupsShow(TestTreatmentAdvice treatmentAdvice) {
-        regimenElement.sendKeys(treatmentAdvice.regimenName());
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(CreateARTRegimenPage.DRUG1_BRAND_ID)) != null;
-            }
-        });
-    }
-
-    private void selectDrugCompositionAndWaitTillTheDrugDosagesShow(TestTreatmentAdvice treatmentAdvice) {
-        drugCompositionGroupElement.sendKeys(treatmentAdvice.drugCompositionName());
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(CreateARTRegimenPage.DRUG1_BRAND_ID)) != null;
-            }
-        });
     }
 }
