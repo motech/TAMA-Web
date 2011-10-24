@@ -7,11 +7,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.listener.FourDayRecallListener;
 import org.motechproject.tama.repository.AllPatients;
@@ -178,5 +180,17 @@ public class TamaSchedulerServiceTest {
         drugDosages.add(drugDosage);
         treatmentAdvice.setDrugDosages(drugDosages);
         return treatmentAdvice;
+    }
+
+    @Test
+       public void shouldUnscheduleFourDayRecallJobs() {
+        String patient_id = "patient_id";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patient_id).withBestCallTime(new TimeOfDay(10, 00, TimeMeridiem.AM)).build();
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn("3");
+        schedulerService.unScheduleFourDayRecallJobs(patient);
+        verify(motechSchedulerService).unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, patient_id);
+        for (int i=0;i<3; i++)
+        verify(motechSchedulerService).unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, i + patient_id);
     }
 }
