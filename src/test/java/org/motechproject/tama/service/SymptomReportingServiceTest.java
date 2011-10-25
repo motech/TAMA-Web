@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.PatientMedicalConditions;
 import org.motechproject.tama.integration.repository.SpringIntegrationTest;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -42,6 +43,8 @@ private SymptomReportingService symptomReportingService;
         patientMedicalConditions.setRegimenName("Regimen I");
         patientMedicalConditions.setAge(60);
         patientMedicalConditions.setCd4Count(20);
+        patientMedicalConditions.setDiabetic(true);
+        patientMedicalConditions.setArtRegimenStartDate(DateUtil.today().minusMonths(6));
 
         assertEquals("Regimen1_3", symptomReportingService.getSymptomReportingTree(patientMedicalConditions));
     }
@@ -52,6 +55,8 @@ private SymptomReportingService symptomReportingService;
         patientMedicalConditions.setRegimenName("Regimen I");
         patientMedicalConditions.setAge(60);
         patientMedicalConditions.setCd4Count(60);
+        patientMedicalConditions.setHyperTensic(true);
+        patientMedicalConditions.setArtRegimenStartDate(DateUtil.today().minusMonths(6));
 
         assertEquals("Regimen1_4", symptomReportingService.getSymptomReportingTree(patientMedicalConditions));
     }
