@@ -40,6 +40,7 @@ public class AdherenceTrendListener {
         voiceMessageType.setPriority(MessagePriority.MEDIUM);
         voiceMessageType.setVoiceMessageTypeName(OutboxController.VOICE_MESSAGE_COMMAND_AUDIO);
         voiceMessage.setVoiceMessageType(voiceMessageType);
+        voiceMessage.setCreationTime(DateUtil.now().toDate());
         Map<String, Object> parameters = new HashMap<String, Object>();
         List<String> commands = Arrays.asList("weeklyAdherenceOutBoxCommand");  // TODO: not used, can probably be removed
         parameters.put(OutboxController.VOICE_MESSAGE_COMMAND, commands);

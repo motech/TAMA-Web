@@ -140,7 +140,7 @@ public class TamaSchedulerService {
                 .payload();
         eventParams.put(IS_RETRY, "true");
         MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
-        Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.OUT_BOX_CALL_RETRIES_PER_DAY));
+        Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.OUT_BOX_CALL_RETRIES_PER_DAY)) - 1;
         int repeatIntervalInMinutes = Integer.valueOf(properties.getProperty(TAMAConstants.OUT_BOX_CALL_RETRY_INTERVAL));
 		RepeatingSchedulableJob outboxCallJob = new RepeatingSchedulableJob(outboxCallEvent, DateUtil.now().plusMinutes(repeatIntervalInMinutes).toDate(), DateUtil.today().plusDays(1).toDate(), maxOutboundRetries, repeatIntervalInMinutes*60*1000);
 		motechSchedulerService.scheduleRepeatingJob(outboxCallJob);
