@@ -118,7 +118,7 @@ public class PatientServiceTest {
         when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult)));
 
         String regimenId = "regimenId";
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId(regimenId).build();
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(DateUtil.today()).withRegimenId(regimenId).build();
         when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
 
         String regimenName = "Regimen Name";
@@ -131,33 +131,5 @@ public class PatientServiceTest {
         assertEquals("Male", patientMedicalConditions.getGender());
         assertEquals(11, patientMedicalConditions.getAge());
         assertEquals(60, patientMedicalConditions.getCd4Count());
-    }
-
-    @Test
-    public void shouldReturnTheLatestTestResultInCaseThereAreMultipleTestResultsForALabTest() {
-        LocalDate dateOfBirth = new LocalDate(2000, 10, 1);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
-        when(allPatients.get(patientId)).thenReturn(patient);
-
-        String labTestId = "labTestId";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
-
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
-        labResult1.setLabTest(labTest);
-        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 10, 20)).withResult("50").build();
-        labResult2.setLabTest(labTest);
-        LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 9, 20)).withResult("70").build();
-        labResult3.setLabTest(labTest);
-        when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult1, labResult2, labResult3)));
-
-        String regimenId = "regimenId";
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId(regimenId).build());
-        when(allRegimens.get(regimenId)).thenReturn(RegimenBuilder.startRecording().withDefaults().build());
-
-        PatientMedicalConditions patientMedicalConditions = patientService.getPatientMedicalConditions(patientId);
-
-        assertEquals(50, patientMedicalConditions.getCd4Count());
-
-
     }
 }
