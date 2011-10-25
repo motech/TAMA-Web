@@ -20,6 +20,8 @@ import java.util.Date;
 @TypeDiscriminator("doc.documentType == 'LabResult'")
 public class LabResult extends CouchEntity {
 
+    public static final int INVALID_CD4_COUNT = -1;
+
     private LabTest labTest;
 
     @NotNull

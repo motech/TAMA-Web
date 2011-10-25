@@ -3,12 +3,12 @@ package org.motechproject.tama.service;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.mapper.PatientMedicalConditionsMapper;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -73,21 +73,7 @@ public class PatientService {
         TreatmentAdvice treatmentAdvice = getTreatmentAdvice(patientId);
         Regimen regimen = getRegimen(treatmentAdvice.getRegimenId());
 
-        PatientMedicalConditions patientMedicalConditions = new PatientMedicalConditions();
-        patientMedicalConditions.setRegimenName(regimen.getName());
-        patientMedicalConditions.setGender(patient.getGender().getType());
-        patientMedicalConditions.setAge(patient.getAge());
-
-        Collections.sort(labResults, new LabResult.LabResultComparator());
-
-        for (LabResult result : labResults) {
-            if (result.isCD4()) {
-                patientMedicalConditions.setCd4Count(Integer.parseInt(result.getResult()));
-                break;
-            }
-        }
-
-        return patientMedicalConditions;
+        return new PatientMedicalConditionsMapper(patient, labResults, regimen).map();
     }
 
     private void postUpdate(Patient patient, Patient dbPatient) {
