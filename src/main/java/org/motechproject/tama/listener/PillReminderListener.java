@@ -25,6 +25,7 @@ public class PillReminderListener {
         String dosageId = (String) parameters.get(EventKeys.DOSAGE_ID_KEY);
         int timesAlreadyCalled = (Integer) parameters.get(EventKeys.PILLREMINDER_TIMES_SENT);
         int totalCallsToBeMade = (Integer) parameters.get(EventKeys.PILLREMINDER_TOTAL_TIMES_TO_SEND);
-        call.execute(patientDocId, dosageId, timesAlreadyCalled, totalCallsToBeMade);
+        int retryInterval = (Integer) parameters.get(EventKeys.PILLREMINDER_RETRY_INTERVAL);
+        call.execute(patientDocId, dosageId, timesAlreadyCalled, totalCallsToBeMade, retryInterval);
     }
 }

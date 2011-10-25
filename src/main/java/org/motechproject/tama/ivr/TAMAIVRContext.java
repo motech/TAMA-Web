@@ -29,6 +29,7 @@ public class TAMAIVRContext {
     private static final String PILL_REGIMEN = "PillRegimen";
     public static final String NUMBER_OF_TIMES_REMINDER_SENT = PillReminderCall.TIMES_SENT;
     private static final String TOTAL_NUMBER_OF_TIMES_TO_SEND_REMINDER = PillReminderCall.TOTAL_TIMES_TO_SEND;
+    private static final String RETRY_INTERVAL = PillReminderCall.RETRY_INTERVAL;
     public static final String IS_OUTBOX_CALL = "outbox_call";
     private static final String LAST_COMPLETED_TREE = "LastCompletedTree";
 
@@ -151,6 +152,10 @@ public class TAMAIVRContext {
 
     public int totalNumberOfTimesToSendReminder() {
         return Integer.parseInt(kookooRequest.getParameter(TOTAL_NUMBER_OF_TIMES_TO_SEND_REMINDER));
+    }
+
+    public int retryInterval() {
+        return Integer.parseInt(kookooRequest.getParameter(RETRY_INTERVAL));
     }
 
     public void callState(CallState callState) {

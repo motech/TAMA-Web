@@ -30,6 +30,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private String preferredLanguage;
     private String isOutboundCall;
     private String symptomReportingTree;
+    private int retryInterval;
 
     @Override
     public String dtmfInput() {
@@ -236,5 +237,15 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     @Override
     public void symptomReportingTree(String symptomReportingTree) {
         this.symptomReportingTree  = symptomReportingTree;
+    }
+
+    public TAMAIVRContextForTest retryInterval(int retryInterval) {
+        this.retryInterval = retryInterval;
+        return this;
+    }
+
+    @Override
+    public int retryInterval() {
+        return retryInterval;
     }
 }

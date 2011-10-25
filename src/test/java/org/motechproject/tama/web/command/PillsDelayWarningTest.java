@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.server.service.ivr.CallDirection;
-import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -27,17 +26,16 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest(DateUtil.class)
 public class PillsDelayWarningTest {
     private PillsDelayWarning pillsDelayWarning;
-    private String retryInterval;
+    private int retryInterval;
     private TAMAIVRContextForTest context;
 
     @Before
     public void setup() {
         initMocks(this);
         Properties stubProperties = new Properties();
-        retryInterval = "15";
-        stubProperties.put(TAMAConstants.RETRY_INTERVAL, retryInterval);
-        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new TamaIVRMessage(null)), new TamaIVRMessage(null), stubProperties, null);
-        context = new TAMAIVRContextForTest().pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0));
+        retryInterval = 15;
+        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(new TamaIVRMessage(null)), new TamaIVRMessage(null), null);
+        context = new TAMAIVRContextForTest().pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0)).retryInterval(retryInterval);
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
     }
@@ -47,7 +45,7 @@ public class PillsDelayWarningTest {
         context.numberOfTimesReminderSent(0).totalNumberOfTimesToSendReminder(2);
         assertArrayEquals(new String[]{
                 TamaIVRMessage.PLEASE_TAKE_DOSE,
-                String.format("Num_%03d", Integer.valueOf(retryInterval)),
+                String.format("Num_%03d", retryInterval),
                 TamaIVRMessage.CALL_AFTER_SOME_TIME},
                 pillsDelayWarning.executeCommand(context));
     }

@@ -14,10 +14,11 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.*;
 
 public class PillReminderListenerTest {
-    private PillReminderListener listener;
     @Mock
     private PillReminderCall pillReminderCall;
+
     private MotechEvent motechEvent;
+    private PillReminderListener listener;
 
     @Before
     public void setUp() {
@@ -33,10 +34,11 @@ public class PillReminderListenerTest {
         map.put(EventKeys.DOSAGE_ID_KEY, "dosageId");
         map.put(EventKeys.PILLREMINDER_TOTAL_TIMES_TO_SEND, 4);
         map.put(EventKeys.PILLREMINDER_TIMES_SENT, 2);
+        map.put(EventKeys.PILLREMINDER_RETRY_INTERVAL, 5);
         MotechEvent motechEvent = new MotechEvent("subject", map);
 
         listener.handlePillReminderEvent(motechEvent);
 
-        verify(pillReminderCall).execute("patientId", "dosageId", 2, 4);
+        verify(pillReminderCall).execute("patientId", "dosageId", 2, 4, 5);
     }
 }
