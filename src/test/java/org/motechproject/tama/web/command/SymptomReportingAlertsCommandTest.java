@@ -19,7 +19,6 @@ import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import java.util.Properties;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

@@ -49,8 +49,8 @@
         <constructor-arg ref="tamaCouchDbInstance"/>
     </bean>
     <drools:kbase id="symptomReportingRules">
-    <drools:resources>
-            <drools:resource source="classpath:symptom-reporting.drl" type="DRL"/>
+        <drools:resources>
+            <drools:resource source="classpath:regimen1.drl" type="DRL"/>
         </drools:resources>
     </drools:kbase>
     <drools:ksession id="ksession" type="stateless" kbase="symptomReportingRules"/>
