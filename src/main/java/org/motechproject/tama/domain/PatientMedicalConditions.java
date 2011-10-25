@@ -5,6 +5,9 @@ public class PatientMedicalConditions {
     private String gender;
     private int age;
     private int cd4Count;
+    private boolean diabetic;
+    private boolean hyperTensic;
+    private boolean nephrotoxic;
 
     public String getGender() {
         return gender;
@@ -36,5 +39,29 @@ public class PatientMedicalConditions {
 
     public void setRegimenName(String regimenId) {
         this.regimenName = regimenId;
+    }
+
+    public boolean isDiabetic() {
+        return diabetic;
+    }
+
+    public void setDiabetic(boolean diabetic) {
+        this.diabetic = diabetic;
+    }
+
+    public boolean isHyperTensic() {
+        return hyperTensic;
+    }
+
+    public void setHyperTensic(boolean hyperTensic) {
+        this.hyperTensic = hyperTensic;
+    }
+
+    public boolean isNephrotoxic() {
+        return nephrotoxic;
+    }
+
+    public void setNephrotoxic(boolean nephrotoxic) {
+        this.nephrotoxic = nephrotoxic;
     }
 }

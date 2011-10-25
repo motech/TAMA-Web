@@ -38,4 +38,13 @@ public class Ailments {
     public boolean isEmpty() {
         return ailments.isEmpty();
     }
+
+    @JsonIgnore
+    public Ailment getAilment(AilmentDefinition ailmentDefinition) {
+        for (Ailment ailment : ailments) {
+            if (ailment.getDefinition().equals(ailmentDefinition))
+                return ailment;
+        }
+        return null;
+    }
 }

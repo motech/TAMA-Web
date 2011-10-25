@@ -1,9 +1,6 @@
 package org.motechproject.tama.mapper;
 
-import org.motechproject.tama.domain.LabResults;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientMedicalConditions;
-import org.motechproject.tama.domain.Regimen;
+import org.motechproject.tama.domain.*;
 
 public class PatientMedicalConditionsMapper {
     private Patient patient;
@@ -23,7 +20,15 @@ public class PatientMedicalConditionsMapper {
         patientMedicalConditions.setGender(patient.getGender().getType());
         patientMedicalConditions.setAge(patient.getAge());
         patientMedicalConditions.setCd4Count(labResults.latestCD4Count());
+        patientMedicalConditions.setDiabetic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Diabetes));
+        patientMedicalConditions.setHyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
+        patientMedicalConditions.setNephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));
 
         return patientMedicalConditions;
+    }
+
+    private boolean hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition ailmentDefinition) {
+        Ailments otherSystemCategoryAilments = patient.getMedicalHistory().getNonHivMedicalHistory().getAilments(SystemCategoryDefiniton.Other);
+        return otherSystemCategoryAilments.getAilment(ailmentDefinition).everHadTheAilment();
     }
 }

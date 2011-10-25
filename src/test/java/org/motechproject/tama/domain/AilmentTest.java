@@ -3,6 +3,8 @@ package org.motechproject.tama.domain;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AilmentTest {
 
@@ -12,5 +14,18 @@ public class AilmentTest {
         ailment.setState(AilmentState.YES);
         assertEquals(ailment.getDefinition(), AilmentDefinition.Asthma);
         assertEquals(ailment.getState(), AilmentState.YES);
+    }
+
+    @Test
+    public void shouldHaveHistoryOfAilment() {
+        Ailment ailment = AilmentDefinition.Asthma.getAilment();
+
+        assertFalse(ailment.everHadTheAilment());
+
+        ailment.setState(AilmentState.YES_WITH_HISTORY);
+        assertTrue(ailment.everHadTheAilment());
+
+        ailment.setState(AilmentState.YES);
+        assertTrue(ailment.everHadTheAilment());
     }
 }

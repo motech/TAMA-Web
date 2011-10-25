@@ -1,5 +1,6 @@
 package org.motechproject.tama.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.TAMAConstants;
 
 import java.util.ArrayList;
@@ -60,5 +61,14 @@ public class NonHIVMedicalHistory extends BaseEntity {
 
     public List<SystemCategory> getSystemCategories() {
         return systemCategories;
+    }
+
+    @JsonIgnore
+    public Ailments getAilments(SystemCategoryDefiniton systemCategoryDefiniton) {
+        for (SystemCategory systemCategory : systemCategories) {
+            if (systemCategory.getName().equals(systemCategoryDefiniton.getCategoryName()))
+                return systemCategory.getAilments();
+        }
+        return null;
     }
 }

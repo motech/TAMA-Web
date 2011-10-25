@@ -8,6 +8,14 @@ public class SystemCategory extends BaseEntity {
 
     private Ailments ailments = new Ailments();
 
+    public SystemCategory() {
+    }
+
+    public SystemCategory(String name, Ailments ailments) {
+        this.name = name;
+        this.ailments = ailments;
+    }
+
     public String getName() {
         return name;
     }

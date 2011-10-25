@@ -1,5 +1,6 @@
 package org.motechproject.tama.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,9 +105,10 @@ public class PatientServiceTest {
         LocalDate dateOfBirth = new LocalDate(2000, 10, 1);
         PowerMockito.mockStatic(DateUtil.class);
         PowerMockito.when(DateUtil.today()).thenReturn(new LocalDate(2011, 10, 19));
+        PowerMockito.when(DateUtil.now()).thenReturn(new DateTime(2011, 10, 19, 10, 10, 10));
         PowerMockito.when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
 
-        Patient patient = PatientBuilder.startRecording().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
         when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";
@@ -134,7 +136,7 @@ public class PatientServiceTest {
     @Test
     public void shouldReturnTheLatestTestResultInCaseThereAreMultipleTestResultsForALabTest() {
         LocalDate dateOfBirth = new LocalDate(2000, 10, 1);
-        Patient patient = PatientBuilder.startRecording().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
         when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";

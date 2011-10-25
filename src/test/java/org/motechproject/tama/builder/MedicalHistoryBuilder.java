@@ -1,7 +1,6 @@
 package org.motechproject.tama.builder;
 
-import org.motechproject.tama.domain.HIVMedicalHistory;
-import org.motechproject.tama.domain.MedicalHistory;
+import org.motechproject.tama.domain.*;
 
 public class MedicalHistoryBuilder {
 
@@ -12,6 +11,12 @@ public class MedicalHistoryBuilder {
         return this;
     }
 
+    public MedicalHistoryBuilder withNonHIVMedicalHistory(NonHIVMedicalHistory nonHivMedicalHistory) {
+        this.medicalHistory.setNonHivMedicalHistory(nonHivMedicalHistory);
+        return this;
+    }
+
+
     public MedicalHistory build() {
         return this.medicalHistory;
     }
@@ -21,6 +26,13 @@ public class MedicalHistoryBuilder {
     }
 
     public MedicalHistoryBuilder withDefaults() {
-        return this.withHIVMedicalHistory(HIVMedicalHistoryBuilder.startRecording().withDefaults().build());
+        HIVMedicalHistory hivMedicalHistory = HIVMedicalHistoryBuilder.startRecording().withDefaults().build();
+        NonHIVMedicalHistory nonHivMedicalHistory = new NonHIVMedicalHistory();
+
+        SystemCategoryDefiniton systemCategoryDefiniton = SystemCategoryDefiniton.Other;
+        SystemCategory systemCategory = new SystemCategory(systemCategoryDefiniton.getCategoryName(), systemCategoryDefiniton.getAilments());
+        nonHivMedicalHistory.addSystemCategory(systemCategory);
+
+        return this.withHIVMedicalHistory(hivMedicalHistory).withNonHIVMedicalHistory(nonHivMedicalHistory);
     }
 }

@@ -1,5 +1,7 @@
 package org.motechproject.tama.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class Ailment extends BaseEntity{
 
     private AilmentDefinition definition;
@@ -37,5 +39,10 @@ public class Ailment extends BaseEntity{
     @Override
     public int hashCode() {
         return definition != null ? definition.hashCode() : 0;
+    }
+
+    @JsonIgnore
+    public boolean everHadTheAilment() {
+        return !state.equals(AilmentState.NONE);
     }
 }

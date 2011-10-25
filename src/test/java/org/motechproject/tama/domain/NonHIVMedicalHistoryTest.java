@@ -4,6 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class NonHIVMedicalHistoryTest{
 
@@ -22,6 +26,20 @@ public class NonHIVMedicalHistoryTest{
         SystemCategory respiratory = new SystemCategory();
         nonHIVMedicalHistory.addSystemCategory(respiratory);
         Assert.assertFalse(nonHIVMedicalHistory.getSystemCategories().isEmpty());
+    }
+
+    @Test
+    public void shouldGetAilments_GivenASystemCategory() {
+        NonHIVMedicalHistory nonHIVMedicalHistory = new NonHIVMedicalHistory();
+        SystemCategoryDefiniton systemCategoryDefiniton = SystemCategoryDefiniton.Other;
+        SystemCategory otherSystemCategory = new SystemCategory(systemCategoryDefiniton.getCategoryName(), systemCategoryDefiniton.getAilments());
+        nonHIVMedicalHistory.setSystemCategories(Arrays.asList(otherSystemCategory));
+
+        Ailments otherSystemCategoryAilments = nonHIVMedicalHistory.getAilments(SystemCategoryDefiniton.Other);
+        assertEquals(5, otherSystemCategoryAilments.getAilments().size());
+
+        Ailments noAilments = nonHIVMedicalHistory.getAilments(SystemCategoryDefiniton.Dermatological);
+        assertNull(noAilments);
     }
 
     private ArrayList<AllergyHistory> getAllergiesHistory() {
