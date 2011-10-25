@@ -3,23 +3,20 @@ package org.motechproject.tama.mapper;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.builder.LabResultBuilder;
-import org.motechproject.tama.builder.LabTestBuilder;
-import org.motechproject.tama.builder.PatientBuilder;
-import org.motechproject.tama.builder.RegimenBuilder;
+import org.motechproject.tama.builder.*;
 import org.motechproject.tama.domain.*;
+import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 public class PatientMedicalConditionsMapperTest {
 
     private Patient patient;
-    private Regimen regimen;
     private LabResult labResult;
+    private TreatmentAdvice treatmentAdvice;
+    private Regimen regimen;
 
     @Before
     public void setUp(){
@@ -36,12 +33,14 @@ public class PatientMedicalConditionsMapperTest {
         String regimenName = "Regimen I";
         String regimenId = "regimenId";
         regimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).withName(regimenName).build();
+
+        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(DateUtil.today().minusMonths(4)).build();
     }
     
     @Test
     public void mapPatientDetails() {
-        PatientMedicalConditionsMapper patientMedicalConditionsMapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), regimen);
-        PatientMedicalConditions patientMedicalConditions = patientMedicalConditionsMapper.map();
+        PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
+        PatientMedicalConditions patientMedicalConditions = mapper.map();
 
         assertEquals("Male", patientMedicalConditions.getGender());
         assertEquals(40, patientMedicalConditions.getAge());
@@ -56,11 +55,19 @@ public class PatientMedicalConditionsMapperTest {
         ailments.getAilment(AilmentDefinition.Hypertension).setState(AilmentState.NONE);
         ailments.getAilment(AilmentDefinition.Nephrotoxicity).setState(AilmentState.YES_WITH_HISTORY);
 
-        PatientMedicalConditionsMapper patientMedicalConditionsMapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), regimen);
-        PatientMedicalConditions patientMedicalConditions = patientMedicalConditionsMapper.map();
+        PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
+        PatientMedicalConditions patientMedicalConditions = mapper.map();
 
         assertTrue(patientMedicalConditions.isDiabetic());
         assertFalse(patientMedicalConditions.isHyperTensic());
         assertTrue(patientMedicalConditions.isNephrotoxic());
+    }
+
+    @Test
+    public void mapTreatmentAdviceDuration() {
+        PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
+        PatientMedicalConditions patientMedicalConditions = mapper.map();
+
+        assertEquals(4, patientMedicalConditions.getNumberOfMonthsSinceRegimenStarted());
     }
 }

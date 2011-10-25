@@ -1,15 +1,18 @@
 package org.motechproject.tama.mapper;
 
 import org.motechproject.tama.domain.*;
+import org.motechproject.util.DateUtil;
 
 public class PatientMedicalConditionsMapper {
     private Patient patient;
     private LabResults labResults;
+    private TreatmentAdvice treatmentAdvice;
     private Regimen regimen;
 
-    public PatientMedicalConditionsMapper(Patient patient, LabResults labResults, Regimen regimen) {
+    public PatientMedicalConditionsMapper(Patient patient, LabResults labResults, TreatmentAdvice treatmentAdvice, Regimen regimen) {
         this.patient = patient;
         this.labResults = labResults;
+        this.treatmentAdvice = treatmentAdvice;
         this.regimen = regimen;
     }
 
@@ -23,6 +26,7 @@ public class PatientMedicalConditionsMapper {
         patientMedicalConditions.setDiabetic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Diabetes));
         patientMedicalConditions.setHyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
         patientMedicalConditions.setNephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));
+        patientMedicalConditions.setArtRegimenStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
 
         return patientMedicalConditions;
     }

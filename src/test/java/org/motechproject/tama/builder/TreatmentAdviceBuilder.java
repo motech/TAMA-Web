@@ -1,6 +1,10 @@
 package org.motechproject.tama.builder;
 
+import org.joda.time.LocalDate;
+import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
+
+import java.util.Arrays;
 
 public class TreatmentAdviceBuilder {
 
@@ -23,6 +27,13 @@ public class TreatmentAdviceBuilder {
 
     public TreatmentAdviceBuilder withPatientId(String patientId){
         this.treatmentAdvice.setPatientId(patientId);
+        return this;
+    }
+
+    public TreatmentAdviceBuilder withStartDate(LocalDate startDate){
+        DrugDosage drugDosage = new DrugDosage();
+        drugDosage.setStartDate(startDate);
+        this.treatmentAdvice.setDrugDosages(Arrays.asList(drugDosage));
         return this;
     }
 

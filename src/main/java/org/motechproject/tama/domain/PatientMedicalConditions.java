@@ -1,5 +1,10 @@
 package org.motechproject.tama.domain;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.motechproject.util.DateUtil;
+
 public class PatientMedicalConditions {
     private String regimenName;
     private String gender;
@@ -8,6 +13,7 @@ public class PatientMedicalConditions {
     private boolean diabetic;
     private boolean hyperTensic;
     private boolean nephrotoxic;
+    private LocalDate artRegimenStartDate;
 
     public String getGender() {
         return gender;
@@ -63,5 +69,17 @@ public class PatientMedicalConditions {
 
     public void setNephrotoxic(boolean nephrotoxic) {
         this.nephrotoxic = nephrotoxic;
+    }
+
+    public LocalDate getArtRegimenStartDate() {
+        return artRegimenStartDate;
+    }
+
+    public void setArtRegimenStartDate(LocalDate artRegimenStartDate) {
+        this.artRegimenStartDate = artRegimenStartDate;
+    }
+
+    public int getNumberOfMonthsSinceRegimenStarted() {
+        return new Period(getArtRegimenStartDate(), DateUtil.today(), PeriodType.months()).getMonths();
     }
 }

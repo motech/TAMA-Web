@@ -73,7 +73,7 @@ public class PatientService {
         TreatmentAdvice treatmentAdvice = getTreatmentAdvice(patientId);
         Regimen regimen = getRegimen(treatmentAdvice.getRegimenId());
 
-        return new PatientMedicalConditionsMapper(patient, labResults, regimen).map();
+        return new PatientMedicalConditionsMapper(patient, labResults, treatmentAdvice, regimen).map();
     }
 
     private void postUpdate(Patient patient, Patient dbPatient) {
