@@ -55,7 +55,7 @@ public class PatientService {
         return allPatients.get(patientId);
     }
 
-    public List<LabResult> getLabResults(String patientId) {
+    public LabResults getLabResults(String patientId) {
         return allLabResults.findByPatientId(patientId);
     }
 
@@ -69,7 +69,7 @@ public class PatientService {
 
     public PatientMedicalConditions getPatientMedicalConditions(String patientId) {
         Patient patient = getPatient(patientId);
-        List<LabResult> labResults = getLabResults(patientId);
+        LabResults labResults = getLabResults(patientId);
         TreatmentAdvice treatmentAdvice = getTreatmentAdvice(patientId);
         Regimen regimen = getRegimen(treatmentAdvice.getRegimenId());
 

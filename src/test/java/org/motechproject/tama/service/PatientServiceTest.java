@@ -17,7 +17,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -70,9 +69,9 @@ public class PatientServiceTest {
         LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 10, 20)).withResult("50").build();
         labResult2.setLabTest(labTest);
 
-        when(allLabResults.findByPatientId(patientId)).thenReturn(Arrays.asList(labResult1, labResult2));
+        when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult1, labResult2)));
 
-        List<LabResult> labResults = patientService.getLabResults(patientId);
+        LabResults labResults = patientService.getLabResults(patientId);
 
         assertEquals(2, labResults.size());
         assertEquals(labResult1, labResults.get(0));
@@ -114,7 +113,7 @@ public class PatientServiceTest {
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
         LabResult labResult = LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTest_id(labTestId).withResult("60").build();
         labResult.setLabTest(labTest);
-        when(allLabResults.findByPatientId(patientId)).thenReturn(Arrays.asList(labResult));
+        when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult)));
 
         String regimenId = "regimenId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId(regimenId).build();
@@ -147,7 +146,7 @@ public class PatientServiceTest {
         labResult2.setLabTest(labTest);
         LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 9, 20)).withResult("70").build();
         labResult3.setLabTest(labTest);
-        when(allLabResults.findByPatientId(patientId)).thenReturn(Arrays.asList(labResult1, labResult2, labResult3));
+        when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult1, labResult2, labResult3)));
 
         String regimenId = "regimenId";
         when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId(regimenId).build());

@@ -1,6 +1,7 @@
 package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.domain.LabResult;
+import org.motechproject.tama.domain.LabResults;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class LabResultsUIModel {
     private String z;
 
     @Valid
-    private List<LabResult> labResults = new ArrayList<LabResult>();
+    private LabResults labResults = new LabResults();
 
     public String getId() {
         return id;
@@ -41,11 +42,11 @@ public class LabResultsUIModel {
         this.z = z;
     }
 
-    public List<LabResult> getLabResults() {
+    public LabResults getLabResults() {
         return labResults;
     }
 
-    public void setLabResults(List<LabResult> labResults) {
+    public void setLabResults(LabResults labResults) {
         this.labResults = labResults;
     }
 

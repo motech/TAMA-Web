@@ -60,7 +60,7 @@ public class LabResultTest {
         LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withResult("70").withTestDate(DateUtil.newDate(2011, 9, 10)).build();
         labResult3.setLabTest(labTest);
 
-        ArrayList<LabResult> labResults = new ArrayList<LabResult>();
+        LabResults labResults = new LabResults();
         labResults.add(labResult1);
         labResults.add(labResult2);
         labResults.add(labResult3);

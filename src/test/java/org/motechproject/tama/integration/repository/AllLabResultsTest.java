@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.motechproject.tama.builder.LabResultBuilder;
 import org.motechproject.tama.builder.LabTestBuilder;
 import org.motechproject.tama.domain.LabResult;
+import org.motechproject.tama.domain.LabResults;
 import org.motechproject.tama.domain.LabTest;
 import org.motechproject.tama.repository.AllLabResults;
 import org.motechproject.tama.repository.AllLabTests;
@@ -65,7 +66,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabResults.add(labResult1);
         allLabResults.add(labResult2);
 
-        List<LabResult> results = allLabResults.findByPatientId(patientId);
+        LabResults results = allLabResults.findByPatientId(patientId);
 
         assertEquals(2, results.size());
 
@@ -91,7 +92,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         LabResult labResultAlreadyPresentInDB = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withResult("1").withPatientId(patientId).build();
         allLabResults.add(labResultAlreadyPresentInDB);
 
-        List<LabResult> labResultsForPatient = allLabResults.findByPatientId(patientId);
+        LabResults labResultsForPatient = allLabResults.findByPatientId(patientId);
         
 
         assertEquals("1", labResultsForPatient.get(0).getResult());
@@ -99,7 +100,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withResult("2").withPatientId(patientId).build();
         labResultFromUI.setId(labResultAlreadyPresentInDB.getId());
 
-        allLabResults.merge(Arrays.asList(labResultFromUI));
+        allLabResults.merge(new LabResults(Arrays.asList(labResultFromUI)));
 
         labResultsForPatient = allLabResults.findByPatientId(patientId);
 

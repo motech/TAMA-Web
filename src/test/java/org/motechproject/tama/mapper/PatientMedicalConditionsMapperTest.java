@@ -26,14 +26,14 @@ public class PatientMedicalConditionsMapperTest {
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
 
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
-        labResult1.setLabTest(labTest);
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
+        labResult.setLabTest(labTest);
 
         String regimenName = "Regimen I";
         String regimenId = "regimenId";
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).withName(regimenName).build();
 
-        patientMedicalConditionsMapper = new PatientMedicalConditionsMapper(patient, Arrays.asList(labResult1), regimen);
+        patientMedicalConditionsMapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), regimen);
     }
     
     @Test

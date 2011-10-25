@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.tama.domain.LabResult;
+import org.motechproject.tama.domain.LabResults;
 import org.motechproject.tama.domain.LabTest;
 import org.motechproject.tama.repository.AllLabResults;
 import org.motechproject.tama.repository.AllLabTests;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.LinkedList;
 import java.util.List;
 
 @RooWebScaffold(path = "labresults", formBackingObject = LabResultsUIModel.class)
@@ -97,12 +97,12 @@ public class LabResultsController extends BaseController {
         uiModel.addAttribute("patientId", patientId);
         uiModel.addAttribute("today", DateUtil.today());
 
-        List<LabResult> labResults = createLabResultForEachLabTest(patientId, labTestsAvailable);
+        LabResults labResults = createLabResultForEachLabTest(patientId, labTestsAvailable);
         uiModel.addAttribute("labResults", labResults);
     }
 
-    private List<LabResult> createLabResultForEachLabTest(String patientId, List<LabTest> labTestsAvailable) {
-        List<LabResult> labResults = new LinkedList<LabResult>();
+    private LabResults createLabResultForEachLabTest(String patientId, List<LabTest> labTestsAvailable) {
+        LabResults labResults = new LabResults();
         for (LabTest labTest : labTestsAvailable) {
             LabResult labResult = LabResult.newDefault();
             labResult.setPatientId(patientId);

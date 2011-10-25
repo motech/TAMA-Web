@@ -5,11 +5,10 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.motechproject.tama.domain.LabResult;
+import org.motechproject.tama.domain.LabResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @View(name = "all", map = "function(doc) { if (doc.documentType == 'LabResult') { emit(null, doc) } }")
@@ -32,9 +31,9 @@ public class AllLabResults extends CouchDbRepositorySupport<LabResult> {
     }
 
     @View(name = "find_by_patientId", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId) {emit(doc.patientId, doc._id);}}")
-    public List<LabResult> findByPatientId(String patientId) {
+    public LabResults findByPatientId(String patientId) {
         ViewQuery query = createQuery("find_by_patientId").key(patientId).includeDocs(true);
-        List<LabResult> labResults = db.queryView(query, LabResult.class);
+        LabResults labResults = new LabResults(db.queryView(query, LabResult.class));
         for(LabResult labResult : labResults){
             loadDependencies(labResult);
         }
@@ -45,7 +44,7 @@ public class AllLabResults extends CouchDbRepositorySupport<LabResult> {
         labResult.setLabTest(allLabTests.get(labResult.getLabTest_id()));
     }
 
-    public void merge(List<LabResult> labResultsForPatient) {
+    public void merge(LabResults labResultsForPatient) {
         for(LabResult labResult : labResultsForPatient){
             LabResult labResultInDb = get(labResult.getId());
             labResultInDb.setResult(labResult.getResult());

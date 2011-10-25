@@ -1,17 +1,18 @@
 package org.motechproject.tama.mapper;
 
-import org.motechproject.tama.domain.*;
-
-import java.util.List;
+import org.motechproject.tama.domain.LabResults;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientMedicalConditions;
+import org.motechproject.tama.domain.Regimen;
 
 public class PatientMedicalConditionsMapper {
     private Patient patient;
     private LabResults labResults;
     private Regimen regimen;
 
-    public PatientMedicalConditionsMapper(Patient patient, List<LabResult> labResults, Regimen regimen) {
+    public PatientMedicalConditionsMapper(Patient patient, LabResults labResults, Regimen regimen) {
         this.patient = patient;
-        this.labResults = new LabResults(labResults);
+        this.labResults = labResults;
         this.regimen = regimen;
     }
 
