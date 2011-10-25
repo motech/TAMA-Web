@@ -3,12 +3,14 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <spring:message code="label_org_motechproject_tama_domain_patient_alert_title" var="alert_title" htmlEscape="false" />
     <jsp:output omit-xml-declaration="yes"/>
-        <util:panel id="ps_org_motechproject_tama_alert" title="${alert_title}" openPane="true" update="true">
+        <util:panel id="ps_org_motechproject_tama_alert" title="${alert_title} " openPane="true" >
         <field:display field="patientId" id="s_org_motechproject_tama_alert_id" object="${alertInfo}" label="Patient Id"/>
         <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
         <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time Of Call"/>
         <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Alert Type"/>
         <field:display field="symptomReported" id="s_org_motechproject_tama_alert_SymptomReported" object="${alertInfo}" label="Symptoms Reported"/>
         <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
+        <field:input field="status" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" max="10"/>
+
         </util:panel>
 </div>

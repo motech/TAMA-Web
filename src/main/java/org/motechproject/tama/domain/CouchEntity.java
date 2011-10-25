@@ -56,7 +56,7 @@ public abstract class CouchEntity extends CouchDbDocument {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return getId() != null ? ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE) : super.toString();
 	}
 
     protected Date toDate(LocalDate date) {

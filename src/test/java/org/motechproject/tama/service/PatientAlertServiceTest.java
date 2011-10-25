@@ -1,4 +1,4 @@
-package org.motechproject.tama.repository;
+package org.motechproject.tama.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +10,7 @@ import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientAlert;
+import org.motechproject.tama.repository.AllPatients;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,20 +21,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-public class AllSymptomReportingAlertsTest {
-
+public class PatientAlertServiceTest {
     @Mock
     private AlertService alertService;
-
     @Mock
     private AllPatients allPatients;
 
-    private AllSymptomReportingAlerts symptomReportingAlerts;
+    PatientAlertService patientAlertService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        symptomReportingAlerts = new AllSymptomReportingAlerts(alertService, allPatients);
+        patientAlertService = new PatientAlertService(allPatients, alertService);
     }
 
     @Test
@@ -56,7 +55,7 @@ public class AllSymptomReportingAlertsTest {
         when(alertService.getBy(null, null, null, null, 100)).thenReturn(alerts);
         when(allPatients.get(testId)).thenReturn(patient);
 
-        PatientAlert symptomReportingAlert = symptomReportingAlerts.getSymptomReportingAlert(testId);
+        PatientAlert symptomReportingAlert = patientAlertService.getSymptomReportingAlert(testId);
 
         assertEquals(testId, symptomReportingAlert.getPatientId());
     }
@@ -75,7 +74,7 @@ public class AllSymptomReportingAlertsTest {
         }};
         when(alertService.getBy(null, null, null, null, 100)).thenReturn(alerts);
 
-        symptomReportingAlerts.getSymptomReportingAlert(testId);
+        patientAlertService.getSymptomReportingAlert(testId);
 
         verify(alertService, times(1)).changeStatus(testId, AlertStatus.READ);
     }
@@ -107,7 +106,7 @@ public class AllSymptomReportingAlertsTest {
         when(allPatients.findByClinic(testClinicId)).thenReturn(clinicPatients);
         when(alertService.getBy(testPatientId, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
 
-        List<PatientAlert> unReadAlertsForClinic = symptomReportingAlerts.getUnreadAlertsForClinic(testClinicId);
+        List<PatientAlert> unReadAlertsForClinic = patientAlertService.getUnreadAlertsForClinic(testClinicId);
 
         assertEquals(alerts.size(), unReadAlertsForClinic.size());
 
@@ -139,9 +138,10 @@ public class AllSymptomReportingAlertsTest {
         when(allPatients.findByClinic(testClinicId)).thenReturn(clinicPatients);
         when(alertService.getBy(testPatientId, null, AlertStatus.READ, null, 100)).thenReturn(alerts);
 
-        List<PatientAlert> readAlertsForClinic = symptomReportingAlerts.getReadAlertsForClinic(testClinicId);
+        List<PatientAlert> readAlertsForClinic = patientAlertService.getReadAlertsForClinic(testClinicId);
 
         assertEquals(alerts.size(), readAlertsForClinic.size());
 
     }
+
 }

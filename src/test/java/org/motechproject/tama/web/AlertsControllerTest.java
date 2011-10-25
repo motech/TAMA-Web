@@ -3,9 +3,8 @@ package org.motechproject.tama.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.tama.domain.PatientAlert;
-import org.motechproject.tama.repository.AllSymptomReportingAlerts;
+import org.motechproject.tama.service.PatientAlertService;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +24,7 @@ public class AlertsControllerTest {
     private HttpServletRequest request;
 
     @Mock
-    private AllSymptomReportingAlerts allSymptomReportingAlerts;
+    private PatientAlertService patientAlertService;
 
 
     private AlertsController alertsController;
@@ -36,7 +35,7 @@ public class AlertsControllerTest {
     public void setUp() {
         initMocks(this);
         clinicId = "loggedInClinicId";
-        alertsController = new AlertsController(allSymptomReportingAlerts) {
+        alertsController = new AlertsController(patientAlertService) {
             protected String loggedInClinic(HttpServletRequest request) {
                 return clinicId;
             }
@@ -46,7 +45,7 @@ public class AlertsControllerTest {
     @Test
     public void shouldSetUnreadAlertsForDisplay() {
         List<PatientAlert> patientAlerts = new ArrayList<PatientAlert>();
-        when(allSymptomReportingAlerts.getUnreadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
+        when(patientAlertService.getUnreadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
 
         String unreadControllerString = alertsController.unread(uiModel, request);
 
@@ -57,7 +56,7 @@ public class AlertsControllerTest {
     @Test
     public void shouldSetReadAlertsForDisplay() {
         List<PatientAlert> patientAlerts = new ArrayList<PatientAlert>();
-        when(allSymptomReportingAlerts.getReadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
+        when(patientAlertService.getReadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
 
         String readControllerString = alertsController.read(uiModel, request);
 
@@ -69,7 +68,7 @@ public class AlertsControllerTest {
     public void shouldSetAlertForDisplay() {
         String id = "alertId";
         PatientAlert alert = new PatientAlert() ;
-        when(allSymptomReportingAlerts.getSymptomReportingAlert(id)).thenReturn(alert);
+        when(patientAlertService.getSymptomReportingAlert(id)).thenReturn(alert);
 
         String returnString = alertsController.show(id, uiModel, request);
 
