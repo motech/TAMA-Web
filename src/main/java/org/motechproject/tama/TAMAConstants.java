@@ -1,5 +1,7 @@
 package org.motechproject.tama;
 
+import org.motechproject.tama.domain.LabTest;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +79,25 @@ public class TAMAConstants {
 
         public String getValue() {
             return value;
+        }
+    }
+
+    public enum LabTestType {
+        CD4("CD4 count"),
+        PVL("PVL count");
+
+        private String name;
+
+        LabTestType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static boolean isCD4(LabTest labTest) {
+            return labTest != null && CD4.name.equals(labTest.getName());
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.TAMAConstants;
 
 @TypeDiscriminator("doc.documentType == 'LabTest'")
 public class LabTest extends CouchEntity {
@@ -25,9 +26,9 @@ public class LabTest extends CouchEntity {
         this.normalRange = normalRange;
     }
 
-    public static LabTest newLabTest(String name, String normalRange) {
+    public static LabTest newLabTest(TAMAConstants.LabTestType labTestType, String normalRange) {
         LabTest labTest = new LabTest();
-        labTest.setName(name);
+        labTest.setName(labTestType.getName());
         labTest.setNormalRange(normalRange);
         return labTest;
     }

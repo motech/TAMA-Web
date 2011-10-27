@@ -3,6 +3,7 @@ package org.motechproject.tama.domain;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.LabResultBuilder;
 import org.motechproject.tama.builder.LabTestBuilder;
 import org.motechproject.util.DateUtil;
@@ -11,7 +12,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 
@@ -51,7 +51,7 @@ public class LabResultTest {
     @Test
     public void shouldSortLabResultsInDescendingOrderBasedOnTestDate() {
         String labTestId = "labTestId";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
 
         LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
         labResult1.setLabTest(labTest);
@@ -74,7 +74,7 @@ public class LabResultTest {
     @Test
     public void shouldReturnTrueForCD4LabResult() {
         String labTestId = "labTestId1";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withType(TAMAConstants.LabTestType.CD4).build();
 
         LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
         labResult.setLabTest(labTest);
@@ -85,7 +85,7 @@ public class LabResultTest {
     @Test
     public void shouldReturnFalseForNonCD4LabResult() {
         String labTestId = "labTestId1";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("xyz").build();
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withType(TAMAConstants.LabTestType.PVL).build();
 
         LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
         labResult.setLabTest(labTest);
@@ -99,7 +99,6 @@ public class LabResultTest {
 
         assertFalse(labResult.isCD4());
     }
-
 
     private void assertConstraintViolation(Set<ConstraintViolation<LabResult>> constraintViolations, String property, String message) {
 

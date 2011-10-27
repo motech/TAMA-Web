@@ -1,5 +1,6 @@
 package org.motechproject.tama.builder;
 
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.LabTest;
 
 public class LabTestBuilder {
@@ -13,7 +14,7 @@ public class LabTestBuilder {
 
     public LabTestBuilder withDefaults() {
         withId("id");
-        withName("name");
+        withType(TAMAConstants.LabTestType.CD4);
         return this;
     }
 
@@ -22,8 +23,8 @@ public class LabTestBuilder {
         return this;
     }
 
-    public LabTestBuilder withName(String name){
-        this.name = name;
+    public LabTestBuilder withType(TAMAConstants.LabTestType labTestType){
+        this.name = labTestType.getName();
         return this;
     }
 

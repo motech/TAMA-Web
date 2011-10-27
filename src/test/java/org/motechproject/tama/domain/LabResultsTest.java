@@ -20,7 +20,7 @@ public class LabResultsTest {
     @Test
     public void shouldSortLabResultsBasedOnDateAndReturnLatestCD4Count() {
         String labTestId = "labTestId";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
 
         LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
         labResult1.setLabTest(labTest);
@@ -40,5 +40,4 @@ public class LabResultsTest {
     public void shouldReturn_INVALID_CD4_COUNT_WhenNoLabResults(){
         assertEquals(-1, labResults.latestCD4Count());
     }
-
 }

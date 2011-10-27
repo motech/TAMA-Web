@@ -3,8 +3,6 @@ package org.motechproject.tama.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
 import org.motechproject.util.DateUtil;
@@ -95,15 +93,13 @@ public class LabResult extends CouchEntity {
 
     @JsonIgnore
     public boolean isCD4() {
-        LabTest labTest = getLabTest();
-        return labTest != null && labTest.getName().toLowerCase().equals("cd4");
+        return TAMAConstants.LabTestType.isCD4(getLabTest());
     }
 
     public static class LabResultComparator implements Comparator<LabResult> {
         @Override
         public int compare(LabResult o1, LabResult o2) {
-            Period period = new Period(o1.getTestDate(), o2.getTestDate(), PeriodType.minutes());
-            return period.getMinutes() > 0 ? 1 : -1;
+            return o2.getTestDate().compareTo(o1.getTestDate());
         }
     }
 }

@@ -64,7 +64,7 @@ public class PatientServiceTest {
     @Test
     public void shouldReturnLabResultsForGivenPatient() {
         String labTestId = "labTestId";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
         LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
         labResult1.setLabTest(labTest);
         LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 10, 20)).withResult("50").build();
@@ -112,7 +112,7 @@ public class PatientServiceTest {
         when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
         LabResult labResult = LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTest_id(labTestId).withResult("60").build();
         labResult.setLabTest(labTest);
         when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult)));

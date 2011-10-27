@@ -25,7 +25,7 @@ public class PatientMedicalConditionsMapperTest {
         patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
 
         String labTestId = "labTestId";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withName("CD4").build();
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
 
         labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
         labResult.setLabTest(labTest);
