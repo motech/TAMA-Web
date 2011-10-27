@@ -22,7 +22,7 @@ public class SymptomReportingTree extends TamaDecisionTree {
 
         try {
             Class symptomReportingTreeChooser = Class.forName("org.motechproject.tama.ivr.decisiontree.RegimenTreeChooser");
-            Tree symptomReportingTree = (Tree) symptomReportingTreeChooser.getMethod("getTree", new Class[0]).invoke(symptomReportingTreeName);
+            Tree symptomReportingTree = (Tree) symptomReportingTreeChooser.getMethod("getTree", String.class).invoke(null, symptomReportingTreeName);
             service.addAlerts(symptomReportingTree.getRootNode());
             return symptomReportingTree;
         } catch (Exception e) {

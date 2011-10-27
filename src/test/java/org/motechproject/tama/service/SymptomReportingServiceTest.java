@@ -14,8 +14,9 @@ import static junit.framework.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:**/applicationContext.xml")
 public class SymptomReportingServiceTest extends SpringIntegrationTest {
+
     @Autowired
-private SymptomReportingService symptomReportingService;
+    private SymptomReportingService symptomReportingService;
 
     @Test
     public void shouldReturnRegimen1_1Tree() {
