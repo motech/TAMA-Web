@@ -3,18 +3,13 @@ package org.motechproject.tama.web.command;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hamcrest.Matchers;
-import org.joda.time.DateTime;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.domain.AlertStatus;
-import org.motechproject.server.alerts.domain.AlertType;
-import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
-import org.motechproject.util.DateUtil;
+import org.motechproject.tama.service.PatientAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -29,18 +24,18 @@ import static org.hamcrest.Matchers.startsWith;
 public class SymptomReportingAlertsCommand {
 
     private Logger logger = Logger.getLogger(this.getClass());
-    private AlertService alertService;
+    private PatientAlertService patientAlertService;
 
     private Properties properties;
     private TAMAIVRContextFactory contextFactory;
 
     @Autowired
-    public SymptomReportingAlertsCommand(AlertService alertService, @Qualifier("symptomProperties") Properties properties) {
-        this(alertService, properties, new TAMAIVRContextFactory());
+    public SymptomReportingAlertsCommand(PatientAlertService patientAlertService, @Qualifier("symptomProperties") Properties properties) {
+        this(patientAlertService, properties, new TAMAIVRContextFactory());
     }
 
-    SymptomReportingAlertsCommand(AlertService alertService, Properties properties, TAMAIVRContextFactory contextFactory) {
-        this.alertService = alertService;
+    SymptomReportingAlertsCommand(PatientAlertService patientAlertService, Properties properties, TAMAIVRContextFactory contextFactory) {
+        this.patientAlertService = patientAlertService;
         this.properties = properties;
         this.contextFactory = contextFactory;
     }
@@ -54,12 +49,7 @@ public class SymptomReportingAlertsCommand {
             public String[] execute(Object o) {
                 TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) o);
                 String externalId = ivrContext.patientId();
-                final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority);
-                final DateTime now = DateUtil.now();
-                symptomsAlert.setDateTime(now);
-                symptomsAlert.setDescription(symptomReported);
-                symptomsAlert.setName(adviceGiven);
-                alertService.createAlert(symptomsAlert);
+                patientAlertService.createAlert(externalId, priority, symptomReported, adviceGiven);
                 return new String[0];
             }
         };

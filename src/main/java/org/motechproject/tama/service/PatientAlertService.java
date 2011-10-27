@@ -2,15 +2,20 @@ package org.motechproject.tama.service;
 
 import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;
+import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
+import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientAlert;
+import org.motechproject.tama.domain.SymptomsAlertStatus;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.*;
@@ -61,4 +66,16 @@ public class PatientAlertService {
         };
         return sort(flatten(convert(allPatients.findByClinic(clinicId), patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
+
+    public void createAlert(String externalId, Integer priority, String symptomReported, String adviceGiven) {
+        HashMap<String,String> data = new HashMap<String, String>();
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
+        final DateTime now = DateUtil.now();
+        symptomsAlert.setDateTime(now);
+        symptomsAlert.setDescription(symptomReported);
+        symptomsAlert.setName(adviceGiven);
+        alertService.createAlert(symptomsAlert);
+    }
+
 }
