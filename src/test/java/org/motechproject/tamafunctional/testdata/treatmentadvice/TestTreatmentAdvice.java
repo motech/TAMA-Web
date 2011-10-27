@@ -13,6 +13,7 @@ public class TestTreatmentAdvice {
     public TestTreatmentAdvice() {
     }
 
+    // extrinsic??
     public static TestTreatmentAdvice withExtrinsic(TestDrugDosage... drugDosages) {
         TestTreatmentAdvice treatmentAdvice = new TestTreatmentAdvice();
         treatmentAdvice.drugDosages.addAll(Arrays.asList(drugDosages));

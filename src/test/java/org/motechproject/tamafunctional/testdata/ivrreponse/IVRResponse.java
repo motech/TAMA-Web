@@ -33,7 +33,7 @@ public class IVRResponse {
         return collectdtmf != null;
     }
 
-    public boolean audioPlayed(String ... names) {
+    public boolean wasAudioPlayed(String... names) {
         return (collectDtmf() && collectdtmf.hasAudio(names)) || new Audios(playaudios).hasAudio(names);
     }
 
