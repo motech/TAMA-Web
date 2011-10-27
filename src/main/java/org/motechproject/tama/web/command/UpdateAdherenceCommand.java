@@ -21,6 +21,7 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
 
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
+        //TODO: Commands should be treated as controllers. This logic should be moved behind a service which is agnostic of IVRContext
         DosageStatus newStatus = DosageStatus.from(ivrContext.dtmfInput());
         String dosageId = getDosageId(ivrContext);
 

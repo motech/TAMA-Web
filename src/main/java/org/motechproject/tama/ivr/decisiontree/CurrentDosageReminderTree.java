@@ -40,6 +40,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                         {"1", new Transition()
                                 .setDestinationNode(
                                         new Node()
+                                                //TODO: stopTodaysRemindersCommand, updateAdherenceCommand should be combined to form a DosageTakenCommand
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),

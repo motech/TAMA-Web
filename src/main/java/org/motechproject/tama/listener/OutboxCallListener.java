@@ -11,6 +11,8 @@ import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.AllPatients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class OutboxCallListener {
     private Properties properties;
 
     private TamaSchedulerService tamaSchedulerService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public OutboxCallListener(VoiceOutboxService voiceOutboxService, IVRService ivrService, AllPatients allPatients, @Qualifier("ivrProperties") Properties properties, TamaSchedulerService tamaSchedulerService) {
@@ -41,18 +44,22 @@ public class OutboxCallListener {
 
     @MotechListener(subjects = TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT)
     public void handleOutBoxCall(MotechEvent event) {
-        Map<String, Object> parameters = event.getParameters();
-        String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
-        int numberPendingMessages = voiceOutboxService.getNumberPendingMessages(externalId);
-        Patient patient = allPatients.get(externalId);
-        if (numberPendingMessages > 0 && patient != null && patient.isActive()) {
-            IvrCall ivrCall = new IvrCall(allPatients, ivrService, properties);
-            Map<String, String> callParams = new HashMap<String, String>();
-            callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
-            ivrCall.makeCall(externalId, callParams);
-            if (!"true".equals(event.getParameters().get(TamaSchedulerService.IS_RETRY))) {
-                tamaSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
+        try {
+            Map<String, Object> parameters = event.getParameters();
+            String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
+            int numberPendingMessages = voiceOutboxService.getNumberPendingMessages(externalId);
+            Patient patient = allPatients.get(externalId);
+            if (numberPendingMessages > 0 && patient != null && patient.isActive()) {
+                IvrCall ivrCall = new IvrCall(allPatients, ivrService, properties);
+                Map<String, String> callParams = new HashMap<String, String>();
+                callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
+                ivrCall.makeCall(externalId, callParams);
+                if (!"true".equals(event.getParameters().get(TamaSchedulerService.IS_RETRY))) {
+                    tamaSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
+                }
             }
+        } catch (Exception e) {
+            logger.error("Failed to handle OutboxCall event, this event would not be retried but the subsequent repeats would happen.", e);
         }
     }
 }

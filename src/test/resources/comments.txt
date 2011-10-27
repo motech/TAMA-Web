@@ -1,12 +1,3 @@
-At the begining of the call store everything required in cookie
-why is caller_id, call_id kept in session, is it not passed with every request
-AUTH_SUCCESS is not required as once authenticated one doesn't need to check it anymore, so this would be set in request
-If the request is still coming to authentication then it is for collecting the PIN. the number of retries should be set in cookie. after authentication we should remove it.
-PillRegimen snapshot is created by putting the time, but it is also provided IVRContext. Calltime can be session.
-ExternalId to go to response cookie
-
-org.motechproject.tama.ivr.PillRegimenSnapshot#getCurrentDosage, what is this used for
-
 1. Service is a service and should not be kept in ivr package. IVR and Web are different presentation mechanism, but are domain services.
 2. Domain package should be subdivided into smaller parts.
 3. Use composition over inheritance, any class hierarchy bigger than two probably is a smell. org.motechproject.tama.web.command.StopPreviousPillReminderCommand
@@ -31,20 +22,7 @@ entire call log should be passed instead of part of it, as the original can be d
 why clinic_id
 use constants in the tests also
 org.motechproject.tama.ivr.TamaIVRMessage.getWav, why is the message picked from the ivrproperties
-
-Tooling issues
-daily pill reminder adherenece data
-set the patient regimen in past
-outbox setup
-changing date
-firing the outgoing call for weekly adherenence
-manually setup the clinic/clician/patient/regimen data
-kookoo emulator
-best call time
-ability to writing functional test for these kind of scenarios
-integration tests deleting the data which is required in functional tests
-constraint
-
+Commands are controller, as they deal with context (user input, session, cookies)
 
 projects
 --------
@@ -56,37 +34,29 @@ impl
 impl-delivery-tools
 impl-deploy
 
-modularizing delivery tools and deploy
---------------------------------------
-- master ant xml
-- task specific ant xml
-- master includes all the task xml
-- use naming convention based namespacing of the tasks
+Spring Integration, JMS and Active MQ
+-------------------------------------
+A way of looking at it: Pipes and filter.
+Another way: Message, Producer and Consumer
+Spring's way: Message, Channel, Endpoint
+	Endpoint: Functional: Transformer, Filter, Router, Splitter, Aggregator)
+			  Implementation: Service activator (invokes a Pojo implementation)
+    Channel: Types: PollableChannel, SubscribableChannel
+             Implementations: PublishSubscribeChannel, QueueChannel (FIFO), PriorityChannel, RendevousChannel (Sender blocks till Receiver picks up the message), DirectChannel
+             Storage: InMemory/Local, JMS backed, ChannelAdapter (Custom)
+    Message: EventMessage, DocumentMessage
 
-motech-delivery-tools
----------------------
-- Create a new github project called motech-delivery-tools
-- This would be home for generic parts of the delivery tools. The specific tools should be part of corresponding implementations e.g. tama-delivery-tools
-- It would contain common code required at the time of development, manual testing, automated testing, deployment, migration, backup and monitoring.
+    MessagingTemplate: Provides api to send/receive of message from the application code
+    ChannelAdapter: Type of endpoind. JMS, filebased, http etc.
+    Gateway: Endpoint
 
-service-invoker
----------------
-- required for development, migration, deployment, manual testing)
-- ability to invoke any service using a url and passing data in query params as JSON. The return data should be diplayed in JSON in the browser.
+SpringFrameworkJMS
+    JMSTemplate: producing and consuming messages.
+                 ConnectionFactory->Connection->Session->MessageProducer->send
 
-Data Migration
---------------
-- Snapshot/dump from production (mysql, kahadb & couch)
-- Should we use KahaDb or switch to mysql?
-- Ensure the locale of production and test environments are same. The deploy script should assert for this. Ensure the mysql locale is also same.
-- Add shutdown/start activemq to the deploy script
-- Deployment script to apply the dump
-- This should be all testable on development machine (unless there is linux specific thing we are doing)
-- Write a utility to change the patient's phone number to make it invalid and deactivate the patient. This utility should separately invocable and should
-not be present in deploy.xml, may be in a file called deployment-tools.xml. The utility should be based on service-invoker and invoke PatientService.
-- Stop the webserver and then delete the tama-delivery-tools
-
-tama snapshot based backup
---------------------------
-- since the system would not be used at the night we can take the back-up nightly
-- ant based script to stop data servers,
+SpringJMS
+    InboundChannelAdapters
+        1. JmsTemplate, PollingBased
+        2. MessageDriven, SpringMessageListener
+    OutboundChannelAdapter
+        JmsTemplate

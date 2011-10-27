@@ -7,6 +7,8 @@ import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.platform.service.FourDayRecallService;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.ivr.call.IvrCall;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class FourDayRecallListener {
     private IvrCall ivrCall;
     private TamaSchedulerService schedulerService;
     private FourDayRecallService fourDayRecallService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public FourDayRecallListener(IvrCall ivrCall, TamaSchedulerService schedulerService, FourDayRecallService fourDayRecallService) {
@@ -30,14 +33,18 @@ public class FourDayRecallListener {
 
     @MotechListener(subjects = TAMAConstants.FOUR_DAY_RECALL_SUBJECT)
     public void handle(MotechEvent motechEvent) {
-        String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
-        String treatmentAdviceId = motechEvent.getParameters().get(TREATMENT_ADVICE_DOC_ID_KEY).toString();
-        LocalDate treatmentAdviceStartDate = (LocalDate) motechEvent.getParameters().get(TREATMENT_ADVICE_START_DATE_KEY);
-        Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
+        try {
+            String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
+            String treatmentAdviceId = motechEvent.getParameters().get(TREATMENT_ADVICE_DOC_ID_KEY).toString();
+            LocalDate treatmentAdviceStartDate = (LocalDate) motechEvent.getParameters().get(TREATMENT_ADVICE_START_DATE_KEY);
+            Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
 
-        if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdviceId)) return;
-        if (!isRetryEvent) schedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId, treatmentAdviceId, treatmentAdviceStartDate);
+            if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdviceId)) return;
+            if (!isRetryEvent) schedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId, treatmentAdviceId, treatmentAdviceStartDate);
 
-        ivrCall.makeCall(patientDocId);
+            ivrCall.makeCall(patientDocId);
+        } catch (Exception e) {
+            logger.error("Failed to handle FourDayRecall event, this event would not be retried but the subsequent repeats would happen.", e);
+        }
     }
 }
