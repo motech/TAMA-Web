@@ -55,6 +55,7 @@
                             <excludes>
                                 <exclude>/**/*.java</exclude>
                                 <exclude>**/tamafunctional/**/*.java</exclude>
+                                <exclude>**/tamaperformance/**/*.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
