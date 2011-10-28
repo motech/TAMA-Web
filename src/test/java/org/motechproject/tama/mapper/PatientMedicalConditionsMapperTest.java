@@ -40,12 +40,12 @@ public class PatientMedicalConditionsMapperTest {
     @Test
     public void mapPatientDetails() {
         PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
-        PatientMedicalConditions patientMedicalConditions = mapper.map();
+        MedicalCondition medicalCondition = mapper.map();
 
-        assertEquals("Male", patientMedicalConditions.getGender());
-        assertEquals(40, patientMedicalConditions.getAge());
-        assertEquals(60, patientMedicalConditions.getCd4Count());
-        assertEquals("Regimen I", patientMedicalConditions.getRegimenName());
+        assertEquals("Male", medicalCondition.gender());
+        assertEquals(40, medicalCondition.age());
+        assertEquals(60, medicalCondition.cd4Count());
+        assertEquals("Regimen I", medicalCondition.regimenName());
     }
 
     @Test
@@ -56,18 +56,18 @@ public class PatientMedicalConditionsMapperTest {
         ailments.getAilment(AilmentDefinition.Nephrotoxicity).setState(AilmentState.YES_WITH_HISTORY);
 
         PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
-        PatientMedicalConditions patientMedicalConditions = mapper.map();
+        MedicalCondition medicalCondition = mapper.map();
 
-        assertTrue(patientMedicalConditions.isDiabetic());
-        assertFalse(patientMedicalConditions.isHyperTensic());
-        assertTrue(patientMedicalConditions.isNephrotoxic());
+        assertTrue(medicalCondition.isDiabetic());
+        assertFalse(medicalCondition.isHyperTensic());
+        assertTrue(medicalCondition.isNephrotoxic());
     }
 
     @Test
     public void mapTreatmentAdviceDuration() {
         PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
-        PatientMedicalConditions patientMedicalConditions = mapper.map();
+        MedicalCondition medicalCondition = mapper.map();
 
-        assertEquals(4, patientMedicalConditions.getNumberOfMonthsSinceRegimenStarted());
+        assertEquals(4, medicalCondition.numberOfMonthsSinceRegimenStarted());
     }
 }

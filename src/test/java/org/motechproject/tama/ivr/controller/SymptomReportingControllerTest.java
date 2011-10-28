@@ -7,7 +7,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
-import org.motechproject.tama.domain.PatientMedicalConditions;
+import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
@@ -48,19 +48,19 @@ public class SymptomReportingControllerTest {
         TAMAIVRContextForTest tamaivrContext = new TAMAIVRContextForTest().callId(callId).patientId(patientId);
 
         String symptomReportingTree = "RegimenTree";
-        PatientMedicalConditions patientMedicalConditions = new PatientMedicalConditions();
-        patientMedicalConditions.setRegimenName("RegimenName");
-        patientMedicalConditions.setAge(20);
+        MedicalCondition medicalCondition = new MedicalCondition();
+        medicalCondition.regimenName("RegimenName");
+        medicalCondition.age(20);
 
         when(contextFactory.create(kookooIvrContext)).thenReturn(tamaivrContext);
-        when(patientService.getPatientMedicalConditions(patientId)).thenReturn(patientMedicalConditions);
-        when(symptomReportingService.getSymptomReportingTree(patientMedicalConditions)).thenReturn(symptomReportingTree);
+        when(patientService.getPatientMedicalConditions(patientId)).thenReturn(medicalCondition);
+        when(symptomReportingService.getSymptomReportingTree(medicalCondition)).thenReturn(symptomReportingTree);
 
         KookooIVRResponseBuilder kookooIVRResponseBuilder = symptomReportingController.gotDTMF(kookooIvrContext);
         assertFalse(kookooIVRResponseBuilder.isCollectDTMF());
 
         verify(patientService).getPatientMedicalConditions(patientId);
-        verify(symptomReportingService).getSymptomReportingTree(patientMedicalConditions);
+        verify(symptomReportingService).getSymptomReportingTree(medicalCondition);
         assertEquals(symptomReportingTree, tamaivrContext.symptomReportingTree());
         assertEquals(CallState.SYMPTOM_REPORTING_TREE, tamaivrContext.callState());
     }

@@ -125,11 +125,11 @@ public class PatientServiceTest {
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).withName(regimenName).build();
         when(allRegimens.get(regimenId)).thenReturn(regimen);
 
-        PatientMedicalConditions patientMedicalConditions = patientService.getPatientMedicalConditions(patientId);
+        MedicalCondition medicalCondition = patientService.getPatientMedicalConditions(patientId);
 
-        assertEquals(regimenName, patientMedicalConditions.getRegimenName());
-        assertEquals("Male", patientMedicalConditions.getGender());
-        assertEquals(11, patientMedicalConditions.getAge());
-        assertEquals(60, patientMedicalConditions.getCd4Count());
+        assertEquals(regimenName, medicalCondition.regimenName());
+        assertEquals("Male", medicalCondition.gender());
+        assertEquals(11, medicalCondition.age());
+        assertEquals(60, medicalCondition.cd4Count());
     }
 }

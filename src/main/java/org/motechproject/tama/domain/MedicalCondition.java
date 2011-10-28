@@ -5,7 +5,7 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.motechproject.util.DateUtil;
 
-public class PatientMedicalConditions {
+public class MedicalCondition {
     private String regimenName;
     private String gender;
     private int age;
@@ -15,71 +15,79 @@ public class PatientMedicalConditions {
     private boolean nephrotoxic;
     private LocalDate artRegimenStartDate;
 
-    public String getGender() {
+    public String gender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public MedicalCondition gender(String gender) {
         this.gender = gender;
+        return this;
     }
 
-    public int getAge() {
+    public int age() {
         return age;
     }
 
-    public void setAge(int age) {
+    public MedicalCondition age(int age) {
         this.age = age;
+        return this;
     }
 
-    public int getCd4Count() {
+    public int cd4Count() {
         return cd4Count;
     }
 
-    public void setCd4Count(int cd4Count) {
+    public MedicalCondition cd4Count(int cd4Count) {
         this.cd4Count = cd4Count;
+        return this;
     }
 
-    public String getRegimenName() {
+    public String regimenName() {
         return regimenName;
     }
 
-    public void setRegimenName(String regimenId) {
+    public MedicalCondition regimenName(String regimenId) {
         this.regimenName = regimenId;
+        return this;
     }
 
     public boolean isDiabetic() {
         return diabetic;
     }
 
-    public void setDiabetic(boolean diabetic) {
+    public MedicalCondition diabetic(boolean diabetic) {
         this.diabetic = diabetic;
+        return this;
     }
 
     public boolean isHyperTensic() {
         return hyperTensic;
     }
 
-    public void setHyperTensic(boolean hyperTensic) {
+    public MedicalCondition hyperTensic(boolean hyperTensic) {
         this.hyperTensic = hyperTensic;
+        return this;
     }
 
     public boolean isNephrotoxic() {
         return nephrotoxic;
     }
 
-    public void setNephrotoxic(boolean nephrotoxic) {
+    public MedicalCondition nephrotoxic(boolean nephrotoxic) {
         this.nephrotoxic = nephrotoxic;
+        return this;
     }
 
-    public LocalDate getArtRegimenStartDate() {
+    public LocalDate artRegimenStartDate() {
         return artRegimenStartDate;
     }
 
-    public void setArtRegimenStartDate(LocalDate artRegimenStartDate) {
+    public MedicalCondition artRegimenStartDate(LocalDate artRegimenStartDate) {
         this.artRegimenStartDate = artRegimenStartDate;
+        return this;
     }
 
-    public int getNumberOfMonthsSinceRegimenStarted() {
-        return new Period(getArtRegimenStartDate(), DateUtil.today(), PeriodType.months()).getMonths();
+    public int numberOfMonthsSinceRegimenStarted() {
+        return new Period(artRegimenStartDate(), DateUtil.today(), PeriodType.months()).getMonths();
     }
 }

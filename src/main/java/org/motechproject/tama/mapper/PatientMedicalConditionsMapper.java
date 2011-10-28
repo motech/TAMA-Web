@@ -16,19 +16,19 @@ public class PatientMedicalConditionsMapper {
         this.regimen = regimen;
     }
 
-    public PatientMedicalConditions map() {
-        PatientMedicalConditions patientMedicalConditions = new PatientMedicalConditions();
+    public MedicalCondition map() {
+        MedicalCondition medicalCondition = new MedicalCondition();
 
-        patientMedicalConditions.setRegimenName(regimen.getName());
-        patientMedicalConditions.setGender(patient.getGender().getType());
-        patientMedicalConditions.setAge(patient.getAge());
-        patientMedicalConditions.setCd4Count(labResults.latestCD4Count());
-        patientMedicalConditions.setDiabetic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Diabetes));
-        patientMedicalConditions.setHyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
-        patientMedicalConditions.setNephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));
-        patientMedicalConditions.setArtRegimenStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
+        medicalCondition.regimenName(regimen.getName());
+        medicalCondition.gender(patient.getGender().getType());
+        medicalCondition.age(patient.getAge());
+        medicalCondition.cd4Count(labResults.latestCD4Count());
+        medicalCondition.diabetic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Diabetes));
+        medicalCondition.hyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
+        medicalCondition.nephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));
+        medicalCondition.artRegimenStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
 
-        return patientMedicalConditions;
+        return medicalCondition;
     }
 
     private boolean hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition ailmentDefinition) {

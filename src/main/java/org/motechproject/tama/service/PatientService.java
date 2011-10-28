@@ -67,7 +67,7 @@ public class PatientService {
         return allRegimens.get(regimenId);
     }
 
-    public PatientMedicalConditions getPatientMedicalConditions(String patientId) {
+    public MedicalCondition getPatientMedicalConditions(String patientId) {
         Patient patient = getPatient(patientId);
         LabResults labResults = getLabResults(patientId);
         TreatmentAdvice treatmentAdvice = getTreatmentAdvice(patientId);

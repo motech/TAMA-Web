@@ -6,7 +6,7 @@ import org.motechproject.ivr.kookoo.KookooResponseFactory;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
-import org.motechproject.tama.domain.PatientMedicalConditions;
+import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
@@ -41,8 +41,8 @@ public class SymptomReportingController extends SafeIVRController {
         String callId = tamaIvrContext.callId();
         String patientId = tamaIvrContext.patientId();
 
-        PatientMedicalConditions patientMedicalConditions = patientService.getPatientMedicalConditions(patientId);
-        String symptomReportingTree = symptomReportingService.getSymptomReportingTree(patientMedicalConditions);
+        MedicalCondition medicalCondition = patientService.getPatientMedicalConditions(patientId);
+        String symptomReportingTree = symptomReportingService.getSymptomReportingTree(medicalCondition);
         tamaIvrContext.symptomReportingTree(symptomReportingTree);
         tamaIvrContext.callState(CallState.SYMPTOM_REPORTING_TREE);
 
