@@ -6,22 +6,32 @@ import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
 
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.equalTo;
+
 public class IVRCallTest extends BaseIVRTest {
 
-    private int callCount = 20;
+    private int callCount = 200;
 
     @Test
     public void executePillReminderFlow() throws IOException {
+
+        //-DpatientId=p1 -DclinicName=clinic1
+        //-DpatientId=p2 -DclinicName=clinic1
+        //-DpatientId=p3 -DclinicName=clinic2
+        //-DpatientId=p4 -DclinicName=clinic2
+        //-DpatientId=p5 -DclinicName=clinic3
+        //-DpatientId=p6 -DclinicName=clinic3
+
         String patientId = System.getProperty("patientId");
         String clinicName = System.getProperty("clinicName");
         TestPatient patient = selectFirst(new TestSample().patients, having(on(TestPatient.class).patientId(), equalTo(patientId)));
         TestClinic clinic = selectFirst(new TestSample().clinics, having(on(TestClinic.class).name(), equalTo(clinicName)));
         while (callCount-- > 0) {
+            System.out.println("************************* " + callCount + " *************************");
             callTama(patient, clinic);
         }
     }

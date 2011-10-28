@@ -29,9 +29,9 @@ public abstract class BaseIVRTest extends BaseTest {
     public void tearDown() throws IOException {
         if (caller != null) {
             try {
+                caller.logCookies();
                 caller.hangup();
             } finally {
-                caller.logCookies();
                 caller.tearDown();
             }
         }
