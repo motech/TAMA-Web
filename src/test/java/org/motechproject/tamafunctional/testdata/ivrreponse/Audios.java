@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.testdata.ivrreponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.tama.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Audios {
         for (String audioResource : audioResourceNames) {
             boolean found = false;
             for (String audioUrl : strings) {
-                if (audioUrl.endsWith(String.format("%s.wav", audioResource))) {
+                if (audioResourceMatchesUrl(audioResource, audioUrl)) {
                     found = true;
                     break;
                 }
@@ -26,6 +27,11 @@ public class Audios {
             if (!found) return false;
         }
         return true;
+    }
+
+    private boolean audioResourceMatchesUrl(String audioResource, String audioUrl) {
+        String resourceFile = String.format("%s.wav", audioResource);
+        return resourceFile.equals(StringUtil.lastMatch(audioUrl, "/"));
     }
 
     @Override
