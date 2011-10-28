@@ -74,6 +74,7 @@ public class Caller extends FunctionalTestObject {
         if (hangedUp) return;
         IVRResponse ivrResponse = invokeAndGetResponse(urlFor(IVREvent.Hangup, ""));
         hangedUp = true;
+        webClient.clearCookies();
         Assert.assertNotNull(ivrResponse);
     }
 

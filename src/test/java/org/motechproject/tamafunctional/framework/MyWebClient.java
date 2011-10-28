@@ -37,6 +37,10 @@ public class MyWebClient extends FunctionalTestObject{
         return cookieManager.getCookies();
     }
 
+    public void clearCookies() {
+        webClient.getCookieManager().clearCookies();
+    }
+
     public String getResponse(String url) {
         Page page = getPage(url);
         return page.getWebResponse().getContentAsString();

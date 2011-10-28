@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class IVRCallTest extends BaseIVRTest {
 
-    private int callCount = 1;
+    private int callCount = 20;
 
     @Test
     public void executePillReminderFlow() throws IOException {
@@ -21,8 +21,9 @@ public class IVRCallTest extends BaseIVRTest {
         String clinicName = System.getProperty("clinicName");
         TestPatient patient = selectFirst(new TestSample().patients, having(on(TestPatient.class).patientId(), equalTo(patientId)));
         TestClinic clinic = selectFirst(new TestSample().clinics, having(on(TestClinic.class).name(), equalTo(clinicName)));
-        while (callCount-- > 0)
+        while (callCount-- > 0) {
             callTama(patient, clinic);
+        }
     }
 
     private void callTama(TestPatient patient, TestClinic clinic) throws IOException {
@@ -35,6 +36,8 @@ public class IVRCallTest extends BaseIVRTest {
 
         ivrResponse = caller.enter("3#");
         assertAudioFilesPresent(ivrResponse, TamaIVRMessage.NO_MESSAGES);
+
+        caller.hangup();
     }
 
     private String welcomeAudioForClinic(TestClinic clinic) {
