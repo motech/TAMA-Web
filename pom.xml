@@ -834,6 +834,7 @@
                     <excludes>
                         <exclude>**/*_Roo_*</exclude>
                         <exclude>**/tamafunctional/**/*.java</exclude>
+                        <exclude>**/tamaperformance/**/*.java</exclude>
                         <exclude>**/integration/**/*.java</exclude>
                     </excludes>
                 </configuration>
