@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.TAMAConstants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,8 +55,8 @@ public class NonHIVMedicalHistory extends BaseEntity {
         return specifiedAllergies;
     }
 
-    public NonHIVMedicalHistory addSystemCategory(SystemCategory systemCategory) {
-        systemCategories.add(systemCategory);
+    public NonHIVMedicalHistory addSystemCategory(SystemCategory... systemCategory) {
+        systemCategories.addAll(Arrays.asList(systemCategory));
         return this;
     }
 
@@ -64,7 +65,7 @@ public class NonHIVMedicalHistory extends BaseEntity {
     }
 
     @JsonIgnore
-    public Ailments getAilments(SystemCategoryDefiniton systemCategoryDefiniton) {
+    public Ailments getAilments(SystemCategoryDefinition systemCategoryDefiniton) {
         for (SystemCategory systemCategory : systemCategories) {
             if (systemCategory.getName().equals(systemCategoryDefiniton.getCategoryName()))
                 return systemCategory.getAilments();

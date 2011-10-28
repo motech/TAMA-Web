@@ -216,7 +216,7 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("modesOfTransmission", new ModesOfTransmissionView(allModesOfTransmission).getAll());
         uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
         uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
-        uiModel.addAttribute("systemCategories", SystemCategoryDefiniton.all());
+        uiModel.addAttribute("systemCategories", SystemCategoryDefinition.all());
         uiModel.addAttribute("options", AilmentState.values());
         uiModel.addAttribute("questions", MedicalHistoryQuestions.all());
         uiModel.addAttribute("daysOfWeek", Arrays.asList(DayOfWeek.values()));

@@ -14,6 +14,8 @@ public class MedicalCondition {
     private boolean hyperTensic;
     private boolean nephrotoxic;
     private LocalDate artRegimenStartDate;
+    private boolean lowBaselineHBCount;
+    private boolean psychiatricIllness;
 
     public String gender() {
         return gender;
@@ -89,5 +91,23 @@ public class MedicalCondition {
 
     public int numberOfMonthsSinceRegimenStarted() {
         return new Period(artRegimenStartDate(), DateUtil.today(), PeriodType.months()).getMonths();
+    }
+
+    public boolean lowBaselineHBCount() {
+        return lowBaselineHBCount;
+    }
+
+    public MedicalCondition lowBaselineHBCount(boolean lowBaselineHBCount) {
+        this.lowBaselineHBCount = lowBaselineHBCount;
+        return this;
+    }
+
+    public boolean psychiatricIllness() {
+        return psychiatricIllness;
+    }
+
+    public MedicalCondition psychiatricIllness(boolean hasPsychiatricIllness) {
+        this.psychiatricIllness = hasPsychiatricIllness;
+        return this;
     }
 }

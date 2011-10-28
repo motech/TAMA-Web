@@ -29,7 +29,7 @@ public class MedicalHistoryBuilder {
         HIVMedicalHistory hivMedicalHistory = HIVMedicalHistoryBuilder.startRecording().withDefaults().build();
         NonHIVMedicalHistory nonHivMedicalHistory = new NonHIVMedicalHistory();
 
-        SystemCategoryDefiniton systemCategoryDefiniton = SystemCategoryDefiniton.Other;
+        SystemCategoryDefinition systemCategoryDefiniton = SystemCategoryDefinition.Other;
         SystemCategory systemCategory = new SystemCategory(systemCategoryDefiniton.getCategoryName(), systemCategoryDefiniton.getAilments());
         nonHivMedicalHistory.addSystemCategory(systemCategory);
 

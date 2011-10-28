@@ -10,7 +10,7 @@ public class AilmentsTest {
     @Test
     public void shouldGetAilment_GivenAnAilmentDefinition() {
 
-        Ailments ailments = SystemCategoryDefiniton.Other.getAilments();
+        Ailments ailments = SystemCategoryDefinition.Other.getAilments();
 
         Ailment diabeticAilment = ailments.getAilment(AilmentDefinition.Diabetes);
         assertEquals("Diabetes", diabeticAilment.getDefinition().getValue());

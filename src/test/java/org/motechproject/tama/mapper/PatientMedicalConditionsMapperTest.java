@@ -35,8 +35,17 @@ public class PatientMedicalConditionsMapperTest {
         regimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).withName(regimenName).build();
 
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(DateUtil.today().minusMonths(4)).build();
+
+        NonHIVMedicalHistory nonHivMedicalHistory = new NonHIVMedicalHistory();
+        nonHivMedicalHistory.addSystemCategory(systemCategory(SystemCategoryDefinition.Other), systemCategory(SystemCategoryDefinition.Psychiatric));
+        nonHivMedicalHistory.setQuestions(MedicalHistoryQuestions.all());
+        patient.setMedicalHistory(MedicalHistoryBuilder.startRecording().withDefaults().withNonHIVMedicalHistory(nonHivMedicalHistory).build());
     }
-    
+
+    private SystemCategory systemCategory(SystemCategoryDefinition categoryDefinition) {
+        return new SystemCategory(categoryDefinition.getCategoryName(), categoryDefinition.getAilments());
+    }
+
     @Test
     public void mapPatientDetails() {
         PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
@@ -55,12 +64,20 @@ public class PatientMedicalConditionsMapperTest {
         ailments.getAilment(AilmentDefinition.Hypertension).setState(AilmentState.NONE);
         ailments.getAilment(AilmentDefinition.Nephrotoxicity).setState(AilmentState.YES_WITH_HISTORY);
 
+        SystemCategory psychiatricIllnessSystemCategory = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories().get(1);
+        psychiatricIllnessSystemCategory.getAilments().getOtherAilments().get(0).setState(AilmentState.YES);
+
+        MedicalHistoryQuestion baselineHBQuestion = patient.getMedicalHistory().getNonHivMedicalHistory().getQuestions().get(1);
+        baselineHBQuestion.setHistoryPresent(true);
+
         PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         assertTrue(medicalCondition.isDiabetic());
         assertFalse(medicalCondition.isHyperTensic());
         assertTrue(medicalCondition.isNephrotoxic());
+        assertTrue(medicalCondition.lowBaselineHBCount());
+        assertTrue(medicalCondition.psychiatricIllness());
     }
 
     @Test
@@ -70,4 +87,6 @@ public class PatientMedicalConditionsMapperTest {
 
         assertEquals(4, medicalCondition.numberOfMonthsSinceRegimenStarted());
     }
+
+
 }

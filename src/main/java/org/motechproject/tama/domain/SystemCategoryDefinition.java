@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.motechproject.tama.domain.AilmentDefinition.*;
 
-public enum SystemCategoryDefiniton {
+public enum SystemCategoryDefinition {
 
     Allergic("Allergic/Immunologic", new Ailments().setAilments(Arrays.asList(Asthma.getAilment(),
             Psoriasis.getAilment(),
@@ -72,7 +72,7 @@ public enum SystemCategoryDefiniton {
     private String categoryName;
     private Ailments ailments;
 
-    SystemCategoryDefiniton(String categoryName, Ailments ailments) {
+    SystemCategoryDefinition(String categoryName, Ailments ailments) {
         this.categoryName = categoryName;
         this.ailments = ailments;
     }
@@ -91,7 +91,7 @@ public enum SystemCategoryDefiniton {
 
     public static  List<SystemCategory> all() {
         List<SystemCategory> systemCategories = new LinkedList<SystemCategory>();
-        for(SystemCategoryDefiniton definiton : SystemCategoryDefiniton.values()) {
+        for(SystemCategoryDefinition definiton : SystemCategoryDefinition.values()) {
            systemCategories.add(definiton.getSystemCategory());
         }
         return systemCategories;

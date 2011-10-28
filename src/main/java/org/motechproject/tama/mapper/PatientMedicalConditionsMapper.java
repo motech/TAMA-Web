@@ -3,6 +3,8 @@ package org.motechproject.tama.mapper;
 import org.motechproject.tama.domain.*;
 import org.motechproject.util.DateUtil;
 
+import java.util.List;
+
 public class PatientMedicalConditionsMapper {
     private Patient patient;
     private LabResults labResults;
@@ -27,12 +29,33 @@ public class PatientMedicalConditionsMapper {
         medicalCondition.hyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
         medicalCondition.nephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));
         medicalCondition.artRegimenStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
+        medicalCondition.lowBaselineHBCount(hasBaselineHBLowerThan10());
+        medicalCondition.psychiatricIllness(hasHistoryOfPsychiatricIllness());
 
         return medicalCondition;
     }
 
     private boolean hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition ailmentDefinition) {
-        Ailments otherSystemCategoryAilments = patient.getMedicalHistory().getNonHivMedicalHistory().getAilments(SystemCategoryDefiniton.Other);
+        Ailments otherSystemCategoryAilments = patient.getMedicalHistory().getNonHivMedicalHistory().getAilments(SystemCategoryDefinition.Other);
         return otherSystemCategoryAilments.getAilment(ailmentDefinition).everHadTheAilment();
+    }
+
+    private boolean hasHistoryOfPsychiatricIllness() {
+        List<SystemCategory> systemCategories = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories();
+        for(SystemCategory category : systemCategories) {
+            if(SystemCategoryDefinition.Psychiatric.getCategoryName().equals(category.getName()))
+                return category.getAilments().getOtherAilments().get(0).everHadTheAilment();
+        }
+        return false;
+    }
+
+    private boolean hasBaselineHBLowerThan10() {
+        List<MedicalHistoryQuestion> medicalHistoryQuestions = patient.getMedicalHistory().getNonHivMedicalHistory().getQuestions();
+        for(MedicalHistoryQuestion question: medicalHistoryQuestions) {
+            if(MedicalHistoryQuestions.baseLinePretherapy().getQuestion().equals(question.getQuestion())) {
+                return question.isHistoryPresent();
+            }
+        }
+        return false;
     }
 }

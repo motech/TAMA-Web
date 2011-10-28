@@ -10,8 +10,8 @@ public class SystemCategoryTest {
     public void shouldHaveAName() {
         String name = "Allergic";
         SystemCategory systemCategory = new SystemCategory();
-        systemCategory.setName(SystemCategoryDefiniton.Allergic.name());
-        assertEquals(SystemCategoryDefiniton.Allergic.name(), systemCategory.getName());
+        systemCategory.setName(SystemCategoryDefinition.Allergic.name());
+        assertEquals(SystemCategoryDefinition.Allergic.name(), systemCategory.getName());
     }
 
 }

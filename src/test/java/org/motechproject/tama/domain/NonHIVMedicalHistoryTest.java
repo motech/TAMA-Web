@@ -31,14 +31,14 @@ public class NonHIVMedicalHistoryTest{
     @Test
     public void shouldGetAilments_GivenASystemCategory() {
         NonHIVMedicalHistory nonHIVMedicalHistory = new NonHIVMedicalHistory();
-        SystemCategoryDefiniton systemCategoryDefiniton = SystemCategoryDefiniton.Other;
+        SystemCategoryDefinition systemCategoryDefiniton = SystemCategoryDefinition.Other;
         SystemCategory otherSystemCategory = new SystemCategory(systemCategoryDefiniton.getCategoryName(), systemCategoryDefiniton.getAilments());
         nonHIVMedicalHistory.setSystemCategories(Arrays.asList(otherSystemCategory));
 
-        Ailments otherSystemCategoryAilments = nonHIVMedicalHistory.getAilments(SystemCategoryDefiniton.Other);
+        Ailments otherSystemCategoryAilments = nonHIVMedicalHistory.getAilments(SystemCategoryDefinition.Other);
         assertEquals(5, otherSystemCategoryAilments.getAilments().size());
 
-        Ailments noAilments = nonHIVMedicalHistory.getAilments(SystemCategoryDefiniton.Dermatological);
+        Ailments noAilments = nonHIVMedicalHistory.getAilments(SystemCategoryDefinition.Dermatological);
         assertNull(noAilments);
     }
 

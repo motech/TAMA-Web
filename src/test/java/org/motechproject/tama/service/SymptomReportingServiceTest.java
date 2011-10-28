@@ -68,4 +68,10 @@ public class SymptomReportingServiceTest extends SpringIntegrationTest {
         medicalCondition.regimenName("Regimen 9");
         assertEquals(null, execute());
     }
+
+    @Test
+    public void shouldReturnRegimen4_5Tree() {
+        medicalCondition.regimenName("Regimen IV").cd4Count(10).psychiatricIllness(false).lowBaselineHBCount(false);
+        assertEquals("Regimen4_5", execute());
+    }
 }
