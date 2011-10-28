@@ -1,5 +1,6 @@
 package org.motechproject.tama.service;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,10 @@ public class SymptomReportingServiceTest extends SpringIntegrationTest {
         medicalCondition = new MedicalCondition();
     }
 
+    private LocalDate today() {
+        return DateUtil.today();
+    }
+
     private String execute() {
         return symptomReportingService.getSymptomReportingTree(medicalCondition);
     }
@@ -42,14 +47,20 @@ public class SymptomReportingServiceTest extends SpringIntegrationTest {
 
     @Test
     public void shouldReturnRegimen1_3Tree() {
-        medicalCondition.regimenName("Regimen I").age(60).cd4Count(20).diabetic(true).artRegimenStartDate(DateUtil.today().minusMonths(6));
+        medicalCondition.regimenName("Regimen I").age(60).cd4Count(20).diabetic(true).artRegimenStartDate(today().minusMonths(6));
         assertEquals("Regimen1_3", execute());
     }
 
     @Test
     public void shouldReturnRegimen1_4Tree() {
-        medicalCondition.regimenName("Regimen I").age(60).cd4Count(60).hyperTensic(true).artRegimenStartDate(DateUtil.today().minusMonths(6));
+        medicalCondition.regimenName("Regimen I").age(60).cd4Count(60).hyperTensic(true).artRegimenStartDate(today().minusMonths(6));
         assertEquals("Regimen1_4", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen1_1Tree_Scenario1() {
+        medicalCondition.age(45).diabetic(true).artRegimenStartDate(today().minusMonths(7)).regimenName("Regimen I");
+        assertEquals("Regimen1_1", execute());
     }
 
     @Test
