@@ -52,6 +52,7 @@
     <drools:kbase id="symptomReportingRules">
         <drools:resources>
             <drools:resource source="classpath:regimen1.drl" type="DRL"/>
+            <drools:resource source="classpath:regimen2.drl" type="DRL"/>
             <drools:resource source="classpath:regimen4.drl" type="DRL"/>
             <drools:resource source="classpath:commonInferences.drl" type="DRL"/>
         </drools:resources>

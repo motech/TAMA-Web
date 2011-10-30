@@ -70,6 +70,60 @@ public class SymptomReportingServiceTest extends SpringIntegrationTest {
     }
 
     @Test
+    public void shouldReturnRegimen2_1Tree() {
+        medicalCondition.regimenName("Regimen II");
+        assertEquals("Regimen2_1", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_2Tree_Diabetic_Only() {
+        medicalCondition.regimenName("Regimen II").cd4Count(10).psychiatricIllness(false).diabetic(true).age(60).artRegimenStartDate(today().minusMonths(6));
+        assertEquals("Regimen2_2", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_2Tree_HyperTensic_Only() {
+        medicalCondition.regimenName("Regimen II").cd4Count(10).psychiatricIllness(false).hyperTensic(true).age(60).artRegimenStartDate(today().minusMonths(6));
+        assertEquals("Regimen2_2", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_2Tree_NephroToxic_Only() {
+        medicalCondition.regimenName("Regimen II").cd4Count(10).psychiatricIllness(false).nephrotoxic(true).age(60).artRegimenStartDate(today().minusMonths(6));
+        assertEquals("Regimen2_2", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_3() {
+        medicalCondition.regimenName("Regimen II").cd4Count(90).psychiatricIllness(false).nephrotoxic(true).age(60).artRegimenStartDate(today().minusMonths(6));
+        assertEquals("Regimen2_3", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_4() {
+        medicalCondition.regimenName("Regimen II").cd4Count(10).psychiatricIllness(true);
+        assertEquals("Regimen2_4", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_5() {
+        medicalCondition.regimenName("Regimen II").cd4Count(90).psychiatricIllness(true);
+        assertEquals("Regimen2_5_7", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_6() {
+        medicalCondition.regimenName("Regimen II").cd4Count(10).psychiatricIllness(true).diabetic(true).age(60).artRegimenStartDate(today().minusMonths(6));
+        assertEquals("Regimen2_6", execute());
+    }
+
+    @Test
+    public void shouldReturnRegimen2_7() {
+        medicalCondition.regimenName("Regimen II").cd4Count(90).psychiatricIllness(true).diabetic(true).age(60).artRegimenStartDate(today().minusMonths(6));
+        assertEquals("Regimen2_5_7", execute());
+    }
+
+    @Test
     public void shouldReturnRegimen4_1Tree() {
         medicalCondition.regimenName("Regimen IV").cd4Count(10).psychiatricIllness(false).lowBaselineHBCount(true);
         assertEquals("Regimen4_1_6", execute());
