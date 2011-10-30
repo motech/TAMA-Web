@@ -12,7 +12,7 @@
             <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
             <form:form action="" method="POST" modelAttribute="alertInfo" enctype="${enctype}">
                 <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
-                <field:select field="symptomsAlertStatus" label= "Status" id="s_org_motechproject_tama_alert_symptomsStatus" required="true" items="${symptomsStatuses}" path="/symptomsStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
+                <field:select field="symptomsAlertStatus" label= "Symptoms Alert Status" id="s_org_motechproject_tama_alert_symptomsStatus" required="true" items="${symptomsStatuses}" path="/symptomsStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                 <field:textarea field="doctorsNotes" label="Doctors Notes" id="s_org_motechproject_tama_alert_doctorsNotes"  required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" /><br/>
                 <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                 <formfield:hidden path="alertId" value="${alertInfo.alertId}"/>

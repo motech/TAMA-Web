@@ -6,4 +6,6 @@
              <table:column id="org_motechproject_tama_domain_patientalert" property="alertPriority" label="Alert Priority" />
              <table:column id="org_motechproject_tama_domain_patientalert" property="type" label="Alert Type" />
              <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOn" label="Alert Generated On" />
+             <table:column id="org_motechproject_tama_domain_patientalert" property="symptomsAlertStatus" label="Symptoms Alert Status" />
+             <table:column id="org_motechproject_tama_domain_patientalert" property="doctorsNotes" label="Doctor's notes" />
 </table:table>
