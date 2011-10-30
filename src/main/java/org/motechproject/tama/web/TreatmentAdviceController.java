@@ -75,6 +75,7 @@ public class TreatmentAdviceController extends BaseController {
     public String changeRegimenForm(@RequestParam String id, @RequestParam String patientId, Model uiModel) {
         uiModel.addAttribute("adviceEndDate", DateUtil.today().toString(TAMAConstants.DATE_FORMAT));
         uiModel.addAttribute("existingTreatmentAdviceId", id);
+        uiModel.addAttribute("discontinuationReason", "");
         createForm(patientId, uiModel);
         return "treatmentadvices/update";
     }

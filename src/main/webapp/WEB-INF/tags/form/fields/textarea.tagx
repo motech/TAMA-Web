@@ -32,10 +32,6 @@
       <spring:escapeBody javaScriptEscape="true" >${field}</spring:escapeBody>
     </c:set>
 
-    <c:set var="modelAttribute">
-      <spring:escapeBody javaScriptEscape="true" >${modelAttribute}</spring:escapeBody>
-    </c:set>
-
     <script type="text/javascript">dojo.require("dijit.form.SimpleTextarea");</script>
     <div id="_${fn:escapeXml(id)}_id">
       <label for="_${sec_field}_id">
