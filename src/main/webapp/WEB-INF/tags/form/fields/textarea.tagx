@@ -32,15 +32,19 @@
       <spring:escapeBody javaScriptEscape="true" >${field}</spring:escapeBody>
     </c:set>
 
+    <c:set var="modelAttribute">
+      <spring:escapeBody javaScriptEscape="true" >${modelAttribute}</spring:escapeBody>
+    </c:set>
+
     <script type="text/javascript">dojo.require("dijit.form.SimpleTextarea");</script>
     <div id="_${fn:escapeXml(id)}_id">
       <label for="_${sec_field}_id">
         <c:out value="${fn:escapeXml(label)}" />
         :
       </label>
-      <textarea id="_${sec_field}_id" name="${sec_field}">
+      <form:textarea path="${sec_field}" id="_${sec_field}_id" name="${sec_field}" >
           <!--dummy text required. dont remove -->
-      </textarea>
+      </form:textarea>
       <form:errors cssClass="errors" id="_${sec_field}_error_id" path="${sec_field}" />
       <script type="text/javascript">
           Spring.addDecoration(new Spring.ElementDecoration({elementId : '_${sec_field}_id', widgetType : 'ValidationTextarea', widgetAttrs : {disabled : ${disabled}, required : ${required}}}));

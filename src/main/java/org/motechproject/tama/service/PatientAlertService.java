@@ -78,4 +78,9 @@ public class PatientAlertService {
         alertService.createAlert(symptomsAlert);
     }
 
+    public void updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes) {
+        alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
+        alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        alertService.setData(alertId, PatientAlert.NOTES, notes);
+    }
 }

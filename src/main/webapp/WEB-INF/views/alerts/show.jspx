@@ -10,5 +10,8 @@
         <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Alert Type"/>
         <field:display field="symptomReported" id="s_org_motechproject_tama_alert_SymptomReported" object="${alertInfo}" label="Symptoms Reported"/>
         <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
+        <field:display field="symptomsAlertStatus" id="s_org_motechproject_tama_alert_symptomsStatus" object="${alertInfo}" label="Status"/>
+        <field:display field="doctorsNotes" id="s_org_motechproject_tama_alert_doctorsNotes" object="${alertInfo}" label="Doctor's Notes"/>
+        <field:display field="notes" id="s_org_motechproject_tama_alert_notes" object="${alertInfo}" label="Notes"/>
         </util:panel>
 </div>

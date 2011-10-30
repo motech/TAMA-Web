@@ -67,6 +67,10 @@ public class PatientAlert {
         return this.alert.getData().get(NOTES);
     }
 
+    public String setNotes(String notes) {
+        return this.alert.getData().put(NOTES, notes);
+    }
+
     public String getDoctorsNotes() {
         return this.alert.getData().get(DOCTORS_NOTES);
     }
