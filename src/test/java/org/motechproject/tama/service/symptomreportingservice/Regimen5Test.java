@@ -2,6 +2,7 @@ package org.motechproject.tama.service.symptomreportingservice;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.integration.repository.SpringIntegrationTest;
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:**/applicationContext.xml")
+@Ignore
 public class Regimen5Test extends SpringIntegrationTest {
     @Autowired
     private SymptomReportingService symptomReportingService;
