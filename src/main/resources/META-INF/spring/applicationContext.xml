@@ -55,6 +55,7 @@
             <drools:resource source="classpath:regimen2.drl" type="DRL"/>
             <drools:resource source="classpath:regimen3.drl" type="DRL"/>
             <drools:resource source="classpath:regimen4.drl" type="DRL"/>
+            <drools:resource source="classpath:regimen5.drl" type="DRL"/>
             <drools:resource source="classpath:commonInferences.drl" type="DRL"/>
         </drools:resources>
     </drools:kbase>
