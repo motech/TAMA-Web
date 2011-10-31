@@ -11,10 +11,11 @@ import java.util.Arrays;
 
 import static junit.framework.Assert.*;
 
-public class PatientMedicalConditionsMapperTest {
+public class MedicalConditionsMapperTest {
 
     private Patient patient;
     private LabResult labResult;
+    private VitalStatistics vitalStatistics;
     private TreatmentAdvice treatmentAdvice;
     private Regimen regimen;
 
@@ -34,6 +35,7 @@ public class PatientMedicalConditionsMapperTest {
         String regimenId = "regimenId";
         regimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).withName(regimenName).build();
 
+        vitalStatistics = new VitalStatistics(74.00, 174.00, 10, 10, 10.00, 10, patientId);
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(DateUtil.today().minusMonths(4)).build();
 
         NonHIVMedicalHistory nonHivMedicalHistory = new NonHIVMedicalHistory();
@@ -48,7 +50,7 @@ public class PatientMedicalConditionsMapperTest {
 
     @Test
     public void mapPatientDetails() {
-        PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         assertEquals("Male", medicalCondition.gender());
@@ -59,10 +61,7 @@ public class PatientMedicalConditionsMapperTest {
 
     @Test
     public void mapPatientNonHIVMedicalHistory() {
-        Ailments ailments = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories().get(0).getAilments();
-        ailments.getAilment(AilmentDefinition.Diabetes).setState(AilmentState.YES);
-        ailments.getAilment(AilmentDefinition.Hypertension).setState(AilmentState.NONE);
-        ailments.getAilment(AilmentDefinition.Nephrotoxicity).setState(AilmentState.YES_WITH_HISTORY);
+        getNonHIVMedicalHistory(patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories().get(0).getAilments());
 
         SystemCategory psychiatricIllnessSystemCategory = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories().get(1);
         psychiatricIllnessSystemCategory.getAilments().getOtherAilments().get(0).setState(AilmentState.YES);
@@ -70,7 +69,7 @@ public class PatientMedicalConditionsMapperTest {
         MedicalHistoryQuestion baselineHBQuestion = patient.getMedicalHistory().getNonHivMedicalHistory().getQuestions().get(1);
         baselineHBQuestion.setHistoryPresent(true);
 
-        PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         assertTrue(medicalCondition.isDiabetic());
@@ -78,15 +77,31 @@ public class PatientMedicalConditionsMapperTest {
         assertTrue(medicalCondition.isNephrotoxic());
         assertTrue(medicalCondition.lowBaselineHBCount());
         assertTrue(medicalCondition.psychiatricIllness());
+        assertTrue(medicalCondition.alcoholic());
+        assertTrue(medicalCondition.tuberculosis());
     }
 
     @Test
     public void mapTreatmentAdviceDuration() {
-        PatientMedicalConditionsMapper mapper = new PatientMedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         assertEquals(4, medicalCondition.numberOfMonthsSinceRegimenStarted());
     }
 
+    @Test
+    public void mapBMIOnVitalStatistics() {
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalCondition medicalCondition = mapper.map();
 
+        assertEquals(24.44, medicalCondition.bmi());
+    }
+
+    private void getNonHIVMedicalHistory(Ailments ailments) {
+        ailments.getAilment(AilmentDefinition.Diabetes).setState(AilmentState.YES);
+        ailments.getAilment(AilmentDefinition.Hypertension).setState(AilmentState.NONE);
+        ailments.getAilment(AilmentDefinition.Nephrotoxicity).setState(AilmentState.YES_WITH_HISTORY);
+        ailments.getAilment(AilmentDefinition.Alcoholism).setState(AilmentState.YES_WITH_HISTORY);
+        ailments.getAilment(AilmentDefinition.Tuberculosis).setState(AilmentState.YES);
+    }
 }

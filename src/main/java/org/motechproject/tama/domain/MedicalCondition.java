@@ -16,6 +16,9 @@ public class MedicalCondition {
     private LocalDate artRegimenStartDate;
     private boolean lowBaselineHBCount;
     private boolean psychiatricIllness;
+    private boolean alcoholic;
+    private boolean tuberculosis;
+    private double bmi;
 
     public String gender() {
         return gender;
@@ -108,6 +111,33 @@ public class MedicalCondition {
 
     public MedicalCondition psychiatricIllness(boolean hasPsychiatricIllness) {
         this.psychiatricIllness = hasPsychiatricIllness;
+        return this;
+    }
+
+    public boolean alcoholic() {
+        return alcoholic;
+    }
+
+    public MedicalCondition alcoholic(boolean isAlcoholic) {
+        this.alcoholic = isAlcoholic;
+        return this;
+    }
+
+    public boolean tuberculosis() {
+        return tuberculosis;
+    }
+
+    public MedicalCondition tuberculosis(boolean hasTuberculosis) {
+        this.tuberculosis = hasTuberculosis;
+        return this;
+    }
+
+    public double bmi() {
+        return bmi;
+    }
+
+    public MedicalCondition bmi(double bmi) {
+        this.bmi = bmi;
         return this;
     }
 }

@@ -24,7 +24,7 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
         vitalStatistics.setPatientId("patient_id");
         allVitalStatistics.add(vitalStatistics);
 
-        assertEquals("patient_id", allVitalStatistics.findByPatientId("patient_id").get(0).getPatientId());
+        assertEquals("patient_id", allVitalStatistics.findByPatientId("patient_id").getPatientId());
         markForDeletion(vitalStatistics);
     }
 

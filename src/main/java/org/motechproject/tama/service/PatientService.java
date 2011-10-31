@@ -3,7 +3,7 @@ package org.motechproject.tama.service;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.*;
-import org.motechproject.tama.mapper.PatientMedicalConditionsMapper;
+import org.motechproject.tama.mapper.MedicalConditionsMapper;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import java.util.List;
 public class PatientService {
 
     private AllPatients allPatients;
+    private AllVitalStatistics allVitalStatistics;
     private AllUniquePatientFields allUniquePatientFields;
     private PillReminderService pillReminderService;
     private AllTreatmentAdvices allTreatmentAdvices;
@@ -23,7 +24,7 @@ public class PatientService {
     private AllRegimens allRegimens;
 
     @Autowired
-    public PatientService(TamaSchedulerService tamaSchedulerService, PillReminderService pillReminderService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllRegimens allRegimens, AllUniquePatientFields allUniquePatientFields) {
+    public PatientService(TamaSchedulerService tamaSchedulerService, PillReminderService pillReminderService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllRegimens allRegimens, AllUniquePatientFields allUniquePatientFields, AllVitalStatistics allVitalStatistics) {
         this.allPatients = allPatients;
         this.allUniquePatientFields = allUniquePatientFields;
         this.tamaSchedulerService = tamaSchedulerService;
@@ -31,6 +32,7 @@ public class PatientService {
         this.pillReminderService = pillReminderService;
         this.allLabResults = allLabResults;
         this.allRegimens = allRegimens;
+        this.allVitalStatistics = allVitalStatistics;
     }
 
     public void update(Patient patient) {
@@ -51,29 +53,14 @@ public class PatientService {
         postUpdate(patient, dbPatient);
     }
 
-    public Patient getPatient(String patientId) {
-        return allPatients.get(patientId);
-    }
-
-    public LabResults getLabResults(String patientId) {
-        return allLabResults.findByPatientId(patientId);
-    }
-
-    public TreatmentAdvice getTreatmentAdvice(String patientId) {
-        return allTreatmentAdvices.findByPatientId(patientId);
-    }
-
-    public Regimen getRegimen(String regimenId) {
-        return allRegimens.get(regimenId);
-    }
-
     public MedicalCondition getPatientMedicalConditions(String patientId) {
-        Patient patient = getPatient(patientId);
-        LabResults labResults = getLabResults(patientId);
-        TreatmentAdvice treatmentAdvice = getTreatmentAdvice(patientId);
-        Regimen regimen = getRegimen(treatmentAdvice.getRegimenId());
+        Patient patient = allPatients.get(patientId);
+        LabResults labResults = allLabResults.findByPatientId(patientId);
+        VitalStatistics vitalStatistics = allVitalStatistics.findByPatientId(patientId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
+        Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
 
-        return new PatientMedicalConditionsMapper(patient, labResults, treatmentAdvice, regimen).map();
+        return new MedicalConditionsMapper(patient, labResults, vitalStatistics, treatmentAdvice, regimen).map();
     }
 
     private void postUpdate(Patient patient, Patient dbPatient) {

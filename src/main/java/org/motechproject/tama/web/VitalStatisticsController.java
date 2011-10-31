@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RooWebScaffold(path = "vital_statistics", formBackingObject = VitalStatistics.class)
 @RequestMapping("/vital_statistics")
@@ -34,9 +33,9 @@ public class VitalStatisticsController extends BaseController {
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        List<VitalStatistics> vitalStatisticsOfPatient = allVitalStatistics.findByPatientId(patientId);
-        uiModel.addAttribute("vitalStatistics", vitalStatisticsOfPatient.isEmpty()? new VitalStatistics(patientId) : vitalStatisticsOfPatient.get(0));
-        return vitalStatisticsOfPatient.isEmpty()? FORM : REDIRECT_AND_SHOW_VITAL_STATISTICS + encodeUrlPathSegment(patientId, httpServletRequest);
+        VitalStatistics vitalStatisticsOfPatient = allVitalStatistics.findByPatientId(patientId);
+        uiModel.addAttribute("vitalStatistics", vitalStatisticsOfPatient == null ? new VitalStatistics(patientId) : vitalStatisticsOfPatient);
+        return vitalStatisticsOfPatient == null ? FORM : REDIRECT_AND_SHOW_VITAL_STATISTICS + encodeUrlPathSegment(patientId, httpServletRequest);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -51,15 +50,15 @@ public class VitalStatisticsController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String patientId, Model uiModel) {
-        List<VitalStatistics> vitalStatisticsForPatient = allVitalStatistics.findByPatientId(patientId);
-        uiModel.addAttribute("vitalStatistics", vitalStatisticsForPatient.isEmpty()? null : vitalStatisticsForPatient.get(0));
+        VitalStatistics vitalStatisticsForPatient = allVitalStatistics.findByPatientId(patientId);
+        uiModel.addAttribute("vitalStatistics", vitalStatisticsForPatient == null ? null : vitalStatisticsForPatient);
         return SHOW_VIEW;
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String patientId, Model uiModel) {
-        List<VitalStatistics> vitalStatisticsOfPatient = allVitalStatistics.findByPatientId(patientId);
-        uiModel.addAttribute("vitalStatistics", vitalStatisticsOfPatient.get(0));
+        VitalStatistics vitalStatisticsOfPatient = allVitalStatistics.findByPatientId(patientId);
+        uiModel.addAttribute("vitalStatistics", vitalStatisticsOfPatient);
         uiModel.addAttribute("_method", "put");
         return FORM;
     }

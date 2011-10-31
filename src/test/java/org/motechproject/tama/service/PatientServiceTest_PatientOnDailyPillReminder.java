@@ -32,6 +32,8 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     private AllLabResults allLabResults;
     @Mock
     private AllRegimens allRegimens;
+    @Mock
+    private AllVitalStatistics allVitalStatistics;
 
     @Before
     public void setUp() {
@@ -39,7 +41,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics);
     }
 
     @Test

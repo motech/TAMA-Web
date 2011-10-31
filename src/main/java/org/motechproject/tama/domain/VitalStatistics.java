@@ -1,6 +1,8 @@
 package org.motechproject.tama.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.util.MathUtil;
 
 import javax.validation.constraints.NotNull;
 
@@ -99,5 +101,11 @@ public class VitalStatistics extends CouchEntity {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+    }
+
+    @JsonIgnore
+    public double getBMI() {
+        double heightInMetres = heightInCm / 100;
+        return MathUtil.roundOffTo(weightInKg / Math.pow(heightInMetres, 2), 2);
     }
 }

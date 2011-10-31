@@ -34,6 +34,8 @@ public class PatientServiceTest_PatientOnFourDayRecall {
     private AllLabResults allLabResults;
     @Mock
     private AllRegimens allRegimens;
+    @Mock
+    private AllVitalStatistics allVitalStatistics;
 
     @Before
     public void setUp() {
@@ -41,7 +43,7 @@ public class PatientServiceTest_PatientOnFourDayRecall {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.FourDayRecall)
                 .withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics);
     }
 
     @Test

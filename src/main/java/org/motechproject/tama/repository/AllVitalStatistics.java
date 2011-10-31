@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -22,9 +21,9 @@ public class AllVitalStatistics extends CouchDbRepositorySupport<VitalStatistics
     }
 
     @View(name = "find_by_patientId", map = "function(doc) {if (doc.documentType =='VitalStatistics' && doc.patientId) {emit(doc.patientId, doc._id);}}")
-    public List<VitalStatistics> findByPatientId(String patientId) {
+    public VitalStatistics findByPatientId(String patientId) {
         List<VitalStatistics> vitalStatisticsOfPatient = db.queryView(createQuery("find_by_patientId").key(patientId).includeDocs(true), VitalStatistics.class);
-        return vitalStatisticsOfPatient == null? new ArrayList<VitalStatistics>() : vitalStatisticsOfPatient;
+        return vitalStatisticsOfPatient == null ? null : vitalStatisticsOfPatient.get(0);
     }
 
     @Override

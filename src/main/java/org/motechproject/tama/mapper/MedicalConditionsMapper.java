@@ -5,15 +5,17 @@ import org.motechproject.util.DateUtil;
 
 import java.util.List;
 
-public class PatientMedicalConditionsMapper {
+public class MedicalConditionsMapper {
     private Patient patient;
     private LabResults labResults;
+    private VitalStatistics vitalStatistics;
     private TreatmentAdvice treatmentAdvice;
     private Regimen regimen;
 
-    public PatientMedicalConditionsMapper(Patient patient, LabResults labResults, TreatmentAdvice treatmentAdvice, Regimen regimen) {
+    public MedicalConditionsMapper(Patient patient, LabResults labResults, VitalStatistics vitalStatistics, TreatmentAdvice treatmentAdvice, Regimen regimen) {
         this.patient = patient;
         this.labResults = labResults;
+        this.vitalStatistics = vitalStatistics;
         this.treatmentAdvice = treatmentAdvice;
         this.regimen = regimen;
     }
@@ -28,9 +30,12 @@ public class PatientMedicalConditionsMapper {
         medicalCondition.diabetic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Diabetes));
         medicalCondition.hyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
         medicalCondition.nephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));
+        medicalCondition.alcoholic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Alcoholism));
+        medicalCondition.tuberculosis(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Tuberculosis));
         medicalCondition.artRegimenStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
         medicalCondition.lowBaselineHBCount(hasBaselineHBLowerThan10());
         medicalCondition.psychiatricIllness(hasHistoryOfPsychiatricIllness());
+        medicalCondition.bmi(vitalStatistics.getBMI());
 
         return medicalCondition;
     }

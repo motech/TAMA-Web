@@ -1,6 +1,5 @@
 package org.motechproject.tama.service;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,15 +11,12 @@ import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.util.DateUtil;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
-import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -41,6 +37,8 @@ public class PatientServiceTest {
     private AllLabResults allLabResults;
     @Mock
     private AllRegimens allRegimens;
+    @Mock
+    private AllVitalStatistics allVitalStatistics;
 
     private final String patientId = "patientId";
     PatientService patientService;
@@ -48,67 +46,13 @@ public class PatientServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields);
-    }
-
-    @Test
-    public void shouldReturnPatientForGivenId() {
-        Patient expectedPatient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
-        when(allPatients.get(patientId)).thenReturn(expectedPatient);
-
-        Patient patient = patientService.getPatient(patientId);
-
-        assertEquals(expectedPatient, patient);
-    }
-
-    @Test
-    public void shouldReturnLabResultsForGivenPatient() {
-        String labTestId = "labTestId";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
-        labResult1.setLabTest(labTest);
-        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 10, 20)).withResult("50").build();
-        labResult2.setLabTest(labTest);
-
-        when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult1, labResult2)));
-
-        LabResults labResults = patientService.getLabResults(patientId);
-
-        assertEquals(2, labResults.size());
-        assertEquals(labResult1, labResults.get(0));
-        assertEquals(labResult2, labResults.get(1));
-    }
-
-    @Test
-    public void shouldReturnTreatmentAdviceForGivenPatient() {
-        TreatmentAdvice expectedTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(expectedTreatmentAdvice);
-
-        TreatmentAdvice treatmentAdvice = patientService.getTreatmentAdvice(patientId);
-
-        assertEquals(expectedTreatmentAdvice, treatmentAdvice);
-    }
-
-    @Test
-    public void shouldReturnRegimenForGivenId() {
-        String regimenId = "regimenId";
-        Regimen expectedRegimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).build();
-        when(allRegimens.get(regimenId)).thenReturn(expectedRegimen);
-
-        Regimen regimen = patientService.getRegimen(regimenId);
-
-        assertEquals(expectedRegimen, regimen);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics);
     }
 
     @Test
     public void shouldReturnPatientMedicalConditions() {
-        LocalDate dateOfBirth = new LocalDate(2000, 10, 1);
-        PowerMockito.mockStatic(DateUtil.class);
-        PowerMockito.when(DateUtil.today()).thenReturn(new LocalDate(2011, 10, 19));
-        PowerMockito.when(DateUtil.now()).thenReturn(new DateTime(2011, 10, 19, 10, 10, 10));
-        PowerMockito.when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
 
-        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(new LocalDate(2000, 10, 1)).build();
         when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";
@@ -116,6 +60,8 @@ public class PatientServiceTest {
         LabResult labResult = LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTest_id(labTestId).withResult("60").build();
         labResult.setLabTest(labTest);
         when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult)));
+
+        when(allVitalStatistics.findByPatientId(patientId)).thenReturn(new VitalStatistics(74.00, 174.00, 10, 10, 10.00, 10, patientId));
 
         String regimenId = "regimenId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(DateUtil.today()).withRegimenId(regimenId).build();
@@ -129,6 +75,7 @@ public class PatientServiceTest {
 
         assertEquals(regimenName, medicalCondition.regimenName());
         assertEquals("Male", medicalCondition.gender());
+        assertEquals(24.44, medicalCondition.bmi());
         assertEquals(11, medicalCondition.age());
         assertEquals(60, medicalCondition.cd4Count());
     }
