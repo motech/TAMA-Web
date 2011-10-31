@@ -23,7 +23,7 @@ public class AllVitalStatistics extends CouchDbRepositorySupport<VitalStatistics
     @View(name = "find_by_patientId", map = "function(doc) {if (doc.documentType =='VitalStatistics' && doc.patientId) {emit(doc.patientId, doc._id);}}")
     public VitalStatistics findByPatientId(String patientId) {
         List<VitalStatistics> vitalStatisticsOfPatient = db.queryView(createQuery("find_by_patientId").key(patientId).includeDocs(true), VitalStatistics.class);
-        return vitalStatisticsOfPatient == null ? null : vitalStatisticsOfPatient.get(0);
+        return vitalStatisticsOfPatient == null || vitalStatisticsOfPatient.isEmpty() ? null : vitalStatisticsOfPatient.get(0);
     }
 
     @Override
