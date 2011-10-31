@@ -97,7 +97,15 @@
                   <c:out value="${colTxt}" />
                 </c:when>
                 <c:otherwise>
-                  <c:out value="${fn:substring(colTxt, 0, columnMaxLength)}" />
+                    <c:choose>
+                        <c:when test="${fn:length(fn:toLowerCase(colTxt)) gt columnMaxLength}">
+                            <c:out value="${fn:substring(colTxt, 0, columnMaxLength - 4)}" />
+                            <c:out value=" ..."/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:out value="${colTxt}" />
+                        </c:otherwise>
+                    </c:choose>
                 </c:otherwise>
               </c:choose>
             </td>

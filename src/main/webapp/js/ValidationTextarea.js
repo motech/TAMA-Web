@@ -7,6 +7,7 @@ dojo.declare(
     [dijit.form.ValidationTextBox,dijit.form.SimpleTextarea],
     {
         invalidMessage: "This field is required",
+        regExp: "(.|\\s)*",
 
         postCreate: function() {
             this.inherited(arguments);
