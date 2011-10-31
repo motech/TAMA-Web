@@ -77,8 +77,8 @@ public class MedicalConditionsMapperTest {
         assertTrue(medicalCondition.isNephrotoxic());
         assertTrue(medicalCondition.lowBaselineHBCount());
         assertTrue(medicalCondition.psychiatricIllness());
-        assertTrue(medicalCondition.alcoholic());
-        assertTrue(medicalCondition.tuberculosis());
+        assertTrue(medicalCondition.isAlcoholic());
+        assertTrue(medicalCondition.isTuberculosis());
     }
 
     @Test

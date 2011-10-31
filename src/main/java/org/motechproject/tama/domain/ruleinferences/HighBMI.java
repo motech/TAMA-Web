@@ -2,8 +2,8 @@ package org.motechproject.tama.domain.ruleinferences;
 
 import org.motechproject.tama.domain.MedicalCondition;
 
-public class BelowMiddleAge extends PatientMedicalConditionInference {
-    public BelowMiddleAge(MedicalCondition medicalCondition) {
+public class HighBMI extends PatientMedicalConditionInference {
+    public HighBMI(MedicalCondition medicalCondition) {
         super(medicalCondition);
     }
 }

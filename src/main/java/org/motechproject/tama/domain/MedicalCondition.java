@@ -114,7 +114,7 @@ public class MedicalCondition {
         return this;
     }
 
-    public boolean alcoholic() {
+    public boolean isAlcoholic() {
         return alcoholic;
     }
 
@@ -123,7 +123,7 @@ public class MedicalCondition {
         return this;
     }
 
-    public boolean tuberculosis() {
+    public boolean isTuberculosis() {
         return tuberculosis;
     }
 
