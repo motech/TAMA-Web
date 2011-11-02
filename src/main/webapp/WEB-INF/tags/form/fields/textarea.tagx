@@ -39,7 +39,6 @@
         :
       </label>
       <form:textarea path="${sec_field}" id="_${sec_field}_id" name="${sec_field}" >
-          <!--dummy text required. dont remove -->
       </form:textarea>
       <form:errors cssClass="errors" id="_${sec_field}_error_id" path="${sec_field}" />
       <script type="text/javascript">
