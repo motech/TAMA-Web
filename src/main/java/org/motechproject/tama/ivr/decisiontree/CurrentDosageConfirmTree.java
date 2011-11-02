@@ -21,8 +21,6 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     @Autowired
     private UpdateAdherenceCommand updateAdherenceCommand;
     @Autowired
-    private MessageFromPreviousDosage messageFromPreviousDosage;
-    @Autowired
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
 
     protected Node createRootNode() {
@@ -37,8 +35,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPillTakenDuringIncomingCall),
-                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand),
-                                                        new MenuAudioPrompt().setCommand(messageFromPreviousDosage)
+                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand)
                                                 ))
                         },
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
