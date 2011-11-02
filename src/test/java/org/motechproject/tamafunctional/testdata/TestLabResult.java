@@ -6,8 +6,10 @@ import java.util.List;
 public class TestLabResult extends TestEntity {
 
     private List<String> testDates;
-
     private List<String> results;
+
+    private TestLabResult() {
+    }
 
     @Override
     public String resourceName() {
@@ -21,12 +23,14 @@ public class TestLabResult extends TestEntity {
         return labResult;
     }
 
-    private void results(List<String> results) {
+    public TestLabResult results(List<String> results) {
         this.results = results;
+        return this;
     }
 
-    private void testDates(List<String> testDates) {
+    public TestLabResult testDates(List<String> testDates) {
         this.testDates = testDates;
+        return this;
     }
 
     public List<String> testDates() {

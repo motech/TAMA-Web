@@ -12,6 +12,7 @@ public class TestPatient extends TestEntity {
     private String travelTimeToClinicInHours;
     private String travelTimeToClinicInMinutes;
     private TestHIVMedicalHistory hivMedicalHistory;
+    private TestNonHIVMedicalHistory nonHIVMedicalHistory;
     private TestPatientPreferences patientPreferences;
 
     private TestPatient() {
@@ -25,7 +26,8 @@ public class TestPatient extends TestEntity {
                 travelTimeToClinicInDays("1").
                 travelTimeToClinicInHours("2").
                 travelTimeToClinicInHours("3").
-                medicalHistory(TestHIVMedicalHistory.withMandatory()).
+                hivMedicalHistory(TestHIVMedicalHistory.withMandatory()).
+                nonHIVMedicalHistory(TestNonHIVMedicalHistory.withMandatory()).
                 patientPreferences(TestPatientPreferences.withMandatory());
     }
 
@@ -33,11 +35,11 @@ public class TestPatient extends TestEntity {
         return withMandatory();
     }
 
-    public TestHIVMedicalHistory medicalHistory() {
+    public TestHIVMedicalHistory hivMedicalHistory() {
         return hivMedicalHistory;
     }
 
-    public TestPatient medicalHistory(TestHIVMedicalHistory hivMedicalHistory) {
+    public TestPatient hivMedicalHistory(TestHIVMedicalHistory hivMedicalHistory) {
         this.hivMedicalHistory = hivMedicalHistory;
         return this;
     }
@@ -108,5 +110,14 @@ public class TestPatient extends TestEntity {
 
     public String patientId() {
         return patientId;
+    }
+
+    public TestNonHIVMedicalHistory nonHIVMedicalHistory() {
+        return nonHIVMedicalHistory;
+    }
+
+    public TestPatient nonHIVMedicalHistory(TestNonHIVMedicalHistory nonHIVMedicalHistory) {
+        this.nonHIVMedicalHistory = nonHIVMedicalHistory;
+        return this;
     }
 }

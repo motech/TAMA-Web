@@ -59,7 +59,7 @@ public class Caller extends FunctionalTestObject {
 
     public IVRResponse enter(String number) {
         IVRResponse ivrResponse = invokeAndGetResponse(urlFor(IVREvent.GotDTMF, number));
-        if (ivrResponse.isEmpty()) {
+        if (ivrResponse.audiosPlayed().isEmpty() && ivrResponse.isEmpty()) {
             ivrResponse = listenMore();
         }
         return ivrResponse;

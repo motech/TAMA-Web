@@ -21,6 +21,8 @@ public class CreatePatientMedicalHistorySection {
     private WebElement drdRash;
     @FindBy(how = How.ID, using = "nextToPatientPreferences")
     private WebElement nextToPatientPreferences;
+    @FindBy(how = How.ID, using = "c_org_motechproject_tama_domain_Patient_medicalHistory_question_1")
+    private WebElement baselineHb;
 
     public void postInitialize() {
         hivTestReason = WebDriverFactory.createWebElement(hivTestReason);
@@ -29,14 +31,17 @@ public class CreatePatientMedicalHistorySection {
         arvAllergyDescription = WebDriverFactory.createWebElement(arvAllergyDescription);
         drdRash = WebDriverFactory.createWebElement(drdRash);
         nextToPatientPreferences = WebDriverFactory.createWebElement(nextToPatientPreferences);
+        baselineHb = WebDriverFactory.createWebElement(baselineHb);
     }
 
     public void enterDetails(TestPatient patient) {
-        hivTestReason.sendKeys(patient.medicalHistory().testReason());
-        modeOfTransmission.sendKeys(patient.medicalHistory().modeOfTransmission());
+        hivTestReason.sendKeys(patient.hivMedicalHistory().testReason());
+        modeOfTransmission.sendKeys(patient.hivMedicalHistory().modeOfTransmission());
         arvAllergy.click();
         arvAllergyDescription.sendKeys("arvAllergyDescription");
         drdRash.click();
+        if(patient.nonHIVMedicalHistory().isBaseLinePreTherapyLowerThanTen())
+            baselineHb.click();
 
         nextToPatientPreferences.click();
     }

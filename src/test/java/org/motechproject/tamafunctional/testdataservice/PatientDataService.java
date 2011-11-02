@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.testdataservice;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.*;
 import org.motechproject.tamafunctional.testdata.TestClinician;
+import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
@@ -82,5 +83,11 @@ public class PatientDataService extends EntityDataService {
                                                         .pulse(showVitalStatisticsPage.getPulse());
         showVitalStatisticsPage.logout();
         return testVitalStatistics;
+    }
+
+    public void setupLabResult(TestPatient patient, TestClinician clinician, TestLabResult labResult) {
+        CreateLabResultsPage createLabResultsPage = viewPatient(patient, clinician).goToLabResultsPage();
+        createLabResultsPage.registerNewLabResult(labResult);
+        createLabResultsPage.logout();
     }
 }
