@@ -35,7 +35,7 @@ public class SymptomReportingServiceTest {
             treeWithTwoMatches.add("match1");
             treeWithTwoMatches.add("match2");
 
-            symptomReportingService = new SymptomReportingService(ksession, treeWithTwoMatches);
+            symptomReportingService = new SymptomReportingServiceStub(ksession, treeWithTwoMatches);
             symptomReportingService.getSymptomReportingTree(medicalCondition);
             fail("test failed ...");
         }
@@ -49,15 +49,29 @@ public class SymptomReportingServiceTest {
         ArrayList<String> treeWithTwoMatches = new ArrayList<String>();
         treeWithTwoMatches.add("match1");
 
-        symptomReportingService = new SymptomReportingService(ksession, treeWithTwoMatches);
+        symptomReportingService = new SymptomReportingServiceStub(ksession, treeWithTwoMatches);
         String symptomReportingTree = symptomReportingService.getSymptomReportingTree(medicalCondition);
         assertEquals("match1", symptomReportingTree);
     }
 
     @Test
     public void shouldReturnNoMatchingCondition() {
-        symptomReportingService = new SymptomReportingService(ksession, new ArrayList<String>());
+        symptomReportingService = new SymptomReportingServiceStub(ksession, new ArrayList<String>());
         String symptomReportingTree = symptomReportingService.getSymptomReportingTree(medicalCondition);
         assertNull(symptomReportingTree);
+    }
+
+    private class SymptomReportingServiceStub extends SymptomReportingService {
+        private ArrayList<String> tree;
+
+        private SymptomReportingServiceStub(StatelessKnowledgeSession ksession, ArrayList<String> tree) {
+            super(ksession);
+            this.tree = tree;
+        }
+
+        @Override
+        protected ArrayList<String> getTree() {
+            return tree;
+        }
     }
 }
