@@ -829,7 +829,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
-                    <argLine>-XX:MaxPermSize=1024M</argLine>
+                    <argLine>-XX:MaxPermSize=1024M -ea</argLine>
                     <printSummary>true</printSummary>
                     <excludes>
                         <exclude>**/*_Roo_*</exclude>
