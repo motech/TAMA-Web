@@ -116,10 +116,11 @@ public class PatientService {
     }
 
     private void unscheduleDailyReminderJobs(Patient patient) {
-        pillReminderService.unscheduleJobs(patient.getId());
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
-        if (treatmentAdvice != null)
+        if (treatmentAdvice != null) {
+            pillReminderService.unscheduleJobs(patient.getId());
             tamaSchedulerService.unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        }
     }
 
     private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
