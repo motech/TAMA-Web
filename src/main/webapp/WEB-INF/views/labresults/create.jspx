@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div version="2.0" xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
      xmlns:springform="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:c="http://java.sun.com/jsp/jstl/core"
      xmlns:field="http://www.springframework.org/tags/form"
@@ -12,7 +13,7 @@
     <spring:url value="/resources/styles/create-lab-result.css" var="create_labresult_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"></link>
 
-    <util:panel id="fc_org_motechproject_tama_domain_Lab_Result" title="Lab Results" openPane="true">
+    <util:panel id="fc_org_motechproject_tama_domain_Lab_Result" title="Create Lab Results" openPane="true">
         <spring:url value="/labresults/create" var="form_url"/>
 
         <springform:form action="${form_url}" modelAttribute="labResultsUIModel" method="POST" id="labResults">
@@ -40,13 +41,13 @@
                     <field:hidden  path="labResults[${labTestIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_labtest_id" value="${labTest.id}"/>
                     <tr>
                         <td class="test-field">
-                            <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labTestIndex.index}].testDateAsDate" label="TestDate" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false" required="true" />
+                            <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labTestIndex.index}].testDateAsDate" label="Test Date" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false" required="true" />
                         </td>
                         <td>
                             <c:out value="${labTest.name}"/>
                         </td>
                         <td class="test-field">
-                            <formfield:input  field="labResults[${labTestIndex.index}].result"  label="Result" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result" required="true"/>
+                            <formfield:input validationRegex="^[0-9]+$" field="labResults[${labTestIndex.index}].result" label="Result" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result" required="true"/>
                         </td>
                         <td>
                             <c:out value="${labTest.normalRange}"/>
@@ -56,8 +57,11 @@
                 </tbody>
             </table>
             <br/>
-            <input type="submit" id="proceed" value="Save"/>
-            <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+            <div class="submit" id="${fn:escapeXml(id)}_submit">
+              <spring:message code="button_save" var="save_button" htmlEscape="false" />
+              <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+              <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}"/>
+            </div>
         </springform:form>
     </util:panel>
 </div>
