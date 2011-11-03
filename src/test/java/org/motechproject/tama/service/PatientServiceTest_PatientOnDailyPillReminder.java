@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
@@ -57,10 +58,24 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     }
 
     @Test
-    public void shouldUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall() {
+    public void shouldUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall_AndPatientHasATreatmentAdvice() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(null, null, null)).build();
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withPatientId("patient_id").build();
+
+        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
+
         verify(pillReminderService).unscheduleJobs(patient.getId());
+    }
+
+    @Test
+    public void shouldNotUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall_AndPatientDoesNotHaveATreatmentAdvice() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(null, null, null)).build();
+
+        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(null);
+
+        patientService.update(patient);
+        verify(pillReminderService, never()).unscheduleJobs(patient.getId());
     }
 
     @Test
