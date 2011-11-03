@@ -16,8 +16,6 @@
         <intercept-url pattern="/changePassword/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/callsummary/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/passwordReset/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/ivrlanguages/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/genders/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
         <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR','ADMIN')" requires-channel="${web.protocol}"/>
