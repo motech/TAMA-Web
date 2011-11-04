@@ -20,6 +20,11 @@ public class MedicalConditionBuilder {
         return this;
     }
 
+    public MedicalConditionBuilder ForRegimen2(){
+        medicalCondition.regimenName("Regimen II");
+        return this;
+    }
+
     public MedicalConditionBuilder ForRegimen3(){
         medicalCondition.regimenName("Regimen III");
         return this;
@@ -92,7 +97,7 @@ public class MedicalConditionBuilder {
     }
 
     public MedicalConditionBuilder NoHistoryOfMedicalConditions(){
-        medicalCondition.tuberculosis(false).diabetic(false).alcoholic(false);
+        medicalCondition.tuberculosis(false).diabetic(false).alcoholic(false).nephrotoxic(false);
         return this;
     }
 
@@ -103,6 +108,11 @@ public class MedicalConditionBuilder {
 
     public MedicalConditionBuilder HistoryOfDiabetes(){
         medicalCondition.diabetic(true);
+        return this;
+    }
+
+    public MedicalConditionBuilder HistoryOfNephrotoxicMedication() {
+        medicalCondition.nephrotoxic(true);
         return this;
     }
 
