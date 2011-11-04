@@ -1,9 +1,12 @@
 package org.motechproject.tama.tools.seed;
 
-import org.apache.commons.io.filefilter.*;
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.log4j.Logger;
-import org.motechproject.cmslite.api.CMSLiteService;
-import org.motechproject.cmslite.api.ResourceQuery;
+import org.motechproject.cmslite.api.model.ResourceQuery;
+import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.tama.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
