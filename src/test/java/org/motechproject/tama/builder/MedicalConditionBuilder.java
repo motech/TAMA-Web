@@ -15,6 +15,11 @@ public class MedicalConditionBuilder {
         return new MedicalConditionBuilder();
     }
 
+    public MedicalConditionBuilder ForRegimen1(){
+        medicalCondition.regimenName("Regimen I");
+        return this;
+    }
+
     public MedicalConditionBuilder ForRegimen5(){
         medicalCondition.regimenName("Regimen V");
         return this;
@@ -37,12 +42,22 @@ public class MedicalConditionBuilder {
     }
 
     public MedicalConditionBuilder HighBMI(){
-        medicalCondition.bmi(60);
+        medicalCondition.bmi(27.3);
         return this;
     }
 
     public MedicalConditionBuilder LowBMI(){
         medicalCondition.bmi(10);
+        return this;
+    }
+
+    public MedicalConditionBuilder AboveMiddleAge(){
+        medicalCondition.age(60);
+        return this;
+    }
+
+    public MedicalConditionBuilder BelowMiddleAge(){
+        medicalCondition.age(50);
         return this;
     }
 
@@ -52,11 +67,16 @@ public class MedicalConditionBuilder {
     }
 
     public MedicalConditionBuilder HistoryOfTuberculosis(){
-        medicalCondition.tuberculosis(true).diabetic(false).alcoholic(false);
+        medicalCondition.tuberculosis(true);
         return this;
     }
 
-    public MedicalConditionBuilder AdviceIsNotWithin6And12Months(){
+    public MedicalConditionBuilder HistoryOfDiabetes(){
+        medicalCondition.diabetic(true);
+        return this;
+    }
+
+    public MedicalConditionBuilder AdviceIsWithin6Months(){
         medicalCondition.treatmentStartDate(DateUtil.today().minusMonths(1));
         return this;
     }

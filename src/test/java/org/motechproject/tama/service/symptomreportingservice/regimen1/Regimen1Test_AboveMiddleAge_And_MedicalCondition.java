@@ -1,4 +1,4 @@
-package org.motechproject.tama.service.symptomreportingservice.regimen5;
+package org.motechproject.tama.service.symptomreportingservice.regimen1;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,43 +15,35 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:**/applicationContext.xml")
-public class Regimen5Test_FemaleWithHighBMI_And_NoMedicalCondition extends SpringIntegrationTest {
+public class Regimen1Test_AboveMiddleAge_And_MedicalCondition extends SpringIntegrationTest {
 
     @Autowired
     private SymptomReportingService symptomReportingService;
 
     private MedicalCondition medicalConditionsCase1;
-    private MedicalCondition medicalConditionsCase2;
-    private MedicalCondition medicalConditionsCase3;
 
     @Before
     public void setUp() {
-        medicalConditionsCase1 = MedicalConditionBuilder.startRecording().ForRegimen5().FemaleWithHighBMI().NoHistoryOfMedicalConditions().AdviceIsWithin6Months().build();
-        medicalConditionsCase2 = MedicalConditionBuilder.startRecording().ForRegimen5().FemaleWithHighBMI().HistoryOfTuberculosis().AdviceIsWithin6Months().build();
-        medicalConditionsCase3 = MedicalConditionBuilder.startRecording().ForRegimen5().FemaleWithHighBMI().NoHistoryOfMedicalConditions().AdviceIsWithin6And12Months().build();
+        medicalConditionsCase1 = MedicalConditionBuilder.startRecording().ForRegimen1().Male().AboveMiddleAge().HistoryOfDiabetes().AdviceIsWithin6And12Months().build();
     }
 
     @Test
     public void patientHasLowCD4Count() {
         assertOnLowCD4Count(medicalConditionsCase1);
-        assertOnLowCD4Count(medicalConditionsCase2);
-        assertOnLowCD4Count(medicalConditionsCase3);
     }
 
     @Test
     public void patientHasHighCD4Count() {
         assertOnHighCD4Count(medicalConditionsCase1);
-        assertOnHighCD4Count(medicalConditionsCase2);
-        assertOnHighCD4Count(medicalConditionsCase3);
     }
 
     private void assertOnLowCD4Count(MedicalCondition medicalCondition) {
         medicalCondition.cd4Count(10);
-        assertEquals("Regimen5_4", symptomReportingService.getSymptomReportingTree(medicalCondition));
+        assertEquals("Regimen1_3", symptomReportingService.getSymptomReportingTree(medicalCondition));
     }
 
     private void assertOnHighCD4Count(MedicalCondition medicalCondition) {
         medicalCondition.cd4Count(60);
-        assertEquals("Regimen5_2_3_5_7", symptomReportingService.getSymptomReportingTree(medicalCondition));
+        assertEquals("Regimen1_4", symptomReportingService.getSymptomReportingTree(medicalCondition));
     }
 }
