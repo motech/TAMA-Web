@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,6 +9,10 @@ import java.util.List;
 
 public class UpdateAlertPage extends Page{
 
+
+
+    public static final String SYMPTOMS_ALERT_STATUS_ID = "_symptomsAlertStatus_id";
+    public static final String NOTES_ID = "_notes_id";
 
     public UpdateAlertPage(WebDriver webDriver) {
         super(webDriver);
@@ -20,10 +25,24 @@ public class UpdateAlertPage extends Page{
 
     @Override
     protected void waitForPageToLoad() {
-        //waitForElementWithIdToLoad(LIST_ALERT_PANE_ID);
+        waitForElementWithIdToLoad(SYMPTOMS_ALERT_STATUS_ID);
+        waitForElementWithIdToLoad(NOTES_ID);
     }
 
-    public List<WebElement> alertsTable() {
-        return null;//webDriver.findElement(By.id(LIST_ALERT_PANE_ID)).findElements(By.xpath("id('" + LIST_ALERT_PANE_ID + "')/table/tbody/tr"));
+
+    public void changeAlertStatus(String status) {
+        webDriver.findElement(By.id(SYMPTOMS_ALERT_STATUS_ID)).clear();
+        webDriver.findElement(By.id(SYMPTOMS_ALERT_STATUS_ID)).sendKeys(status);
+        webDriver.findElement(By.id(SYMPTOMS_ALERT_STATUS_ID)).click();   // required to simulate onKeyPress that sets the dojo backing element
+    }
+
+    public ShowAlertPage save() {
+        webDriver.findElement(By.id("proceed")).click();
+        return MyPageFactory.initElements(webDriver, ShowAlertPage.class);
+    }
+
+    public void changeNotes(String notes) {
+        webDriver.findElement(By.id(NOTES_ID)).clear();
+        webDriver.findElement(By.id(NOTES_ID)).sendKeys(notes);
     }
 }

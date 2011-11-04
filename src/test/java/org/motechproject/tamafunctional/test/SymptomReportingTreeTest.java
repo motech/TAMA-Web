@@ -3,8 +3,7 @@ package org.motechproject.tamafunctional.test;
 import org.junit.Test;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.page.LoginPage;
-import org.motechproject.tamafunctional.page.UnreadAlertsPage;
+import org.motechproject.tamafunctional.page.*;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestLabResult;
@@ -23,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.assertTrue;
 
 public class SymptomReportingTreeTest extends BaseIVRTest {
     @Test
@@ -32,38 +31,66 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         TestPatient patient = createTestPatient(clinician);
 
         assertSymptomReportingCallFlow(clinician, patient);
-        assertAlertIsCreated(clinician, patient);
 
-        //readAndCloseAlert(clinician, patient);
-    }
-
-    private void readAndCloseAlert(TestClinician clinician, TestPatient patient) {
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
-        UnreadAlertsPage unreadAlertsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(),clinician.password()).goToUnreadAlertsPage();
-        List<WebElement> webElements = unreadAlertsPage.alertsTable();
-        openAlert(webElements, patient.patientId());
+        ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
+        UnreadAlertsPage unreadAlertsPage = listPatientsPage.goToUnreadAlertsPage();
+
+        assertAlertIsCreated(patient, unreadAlertsPage);
+
+        String notes = "some notes";
+        String status = "Closed";
+
+        ShowAlertPage showAlertPage = updateNotesAndCloseAlert(patient, status, notes, unreadAlertsPage);
+        assertShowAlert(notes, status, showAlertPage);
+
+        assertAlertIsUpdated(patient, listPatientsPage, status, notes);
     }
 
-    private void openAlert(List<WebElement> webElements, String patientId) {
-        for(WebElement trElement : webElements)
-        {
-            List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
+    private void assertShowAlert(String notes, String status, ShowAlertPage showAlertPage) {
+        assertEquals(status, showAlertPage.getAlertStatus());
+        assertEquals(notes, showAlertPage.getNotes());
+    }
+
+    private void assertAlertIsUpdated(TestPatient patient, ListPatientsPage listPatientsPage, String status, String notes) {
+        ReadAlertsPage readAlertsPage = listPatientsPage.goToReadAlertsPage();
+        assertTableContainsAlert(readAlertsPage.alertsTable(), patient.patientId(), patient.mobileNumber(), status, notes);
+    }
+
+    private void assertAlertIsCreated(TestPatient patient, UnreadAlertsPage unreadAlertsPage) {
+        List<WebElement> webElements = unreadAlertsPage.alertsTable();
+        assertTableContainsAlert(webElements, patient.patientId(), patient.mobileNumber(), "Open", "");
+    }
+
+    private ShowAlertPage updateNotesAndCloseAlert(TestPatient patient, String status, String notes, UnreadAlertsPage unreadAlertsPage) {
+        List<WebElement> webElements = unreadAlertsPage.alertsTable();
+        UpdateAlertPage updateAlertPage = openUpdateAlertPage(webElements, patient.patientId());
+        updateAlertPage.changeAlertStatus(status);
+        updateAlertPage.changeNotes(notes);
+        return updateAlertPage.save();
+    }
+
+    private int getRowId(List<WebElement> webElements, String patientId) {
+        int rowId = 0;
+        for (WebElement trElement : webElements) {
+            List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
             String actualPatientId = td_collection.get(0).getText();
-            if(patientId.equals(actualPatientId)) {
-                //open
-                List<WebElement> elementsWithLinks = trElement.findElements(By.xpath("td/a"));
-                elementsWithLinks.get(1).click();
-                MyPageFactory.initElements(webDriver, UnreadAlertsPage.class);
-                break;
+            if (patientId.equals(actualPatientId)) {
+                return rowId;
             }
+            rowId++;
         }
+        return -1;
     }
 
-    private void assertAlertIsCreated(TestClinician clinician, TestPatient patient) {
-        LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
-        UnreadAlertsPage unreadAlertsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(),clinician.password()).goToUnreadAlertsPage();
-        List<WebElement> webElements = unreadAlertsPage.alertsTable();
-        assertTableContainsAlert(webElements, patient.patientId(), patient.mobileNumber());
+    private UpdateAlertPage openUpdateAlertPage(List<WebElement> webElements, String patientId) {
+        int rowId = getRowId(webElements, patientId);
+        assertTrue(rowId >= 0);
+        WebElement trElement = webElements.get(rowId);
+        //open
+        List<WebElement> elementsWithLinks = trElement.findElements(By.xpath("td/a"));
+        elementsWithLinks.get(1).click();
+        return MyPageFactory.initElements(webDriver, UpdateAlertPage.class);
     }
 
     private TestPatient createTestPatient(TestClinician clinician) {
@@ -93,18 +120,15 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         return clinician;
     }
 
-    private void assertTableContainsAlert(List<WebElement> webElements, String patientId, String phoneNumber) {
-        for(WebElement trElement : webElements)
-        {
-            List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
-            String actualPatientId = td_collection.get(0).getText();
-            if(patientId.equals(actualPatientId)) {
-                String actualPhoneNumber = td_collection.get(1).getText();
-                assertEquals(phoneNumber, actualPhoneNumber);
-                return;
-            }
-        }
-        fail();
+    private void assertTableContainsAlert(List<WebElement> webElements, String patientId, String phoneNumber, String status, String notes) {
+        int rowId = getRowId(webElements, patientId);
+        assertTrue(rowId >= 0);
+        WebElement trElement = webElements.get(rowId);
+        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
+        String actualPhoneNumber = td_collection.get(1).getText();
+        assertEquals(phoneNumber, actualPhoneNumber);
+        assertEquals(status, td_collection.get(5).getText());
+        assertEquals(notes, td_collection.get(6).getText());
     }
 
     private void assertSymptomReportingCallFlow(TestClinician clinician, TestPatient patient) throws IOException {

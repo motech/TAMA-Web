@@ -26,6 +26,9 @@ public class ListPatientsPage extends Page {
     @FindBy(how = How.XPATH, using = "//li[@id='i_alert_new']/a")
     private WebElement showUnreadAlerts;
 
+    @FindBy(how = How.XPATH, using = "//li[@id='i_alert_list']/a")
+    private WebElement showReadAlerts;
+
     @FindBy(how = How.XPATH, using = "//h3")
     private WebElement welcomeMessage;
 
@@ -67,5 +70,10 @@ public class ListPatientsPage extends Page {
     public UnreadAlertsPage goToUnreadAlertsPage() {
         showUnreadAlerts.click();
         return MyPageFactory.initElements(webDriver, UnreadAlertsPage.class);
+    }
+
+    public ReadAlertsPage goToReadAlertsPage() {
+        showReadAlerts.click();
+        return MyPageFactory.initElements(webDriver, ReadAlertsPage.class);
     }
 }
