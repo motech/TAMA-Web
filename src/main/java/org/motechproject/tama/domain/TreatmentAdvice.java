@@ -15,7 +15,7 @@ import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.hasItem;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
-public class TreatmentAdvice extends CouchEntity {
+public class TreatmentAdvice extends CouchEntity implements Comparable<TreatmentAdvice> {
     @NotNull
     private String patientId;
 
@@ -137,5 +137,10 @@ public class TreatmentAdvice extends CouchEntity {
             drugDosagesGroupedAccordingToTime.put(time, select(getDrugDosages(), having(on(DrugDosage.class).getNonEmptyDosageSchedules(), hasItem(time))));
         }
         return drugDosagesGroupedAccordingToTime;
+    }
+
+    @Override
+    public int compareTo(TreatmentAdvice treatmentAdvice) {
+        return getStartDate().compareTo(treatmentAdvice.getStartDate());
     }
 }

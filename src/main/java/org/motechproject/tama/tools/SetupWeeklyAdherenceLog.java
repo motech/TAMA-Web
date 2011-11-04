@@ -33,7 +33,7 @@ public class SetupWeeklyAdherenceLog {
     private void log(String patientId, String logDateYear, String logDateMonth, String logDateDay, String numDaysMissed) {
 
         Patient patient = allPatients.findByPatientId(patientId).get(0);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
 
         WeeklyAdherenceLog log = new WeeklyAdherenceLog();
         log.setPatientId(patient.getId());

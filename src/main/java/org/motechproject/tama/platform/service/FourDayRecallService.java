@@ -39,7 +39,7 @@ public class FourDayRecallService {
 
     public LocalDate getStartDateForCurrentWeek(String patientDocId) {
         Patient patient = allPatients.get(patientDocId);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientDocId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
 
         DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
 
@@ -97,7 +97,7 @@ public class FourDayRecallService {
     }
 
     protected WeeklyAdherenceLog getAdherenceLogForPreviousWeek(String patientId) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         LocalDate startDateForPreviousWeek = getStartDateForCurrentWeek(patientId).minusWeeks(1);
 
         List<WeeklyAdherenceLog> logs = allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdvice.getId(), startDateForPreviousWeek);
@@ -105,7 +105,7 @@ public class FourDayRecallService {
     }
 
     public boolean isAdherenceBeingCapturedForFirstWeek(String patientId) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
         return getStartDateForCurrentWeek(patientId).equals(treatmentAdviceStartDate);
     }

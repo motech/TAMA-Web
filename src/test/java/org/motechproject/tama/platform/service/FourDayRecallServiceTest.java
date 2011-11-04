@@ -61,7 +61,7 @@ public class FourDayRecallServiceTest {
         when(DateUtil.today()).thenReturn(today);
         when(DateUtil.newDate(treatmentAdvice.getStartDate())).thenReturn(treatmentAdviceStartDate);
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         ArrayList<WeeklyAdherenceLog> adherenceLogs = new ArrayList<WeeklyAdherenceLog>() {{
             this.add(new WeeklyAdherenceLog());
         }};
@@ -84,7 +84,7 @@ public class FourDayRecallServiceTest {
         when(DateUtil.today()).thenReturn(today);
         when(DateUtil.newDate(treatmentAdvice.getStartDate())).thenReturn(treatmentAdviceStartDate);
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         ArrayList<WeeklyAdherenceLog> adherenceLogs = new ArrayList<WeeklyAdherenceLog>();
         when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceId, startDateForWeek)).thenReturn(adherenceLogs);
 
@@ -110,7 +110,7 @@ public class FourDayRecallServiceTest {
         when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
         when(allPatients.get(patientId)).thenReturn(patient);
         when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceID, new LocalDate(2011, 10, 5))).thenReturn(logs);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice.toDate());
         when(treatmentAdvice.getId()).thenReturn(treatmentAdviceID);
 
@@ -133,7 +133,7 @@ public class FourDayRecallServiceTest {
         when(DateUtil.today()).thenReturn(today);
         when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice.toDate());
 
         boolean adherenceBeingCapturedForFirstWeek = fourDayRecallService.isAdherenceBeingCapturedForFirstWeek(patientId);
@@ -152,7 +152,7 @@ public class FourDayRecallServiceTest {
         when(DateUtil.today()).thenReturn(today);
         when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice.toDate());
 
         boolean adherenceBeingCapturedForFirstWeek = fourDayRecallService.isAdherenceBeingCapturedForFirstWeek(patientId);
@@ -247,7 +247,7 @@ public class FourDayRecallServiceTest {
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {
         when(DateUtil.today()).thenReturn(today);
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice);
         when(DateUtil.newDate(startDateOfTreatmentAdvice)).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
     }

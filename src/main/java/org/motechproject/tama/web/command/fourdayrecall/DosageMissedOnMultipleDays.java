@@ -27,7 +27,7 @@ public class DosageMissedOnMultipleDays implements ITreeCommand {
 
         List<String> messages = new ArrayList<String>();
         int numDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(tamaivrContext.patientId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(tamaivrContext.patientId());
 
         if (treatmentAdvice.hasMultipleDosages()) {
             messages.add(TamaIVRMessage.FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_1);

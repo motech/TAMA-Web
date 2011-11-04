@@ -32,7 +32,7 @@ public class UpdateTreatmentAdvice {
 
     private void treatmentAdvice(String patientId, String startDateYear, String startDateMonth, String startDateDay) {
         Patient patient = allPatients.findByPatientId(patientId).get(0);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
             drugDosage.setStartDate(DateUtil.newDate(Integer.parseInt(startDateYear), Integer.parseInt(startDateMonth), Integer.parseInt(startDateDay)));
         }

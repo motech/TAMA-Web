@@ -37,7 +37,7 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        TreatmentAdvice adviceForPatient = allTreatmentAdvices.findByPatientId(patientId);
+        TreatmentAdvice adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         if (adviceForPatient != null) {
             return "redirect:/clinicvisits/" + encodeUrlPathSegment(adviceForPatient.getId(), httpServletRequest);
         }

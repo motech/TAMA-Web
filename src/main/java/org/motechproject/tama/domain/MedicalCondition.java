@@ -13,7 +13,7 @@ public class MedicalCondition {
     private boolean diabetic;
     private boolean hyperTensic;
     private boolean nephrotoxic;
-    private LocalDate artRegimenStartDate;
+    private LocalDate treatmentStartDate;
     private boolean lowBaselineHBCount;
     private boolean psychiatricIllness;
     private boolean alcoholic;
@@ -83,17 +83,17 @@ public class MedicalCondition {
         return this;
     }
 
-    public LocalDate artRegimenStartDate() {
-        return artRegimenStartDate;
+    public LocalDate treatmentStartDate() {
+        return treatmentStartDate;
     }
 
-    public MedicalCondition artRegimenStartDate(LocalDate artRegimenStartDate) {
-        this.artRegimenStartDate = artRegimenStartDate;
+    public MedicalCondition treatmentStartDate(LocalDate treatmentStartDate) {
+        this.treatmentStartDate = treatmentStartDate;
         return this;
     }
 
-    public int numberOfMonthsSinceRegimenStarted() {
-        return new Period(artRegimenStartDate(), DateUtil.today(), PeriodType.months()).getMonths();
+    public int numberOfMonthsSinceTreatmentStarted() {
+        return new Period(treatmentStartDate(), DateUtil.today(), PeriodType.months()).getMonths();
     }
 
     public boolean lowBaselineHBCount() {

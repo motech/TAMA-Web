@@ -62,7 +62,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(null, null, null)).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withPatientId("patient_id").build();
 
-        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
 
         verify(pillReminderService).unscheduleJobs(patient.getId());
@@ -72,7 +72,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     public void shouldNotUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall_AndPatientDoesNotHaveATreatmentAdvice() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(null, null, null)).build();
 
-        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(null);
 
         patientService.update(patient);
         verify(pillReminderService, never()).unscheduleJobs(patient.getId());
@@ -90,7 +90,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     public void shouldUnscheduleJobsForAdherenceTrendFeedbackOutboxMessage() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(null, null, null)).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
-        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
         verify(tamaSchedulerService).unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
     }
@@ -100,7 +100,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withBestCallTime(new TimeOfDay(null, null, null)).build();
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
-        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
         verify(tamaSchedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
@@ -110,7 +110,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withBestCallTime(new TimeOfDay(null, null, null)).build();
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
-        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
         verify(tamaSchedulerService).unscheduleJobForOutboxCall(patient);
         verify(tamaSchedulerService).unscheduleRepeatingJobForOutboxCall(patient.getId());

@@ -42,7 +42,7 @@ public class AuthenticationServiceTest {
 
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
 
         IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
         assertEquals(false, ivrAuthenticationStatus.isActive());

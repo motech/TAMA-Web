@@ -9,21 +9,21 @@ public class MedicalConditionsMapper {
     private Patient patient;
     private LabResults labResults;
     private VitalStatistics vitalStatistics;
-    private TreatmentAdvice treatmentAdvice;
-    private Regimen regimen;
+    private TreatmentAdvice earliestTreatmentAdvice;
+    private Regimen currentRegimen;
 
-    public MedicalConditionsMapper(Patient patient, LabResults labResults, VitalStatistics vitalStatistics, TreatmentAdvice treatmentAdvice, Regimen regimen) {
+    public MedicalConditionsMapper(Patient patient, LabResults labResults, VitalStatistics vitalStatistics, TreatmentAdvice earliestTreatmentAdvice, Regimen currentRegimen) {
         this.patient = patient;
         this.labResults = labResults;
         this.vitalStatistics = vitalStatistics;
-        this.treatmentAdvice = treatmentAdvice;
-        this.regimen = regimen;
+        this.earliestTreatmentAdvice = earliestTreatmentAdvice;
+        this.currentRegimen = currentRegimen;
     }
 
     public MedicalCondition map() {
         MedicalCondition medicalCondition = new MedicalCondition();
 
-        medicalCondition.regimenName(regimen.getName());
+        medicalCondition.regimenName(currentRegimen.getName());
         medicalCondition.gender(patient.getGender().getType());
         medicalCondition.age(patient.getAge());
         medicalCondition.cd4Count(labResults.latestCD4Count());
@@ -32,7 +32,7 @@ public class MedicalConditionsMapper {
         medicalCondition.nephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));
         medicalCondition.alcoholic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Alcoholism));
         medicalCondition.tuberculosis(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Tuberculosis));
-        medicalCondition.artRegimenStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
+        medicalCondition.treatmentStartDate(DateUtil.newDate(earliestTreatmentAdvice.getStartDate()));
         medicalCondition.lowBaselineHBCount(hasBaselineHBLowerThan10());
         medicalCondition.psychiatricIllness(hasHistoryOfPsychiatricIllness());
         medicalCondition.bmi(vitalStatistics.getBMI());

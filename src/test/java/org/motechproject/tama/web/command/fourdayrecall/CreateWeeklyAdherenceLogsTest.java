@@ -54,7 +54,7 @@ public class CreateWeeklyAdherenceLogsTest {
 
         when(DateUtil.today()).thenReturn(today);
         context.patientId(patientId).dtmfInput("1");
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         when(fourDayRecallService.getStartDateForCurrentWeek(patientId)).thenReturn(startDateOfTreatmentAdvice);
 
         CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs = new CreateWeeklyAdherenceLogs(allTreatmentAdvices, fourDayRecallService, allWeeklyAdherenceLogs);

@@ -72,7 +72,7 @@ public class PatientServiceTest_PatientOnFourDayRecall {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
-        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
         verify(tamaSchedulerService).scheduleJobForOutboxCall(patient);
     }
@@ -82,7 +82,7 @@ public class PatientServiceTest_PatientOnFourDayRecall {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withBestCallTime(new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
-        when(allTreatmentAdvices.findByPatientId(patient.getId())).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
         verify(tamaSchedulerService, never()).scheduleJobForOutboxCall(patient);
     }

@@ -13,6 +13,7 @@ import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.motechproject.tamafunctional.testdataservice.ScheduledJobDataService;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -47,6 +48,7 @@ public class CallLogsTest extends BaseIVRTest{
         caller.enter("1234");
         caller.hangup();
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
-        loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).goToFilterCallLogsPage().filterCallLogs(new Date(), new Date());
+        Date today = DateUtil.today().toDate();
+        loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).goToFilterCallLogsPage().filterCallLogs(today, today);
     }
 }

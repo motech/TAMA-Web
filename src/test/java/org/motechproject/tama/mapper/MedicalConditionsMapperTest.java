@@ -86,7 +86,7 @@ public class MedicalConditionsMapperTest {
         MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
-        assertEquals(4, medicalCondition.numberOfMonthsSinceRegimenStarted());
+        assertEquals(4, medicalCondition.numberOfMonthsSinceTreatmentStarted());
     }
 
     @Test

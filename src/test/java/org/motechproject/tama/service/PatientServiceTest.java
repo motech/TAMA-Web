@@ -65,7 +65,8 @@ public class PatientServiceTest {
 
         String regimenId = "regimenId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(DateUtil.today()).withRegimenId(regimenId).build();
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.earliestTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
 
         String regimenName = "Regimen Name";
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).withName(regimenName).build();

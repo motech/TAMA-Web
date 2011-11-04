@@ -108,7 +108,7 @@ public class TreatmentAdviceControllerTest {
         Patient patient = PatientBuilder.startRecording().withPatientId(patientId).build();
 
         when(allPatients.get(this.PATIENT_ID)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         controller.createForm(patientId, uiModel);
 
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
@@ -181,7 +181,7 @@ public class TreatmentAdviceControllerTest {
         when(DateUtil.today()).thenReturn(new LocalDate(2012, 12, 12));
 
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String returnURL = controller.changeRegimenForm(treatmentAdviceId, patientId, uiModel);
 
         assertThat(returnURL, is("treatmentadvices/update"));

@@ -57,10 +57,11 @@ public class PatientService {
         Patient patient = allPatients.get(patientId);
         LabResults labResults = allLabResults.findByPatientId(patientId);
         VitalStatistics vitalStatistics = allVitalStatistics.findByPatientId(patientId);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patientId);
-        Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
+        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientId);
+        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        Regimen currentRegimen = allRegimens.get(currentTreatmentAdvice.getRegimenId());
 
-        return new MedicalConditionsMapper(patient, labResults, vitalStatistics, treatmentAdvice, regimen).map();
+        return new MedicalConditionsMapper(patient, labResults, vitalStatistics, earliestTreatmentAdvice, currentRegimen).map();
     }
 
     private void postUpdate(Patient patient, Patient dbPatient) {
@@ -110,13 +111,13 @@ public class PatientService {
     }
 
     private void scheduleFourDayRecallJobs(Patient patient) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (treatmentAdvice != null && patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall)
             tamaSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
 
     private void unscheduleDailyReminderJobs(Patient patient) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.findByPatientId(patient.getId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (treatmentAdvice != null) {
             pillReminderService.unscheduleJobs(patient.getId());
             tamaSchedulerService.unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);

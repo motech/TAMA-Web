@@ -36,9 +36,9 @@ public class ClinicVisitsControllerTest {
     @Test
     public void shouldRedirectToShowClinicVisits_WhenPatientHasATreatmentAdvice() {
         String patientId = "patientId";
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").build();
 
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(treatmentAdvice);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("redirect:/clinicvisits/treatmentAdviceId", redirectURL);
@@ -48,7 +48,7 @@ public class ClinicVisitsControllerTest {
     public void shouldRedirectToCreateClinicVisits_WhenPatientDoesNotHaveATreatmentAdvice() {
         String patientId = "patientId";
 
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("clinicvisits/create", redirectURL);
@@ -59,7 +59,7 @@ public class ClinicVisitsControllerTest {
     public void shouldCreateNewClinicVisitsFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = "patientId";
 
-        when(allTreatmentAdvices.findByPatientId(patientId)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
         junit.framework.Assert.assertEquals("clinicvisits/create", redirectURL);

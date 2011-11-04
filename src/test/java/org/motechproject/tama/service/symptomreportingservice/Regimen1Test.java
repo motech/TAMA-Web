@@ -48,19 +48,19 @@ public class Regimen1Test extends SpringIntegrationTest {
 
     @Test
     public void shouldReturnRegimen1_3Tree() {
-        medicalCondition.regimenName("Regimen I").age(60).cd4Count(20).diabetic(true).artRegimenStartDate(today().minusMonths(6));
+        medicalCondition.regimenName("Regimen I").age(60).cd4Count(20).diabetic(true).treatmentStartDate(today().minusMonths(6));
         assertEquals("Regimen1_3", execute());
     }
 
     @Test
     public void shouldReturnRegimen1_4Tree() {
-        medicalCondition.regimenName("Regimen I").age(60).cd4Count(60).hyperTensic(true).artRegimenStartDate(today().minusMonths(6));
+        medicalCondition.regimenName("Regimen I").age(60).cd4Count(60).hyperTensic(true).treatmentStartDate(today().minusMonths(6));
         assertEquals("Regimen1_4", execute());
     }
 
     @Test
     public void shouldReturnRegimen1_1Tree_Scenario1() {
-        medicalCondition.age(45).diabetic(true).artRegimenStartDate(today().minusMonths(7)).regimenName("Regimen I");
+        medicalCondition.age(45).diabetic(true).treatmentStartDate(today().minusMonths(7)).regimenName("Regimen I");
         assertEquals("Regimen1_1", execute());
     }
 

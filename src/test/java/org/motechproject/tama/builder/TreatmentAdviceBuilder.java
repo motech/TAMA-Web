@@ -3,6 +3,7 @@ package org.motechproject.tama.builder;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.domain.DrugDosage;
 import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.util.UUIDUtil;
 
 import java.util.Arrays;
 
@@ -46,6 +47,6 @@ public class TreatmentAdviceBuilder {
     }
 
     public TreatmentAdviceBuilder withDefaults(){
-        return this.withId("treatmentAdviceId").withPatientId("patientId").withDrugCompositionGroupId("regimenCompositionId").withRegimenId("regimenId");
+        return this.withId(UUIDUtil.newUUID()).withPatientId("patientId").withDrugCompositionGroupId("regimenCompositionId").withRegimenId("regimenId");
     }
 }
