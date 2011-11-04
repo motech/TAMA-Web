@@ -6,7 +6,7 @@ import org.motechproject.server.alerts.domain.Alert;
 
 public class PatientAlert {
 
-    public static String SYMPTOM_ALERT_TYPE = "Symptoms";
+    public static final String PATIENT_ALERT_TYPE = "PatientAlertType";
     public static final String NOTES = "Notes";
     public static final String DOCTORS_NOTES = "Doctor's Notes";
     public static final String SYMPTOMS_ALERT_STATUS = "Symptoms Alert Status";
@@ -60,7 +60,7 @@ public class PatientAlert {
     }
 
     public String getType() {
-        return SYMPTOM_ALERT_TYPE;
+        return this.alert.getData().get(PATIENT_ALERT_TYPE);
     }
 
     public String getNotes() {

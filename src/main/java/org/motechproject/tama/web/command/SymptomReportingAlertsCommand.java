@@ -7,6 +7,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.service.PatientAlertService;
@@ -49,7 +50,7 @@ public class SymptomReportingAlertsCommand {
             public String[] execute(Object o) {
                 TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) o);
                 String externalId = ivrContext.patientId();
-                patientAlertService.createAlert(externalId, priority, symptomReported, adviceGiven);
+                patientAlertService.createAlert(externalId, priority, symptomReported, adviceGiven, PatientAlertType.SymptomReporting);
                 return new String[0];
             }
         };

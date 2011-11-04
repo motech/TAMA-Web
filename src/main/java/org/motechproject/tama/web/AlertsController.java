@@ -39,7 +39,7 @@ public class AlertsController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-        uiModel.addAttribute("alertInfo", patientAlertService.getSymptomReportingAlert(id));
+        uiModel.addAttribute("alertInfo", patientAlertService.getPatientAlert(id));
         return "alerts/show";
     }
 
@@ -50,9 +50,9 @@ public class AlertsController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String update(Model uiModel, String alertId, String symptomsAlertStatus, String notes, String doctorsNotes,  HttpServletRequest request) {
+    public String update(Model uiModel, String alertId, String symptomsAlertStatus, String notes, String doctorsNotes,  String type, HttpServletRequest request) {
         try {
-            patientAlertService.updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes);
+            patientAlertService.updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes, type);
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
             initUIModel(alertId, uiModel);
@@ -62,7 +62,7 @@ public class AlertsController extends BaseController {
     }
 
     private void initUIModel(String id, Model uiModel) {
-        uiModel.addAttribute("alertInfo", patientAlertService.getSymptomReportingAlert(id));
+        uiModel.addAttribute("alertInfo", patientAlertService.getPatientAlert(id));
         uiModel.addAttribute("symptomsStatuses", Arrays.asList(SymptomsAlertStatus.values()));
     }
 }

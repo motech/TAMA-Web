@@ -9,6 +9,7 @@ import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientAlert;
+import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.domain.SymptomsAlertStatus;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
@@ -34,7 +35,7 @@ public class PatientAlertService {
         this.alertService = alertService;
     }
 
-    public PatientAlert getSymptomReportingAlert(String alertId) {
+    public PatientAlert getPatientAlert(String alertId) {
         final Alert alert = selectUnique(alertService.getBy(null, null, null, null, 100),
                 having(on(Alert.class).getId(),
                         equalTo(alertId)));
@@ -67,20 +68,25 @@ public class PatientAlertService {
         return sort(flatten(convert(allPatients.findByClinic(clinicId), patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
 
-    public void createAlert(String externalId, Integer priority, String symptomReported, String adviceGiven) {
+    public void createAlert(String externalId, Integer priority, String description, String adviceGiven, PatientAlertType patientAlertType) {
         HashMap<String,String> data = new HashMap<String, String>();
-        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, patientAlertType.name());
+        if(PatientAlertType.SymptomReporting.equals(patientAlertType)) {
+            data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        }
         final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
         final DateTime now = DateUtil.now();
         symptomsAlert.setDateTime(now);
-        symptomsAlert.setDescription(symptomReported);
+        symptomsAlert.setDescription(description);
         symptomsAlert.setName(adviceGiven);
         alertService.createAlert(symptomsAlert);
     }
 
-    public void updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes) {
-        alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
-        alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+    public void updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType) {
+        if(PatientAlertType.SymptomReporting.name().equals(patientAlertType)) {
+            alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
+            alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        }
         alertService.setData(alertId, PatientAlert.NOTES, notes);
     }
 }

@@ -8,17 +8,16 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientAlert;
-import org.motechproject.tama.domain.SymptomsAlertStatus;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
+import sun.security.action.PutAllAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -58,7 +57,7 @@ public class PatientAlertServiceTest {
         when(alertService.getBy(null, null, null, null, 100)).thenReturn(alerts);
         when(allPatients.get(testId)).thenReturn(patient);
 
-        PatientAlert symptomReportingAlert = patientAlertService.getSymptomReportingAlert(testId);
+        PatientAlert symptomReportingAlert = patientAlertService.getPatientAlert(testId);
 
         assertEquals(testId, symptomReportingAlert.getPatientId());
     }
@@ -77,7 +76,7 @@ public class PatientAlertServiceTest {
         }};
         when(alertService.getBy(null, null, null, null, 100)).thenReturn(alerts);
 
-        patientAlertService.getSymptomReportingAlert(testId);
+        patientAlertService.getPatientAlert(testId);
 
         verify(alertService, times(1)).changeStatus(testId, AlertStatus.READ);
     }
@@ -146,7 +145,7 @@ public class PatientAlertServiceTest {
     }
 
     @Test
-    public void shouldCreateAlert() {
+    public void shouldCreateSymptomReportingAlert() {
         final String testPatientId = "testPatientId";
         final String symptomReported = "some ugly rash";
         final String adviceGiven = "have a bath";
@@ -161,10 +160,58 @@ public class PatientAlertServiceTest {
                         && alert.getStatus().equals(AlertStatus.NEW)
                         && alert.getData().get(PatientAlert.SYMPTOMS_ALERT_STATUS).equals(SymptomsAlertStatus.Open.name())
                         && alert.getDescription().equals(symptomReported)
+                        && alert.getData().get(PatientAlert.PATIENT_ALERT_TYPE).equals(PatientAlertType.SymptomReporting.name())
                         && alert.getName().equals(adviceGiven);
             }
         };
-        patientAlertService.createAlert(testPatientId, 2, symptomReported, adviceGiven);
+        patientAlertService.createAlert(testPatientId, 2, symptomReported, adviceGiven, PatientAlertType.SymptomReporting);
         verify(alertService).createAlert(argThat(alertArgumentMatcher));
     }
+
+    @Test
+    public void shouldUpdateSymptomReportingAlert() {
+        final String testPatientId = "testPatientId";
+        String doctorsNotes = "doctorsNotes";
+        String notes = "notes";
+        patientAlertService.updateAlert(testPatientId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.name());
+        verify(alertService).setData(testPatientId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
+        verify(alertService).setData(testPatientId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        verify(alertService).setData(testPatientId, PatientAlert.NOTES, notes);
+    }
+
+    @Test
+    public void shouldCreateAppointmentReminderAlert() {
+        final String testPatientId = "testPatientId";
+        final String symptomReported = "some ugly rash";
+        final String adviceGiven = "have a bath";
+
+        final ArgumentMatcher<Alert> alertArgumentMatcher = new ArgumentMatcher<Alert>() {
+            @Override
+            public boolean matches(Object testAlert) {
+                Alert alert = (Alert) testAlert;
+                return alert.getAlertType().equals(AlertType.MEDIUM)
+                        && alert.getExternalId().equals(testPatientId)
+                        && (alert.getPriority() == 2)
+                        && alert.getStatus().equals(AlertStatus.NEW)
+                        && alert.getData().get(PatientAlert.SYMPTOMS_ALERT_STATUS) == null
+                        && alert.getDescription().equals(symptomReported)
+                        && alert.getData().get(PatientAlert.PATIENT_ALERT_TYPE).equals(PatientAlertType.AppointmentReminder.name())
+                        && alert.getName().equals(adviceGiven);
+            }
+        };
+        patientAlertService.createAlert(testPatientId, 2, symptomReported, adviceGiven, PatientAlertType.AppointmentReminder);
+        verify(alertService).createAlert(argThat(alertArgumentMatcher));
+    }
+
+@Test
+    public void shouldUpdateAppointmentReminderAlert() {
+        final String testPatientId = "testPatientId";
+        String doctorsNotes = "doctorsNotes";
+        String notes = "notes";
+        patientAlertService.updateAlert(testPatientId, "Open", notes, doctorsNotes, PatientAlertType.AppointmentReminder.name());
+        verify(alertService, never()).setData(testPatientId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
+        verify(alertService, never()).setData(testPatientId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        verify(alertService).setData(testPatientId, PatientAlert.NOTES, notes);
+    }
+
 }

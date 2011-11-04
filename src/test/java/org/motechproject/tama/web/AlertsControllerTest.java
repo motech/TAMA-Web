@@ -68,7 +68,7 @@ public class AlertsControllerTest {
     public void shouldSetAlertForDisplay() {
         String id = "alertId";
         PatientAlert alert = new PatientAlert() ;
-        when(patientAlertService.getSymptomReportingAlert(id)).thenReturn(alert);
+        when(patientAlertService.getPatientAlert(id)).thenReturn(alert);
 
         String returnString = alertsController.show(id, uiModel, request);
 

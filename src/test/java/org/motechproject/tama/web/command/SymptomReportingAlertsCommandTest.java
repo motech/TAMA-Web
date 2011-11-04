@@ -8,6 +8,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.service.PatientAlertService;
@@ -44,7 +45,7 @@ public class SymptomReportingAlertsCommandTest {
         final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, node);
         iTreeCommand.execute(null);
         when(properties.get(any())).thenReturn(StringUtils.EMPTY);
-        verify(alertService).createAlert("dummyPatientId", 1, "", "");
+        verify(alertService).createAlert("dummyPatientId", 1, "", "", PatientAlertType.SymptomReporting);
     }
 
     @Test
@@ -57,7 +58,7 @@ public class SymptomReportingAlertsCommandTest {
 
         final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode);
         iTreeCommand.execute(null);
-        verify(alertService).createAlert("dummyPatientId", 1, "ppc_prompt", "");
+        verify(alertService).createAlert("dummyPatientId", 1, "ppc_prompt", "", PatientAlertType.SymptomReporting);
 
     }
 
@@ -70,7 +71,7 @@ public class SymptomReportingAlertsCommandTest {
 
         final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode);
         iTreeCommand.execute(null);
-        verify(alertService).createAlert("dummyPatientId", 1, "cy_prompt", "");
+        verify(alertService).createAlert("dummyPatientId", 1, "cy_prompt", "", PatientAlertType.SymptomReporting);
     }
 
 
@@ -82,6 +83,6 @@ public class SymptomReportingAlertsCommandTest {
 
         final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode);
         iTreeCommand.execute(null);
-        verify(alertService).createAlert("dummyPatientId", 1, "-", "test");
+        verify(alertService).createAlert("dummyPatientId", 1, "-", "test", PatientAlertType.SymptomReporting);
     }
 }

@@ -19,4 +19,5 @@ public class PatientAlertTest {
         patientAlert.setAlert(alert);
         Assert.assertEquals("26/09/2011 12:05 PM", patientAlert.getGeneratedOn());
     }
+
 }

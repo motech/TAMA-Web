@@ -10,7 +10,7 @@
     </menu:menu>
     <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
         <menu:category id="c_alerts" z="eF9KM9LmRl+DN4yo3LTRDZuTkik=">
-            <menu:item id="i_alert_list" messageCode="unread_menu" url="/alerts/unread" />
+            <menu:item id="i_alert_new" messageCode="unread_menu" url="/alerts/unread" />
             <menu:item id="i_alert_list" messageCode="read_menu" url="/alerts/read" />
         </menu:category>
         <menu:category id="c_summary">

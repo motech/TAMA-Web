@@ -23,6 +23,8 @@ public class ListPatientsPage extends Page {
     @FindBy(how = How.XPATH, using = "//li[@id='i_logs_list']/a")
     private WebElement showCallLogsLink;
 
+    @FindBy(how = How.XPATH, using = "//li[@id='i_alert_new']/a")
+    private WebElement showUnreadAlerts;
 
     @FindBy(how = How.XPATH, using = "//h3")
     private WebElement welcomeMessage;
@@ -60,5 +62,10 @@ public class ListPatientsPage extends Page {
     public ShowPatientPage gotoShowPatientPage(TestPatient patient) {
         webDriver.get(TamaUrl.viewPageUrlFor(patient));
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public UnreadAlertsPage goToUnreadAlertsPage() {
+        showUnreadAlerts.click();
+        return MyPageFactory.initElements(webDriver, UnreadAlertsPage.class);
     }
 }
