@@ -1,13 +1,11 @@
 package org.motechproject.tama.service.symptomreportingservice;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.service.SymptomReportingService;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,15 +22,13 @@ public class Regimen4Test extends SpringIntegrationTest {
     @Before
     public void setUp() {
         medicalCondition = new MedicalCondition();
-    }
-
-    private LocalDate today() {
-        return DateUtil.today();
+        medicalCondition.gender("Male");
     }
 
     private String execute() {
         return symptomReportingService.getSymptomReportingTree(medicalCondition);
     }
+
     @Test
     public void shouldReturnRegimen4_1Tree() {
         medicalCondition.regimenName("Regimen IV").cd4Count(10).psychiatricIllness(false).lowBaselineHBCount(true);

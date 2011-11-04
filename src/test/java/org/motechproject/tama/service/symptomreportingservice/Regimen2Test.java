@@ -24,6 +24,7 @@ public class Regimen2Test extends SpringIntegrationTest {
     @Before
     public void setUp() {
         medicalCondition = new MedicalCondition();
+        medicalCondition.gender("Male");
     }
 
     private LocalDate today() {
