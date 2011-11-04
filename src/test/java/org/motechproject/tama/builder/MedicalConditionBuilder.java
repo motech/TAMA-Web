@@ -20,6 +20,11 @@ public class MedicalConditionBuilder {
         return this;
     }
 
+    public MedicalConditionBuilder ForRegimen3(){
+        medicalCondition.regimenName("Regimen III");
+        return this;
+    }
+
     public MedicalConditionBuilder ForRegimen5(){
         medicalCondition.regimenName("Regimen V");
         return this;
@@ -58,6 +63,16 @@ public class MedicalConditionBuilder {
 
     public MedicalConditionBuilder BelowMiddleAge(){
         medicalCondition.age(50);
+        return this;
+    }
+
+    public MedicalConditionBuilder HighBaselineHBCount(){
+        medicalCondition.lowBaselineHBCount(false);
+        return this;
+    }
+
+    public MedicalConditionBuilder LowBaselineHBCount(){
+        medicalCondition.lowBaselineHBCount(true);
         return this;
     }
 
