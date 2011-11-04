@@ -16,7 +16,7 @@
                 <form:hidden path="type" value="${alertInfo.type}"/>
                 <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
                 <c:if test="${alertInfo.type == 'SymptomReporting'}">
-                    <field:select field="symptomsAlertStatus" label= "Symptoms Alert Status" id="s_org_motechproject_tama_alert_symptomsStatus" required="true" items="${symptomsStatuses}" path="/symptomsStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
+                    <field:select field="symptomsAlertStatus" label= "Symptoms Call Status" id="s_org_motechproject_tama_alert_symptomsStatus" required="true" items="${symptomsStatuses}" path="/symptomsStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                     <field:textarea field="doctorsNotes" label="Doctor’s Notes based on direct contact" id="s_org_motechproject_tama_alert_doctorsNotes"  required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" /><br/>
                 </c:if>
                 <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />

@@ -503,6 +503,8 @@ fieldset th {
     width: 160px;
 }
 
-#_s_org_motechproject_tama_alert_name_adviceGiven_id {
+#_s_org_motechproject_tama_alert_name_adviceGiven_id,
+#_s_org_motechproject_tama_alert_doctorsNotes_doctorsNotes_id,
+#_s_org_motechproject_tama_alert_notes_notes_id {
   margin-left : 155px;
 }
