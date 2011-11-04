@@ -25,6 +25,11 @@ public class MedicalConditionBuilder {
         return this;
     }
 
+    public MedicalConditionBuilder ForRegimen4(){
+        medicalCondition.regimenName("Regimen IV");
+        return this;
+    }
+
     public MedicalConditionBuilder ForRegimen5(){
         medicalCondition.regimenName("Regimen V");
         return this;
@@ -73,6 +78,16 @@ public class MedicalConditionBuilder {
 
     public MedicalConditionBuilder LowBaselineHBCount(){
         medicalCondition.lowBaselineHBCount(true);
+        return this;
+    }
+
+    public MedicalConditionBuilder HistoryOfPsychiatricIllness(){
+        medicalCondition.psychiatricIllness(true);
+        return this;
+    }
+
+    public MedicalConditionBuilder NoHistoryOfPsychiatricIllness(){
+        medicalCondition.psychiatricIllness(false);
         return this;
     }
 
