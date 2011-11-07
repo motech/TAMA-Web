@@ -79,16 +79,18 @@ public class TreatmentAdviceController extends BaseController {
         createForm(patientId, uiModel);
         return "treatmentadvices/update";
     }
-
+                    
     @RequestMapping(method = RequestMethod.POST)
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, Model uiModel, HttpServletRequest httpServletRequest) {
         endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
         uiModel.asMap().clear();
         allTreatmentAdvices.add(treatmentAdvice);
-        pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
-        TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
-        schedulerService.unscheduleJobForAdherenceTrendFeedback(oldTreatmentAdvice);
-        schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        if(allPatients.get(treatmentAdvice.getPatientId()).getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)){
+            TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
+            pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
+            schedulerService.unscheduleJobForAdherenceTrendFeedback(oldTreatmentAdvice);
+            schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        }
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
