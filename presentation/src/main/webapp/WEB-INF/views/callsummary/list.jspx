@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_org_motechproject_tama_ivr_logging_domain_CallLog" items="${callsummary}">
+        <c:forEach items="${callsummary}" var="calllog" varStatus="logIndex">
+            <util:panel id="title[${logIndex.index}]" title="${calllog.title} || Type :${calllog.callLog.callType} || Date :${calllog.callDateFromCallLogDateTime} || Started At :${calllog.callStartTimeFromCallLogStartDateTime} || Ended At :${calllog.callEndTimeFromCallLogEndDateTime}" openPane="false">
+                <util:panel id="sub-title[${logIndex.index}]" title="Events" openPane="true">
+                    <c:forEach items="${calllog.callEvents}" var="callEvent" varStatus="eventIndex">
+                        <c:if test="${callEvent.userInputAvailable}">
+                            <b><c:out value="User entered : "/></b><c:out value="${callEvent.userInput}"/>
+                        </c:if>
+                        <c:if test="${not empty callEvent.responses}">
+                            <br/>
+                            <br/>
+                            <b><c:out value="Tama played"/></b>
+                            <br/>
+                            <br/>
+                            <c:forEach items="${callEvent.responses}" var="response">
+                                 <c:out value="${response}"/>
+                                 <br/>
+                                 <br/>
+                            </c:forEach>
+                        </c:if>
+                    </c:forEach>
+                </util:panel>
+            </util:panel>
+        </c:forEach>
+    </page:list>
+</div>

@@ -1,0 +1,33 @@
+/* patient preferences */
+
+.patient_preferences .section {
+    overflow: auto;
+    padding-bottom: 10px;
+}
+
+.patient_preferences .left_pane {
+}
+
+.patient_preferences .right_pane {
+    float: left;
+}
+
+.patient_preferences .radio_group label {
+    float: none;
+}
+
+.patient_preferences .radio_group input {
+    height: auto;
+}
+
+.patient_preferences label {
+    width: 250px;
+}
+
+.patient_preferences .best_call_time #_bestCallTime_id {
+    float: left;
+}
+
+.patient_preferences .best_call_time .dijitComboBox {
+    width: 50px;
+}

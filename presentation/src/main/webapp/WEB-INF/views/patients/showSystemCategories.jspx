@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:springform="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+   <div class='system_categories'>
+       <span class='title'><spring:message code="table_title_medical_history_system"/></span>
+       <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.systemCategories}" varStatus="categoryStatus" var="category">
+           <div class='category'>
+               <span class='title'>
+                <![CDATA[ &#x2022; ]]> <c:out value=" ${category.name}"></c:out>
+               </span>
+               <c:if test="${category.categoryEmpty}">
+                   <c:forEach items="${category.ailments.otherAilments}" varStatus="otherAilmentItemStatus" var="otherAilment">
+                       <c:if test="${category.name != 'Other' or otherAilment.state.displayName != 'None'}">
+                           <span class='state'>
+                               <c:out value=" ${otherAilment.state.displayName}"></c:out>
+                           </span>
+                           <span class='description'>
+                               <c:out value=" ${otherAilment.description}"></c:out>
+                           </span>
+                       </c:if>
+                   </c:forEach>
+               </c:if>
+               <c:if test="${not category.categoryEmpty}">
+                   <div class='ailments'>
+                       <c:forEach items="${category.ailments.ailments}" varStatus="ailmentItemStatus" var="ailment">
+                           <div class='ailment'>
+                               <span class='title'>
+                                   <![CDATA[ &#x2022; ]]> <c:out value=" ${ailment.definition.value}"></c:out>
+                               </span>
+                               <span class='state'>
+                                   <c:out value=" ${ailment.state.displayName}"></c:out>
+                               </span>
+                           </div>
+                       </c:forEach>
+                       <div class='ailment'>
+                           <c:forEach items="${category.ailments.otherAilments}" varStatus="otherAilmentItemStatus" var="otherAilment">
+                               <c:if test="${otherAilment.state.displayName != 'None'}">
+                                   <span class='title'>
+                                       <![CDATA[ &#x2022; ]]> <c:out value=" ${otherAilment.definition.value}"></c:out>
+                                   </span>
+                                   <span class='state'>
+                                       <c:out value=" ${otherAilment.state.displayName}"></c:out>
+                                   </span>
+                                   <span class='description'>
+                                        <c:out value=" ${otherAilment.description}"></c:out>
+                                   </span>
+                               </c:if>
+                           </c:forEach>
+                       </div>
+                   </div>
+               </c:if>
+           </div>
+       </c:forEach>
+   </div>
+</div>

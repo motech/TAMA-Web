@@ -1,0 +1,16 @@
+.test-field .box{
+    margin-left: 0px;
+}
+
+.test-field label {
+    display: none;
+}
+
+.test-field #__id {
+    width: 15.7em;
+}
+
+.test-field  .errors {
+    margin-top: 1em;
+    margin-left: 0em;
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.w3.org/1999/xhtml" version="2.0"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <util:panel id="vital_statistics_panel" title="Vital Statistics" openPane="true">
+
+        <a id="edit_link" href="?form" style="float:right">[edit]</a>
+
+        <field:display label="Weight (kg)" field="weightInKg" id="weight" object="${vitalStatistics}" />
+        <field:display label="Height (cm)" field="heightInCm" id="height" object="${vitalStatistics}" />
+        <field:display label="Systolic blood pressure" field="systolicBp" id="systolic_bp" object="${vitalStatistics}" />
+        <field:display label="Diastolic blood pressure" field="diastolicBp" id="diastolic_bp" object="${vitalStatistics}" />
+        <field:display label="Temperature (F)" field="temperatureInFahrenheit" id="temperature" object="${vitalStatistics}" />
+        <field:display label="Pulse" field="pulse" id="pulse" object="${vitalStatistics}" />
+    </util:panel>
+    <div id="page_load_marker"></div>
+</div>

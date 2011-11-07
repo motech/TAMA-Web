@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/callsummary" var="form_url"/>
+    <util:panel id="fc_org_motechproject_tama_ivr_logging_domain_CallLog_FilterPreferencesPage" title="Find Logs" openPane="true">
+        <form:form action="${form_url}" method="POST" modelAttribute="logPreferences" enctype="application/x-www-form-urlencoded" onsubmit="encodePk()">
+            <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogStartDate" id="c_org_motechproject_tama_ivr_logging_domain_CallLog_startDate" label="Starting From" required="true" />
+            <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogEndDate" id="c_org_motechproject_tama_ivr_logging_domain_CallLog_endDate" label="Till" required="true" />
+            <span class="submit" id="showLogs">
+                <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'nextToShowLogs', event:'onclick'}));</script>
+                <input id="nextToShowLogs" type="submit" value="Get Logs"/>
+            </span>
+        </form:form>
+    </util:panel>
+</div>

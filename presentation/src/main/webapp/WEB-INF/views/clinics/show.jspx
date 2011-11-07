@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/resources/styles/clinicForm.css" var="clinicForm_css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="${clinicForm_css}"></link>
+
+    <page:show id="ps_org_motechproject_tama_domain_Clinic" object="${clinic}" path="/clinics" delete="false">
+        <field:display field="name" id="s_org_motechproject_tama_domain_Clinic_name" object="${clinic}" />
+        <field:display field="address" id="s_org_motechproject_tama_domain_Clinic_address" object="${clinic}" />
+        <field:display field="phone" id="s_org_motechproject_tama_domain_Clinic_phone" object="${clinic}" />
+        <field:display field="city" id="s_org_motechproject_tama_domain_Clinic_city" object="${clinic}" />
+
+        <div class='contacts'>
+            <div class='title'>Clinician Contact Details</div>
+            <c:forEach var="contact" items="${clinic.clinicianContacts}" varStatus="status">
+                <div class = "contact">
+                    <field:display field="name" label="Clinician Name" id="clinicianContacts[${status.index}]_name" object="${contact}" />
+                    <field:display field="phoneNumber" label="Phone Number" id="clinicianContacts[${status.index}]_phoneNumber" object="${contact}" />
+                </div>
+            </c:forEach>
+        </div>
+    </page:show>
+</div>

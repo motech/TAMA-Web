@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_org_motechproject_tama_domain_Clinic" items="${clinics}" z="iWmmk1YGKvmaXYHSoo1e8DycUAE=">
+        <table:table data="${clinics}" id="l_org_motechproject_tama_domain_Clinic" path="/clinics" z="L6g6fbEk6iwZZadHlBjnb+WHObA=" delete="false" >
+            <table:column id="c_org_motechproject_tama_domain_Clinic_name" property="name" z="3QOgdtXX7ZsangyplNJBQOVx16g="/>
+            <table:column id="c_org_motechproject_tama_domain_Clinic_address" property="address" z="lcCTpwz7v9Hwg43Hgvlf3epZKZ0="/>
+            <table:column id="c_org_motechproject_tama_domain_Clinic_phone" property="phone" z="OCFW9n80KhAhe+AJ7B4OiDd+kc0="/>
+            <table:column id="c_org_motechproject_tama_domain_Clinic_city" property="city" z="/QmICRdaTyUWygUakCATUcZPUg8="/>
+        </table:table>
+    </page:list>
+</div>

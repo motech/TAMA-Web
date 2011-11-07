@@ -1,0 +1,9 @@
+<table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts" delete="false" create="false" update="true" typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields">
+    <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient Id" />
+    <table:column id="org_motechproject_tama_domain_patientalert" property="patientPhoneNumber" label="Phone Number" />
+    <table:column id="org_motechproject_tama_domain_patientalert" property="alertPriority" label="Alert Priority" />
+    <table:column id="org_motechproject_tama_domain_patientalert" property="type" label="Alert Type" />
+    <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOn" label="Alert Generated On" />
+    <table:column id="org_motechproject_tama_domain_patientalert" property="symptomsAlertStatus" label="Symptoms Call Status" />
+    <table:column id="org_motechproject_tama_domain_patientalert" property="notes" label="Notes" />
+</table:table>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div version="2.0" xmlns:spring="http://www.springframework.org/tags"
+     xmlns:springform="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:field="http://www.springframework.org/tags/form"
+     xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:form="urn:jsptagdir:/WEB-INF/tags/form">
+
+    <spring:url value="/resources/images/favicon.ico" var="favicon"/>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/resources/styles/create-lab-result.css" var="create_labresult_css_url"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"></link>
+
+    <spring:url value="/labresults/update" var="form_url"/>
+
+    <form:update id="fu_org_motechproject_tama_web_model_LabResultsUIModel" modelAttribute="labResultsUIModel"
+                 path="/labresults" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
+
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    Test Date
+                </th>
+                <th>
+                    Test Name
+                </th>
+                <th>
+                    Test Results
+                </th>
+                <th>
+                    Normal Range
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${labResultsUIModel.labResults}" varStatus="labResultIndex" var="labResult">
+                <field:hidden  path="labResults[${labResultIndex.index}].id"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_id" value="${labResult.id}"/>
+                <field:hidden  path="labResults[${labResultIndex.index}].patientId"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_patient_id" value="${labResult.patientId}"/>
+                <field:hidden  path="labResults[${labResultIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_id" value="${labResult.labTest_id}"/>
+                <field:hidden  path="labResults[${labResultIndex.index}].labTest.normalRange"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_normalRange" value="${labResult.labTest.normalRange}"/>
+                <field:hidden  path="labResults[${labResultIndex.index}].labTest.name"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_name" value="${labResult.labTest.name}"/>
+                <tr>
+                    <td class="test-field">
+                        <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResults[${labResultIndex.index}].testDateAsDate" label="Test Date" id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_testDate" past="true" future="false" required="true" />
+                    </td>
+                    <td>
+                        <c:out value="${labResult.labTest.name}"/>
+                    </td>
+                    <td class="test-field">
+                        <formfield:input validationRegex="^[0-9]+$" field="labResults[${labResultIndex.index}].result" required="true" label="Result" id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_result"/>
+                    </td>
+                    <td>
+                        <c:out value="${labResult.labTest.normalRange}"/>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+        <br/>
+        <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+    </form:update>
+</div>
