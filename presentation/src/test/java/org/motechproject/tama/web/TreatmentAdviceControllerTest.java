@@ -31,6 +31,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -93,11 +94,11 @@ public class TreatmentAdviceControllerTest {
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         patient.getPatientPreferences().setBestCallTime(bestCallTime);
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
-        
+
         controller.create(treatmentAdvice, uiModel);
         verify(schedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
-    
+
     @Test
     public void shouldCreateNewTreatmentAdviceFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = this.PATIENT_ID;
@@ -191,7 +192,7 @@ public class TreatmentAdviceControllerTest {
     }
 
     @Test
-    public void changeRegimenShouldEndCurrentRegimenAndCreateANewRegimen() {
+    public void changeRegimenShouldEndCurrentRegimenAndCreateANewRegimen_WhenPatientIsOnDailyPillReminderCalls() {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
         String regimenId = "existingTreatmentRegimenId";
@@ -208,7 +209,27 @@ public class TreatmentAdviceControllerTest {
         verify(schedulerService).unscheduleJobForAdherenceTrendFeedback(existingTreatmentAdvice);
         verify(schedulerService).scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
     }
-    
+
+    @Test
+    public void changeRegimenShouldEndCurrentRegimenAndCreateANewRegimen_WhenPatientIsOnFourDayRecallCalls() {
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        String existingTreatmentAdviceId = "existingTreatmentAdviceId";
+        String discontinuationReason = "bad medicine";
+        String regimenId = "existingTreatmentRegimenId";
+        TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
+
+        when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
+        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, uiModel, request);
+
+        assertThat(redirectURL, is("redirect:/clinicvisits/treatmentAdviceId"));
+        assertThat(existingTreatmentAdvice.getReasonForDiscontinuing(), is(discontinuationReason));
+        verify(allTreatmentAdvices).update(existingTreatmentAdvice);
+        verify(allTreatmentAdvices).add(treatmentAdvice);
+        verify(pillReminderService, never()).renew(any(DailyPillRegimenRequest.class));
+        verify(schedulerService, never()).unscheduleJobForAdherenceTrendFeedback(existingTreatmentAdvice);
+        verify(schedulerService, never()).scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+    }
+
 
     private TreatmentAdvice getTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
