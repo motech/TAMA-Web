@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class WelcomeGreetingMessage extends BaseTreeCommand {
+public class IncomingWelcomeGreetingMessage extends BaseTreeCommand {
     private AllPatients allPatients;
     private AllClinics allClinics;
 
     @Autowired
-    public WelcomeGreetingMessage(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
+    public IncomingWelcomeGreetingMessage(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
         super(pillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
@@ -31,7 +31,7 @@ public class WelcomeGreetingMessage extends BaseTreeCommand {
         Patient patient = allPatients.get(ivrContext.patientId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
-        messages.add(clinic.getName());
+        messages.add(String.format("welcome_to_%s", clinic.getName()));
         return messages.toArray(new String[messages.size()]);
     }
 }

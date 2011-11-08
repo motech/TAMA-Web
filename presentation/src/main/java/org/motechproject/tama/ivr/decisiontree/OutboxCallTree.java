@@ -7,7 +7,6 @@ import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.command.CallStateCommand;
 import org.motechproject.tama.web.command.WelcomeMessageForOutboundCall;
-import org.motechproject.tama.web.command.fourdayrecall.WelcomeGreetingMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FourDayRecallTree extends TamaDecisionTree {
     @Autowired
-    private WelcomeGreetingMessage welcomeGreetingMessage;
+    private OutgoingWelcomeGreetingMessage welcomeGreetingMessage;
     @Autowired
     private MainMenu mainMenu;
     @Autowired

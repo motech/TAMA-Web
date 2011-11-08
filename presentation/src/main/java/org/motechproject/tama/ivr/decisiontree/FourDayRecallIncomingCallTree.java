@@ -17,7 +17,7 @@ public class FourDayRecallIncomingCallTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
-                        new MenuAudioPrompt().setName(TamaIVRMessage.MENU_010_05_01_MAINMENU4)
+                        new AudioPrompt().setName(TamaIVRMessage.MENU_010_05_01_MAINMENU4)
                 )
                 .setTransitions(new Object[][]{
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},

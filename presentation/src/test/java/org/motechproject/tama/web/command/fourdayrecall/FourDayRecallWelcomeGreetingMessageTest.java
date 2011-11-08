@@ -23,7 +23,7 @@ public class FourDayRecallWelcomeGreetingMessageTest {
     @Mock
     private PillReminderService pillReminderService;
 
-    private WelcomeGreetingMessage welcomeGreetingMessage;
+    private OutgoingWelcomeGreetingMessage welcomeGreetingMessage;
     private TAMAIVRContextForTest context;
 
     @Before
@@ -33,7 +33,7 @@ public class FourDayRecallWelcomeGreetingMessageTest {
         patient.setClinic_id("clinicId");
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
         context = new TAMAIVRContextForTest().patientId("patientId");
-        welcomeGreetingMessage = new WelcomeGreetingMessage(allPatients, allClinics, pillReminderService);
+        welcomeGreetingMessage = new OutgoingWelcomeGreetingMessage(allPatients, allClinics, pillReminderService);
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
     }
