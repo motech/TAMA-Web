@@ -5,7 +5,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.log4j.Logger;
-import org.motechproject.cmslite.api.model.ResourceQuery;
+import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.tama.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +60,11 @@ public class AudioSeed extends Seed {
                         public void run() {
                             try {
                                 File wav = new File(wavFilePath);
-                                ResourceQuery resourceQuery = new ResourceQuery(FileUtil.sanitizeFilename(wav.getName()), new File(language_dir).getName());
+                                String language = new File(language_dir).getName();
+                                String name = FileUtil.sanitizeFilename(wav.getName());
                                 FileInputStream inputStream = new FileInputStream(wav);
                                 String md5Checksum = new MD5Checksum().getMD5Checksum(wavFilePath);
-                                cmsLiteService.addContent(resourceQuery, inputStream, md5Checksum);
+                                cmsLiteService.addContent(new StreamContent(language, name, inputStream, md5Checksum, "audio/x-wav"));
                                 logger.info("loaded " + wavFilePath);
                                 inputStream.close();
                             } catch (Exception e) {
