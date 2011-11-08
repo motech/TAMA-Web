@@ -29,7 +29,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/applicationContext.xml"})
+@ContextConfiguration(locations = "classpath*:**/applicationContext.xml")
 public class CurrentDosageReminderTreeTest {
     @Autowired
     private TestTree currentDosageReminderTree;
