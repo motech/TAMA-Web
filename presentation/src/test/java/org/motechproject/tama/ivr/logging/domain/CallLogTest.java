@@ -25,7 +25,7 @@ public class CallLogTest {
     }
 
     @Test
-    public void callTypeIsAuthenticatedWhenThereIsAResponseWhichIsNotSignatureMusic() {
+    public void callTypeIsAuthenticatedWhenPatientIdIsSet() {
         CallLog callLog = callWhichGoesBeyondAuthentication();
         assertEquals(CallLog.CALL_TYPE_AUTHENTICATED, callLog.getCallType());
         List<CallEvent> callEvents = callLog.getCallEvents();
@@ -42,7 +42,7 @@ public class CallLogTest {
     }
 
     private CallLog callWhichGoesBeyondAuthentication() {
-        CallLog callLog = new CallLog();
+        CallLog callLog = new CallLog("patientID");
         callLog.setCallEvents(Arrays.asList(addAuthenticationEventCustomData(new CallEvent(IVREvent.GotDTMF.toString())),
                                             appendNonAuthenticationEventParams(new CallEvent(IVREvent.GotDTMF.toString()))));
         return callLog;
