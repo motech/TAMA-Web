@@ -10,8 +10,6 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.server.service.ivr.CallEvent;
 import org.motechproject.server.service.ivr.CallEventCustomData;
 import org.motechproject.tama.domain.CouchEntity;
-import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.util.FileUtil;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -50,14 +48,7 @@ public class CallLog extends CouchEntity {
 
     @JsonIgnore
     public String getCallType() {
-        for (CallEvent callEvent : callEvents) {
-            List<String> responses = callEvent.getData().getAll(CallEventConstants.CUSTOM_DATA_LIST);
-            for (String response : responses) {
-                if (StringUtils.isNotEmpty(response) && !response.contains(FileUtil.sanitizeFilename(TamaIVRMessage.SIGNATURE_MUSIC)))
-                    return CALL_TYPE_AUTHENTICATED;
-            }
-        }
-        return CALL_TYPE_UNAUTHENTICATED;
+        return this.patientDocumentId == null ? CALL_TYPE_UNAUTHENTICATED : CALL_TYPE_AUTHENTICATED;
     }
 
     public DateTime getStartTime() {
