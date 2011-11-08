@@ -34,9 +34,9 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
 
         String patientId = ivrContext.patientId();
 
-        int currentWeekAdherencePercentage = fourDayRecallService.adherencePercentageFor(Integer.parseInt(ivrContext.dtmfInput()));
-        int previousWeekAdherencePercentage = fourDayRecallService.adherencePercentageForPreviousWeek(patientId);
-        boolean falling = currentWeekAdherencePercentage < previousWeekAdherencePercentage;
+        final int numDaysMissed = Integer.parseInt(ivrContext.dtmfInput());
+        int currentWeekAdherencePercentage = fourDayRecallService.adherencePercentageFor(numDaysMissed);
+        boolean falling = fourDayRecallService.isAdherenceFalling(numDaysMissed, patientId);
 
         messages.add(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS);
         messages.add(ivrMessage.getNumberFilename(currentWeekAdherencePercentage));

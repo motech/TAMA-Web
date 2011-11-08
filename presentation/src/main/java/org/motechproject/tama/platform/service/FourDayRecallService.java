@@ -109,4 +109,8 @@ public class FourDayRecallService {
         LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
         return getStartDateForCurrentWeek(patientId).equals(treatmentAdviceStartDate);
     }
+
+    public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
+        return adherencePercentageFor(dosageMissedDays) < adherencePercentageForPreviousWeek(patientId);
+    }
 }

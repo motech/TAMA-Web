@@ -244,6 +244,26 @@ public class FourDayRecallServiceTest {
         assertEquals(new LocalDate(2011, 10, 2), startDateForCurrentWeek);
     }
 
+    @Test
+    public void shouldDetermineIfTheCurrentAdherenceIsFalling() {
+       final int numberOfDaysMissed = 2;
+       final String testPatientId = "testPatientId";
+       FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null) {
+           @Override
+           public int adherencePercentageFor(int daysMissed) {
+              if(numberOfDaysMissed == daysMissed) return 23;
+               return 0;
+           }
+
+           @Override
+           public int adherencePercentageForPreviousWeek(String patientId) {
+               if(patientId.equals(testPatientId)) return 34;
+               return 0;
+           }
+       };
+       assertTrue(fourDayRecallService.isAdherenceFalling(numberOfDaysMissed, testPatientId));
+    }
+
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {
         when(DateUtil.today()).thenReturn(today);
         when(allPatients.get(patientId)).thenReturn(patient);
