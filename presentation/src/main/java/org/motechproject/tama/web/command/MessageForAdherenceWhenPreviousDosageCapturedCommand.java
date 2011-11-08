@@ -1,6 +1,5 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.TAMAIVRContext;
