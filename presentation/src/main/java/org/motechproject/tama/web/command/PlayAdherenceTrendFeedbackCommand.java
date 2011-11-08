@@ -1,12 +1,9 @@
 package org.motechproject.tama.web.command;
 
 import org.joda.time.DateTime;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.outbox.OutboxContext;
-import org.motechproject.tama.repository.AllDosageAdherenceLogs;
-import org.motechproject.tama.util.DosageUtil;
+import org.motechproject.tama.service.DailyReminderAdherenceTrendService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,24 +13,21 @@ import java.util.ArrayList;
 @Component
 /* applicable only when patient is on daily call */
 public class PlayAdherenceTrendFeedbackCommand {
-    AllDosageAdherenceLogs allDosageAdherenceLogs;
-    PillReminderService pillReminderService;
+
+    private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
     @Autowired
-    public PlayAdherenceTrendFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, PillReminderService pillReminderService) {
-        this.allDosageAdherenceLogs = allDosageAdherenceLogs;
-        this.pillReminderService = pillReminderService;
+    public PlayAdherenceTrendFeedbackCommand(DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService) {
+        this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
     }
 
     public String[] execute(OutboxContext outboxContext) {
         ArrayList<String> result = new ArrayList<String>();
         String patientId = outboxContext.partyId();
         DateTime now = DateUtil.now();
-        PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patientId);
 
-        double adherencePercentageAsOfNow = getAdherencePercentage(pillRegimen, now);
-        double adherencePercentageAsOfLastWeek = getAdherencePercentage(pillRegimen, now.minusWeeks(1));
-        boolean falling = adherencePercentageAsOfNow < adherencePercentageAsOfLastWeek;
+        double adherencePercentageAsOfNow = dailyReminderAdherenceTrendService.getAdherencePercentage(patientId);
+        boolean falling = dailyReminderAdherenceTrendService.isAdherenceFalling(patientId);
 
         if (adherencePercentageAsOfNow > 0.9) {
             // A message saying indicating that I’ve done well and should
@@ -64,15 +58,4 @@ public class PlayAdherenceTrendFeedbackCommand {
         return result.toArray(new String[result.size()]);
     }
 
-    private double getAdherencePercentage(PillRegimenResponse pillRegimen, DateTime asOfDate) {
-        String regimenId = pillRegimen.getPillRegimenId();
-        int scheduledDosagesTotalCountForLastFourWeeksAsOfNow = getScheduledDosagesTotalCount(pillRegimen, asOfDate.minusWeeks(4), asOfDate);
-        int dosagesTakenForLastFourWeeksAsOfNow = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId,
-                asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate());
-        return ((double) dosagesTakenForLastFourWeeksAsOfNow) / scheduledDosagesTotalCountForLastFourWeeksAsOfNow;
-    }
-
-    public int getScheduledDosagesTotalCount(PillRegimenResponse pillRegimen, DateTime startDate, DateTime endDate) {
-        return DosageUtil.getScheduledDosagesTotalCount(startDate, endDate, pillRegimen);
-    }
 }
