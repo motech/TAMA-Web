@@ -1,9 +1,6 @@
 package org.motechproject.tamafunctional.framework;
 
-import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
-import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 
 import java.io.IOException;
@@ -42,7 +39,12 @@ public class MyWebClient extends FunctionalTestObject{
     }
 
     public String getResponse(String url) {
+        WebResponse webResponse = getWebResponse(url);
+        return webResponse.getContentAsString();
+    }
+
+    public WebResponse getWebResponse(String url) {
         Page page = getPage(url);
-        return page.getWebResponse().getContentAsString();
+        return page.getWebResponse();
     }
 }

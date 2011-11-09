@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
@@ -29,6 +30,8 @@ public class OutboxControllerTest {
     private VoiceMessageResponseFactory messageResponseFactory;
     @Mock
     private KookooCallDetailRecordsService callDetailRecordsService;
+    @Mock
+    private StandardResponseController standardResponseController;
 
     private OutboxController outboxController;
     private OutboxContextForTest outboxContextForTest;
@@ -40,7 +43,7 @@ public class OutboxControllerTest {
         TAMAIVRContextFactory contextFactory = mock(TAMAIVRContextFactory.class);
 
         when(contextFactory.createOutboxContext(any(KooKooIVRContext.class))).thenReturn(outboxContextForTest);
-        outboxController = new OutboxController(outboxService, tamaIvrMessage, contextFactory, messageResponseFactory, callDetailRecordsService);
+        outboxController = new OutboxController(outboxService, tamaIvrMessage, contextFactory, messageResponseFactory, callDetailRecordsService, standardResponseController);
     }
 
     @Test

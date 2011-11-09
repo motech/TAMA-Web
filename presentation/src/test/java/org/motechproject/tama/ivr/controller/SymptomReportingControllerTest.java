@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.MedicalCondition;
@@ -33,6 +34,8 @@ public class SymptomReportingControllerTest {
     private SymptomReportingService symptomReportingService;
     @Mock
     private KooKooIVRContext kookooIvrContext;
+    @Mock
+    private StandardResponseController standardResponseController;
 
     @Before
     public void setUp() {
@@ -41,7 +44,7 @@ public class SymptomReportingControllerTest {
 
     @Test
     public void shouldHandleDTMFEventForSymptomReportingFlow() {
-        SymptomReportingController symptomReportingController = new SymptomReportingController(ivrMessage, callDetailRecordsService, contextFactory, patientService, symptomReportingService);
+        SymptomReportingController symptomReportingController = new SymptomReportingController(ivrMessage, callDetailRecordsService, contextFactory, patientService, symptomReportingService, standardResponseController);
 
         String callId = "123";
         String patientId = "patientId";

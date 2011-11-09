@@ -7,6 +7,9 @@ public abstract class FunctionalTestObject {
 
     static {
         donotInheritRootLoggerFor("org.motechproject.tamafunctional");
+        donotInheritRootLoggerFor("org.motechproject.tamaperformance");
+        donotInheritRootLoggerFor("org.motechproject.tamadatasetup");
+        donotInheritRootLoggerFor("org.motechproject");
         donotInheritRootLoggerFor("com.gargoylesoftware");
     }
 

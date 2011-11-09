@@ -17,4 +17,8 @@ public class TamaUrl {
     public static String viewPageUrlFor(TestEntity testEntity) {
         return String.format("%s%s/%s", base(), testEntity.resourceName(), testEntity.id());
     }
+
+    public static String ivrURL() {
+        return baseFor("ivr");
+    }
 }

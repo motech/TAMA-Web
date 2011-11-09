@@ -21,7 +21,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TAMACallFlowControllerScenarioTest {
-    private TAMATreeRegistry treeRegistry;
     @Mock
     private PillReminderService pillReminderService;
     @Mock
@@ -41,7 +40,7 @@ public class TAMACallFlowControllerScenarioTest {
     @Before
     public void setUp() {
         initMocks(this);
-        treeRegistry = new TAMATreeRegistry(null, null, null, null, null, null, null, null);
+        TAMATreeRegistry treeRegistry = new TAMATreeRegistry(null, null, null, null, null, null, null, null);
         callFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory);
         ivrContext = new TAMAIVRContextForTest();
         Patient patient = new Patient();

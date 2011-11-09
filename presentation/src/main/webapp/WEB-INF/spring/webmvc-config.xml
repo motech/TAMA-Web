@@ -8,8 +8,10 @@
     <context:component-scan base-package="org.motechproject.tama" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
-    <!-- For IVRController -->
     <context:component-scan base-package="org.motechproject.ivr.kookoo.controller" use-default-filters="false">
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
+    <context:component-scan base-package="org.motechproject.deliverytools" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
@@ -18,7 +20,7 @@
     <mvc:annotation-driven conversion-service="applicationConversionService"/>
 
     <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
-    <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**" cache-period="86400" />
+    <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**" cache-period="86400"/>
 
     <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default Servlet -->
     <mvc:default-servlet-handler/>
@@ -38,7 +40,7 @@
     <!-- selects a static view for rendering without the need for an explicit controller -->
     <mvc:view-controller path="/login"/>
     <mvc:view-controller path="/changePassword"/>
-     <mvc:view-controller path="/passwordReset"/>
+    <mvc:view-controller path="/passwordReset"/>
     <!--<mvc:view-controller path="/" view-name="/patients/list"/>-->
     <mvc:view-controller path="/uncaughtException"/>
     <mvc:view-controller path="/resourceNotFound"/>

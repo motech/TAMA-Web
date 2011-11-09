@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.framework.TamaUrl;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -18,7 +19,7 @@ public class ChangePasswordPage extends Page {
 
     private static final String CONFIRM_PASSWORD_ID = "j_newPasswordConfirm";
 
-    public static final String CHANGE_PASSWORD_URL = String.format("http://%s:%s/tama/changePassword", webserverName(), webserverPort());
+    public static final String CHANGE_PASSWORD_URL = TamaUrl.baseFor("changePassword");
 
     @FindBy(how = How.ID, using = OLD_PASSWORD_ID)
     private WebElement oldPassword;

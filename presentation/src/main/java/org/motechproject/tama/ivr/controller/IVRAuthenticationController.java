@@ -4,6 +4,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooResponseFactory;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
+import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
@@ -20,12 +21,12 @@ public class IVRAuthenticationController extends SafeIVRController {
     private TAMAIVRContextFactory contextFactory;
 
     @Autowired
-    public IVRAuthenticationController(AuthenticationService authenticationService, KookooCallDetailRecordsService callDetailRecordsService, IVRMessage ivrMessage) {
-        this(authenticationService, callDetailRecordsService, ivrMessage, new TAMAIVRContextFactory());
+    public IVRAuthenticationController(AuthenticationService authenticationService, KookooCallDetailRecordsService callDetailRecordsService, IVRMessage ivrMessage, StandardResponseController standardResponseController) {
+        this(authenticationService, callDetailRecordsService, ivrMessage, new TAMAIVRContextFactory(), standardResponseController);
     }
 
-    public IVRAuthenticationController(AuthenticationService authenticationService, KookooCallDetailRecordsService callDetailRecordsService, IVRMessage ivrMessage, TAMAIVRContextFactory contextFactory) {
-        super(ivrMessage, callDetailRecordsService);
+    public IVRAuthenticationController(AuthenticationService authenticationService, KookooCallDetailRecordsService callDetailRecordsService, IVRMessage ivrMessage, TAMAIVRContextFactory contextFactory, StandardResponseController standardResponseController) {
+        super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.authenticationService = authenticationService;
         this.contextFactory = contextFactory;
     }

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
@@ -27,6 +28,8 @@ public class IVRAuthenticationControllerTest {
     TAMAIVRContextFactory tamaivrContextFactory;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
+    @Mock
+    private StandardResponseController standardResponseController;
 
     private String callId = "123";
     private String callerId = "9999";
@@ -36,7 +39,7 @@ public class IVRAuthenticationControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        ivrAuthenticationController = new IVRAuthenticationController(authenticationService, callDetailRecordsService, ivrMessage, tamaivrContextFactory);
+        ivrAuthenticationController = new IVRAuthenticationController(authenticationService, callDetailRecordsService, ivrMessage, tamaivrContextFactory, standardResponseController);
         tamaivrContext = new TAMAIVRContextForTest().callId(callId);
     }
 

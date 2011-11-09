@@ -45,8 +45,17 @@
         <level value="info"/>
     </logger>
 
-    <!-- Tama Functional logger's additivity is set to false in the TamaFunctionalLoggerFactory -->
     <logger name="org.motechproject.tamafunctional">
+        <level value="info"/>
+        <appender-ref ref="functionaltest"/>
+        <appender-ref ref="functionaltest-console"/>
+    </logger>
+    <logger name="org.motechproject.tamaperformance">
+        <level value="info"/>
+        <appender-ref ref="functionaltest"/>
+        <appender-ref ref="functionaltest-console"/>
+    </logger>
+    <logger name="org.motechproject.tamadatasetup">
         <level value="info"/>
         <appender-ref ref="functionaltest"/>
         <appender-ref ref="functionaltest-console"/>

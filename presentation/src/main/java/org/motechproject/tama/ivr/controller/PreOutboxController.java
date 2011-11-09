@@ -3,6 +3,7 @@ package org.motechproject.tama.ivr.controller;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
+import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.ivr.*;
@@ -15,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PreOutboxController extends SafeIVRController {
     private TAMAIVRContextFactory ivrContextFactory;
 
-    public PreOutboxController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, TAMAIVRContextFactory ivrContextFactory) {
-        super(ivrMessage, callDetailRecordsService);
+    public PreOutboxController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, TAMAIVRContextFactory ivrContextFactory, StandardResponseController standardResponseController) {
+        super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.ivrContextFactory = ivrContextFactory;
     }
 
     @Autowired
-    public PreOutboxController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService) {
-        this(ivrMessage, callDetailRecordsService, new TAMAIVRContextFactory());
+    public PreOutboxController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController) {
+        this(ivrMessage, callDetailRecordsService, new TAMAIVRContextFactory(), standardResponseController);
     }
 
     @Override

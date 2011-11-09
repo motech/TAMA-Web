@@ -19,7 +19,7 @@ import java.util.Date;
 public class LabResult extends CouchEntity {
 
     public static final int INVALID_CD4_COUNT = -1;
-
+    //TODO: This should not be a field
     private LabTest labTest;
 
     @NotNull

@@ -13,12 +13,10 @@ import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.equalTo;
 
 public class IVRCallTest extends BaseIVRTest {
-
     private int callCount = 200;
 
     @Test
     public void executePillReminderFlow() throws IOException {
-
         //-DpatientId=p1 -DclinicName=clinic1
         //-DpatientId=p2 -DclinicName=clinic1
         //-DpatientId=p3 -DclinicName=clinic2

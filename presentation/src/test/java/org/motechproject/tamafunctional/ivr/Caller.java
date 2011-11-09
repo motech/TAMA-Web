@@ -6,11 +6,11 @@ import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.tamafunctional.framework.FunctionalTestObject;
 import org.motechproject.tamafunctional.framework.KooKooResponseParser;
 import org.motechproject.tamafunctional.framework.MyWebClient;
+import org.motechproject.tamafunctional.framework.TamaUrl;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.ivrrequest.CallInfo;
 import org.motechproject.tamafunctional.testdata.ivrrequest.NoCallInfo;
 
-import java.io.IOException;
 import java.util.Set;
 
 import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverName;
@@ -30,12 +30,12 @@ public class Caller extends FunctionalTestObject {
         this.webClient = webClient;
     }
 
-    public IVRResponse call() throws IOException {
-        return invokeAndGetResponse(String.format("http://%s:%s/tama/ivr/reply?sid=%s&cid=%s&event=%s", webserverName(), webserverPort(), sid, phoneNumber, IVREvent.NewCall.toString()));
+    public IVRResponse call() {
+        return invokeAndGetResponse(String.format("%s/reply?sid=%s&cid=%s&event=%s", TamaUrl.ivrURL(), sid, phoneNumber, IVREvent.NewCall.toString()));
     }
 
     private String urlFor(IVREvent event, String sid, String data) {
-        String url = String.format("http://%s:%s/tama/ivr/reply?sid=%s&event=%s&data=%s", webserverName(), webserverPort(), sid, event.toString(), data);
+        String url = String.format("%s/reply?sid=%s&event=%s&data=%s", TamaUrl.ivrURL(), sid, event.toString(), data);
         return callInfo.appendDataMapTo(url);
     }
 
@@ -53,7 +53,7 @@ public class Caller extends FunctionalTestObject {
 
     public IVRResponse replyToCall(CallInfo callInfo) {
         this.callInfo = callInfo.outgoingCall();
-        String completeUrl = String.format("http://%s:%s/tama/ivr/reply?sid=%s&cid=%s&event=%s&dataMap=%s", webserverName(), webserverPort(), sid, phoneNumber, "NewCall", callInfo.asQueryParameter());
+        String completeUrl = String.format("%s/reply?sid=%s&cid=%s&event=%s&dataMap=%s", TamaUrl.ivrURL(), sid, phoneNumber, "NewCall", callInfo.asQueryParameter());
         return invokeAndGetResponse(completeUrl);
     }
 
@@ -66,7 +66,7 @@ public class Caller extends FunctionalTestObject {
     }
 
     public IVRResponse listenMore() {
-        String url = String.format("http://%s:%s/tama/ivr/reply?", webserverName(), webserverPort());
+        String url = String.format("%s/reply?", TamaUrl.ivrURL());
         return invokeAndGetResponse(callInfo.appendDataMapTo(url));
     }
 

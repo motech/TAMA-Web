@@ -11,7 +11,6 @@ import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 
 public class SetupData extends BaseIVRTest {
-
     @Test
     public void setup() {
         TestSample testSample = new TestSample();
@@ -35,4 +34,3 @@ public class SetupData extends BaseIVRTest {
         new PatientDataService(webDriver).createARTRegimen(treatmentAdvice, patient, clinician);
     }
 }
-

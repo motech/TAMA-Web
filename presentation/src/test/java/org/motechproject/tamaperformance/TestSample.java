@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestSample {
-    
     private TestClinic clinic1 = TestClinic.withMandatory().name("clinic1");
     private TestClinic clinic2 = TestClinic.withMandatory().name("clinic2");
     private TestClinic clinic3 = TestClinic.withMandatory().name("clinic3");
+
     public List<TestClinic> clinics = new ArrayList<TestClinic>() {{
         add(clinic1);
         add(clinic2);
@@ -23,6 +23,7 @@ public class TestSample {
     private TestClinician clinician1 = TestClinician.withMandatory().name("clinician1").userName("clinician1").clinic(clinic1);
     private TestClinician clinician2 = TestClinician.withMandatory().name("clinician2").userName("clinician2").clinic(clinic2);
     private TestClinician clinician3 = TestClinician.withMandatory().name("clinician3").userName("clinician3").clinic(clinic3);
+
     public List<TestClinician> clinicians = new ArrayList<TestClinician>() {{
         add(clinician1);
         add(clinician2);

@@ -4,14 +4,15 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooResponseFactory;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
+import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.server.service.ivr.IVRMessage;
-import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.VoiceMessageResponseFactory;
+import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.outbox.OutboxContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,12 +30,12 @@ public class OutboxController extends SafeIVRController {
 
 
     @Autowired
-    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, VoiceMessageResponseFactory messageResponseFactory, KookooCallDetailRecordsService callDetailRecordsService) {
-        this(outboxService, ivrMessage, new TAMAIVRContextFactory(), messageResponseFactory, callDetailRecordsService);
+    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, VoiceMessageResponseFactory messageResponseFactory, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController) {
+        this(outboxService, ivrMessage, new TAMAIVRContextFactory(), messageResponseFactory, callDetailRecordsService, standardResponseController);
     }
 
-    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, TAMAIVRContextFactory contextFactory, VoiceMessageResponseFactory messageResponseFactory, KookooCallDetailRecordsService callDetailRecordsService) {
-        super(ivrMessage, callDetailRecordsService);
+    public OutboxController(VoiceOutboxService outboxService, IVRMessage ivrMessage, TAMAIVRContextFactory contextFactory, VoiceMessageResponseFactory messageResponseFactory, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController) {
+        super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.outboxService = outboxService;
         this.contextFactory = contextFactory;
         this.messageResponseFactory = messageResponseFactory;

@@ -4,6 +4,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooResponseFactory;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
+import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.MedicalCondition;
@@ -24,12 +25,13 @@ public class SymptomReportingController extends SafeIVRController {
     private SymptomReportingService symptomReportingService;
 
     @Autowired
-    protected SymptomReportingController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, PatientService patientService, SymptomReportingService symptomReportingService) {
-        this(ivrMessage, callDetailRecordsService, new TAMAIVRContextFactory(), patientService, symptomReportingService);
+    protected SymptomReportingController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, PatientService patientService, SymptomReportingService symptomReportingService, StandardResponseController standardResponseController) {
+        this(ivrMessage, callDetailRecordsService, new TAMAIVRContextFactory(), patientService, symptomReportingService, standardResponseController);
     }
 
-    public SymptomReportingController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, TAMAIVRContextFactory contextFactory, PatientService patientService, SymptomReportingService symptomReportingService) {
-        super(ivrMessage, callDetailRecordsService);
+    public SymptomReportingController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, TAMAIVRContextFactory contextFactory, PatientService patientService, SymptomReportingService symptomReportingService,
+                                      StandardResponseController standardResponseController) {
+        super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.contextFactory = contextFactory;
         this.patientService = patientService;
         this.symptomReportingService = symptomReportingService;

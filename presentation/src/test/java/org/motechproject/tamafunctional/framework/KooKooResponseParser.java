@@ -6,7 +6,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.motechproject.tamafunctional.testdata.ivrreponse.Hangup;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 
-public class KooKooResponseParser {
+public class KooKooResponseParser extends FunctionalTestObject {
     private static XStream xStream;
 
     static {
@@ -15,16 +15,24 @@ public class KooKooResponseParser {
         xStream.alias("hangup", Hangup.class);
     }
 
-    public static IVRResponse fromXml(String xml) {
+    private IVRResponse fromXmlInternal(String xml) {
         try {
             return (IVRResponse) xStream.fromXML(xml);
         } catch (XStreamException exception) {
-            System.out.println(xml);
+            logInfo(xml);
             throw exception;
         }
     }
 
+    public static IVRResponse fromXml(String xml) {
+        return new KooKooResponseParser().fromXmlInternal(xml);
+    }
+
     public static String fromObject(IVRResponse ivrResponse) {
+        return new KooKooResponseParser().toXMLInternal(ivrResponse);
+    }
+
+    private String toXMLInternal(IVRResponse ivrResponse) {
         return xStream.toXML(ivrResponse);
     }
 }
