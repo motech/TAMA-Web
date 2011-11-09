@@ -9,7 +9,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 public class WebDriverFactory {
 
     public static final String TEST_DRIVER = "test.driver";
-    public static final String HTMLUNIT = "firefox";
+    public static final String HTMLUNIT = "htmlunit";
 
     public static WebElement createWebElement(WebElement webElement) {
         if (HTMLUNIT.equals(driverName()))
