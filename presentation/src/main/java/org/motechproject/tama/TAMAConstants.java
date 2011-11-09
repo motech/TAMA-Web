@@ -20,6 +20,7 @@ public class TAMAConstants {
     public static final String ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT = BASE_SUBJECT + ".adherence.weeklyTrendFeedback";
     public static final String OUTBOX_CALL_SCHEDULER_SUBJECT = BASE_SUBJECT + ".outboxCall";
     public static final String FOUR_DAY_RECALL_SUBJECT = BASE_SUBJECT + ".fourDayRecall";
+    public static final String WEEKLY_FALLING_TREND_SUBJECT = BASE_SUBJECT + ".weekly.fallingTrendAlert";
     public static final String OUT_BOX_CALL_RETRY_INTERVAL = "retry.interval.mins";
 
     public enum Time {

@@ -1,13 +1,12 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.*;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.MenuAudioPrompt;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.web.command.fourdayrecall.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Component
 public class FourDayRecallTree extends TamaDecisionTree {
@@ -25,8 +24,6 @@ public class FourDayRecallTree extends TamaDecisionTree {
     private CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs;
     @Autowired
     private WeeklyAdherencePercentage weeklyAdherencePercentage;
-    @Autowired
-    private FallingAdherenceAlert adherenceAlertCommand;
 
 
     @Override
@@ -41,7 +38,7 @@ public class FourDayRecallTree extends TamaDecisionTree {
                                 )
                 );
 
-        final Node node = new Node()
+        return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
                         new MenuAudioPrompt().setCommand(mainMenu)
@@ -73,18 +70,7 @@ public class FourDayRecallTree extends TamaDecisionTree {
                         {"4", missedMultipleDosagesTransition
                         }
                 });
-        addAdherenceTrendAlerts(node);
-        return node;
     }
 
-    private void addAdherenceTrendAlerts(Node node) {
-        final Collection<Transition> transitions = node.getTransitions().values();
-        for(Transition transition : transitions) {
-            List<ITreeCommand> treeCommandsWithAdherenceAlerts = new ArrayList<ITreeCommand>();
-            treeCommandsWithAdherenceAlerts.addAll(transition.getDestinationNode().getTreeCommands());
-            treeCommandsWithAdherenceAlerts.add(adherenceAlertCommand);
-            transition.getDestinationNode().setTreeCommands(new ITreeCommand[]{(ITreeCommand) treeCommandsWithAdherenceAlerts});
-        }
-    }
 }
 

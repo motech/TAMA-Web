@@ -16,6 +16,7 @@ public class PillReminderListener {
     private PillReminderCall call;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     @Autowired
     public PillReminderListener(PillReminderCall call) {
         this.call = call;

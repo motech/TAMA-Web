@@ -4,6 +4,8 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.server.alerts.service.AlertService;
+import org.motechproject.tama.domain.Alerts;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.domain.WeeklyAdherenceLog;
@@ -24,12 +26,14 @@ public class FourDayRecallService {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
+    private AlertService alertService;
 
     @Autowired
-    public FourDayRecallService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
+    public FourDayRecallService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, AlertService alertService) {
         this.allPatients = allPatients;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allTreatmentAdvices = allTreatmentAdvices;
+        this.alertService = alertService;
     }
 
     public boolean isAdherenceCapturedForCurrentWeek(String patientDocId, String treatmentAdviceId) {
@@ -97,8 +101,13 @@ public class FourDayRecallService {
     }
 
     protected WeeklyAdherenceLog getAdherenceLogForPreviousWeek(String patientId) {
+        final int weeksBefore = 1;
+        return getAdherenceLog(patientId, weeksBefore);
+    }
+
+    protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        LocalDate startDateForPreviousWeek = getStartDateForCurrentWeek(patientId).minusWeeks(1);
+        LocalDate startDateForPreviousWeek = getStartDateForCurrentWeek(patientId).minusWeeks(weeksBefore);
 
         List<WeeklyAdherenceLog> logs = allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdvice.getId(), startDateForPreviousWeek);
         return logs.size() == 0 ? null : logs.get(0);
@@ -112,5 +121,13 @@ public class FourDayRecallService {
 
     public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
         return adherencePercentageFor(dosageMissedDays) < adherencePercentageForPreviousWeek(patientId);
+    }
+
+    public void raiseAdherenceFallingAlert(String patientId) {
+        final int weeksBefore = 0;
+        int dosageMissedDays = getAdherenceLog(patientId, weeksBefore).getNumberOfDaysMissed();
+        if (!isAdherenceFalling(dosageMissedDays, patientId)) return;
+
+        alertService.createAlert(Alerts.forFallingAdherence(patientId));
     }
 }

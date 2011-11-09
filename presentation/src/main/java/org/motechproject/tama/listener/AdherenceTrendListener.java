@@ -9,6 +9,7 @@ import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tama.web.OutboxController;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,12 @@ import java.util.Map;
 @Service
 public class AdherenceTrendListener {
     private VoiceOutboxService outboxService;
+    private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
     @Autowired
-    public AdherenceTrendListener(VoiceOutboxService outboxService) {
+    public AdherenceTrendListener(VoiceOutboxService outboxService, DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService) {
         this.outboxService = outboxService;
+        this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
     }
 
     @MotechListener(subjects = TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT)
@@ -46,6 +49,8 @@ public class AdherenceTrendListener {
         parameters.put(OutboxController.VOICE_MESSAGE_COMMAND, commands);
         voiceMessage.setParameters(parameters);
         outboxService.addMessage(voiceMessage);
+
+        dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(externalId);
     }
 
 }

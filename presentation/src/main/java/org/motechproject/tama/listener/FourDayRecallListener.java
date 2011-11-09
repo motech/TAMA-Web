@@ -47,4 +47,10 @@ public class FourDayRecallListener {
             logger.error("Failed to handle FourDayRecall event, this event would not be retried but the subsequent repeats would happen.", e);
         }
     }
+
+    @MotechListener(subjects = TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT)
+    public void handleWeeklyFallingAdherence(MotechEvent motechEvent) {
+        String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
+        fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
+    }
 }

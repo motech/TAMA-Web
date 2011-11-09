@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.RepeatingSchedulableJob;
@@ -25,8 +24,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.never;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -80,23 +78,44 @@ public class TamaSchedulerServiceTest {
         assertCronSchedulableJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7", TREATMENT_ADVICE_START_DATE.plusDays(5).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
         assertCronSchedulableJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1", TREATMENT_ADVICE_START_DATE.plusDays(6).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
     }
-    
+
     @Test
     public void shouldScheduleFourDayRecallJobs_StartDateIsBeforeToday() {
         DayOfWeek dayOfWeek = DayOfWeek.Friday;
         DateTime now = DateUtil.now();
         LocalDate today = now.toLocalDate();
-        
+
         int numDaysToRetry = 2;
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
-		treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusDays(4));
+        treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusDays(4));
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService, times(numDaysToRetry + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
-        
+
         assertTrue(now.minusMinutes(1).isBefore(new DateTime(cronSchedulableJobList.get(0).getStartTime())));
+    }
+
+    @Test
+    public void shouldScheduleFallingAdherenceTrendAlertJob() {
+        DayOfWeek dayOfWeek = DayOfWeek.Friday;
+        int numDaysToRetry = 2;
+        patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
+
+        when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
+
+        schedulerService.scheduleFallingAdherenceAlertJob(patient, treatmentAdvice);
+
+        ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+        verify(motechSchedulerService, times(1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
+        CronSchedulableJob cronSchedulableJob = cronSchedulableJobList.get(0);
+        assertEquals("0 30 10 ? * 2", cronSchedulableJob.getCronExpression());
+        assertEquals(TREATMENT_ADVICE_START_DATE.plusWeeks(2).toDate(), cronSchedulableJob.getStartTime());
+        assertEquals(TREATMENT_ADVICE_END_DATE.toDate(), cronSchedulableJob.getEndTime());
+        assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
+
     }
 
 
@@ -143,13 +162,13 @@ public class TamaSchedulerServiceTest {
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
         Assert.assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
     }
-    
+
     @Test
     public void shouldScheduleWeeklyAdherenceTrendJob_StartDateIsBeforeToday() {
         DateTime now = DateUtil.now();
         LocalDate today = now.toLocalDate();
         treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusMonths(2));
-        
+
         schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
@@ -183,14 +202,16 @@ public class TamaSchedulerServiceTest {
     }
 
     @Test
-       public void shouldUnscheduleFourDayRecallJobs() {
+    public void shouldUnscheduleFourDayRecallJobs() {
         String patient_id = "patient_id";
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(patient_id).withBestCallTime(new TimeOfDay(10, 00, TimeMeridiem.AM)).build();
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn("3");
         schedulerService.unScheduleFourDayRecallJobs(patient);
         verify(motechSchedulerService).unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, patient_id);
-        for (int i=0;i<3; i++)
-        verify(motechSchedulerService).unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, i + patient_id);
+        for (int i = 0; i < 3; i++) {
+            verify(motechSchedulerService).unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, i + patient_id);
+        }
+        verify(motechSchedulerService).unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, patient_id);
     }
 }

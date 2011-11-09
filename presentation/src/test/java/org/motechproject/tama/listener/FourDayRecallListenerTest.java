@@ -91,4 +91,17 @@ public class FourDayRecallListenerTest {
         verifyZeroInteractions(schedulerService);
         verify(ivrCall).makeCall(PATIENT_ID);
     }
+
+    @Test
+    public void shouldPostAlertIfAdherenceTrendIsFalling() {
+        String PATIENT_ID = "patient_id";
+        Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
+                .withJobId("job_id")
+                .withPatientDocId(PATIENT_ID).payload();
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
+        fourDayRecallListener.handleWeeklyFallingAdherence(motechEvent);
+
+        verify(fourDayRecallService).raiseAdherenceFallingAlert(PATIENT_ID);
+
+    }
 }

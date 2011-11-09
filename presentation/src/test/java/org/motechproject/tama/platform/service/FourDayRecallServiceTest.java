@@ -4,8 +4,11 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.domain.WeeklyAdherenceLog;
@@ -21,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -40,13 +44,16 @@ public class FourDayRecallServiceTest {
     @Mock
     private TreatmentAdvice treatmentAdvice;
 
+    @Mock
+    private AlertService alertService;
+
     private FourDayRecallService fourDayRecallService;
 
     @Before
     public void setUp() {
         initMocks(this);
         mockStatic(DateUtil.class);
-        fourDayRecallService = new FourDayRecallService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs);
+        fourDayRecallService = new FourDayRecallService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, alertService);
     }
 
     @Test
@@ -246,22 +253,43 @@ public class FourDayRecallServiceTest {
 
     @Test
     public void shouldDetermineIfTheCurrentAdherenceIsFalling() {
-       final int numberOfDaysMissed = 2;
-       final String testPatientId = "testPatientId";
-       FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null) {
-           @Override
-           public int adherencePercentageFor(int daysMissed) {
-              if(numberOfDaysMissed == daysMissed) return 23;
-               return 0;
-           }
+        final int numberOfDaysMissed = 2;
+        final String testPatientId = "testPatientId";
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, null) {
+            @Override
+            public int adherencePercentageFor(int daysMissed) {
+                if (numberOfDaysMissed == daysMissed) return 23;
+                return 0;
+            }
 
-           @Override
-           public int adherencePercentageForPreviousWeek(String patientId) {
-               if(patientId.equals(testPatientId)) return 34;
-               return 0;
-           }
-       };
-       assertTrue(fourDayRecallService.isAdherenceFalling(numberOfDaysMissed, testPatientId));
+            @Override
+            public int adherencePercentageForPreviousWeek(String patientId) {
+                if (patientId.equals(testPatientId)) return 34;
+                return 0;
+            }
+        };
+        assertTrue(fourDayRecallService.isAdherenceFalling(numberOfDaysMissed, testPatientId));
+    }
+
+    @Test
+    public void shouldRaiseAnAlertIfAdherenceTrendIsFalling() {
+        final String testPatientId = "testPatientId";
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, alertService) {
+            @Override
+            public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
+                if (patientId.equals(testPatientId)) return true;
+                return false;
+            }
+
+            @Override
+            protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
+                final WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
+                weeklyAdherenceLog.setNumberOfDaysMissed(1);
+                return weeklyAdherenceLog;
+            }
+        };
+        fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
+        verify(alertService).createAlert(Matchers.<Alert>any());
     }
 
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {

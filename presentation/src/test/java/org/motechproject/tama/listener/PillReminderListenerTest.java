@@ -10,8 +10,8 @@ import org.motechproject.tama.ivr.call.PillReminderCall;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.mockito.Mockito.*;
 
 public class PillReminderListenerTest {
     @Mock

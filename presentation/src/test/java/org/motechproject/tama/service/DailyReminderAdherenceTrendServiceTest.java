@@ -5,9 +5,12 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
@@ -19,6 +22,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -31,6 +36,8 @@ public class DailyReminderAdherenceTrendServiceTest {
     @Mock
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
+    @Mock
+    private AlertService alertService;
     @Mock
     PillRegimenResponse pillRegimenResponse;
 
@@ -48,7 +55,7 @@ public class DailyReminderAdherenceTrendServiceTest {
     @Test
     public void shouldReportWhenAdherenceTrendIsFalling(){
         final String testPatientId = "testPatientId";
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(null, null) {
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(null, null, null) {
             @Override
             protected double getAdherencePercentageForCurrentWeek(String patientId) {
                 if(patientId.equals(testPatientId))return 23.0;
@@ -75,7 +82,38 @@ public class DailyReminderAdherenceTrendServiceTest {
         Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(pillRegimenId, dateTime.minusWeeks(4).toLocalDate(), dateTime.toLocalDate())).thenReturn(successCountThisWeek);
         PowerMockito.when(DosageUtil.getScheduledDosagesTotalCount(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
 
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService);
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, alertService);
         assertEquals(0.25, dailyReminderAdherenceTrendService.getAdherencePercentage(externalId));
     }
+
+    @Test
+    public void shouldRaiseAlertWhenAdherenceIsFalling(){
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, alertService) {
+            @Override
+            public boolean isAdherenceFalling(String patientId) {
+                return true;
+            }
+        };
+        final String patientId = "patientId";
+
+
+        dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
+        verify(alertService).createAlert(Matchers.<Alert>any());
+    }
+
+    @Test
+    public void shouldNotRaiseAlertWhenAdherenceIsNotFalling(){
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, alertService) {
+            @Override
+            public boolean isAdherenceFalling(String patientId) {
+                return false;
+            }
+        };
+        final String patientId = "patientId";
+
+
+        dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
+        verify(alertService, never()).createAlert(Matchers.<Alert>any());
+    }
+
 }

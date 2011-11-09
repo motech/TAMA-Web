@@ -22,9 +22,6 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     private UpdateAdherenceCommand updateAdherenceCommand;
     @Autowired
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
-    @Autowired
-    private DailyReminderFallingAdherenceAlert dailyReminderFallingAdherenceAlert;
-
 
     protected Node createRootNode() {
         return new Node()
@@ -35,7 +32,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                         {"1", new Transition()
                                 .setDestinationNode(
                                         new Node()
-                                                .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand, dailyReminderFallingAdherenceAlert)
+                                                .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPillTakenDuringIncomingCall),
                                                         new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand)
