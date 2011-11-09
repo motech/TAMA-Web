@@ -4,17 +4,16 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.service.PatientAlertService;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -45,7 +44,7 @@ public class FourDayRecallServiceTest {
     private TreatmentAdvice treatmentAdvice;
 
     @Mock
-    private AlertService alertService;
+    private PatientAlertService patientAlertService;
 
     private FourDayRecallService fourDayRecallService;
 
@@ -53,7 +52,7 @@ public class FourDayRecallServiceTest {
     public void setUp() {
         initMocks(this);
         mockStatic(DateUtil.class);
-        fourDayRecallService = new FourDayRecallService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, alertService);
+        fourDayRecallService = new FourDayRecallService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, patientAlertService);
     }
 
     @Test
@@ -274,7 +273,7 @@ public class FourDayRecallServiceTest {
     @Test
     public void shouldRaiseAnAlertIfAdherenceTrendIsFalling() {
         final String testPatientId = "testPatientId";
-        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, alertService) {
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, patientAlertService) {
             @Override
             public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
                 if (patientId.equals(testPatientId)) return true;
@@ -289,7 +288,7 @@ public class FourDayRecallServiceTest {
             }
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
-        verify(alertService).createAlert(Matchers.<Alert>any());
+        verify(patientAlertService).createAlert(testPatientId, 3, "Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
     }
 
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {

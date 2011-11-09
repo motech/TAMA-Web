@@ -1,11 +1,9 @@
 package org.motechproject.tama.service;
 
 import org.joda.time.DateTime;
-import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.domain.Alerts;
+import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.DosageUtil;
 import org.motechproject.util.DateUtil;
@@ -19,13 +17,13 @@ public class DailyReminderAdherenceTrendService {
 
     private PillReminderService pillReminderService;
 
-    private AlertService alertService;
+    private PatientAlertService patientAlertService;
 
     @Autowired
-    public DailyReminderAdherenceTrendService(AllDosageAdherenceLogs allDosageAdherenceLogs, PillReminderService pillReminderService, AlertService alertService) {
+    public DailyReminderAdherenceTrendService(AllDosageAdherenceLogs allDosageAdherenceLogs, PillReminderService pillReminderService, PatientAlertService alertService) {
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.pillReminderService = pillReminderService;
-        this.alertService = alertService;
+        this.patientAlertService = alertService;
     }
 
     public boolean isAdherenceFalling(String patientId) {
@@ -59,8 +57,7 @@ public class DailyReminderAdherenceTrendService {
 
     public void raiseAdherenceFallingAlert(String patientId) {
         if (!isAdherenceFalling(patientId)) return;
-        final Alert alert = Alerts.forFallingAdherence(patientId);
-        alertService.createAlert(alert);
+        patientAlertService.createAlert(patientId,3,"Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
     }
 
 }

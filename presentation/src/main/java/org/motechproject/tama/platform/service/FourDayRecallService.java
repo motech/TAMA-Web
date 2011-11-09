@@ -4,14 +4,14 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.tama.domain.Alerts;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.domain.TreatmentAdvice;
 import org.motechproject.tama.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.service.PatientAlertService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,14 +26,14 @@ public class FourDayRecallService {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
-    private AlertService alertService;
+    private PatientAlertService patientAlertService;
 
     @Autowired
-    public FourDayRecallService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, AlertService alertService) {
+    public FourDayRecallService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, PatientAlertService patientAlertService) {
         this.allPatients = allPatients;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allTreatmentAdvices = allTreatmentAdvices;
-        this.alertService = alertService;
+        this.patientAlertService = patientAlertService;
     }
 
     public boolean isAdherenceCapturedForCurrentWeek(String patientDocId, String treatmentAdviceId) {
@@ -128,6 +128,6 @@ public class FourDayRecallService {
         int dosageMissedDays = getAdherenceLog(patientId, weeksBefore).getNumberOfDaysMissed();
         if (!isAdherenceFalling(dosageMissedDays, patientId)) return;
 
-        alertService.createAlert(Alerts.forFallingAdherence(patientId));
+        patientAlertService.createAlert(patientId,3,"Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
     }
 }

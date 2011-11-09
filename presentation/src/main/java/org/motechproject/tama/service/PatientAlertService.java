@@ -2,11 +2,17 @@ package org.motechproject.tama.service;
 
 import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;
+import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
+import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.tama.domain.*;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.PatientAlert;
+import org.motechproject.tama.domain.PatientAlertType;
+import org.motechproject.tama.domain.SymptomsAlertStatus;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,13 +68,17 @@ public class PatientAlertService {
         return sort(flatten(convert(allPatients.findByClinic(clinicId), patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
 
-    public void createAlert(String externalId, Integer priority, String description, String adviceGiven, PatientAlertType patientAlertType) {
+    public void createAlert(String externalId, Integer priority, String description, String name, PatientAlertType patientAlertType) {
         HashMap<String,String> data = new HashMap<String, String>();
         data.put(PatientAlert.PATIENT_ALERT_TYPE, patientAlertType.name());
         if(PatientAlertType.SymptomReporting.equals(patientAlertType)) {
             data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
         }
-        final Alert symptomsAlert = Alerts.forSymptomReporting(externalId, priority, description, adviceGiven, data);
+        final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
+        final DateTime now = DateUtil.now();
+        symptomsAlert.setDateTime(now);
+        symptomsAlert.setDescription(description);
+        symptomsAlert.setName(name);
         alertService.createAlert(symptomsAlert);
     }
 

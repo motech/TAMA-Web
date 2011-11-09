@@ -5,14 +5,12 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.DosageUtil;
 import org.motechproject.util.DateUtil;
@@ -37,7 +35,7 @@ public class DailyReminderAdherenceTrendServiceTest {
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
     @Mock
-    private AlertService alertService;
+    private PatientAlertService patientAlertService;
     @Mock
     PillRegimenResponse pillRegimenResponse;
 
@@ -82,13 +80,13 @@ public class DailyReminderAdherenceTrendServiceTest {
         Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(pillRegimenId, dateTime.minusWeeks(4).toLocalDate(), dateTime.toLocalDate())).thenReturn(successCountThisWeek);
         PowerMockito.when(DosageUtil.getScheduledDosagesTotalCount(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
 
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, alertService);
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService);
         assertEquals(0.25, dailyReminderAdherenceTrendService.getAdherencePercentage(externalId));
     }
 
     @Test
     public void shouldRaiseAlertWhenAdherenceIsFalling(){
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, alertService) {
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService) {
             @Override
             public boolean isAdherenceFalling(String patientId) {
                 return true;
@@ -98,12 +96,12 @@ public class DailyReminderAdherenceTrendServiceTest {
 
 
         dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
-        verify(alertService).createAlert(Matchers.<Alert>any());
+        verify(patientAlertService).createAlert(patientId, 3, "Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
     }
 
     @Test
     public void shouldNotRaiseAlertWhenAdherenceIsNotFalling(){
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, alertService) {
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService) {
             @Override
             public boolean isAdherenceFalling(String patientId) {
                 return false;
@@ -113,7 +111,7 @@ public class DailyReminderAdherenceTrendServiceTest {
 
 
         dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
-        verify(alertService, never()).createAlert(Matchers.<Alert>any());
+        verify(patientAlertService, never()).createAlert(patientId, 3, "Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
     }
 
 }

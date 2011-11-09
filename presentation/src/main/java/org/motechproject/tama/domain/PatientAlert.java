@@ -44,7 +44,9 @@ public class PatientAlert {
     }
 
     public String getAlertPriority() {
-        return String.format("SYMPTOM PRIO-%d", this.alert.getPriority());
+        if (PatientAlertType.SymptomReporting.name().equals(getType()))
+            return String.format("SYMPTOM PRIO-%d", this.alert.getPriority());
+        return String.valueOf(this.alert.getPriority());
     }
 
     public String getGeneratedOn() {
