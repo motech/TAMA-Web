@@ -3,12 +3,16 @@ package org.motechproject.tama.service;
 import org.joda.time.DateTime;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.DosageUtil;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class DailyReminderAdherenceTrendService {
@@ -42,7 +46,7 @@ public class DailyReminderAdherenceTrendService {
         return getAdherencePercentage(patientId, DateUtil.now().minusWeeks(1));
     }
 
-    private double getAdherencePercentage(String patientId, DateTime asOfDate) {
+    protected double getAdherencePercentage(String patientId, DateTime asOfDate) {
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patientId);
         String regimenId = pillRegimen.getPillRegimenId();
         int scheduledDosagesTotalCountForLastFourWeeksAsOfNow = getScheduledDosagesTotalCount(pillRegimen, asOfDate.minusWeeks(4), asOfDate);
@@ -57,7 +61,12 @@ public class DailyReminderAdherenceTrendService {
 
     public void raiseAdherenceFallingAlert(String patientId) {
         if (!isAdherenceFalling(patientId)) return;
-        patientAlertService.createAlert(patientId,3,"Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
+        final Map<String, String> data = new HashMap<String, String>();
+        final double adherencePercentageForLastWeek = getAdherencePercentageForLastWeek(patientId);
+        final double adherencePercentageForCurrentWeek = getAdherencePercentageForCurrentWeek(patientId);
+        final double fallPercent =  (adherencePercentageForLastWeek - adherencePercentageForCurrentWeek);
+        final String description = String.format("Adherence fell by %2.2f%%, from %2.2f%% to %2.2f%%",fallPercent, adherencePercentageForLastWeek, adherencePercentageForCurrentWeek);
+        patientAlertService.createAlert(patientId, TAMAConstants.FALLING_ADHERENCE_ALERT_PRIORITY, "Falling Adherence", description, PatientAlertType.FallingAdherence, data);
     }
 
 }

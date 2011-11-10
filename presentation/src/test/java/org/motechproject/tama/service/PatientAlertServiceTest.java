@@ -10,9 +10,10 @@ import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
-import sun.security.action.PutAllAction;
+import org.motechproject.tama.web.command.EmptyMapMatcher;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -30,11 +31,13 @@ public class PatientAlertServiceTest {
     private AllPatients allPatients;
 
     PatientAlertService patientAlertService;
+    private EmptyMapMatcher emptyMapMatcher;
 
     @Before
     public void setUp() {
         initMocks(this);
         patientAlertService = new PatientAlertService(allPatients, alertService);
+        emptyMapMatcher = new EmptyMapMatcher();
     }
 
     @Test
@@ -164,7 +167,7 @@ public class PatientAlertServiceTest {
                         && alert.getName().equals(adviceGiven);
             }
         };
-        patientAlertService.createAlert(testPatientId, 2, symptomReported, adviceGiven, PatientAlertType.SymptomReporting);
+        patientAlertService.createAlert(testPatientId, 2, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, new HashMap<String, String>());
         verify(alertService).createAlert(argThat(alertArgumentMatcher));
     }
 
@@ -199,7 +202,7 @@ public class PatientAlertServiceTest {
                         && alert.getName().equals(adviceGiven);
             }
         };
-        patientAlertService.createAlert(testPatientId, 2, symptomReported, adviceGiven, PatientAlertType.AppointmentReminder);
+        patientAlertService.createAlert(testPatientId, 2, adviceGiven, symptomReported, PatientAlertType.AppointmentReminder, new HashMap<String, String>());
         verify(alertService).createAlert(argThat(alertArgumentMatcher));
     }
 

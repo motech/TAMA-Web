@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Properties;
 
 import static ch.lambdaj.Lambda.*;
@@ -50,7 +51,7 @@ public class SymptomReportingAlertsCommand {
             public String[] execute(Object o) {
                 TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) o);
                 String externalId = ivrContext.patientId();
-                patientAlertService.createAlert(externalId, priority, symptomReported, adviceGiven, PatientAlertType.SymptomReporting);
+                patientAlertService.createAlert(externalId, priority, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, new HashMap<String, String>());
                 return new String[0];
             }
         };

@@ -16,8 +16,8 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ch.lambdaj.Lambda.*;
 import static java.util.Collections.reverseOrder;
@@ -68,8 +68,7 @@ public class PatientAlertService {
         return sort(flatten(convert(allPatients.findByClinic(clinicId), patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
 
-    public void createAlert(String externalId, Integer priority, String description, String name, PatientAlertType patientAlertType) {
-        HashMap<String,String> data = new HashMap<String, String>();
+    public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
         data.put(PatientAlert.PATIENT_ALERT_TYPE, patientAlertType.name());
         if(PatientAlertType.SymptomReporting.equals(patientAlertType)) {
             data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());

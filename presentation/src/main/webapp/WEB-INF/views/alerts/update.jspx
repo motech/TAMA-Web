@@ -10,8 +10,15 @@
             <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
             <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time Of Call"/>
             <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Alert Type"/>
-            <field:display field="symptomReported" id="s_org_motechproject_tama_alert_SymptomReported" object="${alertInfo}" label="Symptoms Reported"/>
-            <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
+            <c:choose >
+                <c:when test="${alertInfo.type == 'SymptomReporting'}">
+                    <field:display field="symptomReported" id="s_org_motechproject_tama_alert_SymptomReported" object="${alertInfo}" label="Symptoms Reported"/>
+                    <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
+                </c:when>
+                <c:otherwise>
+                   <field:display field="description" id="s_org_motechproject_tama_alert_Description" object="${alertInfo}" label="Description"/>
+                </c:otherwise>
+            </c:choose>
             <form:form action="" method="POST" modelAttribute="alertInfo" enctype="${enctype}">
                 <form:hidden path="type" value="${alertInfo.type}"/>
                 <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />

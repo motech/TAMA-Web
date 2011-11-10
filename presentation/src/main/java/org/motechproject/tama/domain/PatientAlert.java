@@ -1,6 +1,7 @@
 package org.motechproject.tama.domain;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.server.alerts.domain.Alert;
 
@@ -46,7 +47,8 @@ public class PatientAlert {
     public String getAlertPriority() {
         if (PatientAlertType.SymptomReporting.name().equals(getType()))
             return String.format("SYMPTOM PRIO-%d", this.alert.getPriority());
-        return String.valueOf(this.alert.getPriority());
+        if (this.alert.getPriority() > 0) return String.valueOf(this.alert.getPriority());
+        return StringUtils.EMPTY;
     }
 
     public String getGeneratedOn() {
@@ -54,10 +56,18 @@ public class PatientAlert {
     }
 
     public String getSymptomReported() {
-        return this.alert.getDescription() ;
+        return this.alert.getDescription();
+    }
+
+    public String getDescription() {
+        return this.alert.getDescription();
     }
 
     public String getAdviceGiven() {
+        return this.alert.getName();
+    }
+
+    public String getName() {
         return this.alert.getName();
     }
 

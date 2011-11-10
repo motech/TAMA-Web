@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -13,6 +14,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.DosageUtil;
+import org.motechproject.tama.web.command.EmptyMapMatcher;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -20,6 +22,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -40,6 +44,7 @@ public class DailyReminderAdherenceTrendServiceTest {
     PillRegimenResponse pillRegimenResponse;
 
     private DateTime dateTime = DateTime.now();
+    EmptyMapMatcher emptyMapMatcher;
 
     @Before
     public void setUp() {
@@ -47,13 +52,14 @@ public class DailyReminderAdherenceTrendServiceTest {
         PowerMockito.mockStatic(DosageUtil.class);
         PowerMockito.mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(dateTime);
+        emptyMapMatcher = new EmptyMapMatcher();
     }
 
 
     @Test
     public void shouldReportWhenAdherenceTrendIsFalling(){
         final String testPatientId = "testPatientId";
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(null, null, null) {
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService) {
             @Override
             protected double getAdherencePercentageForCurrentWeek(String patientId) {
                 if(patientId.equals(testPatientId))return 23.0;
@@ -91,12 +97,22 @@ public class DailyReminderAdherenceTrendServiceTest {
             public boolean isAdherenceFalling(String patientId) {
                 return true;
             }
+
+            @Override
+            public double getAdherencePercentage(String patientId) {
+                return 20.0;
+            }
+
+            @Override
+            protected double getAdherencePercentage(String patientId, DateTime asOfDate) {
+                return 30.0;
+            }
         };
         final String patientId = "patientId";
 
 
         dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
-        verify(patientAlertService).createAlert(patientId, 3, "Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
+        verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), Matchers.<String>any(), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
     }
 
     @Test
@@ -111,7 +127,7 @@ public class DailyReminderAdherenceTrendServiceTest {
 
 
         dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
-        verify(patientAlertService, never()).createAlert(patientId, 3, "Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
+        verify(patientAlertService, never()).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), Matchers.<String>any(), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
     }
 
 }

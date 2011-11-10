@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.domain.TreatmentAdvice;
@@ -16,7 +17,9 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FourDayRecallService {
@@ -128,6 +131,11 @@ public class FourDayRecallService {
         int dosageMissedDays = getAdherenceLog(patientId, weeksBefore).getNumberOfDaysMissed();
         if (!isAdherenceFalling(dosageMissedDays, patientId)) return;
 
-        patientAlertService.createAlert(patientId,3,"Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
+        final Map<String, String> data = new HashMap<String, String>();
+        final int previousWeekPercentage = adherencePercentageForPreviousWeek(patientId);
+        final int thisWeekPercentage = adherencePercentageFor(dosageMissedDays);
+        final int fall = (previousWeekPercentage - thisWeekPercentage);
+        final String description = String.format("Adherence fell by %d%% from %d%% to %d%%", fall, previousWeekPercentage, thisWeekPercentage);
+        patientAlertService.createAlert(patientId, TAMAConstants.FALLING_ADHERENCE_ALERT_PRIORITY, description, "Falling Adherence", PatientAlertType.FallingAdherence, data);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SetupPatient {
 
-    public static final String APPLICATION_CONTEXT_XML = "META-INF/spring/applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationContext-tools.xml";
     private AllClinics allClinics;
     private AllPatients allPatients;
     private AllIVRLanguages allIVRLanguages;

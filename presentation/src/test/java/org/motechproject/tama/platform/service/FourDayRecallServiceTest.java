@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.domain.Patient;
@@ -21,8 +22,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -288,7 +291,7 @@ public class FourDayRecallServiceTest {
             }
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
-        verify(patientAlertService).createAlert(testPatientId, 3, "Falling Adherence", "Falling Adherence", PatientAlertType.FallingAdherence);
+        verify(patientAlertService).createAlert(Matchers.<String>any(), Matchers.<Integer>any(), Matchers.<String>any(), Matchers.<String>any(), any(PatientAlertType.class), Matchers.<Map<String, String>>any());
     }
 
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {
