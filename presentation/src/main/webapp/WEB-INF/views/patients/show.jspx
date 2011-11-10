@@ -9,6 +9,14 @@
     <spring:url value="/resources/styles/show-patient.css" var="show_patient_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
 
+    <script type="text/javascript">
+        dojo.addOnLoad(function() {
+            deactivationStatusesWidget = dijit.byId('_patient.status_id');
+            deactivationStatusesWidget.setValue('');
+            Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'deactivatePatientButton', event:'onclick'}));
+        });
+    </script>
+
     <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" z="+0Wh0SBhvCZhxs18Y4zURfTw/EY=" delete="false" update="false">
         <jsp:include page="showBasicInformation.jspx" />
         <jsp:include page="showMedicalHistory.jspx" />

@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Status;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class PatientController extends BaseController {
     public static final String REDIRECT_TO_LIST_VIEW = "redirect:/patients";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/patients/";
 
+    public static String DEACTIVATION_STATUSES =  "deactivation_statuses";
     public static final String PATIENT = "patient";
     public static final String PATIENTS = "patients";
     public static final String ITEM_ID = "itemId";
@@ -49,7 +52,6 @@ public class PatientController extends BaseController {
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
     public static final String CLINIC_AND_PATIENT_ID_ALREADY_IN_USE = "Sorry, the entered patient-id already in use.";
     private static final String PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE = "Sorry, the entered combination of phone number and TAMA-PIN is already in use.";
-
     private AllPatients allPatients;
     private AllClinics allClinics;
     private AllGenders allGenders;
@@ -84,15 +86,11 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
-    public String deactivate(@RequestParam String id, HttpServletRequest request) {
-        allPatients.deactivate(id);
+    public String deactivate(@RequestParam String id, @RequestParam Patient.Status status, HttpServletRequest request) {
+        Patient patient = allPatients.get(id);
+        patient.setStatus(status);
+        patientService.update(patient);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/deactivate/{id}")
-    public String deactivate(@PathVariable String id) {
-        allPatients.deactivate(id);
-        return REDIRECT_TO_LIST_VIEW;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
@@ -106,7 +104,8 @@ public class PatientController extends BaseController {
     public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         addDateTimeFormat(uiModel);
         uiModel.addAttribute(PATIENT, allPatients.findByIdAndClinicId(id, loggedInClinic(request)));
-        uiModel.addAttribute(ITEM_ID, id);
+        uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
+        uiModel.addAttribute(DEACTIVATION_STATUSES, Patient.Status.deactivationStatuses());
         return SHOW_VIEW;
     }
 

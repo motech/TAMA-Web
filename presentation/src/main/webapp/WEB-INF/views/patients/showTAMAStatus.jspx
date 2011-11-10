@@ -3,7 +3,7 @@
     <spring:message code="label_org_motechproject_tama_domain_patient_tama_status" var="tama_status" htmlEscape="false" />
     <util:panel id="fc_org_motechproject_tama_domain_patient_Status" title="${tama_status}" openPane="true">
         <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDateAsDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
-        <field:display field="status" id="c_org_motechproject_tama_domain_Patient_status" object="${patient}" />
+        <field:display field="displayName" id="c_org_motechproject_tama_domain_Patient_status" object="${patient.status}" />
         <c:choose>
           <c:when test="${patient.active}">
               <spring:url value="/clinicvisits" var="clinic_visits_url">
@@ -27,10 +27,11 @@
               <br/>
               <div class="update_patient">
                   <form action="deactivate" method="POST">
-                     <input type="hidden" name="id" value="${patient.id}"/>
-                     <div class='submit'>
-                       <input type="submit" id="deactivatePatient" value="Deactivate"/>
-                     </div>
+                        <input type="hidden" name="id" value="${patient.id}"/>
+                        <field:select id="deactivationStatuses" field="patient.status" items="${deactivation_statuses}" path="/patient/deactivationStatuses" itemLabel="displayName" itemValue="value" required="true" label="Reason for deactivation"/>
+                        <div class='submit'>
+                            <input type="submit" id="deactivatePatientButton" value="Deactivate"/>
+                        </div>
                   </form>
               </div>
           </c:when>
