@@ -11,7 +11,7 @@ public class SecondPrioritySymptomReportingFilter extends DecisionTreeNodesFilte
     public boolean select(Node node) {
         boolean appropriateNode = false;
         for(Prompt prompt:node.getPrompts()) {
-            if(prompt.getName().equals("adv_stopmedicineseeclinicasap") || prompt.getName().equals("adv_seeclinicasapdepression")) {
+            if("adv_stopmedicineseeclinicasap".equals(prompt.getName()) || "adv_seeclinicasapdepression".equals(prompt.getName())) {
                 appropriateNode = true;
                 break;
             }

@@ -11,7 +11,7 @@ public class FourthPrioritySymptomReportingFilter extends DecisionTreeNodesFilte
     public boolean select(Node node) {
         boolean appropriateNode = false;
         for(Prompt prompt:node.getPrompts()) {
-            if(prompt.getName().equals("adv_callclinic")) {
+            if("adv_callclinic".equals(prompt.getName())) {
                 appropriateNode = true;
                 break;
             }
