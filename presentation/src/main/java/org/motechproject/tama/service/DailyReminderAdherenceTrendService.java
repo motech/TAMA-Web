@@ -64,7 +64,7 @@ public class DailyReminderAdherenceTrendService {
         final Map<String, String> data = new HashMap<String, String>();
         final double adherencePercentageForLastWeek = getAdherencePercentageForLastWeek(patientId);
         final double adherencePercentageForCurrentWeek = getAdherencePercentageForCurrentWeek(patientId);
-        final double fallPercent =  (adherencePercentageForLastWeek - adherencePercentageForCurrentWeek);
+        final double fallPercent =  ((adherencePercentageForLastWeek - adherencePercentageForCurrentWeek)/adherencePercentageForLastWeek)*100;
         final String description = String.format("Adherence fell by %2.2f%%, from %2.2f%% to %2.2f%%",fallPercent, adherencePercentageForLastWeek, adherencePercentageForCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.FALLING_ADHERENCE_ALERT_PRIORITY, "Falling Adherence", description, PatientAlertType.FallingAdherence, data);
     }
