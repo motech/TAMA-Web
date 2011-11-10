@@ -116,7 +116,6 @@ public class TAMACallFlowControllerTest {
     @Test
     public void shouldReturnDecisionTree() {
         ivrContext.callState(CallState.AUTHENTICATED);
-
         tamaCallFlowController.getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, kooKooIVRContext);
 
         verify(treeRegistry).getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);

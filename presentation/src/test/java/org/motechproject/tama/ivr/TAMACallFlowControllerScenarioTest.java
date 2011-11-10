@@ -34,7 +34,10 @@ public class TAMACallFlowControllerScenarioTest {
     @Mock
     private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
     @Mock
+    private SymptomsReportingContextWrapper symptomsReportingContext;
+    @Mock
     private PillRegimenSnapshot pillRegimenSnapshot;
+
     private TAMACallFlowController callFlowController;
     private TAMAIVRContextForTest ivrContext;
     private PatientPreferences patientPreferences;
@@ -50,6 +53,7 @@ public class TAMACallFlowControllerScenarioTest {
         patient.setPatientPreferences(patientPreferences);
         ivrContext.pillRegimenSnapshot(pillRegimenSnapshot).patient(patient).callState(CallState.STARTED);
         when(contextFactory.create(kooKooIVRContext)).thenReturn(ivrContext);
+        when(symptomsReportingContextFactory.create(kooKooIVRContext)).thenReturn(symptomsReportingContext);
     }
 
     private void callPreference(CallPreference callPreference) {

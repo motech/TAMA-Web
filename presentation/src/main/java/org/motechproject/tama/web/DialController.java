@@ -28,8 +28,11 @@ public class DialController {
     private IVRMessage ivrMessages;
     private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
 
-
     @Autowired
+    protected DialController(AllPatients allPatients, IVRMessage ivrMessages) {
+        this(allPatients, ivrMessages, new SymptomsReportingContextWrapperFactory());
+    }
+
     protected DialController(AllPatients allPatients, IVRMessage ivrMessages, SymptomsReportingContextWrapperFactory symptomsReportingContextFactory) {
         this.allPatients = allPatients;
         this.ivrMessages = ivrMessages;

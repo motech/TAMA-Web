@@ -33,6 +33,9 @@ public class TAMACallFlowControllerInboundCallTest {
     private VoiceOutboxService voiceOutboxService;
     @Mock
     private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
+    @Mock
+    private SymptomsReportingContextWrapper symptomsReportingContext;
+
 
     @Before
     public void setUp() {
@@ -46,6 +49,7 @@ public class TAMACallFlowControllerInboundCallTest {
         tamaCallFlowController = new TAMACallFlowController(TAMATreeChooser, pillReminderService, voiceOutboxService, allPatients, contextFactory, symptomsReportingContextFactory);
         tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Inbound);
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContextForTest);
+        when(symptomsReportingContextFactory.create(kooKooIVRContext)).thenReturn(symptomsReportingContext);
     }
 
     @Test
