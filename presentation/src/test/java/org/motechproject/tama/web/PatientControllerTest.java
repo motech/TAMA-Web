@@ -1,19 +1,18 @@
 package org.motechproject.tama.web;
 
 import org.ektorp.UpdateConflictException;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.internal.verification.Times;
 import org.mockito.verification.VerificationMode;
 import org.motechproject.tama.TamaException;
-import org.motechproject.tama.domain.CallPreference;
-import org.motechproject.tama.domain.Gender;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientPreferences;
-import org.motechproject.tama.domain.TimeMeridiem;
-import org.motechproject.tama.domain.TimeOfDay;
+import org.motechproject.tama.builder.ClinicianBuilder;
+import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
@@ -21,16 +20,16 @@ import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.service.PatientService;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.transaction.Status;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -74,9 +73,24 @@ public class PatientControllerTest {
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 
+    @Test
+    public void shouldRenderShowPage() {
+        when(request.getSession()).thenReturn(session);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
+        when(allPatients.findByIdAndClinicId("patient_id", patient.getClinic_id())).thenReturn(patient);
+
+        String returnPage = controller.show("patient_id", uiModel, request);
+
+        assertEquals("patients/show", returnPage);
+
+        verify(uiModel).addAttribute(PatientController.DATE_OF_BIRTH_FORMAT, DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
+        verify(uiModel).addAttribute(PatientController.PATIENT, patient);
+        verify(uiModel).addAttribute(PatientController.ITEM_ID, "patient_id");
+        verify(uiModel).addAttribute(PatientController.DEACTIVATION_STATUSES, Patient.Status.deactivationStatuses());
+    }
 
     @Test
-    public void shouldActivatePatientsByPost() {
+    public void shouldActivatePatientsByPost() {    // by mailing a letter?
         String id = "1234";
         String nextPage = controller.activate(id, request);
 
@@ -86,12 +100,24 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void shouldActivatePatientsByGet() {
+    public void shouldActivatePatientsByGet() {     // wtf!
         String id = "1234";
         String nextPage = controller.activate(id);
 
         verify(allPatients).activate(id);
         assertEquals("redirect:/patients", nextPage);
+    }
+
+    @Test
+    public void shouldDeactivatePatient() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
+        when(allPatients.get("patient_id")).thenReturn(patient);
+
+        String nextPage = controller.deactivate("patient_id", Patient.Status.Patient_Withdraws_Consent, request);
+
+        assertEquals(Patient.Status.Patient_Withdraws_Consent, patient.getStatus());
+        assertEquals("redirect:/patients/patient_id", nextPage);
+        verify(patientService).update(patient);
     }
 
     @Test

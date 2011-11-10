@@ -76,6 +76,6 @@ public class WebDriverFactory {
     }
 
     private static String driverName() {
-        return System.getProperty(TEST_DRIVER, HTMLUNIT);
+        return System.getProperty(TEST_DRIVER, "firefox");
     }
 }

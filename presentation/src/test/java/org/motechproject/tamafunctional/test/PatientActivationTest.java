@@ -32,4 +32,24 @@ public class PatientActivationTest extends BaseTest {
 
         pageAfterActivation.logout();
     }
+
+    @Test
+    public void testPatientDeactivation() {
+        ClinicianContext clinicianContext = new ClinicianContext();
+        buildContexts(clinicianContext);
+
+        TestPatient patient = TestPatient.withMandatory();
+        ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
+                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
+                goToPatientRegistrationPage().
+                registerNewPatient(patient);
+
+        showPatientPage.activatePatient();
+
+        ShowPatientPage pageAfterDeactivation = showPatientPage.deactivatePatient("Study complete");
+
+        Assert.assertEquals("Study complete", pageAfterDeactivation.getStatus().trim());    // TODO:fails randomly; probably because its navigating to same page
+
+        pageAfterDeactivation.logout();
+    }
 }

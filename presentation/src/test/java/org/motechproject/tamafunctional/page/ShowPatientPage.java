@@ -48,10 +48,16 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.ID, using = "activatePatient")
     private WebElement activationLink;
 
+    @FindBy(how = How.ID, using = "deactivatePatientButton")
+    private WebElement deactivationLink;
+
+    @FindBy(how = How.ID, using = "_patient.status_id")
+    private WebElement deactivationReasonDropdown;
+
     @FindBy(how = How.ID, using = "clinic_visits")
     private WebElement clinicVisitsLink;
 
-    @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_status_status_id")
+    @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_status_displayName_id")
     private WebElement status;
 
     @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_reminderCall_displayCallPreference_id")
@@ -121,6 +127,18 @@ public class ShowPatientPage extends Page {
 
     public ShowPatientPage activatePatient() {
         this.activationLink.click();
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(By.id(PATIENT_ID_ID)) != null;
+            }
+        });
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public ShowPatientPage deactivatePatient(String reason) {
+        this.deactivationReasonDropdown.sendKeys(reason);
+        this.deactivationLink.click();
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
