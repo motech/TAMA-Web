@@ -10,10 +10,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.CallState;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.ivr.TAMAIVRContext;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,30 +23,35 @@ public class TAMACallFlowController implements CallFlowController {
     public static final String PRE_OUTBOX_URL = "/ivr/preoutbox";
     public static final String HANG_UP_URL = "/ivr/hangup";
     public static final String SYMPTOM_REPORTING_URL = "/ivr/symptomreporting";
+    public static final String DIAL_URL = "/ivr/dial";
     private TAMATreeRegistry treeRegistry;
     private PillReminderService pillReminderService;
     private VoiceOutboxService voiceOutboxService;
     private TAMAIVRContextFactory factory;
+    private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
     private AllPatients allPatients;
 
     @Autowired
     public TAMACallFlowController(TAMATreeRegistry treeRegistry, PillReminderService pillReminderService, AllPatients allPatients, VoiceOutboxService voiceOutboxService) {
-        this(treeRegistry, pillReminderService, voiceOutboxService, allPatients, new TAMAIVRContextFactory());
+        this(treeRegistry, pillReminderService, voiceOutboxService, allPatients, new TAMAIVRContextFactory(), new SymptomsReportingContextWrapperFactory());
     }
 
-    public TAMACallFlowController(TAMATreeRegistry treeRegistry, PillReminderService pillReminderService, VoiceOutboxService voiceOutboxService, AllPatients allPatients, TAMAIVRContextFactory factory) {
+    public TAMACallFlowController(TAMATreeRegistry treeRegistry, PillReminderService pillReminderService, VoiceOutboxService voiceOutboxService, AllPatients allPatients, TAMAIVRContextFactory factory, SymptomsReportingContextWrapperFactory symptomsReportingContextFactory) {
         this.treeRegistry = treeRegistry;
         this.pillReminderService = pillReminderService;
         this.voiceOutboxService = voiceOutboxService;
         this.factory = factory;
         this.allPatients = allPatients;
+        this.symptomsReportingContextFactory = symptomsReportingContextFactory;
     }
 
     @Override
     public String urlFor(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
+        SymptomsReportingContextWrapper symptomsReportingContext = symptomsReportingContextFactory.create(kooKooIVRContext);
         CallState callState = tamaivrContext.callState();
         if (callState.equals(CallState.STARTED)) return AUTHENTICATION_URL;
+        if (symptomsReportingContext.isDialState()) return DIAL_URL;
         if (callState.equals(CallState.SYMPTOM_REPORTING)) return SYMPTOM_REPORTING_URL;
         if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE))
             return AllIVRURLs.DECISION_TREE_URL;

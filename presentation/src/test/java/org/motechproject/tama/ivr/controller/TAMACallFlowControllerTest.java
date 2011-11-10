@@ -6,10 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.ivr.CallState;
-import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
-import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -29,18 +26,23 @@ public class TAMACallFlowControllerTest {
     @Mock
     private TAMAIVRContextFactory contextFactory;
     @Mock
+    private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
+    @Mock
     private AllPatients allPatients;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
     private TAMACallFlowController tamaCallFlowController;
     private TAMAIVRContextForTest ivrContext;
+    private SymptomsReportingContextForTest symptomsReportingContext;
 
     @Before
     public void setUp() {
         initMocks(this);
-        tamaCallFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory);
+        tamaCallFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory, symptomsReportingContextFactory);
         ivrContext = new TAMAIVRContextForTest();
+        symptomsReportingContext = new SymptomsReportingContextForTest();
         when(contextFactory.create(kooKooIVRContext)).thenReturn(ivrContext);
+        when(symptomsReportingContextFactory.create(kooKooIVRContext)).thenReturn(symptomsReportingContext);
     }
 
     @Test
@@ -65,6 +67,13 @@ public class TAMACallFlowControllerTest {
     public void returnAuthenticationURLWhenTheCallStarts() {
         ivrContext.callState(CallState.STARTED);
         assertEquals(TAMACallFlowController.AUTHENTICATION_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
+    public void dialPromptsShouldLeadToDialURL() {
+        ivrContext.callState(CallState.SYMPTOM_REPORTING_TREE);
+        symptomsReportingContext.switchToDialState(true);
+        assertEquals(TAMACallFlowController.DIAL_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test

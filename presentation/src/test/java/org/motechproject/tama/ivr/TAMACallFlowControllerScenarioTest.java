@@ -32,6 +32,8 @@ public class TAMACallFlowControllerScenarioTest {
     @Mock
     private KooKooIVRContext kooKooIVRContext;
     @Mock
+    private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
+    @Mock
     private PillRegimenSnapshot pillRegimenSnapshot;
     private TAMACallFlowController callFlowController;
     private TAMAIVRContextForTest ivrContext;
@@ -41,7 +43,7 @@ public class TAMACallFlowControllerScenarioTest {
     public void setUp() {
         initMocks(this);
         TAMATreeRegistry treeRegistry = new TAMATreeRegistry(null, null, null, null, null, null, null, null);
-        callFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory);
+        callFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory, symptomsReportingContextFactory);
         ivrContext = new TAMAIVRContextForTest();
         Patient patient = new Patient();
         patientPreferences = new PatientPreferences();

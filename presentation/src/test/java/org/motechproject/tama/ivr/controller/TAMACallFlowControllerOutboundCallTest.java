@@ -3,7 +3,6 @@ package org.motechproject.tama.ivr.controller;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.Mockito;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -11,9 +10,9 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
+import org.motechproject.tama.ivr.SymptomsReportingContextWrapperFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -31,9 +30,10 @@ public class TAMACallFlowControllerOutboundCallTest {
         PillReminderService pillReminderService = mock(PillReminderService.class);
         VoiceOutboxService voiceOutboxService = mock(VoiceOutboxService.class);
         TAMAIVRContextFactory contextFactory = mock(TAMAIVRContextFactory.class);
+        SymptomsReportingContextWrapperFactory symptomsReportingContextFactory = mock(SymptomsReportingContextWrapperFactory.class);
         AllPatients allPatients = mock(AllPatients.class);
 
-        tamaCallFlowController = new TAMACallFlowController(tamaTreeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory);
+        tamaCallFlowController = new TAMACallFlowController(tamaTreeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory, symptomsReportingContextFactory);
         TAMAIVRContextForTest tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Outbound);
 
         Patient patient = new Patient();
