@@ -45,11 +45,17 @@ public class DialController extends SafeIVRController {
         List<Clinic.ClinicianContact> clinicianContacts = tamaivrContext.patient(allPatients).getClinic().getClinicianContacts();
 
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder();
-        kookooIVRResponseBuilder.withPhoneNumber(clinicianContacts.get(0).getPhoneNumber());
+        if (kooKooIVRContext.isAnswered()) {
+            symptomsReportingContextWrapper.isDialState(false);
+        }
+        else {
+            int numberOfClincianBeingCalled = symptomsReportingContextWrapper.anotherClinicianCalled();
+            kookooIVRResponseBuilder.withPhoneNumber(clinicianContacts.get(numberOfClincianBeingCalled - 1).getPhoneNumber());
 
-        symptomsReportingContextWrapper.isDialState(false);
-
+            if (numberOfClincianBeingCalled == 3){
+                symptomsReportingContextWrapper.isDialState(false);
+            }
+        }
         return kookooIVRResponseBuilder;
     }
-
 }
