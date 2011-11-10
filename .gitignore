@@ -17,6 +17,7 @@ log.roo
 *.log
 *.userlibraries
 out/
+*.out
 Error_log/
 tama.log*
 test-output/

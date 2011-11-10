@@ -5,7 +5,7 @@ import org.motechproject.util.Cookies;
 
 public class SymptomsReportingContextWrapper {
 
-    private static String SWITCH_TO_DIAL_STATE = "switch_to_dial_state";
+    public static String SWITCH_TO_DIAL_STATE = "switch_to_dial_state";
 
     private Cookies cookies;
 
