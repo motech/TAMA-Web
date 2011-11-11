@@ -68,7 +68,7 @@ public class PillReminderCallTest {
         String PHONE_NUMBER = "1234567890";
         Patient patient = mock(Patient.class);
         when(patient.isNotActive()).thenReturn(false);
-        when(patient.getIVRMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
+        when(patient.getMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);

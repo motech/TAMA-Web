@@ -22,4 +22,9 @@ public class StringUtilTest {
         String lastMatchedString = StringUtil.lastMatch("http://localhost:8080/tama", "#");
         assertEquals("http://localhost:8080/tama", lastMatchedString);
     }
+
+    @Test
+    public void shouldGetIVRMobilePhoneNumber() {
+        assertEquals("09876543210", StringUtil.ivrMobilePhoneNumber("9876543210"));
+    }
 }

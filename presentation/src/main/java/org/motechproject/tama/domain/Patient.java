@@ -64,11 +64,6 @@ public class Patient extends CouchEntity {
         return this.status.equals(Status.Inactive);
     }
 
-    @JsonIgnore
-    public String getIVRMobilePhoneNumber() {
-        return String.format("0%s", mobilePhoneNumber);
-    }
-
     public Patient deactivate() {
         this.status = Status.Inactive;
         return this;

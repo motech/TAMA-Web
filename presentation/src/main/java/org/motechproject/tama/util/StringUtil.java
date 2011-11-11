@@ -8,4 +8,8 @@ public class StringUtil {
         if (StringUtils.isEmpty(actualString)) return "";
         return actualString.split(splitOn)[actualString.split(splitOn).length - 1];
     }
+
+    public static String ivrMobilePhoneNumber(String mobilePhoneNumber) {
+        return String.format("0%s", mobilePhoneNumber);
+    }
 }

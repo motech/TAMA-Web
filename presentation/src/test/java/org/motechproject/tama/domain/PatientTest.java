@@ -102,12 +102,6 @@ public class PatientTest {
     }
 
     @Test
-    public void shouldGetIVRMobilePhoneNumber() {
-        Patient patient = PatientBuilder.startRecording().withMobileNumber("9876543210").build();
-        assertEquals("09876543210", patient.getIVRMobilePhoneNumber());
-    }
-
-    @Test
     public void shouldReturnUniqueId() {
         Clinic clinic = new Clinic("C1");
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("P1").withClinic(clinic).withMobileNumber("1234567890").withPasscode("1234").build();

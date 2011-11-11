@@ -4,6 +4,7 @@ import org.motechproject.server.service.ivr.CallRequest;
 import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -39,7 +40,7 @@ public class IvrCall {
         Patient patient = allPatients.get(patientDocId);
         if (patient == null || patient.isNotActive()) return;
 
-        CallRequest callRequest = new CallRequest(patient.getIVRMobilePhoneNumber(), params, getApplicationUrl());
+        CallRequest callRequest = new CallRequest(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber()), params, getApplicationUrl());
         ivrService.initiateCall(callRequest);
     }
 

@@ -10,6 +10,7 @@ import org.motechproject.tama.builder.MedicalHistoryBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.util.StringUtil;
 import org.motechproject.tama.util.UniqueMobileNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
@@ -246,7 +247,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         String mobileNumber = patient.getMobilePhoneNumber();
         allPatients.add(patient);
 
-        Patient loadedPatient = allPatients.findByMobileNumber(patient.getIVRMobilePhoneNumber());
+        Patient loadedPatient = allPatients.findByMobileNumber(StringUtil.ivrMobilePhoneNumber(mobileNumber));
         assertNotNull(loadedPatient);
         assertEquals(id, loadedPatient.getPatientId());
         assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());

@@ -14,6 +14,7 @@ import org.motechproject.tama.ivr.TAMAIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,7 +58,7 @@ public class DialController extends SafeIVRController {
     private void tryAndDialTheNextClinician(SymptomsReportingContextWrapper symptomsReportingContextWrapper, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
         String nextClinicianPhoneNumber = getNextClinicianPhoneNumber(symptomsReportingContextWrapper, clinicianContacts);
         String lastClinicianPhoneNumber = clinicianContacts.get(clinicianContacts.size() - 1).getPhoneNumber();
-        kookooIVRResponseBuilder.withPhoneNumber(nextClinicianPhoneNumber);
+        kookooIVRResponseBuilder.withPhoneNumber(StringUtil.ivrMobilePhoneNumber(nextClinicianPhoneNumber));
         if (lastClinicianPhoneNumber.equals(nextClinicianPhoneNumber)){
             symptomsReportingContextWrapper.endCall();
         }

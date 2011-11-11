@@ -62,7 +62,7 @@ public class DialControllerTest {
         when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
-        assertTrue(dialResponse.contains("<dial>ph1</dial>"));
+        assertTrue(dialResponse.contains("<dial>0ph1</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(1)).addCookie(cookieCaptor.capture());
         assertEquals(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getValue().getName());
@@ -75,7 +75,7 @@ public class DialControllerTest {
         when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
-        assertFalse(dialResponse.contains("<dial>ph2</dial>"));
+        assertFalse(dialResponse.contains("<dial>0ph2</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(1)).addCookie(cookieCaptor.capture());
         assertEquals(SymptomsReportingContextWrapper.SWITCH_TO_DIAL_STATE, cookieCaptor.getValue().getName());
@@ -87,7 +87,7 @@ public class DialControllerTest {
         when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
-        assertTrue(dialResponse.contains("<dial>ph3</dial>"));
+        assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(2)).addCookie(cookieCaptor.capture());
         assertEquals(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
@@ -106,7 +106,7 @@ public class DialControllerTest {
         when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
-        assertTrue(dialResponse.contains("<dial>ph3</dial>"));
+        assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(2)).addCookie(cookieCaptor.capture());
         assertEquals(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
