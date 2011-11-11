@@ -1,8 +1,7 @@
 package org.motechproject.tamafunctional.test;
 
 import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tamafunctional.context.ClinicianContext;
@@ -11,8 +10,6 @@ import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.testdata.TestPatient;
-
-import java.io.IOException;
 
 public class PatientActivationTest extends BaseTest {
     @Test
@@ -33,7 +30,7 @@ public class PatientActivationTest extends BaseTest {
         pageAfterActivation.logout();
     }
 
-    @Test
+    @Test @Ignore
     public void testPatientDeactivation() {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
