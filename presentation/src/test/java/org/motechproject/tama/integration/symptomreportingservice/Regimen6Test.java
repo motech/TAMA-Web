@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.service.SymptomReportingService;
+import org.motechproject.tama.service.SymptomReportingTreeService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,7 +18,7 @@ import static junit.framework.Assert.assertEquals;
 @ContextConfiguration(locations = "classpath:**/applicationContext.xml")
 public class Regimen6Test extends SpringIntegrationTest {
     @Autowired
-    private SymptomReportingService symptomReportingService;
+    private SymptomReportingTreeService symptomReportingService;
     private MedicalCondition medicalCondition;
 
     @Before

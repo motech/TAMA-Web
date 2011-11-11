@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SymptomReportingTree extends TamaDecisionTree {
 
-    private SymptomReportingAlertService service;
+    private SymptomReportingService service;
 
     private Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
-    public SymptomReportingTree(SymptomReportingAlertService service) {
+    public SymptomReportingTree(SymptomReportingService service) {
         this.service = service;
     }
 
@@ -23,7 +23,7 @@ public class SymptomReportingTree extends TamaDecisionTree {
         try {
             Class symptomReportingTreeChooser = Class.forName("org.motechproject.tama.ivr.decisiontree.RegimenTreeChooser");
             Tree symptomReportingTree = (Tree) symptomReportingTreeChooser.getMethod("getTree", String.class).invoke(null, symptomReportingTreeName);
-            service.addAlerts(symptomReportingTree.getRootNode());
+            service.addCommands(symptomReportingTree.getRootNode());
             return symptomReportingTree;
         } catch (Exception e) {
             logger.error("Error in getting appropriate tree - " + symptomReportingTreeName);

@@ -13,7 +13,7 @@ import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.service.PatientService;
-import org.motechproject.tama.service.SymptomReportingService;
+import org.motechproject.tama.service.SymptomReportingTreeService;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -31,7 +31,7 @@ public class SymptomReportingControllerTest {
     @Mock
     private PatientService patientService;
     @Mock
-    private SymptomReportingService symptomReportingService;
+    private SymptomReportingTreeService symptomReportingService;
     @Mock
     private KooKooIVRContext kookooIvrContext;
     @Mock

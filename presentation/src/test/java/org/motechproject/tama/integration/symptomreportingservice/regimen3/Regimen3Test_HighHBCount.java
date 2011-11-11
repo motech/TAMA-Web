@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.tama.builder.MedicalConditionBuilder;
 import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.service.SymptomReportingService;
+import org.motechproject.tama.service.SymptomReportingTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,7 +18,7 @@ import static junit.framework.Assert.assertEquals;
 public class Regimen3Test_HighHBCount extends SpringIntegrationTest {
 
     @Autowired
-    private SymptomReportingService symptomReportingService;
+    private SymptomReportingTreeService symptomReportingService;
 
     private MedicalCondition medicalConditionsCase1;
 

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class SymptomReportingService {
+public class SymptomReportingTreeService {
     private StatelessKnowledgeSession ksession;
 
     @Autowired
-    public SymptomReportingService(StatelessKnowledgeSession ksession) {
+    public SymptomReportingTreeService(StatelessKnowledgeSession ksession) {
         this.ksession = ksession;
     }
 
