@@ -14,6 +14,9 @@ public class TreeNodeFilter extends DecisionTreeNodesFilter {
 
     String[] prompts;
 
+    private TreeNodeFilter() {
+    }
+
     public TreeNodeFilter(String... prompts) {
         this.prompts = prompts;
     }
