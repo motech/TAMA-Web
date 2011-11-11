@@ -120,6 +120,9 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_1 = "025_08_01_MissedDose1";
     public static final String FDR_MISSED_MULTIPLE_ON_MULTIPLE_DAYS_PART_2 = "025_08_03_MissedDose2";
 
+    /* ---------- Symptom Reporting Call Forwarding ----------*/
+    public static final String CONNECTING_TO_DOCTOR = "ConnectingDr";
+    public static final String CANNOT_CONNECT_TO_DOCTOR = "CannotContact01";
 
     /* ---------- Four Day Recall ----------*/
     private Properties properties;

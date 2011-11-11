@@ -10,6 +10,6 @@ public class StringUtil {
     }
 
     public static String ivrMobilePhoneNumber(String mobilePhoneNumber) {
-        return String.format("0%s", mobilePhoneNumber);
+        return StringUtils.isEmpty(mobilePhoneNumber) ? mobilePhoneNumber : String.format("0%s", mobilePhoneNumber);
     }
 }

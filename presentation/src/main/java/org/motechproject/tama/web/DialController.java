@@ -8,6 +8,7 @@ import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.Clinic;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -48,16 +49,18 @@ public class DialController extends SafeIVRController {
             symptomsReportingContext.endCall();
         }
         else {
-            tryAndDialTheNextClinician(symptomsReportingContext, clinicianContacts, kookooIVRResponseBuilder);
+            tryAndDialTheNextClinician(symptomsReportingContext, clinicianContacts, kookooIVRResponseBuilder, kooKooIVRContext.isAnswered());
         }
         return kookooIVRResponseBuilder;
     }
 
-    private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
+    private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder, boolean answered) {
         String nextClinicianPhoneNumber = getNextClinicianPhoneNumber(symptomsReportingContext, clinicianContacts);
-        String lastClinicianPhoneNumber = clinicianContacts.get(clinicianContacts.size() - 1).getPhoneNumber();
         kookooIVRResponseBuilder.withPhoneNumber(StringUtil.ivrMobilePhoneNumber(nextClinicianPhoneNumber));
-        if (lastClinicianPhoneNumber.equals(nextClinicianPhoneNumber)){
+        if (StringUtils.isEmpty(nextClinicianPhoneNumber)){
+            if(!answered) {
+                kookooIVRResponseBuilder.withPlayAudios(new String(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR));
+            }
             symptomsReportingContext.endCall();
         }
     }

@@ -8,6 +8,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.decisiontree.filter.alerts.*;
 import org.motechproject.tama.web.command.SymptomReportingAlertsCommand;
 import org.motechproject.tama.web.command.callforwarding.DialStateCommand;
@@ -88,8 +89,9 @@ public class SymptomReportingServiceTest {
         service.addCommands(rootNode);
 
         List<Prompt> prompts = node1.getPrompts();
-        assertEquals(1, prompts.size());
-        assertEquals(dialStateCommand.getClass(), prompts.get(0).getCommand().getClass());
+        assertEquals(2, prompts.size());
+        assertEquals(TamaIVRMessage.CONNECTING_TO_DOCTOR, prompts.get(0).getName());
+        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand().getClass());
 
         assertEquals(0, node2.getPrompts().size());
     }

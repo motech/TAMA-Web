@@ -7,9 +7,11 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
+import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.server.service.ivr.IVRStatus;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 
@@ -30,6 +32,8 @@ public class DialControllerTest {
     private HttpServletRequest httpRequest;
     @Mock
     private KookooCallDetailRecordsService callDetailRecordService;
+    @Mock
+    private IVRMessage ivrMessage;
     @Mock
     private HttpServletResponse response;
     private Clinic clinic;
@@ -84,15 +88,17 @@ public class DialControllerTest {
 
     @Test
     public void shouldSwitchedToDialledState_OnSettingTheLast_ClinicianPhoneNumber() {
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
-        String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("3");
+        when(ivrMessage.getWav(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR, "en")).thenReturn("cannot-connect");
+        String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(ivrMessage);
 
-        assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
+        assertTrue(dialResponse.contains("<playaudio>cannot-connect</playaudio>"));
+        assertFalse(dialResponse.contains("dial"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(2)).addCookie(cookieCaptor.capture());
         assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
         assertEquals(SymptomsReportingContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
-        assertEquals("3", cookieCaptor.getAllValues().get(0).getValue());
+        assertEquals("4", cookieCaptor.getAllValues().get(0).getValue());
         assertEquals("false", cookieCaptor.getAllValues().get(1).getValue());
     }
 
@@ -108,10 +114,8 @@ public class DialControllerTest {
 
         assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
-        verify(response, times(2)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
-        assertEquals(SymptomsReportingContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
-        assertEquals("3", cookieCaptor.getAllValues().get(0).getValue());
-        assertEquals("false", cookieCaptor.getAllValues().get(1).getValue());
+        verify(response, times(1)).addCookie(cookieCaptor.capture());
+        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getValue().getName());
+        assertEquals("3", cookieCaptor.getValue().getValue());
     }
 }
