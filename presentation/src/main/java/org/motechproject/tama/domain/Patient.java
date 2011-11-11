@@ -100,6 +100,12 @@ public class Patient extends CouchEntity {
         public String getValue() {
             return this.name();
         }
+
+
+        @Override
+        public String toString() {
+           return getDisplayName();
+        }
     }
 
     public Patient activate() {
