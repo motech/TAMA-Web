@@ -14,4 +14,8 @@ public class StandardIVRResponse {
     public static KookooIVRResponseBuilder signatureTuneAndHangup(String callId) {
         return signatureTune(callId).withHangUp();
     }
+
+    public static KookooIVRResponseBuilder hangup() {
+        return new KookooIVRResponseBuilder().withHangUp();
+    }
 }
