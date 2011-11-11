@@ -16,6 +16,7 @@ import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,7 +29,7 @@ public class DialController extends SafeIVRController {
     private AllPatients allPatients;
 
     @Autowired
-    public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, AllPatients allPatients) {
+    public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, @Qualifier("standardResponseController") StandardResponseController standardResponseController, AllPatients allPatients) {
         this(ivrMessage, callDetailRecordsService, standardResponseController);
         this.allPatients = allPatients;
     }
@@ -66,8 +67,9 @@ public class DialController extends SafeIVRController {
     }
 
     private String getNextClinicianPhoneNumber(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts) {
-        int numberOfClincianBeingCalled = symptomsReportingContext.anotherClinicianCalled();
-        for (; numberOfClincianBeingCalled <= clinicianContacts.size(); numberOfClincianBeingCalled ++) {
+        for (int numberOfClincianBeingCalled = symptomsReportingContext.anotherClinicianCalled();
+             numberOfClincianBeingCalled <= clinicianContacts.size();
+             numberOfClincianBeingCalled = symptomsReportingContext.anotherClinicianCalled()) {
             String clinicianPhoneNumber = clinicianContacts.get(numberOfClincianBeingCalled - 1).getPhoneNumber();
             if (StringUtils.isEmpty(clinicianPhoneNumber)) {
                 continue;

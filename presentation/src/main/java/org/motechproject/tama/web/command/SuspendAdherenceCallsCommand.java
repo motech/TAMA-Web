@@ -16,11 +16,15 @@ public class SuspendAdherenceCallsCommand implements ITreeCommand {
     private AllPatients allPatients;
     private PatientService patientService;
 
-    @Autowired
     public SuspendAdherenceCallsCommand(AllPatients allPatients, PatientService patientService, TAMAIVRContextFactory contextFactory) {
         this.allPatients = allPatients;
         this.patientService = patientService;
         this.contextFactory = contextFactory;
+    }
+
+    @Autowired
+    public SuspendAdherenceCallsCommand(AllPatients allPatients, PatientService patientService) {
+        this(allPatients, patientService, new TAMAIVRContextFactory());
     }
 
     @Override
