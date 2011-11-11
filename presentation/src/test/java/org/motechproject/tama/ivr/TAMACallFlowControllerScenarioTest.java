@@ -45,7 +45,7 @@ public class TAMACallFlowControllerScenarioTest {
     @Before
     public void setUp() {
         initMocks(this);
-        TAMATreeRegistry treeRegistry = new TAMATreeRegistry(null, null, null, null, null, null, null, null);
+        TAMATreeRegistry treeRegistry = new TAMATreeRegistry(null, null, null, null, null, null, null, null, null);
         callFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory, symptomsReportingContextFactory);
         ivrContext = new TAMAIVRContextForTest();
         Patient patient = new Patient();

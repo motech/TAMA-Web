@@ -95,6 +95,8 @@ public class TAMACallFlowController implements CallFlowController {
         Patient patient = tamaivrContext.patient(allPatients);
         boolean isPatientOnDailyPillReminder = CallPreference.DailyPillReminder.equals(patient.getPatientPreferences().getCallPreference());
         if (tamaivrContext.isIncomingCall()) {
+            if(Patient.Status.Suspended.equals(patient.getStatus()))
+                return TAMATreeRegistry.MENU_TREE;
             if (!isPatientOnDailyPillReminder) {
                 return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
             }

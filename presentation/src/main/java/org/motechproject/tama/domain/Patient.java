@@ -70,7 +70,13 @@ public class Patient extends CouchEntity {
     }
 
     public enum Status {
-        Inactive("Inactive"), Active("Active"), Study_Complete("Study complete"), Premature_Termination_By_Clinic("Premature termination by clinic"), Patient_Withdraws_Consent("Patient withdraws consent"), Loss_To_Follow_Up("Loss to follow up");
+        Inactive("Inactive"),
+        Active("Active"),
+        Study_Complete("Study complete"),
+        Premature_Termination_By_Clinic("Premature termination by clinic"),
+        Patient_Withdraws_Consent("Patient withdraws consent"),
+        Loss_To_Follow_Up("Loss to follow up"),
+        Suspended("Suspended");
 
         private String displayName;
 

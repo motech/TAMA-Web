@@ -6,6 +6,9 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.server.service.ivr.CallDirection;
+import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
@@ -119,5 +122,15 @@ public class TAMACallFlowControllerTest {
         tamaCallFlowController.getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, kooKooIVRContext);
 
         verify(treeRegistry).getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
+    }
+
+    @Test
+    public void shouldReturnMenuTreeWhenPatientIsSuspended() {
+        ivrContext.callState(CallState.AUTHENTICATED);
+        ivrContext.patient(PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Suspended).build());
+        ivrContext.callDirection(CallDirection.Inbound);
+        final String treeName = tamaCallFlowController.decisionTreeName(kooKooIVRContext);
+
+        assertEquals(TAMATreeRegistry.MENU_TREE, treeName);
     }
 }
