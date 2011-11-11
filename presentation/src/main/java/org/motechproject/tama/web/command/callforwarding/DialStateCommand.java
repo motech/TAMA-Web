@@ -3,7 +3,9 @@ package org.motechproject.tama.web.command.callforwarding;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DialStateCommand implements ITreeCommand {
 
     @Override
