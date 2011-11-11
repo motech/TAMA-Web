@@ -88,6 +88,20 @@ public class PatientTest {
     }
 
     @Test
+    public void shouldTestIfPatientIsNotActive() {
+        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Assert.assertTrue(patient.isNotActive());
+        patient.setStatus(Patient.Status.Loss_To_Follow_Up);
+        Assert.assertTrue(patient.isNotActive());
+        patient.setStatus(Patient.Status.Patient_Withdraws_Consent);
+        Assert.assertTrue(patient.isNotActive());
+        patient.setStatus(Patient.Status.Premature_Termination_By_Clinic);
+        Assert.assertTrue(patient.isNotActive());
+        patient.setStatus(Patient.Status.Study_Complete);
+        Assert.assertTrue(patient.isNotActive());
+    }
+
+    @Test
     public void shouldTestActivationOfPatient() {
         Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Inactive).build();
         patient.activate();

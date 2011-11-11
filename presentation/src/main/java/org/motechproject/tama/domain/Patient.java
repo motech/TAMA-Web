@@ -61,7 +61,7 @@ public class Patient extends CouchEntity {
 
     @JsonIgnore
     public boolean isNotActive() {
-        return this.status.equals(Status.Inactive);
+        return !this.status.equals(Status.Active);
     }
 
     public Patient deactivate() {
