@@ -85,7 +85,6 @@ public class SetupAdherenceLogs {
         }
 
         log.info("Adherence % for previous week "  + fourDayRecallService.adherencePercentageForPreviousWeek(patientId));
-        log.info();
     }
 
     private static void createAdherenceForDailyReminderPatient(LocalDate fromDate, LocalDate toDate, AllDosageAdherenceLogs allDosageAdherenceLogs, Patient patient, ApplicationContext context, int nthDosageThatWillNotBeTaken) {
