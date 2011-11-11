@@ -51,7 +51,7 @@ public class IVRAuthenticationController extends SafeIVRController {
         IVRAuthenticationStatus authenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, attemptNumber + 1, callId);
         if (!authenticationStatus.isFound() ||
                 (authenticationStatus.isAuthenticated() && (!authenticationStatus.isActive()))) {
-            return StandardIVRResponse.signatureTuneAndHangup(callId);
+            return StandardIVRResponse.hangup();
         }
         if (!authenticationStatus.isAuthenticated() && authenticationStatus.doAllowRetry()) {
             tamaivrContext.numberOfLoginAttempts(authenticationStatus.loginAttemptNumber());
