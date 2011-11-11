@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageStatus;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

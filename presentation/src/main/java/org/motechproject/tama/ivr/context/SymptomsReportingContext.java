@@ -1,33 +1,41 @@
-package org.motechproject.tama.ivr;
+package org.motechproject.tama.ivr.context;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.util.Cookies;
 
-public class SymptomsReportingContextWrapper {
+import javax.servlet.http.HttpServletRequest;
+
+public class SymptomsReportingContext {
 
     public static String SWITCH_TO_DIAL_STATE = "switch_to_dial_state";
     public static String NUMBER_OF_CLINICIANS_CALLED = "number_of_clinicians_called";
 
+    private KookooRequest kookooRequest;
+    private HttpServletRequest httpRequest;
     private Cookies cookies;
 
-    protected SymptomsReportingContextWrapper() {
+    public SymptomsReportingContext(KooKooIVRContext kooKooIVRContext) {
+        this(kooKooIVRContext.kooKooRequest(), kooKooIVRContext.httpRequest(), kooKooIVRContext.cookies());
     }
 
-    public SymptomsReportingContextWrapper(KooKooIVRContext kooKooIVRContext) {
-        this.cookies = kooKooIVRContext.cookies();
+    private SymptomsReportingContext(KookooRequest kookooRequest, HttpServletRequest httpRequest, Cookies cookies) {
+        this.kookooRequest = kookooRequest;
+        this.httpRequest = httpRequest;
+        this.cookies = cookies;
     }
 
     public boolean isDialState() {
         return Boolean.valueOf(cookies.getValue(SWITCH_TO_DIAL_STATE));
     }
 
-    public void isDialState(boolean dialState) {
-        cookies.add(SWITCH_TO_DIAL_STATE, String.valueOf(dialState));
+    public void startCall() {
+        cookies.add(SWITCH_TO_DIAL_STATE, String.valueOf(true));
     }
 
     public void endCall() {
-        isDialState(false);
+        cookies.add(SWITCH_TO_DIAL_STATE, String.valueOf(false));
     }
 
     public int anotherClinicianCalled() {

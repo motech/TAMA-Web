@@ -11,8 +11,10 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
+import org.motechproject.tama.ivr.context.SymptomsReportingContext;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
@@ -32,9 +34,7 @@ public class TAMACallFlowControllerScenarioTest {
     @Mock
     private KooKooIVRContext kooKooIVRContext;
     @Mock
-    private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
-    @Mock
-    private SymptomsReportingContextWrapper symptomsReportingContext;
+    private SymptomsReportingContext symptomsReportingContext;
     @Mock
     private PillRegimenSnapshot pillRegimenSnapshot;
 
@@ -46,14 +46,14 @@ public class TAMACallFlowControllerScenarioTest {
     public void setUp() {
         initMocks(this);
         TAMATreeRegistry treeRegistry = new TAMATreeRegistry(null, null, null, null, null, null, null, null, null);
-        callFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory, symptomsReportingContextFactory);
+        callFlowController = new TAMACallFlowController(treeRegistry, pillReminderService, voiceOutboxService, allPatients, contextFactory);
         ivrContext = new TAMAIVRContextForTest();
         Patient patient = new Patient();
         patientPreferences = new PatientPreferences();
         patient.setPatientPreferences(patientPreferences);
         ivrContext.pillRegimenSnapshot(pillRegimenSnapshot).patient(patient).callState(CallState.STARTED);
         when(contextFactory.create(kooKooIVRContext)).thenReturn(ivrContext);
-        when(symptomsReportingContextFactory.create(kooKooIVRContext)).thenReturn(symptomsReportingContext);
+        when(contextFactory.createSymptomReportingContext(kooKooIVRContext)).thenReturn(symptomsReportingContext);
     }
 
     private void callPreference(CallPreference callPreference) {

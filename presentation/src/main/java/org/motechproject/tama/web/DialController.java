@@ -8,10 +8,9 @@ import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.ivr.SymptomsReportingContextWrapper;
-import org.motechproject.tama.ivr.SymptomsReportingContextWrapperFactory;
-import org.motechproject.tama.ivr.TAMAIVRContext;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.context.SymptomsReportingContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.util.StringUtil;
@@ -26,13 +25,11 @@ import java.util.List;
 public class DialController extends SafeIVRController {
 
     private AllPatients allPatients;
-    private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
 
     @Autowired
     public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, AllPatients allPatients) {
         this(ivrMessage, callDetailRecordsService, standardResponseController);
         this.allPatients = allPatients;
-        this.symptomsReportingContextFactory = new SymptomsReportingContextWrapperFactory();
     }
 
     protected DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController) {
@@ -41,31 +38,32 @@ public class DialController extends SafeIVRController {
 
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
-        TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
-        SymptomsReportingContextWrapper symptomsReportingContextWrapper = symptomsReportingContextFactory.create(kooKooIVRContext);
+        TAMAIVRContextFactory tamaivrContextFactory = new TAMAIVRContextFactory();
+        TAMAIVRContext tamaivrContext = tamaivrContextFactory.create(kooKooIVRContext);
+        SymptomsReportingContext symptomsReportingContext = tamaivrContextFactory.createSymptomReportingContext(kooKooIVRContext);
 
         List<Clinic.ClinicianContact> clinicianContacts = tamaivrContext.patient(allPatients).getClinic().getClinicianContacts();
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder();
         if (kooKooIVRContext.isAnswered()) {
-            symptomsReportingContextWrapper.endCall();
+            symptomsReportingContext.endCall();
         }
         else {
-            tryAndDialTheNextClinician(symptomsReportingContextWrapper, clinicianContacts, kookooIVRResponseBuilder);
+            tryAndDialTheNextClinician(symptomsReportingContext, clinicianContacts, kookooIVRResponseBuilder);
         }
         return kookooIVRResponseBuilder;
     }
 
-    private void tryAndDialTheNextClinician(SymptomsReportingContextWrapper symptomsReportingContextWrapper, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
-        String nextClinicianPhoneNumber = getNextClinicianPhoneNumber(symptomsReportingContextWrapper, clinicianContacts);
+    private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
+        String nextClinicianPhoneNumber = getNextClinicianPhoneNumber(symptomsReportingContext, clinicianContacts);
         String lastClinicianPhoneNumber = clinicianContacts.get(clinicianContacts.size() - 1).getPhoneNumber();
         kookooIVRResponseBuilder.withPhoneNumber(StringUtil.ivrMobilePhoneNumber(nextClinicianPhoneNumber));
         if (lastClinicianPhoneNumber.equals(nextClinicianPhoneNumber)){
-            symptomsReportingContextWrapper.endCall();
+            symptomsReportingContext.endCall();
         }
     }
 
-    private String getNextClinicianPhoneNumber(SymptomsReportingContextWrapper symptomsReportingContextWrapper, List<Clinic.ClinicianContact> clinicianContacts) {
-        int numberOfClincianBeingCalled = symptomsReportingContextWrapper.anotherClinicianCalled();
+    private String getNextClinicianPhoneNumber(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts) {
+        int numberOfClincianBeingCalled = symptomsReportingContext.anotherClinicianCalled();
         for (; numberOfClincianBeingCalled <= clinicianContacts.size(); numberOfClincianBeingCalled ++) {
             String clinicianPhoneNumber = clinicianContacts.get(numberOfClincianBeingCalled - 1).getPhoneNumber();
             if (StringUtils.isEmpty(clinicianPhoneNumber)) {

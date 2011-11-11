@@ -3,7 +3,7 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.ivr.CallState;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.web.command.CallStateCommand;
 
 public class TAMATransitionFactory {

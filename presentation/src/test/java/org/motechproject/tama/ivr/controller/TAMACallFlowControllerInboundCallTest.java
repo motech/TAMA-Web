@@ -12,7 +12,11 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
-import org.motechproject.tama.ivr.*;
+import org.motechproject.tama.ivr.CallState;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
+import org.motechproject.tama.ivr.context.SymptomsReportingContext;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -32,10 +36,7 @@ public class TAMACallFlowControllerInboundCallTest {
     @Mock
     private VoiceOutboxService voiceOutboxService;
     @Mock
-    private SymptomsReportingContextWrapperFactory symptomsReportingContextFactory;
-    @Mock
-    private SymptomsReportingContextWrapper symptomsReportingContext;
-
+    private SymptomsReportingContext symptomsReportingContext;
 
     @Before
     public void setUp() {
@@ -46,10 +47,10 @@ public class TAMACallFlowControllerInboundCallTest {
         AllPatients allPatients = mock(AllPatients.class);
 
 
-        tamaCallFlowController = new TAMACallFlowController(TAMATreeChooser, pillReminderService, voiceOutboxService, allPatients, contextFactory, symptomsReportingContextFactory);
+        tamaCallFlowController = new TAMACallFlowController(TAMATreeChooser, pillReminderService, voiceOutboxService, allPatients, contextFactory);
         tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Inbound);
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContextForTest);
-        when(symptomsReportingContextFactory.create(kooKooIVRContext)).thenReturn(symptomsReportingContext);
+        when(contextFactory.createSymptomReportingContext(kooKooIVRContext)).thenReturn(symptomsReportingContext);
     }
 
     @Test

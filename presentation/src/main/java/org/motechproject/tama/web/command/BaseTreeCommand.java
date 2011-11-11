@@ -5,7 +5,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 
 public abstract class BaseTreeCommand implements ITreeCommand {
     protected PillReminderService pillReminderService;

@@ -3,8 +3,8 @@ package org.motechproject.tama.web.command;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.CallState;
-import org.motechproject.tama.ivr.TAMAIVRContext;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 public class CallStateCommand implements ITreeCommand {
     private CallState callState;

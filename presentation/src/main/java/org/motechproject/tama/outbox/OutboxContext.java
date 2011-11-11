@@ -1,7 +1,7 @@
 package org.motechproject.tama.outbox;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;

@@ -4,7 +4,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.DeclinedDosageLog;
 import org.motechproject.tama.domain.DosageAdherenceLog;
 import org.motechproject.tama.domain.DosageNotTakenReason;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

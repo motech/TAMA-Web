@@ -7,7 +7,7 @@ import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
 

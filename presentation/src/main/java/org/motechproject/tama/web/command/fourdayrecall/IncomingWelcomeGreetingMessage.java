@@ -3,7 +3,7 @@ package org.motechproject.tama.web.command.fourdayrecall;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.web.command.BaseTreeCommand;

@@ -7,7 +7,7 @@ import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.AllPatients;

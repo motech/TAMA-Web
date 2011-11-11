@@ -9,9 +9,9 @@ import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.VoiceMessageResponseFactory;
+import org.motechproject.tama.ivr.factory.VoiceMessageResponseFactory;
 import org.motechproject.tama.outbox.OutboxContextForTest;
 
 import static junit.framework.Assert.assertEquals;

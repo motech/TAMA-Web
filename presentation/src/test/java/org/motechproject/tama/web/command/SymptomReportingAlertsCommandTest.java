@@ -10,7 +10,7 @@ import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.domain.PatientAlertType;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.service.PatientAlertService;
 

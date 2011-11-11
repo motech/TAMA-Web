@@ -10,7 +10,7 @@ import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.ivr.CallState;
-import org.motechproject.tama.ivr.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.service.PatientService;
 import org.motechproject.tama.service.SymptomReportingService;

@@ -1,6 +1,8 @@
-package org.motechproject.tama.ivr;
+package org.motechproject.tama.ivr.factory;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.ivr.context.SymptomsReportingContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.outbox.OutboxContext;
 
 public class TAMAIVRContextFactory {
@@ -13,6 +15,10 @@ public class TAMAIVRContextFactory {
 
     public TAMAIVRContext create(KooKooIVRContext kooKooIVRContext) {
         return new TAMAIVRContext(kooKooIVRContext);
+    }
+
+    public SymptomsReportingContext createSymptomReportingContext(KooKooIVRContext kooKooIVRContext) {
+        return new SymptomsReportingContext(kooKooIVRContext);
     }
 
     public OutboxContext createOutboxContext(KooKooIVRContext kooKooIVRContext) {

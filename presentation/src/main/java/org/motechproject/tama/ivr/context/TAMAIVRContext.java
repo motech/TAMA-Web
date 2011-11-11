@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr;
+package org.motechproject.tama.ivr.context;
 
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
@@ -8,6 +8,8 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.CallState;
+import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tama.outbox.OutboxContext;
 import org.motechproject.tama.repository.AllPatients;
@@ -52,7 +54,7 @@ public class TAMAIVRContext {
         this.cookies = cookies;
     }
 
-    void initialize() {
+    public void initialize() {
         callerId(requestedCallerId());
         setInSession(NUMBER_OF_ATTEMPTS, "0");
     }

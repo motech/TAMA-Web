@@ -3,7 +3,7 @@ package org.motechproject.tama.web.command.fourdayrecall;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;

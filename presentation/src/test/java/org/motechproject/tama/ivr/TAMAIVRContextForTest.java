@@ -6,6 +6,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllPatients;
 
 public class TAMAIVRContextForTest extends TAMAIVRContext {

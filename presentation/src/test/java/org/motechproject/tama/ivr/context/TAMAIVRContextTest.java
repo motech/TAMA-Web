@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr;
+package org.motechproject.tama.ivr.context;
 
 import org.junit.Before;
 import org.junit.Test;

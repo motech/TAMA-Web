@@ -10,8 +10,8 @@ import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRStatus;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.SymptomsReportingContextWrapper;
-import org.motechproject.tama.ivr.TAMAIVRContext;
+import org.motechproject.tama.ivr.context.SymptomsReportingContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -59,39 +59,39 @@ public class DialControllerTest {
 
     @Test
     public void shouldAddNumberOfCliniciansCalled_ToRepsonse() {
-        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
         assertTrue(dialResponse.contains("<dial>0ph1</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(1)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getValue().getName());
+        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getValue().getName());
         assertEquals("1", cookieCaptor.getValue().getValue());
     }
 
     @Test
     public void shouldSwitchedToDialledState_OnAnswered_CallStatus() {
         kookooRequest.setStatus(IVRStatus.Answered.toString());
-        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
         assertFalse(dialResponse.contains("<dial>0ph2</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(1)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContextWrapper.SWITCH_TO_DIAL_STATE, cookieCaptor.getValue().getName());
+        assertEquals(SymptomsReportingContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getValue().getName());
         assertEquals("false", cookieCaptor.getValue().getValue());
     }
 
     @Test
     public void shouldSwitchedToDialledState_OnSettingTheLast_ClinicianPhoneNumber() {
-        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
         assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(2)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
-        assertEquals(SymptomsReportingContextWrapper.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
+        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
+        assertEquals(SymptomsReportingContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
         assertEquals("3", cookieCaptor.getAllValues().get(0).getValue());
         assertEquals("false", cookieCaptor.getAllValues().get(1).getValue());
     }
@@ -101,16 +101,16 @@ public class DialControllerTest {
         clinic.getClinicianContacts().get(0).setPhoneNumber("");
         clinic.getClinicianContacts().get(1).setPhoneNumber(null);
 
-        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
-        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
-        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
         assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
         verify(response, times(2)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
-        assertEquals(SymptomsReportingContextWrapper.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
+        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
+        assertEquals(SymptomsReportingContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
         assertEquals("3", cookieCaptor.getAllValues().get(0).getValue());
         assertEquals("false", cookieCaptor.getAllValues().get(1).getValue());
     }
