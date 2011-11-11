@@ -15,6 +15,13 @@
     <context:component-scan base-package="org.motechproject.tama.repository"/>
     <context:component-scan base-package="org.motechproject.tama.util"/>
     <context:component-scan base-package="org.motechproject.server.alerts.service"/>
+    <context:component-scan base-package="org.motechproject.tama.platform.service">
+        <context:include-filter type="regex" expression=".*TamaSchedulerService"/>
+    </context:component-scan>
+    <context:component-scan base-package="org.motechproject.tama.service">
+        <context:include-filter type="regex" expression="org.motechproject.tama.service.PatientAlertService"/>
+        <context:exclude-filter type="regex" expression="org.motechproject.tama.service.SymptomReportingTreeService"/>
+    </context:component-scan>
     <import resource="classpath:applicationCmsLiteApi.xml"/>
     <import resource="classpath:applicationContextAlert.xml"/>
     <import resource="classpath:applicationPillReminderAPI.xml"/>
