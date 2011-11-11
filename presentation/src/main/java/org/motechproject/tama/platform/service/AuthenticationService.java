@@ -26,7 +26,8 @@ public class AuthenticationService {
 
     public boolean allowAccess(String callerId, String sid) {
         boolean doAllowAccess = callerId != null && (allPatients.findByMobileNumber(callerId) != null);
-        if (!doAllowAccess) ivrCallAudits.add(new IVRCallAudit(callerId, sid, StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND));
+        if (!doAllowAccess)
+            ivrCallAudits.add(new IVRCallAudit(callerId, sid, StringUtils.EMPTY, IVRCallAudit.State.USER_NOT_FOUND));
         return doAllowAccess;
     }
 
@@ -47,6 +48,6 @@ public class AuthenticationService {
         }
 
         IVRAuthenticationStatus status = IVRAuthenticationStatus.authenticated(patient.getId());
-        return status.active(patient.isActive()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
+        return status.active(patient.isActive() || patient.isSuspended()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
     }
 }

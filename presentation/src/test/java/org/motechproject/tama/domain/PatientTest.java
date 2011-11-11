@@ -88,6 +88,12 @@ public class PatientTest {
     }
 
     @Test
+    public void shouldTestIfPatientIsSuspended() {
+        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Assert.assertTrue(patient.isSuspended());
+    }
+
+    @Test
     public void shouldTestIfPatientIsNotActive() {
         Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
         Assert.assertTrue(patient.isNotActive());

@@ -9,7 +9,6 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
 import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.repository.AllTreatmentAdvices;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -20,8 +19,6 @@ public class AuthenticationServiceTest {
     private AllPatients allPatients;
     @Mock
     private AllIVRCallAudits allIVRCallAudits;
-    @Mock
-    private AllTreatmentAdvices allTreatmentAdvices;
     private AuthenticationService authenticationService;
 
     private String phoneNumber = "9999";
@@ -35,14 +32,39 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void patientIsNotActiveWhenItDoesntHaveTreatmentAdvice() {
+    public void patientIsAllowedAccessWhenSuspended() {
         String patientId = "43245454354";
         Patient patient = patient(patientId);
-        patient.setStatus(Patient.Status.Inactive);
+        patient.setStatus(Patient.Status.Suspended);
 
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
+
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
+        assertEquals(true, ivrAuthenticationStatus.isActive());
+    }
+
+    @Test
+    public void patientIsAllowedAccessWhenActive() {
+        String patientId = "43245454354";
+        Patient patient = patient(patientId);
+        patient.setStatus(Patient.Status.Active);
+
+        when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
+        when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
+
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
+        assertEquals(true, ivrAuthenticationStatus.isActive());
+    }
+
+    @Test
+    public void patientIsAllowedAccessWhenNotActive() {
+        String patientId = "43245454354";
+        Patient patient = patient(patientId);
+        patient.setStatus(Patient.Status.Patient_Withdraws_Consent);
+
+        when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
+        when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
 
         IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
         assertEquals(false, ivrAuthenticationStatus.isActive());
