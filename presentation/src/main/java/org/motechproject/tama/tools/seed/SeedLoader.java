@@ -1,8 +1,8 @@
 package org.motechproject.tama.tools.seed;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 public class SeedLoader {
 	private static Logger LOG = Logger.getLogger(SeedLoader.class);
@@ -12,7 +12,7 @@ public class SeedLoader {
 		this.seeds = seeds;
 	}
 	
-	public void load() {
+	public void load() throws InterruptedException {
 		LOG.info("Started loading seeds :" + seeds.toString());
 		for (Seed seed : seeds) {
 			seed.run();

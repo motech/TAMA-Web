@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 public abstract class Seed {
     Logger LOG = Logger.getLogger(this.getClass());
 
-    public void run() {
+    public void run() throws InterruptedException {
         preLoad();
         load();
         postLoad();
@@ -19,6 +19,6 @@ public abstract class Seed {
         LOG.info("Seed started.");
     }
 
-    protected abstract void load();
+    protected abstract void load() throws InterruptedException;
 
 }
