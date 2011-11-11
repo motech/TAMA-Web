@@ -19,11 +19,15 @@ public class SymptomsReportingContextWrapper {
     }
 
     public boolean isDialState() {
-        return "true".equals(cookies.getValue(SWITCH_TO_DIAL_STATE));
+        return Boolean.valueOf(cookies.getValue(SWITCH_TO_DIAL_STATE));
     }
 
     public void isDialState(boolean dialState) {
         cookies.add(SWITCH_TO_DIAL_STATE, String.valueOf(dialState));
+    }
+
+    public void endCall() {
+        isDialState(false);
     }
 
     public int anotherClinicianCalled() {

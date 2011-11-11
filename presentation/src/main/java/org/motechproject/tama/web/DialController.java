@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
@@ -43,19 +44,34 @@ public class DialController extends SafeIVRController {
         SymptomsReportingContextWrapper symptomsReportingContextWrapper = symptomsReportingContextFactory.create(kooKooIVRContext);
 
         List<Clinic.ClinicianContact> clinicianContacts = tamaivrContext.patient(allPatients).getClinic().getClinicianContacts();
-
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder();
         if (kooKooIVRContext.isAnswered()) {
-            symptomsReportingContextWrapper.isDialState(false);
+            symptomsReportingContextWrapper.endCall();
         }
         else {
-            int numberOfClincianBeingCalled = symptomsReportingContextWrapper.anotherClinicianCalled();
-            kookooIVRResponseBuilder.withPhoneNumber(clinicianContacts.get(numberOfClincianBeingCalled - 1).getPhoneNumber());
-
-            if (numberOfClincianBeingCalled == 3){
-                symptomsReportingContextWrapper.isDialState(false);
-            }
+            tryAndDialTheNextClinician(symptomsReportingContextWrapper, clinicianContacts, kookooIVRResponseBuilder);
         }
         return kookooIVRResponseBuilder;
+    }
+
+    private void tryAndDialTheNextClinician(SymptomsReportingContextWrapper symptomsReportingContextWrapper, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
+        String nextClinicianPhoneNumber = getNextClinicianPhoneNumber(symptomsReportingContextWrapper, clinicianContacts);
+        String lastClinicianPhoneNumber = clinicianContacts.get(clinicianContacts.size() - 1).getPhoneNumber();
+        kookooIVRResponseBuilder.withPhoneNumber(nextClinicianPhoneNumber);
+        if (lastClinicianPhoneNumber.equals(nextClinicianPhoneNumber)){
+            symptomsReportingContextWrapper.endCall();
+        }
+    }
+
+    private String getNextClinicianPhoneNumber(SymptomsReportingContextWrapper symptomsReportingContextWrapper, List<Clinic.ClinicianContact> clinicianContacts) {
+        int numberOfClincianBeingCalled = symptomsReportingContextWrapper.anotherClinicianCalled();
+        for (; numberOfClincianBeingCalled <= clinicianContacts.size(); numberOfClincianBeingCalled ++) {
+            String clinicianPhoneNumber = clinicianContacts.get(numberOfClincianBeingCalled - 1).getPhoneNumber();
+            if (StringUtils.isEmpty(clinicianPhoneNumber)) {
+                continue;
+            }
+            return clinicianPhoneNumber;
+        }
+        return StringUtils.EMPTY;
     }
 }

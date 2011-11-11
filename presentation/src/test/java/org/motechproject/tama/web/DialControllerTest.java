@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -31,6 +32,7 @@ public class DialControllerTest {
     private KookooCallDetailRecordsService callDetailRecordService;
     @Mock
     private HttpServletResponse response;
+    private Clinic clinic;
     private Patient patient;
     private KookooRequest kookooRequest;
     private DialController dialController;
@@ -39,7 +41,7 @@ public class DialControllerTest {
     @Before
     public void setup() {
         initMocks(this);
-        final Clinic clinic = new Clinic("id");
+        clinic = new Clinic("id");
         clinic.setClinicianContacts(new ArrayList<Clinic.ClinicianContact>() {{
             this.add(new Clinic.ClinicianContact("name1", "ph1"));
             this.add(new Clinic.ClinicianContact("name2", "ph2"));
@@ -82,6 +84,25 @@ public class DialControllerTest {
 
     @Test
     public void shouldSwitchedToDialledState_OnSettingTheLast_ClinicianPhoneNumber() {
+        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
+        String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
+
+        assertTrue(dialResponse.contains("<dial>ph3</dial>"));
+        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        verify(response, times(2)).addCookie(cookieCaptor.capture());
+        assertEquals(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
+        assertEquals(SymptomsReportingContextWrapper.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
+        assertEquals("3", cookieCaptor.getAllValues().get(0).getValue());
+        assertEquals("false", cookieCaptor.getAllValues().get(1).getValue());
+    }
+
+    @Test
+    public void shouldSwitchToNextClinicianContactIfCurrentContactPhoneNumberDoesNotExist() {
+        clinic.getClinicianContacts().get(0).setPhoneNumber("");
+        clinic.getClinicianContacts().get(1).setPhoneNumber(null);
+
+        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
+        when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
         when(httpRequest.getAttribute(SymptomsReportingContextWrapper.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
         String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(null);
 
