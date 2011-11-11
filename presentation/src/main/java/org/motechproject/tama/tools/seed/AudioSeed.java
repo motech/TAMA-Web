@@ -81,7 +81,7 @@ public class AudioSeed extends Seed {
                 try {
                     executor.invokeAll(callableList);
                 } catch (InterruptedException e) {
-                    System.out.println("Exception loading audio seed");
+                    logger.error("Exception loading audio seed");
                 }
             }
 
