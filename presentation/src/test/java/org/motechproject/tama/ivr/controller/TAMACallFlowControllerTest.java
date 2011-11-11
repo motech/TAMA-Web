@@ -8,6 +8,7 @@ import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.*;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
@@ -125,12 +126,22 @@ public class TAMACallFlowControllerTest {
     }
 
     @Test
-    public void shouldReturnMenuTreeWhenPatientIsSuspended() {
+    public void shouldReturnMenuTreeWhenPatientIsSuspendedAndIsOnDailyPillReminder() {
         ivrContext.callState(CallState.AUTHENTICATED);
         ivrContext.patient(PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Suspended).build());
         ivrContext.callDirection(CallDirection.Inbound);
         final String treeName = tamaCallFlowController.decisionTreeName(kooKooIVRContext);
 
         assertEquals(TAMATreeRegistry.MENU_TREE, treeName);
+    }
+
+    @Test
+    public void shouldReturnFourDayRecallIncomingTreeWhenPatientIsSuspendedButOnWeeklyAdherence() {
+        ivrContext.callState(CallState.AUTHENTICATED);
+        ivrContext.patient(PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Suspended).withCallPreference(CallPreference.FourDayRecall).build());
+        ivrContext.callDirection(CallDirection.Inbound);
+        final String treeName = tamaCallFlowController.decisionTreeName(kooKooIVRContext);
+
+        assertEquals(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, treeName);
     }
 }
