@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.tama.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.ivr.decisiontree.SymptomReportingService;
+import org.motechproject.tama.ivr.decisiontree.SymptomReportingTreeInterceptor;
 import org.motechproject.tama.ivr.decisiontree.SymptomReportingTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,7 +17,7 @@ import static junit.framework.Assert.assertEquals;
 public class SymptomReportingTreeTest extends SpringIntegrationTest {
 
     @Autowired
-    private SymptomReportingService symptomReportingService;
+    private SymptomReportingTreeInterceptor symptomReportingService;
 
     @Test
     public void shouldReturn_TheRightRegimenTree_ForGivenSymptomReportingTreeName(){

@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SymptomReportingTree extends TamaDecisionTree {
 
-    private SymptomReportingService service;
+    private SymptomReportingTreeInterceptor service;
 
     private Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
-    public SymptomReportingTree(SymptomReportingService service) {
+    public SymptomReportingTree(SymptomReportingTreeInterceptor service) {
         this.service = service;
     }
 
