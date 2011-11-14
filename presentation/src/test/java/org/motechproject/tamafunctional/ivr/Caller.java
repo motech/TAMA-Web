@@ -13,9 +13,6 @@ import org.motechproject.tamafunctional.testdata.ivrrequest.NoCallInfo;
 
 import java.util.Set;
 
-import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverName;
-import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverPort;
-
 //TODO Probably we need a URL builder to not duplicate URLs
 public class Caller extends FunctionalTestObject {
     private String sid;
@@ -68,6 +65,11 @@ public class Caller extends FunctionalTestObject {
     public IVRResponse listenMore() {
         String url = String.format("%s/reply?", TamaUrl.ivrURL());
         return invokeAndGetResponse(callInfo.appendDataMapTo(url));
+    }
+
+    public IVRResponse dialNextClinician() {
+        String url = String.format("%s/reply?sid=%s&event=%s&status=%s", TamaUrl.ivrURL(), sid, IVREvent.Dial.toString(), "not_answered");
+        return invokeAndGetResponse(url);
     }
 
     public void hangup() {

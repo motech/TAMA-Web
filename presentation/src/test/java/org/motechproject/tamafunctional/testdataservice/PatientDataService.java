@@ -6,8 +6,13 @@ import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
+
+import java.util.Arrays;
+
+import static junit.framework.Assert.assertEquals;
 
 public class PatientDataService extends EntityDataService {
     public PatientDataService(WebDriver webDriver) {
@@ -89,5 +94,19 @@ public class PatientDataService extends EntityDataService {
         CreateLabResultsPage createLabResultsPage = viewPatient(patient, clinician).goToLabResultsPage();
         createLabResultsPage.registerNewLabResult(labResult);
         createLabResultsPage.logout();
+    }
+
+    public void createTestPatientForSymptomReporting(TestPatient patient, TestClinician clinician) {
+        patient.patientPreferences().passcode("5678");
+
+        registerAndActivate(patient, clinician);
+
+        TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
+        setupLabResult(patient, clinician, labResult);
+
+        setInitialVitalStatistics(TestVitalStatistics.withMandatory(), patient, clinician);
+
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        createARTRegimen(treatmentAdvice, patient, clinician);
     }
 }

@@ -6,30 +6,35 @@ import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.*;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.TestClinician;
-import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
-import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
-import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class SymptomReportingTreeTest extends BaseIVRTest {
+
+    private TestClinician clinician;
+    private TestPatient patient;
+
+    @Override
+    public void setUp() {
+        super.setUp();
+        clinician = TestClinician.withMandatory();
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        patient = TestPatient.withMandatory();
+        new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
+    }
+
     @Test
     public void shouldTakeThePatientToTheCorrectSymptomReportingTreeAndCreateAlert() throws IOException {
-        TestClinician clinician = createTestClinician();
-        TestPatient patient = createTestPatient(clinician);
-
         assertSymptomReportingCallFlow(clinician, patient);
 
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
@@ -93,33 +98,6 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         return MyPageFactory.initElements(webDriver, UpdateAlertPage.class);
     }
 
-    private TestPatient createTestPatient(TestClinician clinician) {
-        TestPatient patient = TestPatient.withMandatory();
-        patient.patientPreferences().passcode("5678");
-
-        PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
-
-        TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
-        patientDataService.setupLabResult(patient, clinician, labResult);
-
-        patientDataService.setInitialVitalStatistics(TestVitalStatistics.withMandatory(), patient, clinician);
-
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createARTRegimen(treatmentAdvice, patient, clinician);
-
-        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);
-        assertEquals(savedTreatmentAdvice.regimenName(), treatmentAdvice.regimenName());
-        assertEquals(savedTreatmentAdvice.drugCompositionName(), treatmentAdvice.drugCompositionName());
-        return patient;
-    }
-
-    private TestClinician createTestClinician() {
-        TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
-        return clinician;
-    }
-
     private void assertTableContainsAlert(List<WebElement> webElements, String patientId, String phoneNumber, String status, String notes) {
         int rowId = getRowId(webElements, patientId);
         assertTrue(rowId >= 0);
@@ -155,6 +133,4 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
         caller.hangup();
     }
-
-
 }

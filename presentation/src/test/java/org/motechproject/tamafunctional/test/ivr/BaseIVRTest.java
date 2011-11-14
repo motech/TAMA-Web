@@ -54,4 +54,8 @@ public abstract class BaseIVRTest extends BaseTest {
             assertTrue(String.format("%s not found. %s", name, ivrResponse.audiosPlayed()), ivrResponse.wasAudioPlayed(name));
         }
     }
+
+    protected void assertClinicianPhoneNumberPresent(IVRResponse ivrResponse, String number) {
+        assertTrue(ivrResponse.isNumberPresent(number));
+    }
 }
