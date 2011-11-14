@@ -60,7 +60,7 @@ public class DialController extends SafeIVRController {
         kookooIVRResponseBuilder.withPhoneNumber(StringUtil.ivrMobilePhoneNumber(nextClinicianPhoneNumber));
         if (StringUtils.isEmpty(nextClinicianPhoneNumber)){
             if(!answered) {
-                kookooIVRResponseBuilder.withPlayAudios(new String(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR));
+                kookooIVRResponseBuilder.withPlayAudios(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR);
             }
             symptomsReportingContext.endCall();
         }
