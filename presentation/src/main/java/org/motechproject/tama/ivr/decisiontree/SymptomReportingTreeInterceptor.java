@@ -1,9 +1,7 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.DialPrompt;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.decisiontree.filter.TreeNodeFilter;
 import org.motechproject.tama.web.command.SuspendAdherenceCallsCommand;
 import org.motechproject.tama.web.command.SymptomReportingAlertsCommand;
@@ -74,11 +72,9 @@ public class SymptomReportingTreeInterceptor {
     private Node addDialPrompt(Node node) {
         final List<Node> nodes = new TreeNodeFilter(switchToDialPromptFilterCriteria).filter(node);
         for (Node priorityNode : nodes) {
-            AudioPrompt audioPrompt = new AudioPrompt();
-            audioPrompt.setName(TamaIVRMessage.CONNECTING_TO_DOCTOR);
             DialPrompt dialPrompt = new DialPrompt();
             dialPrompt.setCommand(dialStateCommand);
-            priorityNode.addPrompts(audioPrompt, dialPrompt);
+            priorityNode.addPrompts(dialPrompt);
         }
         return node;
     }

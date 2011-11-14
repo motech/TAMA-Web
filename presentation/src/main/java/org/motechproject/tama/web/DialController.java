@@ -11,8 +11,8 @@ import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +55,14 @@ public class DialController extends SafeIVRController {
         return kookooIVRResponseBuilder;
     }
 
-    private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder, boolean answered) {
+    private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder, boolean callAnsweredYet) {
         String nextClinicianPhoneNumber = getNextClinicianPhoneNumber(symptomsReportingContext, clinicianContacts);
-        kookooIVRResponseBuilder.withPhoneNumber(StringUtil.ivrMobilePhoneNumber(nextClinicianPhoneNumber));
-        if (StringUtils.isEmpty(nextClinicianPhoneNumber)){
-            if(!answered) {
+        boolean canCallClinician = StringUtils.isNotEmpty(nextClinicianPhoneNumber);
+        if (canCallClinician){
+            kookooIVRResponseBuilder.withPlayAudios(TamaIVRMessage.CONNECTING_TO_DOCTOR).withPhoneNumber(StringUtil.ivrMobilePhoneNumber(nextClinicianPhoneNumber));
+        }
+        else {
+            if(!callAnsweredYet) {
                 kookooIVRResponseBuilder.withPlayAudios(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR);
             }
             symptomsReportingContext.endCall();
