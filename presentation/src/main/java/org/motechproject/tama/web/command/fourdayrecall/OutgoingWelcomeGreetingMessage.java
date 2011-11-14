@@ -3,6 +3,7 @@ package org.motechproject.tama.web.command.fourdayrecall;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
@@ -32,6 +33,7 @@ public class OutgoingWelcomeGreetingMessage extends BaseTreeCommand {
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         messages.add(clinic.getName());
+        messages.add(TamaIVRMessage.FDR_GREETING);
         return messages.toArray(new String[messages.size()]);
     }
 }

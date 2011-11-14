@@ -17,10 +17,12 @@ public abstract class DecisionTreeNodesFilter {
 
     private List<Node> dfs(Node node) {
         List<Node> resultNodes = new ArrayList<Node>();
-        if (select(node))
+        if (select(node)){
             resultNodes.add(node);
-        for (Node next : getChildNodes(node))
+        }
+        for (Node next : getChildNodes(node)) {
             resultNodes.addAll(dfs(next));
+        }
         return resultNodes;
     }
 

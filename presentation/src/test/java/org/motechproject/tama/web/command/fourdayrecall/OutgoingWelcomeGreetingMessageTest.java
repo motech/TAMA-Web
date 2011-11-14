@@ -8,6 +8,7 @@ import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -15,7 +16,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class FourDayRecallWelcomeGreetingMessageTest {
+public class OutgoingWelcomeGreetingMessageTest {
     @Mock
     private AllPatients allPatients;
     @Mock
@@ -41,7 +42,8 @@ public class FourDayRecallWelcomeGreetingMessageTest {
     @Test
     public void shouldReturnMessageBasedOnClinicAndPlayGreetingMessage() {
         String[] messages = welcomeGreetingMessage.executeCommand(context);
-        assertEquals(1, messages.length);
+        assertEquals(2, messages.length);
         assertEquals("clinicName", messages[0]);
+        assertEquals(TamaIVRMessage.FDR_GREETING, messages[1]);
     }
 }
