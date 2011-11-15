@@ -33,13 +33,42 @@ public class DialClinicianTest extends BaseIVRTest {
     @Test
     public void shouldDialClinicianContacts_InCertain_SymptomReportedCallFlows() throws IOException {
         caller = caller(patient);
+
+        patientCallsTAMA_AndListensToPillMenu();
+
+        patientReportsSymptoms();
+
+        dialClinicianContacts();
+
+        caller.hangup();
+
+        verifyPatientSuspended();
+
+        patientCallsTAMA_AndVerifyPillMenuNotPlayed();
+
+        caller.hangup();
+    }
+
+    private void patientCallsTAMA_AndListensToPillMenu() {
         IVRResponse ivrResponse = caller.call();
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
         asksForCollectDtmfWith(ivrResponse, "welcome_to_" + clinician.clinic().name(), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.PILL_CONFIRM_CALL_MENU);
+    }
 
+    private void patientCallsTAMA_AndVerifyPillMenuNotPlayed() {
+        IVRResponse ivrResponse = caller.call();
+        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
+
+        ivrResponse = caller.enter("5678#");
+        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.MENU_010_05_01_MAINMENU4);
+    }
+
+    private void patientReportsSymptoms() {
         // Regimen4_2
+
+        IVRResponse ivrResponse;
         ivrResponse = caller.enter("2");
         ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
@@ -58,8 +87,10 @@ public class DialClinicianTest extends BaseIVRTest {
 
         ivrResponse = caller.enter("1");
         assertAudioFilesPresent(ivrResponse, "ppc_nvfevhead", "adv_crocin01");
+    }
 
-        ivrResponse = caller.listenMore();
+    private void dialClinicianContacts() {
+        IVRResponse ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber0());
 
@@ -73,9 +104,9 @@ public class DialClinicianTest extends BaseIVRTest {
 
         ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "cannotcontact01");
+    }
 
-        caller.hangup();
-
+    private void verifyPatientSuspended() {
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 gotoShowPatientPage(patient);

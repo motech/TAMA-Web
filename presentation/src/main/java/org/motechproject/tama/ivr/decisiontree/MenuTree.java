@@ -4,8 +4,6 @@ import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.web.command.NextCallDetails;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
