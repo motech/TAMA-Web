@@ -18,6 +18,6 @@ public class TriggerFourDayRecallEvent {
 
         System.out.println("Triggering the FourDayRecall event...");
         IvrCall ivrCall = applicationContext.getBean(IvrCall.class);
-        ivrCall.makeCall(patient.getId());
+        ivrCall.makeCall(patient);
     }
 }

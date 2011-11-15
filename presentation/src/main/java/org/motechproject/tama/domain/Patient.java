@@ -55,18 +55,23 @@ public class Patient extends CouchEntity {
     private String clinic_id;
 
     @JsonIgnore
-    public boolean allowAdherenceCalls() {
+    public boolean isActive() {
         return status.equals(Status.Active);
     }
 
     @JsonIgnore
+    public boolean allowAdherenceCalls() {
+        return isActive();
+    }
+
+    @JsonIgnore
     public boolean allowOutboxCalls() {
-        return status.equals(Status.Active) || status.equals(Status.Suspended);
+        return isActive() || status.equals(Status.Suspended);
     }
 
     @JsonIgnore
     public boolean allowIncomingCalls() {
-        return status.equals(Status.Active) || status.equals(Status.Suspended);
+        return isActive() || status.equals(Status.Suspended);
     }
 
     public Patient deactivate() {

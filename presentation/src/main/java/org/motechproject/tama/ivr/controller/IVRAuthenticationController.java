@@ -50,7 +50,7 @@ public class IVRAuthenticationController extends SafeIVRController {
 
         IVRAuthenticationStatus authenticationStatus = authenticationService.checkAccess(tamaivrContext);
         if (!authenticationStatus.isFound() ||
-                (authenticationStatus.isAuthenticated() && (!authenticationStatus.allowCalls()))) {
+                (authenticationStatus.isAuthenticated() && (!authenticationStatus.allowCall()))) {
             return StandardIVRResponse.hangup();
         }
         if (!authenticationStatus.isAuthenticated() && authenticationStatus.doAllowRetry()) {

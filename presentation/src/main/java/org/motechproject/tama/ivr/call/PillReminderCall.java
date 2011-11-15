@@ -17,10 +17,12 @@ public class PillReminderCall extends IvrCall {
     public static final String TIMES_SENT = "times_sent";
     public static final String TOTAL_TIMES_TO_SEND = "total_times_to_send";
     public static final String RETRY_INTERVAL = "retry_interval";
+    private AllPatients allPatients;
 
     @Autowired
     public PillReminderCall(IVRService ivrService, AllPatients allPatients, @Qualifier("ivrProperties") Properties properties) {
-        super(allPatients, ivrService, properties);
+        super(ivrService, properties);
+        this.allPatients = allPatients;
     }
 
     public void execute(String patientDocId, final String dosageId, final int timesSent, final int totalTimesToSend, final int retryInterval) {
@@ -32,7 +34,7 @@ public class PillReminderCall extends IvrCall {
                 put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
                 put(RETRY_INTERVAL, String.valueOf(retryInterval));
             }};
-            makeCall(patientDocId, params);
+            makeCall(patient, params);
         }
     }
 }

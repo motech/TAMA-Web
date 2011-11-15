@@ -53,7 +53,7 @@ public class AuthenticationService {
         }
 
         IVRAuthenticationStatus status = IVRAuthenticationStatus.authenticated(patient.getId());
-        return status.allowCalls(isOutgoingCall || patient.allowIncomingCalls()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
+        return status.allowCall(isOutgoingCall || patient.allowIncomingCalls()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
     }
 
 }

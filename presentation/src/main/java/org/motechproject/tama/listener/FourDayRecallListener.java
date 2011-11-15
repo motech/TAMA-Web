@@ -49,7 +49,7 @@ public class FourDayRecallListener {
                 if (!isRetryEvent)
                     schedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId, treatmentAdviceId, treatmentAdviceStartDate);
 
-                ivrCall.makeCall(patientDocId);
+                ivrCall.makeCall(patient);
             } catch (Exception e) {
                 logger.error("Failed to handle FourDayRecall event, this event would not be retried but the subsequent repeats would happen.", e);
             }

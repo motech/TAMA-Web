@@ -52,10 +52,10 @@ public class OutboxCallListener {
             try {
                 int numberPendingMessages = voiceOutboxService.getNumberPendingMessages(externalId);
                 if (numberPendingMessages > 0) {
-                    IvrCall ivrCall = new IvrCall(allPatients, ivrService, properties);
+                    IvrCall ivrCall = new IvrCall(ivrService, properties);
                     Map<String, String> callParams = new HashMap<String, String>();
                     callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
-                    ivrCall.makeCall(externalId, callParams);
+                    ivrCall.makeCall(patient, callParams);
                     if (!"true".equals(event.getParameters().get(TamaSchedulerService.IS_RETRY))) {
                         tamaSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
                     }
