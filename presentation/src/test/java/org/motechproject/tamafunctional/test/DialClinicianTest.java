@@ -56,15 +56,15 @@ public class DialClinicianTest extends BaseIVRTest {
 
         ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "ConnectingDr");
-        assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinic().clinicianContact0Number());
+        assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber0());
 
         ivrResponse = caller.dialNextClinician();
         assertAudioFilesPresent(ivrResponse, "ConnectingDr");
-        assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinic().clinicianContact1Number());
+        assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber1());
 
         ivrResponse = caller.dialNextClinician();
         assertAudioFilesPresent(ivrResponse, "ConnectingDr");
-        assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinic().clinicianContact2Number());
+        assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber2());
 
         ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "CannotContact01");

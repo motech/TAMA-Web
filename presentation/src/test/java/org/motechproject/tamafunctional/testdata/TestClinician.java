@@ -69,6 +69,18 @@ public class TestClinician extends TestEntity {
         return alternateContactNumber;
     }
 
+    public String clinicContactNumber0() {
+        return clinic.clinicianContact0Number();
+    }
+
+    public String clinicContactNumber1() {
+        return clinic.clinicianContact1Number();
+    }
+
+    public String clinicContactNumber2() {
+        return clinic.clinicianContact2Number();
+    }
+
     public TestClinician alternateContactNumber(String alternateContactNumber) {
         this.alternateContactNumber = alternateContactNumber;
         return this;
