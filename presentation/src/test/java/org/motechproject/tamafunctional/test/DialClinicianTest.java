@@ -1,7 +1,12 @@
 package org.motechproject.tamafunctional.test;
 
+import junit.framework.Assert;
 import org.junit.Test;
+import org.motechproject.tama.domain.Status;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -70,5 +75,10 @@ public class DialClinicianTest extends BaseIVRTest {
         assertAudioFilesPresent(ivrResponse, "cannotcontact01");
 
         caller.hangup();
+
+        ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
+                loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
+                gotoShowPatientPage(patient);
+        Assert.assertEquals(showPatientPage.getStatus().trim(), Status.Suspended.toString());
     }
 }
