@@ -27,15 +27,17 @@ import java.util.List;
 public class DialController extends SafeIVRController {
 
     private AllPatients allPatients;
+    private TAMAIVRContextFactory contextFactory;
 
     @Autowired
     public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, @Qualifier("standardResponseController") StandardResponseController standardResponseController, AllPatients allPatients) {
-        this(ivrMessage, callDetailRecordsService, standardResponseController);
+        this(ivrMessage, callDetailRecordsService, standardResponseController, new TAMAIVRContextFactory());
         this.allPatients = allPatients;
     }
 
-    protected DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController) {
+    protected DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, TAMAIVRContextFactory contextFactory) {
         super(ivrMessage, callDetailRecordsService, standardResponseController);
+        this.contextFactory = contextFactory;
     }
 
     @Override
@@ -45,12 +47,11 @@ public class DialController extends SafeIVRController {
 
     @Override
     public KookooIVRResponseBuilder dial(KooKooIVRContext kooKooIVRContext) {
-        TAMAIVRContextFactory tamaivrContextFactory = new TAMAIVRContextFactory();
-        TAMAIVRContext tamaivrContext = tamaivrContextFactory.create(kooKooIVRContext);
-        SymptomsReportingContext symptomsReportingContext = tamaivrContextFactory.createSymptomReportingContext(kooKooIVRContext);
+        TAMAIVRContext tamaivrContext = contextFactory.create(kooKooIVRContext);
+        SymptomsReportingContext symptomsReportingContext = contextFactory.createSymptomReportingContext(kooKooIVRContext);
 
         List<Clinic.ClinicianContact> clinicianContacts = tamaivrContext.patient(allPatients).getClinic().getClinicianContacts();
-        KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder();
+        KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder().language(tamaivrContext.preferredLanguage());
         if (kooKooIVRContext.isAnswered()) {
             symptomsReportingContext.endCall();
         }

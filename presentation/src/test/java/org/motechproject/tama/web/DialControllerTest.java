@@ -11,9 +11,10 @@ import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.server.service.ivr.IVRStatus;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
-import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.*;
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -35,12 +35,14 @@ public class DialControllerTest {
     @Mock
     private IVRMessage ivrMessage;
     @Mock
+    private TAMAIVRContextFactory contextFactory;
+    @Mock
     private HttpServletResponse response;
     private Clinic clinic;
-    private Patient patient;
     private KookooRequest kookooRequest;
     private DialController dialController;
     private KooKooIVRContext kooKooIVRContext;
+    private TAMAIVRContextForTest tamaivrcontext;
 
     @Before
     public void setup() {
@@ -51,14 +53,17 @@ public class DialControllerTest {
             this.add(new Clinic.ClinicianContact("name2", "ph2"));
             this.add(new Clinic.ClinicianContact("name3", "ph3"));
         }});
-        patient = new Patient() {{
+        Patient patient = new Patient() {{
             this.setClinic(clinic);
         }};
-        when(httpRequest.getAttribute(TAMAIVRContext.PATIENT)).thenReturn(patient);
 
         kookooRequest = new KookooRequest("", "", "Dial", "", IVRStatus.NotAnswered.toString());
         kooKooIVRContext = new KooKooIVRContext(kookooRequest, httpRequest, response);
-        dialController = new DialController(null, callDetailRecordService, null, null);
+        tamaivrcontext = new TAMAIVRContextForTest().patient(patient);
+        dialController = new DialController(null, callDetailRecordService, null, contextFactory);
+
+        when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaivrcontext);
+        when(contextFactory.createSymptomReportingContext(kooKooIVRContext)).thenReturn(new SymptomsReportingContext(kooKooIVRContext));
     }
 
     @Test
@@ -125,5 +130,14 @@ public class DialControllerTest {
         verify(response, times(1)).addCookie(cookieCaptor.capture());
         assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getValue().getName());
         assertEquals("3", cookieCaptor.getValue().getValue());
+    }
+
+    @Test
+    public void shouldPickUpPreferredLanguage_WhileBuilding_KookooResponse() {
+        tamaivrcontext.preferredLanguage("mr");
+        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
+
+        dialController.dial(kooKooIVRContext).create(ivrMessage);
+        verify(ivrMessage).getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "mr");
     }
 }
