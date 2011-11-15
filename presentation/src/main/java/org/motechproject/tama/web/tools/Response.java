@@ -14,6 +14,8 @@ public class Response {
     @XStreamAsAttribute
     private String sid;
 
+    private String dial;
+
     @XStreamImplicit(itemFieldName="playaudio")
     private List<String> playaudios = new ArrayList<String>();
 
