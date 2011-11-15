@@ -2,6 +2,7 @@ package org.motechproject.tamadatasetup.service;
 
 import com.gargoylesoftware.htmlunit.WebResponse;
 import org.joda.time.DateTime;
+import org.motechproject.deliverytools.kookoo.QueryParams;
 import org.motechproject.tamafunctional.framework.FunctionalTestObject;
 import org.motechproject.tamafunctional.framework.MyWebClient;
 import org.motechproject.tamafunctional.framework.TamaUrl;
@@ -16,10 +17,9 @@ public class TAMADateTimeService extends FunctionalTestObject {
     }
 
     public void adjustDateTime(DateTime dateTime) {
-        String resource = String.format("motech-delivery-tools/datetime/update?date=%s&hour=%s&minute=%s", dateTime.toString("yyyy-MM-dd"), dateTime.getHourOfDay(), dateTime.getMinuteOfHour());
-        String url = TamaUrl.baseFor(resource);
-        logInfo("Invoking: %s", url);
-        WebResponse response = webClient.getWebResponse(url);
+        String url = TamaUrl.baseFor("motech-delivery-tools/datetime/update");
+        QueryParams queryParams = new QueryParams().put("date", dateTime.toString("yyyy-MM-dd")).put("hour", dateTime.getHourOfDay()).put("minute", dateTime.getMinuteOfHour());
+        WebResponse response = webClient.getWebResponse(url, queryParams);
         assertEquals(200, response.getStatusCode());
     }
 }

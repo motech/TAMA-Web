@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.ivr;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.deliverytools.kookoo.QueryParams;
 import org.motechproject.tamafunctional.framework.KooKooResponseParser;
 import org.motechproject.tamafunctional.framework.MyWebClient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
@@ -23,8 +24,8 @@ public class CallerTest {
     @Test
     public void keepInvokingTillTheResponseIsEmpty() {
         Caller caller = new Caller("123", "3432534", webClient);
-        when(webClient.getResponse(any(String.class))).thenReturn(KooKooResponseParser.fromObject(new IVRResponse()));
+        when(webClient.getResponse(any(String.class), any(QueryParams.class))).thenReturn(KooKooResponseParser.fromObject(new IVRResponse()));
         caller.enter("1");
-        verify(webClient, times(2)).getResponse(any(String.class));
+        verify(webClient, times(2)).getResponse(any(String.class), any(QueryParams.class));
     }
 }

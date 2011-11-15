@@ -1,7 +1,9 @@
 package org.motechproject.tamafunctional.testdata.ivrrequest;
 
+import org.motechproject.deliverytools.kookoo.QueryParams;
+
 public interface CallInfo {
-    String asQueryParameter();
-    CallInfo outgoingCall();
-    String appendDataMapTo(String url);
+    String asString();
+
+    QueryParams appendDataMapTo(QueryParams url);
 }

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 @Component
-public class DataSetupConfiguration {
+public class PillReminderDataSetupConfiguration {
     private Properties properties;
 
     @Autowired
-    public DataSetupConfiguration(@Qualifier("pillReminderDataSetup") Properties properties) {
+    public PillReminderDataSetupConfiguration(@Qualifier("pillReminderDataSetup") Properties properties) {
         this.properties = properties;
     }
 

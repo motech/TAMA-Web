@@ -17,7 +17,6 @@ import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import java.io.IOException;
 
 public class DialClinicianTest extends BaseIVRTest {
-
     private TestClinician clinician;
     private TestPatient patient;
 
@@ -67,10 +66,9 @@ public class DialClinicianTest extends BaseIVRTest {
 
     private void patientReportsSymptoms() {
         // Regimen4_2
-
-        IVRResponse ivrResponse;
-        ivrResponse = caller.enter("2");
-        ivrResponse = caller.listenMore();
+        caller.enter("2");
+        caller.enter("2");
+        IVRResponse ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
 
         ivrResponse = caller.enter("1");
@@ -94,11 +92,11 @@ public class DialClinicianTest extends BaseIVRTest {
         assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber0());
 
-        ivrResponse = caller.dialNextClinician();
+        ivrResponse = caller.notAnswered();
         assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber1());
 
-        ivrResponse = caller.dialNextClinician();
+        ivrResponse = caller.notAnswered();
         assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber2());
 

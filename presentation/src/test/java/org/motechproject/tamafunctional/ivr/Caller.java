@@ -1,7 +1,10 @@
 package org.motechproject.tamafunctional.ivr;
 
+import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import org.junit.Assert;
+import org.motechproject.deliverytools.kookoo.IncomingCall;
+import org.motechproject.deliverytools.kookoo.QueryParams;
 import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.tamafunctional.framework.FunctionalTestObject;
 import org.motechproject.tamafunctional.framework.KooKooResponseParser;
@@ -10,10 +13,14 @@ import org.motechproject.tamafunctional.framework.TamaUrl;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.ivrrequest.CallInfo;
 import org.motechproject.tamafunctional.testdata.ivrrequest.NoCallInfo;
+import org.motechproject.tamafunctional.testdata.ivrrequest.OutgoingCallInfo;
 
+import java.io.IOException;
 import java.util.Set;
 
-//TODO Probably we need a URL builder to not duplicate URLs
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 public class Caller extends FunctionalTestObject {
     private String sid;
     private String phoneNumber;
@@ -27,35 +34,41 @@ public class Caller extends FunctionalTestObject {
         this.webClient = webClient;
     }
 
+    public Caller(String phoneNumber, MyWebClient webClient) {
+        this("irrelevant", phoneNumber, webClient);
+    }
+
     public IVRResponse call() {
-        return invokeAndGetResponse(String.format("%s/reply?sid=%s&cid=%s&event=%s", TamaUrl.ivrURL(), sid, phoneNumber, IVREvent.NewCall.toString()));
+        QueryParams queryParams = new QueryParams().put("sid", sid).put("cid", phoneNumber).put("event", IVREvent.NewCall);
+        return invokeAndGetResponse(queryParams);
     }
 
-    private String urlFor(IVREvent event, String sid, String data) {
-        String url = String.format("%s/reply?sid=%s&event=%s&data=%s", TamaUrl.ivrURL(), sid, event.toString(), data);
-        return callInfo.appendDataMapTo(url);
+    private QueryParams paramsFor(IVREvent event, String sid, String data) {
+        QueryParams queryParams = new QueryParams().put("sid", sid).put("event", event).put("data", data);
+        callInfo.appendDataMapTo(queryParams);
+        return queryParams;
     }
 
-    private String urlFor(IVREvent event, String data) {
-        return urlFor(event, sid, data);
+    private QueryParams paramsFor(IVREvent event, String data) {
+        return paramsFor(event, sid, data);
     }
 
-    private IVRResponse invokeAndGetResponse(String completeUrl) {
-        return KooKooResponseParser.fromXml(invoke(completeUrl));
+    private IVRResponse invokeAndGetResponse(QueryParams params) {
+        return KooKooResponseParser.fromXml(invoke(params));
     }
 
-    private String invoke(String completeUrl) {
-        return webClient.getResponse(completeUrl).toLowerCase();
+    private String invoke(QueryParams params) {
+        return webClient.getResponse(TamaUrl.ivrURL(), params).toLowerCase();
     }
 
     public IVRResponse replyToCall(CallInfo callInfo) {
-        this.callInfo = callInfo.outgoingCall();
-        String completeUrl = String.format("%s/reply?sid=%s&cid=%s&event=%s&dataMap=%s", TamaUrl.ivrURL(), sid, phoneNumber, "NewCall", callInfo.asQueryParameter());
-        return invokeAndGetResponse(completeUrl);
+        this.callInfo = callInfo;
+        QueryParams params = new QueryParams().put("sid", sid).put("cid", phoneNumber).put("event", IVREvent.NewCall).put("dataMap", callInfo.asString());
+        return invokeAndGetResponse(params);
     }
 
     public IVRResponse enter(String number) {
-        IVRResponse ivrResponse = invokeAndGetResponse(urlFor(IVREvent.GotDTMF, number));
+        IVRResponse ivrResponse = invokeAndGetResponse(paramsFor(IVREvent.GotDTMF, number));
         if (ivrResponse.audiosPlayed().isEmpty() && ivrResponse.isEmpty()) {
             ivrResponse = listenMore();
         }
@@ -63,18 +76,16 @@ public class Caller extends FunctionalTestObject {
     }
 
     public IVRResponse listenMore() {
-        String url = String.format("%s/reply?", TamaUrl.ivrURL());
-        return invokeAndGetResponse(callInfo.appendDataMapTo(url));
+        return invokeAndGetResponse(callInfo.appendDataMapTo(new QueryParams()));
     }
 
-    public IVRResponse dialNextClinician() {
-        String url = String.format("%s/reply?sid=%s&event=%s&status=%s", TamaUrl.ivrURL(), sid, IVREvent.Dial.toString(), "not_answered");
-        return invokeAndGetResponse(url);
+    public IVRResponse notAnswered() {
+        return invokeAndGetResponse(paramsFor(IVREvent.Dial, "").put("status", "not_answered"));
     }
 
     public void hangup() {
         if (hangedUp) return;
-        IVRResponse ivrResponse = invokeAndGetResponse(urlFor(IVREvent.Hangup, ""));
+        IVRResponse ivrResponse = invokeAndGetResponse(paramsFor(IVREvent.Hangup, ""));
         hangedUp = true;
         webClient.clearCookies();
         Assert.assertNotNull(ivrResponse);
@@ -92,5 +103,16 @@ public class Caller extends FunctionalTestObject {
 
     public void tearDown() {
         hangedUp = false;
+    }
+
+    public void receiveCall() throws IOException {
+        WebResponse webResponse = webClient.getWebResponse(TamaUrl.baseFor("/motech-delivery-tools/outbound/lastreceived"), new QueryParams());
+        assertEquals(200, webResponse.getStatusCode());
+
+        IncomingCall incomingCall = new IncomingCall(webResponse.getContentAsString());
+        assertNotNull(incomingCall.apiKey());
+        assertEquals(true, incomingCall.phoneNumber().contains(phoneNumber));
+
+        callInfo = new OutgoingCallInfo(incomingCall.customParams());
     }
 }

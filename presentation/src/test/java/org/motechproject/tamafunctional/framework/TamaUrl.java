@@ -19,6 +19,6 @@ public class TamaUrl {
     }
 
     public static String ivrURL() {
-        return baseFor("ivr");
+        return baseFor("ivr/reply");
     }
 }

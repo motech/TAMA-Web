@@ -7,19 +7,16 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 public class WebDriverFactory {
-
     public static final String TEST_DRIVER = "test.driver";
-    public static final String HTMLUNIT = "htmlunit";
 
     public static WebElement createWebElement(WebElement webElement) {
-        if (HTMLUNIT.equals(driverName()))
+        if (Driver.HTML_UNIT.is(driverName()))
             return new HtmlUnitWebElement(webElement);
         else
             return new TamaWebElement(webElement);
     }
 
     private enum Driver {
-
         FIREFOX("firefox") {
             @Override
             WebDriver give() {
@@ -48,7 +45,6 @@ public class WebDriverFactory {
             }
         };
 
-
         private String name;
 
         Driver(String name) {
@@ -57,7 +53,6 @@ public class WebDriverFactory {
 
         abstract WebDriver give();
 
-
         public static Driver enumFor(String name) {
             for (Driver driver : values()) {
                 if (driver.is(name)) return driver;
@@ -65,8 +60,13 @@ public class WebDriverFactory {
             return null;
         }
 
-        private boolean is(String name) {
+        public boolean is(String name) {
             return this.name.equalsIgnoreCase(name);
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 
@@ -76,6 +76,6 @@ public class WebDriverFactory {
     }
 
     private static String driverName() {
-        return System.getProperty(TEST_DRIVER, HTMLUNIT);
+        return System.getProperty(TEST_DRIVER, Driver.HTML_UNIT.toString());
     }
 }

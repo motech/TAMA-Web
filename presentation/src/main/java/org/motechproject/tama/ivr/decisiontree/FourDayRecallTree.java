@@ -25,7 +25,6 @@ public class FourDayRecallTree extends TamaDecisionTree {
     @Autowired
     private WeeklyAdherencePercentage weeklyAdherencePercentage;
 
-
     @Override
     protected Node createRootNode() {
         Transition missedMultipleDosagesTransition = new Transition()
@@ -71,6 +70,4 @@ public class FourDayRecallTree extends TamaDecisionTree {
                         }
                 });
     }
-
 }
-
