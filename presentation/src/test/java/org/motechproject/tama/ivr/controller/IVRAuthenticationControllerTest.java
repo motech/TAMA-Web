@@ -7,6 +7,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
+import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -67,7 +68,9 @@ public class IVRAuthenticationControllerTest {
         int numberOfLoginAttempts = 0;
         tamaivrContext.dtmfInput(dtmfInput).callerId(callerId);
         tamaivrContext.numberOfLoginAttempts(numberOfLoginAttempts);
-        when(authenticationService.checkAccess(callerId, dtmfInput, numberOfLoginAttempts + 1, callId)).thenReturn(IVRAuthenticationStatus.allowRetry(1));
+        tamaivrContext.callId(callId);
+        tamaivrContext.callDirection(CallDirection.Outbound);
+        when(authenticationService.checkAccess(tamaivrContext)).thenReturn(IVRAuthenticationStatus.allowRetry(1));
         when(tamaivrContextFactory.create(kooKooIVRContext)).thenReturn(tamaivrContext);
         KookooIVRResponseBuilder kookooIVRResponseBuilder = ivrAuthenticationController.gotDTMF(kooKooIVRContext);
         assertEquals(true, kookooIVRResponseBuilder.isCollectDTMF());

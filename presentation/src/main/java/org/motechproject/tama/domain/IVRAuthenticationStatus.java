@@ -4,7 +4,7 @@ public class IVRAuthenticationStatus {
     private boolean found;
     private boolean allowRetry;
     private boolean authenticated;
-    private boolean active;
+    private boolean allowCalls;
     private String patientId;
     private int loginAttemptNumber;
     private String languageCode;
@@ -39,8 +39,8 @@ public class IVRAuthenticationStatus {
         return this;
     }
 
-    public IVRAuthenticationStatus active(boolean active) {
-        this.active = active;
+    public IVRAuthenticationStatus allowCalls(boolean allowCalls) {
+        this.allowCalls = allowCalls;
         return this;
     }
 
@@ -57,8 +57,8 @@ public class IVRAuthenticationStatus {
         return found;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean allowCalls() {
+        return allowCalls;
     }
 
     public boolean doAllowRetry() {
@@ -85,7 +85,7 @@ public class IVRAuthenticationStatus {
     @Override
     public String toString() {
         return String.format("{Found=%s, AllowRetry=%s, Authenticated=%s, Active=%s, PatientId='%s\', LoginAttemptNumber=%d}",
-                found, allowRetry, authenticated, active, patientId, loginAttemptNumber);
+                found, allowRetry, authenticated, allowCalls, patientId, loginAttemptNumber);
     }
 
     public String language() {

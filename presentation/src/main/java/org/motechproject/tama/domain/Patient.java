@@ -55,18 +55,18 @@ public class Patient extends CouchEntity {
     private String clinic_id;
 
     @JsonIgnore
-    public boolean isActive() {
-        return Status.Active.equals(this.status);
+    public boolean allowAdherenceCalls() {
+        return status.equals(Status.Active);
     }
 
     @JsonIgnore
-    public boolean isNotActive() {
-        return !Status.Active.equals(this.status);
+    public boolean allowOutboxCalls() {
+        return status.equals(Status.Active) || status.equals(Status.Suspended);
     }
 
     @JsonIgnore
-    public boolean isSuspended() {
-        return Status.Suspended.equals(this.status);
+    public boolean allowIncomingCalls() {
+        return status.equals(Status.Active) || status.equals(Status.Suspended);
     }
 
     public Patient deactivate() {
@@ -81,7 +81,7 @@ public class Patient extends CouchEntity {
         Premature_Termination_By_Clinic("Premature termination by clinic"),
         Patient_Withdraws_Consent("Patient withdraws consent"),
         Loss_To_Follow_Up("Loss to follow up"),
-        Suspended("Suspended");
+        Suspended("Suspended adherence calls");
 
         private String displayName;
 

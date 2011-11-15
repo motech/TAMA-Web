@@ -1,6 +1,7 @@
 package org.motechproject.tama.ivr.call;
 
 import org.motechproject.server.service.ivr.IVRService;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,17 +19,20 @@ public class PillReminderCall extends IvrCall {
     public static final String RETRY_INTERVAL = "retry_interval";
 
     @Autowired
-    public PillReminderCall(IVRService ivrService, AllPatients allPatients, @Qualifier("ivrProperties")Properties properties) {
+    public PillReminderCall(IVRService ivrService, AllPatients allPatients, @Qualifier("ivrProperties") Properties properties) {
         super(allPatients, ivrService, properties);
     }
 
     public void execute(String patientDocId, final String dosageId, final int timesSent, final int totalTimesToSend, final int retryInterval) {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put(DOSAGE_ID, dosageId);
-            put(TIMES_SENT, String.valueOf(timesSent));
-            put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
-            put(RETRY_INTERVAL, String.valueOf(retryInterval));
-        }};
-        makeCall(patientDocId, params);
+        final Patient patient = allPatients.get(patientDocId);
+        if (patient != null && patient.allowAdherenceCalls()) {
+            Map<String, String> params = new HashMap<String, String>() {{
+                put(DOSAGE_ID, dosageId);
+                put(TIMES_SENT, String.valueOf(timesSent));
+                put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
+                put(RETRY_INTERVAL, String.valueOf(retryInterval));
+            }};
+            makeCall(patientDocId, params);
+        }
     }
 }

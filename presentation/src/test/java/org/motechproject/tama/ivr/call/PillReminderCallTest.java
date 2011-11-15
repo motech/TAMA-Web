@@ -46,16 +46,14 @@ public class PillReminderCallTest {
     @Test
     public void shouldNotMakeACallForANonExistentPatient() {
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(null);
-
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
-
         verify(callService, never()).initiateCall(any(CallRequest.class));
     }
 
     @Test
     public void shouldNotMakeACallForInActivePatient() {
         Patient patient = mock(Patient.class);
-        when(patient.isNotActive()).thenReturn(true);
+        when(patient.allowAdherenceCalls()).thenReturn(false);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
         pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
@@ -67,7 +65,7 @@ public class PillReminderCallTest {
     public void shouldMakeACallForActivePatient() {
         String PHONE_NUMBER = "1234567890";
         Patient patient = mock(Patient.class);
-        when(patient.isNotActive()).thenReturn(false);
+        when(patient.allowAdherenceCalls()).thenReturn(true);
         when(patient.getMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 

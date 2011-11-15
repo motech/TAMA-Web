@@ -193,7 +193,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         allPatients.activate(patient.getId());
 
         List<Patient> dbPatients = allPatients.findByPatientId("6666");
-        assertTrue(dbPatients.get(0).isActive());
+        assertEquals(Patient.Status.Active, dbPatients.get(0).getStatus());
     }
 
     @Test
@@ -204,7 +204,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         allPatients.deactivate(patient.getId());
 
         List<Patient> dbPatients = allPatients.findByPatientId("7890");
-        assertTrue(dbPatients.get(0).isNotActive());
+        assertEquals(Patient.Status.Inactive, dbPatients.get(0).getStatus());
     }
 
     @Test

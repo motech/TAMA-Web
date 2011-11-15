@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.ivr.kookoo.KookooCallServiceImpl;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.VoiceOutboxService;
@@ -23,6 +24,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.pillreminder.EventKeys.EXTERNAL_ID_KEY;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -32,20 +34,17 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class OutboxCallListenerTest {
 
     private OutboxCallListener outboxCallListener;
+    private MotechEvent motechEvent;
+    private Patient patient;
 
     @Mock
     private VoiceOutboxService voiceOutboxService;
-
     @Mock
     private KookooCallServiceImpl kookooCallServiceImpl;
-
     @Mock
     private AllPatients allPatients;
-
-    private MotechEvent motechEvent;
     @Mock
     private TamaSchedulerService tamaSchedulerService;
-    private Patient patient;
 
     @Before
     public void setUp() {
@@ -56,6 +55,36 @@ public class OutboxCallListenerTest {
         setUpEventWithExternalId();
         setUpPatientAsActive();
         setUpOutboxWithAtLeastOneUnreadMessage();
+    }
+
+    @Test
+    public void shouldMakeACall() {
+        patient.setStatus(Patient.Status.Active);
+        ArgumentCaptor<CallRequest> callRequestCaptor = ArgumentCaptor.forClass(CallRequest.class);
+        outboxCallListener.handleOutBoxCall(motechEvent);
+        verify(kookooCallServiceImpl).initiateCall(callRequestCaptor.capture());
+        verify(tamaSchedulerService).scheduleRepeatingJobForOutBoxCall(patient);
+    }
+
+    @Test
+    public void shouldMakeACallEvenWhenPatientIsSuspended() {
+        patient.setStatus(Patient.Status.Suspended);
+        Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
+
+        ArgumentCaptor<CallRequest> callRequestCaptor = ArgumentCaptor.forClass(CallRequest.class);
+        outboxCallListener.handleOutBoxCall(motechEvent);
+        verify(kookooCallServiceImpl).initiateCall(callRequestCaptor.capture());
+        verify(tamaSchedulerService).scheduleRepeatingJobForOutBoxCall(patient);
+    }
+
+    @Test
+    public void shouldNotMakeACallEvenWhenPatientIsInactive() {
+        patient.setStatus(Patient.Status.Loss_To_Follow_Up);
+        Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
+
+        outboxCallListener.handleOutBoxCall(motechEvent);
+        verifyZeroInteractions(kookooCallServiceImpl);
+        verifyZeroInteractions(tamaSchedulerService);
     }
 
     public void setUpEventWithExternalId() {
@@ -74,11 +103,4 @@ public class OutboxCallListenerTest {
         when(voiceOutboxService.getNumberPendingMessages("patientId")).thenReturn(1);
     }
 
-    @Test
-    public void shouldMakeACall() {
-        ArgumentCaptor<CallRequest> callRequestCaptor = ArgumentCaptor.forClass(CallRequest.class);
-        outboxCallListener.handleOutBoxCall(motechEvent);
-        verify(kookooCallServiceImpl).initiateCall(callRequestCaptor.capture());
-        verify(tamaSchedulerService).scheduleRepeatingJobForOutBoxCall(patient);
-    }
 }

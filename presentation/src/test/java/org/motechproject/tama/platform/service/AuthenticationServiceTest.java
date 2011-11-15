@@ -40,8 +40,8 @@ public class AuthenticationServiceTest {
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
 
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
-        assertEquals(true, ivrAuthenticationStatus.isActive());
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123", false);
+        assertEquals(true, ivrAuthenticationStatus.allowCalls());
     }
 
     @Test
@@ -53,8 +53,8 @@ public class AuthenticationServiceTest {
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
 
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
-        assertEquals(true, ivrAuthenticationStatus.isActive());
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123", false);
+        assertEquals(true, ivrAuthenticationStatus.allowCalls());
     }
 
     @Test
@@ -66,8 +66,8 @@ public class AuthenticationServiceTest {
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
 
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
-        assertEquals(false, ivrAuthenticationStatus.isActive());
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123", false);
+        assertEquals(false, ivrAuthenticationStatus.allowCalls());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class AuthenticationServiceTest {
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(null);
 
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123");
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 1, "123", false);
         assertEquals(false, ivrAuthenticationStatus.isAuthenticated());
         assertEquals(true, ivrAuthenticationStatus.doAllowRetry());
     }
@@ -87,9 +87,9 @@ public class AuthenticationServiceTest {
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(null);
 
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123");
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123", false);
         assertEquals(true, ivrAuthenticationStatus.doAllowRetry());
-        ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 3, "123");
+        ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 3, "123", false);
         assertEquals(false, ivrAuthenticationStatus.isAuthenticated());
         assertEquals(false, ivrAuthenticationStatus.doAllowRetry());
     }
@@ -102,7 +102,7 @@ public class AuthenticationServiceTest {
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, invalidPassCode)).thenReturn(null);
 
         int attemptNumber = 2;
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, invalidPassCode, attemptNumber, "123");
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, invalidPassCode, attemptNumber, "123", false);
         assertEquals(attemptNumber - 1, ivrAuthenticationStatus.loginAttemptNumber());
     }
 
@@ -112,17 +112,28 @@ public class AuthenticationServiceTest {
         Patient secondPatient = patient("p2");
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(firstPatient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(secondPatient);
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123");
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123", false);
         assertEquals(secondPatient.getId(), ivrAuthenticationStatus.patientId());
     }
 
     @Test
-    public void successfulLogin() {
+    public void successfulLogin_ForIncomingCall() {
         Patient patient = patient("p1");
         patient.activate();
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
-        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123");
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123", false);
+        assertEquals(true, ivrAuthenticationStatus.isAuthenticated());
+        assertEquals(patient.getPatientPreferences().getIvrLanguage().getCode(), ivrAuthenticationStatus.language());
+    }
+
+    @Test
+    public void successfulLogin_ForOutgoingCall() {
+        Patient patient = patient("p1");
+        patient.activate();
+        when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
+        when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
+        IVRAuthenticationStatus ivrAuthenticationStatus = authenticationService.checkAccess(phoneNumber, passcode, 2, "123", true);
         assertEquals(true, ivrAuthenticationStatus.isAuthenticated());
         assertEquals(patient.getPatientPreferences().getIvrLanguage().getCode(), ivrAuthenticationStatus.language());
     }

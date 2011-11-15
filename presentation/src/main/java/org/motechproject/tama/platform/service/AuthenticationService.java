@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
 import org.motechproject.tama.domain.IVRCallAudit;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,11 @@ public class AuthenticationService {
         return doAllowAccess;
     }
 
-    public IVRAuthenticationStatus checkAccess(String phoneNumber, String passcode, int attemptNumber, String sid) {
+    public IVRAuthenticationStatus checkAccess(TAMAIVRContext context) {
+        return checkAccess(context.callerId(), context.dtmfInput(), context.numberOfLoginAttempts() + 1, context.callId(), context.isOutgoingCall());
+    }
+
+    protected IVRAuthenticationStatus checkAccess(String phoneNumber, String passcode, int attemptNumber, String sid, boolean isOutgoingCall) {
         Patient likelyPatient = allPatients.findByMobileNumber(phoneNumber);
         if (likelyPatient == null) {
             ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, "", IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
@@ -48,6 +53,7 @@ public class AuthenticationService {
         }
 
         IVRAuthenticationStatus status = IVRAuthenticationStatus.authenticated(patient.getId());
-        return status.active(patient.isActive() || patient.isSuspended()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
+        return status.allowCalls(isOutgoingCall || patient.allowIncomingCalls()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
     }
+
 }

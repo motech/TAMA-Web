@@ -44,22 +44,25 @@ public class OutboxCallListener {
 
     @MotechListener(subjects = TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT)
     public void handleOutBoxCall(MotechEvent event) {
-        try {
-            Map<String, Object> parameters = event.getParameters();
-            String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
-            int numberPendingMessages = voiceOutboxService.getNumberPendingMessages(externalId);
-            Patient patient = allPatients.get(externalId);
-            if (numberPendingMessages > 0 && patient != null && patient.isActive()) {
-                IvrCall ivrCall = new IvrCall(allPatients, ivrService, properties);
-                Map<String, String> callParams = new HashMap<String, String>();
-                callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
-                ivrCall.makeCall(externalId, callParams);
-                if (!"true".equals(event.getParameters().get(TamaSchedulerService.IS_RETRY))) {
-                    tamaSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
+        Map<String, Object> parameters = event.getParameters();
+        String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
+
+        Patient patient = allPatients.get(externalId);
+        if (patient != null && patient.allowOutboxCalls()) {
+            try {
+                int numberPendingMessages = voiceOutboxService.getNumberPendingMessages(externalId);
+                if (numberPendingMessages > 0) {
+                    IvrCall ivrCall = new IvrCall(allPatients, ivrService, properties);
+                    Map<String, String> callParams = new HashMap<String, String>();
+                    callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
+                    ivrCall.makeCall(externalId, callParams);
+                    if (!"true".equals(event.getParameters().get(TamaSchedulerService.IS_RETRY))) {
+                        tamaSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
+                    }
                 }
+            } catch (Exception e) {
+                logger.error("Failed to handle OutboxCall event, this event would not be retried but the subsequent repeats would happen.", e);
             }
-        } catch (Exception e) {
-            logger.error("Failed to handle OutboxCall event, this event would not be retried but the subsequent repeats would happen.", e);
         }
     }
 }

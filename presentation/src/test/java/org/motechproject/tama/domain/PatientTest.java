@@ -82,29 +82,30 @@ public class PatientTest {
     }
 
     @Test
-    public void shouldTestIfPatientIsActive() {
-        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
-        Assert.assertTrue(patient.isActive());
+    public void shouldTestIfOutboxCallsAreAllowedForPatient() {
+        Patient activePatient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Assert.assertTrue(activePatient.allowOutboxCalls());
+
+        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Assert.assertTrue(suspendedPatient.allowOutboxCalls());
     }
 
     @Test
-    public void shouldTestIfPatientIsSuspended() {
-        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
-        Assert.assertTrue(patient.isSuspended());
+    public void shouldTestIfIncomingCallsAreAllowedForPatient() {
+        Patient activePatient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Assert.assertTrue(activePatient.allowIncomingCalls());
+
+        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Assert.assertTrue(suspendedPatient.allowIncomingCalls());
     }
 
     @Test
-    public void shouldTestIfPatientIsNotActive() {
-        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
-        Assert.assertTrue(patient.isNotActive());
-        patient.setStatus(Patient.Status.Loss_To_Follow_Up);
-        Assert.assertTrue(patient.isNotActive());
-        patient.setStatus(Patient.Status.Patient_Withdraws_Consent);
-        Assert.assertTrue(patient.isNotActive());
-        patient.setStatus(Patient.Status.Premature_Termination_By_Clinic);
-        Assert.assertTrue(patient.isNotActive());
-        patient.setStatus(Patient.Status.Study_Complete);
-        Assert.assertTrue(patient.isNotActive());
+    public void shouldTestIfAdherenceCallsAreAllowedForPatient() {
+        Patient activePatient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Assert.assertTrue(activePatient.allowAdherenceCalls());
+
+        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Assert.assertFalse(suspendedPatient.allowAdherenceCalls());
     }
 
     @Test

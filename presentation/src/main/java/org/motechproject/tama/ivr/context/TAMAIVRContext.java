@@ -113,6 +113,10 @@ public class TAMAIVRContext {
         return callDirection().equals(CallDirection.Inbound);
     }
 
+    public boolean isOutgoingCall() {
+        return callDirection().equals(CallDirection.Outbound);
+    }
+
     public DateTime callStartTime() {
         return (DateTime) httpRequest.getSession().getAttribute(CALL_START_TIME);
     }

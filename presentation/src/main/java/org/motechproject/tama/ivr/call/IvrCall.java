@@ -38,7 +38,7 @@ public class IvrCall {
 
     public void makeCall(String patientDocId, Map<String, String> params) {
         Patient patient = allPatients.get(patientDocId);
-        if (patient == null || patient.isNotActive()) return;
+        if (patient == null) return;
 
         CallRequest callRequest = new CallRequest(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber()), params, getApplicationUrl());
         ivrService.initiateCall(callRequest);

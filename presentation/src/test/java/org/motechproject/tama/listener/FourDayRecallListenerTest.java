@@ -6,16 +6,21 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.builder.PatientBuilder;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.tama.platform.service.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tama.platform.service.FourDayRecallService;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
-import org.motechproject.tama.ivr.call.IvrCall;
+import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 public class FourDayRecallListenerTest {
     FourDayRecallListener fourDayRecallListener;
@@ -26,11 +31,13 @@ public class FourDayRecallListenerTest {
     IvrCall ivrCall;
     @Mock
     private FourDayRecallService fourDayRecallService;
+    @Mock
+    private AllPatients allPatients;
 
     @Before
     public void setUp() {
         initMocks(this);
-        fourDayRecallListener = new FourDayRecallListener(ivrCall, schedulerService, fourDayRecallService);
+        fourDayRecallListener = new FourDayRecallListener(ivrCall, schedulerService, fourDayRecallService, allPatients);
     }
 
     @Test
@@ -46,8 +53,10 @@ public class FourDayRecallListenerTest {
                 .withTreatmentAdviceStartDate(startDate)
                 .payload();
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, data);
-        fourDayRecallListener.handle(motechEvent);
+        when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Active).build());
         when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(false);
+
+        fourDayRecallListener.handle(motechEvent);
 
         verify(schedulerService).scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, TREATMENT_ADVICE_ID, startDate);
         verify(ivrCall).makeCall(PATIENT_ID);
@@ -86,6 +95,7 @@ public class FourDayRecallListenerTest {
                 .withRetryFlag(true)
                 .payload();
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, data);
+        when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Active).build());
         fourDayRecallListener.handle(motechEvent);
 
         verifyZeroInteractions(schedulerService);
