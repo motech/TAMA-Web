@@ -51,7 +51,7 @@ public class PillReminderCallTest {
     }
 
     @Test
-    public void shouldNotMakeACallForInActivePatient() {
+    public void shouldNotMakeACallForSuspendedPatient() {
         Patient patient = mock(Patient.class);
         when(patient.allowAdherenceCalls()).thenReturn(false);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);

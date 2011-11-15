@@ -7,7 +7,7 @@
         <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDateAsDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
         <field:display field="displayName" id="c_org_motechproject_tama_domain_Patient_status" object="${patient.status}" />
         <c:choose>
-          <c:when test="${patient.active}">
+          <c:when test="${patient.status.active}">
               <div class="update_patient">
                   <form action="deactivate" method="POST">
                         <input type="hidden" name="id" value="${patient.id}"/>
@@ -32,7 +32,7 @@
     </util:panel>
 
     <c:choose>
-      <c:when test="${patient.active}">
+      <c:when test="${patient.status.active}">
           <spring:url value="/clinicvisits" var="clinic_visits_url">
             <spring:param name="form"/>
             <spring:param name="patientId" value="${patient.id}"/>

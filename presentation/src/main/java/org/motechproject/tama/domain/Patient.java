@@ -55,62 +55,23 @@ public class Patient extends CouchEntity {
     private String clinic_id;
 
     @JsonIgnore
-    public boolean isActive() {
-        return status.equals(Status.Active);
-    }
-
-    @JsonIgnore
     public boolean allowAdherenceCalls() {
-        return isActive();
+        return status.isActive();
     }
 
     @JsonIgnore
     public boolean allowOutboxCalls() {
-        return isActive() || status.equals(Status.Suspended);
+        return status.isActive() || status.isSuspended();
     }
 
     @JsonIgnore
     public boolean allowIncomingCalls() {
-        return isActive() || status.equals(Status.Suspended);
+        return status.isActive() || status.isSuspended();
     }
 
     public Patient deactivate() {
         this.status = Status.Inactive;
         return this;
-    }
-
-    public enum Status {
-        Inactive("Inactive"),
-        Active("Active"),
-        Study_Complete("Study complete"),
-        Premature_Termination_By_Clinic("Premature termination by clinic"),
-        Patient_Withdraws_Consent("Patient withdraws consent"),
-        Loss_To_Follow_Up("Loss to follow up"),
-        Suspended("Suspended adherence calls");
-
-        private String displayName;
-
-        Status(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public static List<Status> deactivationStatuses() {
-            return Arrays.asList(Study_Complete, Premature_Termination_By_Clinic, Patient_Withdraws_Consent, Loss_To_Follow_Up);
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-
-        public String getValue() {
-            return this.name();
-        }
-
-
-        @Override
-        public String toString() {
-           return getDisplayName();
-        }
     }
 
     public Patient activate() {

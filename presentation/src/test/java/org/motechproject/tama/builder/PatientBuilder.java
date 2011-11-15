@@ -69,7 +69,7 @@ public class PatientBuilder {
         return this;
     }
 
-    public PatientBuilder withStatus(Patient.Status status) {
+    public PatientBuilder withStatus(Status status) {
         this.patient.setStatus(status);
         return this;
     }

@@ -12,10 +12,10 @@ import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
-import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -100,7 +100,7 @@ public class TAMACallFlowController implements CallFlowController {
             if (!isPatientOnDailyPillReminder)
                 return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
             else {
-                if (Patient.Status.Suspended.equals(patient.getStatus()))
+                if (patient.getStatus().isSuspended())
                     return TAMATreeRegistry.MENU_TREE;
                 PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(tamaivrContext);
                 if (pillRegimenSnapshot.isCurrentDosageTaken()) {

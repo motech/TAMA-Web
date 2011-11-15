@@ -12,6 +12,7 @@ import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
+import org.motechproject.tama.domain.Status;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
@@ -61,6 +62,7 @@ public class TAMACallFlowControllerInboundCallTest {
         tamaIVRContextForTest.pillRegimenSnapshot(pillRegimenSnapshot);
         tamaIVRContextForTest.patient(patient);
 
+        when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
         when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
         when(pillRegimenSnapshot.isCurrentDosageTaken()).thenReturn(true);
@@ -76,6 +78,7 @@ public class TAMACallFlowControllerInboundCallTest {
         tamaIVRContextForTest.patient(patient);
         tamaIVRContextForTest.pillRegimenSnapshot(pillRegimenSnapshot);
 
+        when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
         when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
         when(pillRegimenSnapshot.isCurrentDosageTaken()).thenReturn(false);

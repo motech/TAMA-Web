@@ -11,6 +11,7 @@ import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.Status;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.service.DailyReminderAdherenceTrendService;
 import org.powermock.api.mockito.PowerMockito;
@@ -42,7 +43,7 @@ public class AdherenceTrendListenerTest {
     @Test
     public void shouldCreateVoiceMessage() {
         final String patientId = "patientId";
-        PowerMockito.when(allPatients.get(patientId)).thenReturn(PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Active).build());
+        PowerMockito.when(allPatients.get(patientId)).thenReturn(PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).build());
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patientId)
                 .withExternalId(patientId)
                 .payload();
@@ -53,10 +54,10 @@ public class AdherenceTrendListenerTest {
     }
 
     @Test
-    public void shouldNotCreateVoiceMessageIfPatientIsNotActive() {
+    public void shouldNotCreateVoiceMessageIfPatientIsSuspended() {
         final String patientId = "patientId";
         final Patient patient = new Patient();
-        patient.setStatus(Patient.Status.Suspended);
+        patient.setStatus(Status.Suspended);
         when(allPatients.get(patientId)).thenReturn(patient);
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patientId)
                 .withExternalId(patientId)

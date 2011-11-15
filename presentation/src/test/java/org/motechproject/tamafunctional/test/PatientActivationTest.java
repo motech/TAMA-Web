@@ -3,7 +3,7 @@ package org.motechproject.tamafunctional.test;
 import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.Status;
 import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -22,10 +22,10 @@ public class PatientActivationTest extends BaseTest {
                 loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
-        Assert.assertEquals(showPatientPage.getStatus().trim(), Patient.Status.Inactive.toString());
+        Assert.assertEquals(showPatientPage.getStatus().trim(), Status.Inactive.toString());
 
         ShowPatientPage pageAfterActivation = showPatientPage.activatePatient();
-        Assert.assertEquals(pageAfterActivation.getStatus().trim(), Patient.Status.Active.toString());
+        Assert.assertEquals(pageAfterActivation.getStatus().trim(), Status.Active.toString());
 
         pageAfterActivation.logout();
     }

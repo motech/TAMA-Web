@@ -13,6 +13,7 @@ import org.motechproject.server.service.ivr.CallRequest;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.Status;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -59,7 +60,7 @@ public class OutboxCallListenerTest {
 
     @Test
     public void shouldMakeACall() {
-        patient.setStatus(Patient.Status.Active);
+        patient.setStatus(Status.Active);
         ArgumentCaptor<CallRequest> callRequestCaptor = ArgumentCaptor.forClass(CallRequest.class);
         outboxCallListener.handleOutBoxCall(motechEvent);
         verify(kookooCallServiceImpl).initiateCall(callRequestCaptor.capture());
@@ -68,7 +69,7 @@ public class OutboxCallListenerTest {
 
     @Test
     public void shouldMakeACallEvenWhenPatientIsSuspended() {
-        patient.setStatus(Patient.Status.Suspended);
+        patient.setStatus(Status.Suspended);
         Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
 
         ArgumentCaptor<CallRequest> callRequestCaptor = ArgumentCaptor.forClass(CallRequest.class);
@@ -79,7 +80,7 @@ public class OutboxCallListenerTest {
 
     @Test
     public void shouldNotMakeACallEvenWhenPatientIsInactive() {
-        patient.setStatus(Patient.Status.Loss_To_Follow_Up);
+        patient.setStatus(Status.Loss_To_Follow_Up);
         Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
 
         outboxCallListener.handleOutBoxCall(motechEvent);

@@ -83,43 +83,43 @@ public class PatientTest {
 
     @Test
     public void shouldTestIfOutboxCallsAreAllowedForPatient() {
-        Patient activePatient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Patient activePatient = PatientBuilder.startRecording().withStatus(Status.Active).build();
         Assert.assertTrue(activePatient.allowOutboxCalls());
 
-        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Status.Suspended).build();
         Assert.assertTrue(suspendedPatient.allowOutboxCalls());
     }
 
     @Test
     public void shouldTestIfIncomingCallsAreAllowedForPatient() {
-        Patient activePatient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Patient activePatient = PatientBuilder.startRecording().withStatus(Status.Active).build();
         Assert.assertTrue(activePatient.allowIncomingCalls());
 
-        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Status.Suspended).build();
         Assert.assertTrue(suspendedPatient.allowIncomingCalls());
     }
 
     @Test
     public void shouldTestIfAdherenceCallsAreAllowedForPatient() {
-        Patient activePatient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Patient activePatient = PatientBuilder.startRecording().withStatus(Status.Active).build();
         Assert.assertTrue(activePatient.allowAdherenceCalls());
 
-        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Patient suspendedPatient = PatientBuilder.startRecording().withStatus(Status.Suspended).build();
         Assert.assertFalse(suspendedPatient.allowAdherenceCalls());
     }
 
     @Test
     public void shouldTestActivationOfPatient() {
-        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Inactive).build();
+        Patient patient = PatientBuilder.startRecording().withStatus(Status.Inactive).build();
         patient.activate();
-        assertTrue(patient.getStatus().equals(Patient.Status.Active));
+        assertTrue(patient.getStatus().equals(Status.Active));
     }
 
     @Test
     public void shouldTestDeactivationOfPatient() {
-        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Active).build();
+        Patient patient = PatientBuilder.startRecording().withStatus(Status.Active).build();
         patient.deactivate();
-        assertTrue(patient.getStatus().equals(Patient.Status.Inactive));
+        assertTrue(patient.getStatus().equals(Status.Inactive));
     }
 
     @Test

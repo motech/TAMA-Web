@@ -3,10 +3,7 @@ package org.motechproject.tama.platform.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.domain.IVRAuthenticationStatus;
-import org.motechproject.tama.domain.IVRLanguage;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientPreferences;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllIVRCallAudits;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -35,7 +32,7 @@ public class AuthenticationServiceTest {
     public void patientIsAllowedAccessWhenSuspended() {
         String patientId = "43245454354";
         Patient patient = patient(patientId);
-        patient.setStatus(Patient.Status.Suspended);
+        patient.setStatus(Status.Suspended);
 
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
@@ -48,7 +45,7 @@ public class AuthenticationServiceTest {
     public void patientIsAllowedAccessWhenActive() {
         String patientId = "43245454354";
         Patient patient = patient(patientId);
-        patient.setStatus(Patient.Status.Active);
+        patient.setStatus(Status.Active);
 
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);
@@ -61,7 +58,7 @@ public class AuthenticationServiceTest {
     public void patientIsAllowedAccessWhenNotActive() {
         String patientId = "43245454354";
         Patient patient = patient(patientId);
-        patient.setStatus(Patient.Status.Patient_Withdraws_Consent);
+        patient.setStatus(Status.Patient_Withdraws_Consent);
 
         when(allPatients.findByMobileNumber(phoneNumber)).thenReturn(patient);
         when(allPatients.findByMobileNumberAndPasscode(phoneNumber, passcode)).thenReturn(patient);

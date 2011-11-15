@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Status;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,7 +84,7 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
-    public String deactivate(@RequestParam String id, @RequestParam Patient.Status status, HttpServletRequest request) {
+    public String deactivate(@RequestParam String id, @RequestParam org.motechproject.tama.domain.Status status, HttpServletRequest request) {
         Patient patient = allPatients.get(id);
         patient.setStatus(status);
         patientService.update(patient);
@@ -105,7 +103,7 @@ public class PatientController extends BaseController {
         addDateTimeFormat(uiModel);
         uiModel.addAttribute(PATIENT, allPatients.findByIdAndClinicId(id, loggedInClinic(request)));
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
-        uiModel.addAttribute(DEACTIVATION_STATUSES, Patient.Status.deactivationStatuses());
+        uiModel.addAttribute(DEACTIVATION_STATUSES, org.motechproject.tama.domain.Status.deactivationStatuses());
         return SHOW_VIEW;
     }
 

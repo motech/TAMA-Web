@@ -6,6 +6,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.Status;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
@@ -39,7 +40,7 @@ public class SuspendAdherenceCallsCommandTest {
 
         suspendAdherenceCallsCommand.execute(null);
 
-        assertEquals(Patient.Status.Suspended, patient.getStatus());
+        assertEquals(Status.Suspended, patient.getStatus());
         verify(patientService).update(patient);
     }
 }

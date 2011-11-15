@@ -9,6 +9,7 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.Status;
 import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.tama.platform.service.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tama.platform.service.FourDayRecallService;
@@ -46,7 +47,7 @@ public class FourDayRecallListenerTest {
         LocalDate startDate = DateUtil.today();
         String PATIENT_ID = "patient_id";
         String TREATMENT_ADVICE_ID = "TA_ID";
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Active).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).build();
 
         Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
@@ -88,7 +89,7 @@ public class FourDayRecallListenerTest {
         LocalDate startDate = DateUtil.today();
         String PATIENT_ID = "patient_id";
         String TREATMENT_ADVICE_ID = "TA_ID";
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Active).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).build();
 
         Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
@@ -123,7 +124,7 @@ public class FourDayRecallListenerTest {
         Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
                 .withPatientDocId(PATIENT_ID).payload();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Patient.Status.Suspended).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
