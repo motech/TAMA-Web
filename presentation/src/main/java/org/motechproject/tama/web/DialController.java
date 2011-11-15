@@ -40,6 +40,11 @@ public class DialController extends SafeIVRController {
 
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
+        return dial(kooKooIVRContext);
+    }
+
+    @Override
+    public KookooIVRResponseBuilder dial(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContextFactory tamaivrContextFactory = new TAMAIVRContextFactory();
         TAMAIVRContext tamaivrContext = tamaivrContextFactory.create(kooKooIVRContext);
         SymptomsReportingContext symptomsReportingContext = tamaivrContextFactory.createSymptomReportingContext(kooKooIVRContext);

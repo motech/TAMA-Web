@@ -65,7 +65,7 @@ public class DialControllerTest {
     public void shouldAddNumberOfCliniciansCalled_ToRepsonse() {
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
         when(ivrMessage.getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "en")).thenReturn("connecting-to-dr");
-        String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(ivrMessage);
+        String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertTrue(dialResponse.contains("<dial>0ph1</dial>"));
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));
@@ -80,7 +80,7 @@ public class DialControllerTest {
     public void shouldSwitchedToDialledState_OnAnswered_CallStatus() {
         kookooRequest.setStatus(IVRStatus.Answered.toString());
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
-        String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(ivrMessage);
+        String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertFalse(dialResponse.contains("<dial>0ph2</dial>"));
 
@@ -94,7 +94,7 @@ public class DialControllerTest {
     public void shouldSwitchedToDialledState_OnSettingTheLast_ClinicianPhoneNumber() {
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("3");
         when(ivrMessage.getWav(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR, "en")).thenReturn("cannot-connect");
-        String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(ivrMessage);
+        String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertTrue(dialResponse.contains("<playaudio>cannot-connect</playaudio>"));
         assertFalse(dialResponse.contains("dial"));
@@ -116,7 +116,7 @@ public class DialControllerTest {
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
         when(ivrMessage.getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "en")).thenReturn("connecting-to-dr");
-        String dialResponse = dialController.gotDTMF(kooKooIVRContext).create(ivrMessage);
+        String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));

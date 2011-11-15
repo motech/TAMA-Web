@@ -32,19 +32,12 @@ public class DialClinicianTest extends BaseIVRTest {
     @Test
     public void shouldDialClinicianContacts_InCertain_SymptomReportedCallFlows() throws IOException {
         caller = caller(patient);
-
         patientCallsTAMA_AndListensToPillMenu();
-
         patientReportsSymptoms();
-
         dialClinicianContacts();
-
         caller.hangup();
-
         verifyPatientSuspended();
-
         patientCallsTAMA_AndVerifyPillMenuNotPlayed();
-
         caller.hangup();
     }
 
