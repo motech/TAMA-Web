@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr.decisiontree;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.motechproject.decisiontree.model.DialPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.ivr.decisiontree.filter.TreeNodeFilter;
@@ -22,7 +23,7 @@ public class SymptomReportingTreeInterceptor {
     private String[] fifthPriorityFilterCriteria = {"adv_tingpainfeetcropanto", "adv_tingpainfeetcro", "adv_crocin02", "adv_crocin03", "adv`_crocinpanto01", "adv_crocinpanto02",
             "adv_halfhourcontmed01", "adv_halfhourcro01", "adv_halfhourcrocinpanto01", "adv_halfhourpanto01", "adv_levo01", "adv_levopanto01", "adv_panto01",
             "adv_panto02", "adv_tingpainfeet", "adv_tingpainfeetpanto"};
-    private String[] switchToDialPromptFilterCriteria = {"adv_crocin01", "adv_noteatanythg"};
+    private String[] switchToDialPromptFilterCriteria = (String[]) ArrayUtils.addAll(firstPriorityFilterCriteria, secondPriorityFilterCriteria);
     private String[] suspendAdherenceCallsFilterCriteria = {"adv_crocin01", "adv_noteatanythg", "adv_stopmedicineseeclinicasap"};
 
 

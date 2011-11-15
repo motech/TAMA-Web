@@ -69,7 +69,7 @@ public class SymptomReportingTreeInterceptorTest {
     }
 
     @Test
-    public void shouldAddDialPrompts() {
+    public void shouldAddDialPrompts_ForFirstPriorityNodes() {
         Node node1 = node("adv_crocin01");
         interceptor.addCommands(node1);
         List<Prompt> prompts = node1.getPrompts();
@@ -80,6 +80,16 @@ public class SymptomReportingTreeInterceptorTest {
         Node node2 = node("some other node");
         interceptor.addCommands(node2);
         assertTrue(node2.getPrompts().size() == 1);
+    }
+
+    @Test
+    public void shouldAddDialPrompts_ForSecondPriorityNodes() {
+        Node node1 = node("adv_seeclinicasapdepression");
+        interceptor.addCommands(node1);
+        List<Prompt> prompts = node1.getPrompts();
+        assertEquals(2, prompts.size());
+        assertEquals("adv_seeclinicasapdepression", prompts.get(0).getName());
+        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand().getClass());
     }
 
     @Test
@@ -126,13 +136,6 @@ public class SymptomReportingTreeInterceptorTest {
     private boolean containsTreeCommand(Node node, ITreeCommand command) {
         for (ITreeCommand cmd : node.getTreeCommands()) {
             if (cmd == command) return true;
-        }
-        return false;
-    }
-
-    private boolean containsPromptCommand(Node node, ITreeCommand command) {
-        for (Prompt prompt : node.getPrompts()) {
-            if (prompt.getCommand().getClass().getName().equals(command.getClass().getName())) return true;
         }
         return false;
     }
