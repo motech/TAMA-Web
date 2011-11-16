@@ -150,6 +150,6 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
 
         int count = allDosageAdherenceLogs.findScheduledDosagesFailureCount("r1");
 
-        Assert.assertEquals(2, count);
+        Assert.assertEquals(3, count);
     }
 }
