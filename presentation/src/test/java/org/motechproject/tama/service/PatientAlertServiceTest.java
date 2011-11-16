@@ -10,7 +10,6 @@ import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
-import org.motechproject.tama.web.command.EmptyMapMatcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +17,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -31,13 +28,11 @@ public class PatientAlertServiceTest {
     private AllPatients allPatients;
 
     PatientAlertService patientAlertService;
-    private EmptyMapMatcher emptyMapMatcher;
 
     @Before
     public void setUp() {
         initMocks(this);
         patientAlertService = new PatientAlertService(allPatients, alertService);
-        emptyMapMatcher = new EmptyMapMatcher();
     }
 
     @Test
@@ -84,12 +79,10 @@ public class PatientAlertServiceTest {
         verify(alertService, times(1)).changeStatus(testId, AlertStatus.READ);
     }
 
-
     @Test
     public void shouldReturnUnreadAlerts() {
         final String testPatientId = "testPatientId";
         final String testClinicId = "testClinicId";
-
 
         final Clinic clinic = new Clinic() {{
             setId(testClinicId);
@@ -117,10 +110,31 @@ public class PatientAlertServiceTest {
     }
 
     @Test
+    public void shouldReturnUnreadAlerts_ByPatientId() {
+        final String testPatientId1 = "testPatientId1";
+
+        List<Patient> patient1 = new ArrayList<Patient>() {{
+            add(new Patient() {{
+                setPatientId(testPatientId1);
+                setId(testPatientId1);
+            }});
+        }};
+        List<Alert> alerts = new ArrayList<Alert>() {{
+            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+        }};
+
+        when(allPatients.findByPatientId(testPatientId1)).thenReturn(patient1);
+        when(alertService.getBy(testPatientId1, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
+
+        List<PatientAlert> unReadAlertsByPatientId = patientAlertService.getUnreadAlertsBy(testPatientId1);
+        assertEquals(alerts.size(), unReadAlertsByPatientId.size());
+    }
+
+    @Test
     public void shouldReturnReadAlerts() {
         final String testPatientId = "testPatientId";
         final String testClinicId = "testClinicId";
-
 
         final Clinic clinic = new Clinic() {{
             setId(testClinicId);
@@ -206,7 +220,7 @@ public class PatientAlertServiceTest {
         verify(alertService).createAlert(argThat(alertArgumentMatcher));
     }
 
-@Test
+    @Test
     public void shouldUpdateAppointmentReminderAlert() {
         final String testPatientId = "testPatientId";
         String doctorsNotes = "doctorsNotes";
@@ -216,5 +230,4 @@ public class PatientAlertServiceTest {
         verify(alertService, never()).setData(testPatientId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
         verify(alertService).setData(testPatientId, PatientAlert.NOTES, notes);
     }
-
 }

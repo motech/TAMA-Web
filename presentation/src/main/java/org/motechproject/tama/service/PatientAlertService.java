@@ -45,14 +45,18 @@ public class PatientAlertService {
     }
 
     public List<PatientAlert> getReadAlertsForClinic(String clinicId) {
-        return getAlerts(clinicId, AlertStatus.READ);
+        return getAlerts(allPatients.findByClinic(clinicId), AlertStatus.READ);
     }
 
     public List<PatientAlert> getUnreadAlertsForClinic(String clinicId) {
-        return getAlerts(clinicId, AlertStatus.NEW);
+        return getAlerts(allPatients.findByClinic(clinicId), AlertStatus.NEW);
     }
 
-    private List<PatientAlert> getAlerts(String clinicId, final AlertStatus alertStatus) {
+    public List<PatientAlert> getUnreadAlertsBy(String patientId) {
+        return getAlerts(allPatients.findByPatientId(patientId), AlertStatus.NEW);
+    }
+
+    private List<PatientAlert> getAlerts(List<Patient> patients, final AlertStatus alertStatus) {
         final Converter<Patient, List<PatientAlert>> patientListConverter = new Converter<Patient, List<PatientAlert>>() {
             @Override
             public List<PatientAlert> convert(final Patient patient) {
@@ -65,7 +69,7 @@ public class PatientAlertService {
                 return Lambda.convert(alertService.getBy(patient.getId(), null, alertStatus, null, 100), alertPatientAlertConverter);
             }
         };
-        return sort(flatten(convert(allPatients.findByClinic(clinicId), patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
+        return sort(flatten(convert(patients, patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
 
     public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
