@@ -25,9 +25,6 @@
                 <c:if test="${alertInfo.type == 'SymptomReporting'}">
                     <field:select field="symptomsAlertStatus" label= "Symptoms Call Status" id="s_org_motechproject_tama_alert_symptomsStatus" required="true" items="${symptomsStatuses}" path="/symptomsStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                     <field:display field="connectedToDoctor" id="s_org_motechproject_tama_alert_connectedToDoctor" object="${alertInfo}" label="Connected to Doctor"/>
-                    <c:if test="${alertInfo.connectedToDoctor == 'Yes'}">
-                        <c:out value=" - ${alertInfo.doctorName}" />
-                    </c:if>
                     <field:textarea field="doctorsNotes" label="Doctor’s Notes based on direct contact" id="s_org_motechproject_tama_alert_doctorsNotes"  required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" /><br/>
                 </c:if>
                 <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />

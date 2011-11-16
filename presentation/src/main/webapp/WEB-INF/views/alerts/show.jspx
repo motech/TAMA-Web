@@ -15,9 +15,6 @@
                 <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
                 <field:display field="symptomsAlertStatus" id="s_org_motechproject_tama_alert_symptomsStatus" object="${alertInfo}" label="Symptoms Call Status"/>
                 <field:display field="connectedToDoctor" id="s_org_motechproject_tama_alert_connectedToDoctor" object="${alertInfo}" label="Connected to Doctor"/>
-                <c:if test="${alertInfo.connectedToDoctor == 'Yes'}">
-                    <c:out value=" - ${alertInfo.doctorName}" />
-                </c:if>
                 <field:display field="doctorsNotes" id="s_org_motechproject_tama_alert_doctorsNotes" object="${alertInfo}" label="Doctor’s Notes based on direct contact"/>
             </c:when>
             <c:otherwise>

@@ -99,15 +99,12 @@ public class PatientAlert {
     }
 
     public String getConnectedToDoctor() {
-        String connectedtoDoctor = this.alert.getData().get(CONNECTED_TO_DOCTOR);
-        if (StringUtils.isEmpty(connectedtoDoctor))  {
+        String connectedtoDoctorStatus = this.alert.getData().get(CONNECTED_TO_DOCTOR);
+        String doctorName = this.alert.getData().get(DOCTOR_NAME);
+        if (StringUtils.isEmpty(connectedtoDoctorStatus))  {
             return TAMAConstants.ReportedType.NA.toString();
         }
-        return connectedtoDoctor;
-    }
-
-    public String getDoctorName() {
-        return this.alert.getData().get(DOCTOR_NAME);
+        return StringUtils.isEmpty(doctorName) ? connectedtoDoctorStatus : doctorName;
     }
 
     public static PatientAlert newPatientAlert(Alert alert, Patient patient) {
