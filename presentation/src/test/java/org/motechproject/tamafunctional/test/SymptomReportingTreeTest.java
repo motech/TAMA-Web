@@ -68,8 +68,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
     }
 
     private ShowAlertPage updateNotesAndCloseAlert(TestPatient patient, String status, String notes, UnreadAlertsPage unreadAlertsPage) {
-        List<WebElement> webElements = unreadAlertsPage.alertsTable();
-        UpdateAlertPage updateAlertPage = openUpdateAlertPage(webElements, patient.patientId());
+        UpdateAlertPage updateAlertPage = unreadAlertsPage.openUpdateAlertPage(patient.patientId());
         updateAlertPage.changeAlertStatus(status);
         updateAlertPage.changeNotes(notes);
         return updateAlertPage.save();
@@ -86,16 +85,6 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
             rowId++;
         }
         return -1;
-    }
-
-    private UpdateAlertPage openUpdateAlertPage(List<WebElement> webElements, String patientId) {
-        int rowId = getRowId(webElements, patientId);
-        assertTrue(rowId >= 0);
-        WebElement trElement = webElements.get(rowId);
-        //open
-        List<WebElement> elementsWithLinks = trElement.findElements(By.xpath("td/a"));
-        elementsWithLinks.get(1).click();
-        return MyPageFactory.initElements(webDriver, UpdateAlertPage.class);
     }
 
     private void assertTableContainsAlert(List<WebElement> webElements, String patientId, String phoneNumber, String status, String notes) {
@@ -118,7 +107,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         asksForCollectDtmfWith(ivrResponse, "welcome_to_" + clinician.clinic().name(), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.PILL_CONFIRM_CALL_MENU);
 
         // Regimen4_2
-        ivrResponse = caller.enter("2");
+        caller.enter("2");
         ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
 

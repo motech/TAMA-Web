@@ -79,6 +79,10 @@ public class Caller extends FunctionalTestObject {
         return invokeAndGetResponse(callInfo.appendDataMapTo(new QueryParams()));
     }
 
+    public IVRResponse answered() {
+        return invokeAndGetResponse(paramsFor(IVREvent.Dial, "").put("status", "answered"));
+    }
+
     public IVRResponse notAnswered() {
         return invokeAndGetResponse(paramsFor(IVREvent.Dial, "").put("status", "not_answered"));
     }

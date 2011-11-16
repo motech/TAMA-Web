@@ -1,11 +1,12 @@
 package org.motechproject.tamafunctional.test;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import org.motechproject.tama.domain.Status;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.page.ShowAlertPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.TestClinician;
@@ -15,6 +16,8 @@ import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 
 import java.io.IOException;
+
+import static junit.framework.Assert.assertEquals;
 
 public class DialClinicianTest extends BaseIVRTest {
     private TestClinician clinician;
@@ -30,11 +33,21 @@ public class DialClinicianTest extends BaseIVRTest {
     }
 
     @Test
-    public void shouldDialClinicianContacts_InCertain_SymptomReportedCallFlows() throws IOException {
+    public void shouldDialClinicianContacts_InCertain_SymptomReportedCallFlows_AndAClinicianRespondsToTheCall() throws IOException {
         caller = caller(patient);
         patientCallsTAMA_AndListensToPillMenu();
         patientReportsSymptoms();
-        dialClinicianContacts();
+        clinician0AnswersTheCall();
+        caller.hangup();
+        verifyAlertRaised(clinician.clinicContactName0());
+    }
+
+    @Test
+    public void shouldDialClinicianContacts_InCertain_SymptomReportedCallFlows_AndNoClinicianRespondsToTheCall() throws IOException {
+        caller = caller(patient);
+        patientCallsTAMA_AndListensToPillMenu();
+        patientReportsSymptoms();
+        noClinicianAnswersTheCall();
         caller.hangup();
         verifyPatientSuspended();
         patientCallsTAMA_AndVerifyPillMenuNotPlayed();
@@ -80,7 +93,15 @@ public class DialClinicianTest extends BaseIVRTest {
         assertAudioFilesPresent(ivrResponse, "ppc_nvfevhead", "adv_crocin01");
     }
 
-    private void dialClinicianContacts() {
+    private void clinician0AnswersTheCall() {
+        IVRResponse ivrResponse = caller.listenMore();
+        assertAudioFilesPresent(ivrResponse, "connectingdr");
+        assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber0());
+
+        caller.answered();
+    }
+
+    private void noClinicianAnswersTheCall() {
         IVRResponse ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber0());
@@ -97,10 +118,17 @@ public class DialClinicianTest extends BaseIVRTest {
         assertAudioFilesPresent(ivrResponse, "cannotcontact01");
     }
 
+    private void verifyAlertRaised(String clinicianName) {
+        LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
+        ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
+        ShowAlertPage showAlertsPage = listPatientsPage.goToUnreadAlertsPage().openShowAlertPage(patient.patientId());
+        assertEquals(clinicianName, showAlertsPage.getConnectedToDoctor());
+    }
+
     private void verifyPatientSuspended() {
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 gotoShowPatientPage(patient);
-        Assert.assertEquals(showPatientPage.getStatus().trim(), Status.Suspended.toString());
+        assertEquals(Status.Suspended.toString(), showPatientPage.getStatus().trim());
     }
 }

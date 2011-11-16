@@ -73,6 +73,10 @@ public class TestClinician extends TestEntity {
         return clinic.clinicianContact0Number();
     }
 
+    public String clinicContactName0() {
+        return clinic.clinicianContact0Name();
+    }
+
     public String clinicContactNumber1() {
         return clinic.clinicianContact1Number();
     }
