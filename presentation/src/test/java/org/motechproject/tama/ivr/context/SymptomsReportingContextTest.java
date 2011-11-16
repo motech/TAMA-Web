@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tama.ivr.context.SymptomsReportingContext;
 import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
@@ -26,16 +25,18 @@ public class SymptomsReportingContextTest {
     @Test
     public void shouldSet1_AsThe_DefaultNumberOfCliniciansCalled() {
         when(cookies.getValue(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
-        int numberOfCliniciansCalled = new SymptomsReportingContext(kooKooIVRContext).anotherClinicianCalled();
+        SymptomsReportingContext symptomsReportingContext = new SymptomsReportingContext(kooKooIVRContext);
 
-        assertEquals(1, numberOfCliniciansCalled);
+        assertEquals(0, symptomsReportingContext.numberOfCliniciansCalled());
+        assertEquals(1, symptomsReportingContext.anotherClinicianCalled());
     }
 
     @Test
     public void shouldIncrementTheNumberOfPatientsCalled() {
         when(cookies.getValue(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
-        int numberOfCliniciansCalled = new SymptomsReportingContext(kooKooIVRContext).anotherClinicianCalled();
+        SymptomsReportingContext symptomsReportingContext = new SymptomsReportingContext(kooKooIVRContext);
 
-        assertEquals(2, numberOfCliniciansCalled);
+        assertEquals(1, symptomsReportingContext.numberOfCliniciansCalled());
+        assertEquals(2, symptomsReportingContext.anotherClinicianCalled());
     }
 }

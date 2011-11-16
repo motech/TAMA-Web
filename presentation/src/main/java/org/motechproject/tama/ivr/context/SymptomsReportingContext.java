@@ -31,9 +31,13 @@ public class SymptomsReportingContext {
         cookies.add(SWITCH_TO_DIAL_STATE, String.valueOf(false));
     }
 
-    public int anotherClinicianCalled() {
+    public int numberOfCliniciansCalled() {
         String value = cookies.getValue(NUMBER_OF_CLINICIANS_CALLED);
-        int numberOfCliniciansCalled = StringUtils.isEmpty(value) ? 1 : Integer.valueOf(value) + 1;
+        return StringUtils.isEmpty(value) ? 0 : Integer.valueOf(value);
+    }
+
+    public int anotherClinicianCalled() {
+        int numberOfCliniciansCalled = numberOfCliniciansCalled() + 1;
         cookies.add(NUMBER_OF_CLINICIANS_CALLED, String.valueOf(numberOfCliniciansCalled));
         return numberOfCliniciansCalled;
     }

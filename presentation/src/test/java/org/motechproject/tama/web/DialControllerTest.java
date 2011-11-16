@@ -57,12 +57,12 @@ public class DialControllerTest {
             this.add(new Clinic.ClinicianContact("name3", "ph3"));
         }});
         Patient patient = new Patient() {{
-            this.setClinic(clinic);
+            this.setClinic(clinic);setId("patientId");
         }};
 
         kookooRequest = new KookooRequest("", "", "Dial", "", IVRStatus.NotAnswered.toString());
         kooKooIVRContext = new KooKooIVRContext(kookooRequest, httpRequest, response);
-        tamaivrcontext = new TAMAIVRContextForTest().patient(patient);
+        tamaivrcontext = new TAMAIVRContextForTest().patient(patient).patientId(patient.getId());
         dialController = new DialController(null, callDetailRecordService, null, contextFactory, patientAlertService);
 
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaivrcontext);
@@ -96,6 +96,7 @@ public class DialControllerTest {
         verify(response, times(1)).addCookie(cookieCaptor.capture());
         assertEquals(SymptomsReportingContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getValue().getName());
         assertEquals("false", cookieCaptor.getValue().getValue());
+        verify(patientAlertService).updateDoctorConnectedToDuringSymptomCall("patientId", "name1");
     }
 
     @Test

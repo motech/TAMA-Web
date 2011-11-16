@@ -56,12 +56,18 @@ public class DialController extends SafeIVRController {
         List<Clinic.ClinicianContact> clinicianContacts = tamaivrContext.patient(allPatients).getClinic().getClinicianContacts();
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder().language(tamaivrContext.preferredLanguage());
         if (kooKooIVRContext.isAnswered()) {
-            symptomsReportingContext.endCall();
+            updateAlertAndEndCurrentCall(tamaivrContext, symptomsReportingContext, clinicianContacts);
         }
         else {
             tryAndDialTheNextClinician(symptomsReportingContext, clinicianContacts, kookooIVRResponseBuilder);
         }
         return kookooIVRResponseBuilder;
+    }
+
+    private void updateAlertAndEndCurrentCall(TAMAIVRContext tamaivrContext, SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts) {
+        String clinicianName = clinicianContacts.get(symptomsReportingContext.numberOfCliniciansCalled() - 1).getName();
+        patientAlertService.updateDoctorConnectedToDuringSymptomCall(tamaivrContext.patientId(), clinicianName);
+        symptomsReportingContext.endCall();
     }
 
     private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
