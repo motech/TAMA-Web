@@ -14,6 +14,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +51,8 @@ public class PatientAlertService {
         return new PatientAlerts(getAlerts(allPatients.findByClinic(clinicId), AlertStatus.NEW));
     }
 
-    public PatientAlerts getAllAlertsBy(String patientId) {
-        return new PatientAlerts(getAlerts(allPatients.findByPatientId(patientId), null));
+    public PatientAlerts getAllAlertsBy(final String patientId) {
+        return new PatientAlerts(getAlerts(new ArrayList<Patient>() {{ add(allPatients.get(patientId)); }}, null));
     }
 
     private List<PatientAlert> getAlerts(List<Patient> patients, final AlertStatus alertStatus) {

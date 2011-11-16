@@ -116,18 +116,16 @@ public class PatientAlertServiceTest {
     public void shouldReturnAllAlerts_ByPatientId() {
         final String testPatientId1 = "testPatientId1";
 
-        List<Patient> patient1 = new ArrayList<Patient>() {{
-            add(new Patient() {{
-                setPatientId(testPatientId1);
-                setId(testPatientId1);
-            }});
+        Patient patient1 = new Patient() {{
+            setPatientId(testPatientId1);
+            setId(testPatientId1);
         }};
         List<Alert> alerts = new ArrayList<Alert>() {{
             add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
             add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.READ, 2, null));
         }};
 
-        when(allPatients.findByPatientId(testPatientId1)).thenReturn(patient1);
+        when(allPatients.get(testPatientId1)).thenReturn(patient1);
         when(alertService.getBy(testPatientId1, null, null, null, 100)).thenReturn(alerts);
 
         PatientAlerts unReadAlertsByPatientId = patientAlertService.getAllAlertsBy(testPatientId1);
@@ -240,17 +238,15 @@ public class PatientAlertServiceTest {
         final String alertId = "alertId";
         String doctorName = "kumarasamy";
 
-        List<Patient> patientList = new ArrayList<Patient>() {{
-            add(new Patient() {{
-                setPatientId(testPatientId);
-                setId(testPatientId);
-            }});
+        Patient patient = new Patient() {{
+            setPatientId(testPatientId);
+            setId(testPatientId);
         }};
         List<Alert> alerts = new ArrayList<Alert>() {{
             add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null){{setData(symptomReportingData); setId(alertId);}});
         }};
 
-        when(allPatients.findByPatientId(testPatientId)).thenReturn(patientList);
+        when(allPatients.get(testPatientId)).thenReturn(patient);
         when(alertService.getBy(testPatientId, null, null, null, 100)).thenReturn(alerts);
 
         patientAlertService.updateDoctorConnectedToDuringSymptomCall(testPatientId, doctorName);
