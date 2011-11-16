@@ -32,4 +32,18 @@ public class AllHealthTipsHistoryTest extends SpringIntegrationTest {
 
         markForDeletion(healthTipsHistory1, healthTipsHistory2, healthTipsHistory3);
     }
+
+    @Test
+    public void shouldFilterByPatientIdAndAudioFilename() throws Exception {
+        HealthTipsHistory healthTipsHistory1 = new HealthTipsHistory("1", "foo", DateUtil.now());
+        HealthTipsHistory healthTipsHistory2 = new HealthTipsHistory("2", "fuu", DateUtil.now());
+        HealthTipsHistory healthTipsHistory3 = new HealthTipsHistory("1", "fii", DateUtil.now());
+        allHealthTipsHistory.add(healthTipsHistory1);
+        allHealthTipsHistory.add(healthTipsHistory2);
+        allHealthTipsHistory.add(healthTipsHistory3);
+
+        assertEquals("fii", allHealthTipsHistory.findByPatientIdAndAudioFilename("1", "fii").getAudioFilename());
+
+        markForDeletion(healthTipsHistory1, healthTipsHistory2, healthTipsHistory3);
+    }
 }

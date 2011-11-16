@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 public class TAMACallFlowController implements CallFlowController {
     public static final String AUTHENTICATION_URL = "/ivr/authentication";
     public static final String OUTBOX_URL = "/ivr/outbox";
+    public static final String HEALTH_TIPS_URL = "/ivr/healthtips";
     public static final String PRE_OUTBOX_URL = "/ivr/preoutbox";
     public static final String HANG_UP_URL = "/ivr/hangup";
     public static final String SYMPTOM_REPORTING_URL = "/ivr/symptomreporting";
@@ -59,6 +60,7 @@ public class TAMACallFlowController implements CallFlowController {
             return AllIVRURLs.DECISION_TREE_URL;
         if (tamaivrContext.hasOutboxCompleted()) return HANG_UP_URL;
         if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
+        if (callState.equals(CallState.HEALTH_TIPS)) return HEALTH_TIPS_URL;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
             return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : HANG_UP_URL;
         throw new TamaException("No URL found");

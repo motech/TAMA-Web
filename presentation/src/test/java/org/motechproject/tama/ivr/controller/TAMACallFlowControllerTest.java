@@ -49,6 +49,7 @@ public class TAMACallFlowControllerTest {
         when(contextFactory.createSymptomReportingContext(kooKooIVRContext)).thenReturn(symptomsReportingContext);
     }
 
+
     @Test
     public void outboxURLShouldBeReturnedWhenTheDecisionTreesAreComplete() {
         ivrContext.callState(CallState.ALL_TREES_COMPLETED);
@@ -71,6 +72,12 @@ public class TAMACallFlowControllerTest {
     public void returnAuthenticationURLWhenTheCallStarts() {
         ivrContext.callState(CallState.STARTED);
         assertEquals(TAMACallFlowController.AUTHENTICATION_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldReturnHealthTipURLWhenCallStateIsHealthTip() {
+        ivrContext.callState(CallState.HEALTH_TIPS);
+        assertEquals(TAMACallFlowController.HEALTH_TIPS_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package org.motechproject.tama.repository;
 
+import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
@@ -23,5 +24,11 @@ public class AllHealthTipsHistory extends CouchDbRepositorySupport<HealthTipsHis
     @View(name="findByPatientId", map = "function(doc) { if (doc.documentType == 'HealthTipsHistory') { emit(doc.patientDocumentId, doc) } }")
     public List<HealthTipsHistory> findByPatientId(String patientDocumentId) {
         return queryView("findByPatientId", patientDocumentId);
+    }
+
+    @View(name="findByPatientIdAndAudioFilename", map = "function(doc) { if (doc.documentType == 'HealthTipsHistory') { emit([doc.patientDocumentId, doc.audioFilename], doc) } }")
+    public HealthTipsHistory findByPatientIdAndAudioFilename(String patientDocumentId, String audioFilename) {
+        List<HealthTipsHistory> entries = queryView("findByPatientIdAndAudioFilename", ComplexKey.of(patientDocumentId, audioFilename));
+        return entries != null && entries.size() > 0? entries.get(0) : null;
     }
 }
