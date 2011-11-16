@@ -4,6 +4,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.command.fourdayrecall.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,7 @@ public class FourDayRecallTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
+                        new AudioPrompt().setName(TamaIVRMessage.FDR_GREETING),
                         new MenuAudioPrompt().setCommand(mainMenu)
                 )
                 .setTransitions(new Object[][]{
