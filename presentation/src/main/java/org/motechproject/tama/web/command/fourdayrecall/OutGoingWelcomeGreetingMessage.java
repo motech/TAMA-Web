@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class WelcomeGreetingMessage extends BaseTreeCommand {
+public class OutGoingWelcomeGreetingMessage extends BaseTreeCommand {
     private AllPatients allPatients;
     private AllClinics allClinics;
 
     @Autowired
-    public WelcomeGreetingMessage(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
+    public OutGoingWelcomeGreetingMessage(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
         super(pillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
