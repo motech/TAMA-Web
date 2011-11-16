@@ -77,7 +77,6 @@ public class DialClinicianTest extends BaseIVRTest {
     private void patientReportsSymptoms() {
         // Regimen4_2
         caller.enter("2");
-        caller.enter("2");
         IVRResponse ivrResponse = caller.listenMore();
         assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
 
