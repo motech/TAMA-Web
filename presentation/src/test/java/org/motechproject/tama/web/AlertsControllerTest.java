@@ -4,12 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.domain.PatientAlert;
+import org.motechproject.tama.domain.PatientAlerts;
 import org.motechproject.tama.service.PatientAlertService;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.times;
@@ -44,7 +43,7 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldSetUnreadAlertsForDisplay() {
-        List<PatientAlert> patientAlerts = new ArrayList<PatientAlert>();
+        PatientAlerts patientAlerts = new PatientAlerts();
         when(patientAlertService.getUnreadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
 
         String unreadControllerString = alertsController.unread(uiModel, request);
@@ -55,7 +54,7 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldSetReadAlertsForDisplay() {
-        List<PatientAlert> patientAlerts = new ArrayList<PatientAlert>();
+        PatientAlerts patientAlerts = new PatientAlerts();
         when(patientAlertService.getReadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
 
         String readControllerString = alertsController.read(uiModel, request);

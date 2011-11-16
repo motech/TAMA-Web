@@ -104,7 +104,7 @@ public class PatientAlertServiceTest {
         when(allPatients.findByClinic(testClinicId)).thenReturn(clinicPatients);
         when(alertService.getBy(testPatientId, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
 
-        List<PatientAlert> unReadAlertsForClinic = patientAlertService.getUnreadAlertsForClinic(testClinicId);
+        PatientAlerts unReadAlertsForClinic = patientAlertService.getUnreadAlertsForClinic(testClinicId);
 
         assertEquals(alerts.size(), unReadAlertsForClinic.size());
     }
@@ -127,7 +127,7 @@ public class PatientAlertServiceTest {
         when(allPatients.findByPatientId(testPatientId1)).thenReturn(patient1);
         when(alertService.getBy(testPatientId1, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
 
-        List<PatientAlert> unReadAlertsByPatientId = patientAlertService.getUnreadAlertsBy(testPatientId1);
+        PatientAlerts unReadAlertsByPatientId = patientAlertService.getUnreadAlertsBy(testPatientId1);
         assertEquals(alerts.size(), unReadAlertsByPatientId.size());
     }
 
@@ -156,7 +156,7 @@ public class PatientAlertServiceTest {
         when(allPatients.findByClinic(testClinicId)).thenReturn(clinicPatients);
         when(alertService.getBy(testPatientId, null, AlertStatus.READ, null, 100)).thenReturn(alerts);
 
-        List<PatientAlert> readAlertsForClinic = patientAlertService.getReadAlertsForClinic(testClinicId);
+        PatientAlerts readAlertsForClinic = patientAlertService.getReadAlertsForClinic(testClinicId);
 
         assertEquals(alerts.size(), readAlertsForClinic.size());
     }

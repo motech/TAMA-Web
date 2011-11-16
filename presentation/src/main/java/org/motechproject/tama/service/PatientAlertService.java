@@ -7,10 +7,7 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientAlert;
-import org.motechproject.tama.domain.PatientAlertType;
-import org.motechproject.tama.domain.SymptomsAlertStatus;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,16 +41,16 @@ public class PatientAlertService {
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }
 
-    public List<PatientAlert> getReadAlertsForClinic(String clinicId) {
-        return getAlerts(allPatients.findByClinic(clinicId), AlertStatus.READ);
+    public PatientAlerts getReadAlertsForClinic(String clinicId) {
+        return new PatientAlerts(getAlerts(allPatients.findByClinic(clinicId), AlertStatus.READ));
     }
 
-    public List<PatientAlert> getUnreadAlertsForClinic(String clinicId) {
-        return getAlerts(allPatients.findByClinic(clinicId), AlertStatus.NEW);
+    public PatientAlerts getUnreadAlertsForClinic(String clinicId) {
+        return new PatientAlerts(getAlerts(allPatients.findByClinic(clinicId), AlertStatus.NEW));
     }
 
-    public List<PatientAlert> getUnreadAlertsBy(String patientId) {
-        return getAlerts(allPatients.findByPatientId(patientId), AlertStatus.NEW);
+    public PatientAlerts getUnreadAlertsBy(String patientId) {
+        return new PatientAlerts(getAlerts(allPatients.findByPatientId(patientId), AlertStatus.NEW));
     }
 
     private List<PatientAlert> getAlerts(List<Patient> patients, final AlertStatus alertStatus) {

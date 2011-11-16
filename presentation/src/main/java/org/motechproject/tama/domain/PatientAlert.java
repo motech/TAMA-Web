@@ -73,6 +73,10 @@ public class PatientAlert {
         return this.alert.getName();
     }
 
+    public boolean isSymptomReportingAlert() {
+        return PatientAlertType.SymptomReporting.name().equals(getType());
+    }
+
     public String getType() {
         return this.alert.getData().get(PATIENT_ALERT_TYPE);
     }
