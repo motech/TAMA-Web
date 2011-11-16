@@ -26,9 +26,9 @@ public class IvrCallTest {
     }
 
     @Test
-    public void shouldNotMakeCallWhenPatientIsSuspended() {
+    public void shouldNotMakeCallWhenPatientIsInactive() {
         final Patient patient = new Patient();
-        patient.setStatus(Patient.Status.Suspended);
+        patient.setStatus(Patient.Status.Inactive);
         when(allPatients.get("patient_doc_id")).thenReturn(patient);
 
         new IvrCall(allPatients, ivrService, null).makeCall("patient_doc_id");

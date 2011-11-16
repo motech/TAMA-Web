@@ -89,7 +89,7 @@ public class PatientTest {
 
     @Test
     public void shouldTestIfPatientIsNotActive() {
-        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Suspended).build();
+        Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Inactive).build();
         Assert.assertTrue(patient.isNotActive());
         patient.setStatus(Patient.Status.Loss_To_Follow_Up);
         Assert.assertTrue(patient.isNotActive());
