@@ -40,6 +40,9 @@ public class DialClinicianTest extends BaseIVRTest {
         clinician0AnswersTheCall();
         caller.hangup();
         verifyAlertRaised(clinician.clinicContactName0());
+        verifyPatientSuspended();
+        patientCallsTAMA_AndVerifyPillMenuNotPlayed();
+        caller.hangup();
     }
 
     @Test
@@ -49,6 +52,7 @@ public class DialClinicianTest extends BaseIVRTest {
         patientReportsSymptoms();
         noClinicianAnswersTheCall();
         caller.hangup();
+        verifyAlertRaised("No");
         verifyPatientSuspended();
         patientCallsTAMA_AndVerifyPillMenuNotPlayed();
         caller.hangup();
@@ -123,6 +127,7 @@ public class DialClinicianTest extends BaseIVRTest {
         ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
         ShowAlertPage showAlertsPage = listPatientsPage.goToUnreadAlertsPage().openShowAlertPage(patient.patientId());
         assertEquals(clinicianName, showAlertsPage.getConnectedToDoctor());
+        showAlertsPage.logout();
     }
 
     private void verifyPatientSuspended() {
@@ -130,5 +135,6 @@ public class DialClinicianTest extends BaseIVRTest {
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 gotoShowPatientPage(patient);
         assertEquals(Status.Suspended.toString(), showPatientPage.getStatus().trim());
+        showPatientPage.logout();
     }
 }
