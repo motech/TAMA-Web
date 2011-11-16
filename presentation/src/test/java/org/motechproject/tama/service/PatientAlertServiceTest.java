@@ -8,6 +8,7 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -112,7 +113,7 @@ public class PatientAlertServiceTest {
     }
 
     @Test
-    public void shouldReturnUnreadAlerts_ByPatientId() {
+    public void shouldReturnAllAlerts_ByPatientId() {
         final String testPatientId1 = "testPatientId1";
 
         List<Patient> patient1 = new ArrayList<Patient>() {{
@@ -123,13 +124,13 @@ public class PatientAlertServiceTest {
         }};
         List<Alert> alerts = new ArrayList<Alert>() {{
             add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
-            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.READ, 2, null));
         }};
 
         when(allPatients.findByPatientId(testPatientId1)).thenReturn(patient1);
-        when(alertService.getBy(testPatientId1, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
+        when(alertService.getBy(testPatientId1, null, null, null, 100)).thenReturn(alerts);
 
-        PatientAlerts unReadAlertsByPatientId = patientAlertService.getUnreadAlertsBy(testPatientId1);
+        PatientAlerts unReadAlertsByPatientId = patientAlertService.getAllAlertsBy(testPatientId1);
         assertEquals(alerts.size(), unReadAlertsByPatientId.size());
     }
 
@@ -250,10 +251,11 @@ public class PatientAlertServiceTest {
         }};
 
         when(allPatients.findByPatientId(testPatientId)).thenReturn(patientList);
-        when(alertService.getBy(testPatientId, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
+        when(alertService.getBy(testPatientId, null, null, null, 100)).thenReturn(alerts);
 
         patientAlertService.updateDoctorConnectedToDuringSymptomCall(testPatientId, doctorName);
 
+        verify(alertService).setData(alertId, PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
         verify(alertService).setData(alertId, PatientAlert.DOCTOR_NAME, doctorName);
     }
 }

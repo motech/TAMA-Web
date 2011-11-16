@@ -7,6 +7,7 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
@@ -49,8 +50,8 @@ public class PatientAlertService {
         return new PatientAlerts(getAlerts(allPatients.findByClinic(clinicId), AlertStatus.NEW));
     }
 
-    public PatientAlerts getUnreadAlertsBy(String patientId) {
-        return new PatientAlerts(getAlerts(allPatients.findByPatientId(patientId), AlertStatus.NEW));
+    public PatientAlerts getAllAlertsBy(String patientId) {
+        return new PatientAlerts(getAlerts(allPatients.findByPatientId(patientId), null));
     }
 
     private List<PatientAlert> getAlerts(List<Patient> patients, final AlertStatus alertStatus) {
@@ -91,9 +92,10 @@ public class PatientAlertService {
     }
 
     public void updateDoctorConnectedToDuringSymptomCall(String patientId, String doctorName) {
-        PatientAlerts unreadAlerts = getUnreadAlertsBy(patientId);
-        PatientAlert lastReportedAlert = unreadAlerts.lastSymptomReportedAlert();
+        PatientAlerts allAlerts = getAllAlertsBy(patientId);
+        PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
         if (lastReportedAlert == null) return;
+        alertService.setData(lastReportedAlert.getAlertId(), PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
         alertService.setData(lastReportedAlert.getAlertId(), PatientAlert.DOCTOR_NAME, doctorName);
     }
 }
