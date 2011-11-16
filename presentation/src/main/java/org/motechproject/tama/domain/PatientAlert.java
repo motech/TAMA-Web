@@ -4,10 +4,12 @@ package org.motechproject.tama.domain;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.tama.TAMAConstants;
 
 public class PatientAlert {
 
     public static final String PATIENT_ALERT_TYPE = "PatientAlertType";
+    public static final String CONNECTED_TO_DOCTOR = "ConnectedToDoctor";
     public static final String NOTES = "Notes";
     public static final String DOCTORS_NOTES = "Doctor's Notes";
     public static final String SYMPTOMS_ALERT_STATUS = "Symptoms Alert Status";
@@ -89,6 +91,14 @@ public class PatientAlert {
 
     public String getSymptomsAlertStatus() {
         return this.alert.getData().get(SYMPTOMS_ALERT_STATUS);
+    }
+
+    public TAMAConstants.ReportedType getConnectedToDoctor() {
+        String connectedtoDoctor = this.alert.getData().get(CONNECTED_TO_DOCTOR);
+        if (StringUtils.isEmpty(connectedtoDoctor))  {
+            return TAMAConstants.ReportedType.NA;
+        }
+        return Enum.valueOf(TAMAConstants.ReportedType.class, connectedtoDoctor);
     }
 
     public static PatientAlert newPatientAlert(Alert alert, Patient patient) {

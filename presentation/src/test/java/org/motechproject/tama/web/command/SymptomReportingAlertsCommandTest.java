@@ -1,17 +1,19 @@
 package org.motechproject.tama.web.command;
 
 import org.apache.commons.lang.StringUtils;
-import org.hamcrest.BaseMatcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.domain.PatientAlert;
 import org.motechproject.tama.domain.PatientAlertType;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.service.PatientAlertService;
 
 import java.util.Map;
@@ -29,11 +31,11 @@ public class SymptomReportingAlertsCommandTest {
     private Properties properties;
     @Mock
     private TAMAIVRContextFactory contextFactory;
-
     @Mock
     private Node node;
     private SymptomReportingAlertsCommand command;
-    private BaseMatcher<Map<String,String>> emptyMapMatcher;
+    private ArgumentMatcher<Map<String,String>> naReportedTypeDataMatcher;
+    private ArgumentMatcher<Map<String,String>> notReportedTypeDataMatcher;
 
     @Before
     public void setup() {
@@ -41,15 +43,36 @@ public class SymptomReportingAlertsCommandTest {
         TAMAIVRContextForTest context = new TAMAIVRContextForTest().patientId("dummyPatientId");
         when(contextFactory.create(any(KooKooIVRContext.class))).thenReturn(context);
         command = new SymptomReportingAlertsCommand(alertService, properties, contextFactory);
-        emptyMapMatcher = new EmptyMapMatcher();
+        naReportedTypeDataMatcher = new ArgumentMatcher<Map<String, String>>() {
+            @Override
+            public boolean matches(Object argument) {
+                Map<String, String> map = (Map<String, String>) argument;
+                return map.size() == 1 && map.get(PatientAlert.CONNECTED_TO_DOCTOR).equals(TAMAConstants.ReportedType.NA.toString());
+            }
+        };
+        notReportedTypeDataMatcher = new ArgumentMatcher<Map<String, String>>() {
+            @Override
+            public boolean matches(Object argument) {
+                Map<String, String> map = (Map<String, String>) argument;
+                return map.size() == 1 && map.get(PatientAlert.CONNECTED_TO_DOCTOR).equals(TAMAConstants.ReportedType.No.toString());
+            }
+        };
     }
 
     @Test
     public void shouldCallAlertServiceToCreateANewAlert() {
-        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, node);
+        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, node, TAMAConstants.ReportedType.NA);
         iTreeCommand.execute(null);
         when(properties.get(any())).thenReturn(StringUtils.EMPTY);
-        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq(""), eq(""), eq(PatientAlertType.SymptomReporting), argThat(emptyMapMatcher));
+        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq(""), eq(""), eq(PatientAlertType.SymptomReporting), argThat(naReportedTypeDataMatcher));
+    }
+
+    @Test
+    public void shouldCallAlertServiceToCreateANewAlert_ForASpecificReportedType() {
+        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, node, TAMAConstants.ReportedType.No);
+        iTreeCommand.execute(null);
+        when(properties.get(any())).thenReturn(StringUtils.EMPTY);
+        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq(""), eq(""), eq(PatientAlertType.SymptomReporting), argThat(notReportedTypeDataMatcher));
     }
 
     @Test
@@ -60,10 +83,9 @@ public class SymptomReportingAlertsCommandTest {
         when(properties.get("cy_prompt")).thenReturn("cy_prompt");
         when(properties.get("cn_prompt")).thenReturn("cn_prompt");
 
-        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode);
+        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode, TAMAConstants.ReportedType.NA);
         iTreeCommand.execute(null);
-        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq(""), eq("ppc_prompt"), eq(PatientAlertType.SymptomReporting), argThat(emptyMapMatcher));
-
+        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq(""), eq("ppc_prompt"), eq(PatientAlertType.SymptomReporting), argThat(naReportedTypeDataMatcher));
     }
 
     @Test
@@ -73,11 +95,10 @@ public class SymptomReportingAlertsCommandTest {
         when(properties.get("cy_prompt")).thenReturn("cy_prompt");
         when(properties.get("cn_prompt")).thenReturn("cn_prompt");
 
-        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode);
+        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode, TAMAConstants.ReportedType.NA);
         iTreeCommand.execute(null);
-        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq(""), eq("cy_prompt"), eq(PatientAlertType.SymptomReporting), argThat(emptyMapMatcher));
+        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq(""), eq("cy_prompt"), eq(PatientAlertType.SymptomReporting), argThat(naReportedTypeDataMatcher));
     }
-
 
     @Test
     public void shouldNotSetSymptomsForN02Node() {
@@ -85,9 +106,8 @@ public class SymptomReportingAlertsCommandTest {
         stubNode.setPrompts(new MenuAudioPrompt().setName("adv_callclinic"), new MenuAudioPrompt().setName("cn_prompt"));
         when(properties.get(any())).thenReturn("test");
 
-        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode);
+        final ITreeCommand iTreeCommand = command.symptomReportingAlertWithPriority(1, stubNode, TAMAConstants.ReportedType.NA);
         iTreeCommand.execute(null);
-        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq("test"), eq("-"), eq(PatientAlertType.SymptomReporting), argThat(emptyMapMatcher));
+        verify(alertService).createAlert(eq("dummyPatientId"), eq(1), eq("test"), eq("-"), eq(PatientAlertType.SymptomReporting), argThat(naReportedTypeDataMatcher));
     }
-
 }

@@ -9,6 +9,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.web.command.SuspendAdherenceCallsCommand;
 import org.motechproject.tama.web.command.SymptomReportingAlertsCommand;
 import org.motechproject.tama.web.command.callforwarding.DialStateCommand;
@@ -35,7 +36,7 @@ public class SymptomReportingTreeInterceptorTest {
     public void setUp() {
         initMocks(this);
 
-        when(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(Matchers.<Integer>any(), Matchers.<Node>any())).thenReturn(new ITreeCommand() {
+        when(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(Matchers.<Integer>any(), Matchers.<Node>any(), Matchers.<TAMAConstants.ReportedType>any())).thenReturn(new ITreeCommand() {
             @Override
             public String[] execute(Object o) {
                 return new String[0];
@@ -57,15 +58,15 @@ public class SymptomReportingTreeInterceptorTest {
 
         assertEquals(0, rootNode.getTreeCommands().size());
         interceptor.addCommands(node1);
-        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(1, node1);
+        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(1, node1, TAMAConstants.ReportedType.No);
         interceptor.addCommands(node2);
-        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(2, node2);
+        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(2, node2, TAMAConstants.ReportedType.No);
         interceptor.addCommands(node3);
-        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(3, node3);
+        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(3, node3, TAMAConstants.ReportedType.NA);
         interceptor.addCommands(node4);
-        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(4, node4);
+        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(4, node4, TAMAConstants.ReportedType.NA);
         interceptor.addCommands(node5);
-        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(5, node5);
+        verify(symptomReportingAlertsCommand).symptomReportingAlertWithPriority(5, node5, TAMAConstants.ReportedType.NA);
     }
 
     @Test

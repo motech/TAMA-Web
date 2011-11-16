@@ -102,4 +102,21 @@ public class TAMAConstants {
             return labTest != null && CD4.name.equals(labTest.getName());
         }
     }
+
+    public enum ReportedType {
+        NA("n/a"),
+        Yes("Yes"),
+        No("No");
+
+        private String type;
+
+        ReportedType(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return type;
+        }
+    }
 }

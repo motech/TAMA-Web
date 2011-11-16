@@ -7,6 +7,8 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.domain.PatientAlert;
 import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -42,7 +44,7 @@ public class SymptomReportingAlertsCommand {
         this.contextFactory = contextFactory;
     }
 
-    public ITreeCommand symptomReportingAlertWithPriority(final Integer priority, final Node node) {
+    public ITreeCommand symptomReportingAlertWithPriority(final Integer priority, final Node node, final TAMAConstants.ReportedType symptomReportedToDoctor) {
         final String adviceGiven = getAdviceGiven(node);
         final String symptomReported = getSymptomReported(node);
 
@@ -51,7 +53,9 @@ public class SymptomReportingAlertsCommand {
             public String[] execute(Object o) {
                 TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) o);
                 String externalId = ivrContext.patientId();
-                patientAlertService.createAlert(externalId, priority, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, new HashMap<String, String>());
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put(PatientAlert.CONNECTED_TO_DOCTOR, symptomReportedToDoctor.toString());
+                patientAlertService.createAlert(externalId, priority, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, data);
                 return new String[0];
             }
         };

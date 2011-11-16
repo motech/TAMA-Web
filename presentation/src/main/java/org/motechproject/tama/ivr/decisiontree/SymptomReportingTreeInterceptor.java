@@ -3,6 +3,7 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.apache.commons.lang.ArrayUtils;
 import org.motechproject.decisiontree.model.DialPrompt;
 import org.motechproject.decisiontree.model.Node;
+import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.ivr.decisiontree.filter.TreeNodeFilter;
 import org.motechproject.tama.web.command.SuspendAdherenceCallsCommand;
 import org.motechproject.tama.web.command.SymptomReportingAlertsCommand;
@@ -44,16 +45,7 @@ public class SymptomReportingTreeInterceptor {
         addSuspendAdherenceCallsCommand(node);
     }
 
-    private Node addSuspendAdherenceCallsCommand(Node node) {
-        TreeNodeFilter filter = new TreeNodeFilter(suspendAdherenceCallsFilterCriteria);
-        final List<Node> nodes = filter.filter(node);
-        for (Node priorityNode : nodes) {
-            priorityNode.setTreeCommands(suspendAdherenceCallsCommand);
-        }
-        return node;
-    }
-
-    private Node addAlerts(final Node node) {
+    private void addAlerts(Node node) {
         List<TreeNodeFilter> finders = Arrays.asList(
                 new TreeNodeFilter(firstPriorityFilterCriteria),
                 new TreeNodeFilter(secondPriorityFilterCriteria),
@@ -64,19 +56,27 @@ public class SymptomReportingTreeInterceptor {
         for (int i = 0; i < finders.size(); i++) {
             final List<Node> nodes = finders.get(i).filter(node);
             for (Node priorityNode : nodes) {
-                priorityNode.setTreeCommands(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(i + 1, priorityNode));
+                boolean isDialPrompt = new TreeNodeFilter(switchToDialPromptFilterCriteria).select(priorityNode);
+                TAMAConstants.ReportedType symptomReportedToDoctor = isDialPrompt ? TAMAConstants.ReportedType.No : TAMAConstants.ReportedType.NA;
+                priorityNode.setTreeCommands(symptomReportingAlertsCommand.symptomReportingAlertWithPriority(i + 1, priorityNode, symptomReportedToDoctor));
             }
         }
-        return node;
     }
 
-    private Node addDialPrompt(Node node) {
+    private void addDialPrompt(Node node) {
         final List<Node> nodes = new TreeNodeFilter(switchToDialPromptFilterCriteria).filter(node);
         for (Node priorityNode : nodes) {
             DialPrompt dialPrompt = new DialPrompt();
             dialPrompt.setCommand(dialStateCommand);
             priorityNode.addPrompts(dialPrompt);
         }
-        return node;
+    }
+
+    private void addSuspendAdherenceCallsCommand(Node node) {
+        TreeNodeFilter filter = new TreeNodeFilter(suspendAdherenceCallsFilterCriteria);
+        final List<Node> nodes = filter.filter(node);
+        for (Node priorityNode : nodes) {
+            priorityNode.setTreeCommands(suspendAdherenceCallsCommand);
+        }
     }
 }
