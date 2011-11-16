@@ -29,11 +29,13 @@ public class PatientAlertTest {
     public void shouldReturnConnectedToDoctor_ReportedType() {
         HashMap<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.No.toString());
+        data.put(PatientAlert.DOCTOR_NAME, "kumarasamy");
         Alert alert = new Alert("externalId", AlertType.MEDIUM, AlertStatus.NEW, 1, data);
 
         final PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
         Assert.assertEquals(TAMAConstants.ReportedType.No.toString(), patientAlert.getConnectedToDoctor());
+        Assert.assertEquals("kumarasamy", patientAlert.getDoctorName());
     }
 
     @Test

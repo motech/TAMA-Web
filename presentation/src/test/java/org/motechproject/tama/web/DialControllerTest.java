@@ -15,6 +15,7 @@ import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.SymptomsReportingContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.service.PatientAlertService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ public class DialControllerTest {
     private TAMAIVRContextFactory contextFactory;
     @Mock
     private HttpServletResponse response;
+    @Mock
+    private PatientAlertService patientAlertService;
     private Clinic clinic;
     private KookooRequest kookooRequest;
     private DialController dialController;
@@ -60,7 +63,7 @@ public class DialControllerTest {
         kookooRequest = new KookooRequest("", "", "Dial", "", IVRStatus.NotAnswered.toString());
         kooKooIVRContext = new KooKooIVRContext(kookooRequest, httpRequest, response);
         tamaivrcontext = new TAMAIVRContextForTest().patient(patient);
-        dialController = new DialController(null, callDetailRecordService, null, contextFactory);
+        dialController = new DialController(null, callDetailRecordService, null, contextFactory, patientAlertService);
 
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaivrcontext);
         when(contextFactory.createSymptomReportingContext(kooKooIVRContext)).thenReturn(new SymptomsReportingContext(kooKooIVRContext));

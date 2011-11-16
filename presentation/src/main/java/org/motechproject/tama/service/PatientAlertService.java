@@ -89,4 +89,11 @@ public class PatientAlertService {
         }
         alertService.setData(alertId, PatientAlert.NOTES, notes);
     }
+
+    public void updateDoctorConnectedToDuringSymptomCall(String patientId, String doctorName) {
+        PatientAlerts unreadAlerts = getUnreadAlertsBy(patientId);
+        PatientAlert lastReportedAlert = unreadAlerts.lastSymptomReportedAlert();
+        if (lastReportedAlert == null) return;
+        alertService.setData(lastReportedAlert.getAlertId(), PatientAlert.DOCTOR_NAME, doctorName);
+    }
 }

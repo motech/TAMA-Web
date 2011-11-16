@@ -14,6 +14,7 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.service.PatientAlertService;
 import org.motechproject.tama.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,16 +29,18 @@ public class DialController extends SafeIVRController {
 
     private AllPatients allPatients;
     private TAMAIVRContextFactory contextFactory;
+    private PatientAlertService patientAlertService;
 
     @Autowired
-    public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, @Qualifier("standardResponseController") StandardResponseController standardResponseController, AllPatients allPatients) {
-        this(ivrMessage, callDetailRecordsService, standardResponseController, new TAMAIVRContextFactory());
+    public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, @Qualifier("standardResponseController") StandardResponseController standardResponseController, AllPatients allPatients, PatientAlertService patientAlertService) {
+        this(ivrMessage, callDetailRecordsService, standardResponseController, new TAMAIVRContextFactory(), patientAlertService);
         this.allPatients = allPatients;
     }
 
-    protected DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, TAMAIVRContextFactory contextFactory) {
+    protected DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, TAMAIVRContextFactory contextFactory, PatientAlertService patientAlertService) {
         super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.contextFactory = contextFactory;
+        this.patientAlertService = patientAlertService;
     }
 
     @Override

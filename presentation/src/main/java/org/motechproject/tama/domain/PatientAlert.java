@@ -10,6 +10,7 @@ public class PatientAlert {
 
     public static final String PATIENT_ALERT_TYPE = "PatientAlertType";
     public static final String CONNECTED_TO_DOCTOR = "ConnectedToDoctor";
+    public static final String DOCTOR_NAME = "DoctorName";
     public static final String NOTES = "Notes";
     public static final String DOCTORS_NOTES = "Doctor's Notes";
     public static final String SYMPTOMS_ALERT_STATUS = "Symptoms Alert Status";
@@ -103,6 +104,10 @@ public class PatientAlert {
             return TAMAConstants.ReportedType.NA.toString();
         }
         return connectedtoDoctor;
+    }
+
+    public String getDoctorName() {
+        return this.alert.getData().get(DOCTOR_NAME);
     }
 
     public static PatientAlert newPatientAlert(Alert alert, Patient patient) {

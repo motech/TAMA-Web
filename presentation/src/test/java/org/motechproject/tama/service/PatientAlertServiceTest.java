@@ -28,11 +28,13 @@ public class PatientAlertServiceTest {
     private AllPatients allPatients;
 
     PatientAlertService patientAlertService;
+    HashMap<String, String> symptomReportingData = new HashMap<String, String>();
 
     @Before
     public void setUp() {
         initMocks(this);
         patientAlertService = new PatientAlertService(allPatients, alertService);
+        symptomReportingData.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
     }
 
     @Test
@@ -229,5 +231,29 @@ public class PatientAlertServiceTest {
         verify(alertService, never()).setData(testPatientId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
         verify(alertService, never()).setData(testPatientId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
         verify(alertService).setData(testPatientId, PatientAlert.NOTES, notes);
+    }
+
+    @Test
+    public void shouldUpdateDoctorConnectedToDuringSymptomCall() {
+        final String testPatientId = "testPatientId";
+        final String alertId = "alertId";
+        String doctorName = "kumarasamy";
+
+        List<Patient> patientList = new ArrayList<Patient>() {{
+            add(new Patient() {{
+                setPatientId(testPatientId);
+                setId(testPatientId);
+            }});
+        }};
+        List<Alert> alerts = new ArrayList<Alert>() {{
+            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null){{setData(symptomReportingData); setId(alertId);}});
+        }};
+
+        when(allPatients.findByPatientId(testPatientId)).thenReturn(patientList);
+        when(alertService.getBy(testPatientId, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
+
+        patientAlertService.updateDoctorConnectedToDuringSymptomCall(testPatientId, doctorName);
+
+        verify(alertService).setData(alertId, PatientAlert.DOCTOR_NAME, doctorName);
     }
 }
