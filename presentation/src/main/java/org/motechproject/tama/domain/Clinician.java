@@ -4,7 +4,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;

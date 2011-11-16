@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.test;
 
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctional.context.ClinicianContext;
@@ -13,7 +12,6 @@ import org.motechproject.tamafunctional.page.Page;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.assertEquals;

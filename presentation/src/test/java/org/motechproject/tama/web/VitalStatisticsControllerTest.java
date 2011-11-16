@@ -3,17 +3,12 @@ package org.motechproject.tama.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.domain.LabResult;
 import org.motechproject.tama.domain.VitalStatistics;
 import org.motechproject.tama.repository.AllVitalStatistics;
-import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;

@@ -3,9 +3,11 @@ package org.motechproject.tama.ivr.decisiontree.filter;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.on;
 
 public abstract class DecisionTreeNodesFilter {
 

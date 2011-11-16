@@ -2,7 +2,6 @@ package org.motechproject.tama.integration.repository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.tama.ivr.logging.repository.AllCallLogs;
 import org.motechproject.util.DateUtil;

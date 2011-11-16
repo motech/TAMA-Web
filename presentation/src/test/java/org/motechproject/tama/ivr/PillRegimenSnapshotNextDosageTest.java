@@ -10,7 +10,6 @@ import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
-import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 

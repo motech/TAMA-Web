@@ -7,8 +7,6 @@ import org.motechproject.server.service.ivr.CallDetailRecord;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.util.DateUtil;
 
-import java.util.Date;
-
 import static junit.framework.Assert.assertEquals;
 
 public class CallLogMapperTest {

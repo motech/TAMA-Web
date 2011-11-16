@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.*;
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;

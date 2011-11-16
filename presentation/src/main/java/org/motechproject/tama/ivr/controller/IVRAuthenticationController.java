@@ -8,7 +8,7 @@ import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.server.service.ivr.IVRMessage;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
-import org.motechproject.tama.ivr.*;
+import org.motechproject.tama.ivr.StandardIVRResponse;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.platform.service.AuthenticationService;

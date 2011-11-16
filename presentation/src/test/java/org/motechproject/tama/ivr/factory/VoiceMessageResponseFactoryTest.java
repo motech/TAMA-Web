@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
-import org.motechproject.tama.ivr.factory.VoiceMessageResponseFactory;
 import org.motechproject.tama.web.OutboxController;
 import org.motechproject.tama.web.command.MessageForAdherenceWhenPreviousDosageNotCapturedCommand;
 import org.motechproject.tama.web.command.PlayAdherenceTrendFeedbackCommand;

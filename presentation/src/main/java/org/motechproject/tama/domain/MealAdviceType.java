@@ -1,6 +1,7 @@
 package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
+
 import javax.validation.constraints.NotNull;
 
 @TypeDiscriminator("doc.documentType == 'MealAdviceType'")

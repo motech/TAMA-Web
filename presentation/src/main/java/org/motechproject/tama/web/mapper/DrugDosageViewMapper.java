@@ -1,10 +1,6 @@
 package org.motechproject.tama.web.mapper;
 
-import org.motechproject.tama.domain.Brand;
-import org.motechproject.tama.domain.DosageType;
-import org.motechproject.tama.domain.Drug;
-import org.motechproject.tama.domain.DrugDosage;
-import org.motechproject.tama.domain.MealAdviceType;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllDosageTypes;
 import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.tama.repository.AllMealAdviceTypes;

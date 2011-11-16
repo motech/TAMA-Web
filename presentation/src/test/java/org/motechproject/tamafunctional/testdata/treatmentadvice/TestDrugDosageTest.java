@@ -3,7 +3,6 @@ package org.motechproject.tamafunctional.testdata.treatmentadvice;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.domain.Drug;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;

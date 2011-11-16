@@ -4,8 +4,6 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
-
 import static junit.framework.Assert.assertEquals;
 
 public class DrugDosageTest {

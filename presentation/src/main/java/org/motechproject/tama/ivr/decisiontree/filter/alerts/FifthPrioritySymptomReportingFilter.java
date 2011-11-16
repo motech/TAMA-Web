@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 

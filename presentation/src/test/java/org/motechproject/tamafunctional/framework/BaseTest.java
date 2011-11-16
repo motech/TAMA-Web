@@ -10,7 +10,10 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.util.DateUtil;
 import org.openqa.selenium.WebDriver;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 
 public abstract class BaseTest extends FunctionalTestObject {

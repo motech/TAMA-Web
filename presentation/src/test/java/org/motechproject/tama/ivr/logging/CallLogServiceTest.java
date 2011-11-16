@@ -19,7 +19,6 @@ import org.motechproject.tama.repository.AllPatients;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CallLogServiceTest {

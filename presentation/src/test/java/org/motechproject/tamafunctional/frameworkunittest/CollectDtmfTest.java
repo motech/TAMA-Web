@@ -3,7 +3,8 @@ package org.motechproject.tamafunctional.frameworkunittest;
 import org.junit.Test;
 import org.motechproject.tamafunctional.testdata.ivrreponse.CollectDtmf;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 public class CollectDtmfTest {
     @Test

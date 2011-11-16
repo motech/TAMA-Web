@@ -3,7 +3,6 @@ package org.motechproject.tama.integration.repository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tama.domain.VitalStatistics;
-import org.motechproject.tama.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.repository.AllVitalStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

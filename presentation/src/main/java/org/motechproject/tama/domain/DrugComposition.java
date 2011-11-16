@@ -1,6 +1,5 @@
 package org.motechproject.tama.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.motechproject.tama.util.UUIDUtil;
 
 import java.util.HashSet;

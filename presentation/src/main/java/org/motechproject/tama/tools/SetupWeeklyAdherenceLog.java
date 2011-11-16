@@ -1,7 +1,11 @@
 package org.motechproject.tama.tools;
 
-import org.motechproject.tama.domain.*;
-import org.motechproject.tama.repository.*;
+import org.motechproject.tama.domain.Patient;
+import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.tama.repository.AllTreatmentAdvices;
+import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

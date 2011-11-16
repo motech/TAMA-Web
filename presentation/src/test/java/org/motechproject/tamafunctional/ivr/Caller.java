@@ -13,9 +13,6 @@ import org.motechproject.tamafunctional.testdata.ivrrequest.NoCallInfo;
 
 import java.util.Set;
 
-import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverName;
-import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverPort;
-
 //TODO Probably we need a URL builder to not duplicate URLs
 public class Caller extends FunctionalTestObject {
     private String sid;

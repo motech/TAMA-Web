@@ -3,8 +3,8 @@ package org.motechproject.tama.web.command;
 import org.junit.Test;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.CallState;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;

@@ -1,11 +1,8 @@
 package org.motechproject.tama.web.model;
 
-import org.motechproject.tama.domain.LabResult;
 import org.motechproject.tama.domain.LabResults;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LabResultsUIModel {
 

@@ -1,9 +1,9 @@
 package org.motechproject.tama.tools.seed;
 
 import org.motechproject.tama.domain.Drug;
+import org.motechproject.tama.domain.DrugComposition;
 import org.motechproject.tama.domain.DrugCompositionGroup;
 import org.motechproject.tama.domain.Regimen;
-import org.motechproject.tama.domain.DrugComposition;
 import org.motechproject.tama.repository.AllRegimens;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

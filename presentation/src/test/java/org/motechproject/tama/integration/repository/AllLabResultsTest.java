@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 public class AllLabResultsTest extends SpringIntegrationTest {
 

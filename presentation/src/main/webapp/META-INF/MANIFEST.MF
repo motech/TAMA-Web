@@ -1,0 +1,12 @@
+Manifest-Version: 1
+Bnd-LastModified: 1321421357488
+Build-Jdk: 1.6.0_26
+Built-By: balaji
+Bundle-ManifestVersion: 2
+Bundle-Name: tama
+Bundle-SymbolicName: org.motechproject.tama
+Bundle-Version: 0.3.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Originally-Created-By: Apache Maven Bundle Plugin
+Tool: Bnd-1.43.0
+Web-ContextPath: /tama

@@ -3,11 +3,6 @@ package org.motechproject.tama.domain;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
-import org.jasypt.encryption.pbe.PBEStringEncryptor;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @TypeDiscriminator("doc.documentType == 'Administrator'")
 public class Administrator extends CouchEntity implements TAMAUser {

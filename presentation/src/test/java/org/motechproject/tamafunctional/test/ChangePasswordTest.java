@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.test;
 
 
-import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;

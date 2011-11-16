@@ -2,7 +2,6 @@ package org.motechproject.tama.mapper;
 
 import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;
-
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.contract.DosageRequest;

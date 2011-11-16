@@ -3,9 +3,7 @@ package org.motechproject.tama.web.model;
 import org.joda.time.LocalDate;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class DrugDosageView extends TamaView {
 

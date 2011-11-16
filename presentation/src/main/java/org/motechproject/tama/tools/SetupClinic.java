@@ -2,7 +2,8 @@ package org.motechproject.tama.tools;
 
 import org.motechproject.tama.domain.City;
 import org.motechproject.tama.domain.Clinic;
-import org.motechproject.tama.repository.*;
+import org.motechproject.tama.repository.AllCities;
+import org.motechproject.tama.repository.AllClinics;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

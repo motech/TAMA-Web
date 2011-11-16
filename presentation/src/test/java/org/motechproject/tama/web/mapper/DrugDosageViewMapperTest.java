@@ -13,8 +13,6 @@ import org.motechproject.tama.repository.AllDrugs;
 import org.motechproject.tama.repository.AllMealAdviceTypes;
 import org.motechproject.tama.web.model.DrugDosageView;
 
-import java.util.ArrayList;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

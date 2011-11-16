@@ -1,10 +1,10 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.tama.domain.*;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.roo.addon.web.mvc.controller.RooConversionService;
-import org.springframework.core.convert.converter.Converter;
-import org.motechproject.tama.domain.*;
 
 /**
  * A central place to register application Converters and Formatters. 

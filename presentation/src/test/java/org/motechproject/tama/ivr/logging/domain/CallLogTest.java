@@ -10,7 +10,9 @@ import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.tama.ivr.StandardIVRResponse;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 

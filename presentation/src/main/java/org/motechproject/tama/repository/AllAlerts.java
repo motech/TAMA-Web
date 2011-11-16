@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static ch.lambdaj.Lambda.convert;
+import static ch.lambdaj.Lambda.flatten;
 
 @Repository
 public class AllAlerts {

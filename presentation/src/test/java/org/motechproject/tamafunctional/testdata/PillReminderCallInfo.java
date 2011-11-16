@@ -5,7 +5,6 @@ import org.motechproject.ivr.kookoo.KookooCallServiceImpl;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tamafunctional.testdata.ivrrequest.CallInfo;
 
-import java.util.Map;
 import java.util.HashMap;
 
 public class PillReminderCallInfo implements CallInfo {

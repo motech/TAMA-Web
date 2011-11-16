@@ -1,15 +1,11 @@
 package org.motechproject.tamafunctional.test;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowClinicPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
-
-import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
 

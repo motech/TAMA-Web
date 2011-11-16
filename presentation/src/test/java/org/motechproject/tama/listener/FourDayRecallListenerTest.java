@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.tama.platform.service.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tama.platform.service.FourDayRecallService;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
-import org.motechproject.tama.ivr.call.IvrCall;
 import org.motechproject.util.DateUtil;
 
 import java.util.Map;

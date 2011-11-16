@@ -1,9 +1,10 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.*;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.web.command.fourdayrecall.*;
+import org.motechproject.tama.web.command.fourdayrecall.IncomingWelcomeGreetingMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

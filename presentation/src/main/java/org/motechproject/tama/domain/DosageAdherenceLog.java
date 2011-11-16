@@ -1,7 +1,6 @@
 package org.motechproject.tama.domain;
 
 import org.ektorp.support.TypeDiscriminator;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 @TypeDiscriminator("doc.documentType == 'DosageAdherenceLog'")

@@ -1,9 +1,9 @@
 package org.motechproject.tama.web.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

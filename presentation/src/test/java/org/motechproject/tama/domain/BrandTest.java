@@ -1,7 +1,6 @@
 package org.motechproject.tama.domain;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
 
 public class BrandTest {
