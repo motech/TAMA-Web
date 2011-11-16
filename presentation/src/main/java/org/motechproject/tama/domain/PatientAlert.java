@@ -93,12 +93,12 @@ public class PatientAlert {
         return this.alert.getData().get(SYMPTOMS_ALERT_STATUS);
     }
 
-    public TAMAConstants.ReportedType getConnectedToDoctor() {
+    public String getConnectedToDoctor() {
         String connectedtoDoctor = this.alert.getData().get(CONNECTED_TO_DOCTOR);
         if (StringUtils.isEmpty(connectedtoDoctor))  {
-            return TAMAConstants.ReportedType.NA;
+            return TAMAConstants.ReportedType.NA.toString();
         }
-        return Enum.valueOf(TAMAConstants.ReportedType.class, connectedtoDoctor);
+        return connectedtoDoctor;
     }
 
     public static PatientAlert newPatientAlert(Alert alert, Patient patient) {

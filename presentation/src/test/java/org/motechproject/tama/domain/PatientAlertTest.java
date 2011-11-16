@@ -33,7 +33,7 @@ public class PatientAlertTest {
 
         final PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
-        Assert.assertEquals(TAMAConstants.ReportedType.No, patientAlert.getConnectedToDoctor());
+        Assert.assertEquals(TAMAConstants.ReportedType.No.toString(), patientAlert.getConnectedToDoctor());
     }
 
     @Test
@@ -43,6 +43,6 @@ public class PatientAlertTest {
 
         final PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
-        Assert.assertEquals(TAMAConstants.ReportedType.NA, patientAlert.getConnectedToDoctor());
+        Assert.assertEquals(TAMAConstants.ReportedType.NA.toString(), patientAlert.getConnectedToDoctor());
     }
 }
