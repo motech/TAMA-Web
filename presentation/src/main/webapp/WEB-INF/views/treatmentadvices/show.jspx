@@ -63,18 +63,15 @@
         <div>
             <spring:url value="/treatmentadvices/changeRegimen" var="form_url"/>
             <form action="${form_url}" method="GET">
-               <div class='floatSubmit'>
+               <div class='submit'>
                   <input type="hidden" name="id" value="${treatmentAdvice.treatmentAdviceId}"/>
                   <input type="hidden" name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
                   <input type="submit" id="changeRegimen" value="Change Regimen"/>
                </div>
             </form>
-            <spring:url value="/patients/${treatmentAdvice.patientIdentifier}" var="patient_form_url"/>
-            <form action="${patient_form_url}" method="GET">
-               <div class='submit'>
-                  <input type="submit" id="viewPatient" value="View Patient"/>
-               </div>
-            </form>
         </div>
     </page:show>
+    <br/>
+    <spring:url value="/patients/${treatmentAdvice.patientIdentifier}" var="patient_form_url"/>
+    <a id="showPatient" href="${patient_form_url}">Show Patient</a>
 </div>
