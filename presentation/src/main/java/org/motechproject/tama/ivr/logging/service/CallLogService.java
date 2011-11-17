@@ -3,6 +3,7 @@ package org.motechproject.tama.ivr.logging.service;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
+import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.tama.ivr.logging.mapper.CallLogMapper;
 import org.motechproject.tama.ivr.logging.repository.AllCallLogs;
@@ -10,6 +11,7 @@ import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,8 +34,12 @@ public class CallLogService {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callId);
         CallLog callLog = callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord);
         callLog.maskAuthenticationPin();
-        if (patientDocumentId != null)
+        callLog.setLikelyPatientIds(getAllLikelyPatientIds(kookooCallDetailRecord));
+        if (patientDocumentId == null) {
+            callLog.clinicId(allPatients.get(callLog.getLikelyPatientIds().get(0)).getClinic_id());
+        } else {
             callLog.clinicId(allPatients.get(patientDocumentId).getClinic_id());
+        }
         allCallLogs.add(callLog);
     }
 
@@ -47,5 +53,14 @@ public class CallLogService {
 
     public List<CallLog> getLogsBetweenDates(DateTime fromDate, DateTime toDate) {
         return allCallLogs.findCallLogsBetweenGivenDates(fromDate, toDate);
+    }
+
+    private List<String> getAllLikelyPatientIds(KookooCallDetailRecord kookooCallDetailRecord) {
+        String phoneNumber = kookooCallDetailRecord.getCallDetailRecord().getPhoneNumber();
+        ArrayList<String> patientIds = new ArrayList<String>();
+        for (Patient patient : allPatients.findAllByMobileNumber(phoneNumber)) {
+            patientIds.add(patient.getId());
+        }
+        return patientIds;
     }
 }

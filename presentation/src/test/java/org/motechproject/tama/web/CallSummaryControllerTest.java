@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class CallSummaryControllerTest {
     public void shouldShowAllCallLogsBetweenEnteredDates() {
         CallLog callLog = setUpCallLogs();
         List<CallLog> callLogs = Arrays.asList(callLog);
-        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic"));
+        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic", new ArrayList<String>()));
         CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
 
         when(user.isAdministrator()).thenReturn(true);
@@ -82,7 +83,7 @@ public class CallSummaryControllerTest {
     public void shouldShowOnlyLogsOfPatientsBelongingToTheClinic() {
         CallLog callLog = setUpCallLogs();
         List<CallLog> callLogs = Arrays.asList(callLog);
-        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic"));
+        List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic", new ArrayList<String>()));
         CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
 
         when(user.isAdministrator()).thenReturn(false);

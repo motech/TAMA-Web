@@ -10,6 +10,7 @@ import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class CallLogViewMapperTest {
         defaultCallLog.setPatientDocumentId("patientDocumentId");
         defaultCallLog.setStartTime(DateUtil.now());
         defaultCallLog.setEndTime(DateUtil.now().plusMinutes(2));
+        defaultCallLog.setLikelyPatientIds(new ArrayList<String>() {{add("patientDocumentId");}});
 
         List<CallLog> callLogs = Arrays.asList(defaultCallLog);
 
@@ -57,6 +59,7 @@ public class CallLogViewMapperTest {
         CallLogView callLogView = callLogViews.get(0);
 
         assertEquals(defaultCallLog, callLogView.getCallLog());
+        assertEquals("patientId", callLogView.getLikelyPatientIds().get(0));
     }
 
     @Test
@@ -71,6 +74,22 @@ public class CallLogViewMapperTest {
         assertEquals(2, callLogViews.size());
         assertEquals("clinic", callLogViews.get(0).getClinicName());
         assertEquals("anotherClinic", callLogViews.get(1).getClinicName());
+    }
+
+    @Test
+    public void shouldSetClinicName_WhenPatientIsNotAuthenticated(){
+        List<CallLog> callLogs = new ArrayList<CallLog>(){{add(new CallLog() {{
+            setLikelyPatientIds(new ArrayList<String>() {{add("patientDocumentId");}});
+            setStartTime(DateUtil.now());
+            setEndTime(DateUtil.now().plusMinutes(2));
+        }});}};
+
+        when(allPatients.get("patientDocumentId")).thenReturn(PatientBuilder.startRecording().withPatientId("patientId").withClinic(ClinicBuilder.startRecording().withName("clinic").build()).build());
+
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(callLogs);
+
+        assertEquals(1, callLogViews.size());
+        assertEquals("clinic", callLogViews.get(0).getClinicName());
     }
 
     private List<CallLog> createCallLogs() {

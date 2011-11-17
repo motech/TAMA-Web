@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.view;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -15,14 +16,16 @@ public class CallLogView {
     private String patientId;
     private CallLog callLog;
     private String clinicName;
+    private List<String> likelyPatientIds;
     private String callDateFromCallLogDateTime;
     private LocalTime callStartTimeFromCallLogStartDateTime;
     private LocalTime callEndTimeFromCallLogEndDateTime;
 
-    public CallLogView(String patientId, CallLog callLog, String clinicName) {
+    public CallLogView(String patientId, CallLog callLog, String clinicName, List<String> likelyPatientIds) {
         this.patientId = patientId;
         this.callLog = callLog;
         this.clinicName = clinicName;
+        this.likelyPatientIds = likelyPatientIds;
         setCallDateFromCallLogDateTime();
         setCallStartTimeFromCallLogDateTime();
         setCallEndTimeFromCallLogDateTime();
@@ -65,6 +68,10 @@ public class CallLogView {
         return clinicName;
     }
 
+    public List<String> getLikelyPatientIds() {
+        return likelyPatientIds;
+    }
+
     public List<CallEventView> getCallEvents() {
         List<CallEventView> callEventViews = new ArrayList<CallEventView>();
         for (CallEvent callEvent : callLog.getCallEvents()) {
@@ -74,12 +81,12 @@ public class CallLogView {
     }
 
     public String getTitle() {
+        String patientInfo = StringUtils.isEmpty(patientId) ? StringUtils.join(likelyPatientIds, " or ") : patientId;
         if (callLog.getCallDirection() == CallDirection.Outbound) {
-            return "Tama called " + patientId + " || Clinic :" + clinicName;
+            return "Tama called " + patientInfo + " || Clinic :" + clinicName;
         } else {
-            return patientId + " called Tama" + " || Clinic :" + clinicName;
+            return patientInfo + " called Tama" + " || Clinic :" + clinicName;
         }
-
     }
 }
 

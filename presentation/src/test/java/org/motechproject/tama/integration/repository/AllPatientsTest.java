@@ -253,6 +253,20 @@ public class AllPatientsTest extends SpringIntegrationTest {
     }
 
     @Test
+    public void shouldGetAllPatientsByMobileNumber() {
+        Patient patient1 = PatientBuilder.startRecording().withDefaults().withPasscode("1111").build();
+        String mobilePhoneNumber = patient1.getMobilePhoneNumber();
+        Patient patient2 = PatientBuilder.startRecording().withDefaults().withMobileNumber(mobilePhoneNumber).withPasscode("2222").build();
+        allPatients.add(patient1);
+        allPatients.add(patient2);
+
+        List<Patient> loadedPatients = allPatients.findAllByMobileNumber(mobilePhoneNumber);
+        assertEquals(2, loadedPatients.size());
+        assertEquals(mobilePhoneNumber, loadedPatients.get(0).getMobilePhoneNumber());
+        assertEquals(mobilePhoneNumber, loadedPatients.get(1).getMobilePhoneNumber());
+    }
+
+    @Test
     public void shouldFindByIdAndClinicId() {
         Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         allClinics.add(clinicForPatient);
@@ -273,7 +287,6 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Patient dbPatient2 = allPatients.findByIdAndClinicId(anotherPatient.getId(), anotherClinic.getId());
         assertEquals(anotherPatient.getId(), dbPatient2.getId());
     }
-
 
     @Test
     public void shouldFindByMobileNumberAndPasscode() {

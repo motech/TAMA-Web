@@ -23,12 +23,20 @@ public class CallLogViewMapper {
         List<CallLogView> callLogViews = new ArrayList<CallLogView>();
         for (CallLog callLog : callLogs) {
             String patientDocumentId = callLog.getPatientDocumentId();
+            List<String> likelyPatientDocIds = callLog.getLikelyPatientIds();
             Patient patient = patientDocumentId == null ? null : allPatients.get(patientDocumentId);
             String patientId = patient == null ? "" : patient.getPatientId();
-            String clinicName = patient == null ? "" : patient.getClinic().getName();
-            callLogViews.add(new CallLogView(patientId, callLog, clinicName));
+            String clinicName = patient == null ? allPatients.get(likelyPatientDocIds.get(0)).getClinic().getName() : patient.getClinic().getName();
+            callLogViews.add(new CallLogView(patientId, callLog, clinicName, getLikelyPatientIds(likelyPatientDocIds)));
         }
         return callLogViews;
+    }
 
+    private List<String> getLikelyPatientIds(List<String> likelyPatientDocIds) {
+        ArrayList<String> likelyPatientIds = new ArrayList<String>();
+        for (String likelyPatientDocId : likelyPatientDocIds) {
+            likelyPatientIds.add(allPatients.get(likelyPatientDocId).getPatientId());
+        }
+        return likelyPatientIds;
     }
 }

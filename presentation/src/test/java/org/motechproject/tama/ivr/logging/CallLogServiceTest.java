@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
+import org.motechproject.server.service.ivr.CallDetailRecord;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinic;
@@ -16,10 +17,11 @@ import org.motechproject.tama.ivr.logging.repository.AllCallLogs;
 import org.motechproject.tama.ivr.logging.service.CallLogService;
 import org.motechproject.tama.repository.AllPatients;
 
+import java.util.ArrayList;
+
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CallLogServiceTest {
@@ -57,17 +59,17 @@ public class CallLogServiceTest {
         String callId = "callId";
 
         when(allPatients.get(patientDocId)).thenReturn(patient);
+        when(allPatients.findAllByMobileNumber("phoneNumber")).thenReturn(new ArrayList<Patient>() {{ add(patient); }});
         when(kookooCallDetailRecordsService.get(callId)).thenReturn(kookooCallDetailRecord);
         when(callLogMapper.toCallLog(patientDocId, kookooCallDetailRecord)).thenReturn(new CallLog());
         callLoggingService.log(callId, patientDocId);
 
         ArgumentCaptor<CallLog> logCapture = ArgumentCaptor.forClass(CallLog.class);
         verify(allCallLogs).add(logCapture.capture());
-        assertEquals(clinic.getId(), logCapture.getValue().clinicId());
-    }
 
-    private KookooCallDetailRecord callDetailRecord() {
-        return new KookooCallDetailRecord(null, "sdfdf");
+        assertEquals(clinic.getId(), logCapture.getValue().clinicId());
+        assertEquals(1, logCapture.getValue().getLikelyPatientIds().size());
+        assertEquals(patient.getId(), logCapture.getValue().getLikelyPatientIds().get(0));
     }
 
     @Test
@@ -77,12 +79,24 @@ public class CallLogServiceTest {
 
         String callId = "callId";
         when(kookooCallDetailRecordsService.get(callId)).thenReturn(kookooCallDetailRecord);
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+        when(allPatients.findAllByMobileNumber("phoneNumber")).thenReturn(new ArrayList<Patient>() {{ add(patient); }});
         when(callLogMapper.toCallLog(patientDocumentId, kookooCallDetailRecord)).thenReturn(new CallLog());
         callLoggingService.log(callId, patientDocumentId);
 
         ArgumentCaptor<CallLog> logCapture = ArgumentCaptor.forClass(CallLog.class);
         verify(allCallLogs).add(logCapture.capture());
 
-        assertEquals(null, logCapture.getValue().clinicId());
+        assertEquals(clinic.getId(), logCapture.getValue().clinicId());
+        assertEquals(1, logCapture.getValue().getLikelyPatientIds().size());
+        assertEquals(patient.getId(), logCapture.getValue().getLikelyPatientIds().get(0));
+    }
+
+    private KookooCallDetailRecord callDetailRecord() {
+        KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(null, "vendorCallId");
+        CallDetailRecord cdc = new CallDetailRecord(null, null);
+        cdc.setPhoneNumber("phoneNumber");
+        kookooCallDetailRecord.setCallDetailRecord(cdc);
+        return kookooCallDetailRecord;
     }
 }
