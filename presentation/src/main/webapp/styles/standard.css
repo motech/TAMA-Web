@@ -362,17 +362,6 @@ fieldset th {
 	height:24px;
 }
 
-.floatSubmit input {
-	border: 1px solid #BBBBBB;
-	color:#777777;
-	padding:2px 7px;
-	font-size:11px;
-	text-transform:uppercase;
-	font-weight:bold;
-	height:24px;
-	float: left;
-}
-
 .updated {
 	background:#ecf1e5;
 	font-size:11px;

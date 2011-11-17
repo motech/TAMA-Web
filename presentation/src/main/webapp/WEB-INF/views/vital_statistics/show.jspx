@@ -17,11 +17,7 @@
         <field:display label="Pulse" field="pulse" id="pulse" object="${vitalStatistics}" />
         <div>
             <spring:url value="/patients/${vitalStatistics.patientId}" var="patient_form_url"/>
-            <form action="${patient_form_url}" method="GET">
-               <div class='submit'>
-                  <input type="submit" id="viewPatient" value="View Patient"/>
-               </div>
-            </form>
+            <a id="showPatient" href="${patient_form_url}">Show Patient</a>
         </div>
     </util:panel>
     <div id="page_load_marker"></div>
