@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page"
-     xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.w3.org/1999/xhtml" version="2.0"
-     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:spring="http://www.springframework.org/tags" version="2.0">
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -17,6 +15,14 @@
         <field:display label="Diastolic blood pressure" field="diastolicBp" id="diastolic_bp" object="${vitalStatistics}" />
         <field:display label="Temperature (F)" field="temperatureInFahrenheit" id="temperature" object="${vitalStatistics}" />
         <field:display label="Pulse" field="pulse" id="pulse" object="${vitalStatistics}" />
+        <div>
+            <spring:url value="/patients/${vitalStatistics.patientId}" var="patient_form_url"/>
+            <form action="${patient_form_url}" method="GET">
+               <div class='submit'>
+                  <input type="submit" id="viewPatient" value="View Patient"/>
+               </div>
+            </form>
+        </div>
     </util:panel>
     <div id="page_load_marker"></div>
 </div>
