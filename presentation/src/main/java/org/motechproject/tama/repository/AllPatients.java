@@ -61,14 +61,19 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
         return patients;
     }
 
-    @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
     public Patient findByMobileNumber(String phoneNumber) {
+        return singleResult(findAllByMobileNumber(phoneNumber));
+    }
+
+    @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
+    public List<Patient> findAllByMobileNumber(String phoneNumber) {
         String mobileNumber = phoneNumber.length() > 10 ? phoneNumber.substring(1) : phoneNumber;
         ViewQuery q = createQuery("find_by_mobile_number").key(mobileNumber).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
-        Patient patient = singleResult(patients);
-        loadPatientDependencies(patient);
-        return patient;
+        for (Patient patient : patients) {
+            loadPatientDependencies(patient);
+        }
+        return patients;
     }
 
     @View(name = "find_by_mobile_number_and_passcode", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber && doc.patientPreferences.passcode) {emit([doc.mobilePhoneNumber, doc.patientPreferences.passcode], doc._id);}}")
