@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.motechproject.server.service.ivr.CallDirection;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.Clinic;

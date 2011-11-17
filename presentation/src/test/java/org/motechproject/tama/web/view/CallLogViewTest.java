@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.motechproject.server.service.ivr.CallDirection;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 
 import static junit.framework.Assert.assertEquals;

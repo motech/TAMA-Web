@@ -2,15 +2,17 @@ package org.motechproject.tama.ivr.logging.domain;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.ivr.event.CallEvent;
+import org.motechproject.ivr.event.CallEventCustomData;
+import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
-import org.motechproject.server.service.ivr.CallEvent;
-import org.motechproject.server.service.ivr.CallEventCustomData;
-import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.tama.ivr.StandardIVRResponse;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 

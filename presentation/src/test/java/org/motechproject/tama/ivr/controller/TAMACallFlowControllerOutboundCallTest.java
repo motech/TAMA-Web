@@ -4,15 +4,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.CallPreference;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.domain.PatientPreferences;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;

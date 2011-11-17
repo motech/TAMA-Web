@@ -1,9 +1,9 @@
 package org.motechproject.tama.ivr;
 
 import org.joda.time.DateTime;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.server.service.ivr.CallDirection;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;

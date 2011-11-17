@@ -1,10 +1,10 @@
 package org.motechproject.tama.web.view.callevent;
 
 import org.junit.Test;
+import org.motechproject.ivr.event.CallEvent;
+import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
-import org.motechproject.server.service.ivr.CallEvent;
-import org.motechproject.server.service.ivr.IVREvent;
 import org.motechproject.tama.ivr.StandardIVRResponse;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.view.CallEventView;

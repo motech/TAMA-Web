@@ -1,6 +1,6 @@
 package org.motechproject.tama.ivr;
 
-import org.motechproject.server.service.ivr.IVRMessage;
+import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -137,19 +137,12 @@ public class TamaIVRMessage implements IVRMessage {
         return (String) properties.get(key.toLowerCase());
     }
 
-
-    /* (non-Javadoc)
-      * @see org.motechproject.tama.ivr.IVRMessage#getText(java.lang.String)
-      */
     @Override
     public String getText(String key) {
         String text = get(key);
         return text == null ? key : text;
     }
 
-    /* (non-Javadoc)
-      * @see org.motechproject.tama.ivr.IVRMessage#getWav(java.lang.String, java.lang.String)
-      */
     @Override
 	public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : FileUtil.sanitizeFilename(key);
@@ -160,7 +153,6 @@ public class TamaIVRMessage implements IVRMessage {
         return String.format("Num_%03d", n);
     }
 
-    @Override
     public String getSignatureMusic() {
         return SIGNATURE_MUSIC;
     }

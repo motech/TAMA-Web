@@ -7,11 +7,11 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.server.service.ivr.CallDirection;
-import org.motechproject.server.service.ivr.IVRMessage;
+import org.motechproject.ivr.message.IVRMessage;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.domain.IVRAuthenticationStatus;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.platform.service.AuthenticationService;
 
 import static junit.framework.Assert.assertEquals;

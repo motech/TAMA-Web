@@ -3,8 +3,8 @@ package org.motechproject.tama.web.view;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.motechproject.server.service.ivr.CallDirection;
-import org.motechproject.server.service.ivr.CallEvent;
+import org.motechproject.ivr.event.CallEvent;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 
 import java.util.ArrayList;

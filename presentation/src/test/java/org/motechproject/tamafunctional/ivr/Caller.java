@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import org.junit.Assert;
 import org.motechproject.deliverytools.kookoo.IncomingCall;
 import org.motechproject.deliverytools.kookoo.QueryParams;
-import org.motechproject.server.service.ivr.IVREvent;
+import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.tamafunctional.framework.FunctionalTestObject;
 import org.motechproject.tamafunctional.framework.KooKooResponseParser;
 import org.motechproject.tamafunctional.framework.MyWebClient;

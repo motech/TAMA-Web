@@ -1,14 +1,14 @@
 package org.motechproject.tama.listener;
 
+import org.motechproject.ivr.service.IVRService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.pillreminder.EventKeys;
-import org.motechproject.server.service.ivr.IVRService;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.call.IvrCall;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.AllPatients;
 import org.slf4j.Logger;

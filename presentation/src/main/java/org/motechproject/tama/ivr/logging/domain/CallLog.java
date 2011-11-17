@@ -5,10 +5,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
+import org.motechproject.ivr.event.CallEvent;
+import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
-import org.motechproject.server.service.ivr.CallDirection;
-import org.motechproject.server.service.ivr.CallEvent;
-import org.motechproject.server.service.ivr.CallEventCustomData;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 

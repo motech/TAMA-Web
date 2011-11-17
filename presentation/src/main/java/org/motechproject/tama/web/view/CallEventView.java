@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.view;
 
+import org.motechproject.ivr.event.CallEvent;
+import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
-import org.motechproject.server.service.ivr.CallEvent;
-import org.motechproject.server.service.ivr.CallEventCustomData;
 import org.motechproject.tama.web.tools.KooKooResponseParser;
 import org.motechproject.tama.web.tools.Response;
 

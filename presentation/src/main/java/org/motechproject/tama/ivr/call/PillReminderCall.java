@@ -1,6 +1,6 @@
 package org.motechproject.tama.ivr.call;
 
-import org.motechproject.server.service.ivr.IVRService;
+import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;

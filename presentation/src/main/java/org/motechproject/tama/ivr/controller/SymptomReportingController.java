@@ -6,7 +6,7 @@ import org.motechproject.ivr.kookoo.KookooResponseFactory;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.server.service.ivr.IVRMessage;
+import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.domain.MedicalCondition;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;

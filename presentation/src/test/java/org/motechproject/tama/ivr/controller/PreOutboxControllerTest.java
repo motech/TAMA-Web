@@ -5,10 +5,10 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.server.service.ivr.IVRMessage;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;

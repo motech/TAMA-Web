@@ -3,11 +3,9 @@ package org.motechproject.tama.ivr.logging.mapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
-import org.motechproject.server.service.ivr.CallDetailRecord;
+import org.motechproject.ivr.model.CallDetailRecord;
 import org.motechproject.tama.ivr.logging.domain.CallLog;
 import org.motechproject.util.DateUtil;
-
-import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 
