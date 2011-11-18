@@ -107,9 +107,13 @@ public class PillRegimenSnapshot {
         return getScheduledDosagesTotalCountForLastFourWeeks(tamaIVRContext.callStartTime());
     }
 
-    public int getScheduledDosagesTotalCountForLastFourWeeks(DateTime endDate) {
+    protected int getScheduledDosagesTotalCountForLastFourWeeks(DateTime endDate) {
         DateTime startTime = endDate.minusWeeks(4);
-        return DosageUtil.getScheduledDosagesTotalCount(startTime, endDate, pillRegimen);
+        return DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(startTime, endDate, pillRegimen);
+    }
+
+    public int getScheduledDosagesTotalCount() {
+        return DosageUtil.getScheduledDosagesTotalCount(tamaIVRContext.callStartTime(), pillRegimen);
     }
 
     public boolean isCurrentDosageTaken() {

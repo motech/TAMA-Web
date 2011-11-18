@@ -1,7 +1,6 @@
 package org.motechproject.tama.integration.repository;
 
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -131,7 +130,7 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldGetDosageNotTakenCount() {
+    public void shouldGetDosageTakenCount() {
         LocalDate today = DateUtil.today();
         DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today).withDosageStatus(DosageStatus.TAKEN).build();
         DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("234").withDosageDate(today).withDosageStatus(DosageStatus.NOT_TAKEN).build();
@@ -148,7 +147,7 @@ public class DosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(log5);
         allDosageAdherenceLogs.add(log6);
 
-        int count = allDosageAdherenceLogs.findScheduledDosagesFailureCount("r1");
+        int count = allDosageAdherenceLogs.findScheduledDosagesSuccessCount("r1");
 
         Assert.assertEquals(3, count);
     }

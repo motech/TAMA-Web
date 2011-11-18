@@ -157,8 +157,8 @@ public class PillRegimenSnapshotTest {
         DateTime testCallTime = new DateTime(2011, 8, 1, 12, 0, 0);
         ivrContext.callStartTime(testCallTime);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, getPillRegimenResponse());
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
-        assertEquals(50, totalCount);
+        assertEquals(50, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks());
+        assertEquals(54, pillRegimenSnapshot.getScheduledDosagesTotalCount());
     }
 
     @Test
@@ -172,8 +172,8 @@ public class PillRegimenSnapshotTest {
         ivrContext.callStartTime(testCallTime);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, getPillRegimenResponse());
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks(DateUtil.now().minusWeeks(1));
-        assertEquals(40, totalCount);
+        assertEquals(40, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks(DateUtil.now().minusWeeks(1)));
+        assertEquals(54, pillRegimenSnapshot.getScheduledDosagesTotalCount());
     }
 
     @Test
@@ -198,8 +198,8 @@ public class PillRegimenSnapshotTest {
         ivrContext.callStartTime(testCallTime);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimenResponse);
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
-        assertEquals(1, totalCount);
+        assertEquals(1, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks());
+        assertEquals(1, pillRegimenSnapshot.getScheduledDosagesTotalCount());
     }
 
     @Test
@@ -219,22 +219,22 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimenResponse);
 
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
-        assertEquals(1, totalCount);
+        assertEquals(1, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks());
+        assertEquals(1, pillRegimenSnapshot.getScheduledDosagesTotalCount());
     }
 
     @Test
     public void shouldGetTotalCountOfScheduledDosagesForARegimenWhenWeeksGreaterThanFour() {
         mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2011, 10, 1, 12, 0, 0)); // TotalCount = 93 + 89 = 182; capped to 56
+        when(DateUtil.now()).thenReturn(new DateTime(2011, 10, 1, 12, 0, 0)); // TotalCount = 93 + 83 = 176; capped to 56
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 1), 9, 5, 0)).thenReturn(new DateTime(2011, 7, 1, 9, 5, 0));
         when(DateUtil.newDateTime(new LocalDate(2011, 7, 10), 15, 5, 0)).thenReturn(new DateTime(2011, 7, 10, 15, 5, 0));
 
         DateTime testCallTime = new DateTime(2011, 10, 1, 12, 0, 0);
         ivrContext.callStartTime(testCallTime);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, getPillRegimenResponse());
-        int totalCount = pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks();
-        assertEquals(56, totalCount);
+        assertEquals(56, pillRegimenSnapshot.getScheduledDosagesTotalCountForLastFourWeeks());
+        assertEquals(176, pillRegimenSnapshot.getScheduledDosagesTotalCount());
     }
 
     @Test

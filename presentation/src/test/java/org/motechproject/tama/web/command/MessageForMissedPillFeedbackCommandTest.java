@@ -58,16 +58,16 @@ public class MessageForMissedPillFeedbackCommandTest {
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForTheFirstTime() {
-        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(1);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID)).thenReturn(64);
         String[] message = command.executeCommand(context);
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(TamaIVRMessage.MISSED_PILL_FEEDBACK_FIRST_TIME, message[0]);
-        verify(allDosageAdherenceLogs).findScheduledDosagesFailureCount(REGIMEN_ID);
+        verify(allDosageAdherenceLogs).findScheduledDosagesSuccessCount(REGIMEN_ID);
     }
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForTheSecondTime() {
-        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(2);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID)).thenReturn(63);
         String[] message = command.executeCommand(context);
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME, message[0]);
@@ -75,7 +75,7 @@ public class MessageForMissedPillFeedbackCommandTest {
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceMoreThan90() {
-        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID)).thenReturn(60);
         when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(TOTAL_DOSAGE_COUNT * 95 / 100);
         String[] message = command.executeCommand(context);
         Assert.assertEquals(1, message.length);
@@ -84,7 +84,7 @@ public class MessageForMissedPillFeedbackCommandTest {
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceBetween70And90() {
-        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID)).thenReturn(60);
         when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(TOTAL_DOSAGE_COUNT * 90 / 100);
         String[] message = command.executeCommand(context);
         Assert.assertEquals(1, message.length);
@@ -93,7 +93,7 @@ public class MessageForMissedPillFeedbackCommandTest {
 
     @Test
     public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceLessThan70() {
-        when(allDosageAdherenceLogs.findScheduledDosagesFailureCount(REGIMEN_ID)).thenReturn(5);
+        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID)).thenReturn(60);
         LocalDate today = DateUtil.today();
         when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(REGIMEN_ID, today, today.minusDays(28))).thenReturn(TOTAL_DOSAGE_COUNT * 69 / 100);
         String[] message = command.executeCommand(context);

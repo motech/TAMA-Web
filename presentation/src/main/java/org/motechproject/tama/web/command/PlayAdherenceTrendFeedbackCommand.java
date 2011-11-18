@@ -73,6 +73,6 @@ public class PlayAdherenceTrendFeedbackCommand {
     }
 
     public int getScheduledDosagesTotalCount(PillRegimenResponse pillRegimen, DateTime startDate, DateTime endDate) {
-        return DosageUtil.getScheduledDosagesTotalCount(startDate, endDate, pillRegimen);
+        return DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(startDate, endDate, pillRegimen);
     }
 }

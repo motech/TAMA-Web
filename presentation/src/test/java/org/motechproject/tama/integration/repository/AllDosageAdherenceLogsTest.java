@@ -32,14 +32,14 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         DosageAdherenceLog dosageAdherenceLog1 = adherenceLog("1", DosageStatus.NOT_TAKEN);
         DosageAdherenceLog dosageAdherenceLog2 = adherenceLog("1", DosageStatus.TAKEN);
         DosageAdherenceLog dosageAdherenceLog3 = adherenceLog("1", DosageStatus.WILL_TAKE_LATER);
-        DosageAdherenceLog dosageAdherenceLog4 = adherenceLog("2", DosageStatus.WILL_TAKE_LATER);
+        DosageAdherenceLog dosageAdherenceLog4 = adherenceLog("2", DosageStatus.TAKEN);
         allDosageAdherenceLogs.add(dosageAdherenceLog1);
         allDosageAdherenceLogs.add(dosageAdherenceLog2);
         allDosageAdherenceLogs.add(dosageAdherenceLog3);
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
 
         markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4);
-        assertEquals(2, allDosageAdherenceLogs.findScheduledDosagesFailureCount("1"));
+        assertEquals(1, allDosageAdherenceLogs.findScheduledDosagesSuccessCount("1"));
     }
 
     private DosageAdherenceLog adherenceLog(String regimenId, DosageStatus dosageStatus) {

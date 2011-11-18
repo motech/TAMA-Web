@@ -1,6 +1,5 @@
 package org.motechproject.tama.web.command;
 
-import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.TAMAIVRContext;
@@ -19,7 +18,8 @@ public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand 
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
         PillRegimenResponse pillRegimenResponse = pillRegimen(ivrContext);
-        int dosagesFailureCount = allDosageAdherenceLogs.findScheduledDosagesFailureCount(pillRegimenResponse.getPillRegimenId());
+        int scheduledDosagesSuccessCount = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(pillRegimenResponse.getPillRegimenId());
+        int dosagesFailureCount = pillRegimenSnapshot(ivrContext).getScheduledDosagesTotalCount() - scheduledDosagesSuccessCount;
 
         switch (dosagesFailureCount) {
             case 1:

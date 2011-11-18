@@ -59,7 +59,7 @@ public class PlayAdherenceTrendFeedbackCommandTest {
         DateTime now = DateUtil.now();
         Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(pillRegimenId, now.minusWeeks(4).toLocalDate(), now.toLocalDate())).thenReturn(successCountThisWeek);
         Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(pillRegimenId, now.minusWeeks(5).toLocalDate(), now.minusWeeks(1).toLocalDate())).thenReturn(successCountLastWeek);
-        PowerMockito.when(DosageUtil.getScheduledDosagesTotalCount(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
+        PowerMockito.when(DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
 
 
         result = playAdherenceTrendFeedbackCommand.execute(context);
