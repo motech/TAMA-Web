@@ -1,9 +1,6 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.MenuAudioPrompt;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.CallState;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.web.command.*;
@@ -27,7 +24,8 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
-                        new MenuAudioPrompt().setName(TamaIVRMessage.PILL_CONFIRM_CALL_MENU))
+                        new MenuAudioPrompt().setName(TamaIVRMessage.PILL_CONFIRM_CALL_MENU),
+                        new TextToSpeechPrompt().setName("if you want to listen to health tips Press 5"))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()
                                 .setDestinationNode(
@@ -40,7 +38,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                         },
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
                         {"3", TAMATransitionFactory.createCallStateTransition(CallState.OUTBOX)},
-                        {"4", TAMATransitionFactory.createCallStateTransition(CallState.HEALTH_TIPS)}
+                        {"5", TAMATransitionFactory.createCallStateTransition(CallState.HEALTH_TIPS)}
                 });
     }
 }
