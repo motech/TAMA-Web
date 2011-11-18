@@ -34,9 +34,11 @@ public class CallLogService {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callId);
         CallLog callLog = callDetailRecordMapper.toCallLog(patientDocumentId, kookooCallDetailRecord);
         callLog.maskAuthenticationPin();
-        callLog.setLikelyPatientIds(getAllLikelyPatientIds(kookooCallDetailRecord));
         if (patientDocumentId == null) {
-            callLog.clinicId(allPatients.get(callLog.getLikelyPatientIds().get(0)).getClinic_id());
+            List<String> allLikelyPatientIds = getAllLikelyPatientIds(kookooCallDetailRecord);
+            String clinicId = allLikelyPatientIds.isEmpty() ? null : allPatients.get(allLikelyPatientIds.get(0)).getClinic_id();
+            callLog.clinicId(clinicId);
+            callLog.setLikelyPatientIds(allLikelyPatientIds);
         } else {
             callLog.clinicId(allPatients.get(patientDocumentId).getClinic_id());
         }
