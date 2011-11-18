@@ -55,8 +55,6 @@ public class TamaSchedulerService {
             Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
                     .withJobId(count + patientDocId)
                     .withPatientDocId(patientDocId)
-                    .withTreatmentAdviceId(treatmentAdvice.getId())
-                    .withTreatmentAdviceStartDate(treatmentAdviceStartDate)
                     .payload();
             MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
             String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, count)).withTime(callTime).build();
@@ -96,7 +94,7 @@ public class TamaSchedulerService {
         return DayOfWeek.getDayOfWeek(dayOfWeekNum);
     }
 
-    public void scheduleRepeatingJobsForFourDayRecall(String patientDocId, String treatmentAdviceId, LocalDate treatmentAdviceStartDate) {
+    public void scheduleRepeatingJobsForFourDayRecall(String patientDocId) {
         Patient patient = allPatients.get(patientDocId);
         Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.RETRIES_PER_DAY));
         int repeatIntervalInMinutes = Integer.valueOf(properties.getProperty(TAMAConstants.RETRY_INTERVAL));
@@ -109,8 +107,6 @@ public class TamaSchedulerService {
         Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
                 .withJobId(patientDocId)
                 .withPatientDocId(patientDocId)
-                .withTreatmentAdviceId(treatmentAdviceId)
-                .withTreatmentAdviceStartDate(treatmentAdviceStartDate)
                 .withRetryFlag(true)
                 .payload();
         MotechEvent fourDayRecallRepeatingEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
@@ -131,8 +127,7 @@ public class TamaSchedulerService {
     }
 
     private Date getJobStartDate(LocalDate startDate) {
-        Date jobStartDate = DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
-        return jobStartDate;
+        return DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
     }
 
     public void unscheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {

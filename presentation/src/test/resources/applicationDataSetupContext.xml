@@ -8,6 +8,7 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <util:properties id="pillReminderDataSetup" location="classpath:/datasetup/pillReminderDataSetup.properties"/>
+    <util:properties id="fourDayRecallDataSetup" location="classpath:/datasetup/fourDayRecallDataSetup.properties"/>
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tamadatasetup"/>

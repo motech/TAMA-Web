@@ -8,24 +8,14 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 @Component
-public class PillReminderDataSetupConfiguration {
-    private Properties properties;
-
+public class PillReminderDataSetupConfiguration extends DataSetupConfiguration {
     @Autowired
     public PillReminderDataSetupConfiguration(@Qualifier("pillReminderDataSetup") Properties properties) {
-        this.properties = properties;
+        super(properties);
     }
 
     public int percentageOfPillTaken() {
         return intValue("percentageOfPillTaken");
-    }
-
-    private int intValue(String key) {
-        return Integer.parseInt(stringValue(key));
-    }
-
-    private String stringValue(String key) {
-        return properties.getProperty(key);
     }
 
     public int numberOfDaysToRunFor() {

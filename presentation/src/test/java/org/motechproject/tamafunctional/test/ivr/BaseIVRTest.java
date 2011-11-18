@@ -1,6 +1,5 @@
 package org.motechproject.tamafunctional.test.ivr;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.motechproject.tama.util.FileUtil;

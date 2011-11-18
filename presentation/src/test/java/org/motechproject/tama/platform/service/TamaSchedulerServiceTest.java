@@ -124,8 +124,6 @@ public class TamaSchedulerServiceTest {
         assertEquals(startTime, cronSchedulableJob.getStartTime());
         assertEquals(endTime, cronSchedulableJob.getEndTime());
         assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
-        assertEquals(TREATMENT_ADVICE_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.TREATMENT_ADVICE_DOC_ID_KEY));
-        assertEquals(TREATMENT_ADVICE_START_DATE, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.TREATMENT_ADVICE_START_DATE_KEY));
         assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 

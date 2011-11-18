@@ -110,13 +110,16 @@ public class Caller extends FunctionalTestObject {
     }
 
     public void receiveCall() throws IOException {
-        WebResponse webResponse = webClient.getWebResponse(TamaUrl.baseFor("/motech-delivery-tools/outbound/lastreceived"), new QueryParams());
+        WebResponse webResponse = webClient.getWebResponse(TamaUrl.baseFor("motech-delivery-tools/outbound/lastreceived"), new QueryParams());
         assertEquals(200, webResponse.getStatusCode());
 
-        IncomingCall incomingCall = new IncomingCall(webResponse.getContentAsString());
+        String incomingCallRequest = webResponse.getContentAsString();
+        logInfo("Incoming call: %s", incomingCallRequest);
+        IncomingCall incomingCall = new IncomingCall(incomingCallRequest);
         assertNotNull(incomingCall.apiKey());
         assertEquals(true, incomingCall.phoneNumber().contains(phoneNumber));
 
         callInfo = new OutgoingCallInfo(incomingCall.customParams());
+        replyToCall(callInfo);
     }
 }

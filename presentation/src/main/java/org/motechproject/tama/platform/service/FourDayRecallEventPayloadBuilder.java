@@ -23,16 +23,6 @@ public class FourDayRecallEventPayloadBuilder {
         return this;
     }
 
-    public FourDayRecallEventPayloadBuilder withTreatmentAdviceStartDate(LocalDate startDate) {
-        params.put(FourDayRecallListener.TREATMENT_ADVICE_START_DATE_KEY, startDate);
-        return this;
-    }
-
-    public FourDayRecallEventPayloadBuilder withTreatmentAdviceId(String treatmentAdviceId) {
-        params.put(FourDayRecallListener.TREATMENT_ADVICE_DOC_ID_KEY, treatmentAdviceId);
-        return this;
-    }
-
     public FourDayRecallEventPayloadBuilder withRetryFlag(boolean isRetryEvent) {
         params.put(FourDayRecallListener.RETRY_EVENT_KEY, isRetryEvent);
         return this;

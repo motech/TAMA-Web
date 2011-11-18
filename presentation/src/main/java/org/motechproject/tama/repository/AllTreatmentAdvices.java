@@ -23,6 +23,7 @@ public class AllTreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvic
         initStandardDesignDocument();
     }
 
+    //TODO: This should be renamed to findByPatientIdAndReasonForDiscontinuing. A class should not assume "how" its method would be used and should just try to do "what"?
     public TreatmentAdvice currentTreatmentAdvice(String patientId) {
         List<TreatmentAdvice> treatmentAdvices = find_by_patient_id(patientId);
         for (TreatmentAdvice treatmentAdvice : treatmentAdvices) {

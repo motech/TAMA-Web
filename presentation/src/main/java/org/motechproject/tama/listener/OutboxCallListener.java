@@ -55,10 +55,10 @@ public class OutboxCallListener {
                     IvrCall ivrCall = new IvrCall(ivrService, properties);
                     Map<String, String> callParams = new HashMap<String, String>();
                     callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
-                    ivrCall.makeCall(patient, callParams);
                     if (!"true".equals(event.getParameters().get(TamaSchedulerService.IS_RETRY))) {
                         tamaSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
                     }
+                    ivrCall.makeCall(patient, callParams);
                 }
             } catch (Exception e) {
                 logger.error("Failed to handle OutboxCall event, this event would not be retried but the subsequent repeats would happen.", e);

@@ -7,27 +7,25 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 @Component
-public class FourDayRecallSetupConfiguration {
-    private Properties properties;
-
+public class FourDayRecallSetupConfiguration extends DataSetupConfiguration {
     @Autowired
     public FourDayRecallSetupConfiguration(@Qualifier("fourDayRecallDataSetup") Properties properties) {
-        this.properties = properties;
+        super(properties);
     }
 
     public String patientsDocumentId() {
-        return null;
+        return stringValue("patientsDocumentId");
     }
 
     public String phoneNumber() {
-        return null;
+        return stringValue("phoneNumber");
     }
 
     public String pinNumber() {
-        return null;
+        return stringValue("pinNumber");
     }
 
-    public String weeklyPattern() {
-        return null;
+    public String adherenceResponse() {
+        return stringValue("adherenceResponse");
     }
 }
