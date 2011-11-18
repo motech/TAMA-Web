@@ -14,6 +14,7 @@ import org.motechproject.util.Cookies;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -49,7 +50,10 @@ public class HealthTipsControllerTest {
     public void setUp(){
         initMocks(this);
         String patientId = "patientId";
-        healthTipsController = new HealthTipsController(healthTipService, tamaIvrMessage, callDetailRecordsService, standardResponseController);
+        Properties ivrProperties = new Properties();
+        ivrProperties.put(HealthTipsController.HEALTH_TIP_PLAY_COUNT, "2");
+        healthTipsController = new HealthTipsController(healthTipService, tamaIvrMessage,
+                callDetailRecordsService, standardResponseController,ivrProperties);
         when(kookooIVRContext.callId()).thenReturn("34");
         when(kookooIVRContext.preferredLanguage()).thenReturn("en");
         when(kookooIVRContext.externalId()).thenReturn(patientId);

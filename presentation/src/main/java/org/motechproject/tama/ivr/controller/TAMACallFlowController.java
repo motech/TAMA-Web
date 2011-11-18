@@ -61,6 +61,7 @@ public class TAMACallFlowController implements CallFlowController {
         if (tamaivrContext.hasOutboxCompleted()) return HANG_UP_URL;
         if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
         if (callState.equals(CallState.HEALTH_TIPS)) return HEALTH_TIPS_URL;
+        if (callState.equals(CallState.END_OF_FLOW)) return HANG_UP_URL;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
             return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : HANG_UP_URL;
         throw new TamaException("No URL found");

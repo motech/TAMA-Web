@@ -65,8 +65,13 @@ public class HealthTipService {
 
     public void markAsPlayed(String patientDocumentId, String audioFilename) {
         HealthTipsHistory healthTipsHistory = allHealthTipsHistory.findByPatientIdAndAudioFilename(patientDocumentId, audioFilename);
-        healthTipsHistory.setLastPlayed(DateUtil.now());
-        allHealthTipsHistory.update(healthTipsHistory);
+        if (healthTipsHistory == null) {
+            healthTipsHistory = new HealthTipsHistory(patientDocumentId, audioFilename, DateUtil.now());
+            allHealthTipsHistory.add(healthTipsHistory);
+        } else {
+            healthTipsHistory.setLastPlayed(DateUtil.now());
+            allHealthTipsHistory.update(healthTipsHistory);
+        }
     }
 
     List<PrioritizedHealthTip> getApplicableHealthTips(String patientId) {
@@ -87,7 +92,17 @@ public class HealthTipService {
 
     //TODO: duh
     Map<String, Integer> runHealthTipRules() {
-        return null;
+        Map<String, Integer> healthTips = new HashMap<String, Integer>();
+        healthTips.put("healthTipOne.wav", 1);
+        healthTips.put("healthTipTwo.wav", 2);
+        healthTips.put("healthTipThree.wav", 3);
+        healthTips.put("healthTipFour.wav", 2);
+        healthTips.put("healthTipFive.wav", 1);
+        healthTips.put("healthTipSix.wav", 1);
+        healthTips.put("healthTipSeven.wav", 2);
+        healthTips.put("healthTipEight.wav", 3);
+        healthTips.put("healthTipNine.wav", 2);
+        return healthTips;
     }
 
     public List<String> getPlayList(String patientId) {

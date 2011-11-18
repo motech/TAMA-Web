@@ -18,12 +18,15 @@ import static ch.lambdaj.Lambda.extract;
 import static ch.lambdaj.Lambda.on;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.motechproject.tama.service.HealthTipService.*;
 
 public class HealthTipServiceTest {
 
+    
     HealthTipService healthTipService;
     private Patient patient;
 
@@ -71,6 +74,21 @@ public class HealthTipServiceTest {
     @Test
     public void shouldFilterRecentlyPlayedTipsBasedOnTheirPriority() {
         assertEquals(Arrays.asList("healthTipSix.wav", "healthTipFive.wav", "healthTipFour.wav", "healthTipTwo.wav", "healthTipThree.wav"), healthTipService.getPlayList(patient.getId()));
+    }
+
+    @Test
+    public void shouldAddHistoryOnMarkAsRead() {
+        healthTipService.markAsPlayed(patient.getId(), "file");
+        verify(allHealthTipsHistory).add(any(HealthTipsHistory.class));
+    }
+    
+    @Test
+    public void shouldUpdateHistoryOnMarkAsRead() {
+        final String AUDIO_FILE = "file";
+        HealthTipsHistory healthTipHistory = new HealthTipsHistory(patient.getId(), AUDIO_FILE, DateUtil.now().minusDays(10));
+        when(allHealthTipsHistory.findByPatientIdAndAudioFilename(patient.getPatientId(), AUDIO_FILE)).thenReturn(healthTipHistory);
+        healthTipService.markAsPlayed(patient.getId(), AUDIO_FILE);
+        verify(allHealthTipsHistory).add(any(HealthTipsHistory.class));
     }
 
     private void assertEqualsIgnoreOrder(Collection<? extends Object> list1, Collection<? extends Object> list2) {
