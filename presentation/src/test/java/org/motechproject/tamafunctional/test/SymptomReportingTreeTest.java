@@ -151,7 +151,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         assertAudioFilesPresent(ivrResponse, "ppc_nvshortbreathgiddi", "adv_continuemedicineseeclinicasap");
 
         ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
+        assertAudioFilesPresent(ivrResponse, TamaIVRMessage.END_OF_CALL);
 
         caller.hangup();
     }

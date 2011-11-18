@@ -37,7 +37,7 @@ public class IVRAuthenticationController extends SafeIVRController {
         String callId = tamaivrContext.callId();
 
         return authenticationService.allowAccess(callerId, callId) ?
-                StandardIVRResponse.signatureTuneAndCollectDTMF(callId) : StandardIVRResponse.signatureTuneAndHangup(callId);
+                StandardIVRResponse.signatureTuneAndCollectDTMF(callId) : StandardIVRResponse.endOfCallTuneAndHangup(callId);
     }
 
     @Override
