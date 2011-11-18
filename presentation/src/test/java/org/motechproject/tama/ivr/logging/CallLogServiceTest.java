@@ -6,7 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.server.service.ivr.CallDetailRecord;
+import org.motechproject.ivr.model.CallDetailRecord;
 import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinic;

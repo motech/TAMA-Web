@@ -57,5 +57,4 @@ public class PlayAdherenceTrendFeedbackCommand {
 
         return result.toArray(new String[result.size()]);
     }
-
 }

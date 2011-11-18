@@ -18,7 +18,8 @@ public class MessageForMissedPillFeedbackCommand extends DosageAdherenceCommand 
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
         PillRegimenResponse pillRegimenResponse = pillRegimen(ivrContext);
-        int dosagesFailureCount = allDosageAdherenceLogs.findScheduledDosagesFailureCount(pillRegimenResponse.getPillRegimenId());
+        int scheduledDosagesSuccessCount = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(pillRegimenResponse.getPillRegimenId());
+        int dosagesFailureCount = pillRegimenSnapshot(ivrContext).getScheduledDosagesTotalCount() - scheduledDosagesSuccessCount;
 
         switch (dosagesFailureCount) {
             case 1:

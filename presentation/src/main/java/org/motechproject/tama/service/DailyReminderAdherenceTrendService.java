@@ -49,14 +49,10 @@ public class DailyReminderAdherenceTrendService {
     protected double getAdherencePercentage(String patientId, DateTime asOfDate) {
         PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patientId);
         String regimenId = pillRegimen.getPillRegimenId();
-        int scheduledDosagesTotalCountForLastFourWeeksAsOfNow = getScheduledDosagesTotalCount(pillRegimen, asOfDate.minusWeeks(4), asOfDate);
+        int scheduledDosagesTotalCountForLastFourWeeksAsOfNow = DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(asOfDate.minusWeeks(4), asOfDate, pillRegimen);
         int dosagesTakenForLastFourWeeksAsOfNow = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId,
                 asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate());
         return ((double) dosagesTakenForLastFourWeeksAsOfNow) / scheduledDosagesTotalCountForLastFourWeeksAsOfNow;
-    }
-
-    private int getScheduledDosagesTotalCount(PillRegimenResponse pillRegimen, DateTime startDate, DateTime endDate) {
-        return DosageUtil.getScheduledDosagesTotalCount(startDate, endDate, pillRegimen);
     }
 
     public void raiseAdherenceFallingAlert(String patientId) {

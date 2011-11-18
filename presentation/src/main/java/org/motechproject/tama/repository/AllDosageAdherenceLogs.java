@@ -42,6 +42,14 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return successLogCount;
     }
 
+    @View(name = "find_success_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus], doc._id);}}", reduce = "_count")
+    public int findScheduledDosagesSuccessCount(String regimenId) {
+        ComplexKey key = ComplexKey.of(regimenId, DosageStatus.TAKEN);
+        ViewQuery q = createQuery("find_success_log_count").key(key);
+        ViewResult viewResult = db.queryView(q);
+        return rowCount(viewResult);
+    }
+
     //TODO: Should be renamed to findByRegimenDosageStatusAndDosageDate.
     @View(name = "find_whether_current_dosage_will_be_taken_later", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}", reduce = "_count")
     public boolean willCurrentDosageBeTakenLater(String regimenId) {
@@ -49,19 +57,6 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         ViewQuery q = createQuery("find_whether_current_dosage_will_be_taken_later").key(key);
         ViewResult viewResult = db.queryView(q);
         return rowCount(viewResult) == 1;
-    }
-
-    @View(name = "find_failure_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesFailureCount(String regimenId) {
-        ComplexKey key1 = ComplexKey.of(regimenId, DosageStatus.NOT_TAKEN);
-        ViewQuery q1 = createQuery("find_failure_log_count").key(key1);
-        ViewResult viewResult1 = db.queryView(q1);
-
-        ComplexKey key2 = ComplexKey.of(regimenId, DosageStatus.WILL_TAKE_LATER);
-        ViewQuery q2 = createQuery("find_failure_log_count").key(key2);
-        ViewResult viewResult2 = db.queryView(q2);
-
-        return rowCount(viewResult1) + rowCount(viewResult2);
     }
 
     @View(name = "find_by_dosage_id_and_dosageDate", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.dosageId && doc.dosageDate) {emit([doc.dosageId, doc.dosageDate], doc._id);}}")

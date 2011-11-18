@@ -84,7 +84,7 @@ public class DailyReminderAdherenceTrendServiceTest {
         Mockito.when(pillReminderService.getPillRegimen(Mockito.anyString())).thenReturn(pillRegimenResponse);
         Mockito.when(pillRegimenResponse.getPillRegimenId()).thenReturn(pillRegimenId);
         Mockito.when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount(pillRegimenId, dateTime.minusWeeks(4).toLocalDate(), dateTime.toLocalDate())).thenReturn(successCountThisWeek);
-        PowerMockito.when(DosageUtil.getScheduledDosagesTotalCount(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
+        PowerMockito.when(DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
 
         DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService);
         assertEquals(0.25, dailyReminderAdherenceTrendService.getAdherencePercentage(externalId));
