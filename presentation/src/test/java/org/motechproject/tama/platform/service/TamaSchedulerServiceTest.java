@@ -34,7 +34,6 @@ public class TamaSchedulerServiceTest {
     private final LocalDate TREATMENT_ADVICE_START_DATE = DateUtil.newDate(2012, 12, 12);
     private final LocalDate TREATMENT_ADVICE_END_DATE = DateUtil.newDate(2012, 12, 24);
     private static final String PATIENT_ID = "patient_id";
-    private final String TREATMENT_ADVICE_ID = "treatmentAdviceId";
 
     private TamaSchedulerService schedulerService;
     private TreatmentAdvice treatmentAdvice;
@@ -133,7 +132,7 @@ public class TamaSchedulerServiceTest {
         when(properties.getProperty(TAMAConstants.RETRIES_PER_DAY)).thenReturn("5");
         when(properties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("15");
 
-        schedulerService.scheduleRepeatingJobsForFourDayRecall(PATIENT_ID, TREATMENT_ADVICE_ID, TREATMENT_ADVICE_START_DATE);
+        schedulerService.scheduleRepeatingJobsForFourDayRecall(PATIENT_ID);
 
         ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
         verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
@@ -187,6 +186,7 @@ public class TamaSchedulerServiceTest {
 
     private TreatmentAdvice getTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
+        String TREATMENT_ADVICE_ID = "treatmentAdviceId";
         treatmentAdvice.setId(TREATMENT_ADVICE_ID);
         treatmentAdvice.setPatientId(PATIENT_ID);
         ArrayList<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
@@ -202,7 +202,7 @@ public class TamaSchedulerServiceTest {
     @Test
     public void shouldUnscheduleFourDayRecallJobs() {
         String patient_id = "patient_id";
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patient_id).withBestCallTime(new TimeOfDay(10, 00, TimeMeridiem.AM)).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patient_id).withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn("3");
         schedulerService.unScheduleFourDayRecallJobs(patient);
