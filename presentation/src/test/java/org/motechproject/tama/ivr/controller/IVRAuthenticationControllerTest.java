@@ -15,6 +15,7 @@ import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.platform.service.AuthenticationService;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -60,6 +61,15 @@ public class IVRAuthenticationControllerTest {
         when(authenticationService.allowAccess(callerId, callId)).thenReturn(true);
         KookooIVRResponseBuilder kookooIVRResponseBuilder = ivrAuthenticationController.newCall(kooKooIVRContext);
         assertEquals(true, kookooIVRResponseBuilder.isCollectDTMF());
+    }
+
+    @Test
+    public void acceptedNumberOfInputLengthForPasscode() {
+        tamaivrContext.requestedCallerId(callerId);
+        when(tamaivrContextFactory.initialize(kooKooIVRContext)).thenReturn(tamaivrContext);
+        when(authenticationService.allowAccess(callerId, callId)).thenReturn(true);
+        KookooIVRResponseBuilder kookooIVRResponseBuilder = ivrAuthenticationController.newCall(kooKooIVRContext);
+        assertTrue(kookooIVRResponseBuilder.create(ivrMessage).contains("collectdtmf l=\"10\""));
     }
 
     @Test

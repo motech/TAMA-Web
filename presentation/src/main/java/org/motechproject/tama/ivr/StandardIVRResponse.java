@@ -4,7 +4,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 
 public class StandardIVRResponse {
     public static KookooIVRResponseBuilder signatureTuneAndCollectDTMF(String callId) {
-        return signatureTune(callId).collectDtmfLength(4);
+        return signatureTune(callId).collectDtmfLength(10);
     }
 
     private static KookooIVRResponseBuilder signatureTune(String callId) {
