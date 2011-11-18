@@ -68,8 +68,7 @@ public class CallLogServiceTest {
         verify(allCallLogs).add(logCapture.capture());
 
         assertEquals(clinic.getId(), logCapture.getValue().clinicId());
-        assertEquals(1, logCapture.getValue().getLikelyPatientIds().size());
-        assertEquals(patient.getId(), logCapture.getValue().getLikelyPatientIds().get(0));
+        assertEquals(0, logCapture.getValue().getLikelyPatientIds().size());
     }
 
     @Test
