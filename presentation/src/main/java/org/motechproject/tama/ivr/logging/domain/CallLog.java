@@ -29,6 +29,9 @@ public class CallLog extends CouchEntity {
     private List<String> likelyPatientIds = new ArrayList<String>();
     private List<CallEvent> callEvents = new ArrayList<CallEvent>();
 
+    @JsonProperty
+    private String clinicId;
+
     public CallLog() {
     }
 
@@ -95,6 +98,15 @@ public class CallLog extends CouchEntity {
 
     public void setCallEvents(List<CallEvent> callEvents) {
         this.callEvents = callEvents;
+    }
+
+    public String clinicId() {
+        return clinicId;
+    }
+
+    public CallLog clinicId(String clinicId) {
+        this.clinicId = clinicId;
+        return this;
     }
 
     public List<String> getLikelyPatientIds() {

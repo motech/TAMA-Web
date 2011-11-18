@@ -254,9 +254,9 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldGetAllPatientsByMobileNumber() {
-        Patient patient1 = PatientBuilder.startRecording().withDefaults().withPatientId("123213213").withPasscode("1212").build();
+        Patient patient1 = PatientBuilder.startRecording().withDefaults().withPasscode("1111").build();
         String mobilePhoneNumber = patient1.getMobilePhoneNumber();
-        Patient patient2 = PatientBuilder.startRecording().withDefaults().withPatientId("123213453").withMobileNumber(mobilePhoneNumber).withPasscode("1233").build();
+        Patient patient2 = PatientBuilder.startRecording().withDefaults().withMobileNumber(mobilePhoneNumber).withPasscode("2222").build();
         allPatients.add(patient1);
         allPatients.add(patient2);
 

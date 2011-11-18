@@ -20,7 +20,6 @@ import org.motechproject.tama.repository.AllPatients;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -68,7 +67,9 @@ public class CallLogServiceTest {
         ArgumentCaptor<CallLog> logCapture = ArgumentCaptor.forClass(CallLog.class);
         verify(allCallLogs).add(logCapture.capture());
 
-        assertEquals(0, logCapture.getValue().getLikelyPatientIds().size());
+        assertEquals(clinic.getId(), logCapture.getValue().clinicId());
+        assertEquals(1, logCapture.getValue().getLikelyPatientIds().size());
+        assertEquals(patient.getId(), logCapture.getValue().getLikelyPatientIds().get(0));
     }
 
     @Test
@@ -86,6 +87,7 @@ public class CallLogServiceTest {
         ArgumentCaptor<CallLog> logCapture = ArgumentCaptor.forClass(CallLog.class);
         verify(allCallLogs).add(logCapture.capture());
 
+        assertEquals(clinic.getId(), logCapture.getValue().clinicId());
         assertEquals(1, logCapture.getValue().getLikelyPatientIds().size());
         assertEquals(patient.getId(), logCapture.getValue().getLikelyPatientIds().get(0));
     }
