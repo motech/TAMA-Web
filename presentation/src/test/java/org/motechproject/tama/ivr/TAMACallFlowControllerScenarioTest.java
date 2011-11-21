@@ -171,6 +171,6 @@ public class TAMACallFlowControllerScenarioTest {
         assertURL(TAMACallFlowController.OUTBOX_URL);
 
         ivrContext.outboxCompleted(true);
-        assertURL(TAMACallFlowController.HANG_UP_URL);
+        assertURL(TAMACallFlowController.MENU_REPEAT);
     }
 }

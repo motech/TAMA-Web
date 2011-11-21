@@ -29,6 +29,7 @@ public class TAMACallFlowController implements CallFlowController {
     public static final String HANG_UP_URL = "/ivr/hangup";
     public static final String SYMPTOM_REPORTING_URL = "/ivr/symptomreporting";
     public static final String DIAL_URL = "/ivr/dial";
+    public static final String MENU_REPEAT = "/ivr/reset";
     private TAMATreeRegistry treeRegistry;
     private PillReminderService pillReminderService;
     private VoiceOutboxService voiceOutboxService;
@@ -58,12 +59,12 @@ public class TAMACallFlowController implements CallFlowController {
         if (callState.equals(CallState.SYMPTOM_REPORTING)) return SYMPTOM_REPORTING_URL;
         if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE))
             return AllIVRURLs.DECISION_TREE_URL;
-        if (tamaivrContext.hasOutboxCompleted()) return HANG_UP_URL;
+        if (tamaivrContext.hasOutboxCompleted()) return MENU_REPEAT;
         if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
         if (callState.equals(CallState.HEALTH_TIPS)) return HEALTH_TIPS_URL;
-        if (callState.equals(CallState.END_OF_FLOW)) return HANG_UP_URL;
+        if (callState.equals(CallState.END_OF_FLOW)) return MENU_REPEAT;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
-            return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : HANG_UP_URL;
+            return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : MENU_REPEAT;
         throw new TamaException("No URL found");
     }
 
@@ -112,16 +113,24 @@ public class TAMACallFlowController implements CallFlowController {
                     return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM;
                 }
             }
-        } else {
-            if (tamaivrContext.isOutBoxCall()) {
-                return TAMATreeRegistry.OUTBOX_CALL;
-            }
         }
 
-        if (isPatientOnDailyPillReminder)
+        if (tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER)
+                || tamaivrContext.hasTraversedTree(TAMATreeRegistry.FOUR_DAY_RECALL)
+                || tamaivrContext.hasTraversedTree(TAMATreeRegistry.OUTBOX_CALL)) {
+            return TAMATreeRegistry.MENU_TREE;
+        }
+
+        if (tamaivrContext.isOutBoxCall() && !tamaivrContext.hasTraversedTree(TAMATreeRegistry.OUTBOX_CALL)) {
+            return TAMATreeRegistry.OUTBOX_CALL;
+        }
+        
+        if (isPatientOnDailyPillReminder && !tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER)) {
             return TAMATreeRegistry.CURRENT_DOSAGE_REMINDER;
-        else
+        }
+        else {
             return TAMATreeRegistry.FOUR_DAY_RECALL;
+        }
     }
 
     @Override

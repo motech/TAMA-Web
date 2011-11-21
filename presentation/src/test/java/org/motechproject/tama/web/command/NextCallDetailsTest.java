@@ -10,9 +10,11 @@ import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
+import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -34,7 +36,7 @@ public class NextCallDetailsTest {
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
     }
 
-     @Test
+    @Test
     public void shouldReturnLastReminderWarningMessageNonLastReminder() {
         context.callDirection(CallDirection.Inbound);
 
@@ -47,5 +49,14 @@ public class NextCallDetailsTest {
         assertEquals("001_07_04_doseTimeAtEvening", messages[4]);
         assertEquals("timeOfDayToday", messages[5]);
         assertEquals("010_04_06_nextDoseIs2", messages[6]);
+    }
+
+    @Test
+    public void shouldNotReturnNextCallDetailMessagesForRepeatMenu() {
+        ArrayList<String> completedTrees = new ArrayList<String>();
+        context.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN);
+        completedTrees.add(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN);
+        String[] messages = nextCallDetails.executeCommand(context);
+        assertEquals(0, messages.length);
     }
 }

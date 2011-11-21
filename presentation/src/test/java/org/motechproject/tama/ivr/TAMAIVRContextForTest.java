@@ -9,6 +9,9 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.repository.AllPatients;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TAMAIVRContextForTest extends TAMAIVRContext {
     private String dtmfInput;
     private String callerId;
@@ -32,6 +35,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private String isOutboundCall;
     private String symptomReportingTree;
     private int retryInterval;
+    private List<String> completedTrees = new ArrayList<String>();
 
     @Override
     public String dtmfInput() {
@@ -248,5 +252,20 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     @Override
     public int retryInterval() {
         return retryInterval;
+    }
+
+    @Override
+    public List<String> getListOfCompletedTrees() {
+        return this.completedTrees;
+    }
+
+    @Override
+    public boolean hasTraversedTree(String treeName) {
+        return completedTrees.contains(treeName);
+    }
+
+    @Override
+    public void addLastCompletedTreeToListOfCompletedTrees(String treeName) {
+        this.completedTrees.add(treeName);
     }
 }

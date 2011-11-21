@@ -7,7 +7,8 @@ import org.motechproject.tama.builder.ClinicBuilder;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
 
@@ -30,7 +31,7 @@ public class IncomingWelcomeGreetingMessageTest {
 
     private Clinic clinic;
 
-    private TAMAIVRContext ivrContext;
+    private TAMAIVRContextForTest ivrContext;
 
     @Before
     public void setUp() {
@@ -42,12 +43,8 @@ public class IncomingWelcomeGreetingMessageTest {
         incomingWelcomeGreetingMessage = new IncomingWelcomeGreetingMessage(allPatients, allClinics, null);
         clinic = ClinicBuilder.startRecording().withId(clinicId).withName(clinicName).build();
         patient = PatientBuilder.startRecording().withId(patientId).withClinic(clinic).build();
-        ivrContext = new TAMAIVRContext() {
-            @Override
-            public String patientId() {
-                return patientId;
-            }
-        };
+        ivrContext = new TAMAIVRContextForTest();
+        ivrContext.patientId(patientId);
         when(allPatients.get(patientId)).thenReturn(patient);
         when(allClinics.get(clinicId)).thenReturn(clinic);
     }
@@ -59,5 +56,12 @@ public class IncomingWelcomeGreetingMessageTest {
         assertNotNull(messagesToBePlayed);
         assertEquals(1, messagesToBePlayed.length);
         assertEquals(String.format("welcome_to_%s", clinic.getName()), messagesToBePlayed[0]);
+    }
+
+    @Test
+    public void shouldNotPlayWelcomeGreetingMessageForRepeatMenu() {
+        ivrContext.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL);
+        final String[] messagesToBePlayed = incomingWelcomeGreetingMessage.executeCommand(ivrContext);
+        assertEquals(0, messagesToBePlayed.length);
     }
 }

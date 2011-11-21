@@ -32,8 +32,4 @@ public class WelcomeMessageForOutboundCall extends BaseTreeCommand {
         messages.add(clinic.getName());
         return messages.toArray(new String[messages.size()]);
     }
-
-    private List<String> getMedicines(TAMAIVRContext ivrContext) {
-        return pillRegimenSnapshot(ivrContext).medicinesForCurrentDosage();
-    }
 }

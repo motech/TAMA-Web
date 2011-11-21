@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.tama.ivr.decisiontree.CurrentDosageTakenTree;
+import org.motechproject.tama.web.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.web.command.NextCallDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -38,7 +40,9 @@ public class CurrentDosageTakenTreeTest {
     public void shouldGetPillTakenCommand() {
         Node nextNode = testConfirmTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
+        assertEquals(2, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof NextCallDetails);
+        assertTrue(prompts.get(1).getCommand() instanceof SymptomAndOutboxMenuCommand);
     }
 }
 

@@ -5,6 +5,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.builder.IVRDayMessageBuilder;
+import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,10 @@ public class NextCallDetails extends BaseTreeCommand {
 
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
+        if (ivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN)) {
+            return new String[0];
+        }
+
         DateTime nextDosageTime = pillRegimenSnapshot(ivrContext).getNextDosageTime();
         List<String> messageForNextDosage = new ArrayList<String>();
         messageForNextDosage.add(TamaIVRMessage.YOUR_NEXT_DOSE_IS);

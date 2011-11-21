@@ -18,6 +18,7 @@ import org.motechproject.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public class TAMAIVRContext {
     static final String CALLER_ID = "caller_id";
@@ -61,6 +62,18 @@ public class TAMAIVRContext {
 
     private void setInSession(String name, Object value) {
         httpRequest.getSession().setAttribute(name, value);
+    }
+
+    public void addLastCompletedTreeToListOfCompletedTrees(String treeName) {
+        kooKooIVRContext.addToListOfCompletedTrees(treeName);
+    }
+
+    public List<String> getListOfCompletedTrees() {
+        return kooKooIVRContext.getListOfCompletedTrees();
+    }
+
+    public boolean hasTraversedTree(String treeName) {
+        return getListOfCompletedTrees() != null && getListOfCompletedTrees().contains(treeName);
     }
 
     protected void callerId(String callerId) {
@@ -170,6 +183,7 @@ public class TAMAIVRContext {
 
     public void lastCompletedTree(String treeName) {
         cookies.add(LAST_COMPLETED_TREE, treeName);
+        addLastCompletedTreeToListOfCompletedTrees(treeName);
     }
 
     public String lastCompletedTree() {
@@ -193,11 +207,22 @@ public class TAMAIVRContext {
         return kooKooIVRContext.preferredLanguage();
     }
 
+    public void currentDecisionTreePath(String path) {
+        kooKooIVRContext.currentDecisionTreePath(path);
+    }
+
     public void symptomReportingTree(String symptomReportingTree) {
         setInSession(SYMPTOM_REPORTING_TREE, symptomReportingTree);
     }
 
     public String symptomReportingTree() {
         return fromSession(SYMPTOM_REPORTING_TREE);
+    }
+
+    public void resetForMenuRepeat() {
+        this.currentDecisionTreePath("");
+        this.lastCompletedTree(null);
+        setInSession(PILL_REGIMEN, null);
+        this.callState(CallState.AUTHENTICATED);
     }
 }

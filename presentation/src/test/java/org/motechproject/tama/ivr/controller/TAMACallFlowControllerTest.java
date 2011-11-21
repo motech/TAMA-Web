@@ -19,6 +19,7 @@ import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -53,6 +54,12 @@ public class TAMACallFlowControllerTest {
 
 
     @Test
+    public void returnAuthenticationURLWhenTheCallStarts() {
+        ivrContext.callState(CallState.STARTED);
+        assertEquals(TAMACallFlowController.AUTHENTICATION_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
     public void outboxURLShouldBeReturnedWhenTheDecisionTreesAreComplete() {
         ivrContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
@@ -62,21 +69,14 @@ public class TAMACallFlowControllerTest {
     }
 
     @Test
-    public void hangupURLShouldBeReturnedWhenThereAreNoMessagesInOutbox() {
+    public void menuRepeatURLShouldBeReturnedWhenThereAreNoMessagesInOutbox() {
         ivrContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
         ivrContext.patientId(patientId);
         when(voiceOutboxService.getNumberPendingMessages(patientId)).thenReturn(0);
-        assertEquals(TAMACallFlowController.HANG_UP_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+        assertEquals(TAMACallFlowController.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
-    @Test
-    public void returnAuthenticationURLWhenTheCallStarts() {
-        ivrContext.callState(CallState.STARTED);
-        assertEquals(TAMACallFlowController.AUTHENTICATION_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
-    }
-
-    @Test
     public void shouldReturnHealthTipURLWhenCallStateIsHealthTip() {
         ivrContext.callState(CallState.HEALTH_TIPS);
         assertEquals(TAMACallFlowController.HEALTH_TIPS_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
@@ -107,12 +107,12 @@ public class TAMACallFlowControllerTest {
     }
 
     @Test
-    public void completionOfOutboxShouldLeadToHangup() {
+    public void completionOfOutboxShouldLeadToMenuRepeat() {
         ivrContext.callState(CallState.OUTBOX);
         ivrContext.outboxCompleted(true);
         String patientId = "1234";
         ivrContext.patientId(patientId);
-        assertEquals(TAMACallFlowController.HANG_UP_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+        assertEquals(TAMACallFlowController.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test
@@ -139,9 +139,8 @@ public class TAMACallFlowControllerTest {
         ivrContext.callState(CallState.AUTHENTICATED);
         ivrContext.patient(PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).build());
         ivrContext.callDirection(CallDirection.Inbound);
-        final String treeName = tamaCallFlowController.decisionTreeName(kooKooIVRContext);
 
-        assertEquals(TAMATreeRegistry.MENU_TREE, treeName);
+        assertEquals(TAMATreeRegistry.MENU_TREE, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
 
     @Test
@@ -149,8 +148,64 @@ public class TAMACallFlowControllerTest {
         ivrContext.callState(CallState.AUTHENTICATED);
         ivrContext.patient(PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).withCallPreference(CallPreference.FourDayRecall).build());
         ivrContext.callDirection(CallDirection.Inbound);
-        final String treeName = tamaCallFlowController.decisionTreeName(kooKooIVRContext);
 
-        assertEquals(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, treeName);
+        assertEquals(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
+
+    @Test
+    public void shouldTransitionToMenuRepetitionOnceAllTreesAreCompletedAndThereAreNoOutboxMessages() {
+        ivrContext.callState(CallState.ALL_TREES_COMPLETED);
+        when(voiceOutboxService.getNumberPendingMessages(any(String.class))).thenReturn(0);
+
+        assertEquals(TAMACallFlowController.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldNotTransitionToCurrentDosageReminderTreeIsPlayed_AndUserEntersWillTakeLater() {
+        ivrContext.callState(CallState.AUTHENTICATED);
+        ivrContext.patient(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
+        ivrContext.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
+        ivrContext.callDirection(CallDirection.Outbound);
+
+        assertEquals(TAMATreeRegistry.MENU_TREE, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldTransitionToMenuTreeOnceFourDayRecallTreeIsPlayed() {
+        ivrContext.callState(CallState.AUTHENTICATED);
+        ivrContext.patient(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build());
+        ivrContext.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.FOUR_DAY_RECALL);
+        ivrContext.callDirection(CallDirection.Outbound);
+
+        assertEquals(TAMATreeRegistry.MENU_TREE, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldNotRepeatOutboxCallTreeMoreThanOnceDuringOutboxCall() {
+        ivrContext.callState(CallState.AUTHENTICATED);
+        ivrContext.patient(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
+        ivrContext.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.OUTBOX_CALL);
+        ivrContext.callDirection(CallDirection.Outbound);
+
+        assertEquals(TAMATreeRegistry.MENU_TREE, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldTransitionToCurrentDosageReminderTreeForPatientOnDailyPillReminder(){
+        ivrContext.callState(CallState.AUTHENTICATED);
+        ivrContext.patient(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
+        ivrContext.callDirection(CallDirection.Outbound);
+
+        assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
+    }
+    
+    @Test
+    public void shouldTransitionToMenuRepeatWhenCallStateIs_EndOfFlow(){
+        ivrContext.callState(CallState.END_OF_FLOW);
+        ivrContext.patient(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
+        ivrContext.callDirection(CallDirection.Outbound);
+
+        assertEquals(TAMACallFlowController.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
 }

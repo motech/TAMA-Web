@@ -37,7 +37,7 @@ public class TAMATreeRegistry {
         decisionTrees.put(FOUR_DAY_RECALL_INCOMING_CALL, fourDayRecallIncomingCallTree);
         decisionTrees.put(OUTBOX_CALL, outboxCallTree);
         decisionTrees.put(MENU_TREE, menuTree);
-        leafTreeNames = Arrays.asList(PREVIOUS_DOSAGE_REMINDER, REGIMEN_1_TO_6);
+        leafTreeNames = Arrays.asList(PREVIOUS_DOSAGE_REMINDER, REGIMEN_1_TO_6, FOUR_DAY_RECALL);
     }
 
     public Tree getTree(String treeName) {

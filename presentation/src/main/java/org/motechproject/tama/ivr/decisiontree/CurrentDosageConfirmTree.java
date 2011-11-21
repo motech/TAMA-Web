@@ -19,12 +19,15 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     private UpdateAdherenceCommand updateAdherenceCommand;
     @Autowired
     private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
+    @Autowired
+    private SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand;
 
     protected Node createRootNode() {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
-                        new MenuAudioPrompt().setName(TamaIVRMessage.PILL_CONFIRM_CALL_MENU),
+                        new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_TAKEN_MENU_OPTION),
+                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand),
                         new TextToSpeechPrompt().setName("if you want to listen to health tips Press 5"))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()

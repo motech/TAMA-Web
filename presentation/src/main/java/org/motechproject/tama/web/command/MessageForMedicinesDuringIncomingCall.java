@@ -6,6 +6,7 @@ import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,9 @@ public class MessageForMedicinesDuringIncomingCall extends BaseTreeCommand {
         Patient patient = allPatients.get(tamaivrContext.patientId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
-        messages.add(String.format("welcome_to_%s", clinic.getName()));
+        if (!tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM)) {
+            messages.add(String.format("welcome_to_%s", clinic.getName()));
+        }
         PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(tamaivrContext);
         if (pillRegimenSnapshot.isTimeToTakeCurrentPill()) {
             messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);

@@ -16,6 +16,7 @@ import org.motechproject.tama.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.domain.Clinic;
 import org.motechproject.tama.domain.Patient;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.repository.AllClinics;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -103,6 +105,23 @@ public class MessageForMedicinesDuringIncomingCallTest {
         assertEquals("welcome_to_clinicName", messages[0]);
         assertEquals("010_02_04_notReportedIfTaken", messages[1]);
         assertEquals("pillmedicine3", messages[2]);
+        assertEquals("001_07_07_fromTheBottle1", messages[3]);
+    }
+    
+    @Test
+    public void shouldNotPlayWelcomeMessageDuringMenuRepeat(){
+        int dosageHour = 16;
+        DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
+        context.dosageId("currentDosageId").callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
+        context.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
+        
+        String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
+
+        assertEquals(4, messages.length);
+        assertFalse(Arrays.asList(messages).contains("welcome_to_clinicName"));
+        assertEquals("001_02_02_itsTimeForPill1", messages[0]);
+        assertEquals("pillmedicine1", messages[1]);
+        assertEquals("pillmedicine2", messages[2]);
         assertEquals("001_07_07_fromTheBottle1", messages[3]);
     }
 }

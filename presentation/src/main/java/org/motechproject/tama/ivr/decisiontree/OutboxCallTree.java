@@ -15,7 +15,8 @@ public class OutboxCallTree extends TamaDecisionTree {
     @Autowired
     private WelcomeMessageForOutboundCall welcomeMessageForOutboundCall;
 
-    @Autowired DisableOutboxCallRetryCommand disableOutboxCallRetryCommand;
+    @Autowired
+    private DisableOutboxCallRetryCommand disableOutboxCallRetryCommand;
 
     @Override
     protected Node createRootNode() {
