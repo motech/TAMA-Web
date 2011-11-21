@@ -33,7 +33,6 @@
     <import resource="classpath:applicationCmsLiteApi.xml"/>
     <import resource="classpath:applicationIvrKookoo.xml"/>
     <import resource="classpath:applicationOutboxAPI.xml"/>
-    <import resource="classpath:applicationContextAlert.xml"/>
     <import resource="classpath:applicationPlatformScheduler.xml"/>
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">

@@ -197,7 +197,7 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -215,25 +215,55 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
             <version>${spring.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-support</artifactId>
+				</exclusion>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -264,12 +294,24 @@
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
@@ -326,6 +368,10 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
             </exclusions>
             <scope>compile</scope>
         </dependency>
@@ -338,6 +384,14 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-support</artifactId>
+				</exclusion>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
             </exclusions>
             <scope>compile</scope>
         </dependency>
@@ -448,18 +502,40 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring-security.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-support</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.ektorp</groupId>
             <artifactId>org.ektorp</artifactId>
             <version>1.1.1</version>
             <scope>compile</scope>
+            <exclusions>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+            </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.ektorp</groupId>
             <artifactId>org.ektorp.spring</artifactId>
             <version>1.1.1</version>
             <scope>compile</scope>
+            <exclusions>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+            </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -503,90 +579,282 @@
             <artifactId>motech-platform-ivr</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder-api</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-alerts-api</artifactId>
             <version>0.3-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-server-api</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-ivr-kookoo</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-event-tracking-api</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-decisiontree</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-decisiontree-common</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-outbox-api</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-scheduler</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-support</artifactId>
+				</exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-cmslite-api</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>tama-symptoms-reporting</artifactId>
             <version>0.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>1.8.4</version>
-            <scope>compile</scope>
+            <groupId>org.opensymphony.quartz</groupId>
+            <artifactId>quartz-all</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -627,12 +895,32 @@
             <artifactId>lambdaj</artifactId>
             <version>2.3.1</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-spring</artifactId>
             <version>5.1.1</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit-addons</groupId>
@@ -650,6 +938,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>org.osgi.core</artifactId>
+              <version>1.0.0</version>
+            </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -1001,10 +1294,20 @@
                 <version>2.1.1</version>
             </plugin>
 
-             <plugin>
+            <plugin>
                <groupId>org.apache.felix</groupId>
                <artifactId>maven-bundle-plugin</artifactId>
                <extensions>true</extensions>
+               <executions>
+                   <execution>
+                      <id>bundle-manifest</id>
+                      <phase>process-classes</phase>
+                      <goals>
+                        <goal>bundle</goal>
+                      </goals>
+                   </execution>
+               </executions>
+
                <configuration>
                  <supportedProjectTypes>
                   <supportedProjectType>jar</supportedProjectType>
@@ -1013,12 +1316,13 @@
                 </supportedProjectTypes>
                  <instructions>
                      <Import-Package>*;resolution:=optional;-split-package:=merge-first</Import-Package>
-                     <Embed-Dependency>*</Embed-Dependency>
+                     <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                      <Embed-Transitive>true</Embed-Transitive>
                      <Embed-Directory>WEB-INF/lib</Embed-Directory>
                      <_wab>src/main/webapp</_wab>
                      <Web-ContextPath>/tama</Web-ContextPath>
                  </instructions>
+                 <excludeDependencies>*;scope=provided,org.apache.commons.logging</excludeDependencies>
                </configuration>
            </plugin>
 

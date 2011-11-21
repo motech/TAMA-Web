@@ -1,4 +1,5 @@
 Manifest-Version: 1
+Module-Type: Web
 Bnd-LastModified: 1321421357488
 Build-Jdk: 1.6.0_26
 Built-By: balaji
@@ -10,3 +11,5 @@ Created-By: Apache Maven Bundle Plugin
 Originally-Created-By: Apache Maven Bundle Plugin
 Tool: Bnd-1.43.0
 Web-ContextPath: /tama
+Import-Library: org.springframework.spring
+Import-Package: org.eclipse.virgo.web.dm,org.springframework.web.context,org.springframework.context.support
