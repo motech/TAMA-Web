@@ -14,6 +14,8 @@ import java.net.URL;
 
 public class ShowPatientPage extends Page {
     public static final String PATIENT_ID_ID = "_s_org_motechproject_tama_domain_patient_patientId_patientId_id";
+    public static final String ACTIVATE_PATIENT_ID = "activatePatient";
+    public static final String DEACTIVATE_PATIENT_ID = "deactivatePatientButton";
 
     @FindBy(how = How.ID, using = PATIENT_ID_ID)
     private WebElement patientId;
@@ -45,10 +47,10 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.ID, using = "_bestCallTime__id")
     private WebElement bestCallTime;
 
-    @FindBy(how = How.ID, using = "activatePatient")
+    @FindBy(how = How.ID, using = ACTIVATE_PATIENT_ID)
     private WebElement activationLink;
 
-    @FindBy(how = How.ID, using = "deactivatePatientButton")
+    @FindBy(how = How.ID, using = DEACTIVATE_PATIENT_ID)
     private WebElement deactivationLink;
 
     @FindBy(how = How.ID, using = "_patient.status_id")
@@ -130,7 +132,7 @@ public class ShowPatientPage extends Page {
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(PATIENT_ID_ID)) != null;
+                return webDriver.findElement(By.id(DEACTIVATE_PATIENT_ID)) != null;
             }
         });
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
@@ -142,7 +144,7 @@ public class ShowPatientPage extends Page {
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(PATIENT_ID_ID)) != null;
+                return webDriver.findElement(By.id(ACTIVATE_PATIENT_ID)) != null;
             }
         });
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);

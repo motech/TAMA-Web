@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.test;
 
 import junit.framework.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tama.domain.Status;
 import org.motechproject.tamafunctional.context.ClinicianContext;
@@ -30,7 +29,7 @@ public class PatientActivationTest extends BaseTest {
         pageAfterActivation.logout();
     }
 
-    @Test @Ignore
+    @Test
     public void testPatientDeactivation() {
         ClinicianContext clinicianContext = new ClinicianContext();
         buildContexts(clinicianContext);
@@ -45,7 +44,7 @@ public class PatientActivationTest extends BaseTest {
 
         ShowPatientPage pageAfterDeactivation = showPatientPage.deactivatePatient("Study complete");
 
-        Assert.assertEquals("Study complete", pageAfterDeactivation.getStatus().trim());    // TODO:fails randomly; probably because its navigating to same page
+        Assert.assertEquals("Study complete", pageAfterDeactivation.getStatus().trim());
 
         pageAfterDeactivation.logout();
     }
