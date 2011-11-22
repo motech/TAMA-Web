@@ -63,7 +63,7 @@ public class DialClinicianTest extends BaseIVRTest {
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
-        asksForCollectDtmfWith(ivrResponse, "welcome_to_" + clinician.clinic().name(), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.PILL_CONFIRM_CALL_MENU);
+        asksForCollectDtmfWith(ivrResponse, "welcome_to_" + clinician.clinic().name(), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
     }
 
     private void patientCallsTAMA_AndVerifyPillMenuNotPlayed() {
@@ -71,7 +71,7 @@ public class DialClinicianTest extends BaseIVRTest {
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
-        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.MENU_010_05_01_MAINMENU4);
+        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
     }
 
     private void patientReportsSymptoms() {

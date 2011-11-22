@@ -40,7 +40,7 @@ public class CurrentDosageTakenTreeTest {
     public void shouldGetPillTakenCommand() {
         Node nextNode = testConfirmTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(2, prompts.size());
+        assertEquals(3, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof NextCallDetails);
         assertTrue(prompts.get(1).getCommand() instanceof SymptomAndOutboxMenuCommand);
     }
