@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatientPreferences;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -83,6 +84,11 @@ public class ShowPatientPage extends Page {
         waitForElementWithIdToLoad(PATIENT_ID_ID);
     }
 
+    @Override
+    public void postInitialize() {
+        this.deactivationReasonDropdown = WebDriverFactory.createWebElement(this.deactivationReasonDropdown);
+    }
+
     public String getPatientId() {
         return patientId.getText();
     }
@@ -135,10 +141,12 @@ public class ShowPatientPage extends Page {
                 return webDriver.findElement(By.id(DEACTIVATE_PATIENT_ID)) != null;
             }
         });
+
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
     public ShowPatientPage deactivatePatient(String reason) {
+        this.deactivationReasonDropdown.clear();
         this.deactivationReasonDropdown.sendKeys(reason);
         this.deactivationLink.click();
         wait.until(new ExpectedCondition<Boolean>() {
