@@ -61,6 +61,6 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         ivrResponse = caller.enter("3");
         assertAudioFilesPresent(ivrResponse, NO_MESSAGES);
         ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, MORE_OPTIONS, END_OF_CALL);
+        assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU, END_OF_CALL);
     }
 }
