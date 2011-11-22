@@ -102,6 +102,11 @@ public class PatientTest {
     }
 
     @Test
+    public void shouldTestTheFirstDeactivationStatusOfPatient() {
+        assertEquals(Patient.Status.Temporary_Deactivation, Patient.Status.deactivationStatuses().get(0));
+    }
+
+    @Test
     public void shouldTestActivationOfPatient() {
         Patient patient = PatientBuilder.startRecording().withStatus(Patient.Status.Inactive).build();
         patient.activate();

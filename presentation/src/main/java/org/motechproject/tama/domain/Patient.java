@@ -75,7 +75,7 @@ public class Patient extends CouchEntity {
     }
 
     public enum Status {
-        Inactive("Inactive"), Active("Active"), Study_Complete("Study complete"), Premature_Termination_By_Clinic("Premature termination by clinic"), Patient_Withdraws_Consent("Patient withdraws consent"), Loss_To_Follow_Up("Loss to follow up");
+        Inactive("Inactive"), Active("Active"), Temporary_Deactivation("Temporary Deactivation"), Study_Complete("Study complete"), Premature_Termination_By_Clinic("Premature termination by clinic"), Patient_Withdraws_Consent("Patient withdraws consent"), Loss_To_Follow_Up("Loss to follow up");
 
         private String displayName;
 
@@ -84,7 +84,7 @@ public class Patient extends CouchEntity {
         }
 
         public static List<Status> deactivationStatuses() {
-            return Arrays.asList(Study_Complete, Premature_Termination_By_Clinic, Patient_Withdraws_Consent, Loss_To_Follow_Up);
+            return Arrays.asList(Temporary_Deactivation, Study_Complete, Premature_Termination_By_Clinic, Patient_Withdraws_Consent, Loss_To_Follow_Up);
         }
 
         public String getDisplayName() {
