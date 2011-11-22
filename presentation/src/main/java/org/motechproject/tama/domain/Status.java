@@ -6,6 +6,7 @@ import java.util.List;
 public enum Status {
     Inactive("Inactive"),
     Active("Active"),
+    Temporary_Deactivation("Temporary Deactivation"),
     Study_Complete("Study complete"),
     Premature_Termination_By_Clinic("Premature termination by clinic"),
     Patient_Withdraws_Consent("Patient withdraws consent"),
@@ -19,7 +20,7 @@ public enum Status {
     }
 
     public static List<Status> deactivationStatuses() {
-        return Arrays.asList(Study_Complete, Premature_Termination_By_Clinic, Patient_Withdraws_Consent, Loss_To_Follow_Up);
+        return Arrays.asList(Temporary_Deactivation, Study_Complete, Premature_Termination_By_Clinic, Patient_Withdraws_Consent, Loss_To_Follow_Up);
     }
 
     public String getDisplayName() {
