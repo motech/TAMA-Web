@@ -1,9 +1,13 @@
 package org.motechproject.tamafunctional.testdataservice;
 
+import org.apache.commons.lang.SerializationUtils;
+import org.motechproject.server.pillreminder.EventKeys;
+import org.quartz.JobDataMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
 
@@ -46,16 +50,19 @@ public class ScheduledJobDataService {
         return DriverManager.getConnection(property("URL"), property("user"), property("password"));
     }
 
-    public String currentJobId() {
+    public String currentDosageId() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             connection = createConnection();
-            preparedStatement = connection.prepareStatement(String.format("select job_name from %s", QRTZ_JOB_DETAILS_TABLE));
+            preparedStatement = connection.prepareStatement(String.format("select job_data from %s where job_name like '%s%%'", QRTZ_JOB_DETAILS_TABLE, EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER));
             resultSet = preparedStatement.executeQuery();
             if (!resultSet.first()) throw new RuntimeException("Not job not scheduled.");
-            return resultSet.getString(1);
+            Blob blob = resultSet.getBlob(1);
+            InputStream blobStream = blob.getBinaryStream();
+            JobDataMap jobDataMap = (JobDataMap) SerializationUtils.deserialize(blobStream);
+            return jobDataMap.get(EventKeys.DOSAGE_ID_KEY).toString();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

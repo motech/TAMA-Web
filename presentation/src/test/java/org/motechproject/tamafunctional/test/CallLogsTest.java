@@ -41,10 +41,10 @@ public class CallLogsTest extends BaseIVRTest{
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
 
-        String dosageId = scheduledJobDataService.currentJobId();
-        logInfo("{Regimen}{Id={%s}}", dosageId);
+        String currentDosageId = scheduledJobDataService.currentDosageId();
+        logInfo("{CurrentDosageId}{Id={%s}}", currentDosageId);
         caller = caller(patient);
-        caller.replyToCall(new PillReminderCallInfo(dosageId, 1));
+        caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
         caller.enter("1234");
         caller.hangup();
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);

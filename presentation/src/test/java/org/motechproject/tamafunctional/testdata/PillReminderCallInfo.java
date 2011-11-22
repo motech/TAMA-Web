@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.testdata;
 
 import org.motechproject.deliverytools.kookoo.QueryParams;
+import org.motechproject.ivr.kookoo.KookooCallServiceImpl;
 import org.motechproject.tama.ivr.call.PillReminderCall;
 import org.motechproject.tamafunctional.testdata.ivrrequest.CallInfo;
 import org.motechproject.tamafunctional.testdata.ivrrequest.OutgoingCallInfo;
@@ -12,6 +13,7 @@ public class PillReminderCallInfo implements CallInfo {
 
     public PillReminderCallInfo(String dosageId, int callNumber) {
         HashMap<String, String> dictionary = new HashMap<String, String>();
+        dictionary.put(KookooCallServiceImpl.IS_OUTBOUND_CALL, "true");
         dictionary.put(PillReminderCall.DOSAGE_ID, dosageId);
         dictionary.put(PillReminderCall.TIMES_SENT, Integer.valueOf(callNumber).toString());
         dictionary.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "5");

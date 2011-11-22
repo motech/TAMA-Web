@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
-import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
@@ -22,7 +21,7 @@ import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
-public class CurrentDosageReminderTest extends BaseIVRTest {
+public class CurrentDosageConfirmTest extends BaseIVRTest {
     @Autowired
     private ScheduledJobDataService scheduledJobDataService;
 
@@ -40,14 +39,13 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
     }
 
     @Test
-    public void dosageTakenFlow_WhenTAMA_CallsPatient() throws IOException {
-        String currentDosageId = scheduledJobDataService.currentDosageId();
-        logInfo("{CurrentDosageId}{Id={%s}}", currentDosageId);
-
-        caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
+    public void outboxFlow_WhenPatient_CallsTAMA() throws IOException {
+        caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
-        ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, DOSE_RECORDED, YOUR_ADHERENCE_IS_NOW, "Num_100", PERCENT);
+        asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
+        ivrResponse = caller.enter("3");
+        assertAudioFilesPresent(ivrResponse, NO_MESSAGES);
+        ivrResponse = caller.listenMore();
+        assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
     }
 }
