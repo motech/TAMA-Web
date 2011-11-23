@@ -65,6 +65,7 @@ public class TamaSchedulerService {
             CronSchedulableJob cronJobForFourDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
             motechSchedulerService.scheduleJob(cronJobForFourDayRecall);
         }
+        scheduleFallingAdherenceAlertJob(patient,treatmentAdvice);
     }
 
     public void scheduleFallingAdherenceAlertJob(Patient patient, TreatmentAdvice treatmentAdvice) {

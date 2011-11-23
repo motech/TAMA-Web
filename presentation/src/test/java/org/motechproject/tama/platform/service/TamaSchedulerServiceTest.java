@@ -70,30 +70,41 @@ public class TamaSchedulerServiceTest {
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(numDaysToRetry + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(numDaysToRetry + 1 + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         assertCronSchedulableJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6", TREATMENT_ADVICE_START_DATE.plusDays(4).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
         assertCronSchedulableJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7", TREATMENT_ADVICE_START_DATE.plusDays(5).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
         assertCronSchedulableJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1", TREATMENT_ADVICE_START_DATE.plusDays(6).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
+
+        final CronSchedulableJob fallingAdherenceAlertJob = cronSchedulableJobList.get(3);
+        assertCronSchedulableJob(fallingAdherenceAlertJob, "0 30 10 ? * 2", TREATMENT_ADVICE_START_DATE.plusDays(14).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
+        assertEquals(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, fallingAdherenceAlertJob.getMotechEvent().getSubject());
+
     }
 
     @Test
-    public void shouldScheduleFourDayRecallJobs_StartDateIsBeforeToday() {
+    public void shouldScheduleFourDayRecallJobsStartingNow_StartDateIsBeforeToday() {
         DayOfWeek dayOfWeek = DayOfWeek.Friday;
         DateTime now = DateUtil.now();
         LocalDate today = now.toLocalDate();
+        final LocalDate treatmentAdviceStartDate = today.minusDays(4);
 
         int numDaysToRetry = 2;
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
-        treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusDays(4));
+        treatmentAdvice.getDrugDosages().get(0).setStartDate(treatmentAdviceStartDate);
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(numDaysToRetry + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(numDaysToRetry + 1 + 1)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
-        assertTrue(now.minusMinutes(1).isBefore(new DateTime(cronSchedulableJobList.get(0).getStartTime())));
+        assertJobIsScheduledStartingNow(now, cronSchedulableJobList.get(0));
+    }
+
+    private void assertJobIsScheduledStartingNow(DateTime now, CronSchedulableJob cronSchedulableJobList) {
+        assertTrue(now.minusMinutes(1).isBefore(new DateTime(cronSchedulableJobList.getStartTime())));
+        assertTrue(now.plusMinutes(1).isAfter(new DateTime(cronSchedulableJobList.getStartTime())));
     }
 
     @Test
