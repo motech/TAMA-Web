@@ -16,4 +16,8 @@
         <spring:message code="button_next" var="next_button" htmlEscape="false" />
         <input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>
     </span>
+
+    <span class="submit" id="fillAllSpan">
+        <input id="fillAll" type="button" value="Fill All" onClick="fillAllDetails();"/>
+    </span>
 </div>
