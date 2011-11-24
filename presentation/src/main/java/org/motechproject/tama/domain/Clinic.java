@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -107,7 +108,7 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
-    public static class ClinicianContact {
+    public static class ClinicianContact implements Serializable {
 
         @NotNull(message = "Clinician name is mandatory")
         private String name;
