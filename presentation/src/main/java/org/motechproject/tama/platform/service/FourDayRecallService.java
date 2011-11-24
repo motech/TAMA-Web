@@ -1,5 +1,6 @@
 package org.motechproject.tama.platform.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -134,8 +135,13 @@ public class FourDayRecallService {
         final Map<String, String> data = new HashMap<String, String>();
         final int previousWeekPercentage = adherencePercentageForPreviousWeek(patientId);
         final int thisWeekPercentage = adherencePercentageFor(dosageMissedDays);
-        final double fall = ((previousWeekPercentage - thisWeekPercentage)/previousWeekPercentage)*100.0;
+        final double fall = ((previousWeekPercentage - thisWeekPercentage) / previousWeekPercentage) * 100.0;
         final String description = String.format("Adherence fell by %2.2f%% from %d%% to %d%%", fall, previousWeekPercentage, thisWeekPercentage);
         patientAlertService.createAlert(patientId, TAMAConstants.FALLING_ADHERENCE_ALERT_PRIORITY, description, "Falling Adherence", PatientAlertType.FallingAdherence, data);
+    }
+
+    public boolean hasAdherenceFallingAlertBeenRaisedForCurrentWeek(String patientDocId) {
+        DateTime startDateForCurrentWeek = DateUtil.newDateTime(getStartDateForCurrentWeek(patientDocId), 0, 0, 0);
+        return patientAlertService.getFallingAdherenceAlerts(patientDocId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
     }
 }

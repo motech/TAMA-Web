@@ -1,6 +1,5 @@
 package org.motechproject.tama.platform.service;
 
-import org.joda.time.LocalDate;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.tama.listener.FourDayRecallListener;
 
@@ -25,6 +24,11 @@ public class FourDayRecallEventPayloadBuilder {
 
     public FourDayRecallEventPayloadBuilder withRetryFlag(boolean isRetryEvent) {
         params.put(FourDayRecallListener.RETRY_EVENT_KEY, isRetryEvent);
+        return this;
+    }
+
+    public FourDayRecallEventPayloadBuilder withLastRetryDayFlagSet() {
+        params.put(FourDayRecallListener.IS_LAST_RETRY_DAY, "true");
         return this;
     }
 

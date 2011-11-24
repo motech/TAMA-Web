@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class FourDayRecallListener {
     public static final String PATIENT_DOC_ID_KEY = "patient_id";
     public static final String RETRY_EVENT_KEY = "retry_event";
+    public static final String IS_LAST_RETRY_DAY = "is_last_retry_day";
 
     private IvrCall ivrCall;
     private TamaSchedulerService schedulerService;
@@ -45,7 +46,8 @@ public class FourDayRecallListener {
                 TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
                 Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
 
-                if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId())) return;
+                if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()))
+                    return;
                 if (!isRetryEvent)
                     schedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId);
 
@@ -59,6 +61,16 @@ public class FourDayRecallListener {
     @MotechListener(subjects = TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT)
     public void handleWeeklyFallingAdherence(MotechEvent motechEvent) {
         String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
-        fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
+        Patient patient = allPatients.get(patientDocId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+
+        if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()) || isLastRetryDay(motechEvent)) {
+            if (fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_DOC_ID_KEY)) return;
+            fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
+        }
+    }
+
+    private boolean isLastRetryDay(MotechEvent motechEvent) {
+        return "true".equals(motechEvent.getParameters().get(FourDayRecallListener.IS_LAST_RETRY_DAY));
     }
 }

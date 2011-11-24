@@ -1,5 +1,6 @@
 package org.motechproject.tama.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -9,8 +10,10 @@ import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -243,7 +246,10 @@ public class PatientAlertServiceTest {
             setId(testPatientId);
         }};
         List<Alert> alerts = new ArrayList<Alert>() {{
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null){{setData(symptomReportingData); setId(alertId);}});
+            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+                setData(symptomReportingData);
+                setId(alertId);
+            }});
         }};
 
         when(allPatients.get(testPatientId)).thenReturn(patient);
@@ -253,5 +259,30 @@ public class PatientAlertServiceTest {
 
         verify(alertService).setData(alertId, PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
         verify(alertService).setData(alertId, PatientAlert.DOCTOR_NAME, doctorName);
+    }
+
+    @Test
+    public void shouldGetFallingAdherenceAlerts() {
+        final String patientId = "patientId";
+        final DateTime startDate = DateUtil.now().minusDays(2);
+        final DateTime endDate = DateUtil.now().plusDays(2);
+        final Patient patient = new PatientBuilder().withId(patientId).build();
+        when(allPatients.get(patientId)).thenReturn(patient);
+        when(alertService.getBy(patient.getId(), null, null, null, 100)).thenReturn(new ArrayList<Alert>() {{
+            final HashMap<String, String> data = new HashMap<String, String>() {{
+                put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
+            }};
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data ) {{ setDateTime( DateUtil.now().plusDays(7));}});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{ setDateTime( DateUtil.now().minusDays(7));}});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, new HashMap<String, String>()));
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, null));
+        }});
+
+        final PatientAlerts fallingAdherenceAlerts = patientAlertService.getFallingAdherenceAlerts(patientId, startDate, endDate);
+        assertEquals(2, fallingAdherenceAlerts.size());
+        assertEquals(1, fallingAdherenceAlerts.get(0).getAlert().getPriority());
+        assertEquals(1, fallingAdherenceAlerts.get(1).getAlert().getPriority());
     }
 }

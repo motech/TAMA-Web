@@ -8,10 +8,7 @@ import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.TAMAConstants;
-import org.motechproject.tama.domain.CallPreference;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.TimeOfDay;
-import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -44,49 +42,59 @@ public class TamaSchedulerService {
     }
 
     public void scheduleJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
+        scheduleFourDayRecallCalls(patient, treatmentAdvice);
+        scheduleFallingAdherenceAlertJobs(patient, treatmentAdvice);
+    }
+
+    private void scheduleFourDayRecallCalls(Patient patient, TreatmentAdvice treatmentAdvice) {
         String patientDocId = patient.getId();
-        LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
-        LocalDate endDate = DateUtil.newDate(treatmentAdvice.getEndDate());
         DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
+        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4);
+
         for (int count = 0; count <= daysToRetry; count++) {
-            Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
+            DayOfWeek day = dayOfWeek(dayOfWeeklyCall, count);
+            HashMap<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
                     .withJobId(count + patientDocId)
                     .withPatientDocId(patientDocId)
                     .payload();
-            MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
-            String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, count)).withTime(callTime).build();
-            Date jobEndDate = endDate == null ? null : endDate.toDate();
 
-            LocalDate startDate = treatmentAdviceStartDate.plusDays(4 + count);
-            Date jobStartDate = getJobStartDate(startDate);
-            CronSchedulableJob cronJobForFourDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
-            motechSchedulerService.scheduleJob(cronJobForFourDayRecall);
+            scheduleWeeklyEvent(getJobStartDate(startDate), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
         }
-        scheduleFallingAdherenceAlertJob(patient,treatmentAdvice);
     }
 
-    public void scheduleFallingAdherenceAlertJob(Patient patient, TreatmentAdvice treatmentAdvice) {
+    private void scheduleWeeklyEvent(Date jobStartDate, Date jobEndDate, DayOfWeek day, Time time, Map<String, Object> params, String eventName) {
+        MotechEvent fourDayRecallEvent = new MotechEvent(eventName, params);
+        String cronExpression = new WeeklyCronJobExpressionBuilder(day).withTime(time).build();
+
+        CronSchedulableJob cronJobForFourDayRecall = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
+        motechSchedulerService.scheduleJob(cronJobForFourDayRecall);
+    }
+
+    void scheduleFallingAdherenceAlertJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
         String patientDocId = patient.getId();
-        LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
-        LocalDate endDate = DateUtil.newDate(treatmentAdvice.getEndDate());
         DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
-        Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
+        Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        Map<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
-                .withJobId(patientDocId)
-                .withPatientDocId(patientDocId).payload();
-        MotechEvent fourDayRecallEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, eventParams);
-        String cronExpression = new WeeklyCronJobExpressionBuilder(dayOfWeek(dayOfWeeklyCall, daysToRetry + 1)).withTime(callTime).build();
-        Date jobEndDate = endDate == null ? null : endDate.toDate();
+        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4 + 14); // days to recall + 2 weeks offset
 
-        LocalDate startDate = treatmentAdviceStartDate.plusWeeks(2);
-        Date jobStartDate = getJobStartDate(startDate);
-        CronSchedulableJob cronJobForFallingAdherenceTrend = new CronSchedulableJob(fourDayRecallEvent, cronExpression, jobStartDate, jobEndDate);
-        motechSchedulerService.scheduleJob(cronJobForFallingAdherenceTrend);
+        for (int count = 0; count <= daysToRetry; count++) {
+            DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1);
+            FourDayRecallEventPayloadBuilder paramsBuilder = new FourDayRecallEventPayloadBuilder()
+                    .withJobId(count + patientDocId)
+                    .withPatientDocId(patientDocId);
+
+            if (count == daysToRetry) paramsBuilder.withLastRetryDayFlagSet();
+
+            scheduleWeeklyEvent(getJobStartDate(startDate), getJobEndDate(treatmentAdvice), eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT);
+        }
+    }
+
+    private Date getJobEndDate(TreatmentAdvice treatmentAdvice) {
+        return DateUtil.newDate(treatmentAdvice.getEndDate()) == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).toDate();
     }
 
     private DayOfWeek dayOfWeek(DayOfWeek dayOfWeek, int count) {

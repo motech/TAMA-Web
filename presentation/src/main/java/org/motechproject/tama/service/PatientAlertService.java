@@ -2,6 +2,8 @@ package org.motechproject.tama.service;
 
 import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
@@ -52,7 +54,23 @@ public class PatientAlertService {
     }
 
     public PatientAlerts getAllAlertsBy(final String patientId) {
-        return new PatientAlerts(getAlerts(new ArrayList<Patient>() {{ add(allPatients.get(patientId)); }}, null));
+        final ArrayList<Patient> patients = new ArrayList<Patient>() {{
+            add(allPatients.get(patientId));
+        }};
+        return new PatientAlerts(getAlerts(patients, null));
+    }
+
+    public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, patientAlertType.name());
+        if (PatientAlertType.SymptomReporting.equals(patientAlertType)) {
+            data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        }
+        final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
+        final DateTime now = DateUtil.now();
+        symptomsAlert.setDateTime(now);
+        symptomsAlert.setDescription(description);
+        symptomsAlert.setName(name);
+        alertService.createAlert(symptomsAlert);
     }
 
     private List<PatientAlert> getAlerts(List<Patient> patients, final AlertStatus alertStatus) {
@@ -71,21 +89,8 @@ public class PatientAlertService {
         return sort(flatten(convert(patients, patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
 
-    public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
-        data.put(PatientAlert.PATIENT_ALERT_TYPE, patientAlertType.name());
-        if(PatientAlertType.SymptomReporting.equals(patientAlertType)) {
-            data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
-        }
-        final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
-        final DateTime now = DateUtil.now();
-        symptomsAlert.setDateTime(now);
-        symptomsAlert.setDescription(description);
-        symptomsAlert.setName(name);
-        alertService.createAlert(symptomsAlert);
-    }
-
     public void updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType) {
-        if(PatientAlertType.SymptomReporting.name().equals(patientAlertType)) {
+        if (PatientAlertType.SymptomReporting.name().equals(patientAlertType)) {
             alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
             alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
         }
@@ -98,5 +103,20 @@ public class PatientAlertService {
         if (lastReportedAlert == null) return;
         alertService.setData(lastReportedAlert.getAlertId(), PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
         alertService.setData(lastReportedAlert.getAlertId(), PatientAlert.DOCTOR_NAME, doctorName);
+    }
+
+    public PatientAlerts getFallingAdherenceAlerts(String patientID, final DateTime startDate, final DateTime endDate) {
+        PatientAlerts allAlerts = getAllAlertsBy(patientID);
+        ArrayList<PatientAlert> filteredAlerts = new ArrayList<PatientAlert>();
+        CollectionUtils.select(allAlerts, new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                PatientAlert patientAlert = (PatientAlert) o;
+                DateTime alertTime = patientAlert.getAlert().getDateTime();
+                boolean isFallingAdherenceAlertType = patientAlert.getAlert().getData() != null && PatientAlertType.FallingAdherence.name().equals(patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE));
+                return isFallingAdherenceAlertType && alertTime.isAfter(startDate) && alertTime.isBefore(endDate);
+            }
+        }, filteredAlerts);
+        return new PatientAlerts(filteredAlerts);
     }
 }

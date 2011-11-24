@@ -1,5 +1,6 @@
 package org.motechproject.tama.platform.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,10 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.PatientAlertType;
-import org.motechproject.tama.domain.TreatmentAdvice;
-import org.motechproject.tama.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
 import org.motechproject.tama.repository.AllWeeklyAdherenceLogs;
@@ -26,6 +24,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -292,6 +291,38 @@ public class FourDayRecallServiceTest {
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
         verify(patientAlertService).createAlert(Matchers.<String>any(), Matchers.<Integer>any(), Matchers.<String>any(), Matchers.<String>any(), any(PatientAlertType.class), Matchers.<Map<String, String>>any());
+    }
+
+    @Test
+    public void shouldReturnTrue_WhenAdherenceAlertHasAlreadyBeenRaised() {
+        final PatientAlerts patientAlerts = new PatientAlerts() {{
+            add(new PatientAlert());
+        }};
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Saturday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 9, 27).toDate();
+        LocalDate today = new LocalDate(2011, 10, 16);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+
+        when(patientAlertService.getFallingAdherenceAlerts(eq(patientId), Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(patientAlerts);
+        assertEquals(true, fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientId));
+    }
+
+    @Test
+    public void shouldReturnFalse_WhenAdherenceAlertHasNotBeenRaised() {
+        final PatientAlerts patientAlerts = new PatientAlerts();
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Saturday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 9, 27).toDate();
+        LocalDate today = new LocalDate(2011, 10, 16);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+
+        when(patientAlertService.getFallingAdherenceAlerts(eq(patientId), Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(patientAlerts);
+        assertEquals(false, fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientId));
     }
 
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {
