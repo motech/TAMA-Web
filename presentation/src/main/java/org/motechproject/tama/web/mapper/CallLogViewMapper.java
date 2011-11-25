@@ -26,7 +26,12 @@ public class CallLogViewMapper {
             List<String> likelyPatientDocIds = callLog.getLikelyPatientIds();
             Patient patient = patientDocumentId == null ? null : allPatients.get(patientDocumentId);
             String patientId = patient == null ? "" : patient.getPatientId();
-            String clinicName = patient == null ? allPatients.get(likelyPatientDocIds.get(0)).getClinic().getName() : patient.getClinic().getName();
+            String clinicName = null;
+            if (patient != null) {
+                clinicName = patient.getClinic().getName();
+            } else if (likelyPatientDocIds != null && likelyPatientDocIds.size() > 0) {
+                clinicName = allPatients.get(likelyPatientDocIds.get(0)).getClinic().getName();
+            }
             callLogViews.add(new CallLogView(patientId, callLog, clinicName, getLikelyPatientIds(likelyPatientDocIds)));
         }
         return callLogViews;
