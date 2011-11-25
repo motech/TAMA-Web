@@ -6,11 +6,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.model.MotechEvent;
 import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.domain.*;
@@ -18,13 +21,11 @@ import org.motechproject.tama.listener.FourDayRecallListener;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -129,8 +130,8 @@ public class TamaSchedulerServiceTest {
         assertEquals(cronExpression, cronSchedulableJob.getCronExpression());
         assertEquals(startTime, cronSchedulableJob.getStartTime());
         assertEquals(endTime, cronSchedulableJob.getEndTime());
-        assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
-        assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
+        //assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
+        //assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
     @Test
@@ -192,6 +193,10 @@ public class TamaSchedulerServiceTest {
     }
 
     private TreatmentAdvice getTreatmentAdvice() {
+        return getTreatmentAdvice(TREATMENT_ADVICE_START_DATE, TREATMENT_ADVICE_END_DATE);
+    }
+
+    private TreatmentAdvice getTreatmentAdvice(LocalDate startDate, LocalDate endDate) {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
         String TREATMENT_ADVICE_ID = "treatmentAdviceId";
         treatmentAdvice.setId(TREATMENT_ADVICE_ID);
@@ -199,8 +204,8 @@ public class TamaSchedulerServiceTest {
         ArrayList<DrugDosage> drugDosages = new ArrayList<DrugDosage>();
         DrugDosage drugDosage = new DrugDosage();
         treatmentAdvice.setDrugCompositionGroupId("");
-        drugDosage.setStartDate(TREATMENT_ADVICE_START_DATE);
-        drugDosage.setEndDate(TREATMENT_ADVICE_END_DATE);
+        drugDosage.setStartDate(startDate);
+        drugDosage.setEndDate(endDate);
         drugDosages.add(drugDosage);
         treatmentAdvice.setDrugDosages(drugDosages);
         return treatmentAdvice;
@@ -224,12 +229,83 @@ public class TamaSchedulerServiceTest {
         assertCronSchedulableJob(cronSchedulableJob, cronExpression, TREATMENT_ADVICE_START_DATE.plusDays(4).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
         assertEquals(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, cronSchedulableJob.getMotechEvent().getSubject());
         assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
+        assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
     private void assertFallingAdherenceAlertJob(CronSchedulableJob cronSchedulableJob, String cronExpression, boolean isLastRetryJob) {
         assertCronSchedulableJob(cronSchedulableJob, cronExpression, TREATMENT_ADVICE_START_DATE.plusDays(4 + 14).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
         assertEquals(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, cronSchedulableJob.getMotechEvent().getSubject());
         assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
-        if (isLastRetryJob) assertEquals("true", cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.IS_LAST_RETRY_DAY));
+        if (isLastRetryJob) {
+            assertEquals("true", cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.IS_LAST_RETRY_DAY));
+        }
+        else {
+            assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
+        }
+    }
+
+    @Test
+    public void shouldNotScheduleDailyAdherenceQualityJobsForAPatientOnWeeklyReminder() {
+        Patient patient = PatientBuilder.startRecording().withCallPreference(CallPreference.FourDayRecall).build();
+        schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, null);
+        verify(motechSchedulerService, never()).scheduleJob(Matchers.<CronSchedulableJob>any());
+    }
+
+    @Test
+    public void shouldScheduleDailyAdherenceQualityJobsForAPatientOnDailyReminderStartingFromTreatmentAdviceStartDate() {
+        final String patientId = "123456";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
+
+        final LocalDate startDate = DateUtil.today().plusDays(1);
+        final LocalDate endDate = startDate.plusDays(1);
+
+        TreatmentAdvice advice = getTreatmentAdvice(startDate, endDate);
+        schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
+
+        final ArgumentCaptor<CronSchedulableJob> cronArgCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+        verify(motechSchedulerService, times(1)).scheduleJob(cronArgCaptor.capture());
+
+        CronSchedulableJob jobScheduledWithParams = cronArgCaptor.getValue();
+        final MotechEvent motechEventInScheduledJob = jobScheduledWithParams.getMotechEvent();
+        Map<String, Object> paramsInScheduledJob = motechEventInScheduledJob.getParameters();
+
+        assertCronSchedulableJob(jobScheduledWithParams, "0 0 0 * * ?", startDate.toDate(), endDate.toDate());
+
+        assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
+        assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
+        assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_DAILY_ADHERENCE_QUALITY);
+    }
+
+    @Test
+    public void shouldScheduleDailyAdherenceQualityJobsForAPatientOnDailyReminderStartingFromTodayIfTreatmentAdviceStartDateIsInPast() {
+        final String patientId = "123456";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
+
+        final LocalDate startDate = DateUtil.today().minusDays(2);
+        final LocalDate endDate = DateUtil.today().plusDays(2);
+        final DateTime timeFewMillisBack = DateUtil.now().minusMillis(1000);
+
+        TreatmentAdvice advice = getTreatmentAdvice(startDate, endDate);
+        schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
+
+        final ArgumentCaptor<CronSchedulableJob> cronArgCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+        verify(motechSchedulerService, times(1)).scheduleJob(cronArgCaptor.capture());
+
+        CronSchedulableJob jobScheduledWithParams = cronArgCaptor.getValue();
+        final MotechEvent motechEventInScheduledJob = jobScheduledWithParams.getMotechEvent();
+        Map<String, Object> paramsInScheduledJob = motechEventInScheduledJob.getParameters();
+
+        assertEquals("Should setup the cron expression to run at every midnight.", jobScheduledWithParams.getCronExpression(), "0 0 0 * * ?");
+
+        DateTime actualTimeWhenTriggerWasActivated = DateUtil.newDateTime(jobScheduledWithParams.getStartTime());
+        assertTrue("Since the advice has already started in past, we should schedule it starting now, which is after a time few milli seconds back.", timeFewMillisBack.isBefore(actualTimeWhenTriggerWasActivated));
+        DateTime rightNow = DateUtil.now();
+        assertTrue("And the time when it was scheduled should be a bit in past.", rightNow.isAfter(actualTimeWhenTriggerWasActivated));
+
+        assertEquals(jobScheduledWithParams.getEndTime(), endDate.toDate());
+
+        assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
+        assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
+        assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_DAILY_ADHERENCE_QUALITY);
     }
 }

@@ -184,4 +184,27 @@ public class TamaSchedulerService {
         motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, patient.getId());
         motechSchedulerService.unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, patient.getId());
     }
+
+    public void scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient, TreatmentAdvice treatmentAdvice) {
+        if(patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) {
+            Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patient.getId())
+                    .withExternalId(patient.getId())
+                    .payload();
+            MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DETERMINE_DAILY_ADHERENCE_QUALITY, eventParams);
+
+            Date jobStartDate = getJobStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
+            Date jobEndDate = getJobEndDate(treatmentAdvice);
+
+            Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
+
+            CronJobSimpleExpressionBuilder cronJobSimpleExpressionBuilder = new CronJobSimpleExpressionBuilder(eventTime);
+            CronSchedulableJob jobToDetermineAdherenceInRed = new CronSchedulableJob(eventToDetermineAdherenceInRed, cronJobSimpleExpressionBuilder.build(), jobStartDate, jobEndDate);
+
+            motechSchedulerService.scheduleJob(jobToDetermineAdherenceInRed);
+        }
+    }
+
+    public void unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient) {
+        motechSchedulerService.unscheduleJob(TAMAConstants.DETERMINE_DAILY_ADHERENCE_QUALITY, patient.getId());
+    }
 }

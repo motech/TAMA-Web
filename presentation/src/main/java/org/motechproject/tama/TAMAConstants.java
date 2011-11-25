@@ -23,6 +23,7 @@ public class TAMAConstants {
     public static final String WEEKLY_FALLING_TREND_SUBJECT = BASE_SUBJECT + ".weekly.fallingTrendAlert";
     public static final String OUT_BOX_CALL_RETRY_INTERVAL = "retry.interval.mins";
     public static final int FALLING_ADHERENCE_ALERT_PRIORITY = 0;
+    public static final String DETERMINE_DAILY_ADHERENCE_QUALITY = "determine.daily.adherence.quality";
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),
