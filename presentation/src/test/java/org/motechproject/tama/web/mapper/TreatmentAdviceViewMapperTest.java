@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.motechproject.tama.builder.PatientBuilder;
 import org.motechproject.tama.builder.RegimenBuilder;
 import org.motechproject.tama.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.domain.DrugCompositionGroup;
-import org.motechproject.tama.domain.Patient;
-import org.motechproject.tama.domain.Regimen;
-import org.motechproject.tama.domain.TreatmentAdvice;
+import org.motechproject.tama.domain.*;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.repository.AllRegimens;
 import org.motechproject.tama.repository.AllTreatmentAdvices;
@@ -17,6 +14,8 @@ import org.motechproject.tama.web.model.TreatmentAdviceView;
 
 import java.util.ArrayList;
 
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,4 +57,26 @@ public class TreatmentAdviceViewMapperTest {
         Assert.assertEquals(group.getName(), treatmentAdviceView.getDrugCompositionName());
         Assert.assertEquals(0, treatmentAdviceView.getDrugDosages().size());
     }
+
+    @Test
+    public void shouldShowChangeRegimenButtonIfPatientIsActive(){
+        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
+        treatmentAdviceView.setPatientStatus(Status.Active);
+        assertTrue(treatmentAdviceView.getShowChangeRegimenButton());
+    }
+
+    @Test
+    public void shouldNotShowChangeRegimenButtonIfPatientIsInActive(){
+        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
+        treatmentAdviceView.setPatientStatus(Status.Inactive);
+        assertFalse(treatmentAdviceView.getShowChangeRegimenButton());
+    }
+
+    @Test
+    public void shouldNotShowChangeRegimenButtonIfPatientIsSuspended(){
+        TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
+        treatmentAdviceView.setPatientStatus(Status.Suspended);
+        assertFalse(treatmentAdviceView.getShowChangeRegimenButton());
+    }
+
 }

@@ -34,6 +34,7 @@ public class TreatmentAdviceViewMapper {
         treatmentAdviceView.setPatientId(patient.getPatientId());
         treatmentAdviceView.setRegimenName(regimen.getDisplayName());
         treatmentAdviceView.setDrugCompositionName(drugCompositionGroup.getName());
+        treatmentAdviceView.setPatientStatus(patient.getStatus());
 
         DrugDosageViewMapper drugDosageViewMapper = new DrugDosageViewMapper(allDrugs, allDosageTypes, allMealAdviceTypes);
         for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {

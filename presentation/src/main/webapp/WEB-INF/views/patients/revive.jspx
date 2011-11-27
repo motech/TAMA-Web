@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/patients/revive" var="form_url"/>
+    <util:panel id="fc_org_motechproject_tama_ivr_logging_domain_PatientAdherenceDataPage" title="Adherence Data For Interim Period" openPane="true">
+        <form:form action="${form_url}" method="POST" modelAttribute="suspendedAdherenceData" enctype="application/x-www-form-urlencoded" onsubmit="encodePk()">
+            <field:select disableDefaultSelection="true" id="c_org_motechproject_tama_domain_patient_adherencedata" field="adherenceDataWhenPatientWasSuspended" items="${pastDosageStatus}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true" />
+            <input type="hidden" name="id" value="${patientId}" />
+            <span class="submit" id="ReactivatePatient">
+                <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'ReactivatePatient_', event:'onclick'}));</script>
+                <input id="reactivatePatient" type="submit" value="Reactivate Patient"/>
+            </span>
+            <br/>
+            <br/>
+            <br/>
+            <I>The patient will be maintained on the same regimen. To change the patient's regimen, please visit the Clinic Visits/ Appointment Details page after reactivating the patient.</I>
+        </form:form>
+    </util:panel>
+</div>

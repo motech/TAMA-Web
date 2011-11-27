@@ -14,4 +14,7 @@
     <definition extends="default" name="patients/update">
         <put-attribute name="body" value="/WEB-INF/views/patients/update.jspx"/>
     </definition>
+    <definition extends="default" name="patients/revive">
+        <put-attribute name="body" value="/WEB-INF/views/patients/revive.jspx"/>
+    </definition>
 </tiles-definitions>

@@ -8,10 +8,7 @@ import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.service.PatientService;
-import org.motechproject.tama.web.view.ClinicsView;
-import org.motechproject.tama.web.view.HIVTestReasonsView;
-import org.motechproject.tama.web.view.IvrLanguagesView;
-import org.motechproject.tama.web.view.ModesOfTransmissionView;
+import org.motechproject.tama.web.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -39,6 +36,7 @@ public class PatientController extends BaseController {
     public static final String UPDATE_VIEW = "patients/update";
     public static final String REDIRECT_TO_LIST_VIEW = "redirect:/patients";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/patients/";
+    private static final String REVIVE_VIEW = "patients/revive";
 
     public static String DEACTIVATION_STATUSES =  "deactivation_statuses";
     public static final String PATIENT = "patient";
@@ -96,6 +94,22 @@ public class PatientController extends BaseController {
         Patient patient = new Patient();
         initUIModel(uiModel, patient);
         return CREATE_VIEW;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/revive")
+    public String revive(@RequestParam String id, Model model, HttpServletRequest request){
+        List<SuspendedAdherenceData.DosageStatusWhenSuspended> pastDosageStatus = Arrays.asList(SuspendedAdherenceData.DosageStatusWhenSuspended.values());
+        model.addAttribute("suspendedAdherenceData", new SuspendedAdherenceData());
+        model.addAttribute("patientId", id);
+        model.addAttribute("pastDosageStatus", pastDosageStatus);
+        return REVIVE_VIEW;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/revive")
+    public String reactivatePatient(@RequestParam String id, SuspendedAdherenceData suspendedAdherenceData, Model uiModel, HttpServletRequest request){
+        suspendedAdherenceData.patientId(id);
+        patientService.reActivate(id, suspendedAdherenceData);
+        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
