@@ -15,6 +15,7 @@ import org.motechproject.tama.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.service.PatientService;
+import org.motechproject.tama.web.view.SuspendedAdherenceData;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -273,6 +274,16 @@ public class PatientControllerTest {
 
         assertEquals("redirect:/patients/123", updatePage);
         verify(patientService).update(patientFromUI);
+    }
+
+    @Test
+    public void shouldReactivatePatient(){
+        String patientId = "patientId";
+        SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
+        suspendedAdherenceData.setAdherenceDataWhenPatientWasSuspended(SuspendedAdherenceData.DosageStatusWhenSuspended.DOSE_NOT_TAKEN);
+
+        controller.reactivatePatient(patientId, suspendedAdherenceData,uiModel, request);
+        verify(patientService, times(1)).reActivate(patientId, suspendedAdherenceData);
     }
 
 }

@@ -2,9 +2,8 @@ package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
+import org.joda.time.*;
+import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
 import org.motechproject.util.DateUtil;
@@ -53,6 +52,8 @@ public class Patient extends CouchEntity {
     private Date registrationDateAsDate;
     private String genderId;
     private String clinic_id;
+    private DateTime lastSuspendedDate;
+    private String displayableSuspendedDateAndTime;
 
     @JsonIgnore
     public boolean allowAdherenceCalls() {
@@ -230,6 +231,26 @@ public class Patient extends CouchEntity {
 
     public String phoneNumberAndPasscode() {
         return PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + this.getMobilePhoneNumber() + "/" + this.getPatientPreferences().getPasscode();
+    }
+
+    public DateTime getLastSuspendedDate() {
+        return DateUtil.setTimeZone(lastSuspendedDate);
+    }
+
+    public void setLastSuspendedDate(DateTime lastSuspendedDate) {
+        this.lastSuspendedDate = lastSuspendedDate;
+        setDisplayableSuspendedDateAndTime();
+    }
+
+    public void setDisplayableSuspendedDateAndTime(){
+        DateTimeFormatter timeFormatter = org.joda.time.format.DateTimeFormat.forPattern("HH:mm aa");
+        DateTimeFormatter dateFormatter = org.joda.time.format.DateTimeFormat.forPattern("EEE MMM dd YYYY");
+        displayableSuspendedDateAndTime = dateFormatter.print(getLastSuspendedDate()) + ", at " + timeFormatter.print(getLastSuspendedDate().toLocalTime());
+    }
+
+    @JsonIgnore
+    public String getDisplayableSuspendedDateAndTime(){
+        return displayableSuspendedDateAndTime;
     }
 
     @JsonIgnore

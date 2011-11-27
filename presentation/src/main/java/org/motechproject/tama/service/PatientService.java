@@ -6,6 +6,7 @@ import org.motechproject.tama.domain.*;
 import org.motechproject.tama.mapper.MedicalConditionsMapper;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.web.view.SuspendedAdherenceData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +23,15 @@ public class PatientService {
     private TamaSchedulerService tamaSchedulerService;
     private AllLabResults allLabResults;
     private AllRegimens allRegimens;
+    private WeeklyAdherenceService weeklyAdherenceService;
+    private DosageAdherenceService dosageAdherenceService;
 
     @Autowired
-    public PatientService(TamaSchedulerService tamaSchedulerService, PillReminderService pillReminderService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllRegimens allRegimens, AllUniquePatientFields allUniquePatientFields, AllVitalStatistics allVitalStatistics) {
+    public PatientService(TamaSchedulerService tamaSchedulerService, PillReminderService pillReminderService, AllPatients allPatients,
+                          AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllRegimens allRegimens,
+                          AllUniquePatientFields allUniquePatientFields, AllVitalStatistics allVitalStatistics, WeeklyAdherenceService weeklyAdherenceService,
+                          DosageAdherenceService dosageAdherenceService) {
+
         this.allPatients = allPatients;
         this.allUniquePatientFields = allUniquePatientFields;
         this.tamaSchedulerService = tamaSchedulerService;
@@ -33,6 +40,8 @@ public class PatientService {
         this.allLabResults = allLabResults;
         this.allRegimens = allRegimens;
         this.allVitalStatistics = allVitalStatistics;
+        this.weeklyAdherenceService = weeklyAdherenceService;
+        this.dosageAdherenceService = dosageAdherenceService;
     }
 
     public void update(Patient patient) {
@@ -126,5 +135,16 @@ public class PatientService {
 
     private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
         return dbPatient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) && patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall);
+    }
+
+    public void reActivate(String patientId, SuspendedAdherenceData suspendedAdherenceData) {
+        allPatients.activate(patientId);
+        Patient patient = allPatients.get(patientId);
+        suspendedAdherenceData.suspendedFrom(patient.getLastSuspendedDate());
+        if(patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall){
+            weeklyAdherenceService.recordAdherence(suspendedAdherenceData);
+        }else{
+            dosageAdherenceService.recordAdherence(suspendedAdherenceData);
+        }
     }
 }

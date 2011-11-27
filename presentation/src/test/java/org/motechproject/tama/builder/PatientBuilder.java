@@ -1,6 +1,8 @@
 package org.motechproject.tama.builder;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.util.UniqueMobileNumber;
 import org.motechproject.util.DateUtil;
@@ -112,6 +114,19 @@ public class PatientBuilder {
 
     public PatientBuilder withBestCallTime(TimeOfDay bestCallTime) {
         patient.getPatientPreferences().setBestCallTime(bestCallTime);
+        return this;
+    }
+
+    public PatientBuilder withLastSuspendedDate(DateTime suspendedDate) {
+        patient.setLastSuspendedDate(suspendedDate);
+        return this;
+    }
+
+    public PatientBuilder withPatientPreferences(DayOfWeek dayOfWeeklyCall, TimeOfDay patientBestCallTime) {
+        PatientPreferences patientPreferences = new PatientPreferences();
+        patientPreferences.setDayOfWeeklyCall(dayOfWeeklyCall);
+        patientPreferences.setBestCallTime(patientBestCallTime);
+        patient.setPatientPreferences(patientPreferences);
         return this;
     }
 }

@@ -8,6 +8,7 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.tama.service.PatientService;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,7 @@ public class SuspendAdherenceCallsCommand implements ITreeCommand {
         TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) obj);
         final Patient patient = ivrContext.patient(allPatients);
         patient.setStatus(Status.Suspended);
+        patient.setLastSuspendedDate(DateUtil.now());
         patientService.update(patient);
         return new String[0];
     }
