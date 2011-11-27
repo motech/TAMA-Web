@@ -41,11 +41,18 @@ public class FourDayRecallService {
     }
 
     public boolean isAdherenceCapturedForCurrentWeek(String patientDocId, String treatmentAdviceId) {
-        LocalDate startDateForCurrentWeek = getStartDateForCurrentWeek(patientDocId);
-        return 1 == allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientDocId, treatmentAdviceId, startDateForCurrentWeek).size();
+        return isAdherenceCapturedForAnyWeek(patientDocId, treatmentAdviceId, getStartDateForCurrentWeek(patientDocId));
+    }
+
+    public boolean isAdherenceCapturedForAnyWeek(String patientDocId, String treatmentAdviceId, LocalDate weekStartDate) {
+        return 1 == allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientDocId, treatmentAdviceId, weekStartDate).size();
     }
 
     public LocalDate getStartDateForCurrentWeek(String patientDocId) {
+        return getStartDateForAnyWeek(patientDocId, DateUtil.today());
+    }
+
+    public LocalDate getStartDateForAnyWeek(String patientDocId, LocalDate week) {
         Patient patient = allPatients.get(patientDocId);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
 
@@ -56,7 +63,7 @@ public class FourDayRecallService {
         if (isRetry) retryDayCount = getRetryDaysCount(preferredDayOfWeek);
 
         DayOfWeek treatmentAdviceStartDay = DayOfWeek.getDayOfWeek(DateUtil.newDate(treatmentAdvice.getStartDate()));
-        return dateWith(treatmentAdviceStartDay, DAYS_TO_RECALL, DateUtil.today().minusDays(retryDayCount));
+        return dateWith(treatmentAdviceStartDay, DAYS_TO_RECALL, week.minusDays(retryDayCount));
     }
 
     private int getRetryDaysCount(DayOfWeek preferredDayOfWeek) {
@@ -85,6 +92,18 @@ public class FourDayRecallService {
             returnDate = returnDate.minusWeeks(1);
         }
         return returnDate;
+    }
+
+    public LocalDate findFourDayRecallDateForAnyWeek(String patientDocId, LocalDate week) {
+        Patient patient = allPatients.get(patientDocId);
+        LocalDate startDayOfWeek = getStartDateForAnyWeek(patientDocId, week);
+        DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
+        while (true){
+            if(startDayOfWeek.getDayOfWeek() == preferredDayOfWeek.getValue()){
+                return startDayOfWeek;
+            }
+            startDayOfWeek = startDayOfWeek.plusDays(1);
+        }
     }
 
     public int adherencePercentageForPreviousWeek(String patientId) {

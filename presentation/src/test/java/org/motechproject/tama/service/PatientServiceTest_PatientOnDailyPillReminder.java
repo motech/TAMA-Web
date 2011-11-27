@@ -1,5 +1,6 @@
 package org.motechproject.tama.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -10,13 +11,17 @@ import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.web.view.SuspendedAdherenceData;
+import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest_PatientOnDailyPillReminder {
+
     private PatientService patientService;
+    
     private Patient dbPatient;
 
     @Mock
@@ -35,6 +40,10 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     private AllRegimens allRegimens;
     @Mock
     private AllVitalStatistics allVitalStatistics;
+    @Mock
+    private WeeklyAdherenceService weeklyAdherenceService;
+    @Mock
+    private DosageAdherenceService dosageAdherenceService;
 
     @Before
     public void setUp() {
@@ -42,7 +51,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, weeklyAdherenceService, dosageAdherenceService);
     }
 
     @Test
@@ -128,4 +137,16 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         verify(tamaSchedulerService).scheduleJobForOutboxCall(updatedPatient);
         verify(tamaSchedulerService, never()).scheduleRepeatingJobForOutBoxCall(updatedPatient);
     }
+
+    @Test
+    public void shouldUpdate_DosageAdherenceLogsForPatientOnDailyPillReminder(){
+        DateTime suspendedDate = DateUtil.now();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("patientId").withLastSuspendedDate(suspendedDate).withCallPreference(CallPreference.DailyPillReminder).build();
+        when(allPatients.get("patientId")).thenReturn(patient);
+        SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
+        patientService.reActivate("patientId", suspendedAdherenceData);
+        verify(dosageAdherenceService).recordAdherence(suspendedAdherenceData);
+        assertEquals(suspendedDate, suspendedAdherenceData.suspendedFrom());
+    }
+
 }

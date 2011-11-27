@@ -103,20 +103,20 @@
                     <c:when test="${empty itemLabel}">
                       <c:choose>
                         <c:when test="${multiple}">
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" multiple="${multiple}" />
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disableDefaultSelection="${disableDefaultSelection}" disabled="${disabled}" multiple="${multiple}" />
                         </c:when>
                         <c:otherwise>
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" />
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disableDefaultSelection="${disableDefaultSelection}" disabled="${disabled}" />
                         </c:otherwise>
                      </c:choose>
                     </c:when>
                     <c:otherwise>
                       <c:choose>
                         <c:when test="${multiple}">
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" multiple="${multiple}" itemLabel="${sec_itemLabel}"/>
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disableDefaultSelection="${disableDefaultSelection}" disabled="${disabled}" multiple="${multiple}" itemLabel="${sec_itemLabel}"/>
                         </c:when>
                         <c:otherwise>
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" itemLabel="${sec_itemLabel}"/>
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disableDefaultSelection="${disableDefaultSelection}" disabled="${disabled}" itemLabel="${sec_itemLabel}"/>
                         </c:otherwise>
                       </c:choose>
                     </c:otherwise>
@@ -174,20 +174,20 @@
                     <c:when test="${empty itemLabel}">
                       <c:choose>
                         <c:when test="${multiple}">
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" multiple="${multiple}" itemValue="${fn:escapeXml(itemValue)}" />
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disableDefaultSelection="${disableDefaultSelection}" disabled="${disabled}" multiple="${multiple}" itemValue="${fn:escapeXml(itemValue)}" />
                         </c:when>
                         <c:otherwise>
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" itemValue="${fn:escapeXml(itemValue)}" />
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disableDefaultSelection="${disableDefaultSelection}" disabled="${disabled}" itemValue="${fn:escapeXml(itemValue)}" />
                         </c:otherwise>
                       </c:choose>
                     </c:when>
                     <c:otherwise>
                       <c:choose>
                         <c:when test="${multiple}">
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" multiple="${multiple}" itemValue="${fn:escapeXml(itemValue)}" itemLabel="${sec_itemLabel}"/>
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" disableDefaultSelection="${disableDefaultSelection}" multiple="${multiple}" itemValue="${fn:escapeXml(itemValue)}" itemLabel="${sec_itemLabel}"/>
                         </c:when>
                         <c:otherwise>
-                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" itemValue="${fn:escapeXml(itemValue)}" itemLabel="${sec_itemLabel}"/>
+                          <form:select id="_${sec_field}_id" items="${items}" path="${sec_field}" disabled="${disabled}" disableDefaultSelection="${disableDefaultSelection}" itemValue="${fn:escapeXml(itemValue)}" itemLabel="${sec_itemLabel}"/>
                         </c:otherwise>
                       </c:choose>
                     </c:otherwise>

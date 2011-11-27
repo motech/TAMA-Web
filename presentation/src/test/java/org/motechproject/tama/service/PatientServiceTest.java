@@ -10,6 +10,7 @@ import org.motechproject.tama.builder.*;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.web.view.SuspendedAdherenceData;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -17,6 +18,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -39,6 +41,12 @@ public class PatientServiceTest {
     private AllRegimens allRegimens;
     @Mock
     private AllVitalStatistics allVitalStatistics;
+    @Mock
+    private AllDosageAdherenceLogs allDosageAdherenceLogs;
+    @Mock
+    private WeeklyAdherenceService weeklyAdherenceService;
+    @Mock
+    private DosageAdherenceService dosageAdherenceService;
 
     private final String patientId = "patientId";
     PatientService patientService;
@@ -46,7 +54,7 @@ public class PatientServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, weeklyAdherenceService, dosageAdherenceService);
     }
 
     @Test
@@ -80,4 +88,12 @@ public class PatientServiceTest {
         assertEquals(11, medicalCondition.age());
         assertEquals(60, medicalCondition.cd4Count());
     }
+
+    @Test
+    public void shouldActivateWhenPatientIsReActivated(){
+        when(allPatients.get("patientId")).thenReturn(PatientBuilder.startRecording().withDefaults().withPatientId("patientId").build());
+        patientService.reActivate("patientId", new SuspendedAdherenceData());
+        verify(allPatients).activate("patientId");
+    }
+
 }
