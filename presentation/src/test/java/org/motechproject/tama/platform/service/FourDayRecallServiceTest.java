@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -208,6 +209,34 @@ public class FourDayRecallServiceTest {
         LocalDate startDateForCurrentWeek = fourDayRecallService.getStartDateForCurrentWeek(patientId);
 
         assertEquals(new LocalDate(2011, 10, 2), startDateForCurrentWeek);
+    }
+
+    @Test
+    public void shouldGetTheStartDateForAnyWeekSpecified() {
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 6).toDate();
+        LocalDate today = new LocalDate(2011, 11, 25);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+
+        LocalDate startDateForCurrentWeek = fourDayRecallService.getStartDateForAnyWeek(patientId, today);
+
+        assertEquals(new LocalDate(2011, 11, 20), startDateForCurrentWeek);
+    }
+
+    @Test
+    public void shouldGetTheFourDayRecallDateForAnyWeekSpecified() {
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 7).toDate();
+        LocalDate today = new LocalDate(2011, 11, 29);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+
+        LocalDate fourDayRecallDateForCurrentWeek = fourDayRecallService.findFourDayRecallDateForAnyWeek(patientId, today);
+        
+        assertEquals(new LocalDate(2011, 11, 25), fourDayRecallDateForCurrentWeek);
     }
 
     @Test

@@ -66,7 +66,14 @@
                <div class='submit'>
                   <input type="hidden" name="id" value="${treatmentAdvice.treatmentAdviceId}"/>
                   <input type="hidden" name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
-                  <input type="submit" id="changeRegimen" value="Change Regimen"/>
+                   <c:choose>
+                       <c:when test="${treatmentAdvice.showChangeRegimenButton}">
+                           <input type="submit" id="changeRegimen" value="Change Regimen"/>
+                       </c:when>
+                       <c:otherwise>
+                           <I>Adherence calls for the patient are currently suspended. Please reactivate the patient to be able to change regimen.</I>
+                       </c:otherwise>
+                   </c:choose>
                </div>
             </form>
         </div>

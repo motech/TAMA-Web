@@ -7,32 +7,49 @@
         <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDateAsDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}"/>
         <field:display field="displayName" id="c_org_motechproject_tama_domain_Patient_status" object="${patient.status}" />
         <c:choose>
-          <c:when test="${patient.status.active}">
-              <div class="update_patient">
-                  <form action="deactivate" method="POST">
+            <c:when test="${patient.status.active}">
+                <div class="update_patient">
+                    <form action="deactivate" method="POST">
                         <input type="hidden" name="id" value="${patient.id}"/>
-                        <field:select id="deactivationStatuses" field="patient.status" items="${deactivation_statuses}" path="/patient/deactivationStatuses" itemLabel="displayName" itemValue="value" required="true" label="Reason for deactivation"/>
+                        <field:select id="deactivationStatuses" field="patient.status" items="${deactivation_statuses}"
+                                      path="/patient/deactivationStatuses" itemLabel="displayName" itemValue="value"
+                                      required="true" label="Reason for deactivation"/>
                         <div class='submit'>
                             <input type="submit" id="deactivatePatientButton" value="Deactivate"/>
                         </div>
-                  </form>
-              </div>
-          </c:when>
-          <c:otherwise>
-              <div class="update_patient">
-                  <form action="activate" method="POST">
-                     <input type="hidden" name="id" value="${patient.id}"/>
-                     <div class='submit'>
-                       <input type="submit" id="activatePatient" value="Activate"/>
-                     </div>
-                  </form>
-              </div>
-          </c:otherwise>
+                    </form>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <c:choose>
+                    <c:when test="${patient.status.suspended}">
+                        <div class="update_patient">
+                            <form action="revive" method="GET">
+                                <input type="hidden" name="id" value="${patient.id}" />
+                                <div class="submit">
+                                    <field:display field="displayableSuspendedDateAndTime" label="Patient Suspended On" id="s_org_motechproject_tama_domain_patient_lastSuspendedDate" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
+                                    <input type="submit" id="reActivatePatient" value="Reactivate"/>
+                                </div>
+                            </form>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="update_patient">
+                            <form action="activate" method="POST">
+                                <input type="hidden" name="id" value="${patient.id}"/>
+                                <div class='submit'>
+                                    <input type="submit" id="activatePatient" value="Activate"/>
+                                </div>
+                            </form>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
         </c:choose>
     </util:panel>
 
     <c:choose>
-      <c:when test="${patient.status.active}">
+      <c:when test="${patient.status.active || patient.status.suspended}">
           <spring:url value="/clinicvisits" var="clinic_visits_url">
             <spring:param name="form"/>
             <spring:param name="patientId" value="${patient.id}"/>
