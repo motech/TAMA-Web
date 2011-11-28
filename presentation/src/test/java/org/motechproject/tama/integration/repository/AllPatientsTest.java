@@ -236,23 +236,6 @@ public class AllPatientsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldGetPatientByIVRMobileNumber() {
-        String id = "12345678";
-        Patient patient = PatientBuilder.startRecording()
-                .withDefaults()
-                .withPatientId(id)
-                .withGender(gender).withIVRLanguage(ivrLanguage)
-                .build();
-        String mobileNumber = patient.getMobilePhoneNumber();
-        allPatients.add(patient);
-
-        Patient loadedPatient = allPatients.findByMobileNumber(patient.getIVRMobilePhoneNumber());
-        assertNotNull(loadedPatient);
-        assertEquals(id, loadedPatient.getPatientId());
-        assertEquals(mobileNumber, loadedPatient.getMobilePhoneNumber());
-    }
-
-    @Test
     public void shouldGetAllPatientsByMobileNumber() {
         Patient patient1 = PatientBuilder.startRecording().withDefaults().withPatientId("123213213").withPasscode("1212").build();
         String mobilePhoneNumber = patient1.getMobilePhoneNumber();
