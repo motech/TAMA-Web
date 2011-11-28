@@ -226,10 +226,10 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService, never()).renew(any(DailyPillRegimenRequest.class));
+        verify(schedulerService).unscheduleFallingAdherenceAlertJobs(PATIENT_ID);
         verify(schedulerService, never()).unscheduleJobForAdherenceTrendFeedback(existingTreatmentAdvice);
         verify(schedulerService, never()).scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
     }
-
 
     private TreatmentAdvice getTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();

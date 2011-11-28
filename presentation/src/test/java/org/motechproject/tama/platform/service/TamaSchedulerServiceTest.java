@@ -238,8 +238,7 @@ public class TamaSchedulerServiceTest {
         assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
         if (isLastRetryJob) {
             assertEquals("true", cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.IS_LAST_RETRY_DAY));
-        }
-        else {
+        } else {
             assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
         }
     }
@@ -308,4 +307,16 @@ public class TamaSchedulerServiceTest {
         assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
         assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_DAILY_ADHERENCE_QUALITY);
     }
+
+    @Test
+    public void shouldUnscheduleFallingAdherenceAlertJobs() {
+        String patient_id = "patient_id";
+        int numDaysToRetry = 2;
+        when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
+        schedulerService.unscheduleFallingAdherenceAlertJobs(patient_id);
+        verify(motechSchedulerService).unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, 0 + patient_id);
+        verify(motechSchedulerService).unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, 1 + patient_id);
+        verify(motechSchedulerService).unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, 2 + patient_id);
+    }
+
 }
