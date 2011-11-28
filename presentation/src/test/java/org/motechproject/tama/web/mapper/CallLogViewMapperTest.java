@@ -50,7 +50,9 @@ public class CallLogViewMapperTest {
         defaultCallLog.setPatientDocumentId("patientDocumentId");
         defaultCallLog.setStartTime(DateUtil.now());
         defaultCallLog.setEndTime(DateUtil.now().plusMinutes(2));
-        defaultCallLog.setLikelyPatientIds(new ArrayList<String>() {{add("patientDocumentId");}});
+        defaultCallLog.setLikelyPatientIds(new ArrayList<String>() {{
+            add("patientDocumentId");
+        }});
 
         List<CallLog> callLogs = Arrays.asList(defaultCallLog);
 
@@ -70,14 +72,13 @@ public class CallLogViewMapperTest {
         when(allPatients.get("anotherPatientDocumentId")).thenReturn(PatientBuilder.startRecording().withPatientId("anotherPatientId").withClinic(ClinicBuilder.startRecording().withName("anotherClinic").build()).build());
 
         List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(callLogs);
-
         assertEquals(2, callLogViews.size());
         assertEquals("clinic", callLogViews.get(0).getClinicName());
         assertEquals("anotherClinic", callLogViews.get(1).getClinicName());
     }
 
     @Test
-    public void shouldSetClinicName_WhenPatientIsNotAuthenticated(){
+    public void shouldMapCallLogs_WhenPatientIsNotAuthenticated(){
         List<CallLog> callLogs = new ArrayList<CallLog>(){{add(new CallLog() {{
             setLikelyPatientIds(new ArrayList<String>() {{add("patientDocumentId");}});
             setStartTime(DateUtil.now());
@@ -87,18 +88,28 @@ public class CallLogViewMapperTest {
         when(allPatients.get("patientDocumentId")).thenReturn(PatientBuilder.startRecording().withPatientId("patientId").withClinic(ClinicBuilder.startRecording().withName("clinic").build()).build());
 
         List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(callLogs);
-
         assertEquals(1, callLogViews.size());
         assertEquals("clinic", callLogViews.get(0).getClinicName());
+    }
+
+    @Test
+    public void shouldMapCallLogs_WhenPatientIsNotRegistered(){
+        List<CallLog> callLogs = new ArrayList<CallLog>(){{add(new CallLog() {{
+            setPatientDocumentId(null);
+            setLikelyPatientIds(new ArrayList<String>());
+        }});}};
+
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(callLogs);
+        assertEquals(0, callLogViews.size());
     }
 
     private List<CallLog> createCallLogs() {
         CallLog callLog = new CallLog();
         callLog.setPatientDocumentId("patientDocumentId");
-        CallLog anotherCallLog = new CallLog();
-        anotherCallLog.setPatientDocumentId("anotherPatientDocumentId");
         callLog.setStartTime(DateUtil.now());
         callLog.setEndTime(DateUtil.now().plusMinutes(2));
+        CallLog anotherCallLog = new CallLog();
+        anotherCallLog.setPatientDocumentId("anotherPatientDocumentId");
         anotherCallLog.setStartTime(DateUtil.now());
         anotherCallLog.setEndTime(DateUtil.now().plusMinutes(2));
         return Arrays.asList(callLog, anotherCallLog);
