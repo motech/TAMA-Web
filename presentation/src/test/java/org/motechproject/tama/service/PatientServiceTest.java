@@ -1,9 +1,9 @@
 package org.motechproject.tama.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.builder.*;
@@ -12,8 +12,6 @@ import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
 import org.motechproject.tama.web.view.SuspendedAdherenceData;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
 
@@ -22,8 +20,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
 public class PatientServiceTest {
     @Mock
     private AllPatients allPatients;
@@ -91,7 +87,7 @@ public class PatientServiceTest {
 
     @Test
     public void shouldActivateWhenPatientIsReActivated(){
-        when(allPatients.get("patientId")).thenReturn(PatientBuilder.startRecording().withDefaults().withPatientId("patientId").build());
+        when(allPatients.get("patientId")).thenReturn(PatientBuilder.startRecording().withDefaults().withPatientId("patientId").withLastSuspendedDate(new DateTime(2011, 11, 11, 0, 0, 0)).build());
         patientService.reActivate("patientId", new SuspendedAdherenceData());
         verify(allPatients).activate("patientId");
     }

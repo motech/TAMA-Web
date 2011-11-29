@@ -18,6 +18,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static junitx.framework.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -49,6 +50,7 @@ public class SuspendAdherenceCallsCommandTest {
         when(contextFactory.create(Matchers.<KooKooIVRContext>any())).thenReturn(tamaivrContextForTest);
         DateTime suspendedDateTime = new DateTime(2011, 11, 11, 0, 0, 0);
         when(DateUtil.now()).thenReturn(suspendedDateTime);
+        when(DateUtil.setTimeZone(any(DateTime.class))).thenReturn(new DateTime(2011, 11, 11, 0, 0, 0));
 
         final SuspendAdherenceCallsCommand suspendAdherenceCallsCommand = new SuspendAdherenceCallsCommand(allPatients, patientService, contextFactory);
         suspendAdherenceCallsCommand.execute(null);

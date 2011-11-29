@@ -53,7 +53,6 @@ public class Patient extends CouchEntity {
     private String genderId;
     private String clinic_id;
     private DateTime lastSuspendedDate;
-    private String displayableSuspendedDateAndTime;
 
     @JsonIgnore
     public boolean allowAdherenceCalls() {
@@ -234,23 +233,18 @@ public class Patient extends CouchEntity {
     }
 
     public DateTime getLastSuspendedDate() {
-        return DateUtil.setTimeZone(lastSuspendedDate);
+        return lastSuspendedDate == null ? null : DateUtil.setTimeZone(lastSuspendedDate);
     }
 
     public void setLastSuspendedDate(DateTime lastSuspendedDate) {
         this.lastSuspendedDate = lastSuspendedDate;
-        setDisplayableSuspendedDateAndTime();
-    }
-
-    public void setDisplayableSuspendedDateAndTime(){
-        DateTimeFormatter timeFormatter = org.joda.time.format.DateTimeFormat.forPattern("HH:mm aa");
-        DateTimeFormatter dateFormatter = org.joda.time.format.DateTimeFormat.forPattern("EEE MMM dd YYYY");
-        displayableSuspendedDateAndTime = dateFormatter.print(getLastSuspendedDate()) + ", at " + timeFormatter.print(getLastSuspendedDate().toLocalTime());
     }
 
     @JsonIgnore
     public String getDisplayableSuspendedDateAndTime(){
-        return displayableSuspendedDateAndTime;
+        DateTimeFormatter timeFormatter = org.joda.time.format.DateTimeFormat.forPattern("HH:mm");
+        DateTimeFormatter dateFormatter = org.joda.time.format.DateTimeFormat.forPattern("EEE MMM dd YYYY");
+        return getLastSuspendedDate() == null ? null : dateFormatter.print(getLastSuspendedDate()) + ", at " + timeFormatter.print(getLastSuspendedDate().toLocalTime());
     }
 
     @JsonIgnore

@@ -10,9 +10,7 @@ import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertFalse;
 
 public class DosageTimeLineTest {
@@ -115,7 +113,6 @@ public class DosageTimeLineTest {
         } catch (ArrayIndexOutOfBoundsException ex) {
         }
     }
-
 
     @Test
     public void shouldReturnTrueIfThereIsAtLeastOneUpcomingDosage() {

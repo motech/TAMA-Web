@@ -96,8 +96,8 @@ public class PatientController extends BaseController {
         return CREATE_VIEW;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/revive")
-    public String revive(@RequestParam String id, Model model, HttpServletRequest request){
+    @RequestMapping(method = RequestMethod.POST, value = "/revive/{id}")
+    public String revive(@PathVariable String id, Model model, HttpServletRequest request){
         List<SuspendedAdherenceData.DosageStatusWhenSuspended> pastDosageStatus = Arrays.asList(SuspendedAdherenceData.DosageStatusWhenSuspended.values());
         model.addAttribute("suspendedAdherenceData", new SuspendedAdherenceData());
         model.addAttribute("patientId", id);

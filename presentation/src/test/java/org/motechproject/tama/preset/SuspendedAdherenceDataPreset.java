@@ -5,7 +5,7 @@ import org.motechproject.tama.web.view.SuspendedAdherenceData;
 
 public class SuspendedAdherenceDataPreset {
 
-    public static SuspendedAdherenceData fromYesterdayWithAnyStatus(){
+    public static SuspendedAdherenceData fromYesterdayWithAnyStatus() {
         SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
         DateTime suspendedFromDate = new DateTime();
         suspendedAdherenceData.suspendedFrom(suspendedFromDate);
@@ -14,9 +14,18 @@ public class SuspendedAdherenceDataPreset {
         return suspendedAdherenceData;
     }
 
-    public static SuspendedAdherenceData fromWeekBeforeLastWithAnyStatus(DateTime reActivatedDate){
+    public static SuspendedAdherenceData fromWeekBeforeLastWithAnyStatus(DateTime reActivatedDate) {
         SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
         DateTime suspendedFromDate = reActivatedDate.minusDays(16);
+        suspendedAdherenceData.suspendedFrom(suspendedFromDate);
+        suspendedAdherenceData.patientId("patientId");
+        suspendedAdherenceData.setAdherenceDataWhenPatientWasSuspended(SuspendedAdherenceData.DosageStatusWhenSuspended.DOSE_NOT_TAKEN);
+        return suspendedAdherenceData;
+    }
+
+    public static SuspendedAdherenceData fromFourteenDaysBackWithAnyStatus(DateTime reActivatedDate) {
+        SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
+        DateTime suspendedFromDate = reActivatedDate.minusDays(14);
         suspendedAdherenceData.suspendedFrom(suspendedFromDate);
         suspendedAdherenceData.patientId("patientId");
         suspendedAdherenceData.setAdherenceDataWhenPatientWasSuspended(SuspendedAdherenceData.DosageStatusWhenSuspended.DOSE_NOT_TAKEN);
