@@ -39,7 +39,7 @@ public class CallSummaryController {
         this.callLogViewMapper = callLogViewMapper;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.GET)
     public String list(@Valid CallLogPreferencesFilter callLogPreferencesFilter, BindingResult bindingResult, HttpServletRequest request, Model uiModel) {
         if (bindingResult.hasErrors()) {
             callLogPreferencesFilter = new CallLogPreferencesFilter();

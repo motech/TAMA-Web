@@ -9,7 +9,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/callsummary" var="form_url"/>
     <util:panel id="fc_org_motechproject_tama_ivr_logging_domain_CallLog_FilterPreferencesPage" title="Find Logs" openPane="true">
-        <form:form action="${form_url}" method="POST" modelAttribute="logPreferences" enctype="application/x-www-form-urlencoded" onsubmit="encodePk()">
+        <form:form action="${form_url}" method="GET" modelAttribute="logPreferences" enctype="application/x-www-form-urlencoded" onsubmit="encodePk()">
             <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogStartDate" id="c_org_motechproject_tama_ivr_logging_domain_CallLog_startDate" label="Starting From" required="true" />
             <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogEndDate" id="c_org_motechproject_tama_ivr_logging_domain_CallLog_endDate" label="Till" required="true" />
             <span class="submit" id="showLogs">
