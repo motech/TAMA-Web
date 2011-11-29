@@ -23,7 +23,7 @@ public class TAMAConstants {
     public static final String FOUR_DAY_RECALL_SUBJECT = BASE_SUBJECT + ".fourDayRecall";
     public static final String WEEKLY_FALLING_TREND_SUBJECT = BASE_SUBJECT + ".weekly.fallingTrendAlert";
     public static final String OUT_BOX_CALL_RETRY_INTERVAL = "retry.interval.mins";
-    public static final int FALLING_ADHERENCE_ALERT_PRIORITY = 0;
+    public static final int NO_ALERT_PRIORITY = 0;
     public static final String DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER = "determine.adherence.quality.in.daily.pill.reminder";
     public static final String DETERMINE_ADHERENCE_QUALITY_IN_FOUR_DAY_RECALL = "determine.adherence.quality.in.four.day.recall";
 

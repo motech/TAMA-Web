@@ -171,6 +171,9 @@ public class PatientAlertServiceTest {
         final String symptomReported = "some ugly rash";
         final String adviceGiven = "have a bath";
 
+        Patient patient = new PatientBuilder().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
+        when(allPatients.get(testPatientId)).thenReturn(patient);
+
         final ArgumentMatcher<Alert> alertArgumentMatcher = new ArgumentMatcher<Alert>() {
             @Override
             public boolean matches(Object testAlert) {
@@ -180,6 +183,7 @@ public class PatientAlertServiceTest {
                         && (alert.getPriority() == 2)
                         && alert.getStatus().equals(AlertStatus.NEW)
                         && alert.getData().get(PatientAlert.SYMPTOMS_ALERT_STATUS).equals(SymptomsAlertStatus.Open.name())
+                        && alert.getData().get(PatientAlert.PATIENT_CALL_PREFERENCE).equals("Daily")
                         && alert.getDescription().equals(symptomReported)
                         && alert.getData().get(PatientAlert.PATIENT_ALERT_TYPE).equals(PatientAlertType.SymptomReporting.name())
                         && alert.getName().equals(adviceGiven);

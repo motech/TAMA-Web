@@ -62,6 +62,10 @@ public class PatientAlertService {
 
     public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
         data.put(PatientAlert.PATIENT_ALERT_TYPE, patientAlertType.name());
+        Patient patient = allPatients.get(externalId);
+        if (patient != null) {
+            data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
+        }
         if (PatientAlertType.SymptomReporting.equals(patientAlertType)) {
             data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
         }

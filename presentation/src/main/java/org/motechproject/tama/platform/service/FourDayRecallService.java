@@ -163,7 +163,7 @@ public class FourDayRecallService {
         final int thisWeekPercentage = adherencePercentageFor(dosageMissedDays);
         final double fall = ((previousWeekPercentage - thisWeekPercentage) / previousWeekPercentage) * 100.0;
         final String description = String.format("Adherence fell by %2.2f%% from %d%% to %d%%", fall, previousWeekPercentage, thisWeekPercentage);
-        patientAlertService.createAlert(patientId, TAMAConstants.FALLING_ADHERENCE_ALERT_PRIORITY, description, "Falling Adherence", PatientAlertType.FallingAdherence, data);
+        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, description, "Falling Adherence", PatientAlertType.FallingAdherence, data);
     }
 
     public boolean hasAdherenceFallingAlertBeenRaisedForCurrentWeek(String patientDocId) {

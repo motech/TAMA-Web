@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.domain.PatientAlert;
 import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.DosageUtil;
@@ -19,6 +21,9 @@ import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -112,7 +117,7 @@ public class DailyReminderAdherenceTrendServiceTest {
 
 
         dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
-        verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), Matchers.<String>any(), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
+        verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), eq("Adherence fell by 0.00%, from 30.00% to 30.00%"), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
     }
 
     @Test
@@ -128,6 +133,19 @@ public class DailyReminderAdherenceTrendServiceTest {
 
         dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
         verify(patientAlertService, never()).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), Matchers.<String>any(), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
+    }
+
+    @Test
+    public void shouldRaiseRedAlertForThePatient() {
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService);
+        String patientId = "patientId";
+        double adherencePercentage = 69.9;
+
+        dailyReminderAdherenceTrendService.raiseRedAlert(patientId, adherencePercentage);
+
+        Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.ADHERENCE, adherencePercentage+"");
+        verify(patientAlertService).createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, "Adherence in Red", "Adherence percentage is 69.90%", PatientAlertType.AdherenceInRed, data);
     }
 
 }

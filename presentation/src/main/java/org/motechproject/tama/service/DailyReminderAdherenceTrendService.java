@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TAMAConstants;
+import org.motechproject.tama.domain.PatientAlert;
 import org.motechproject.tama.domain.PatientAlertType;
 import org.motechproject.tama.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.util.DosageUtil;
@@ -17,6 +18,8 @@ import java.util.Map;
 @Component
 public class DailyReminderAdherenceTrendService {
 
+    public static final String ADHERENCE_IN_RED_ALERT = "Adherence in Red";
+    public static final String FALLING_ADHERENCE = "Falling Adherence";
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
     private PillReminderService pillReminderService;
@@ -58,14 +61,18 @@ public class DailyReminderAdherenceTrendService {
     public void raiseAdherenceFallingAlert(String patientId) {
         if (!isAdherenceFalling(patientId)) return;
         final Map<String, String> data = new HashMap<String, String>();
-        final double adherencePercentageForLastWeek = 100.0 * getAdherencePercentageForLastWeek(patientId);
-        final double adherencePercentageForCurrentWeek = 100.0 * getAdherencePercentageForCurrentWeek(patientId);
+        final double adherencePercentageForLastWeek =  getAdherencePercentageForLastWeek(patientId);
+        final double adherencePercentageForCurrentWeek =  getAdherencePercentageForCurrentWeek(patientId);
         final double fallPercent =  ((adherencePercentageForLastWeek - adherencePercentageForCurrentWeek)/adherencePercentageForLastWeek)*100;
         final String description = String.format("Adherence fell by %2.2f%%, from %2.2f%% to %2.2f%%",fallPercent, adherencePercentageForLastWeek, adherencePercentageForCurrentWeek);
-        patientAlertService.createAlert(patientId, TAMAConstants.FALLING_ADHERENCE_ALERT_PRIORITY, "Falling Adherence", description, PatientAlertType.FallingAdherence, data);
+        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 
     public void raiseRedAlert(String patientId, Double adherencePercentage) {
-        //To change body of created methods use File | Settings | File Templates.
+        String description = String.format("Adherence percentage is %.2f%%", adherencePercentage);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.ADHERENCE, adherencePercentage.toString());
+        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);
+
     }
 }

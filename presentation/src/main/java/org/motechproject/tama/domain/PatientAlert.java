@@ -14,6 +14,8 @@ public class PatientAlert {
     public static final String NOTES = "Notes";
     public static final String DOCTORS_NOTES = "Doctor's Notes";
     public static final String SYMPTOMS_ALERT_STATUS = "Symptoms Alert Status";
+    public static final String PATIENT_CALL_PREFERENCE = "Patient Call Preference";
+    public static final String ADHERENCE = "Adherence";
 
     private Patient patient;
 
