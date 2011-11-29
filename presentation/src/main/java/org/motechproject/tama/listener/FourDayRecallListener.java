@@ -65,7 +65,7 @@ public class FourDayRecallListener {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
 
         if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()) || isLastRetryDay(motechEvent)) {
-            if (fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_DOC_ID_KEY)) return;
+            if (fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId)) return;
             fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
         }
     }

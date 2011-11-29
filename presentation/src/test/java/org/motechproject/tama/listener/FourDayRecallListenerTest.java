@@ -29,7 +29,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class FourDayRecallListenerTest {
 
-    public static final String PATIENT_ID = "patient_id";
+    public static final String PATIENT_ID = "patientId";
     public static final String TREATMENT_ADVICE_ID = "TA_ID";
 
     @Mock
