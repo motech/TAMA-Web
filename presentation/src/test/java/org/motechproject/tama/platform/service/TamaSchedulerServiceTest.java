@@ -273,7 +273,7 @@ public class TamaSchedulerServiceTest {
 
         assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
         assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
-        assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_DAILY_ADHERENCE_QUALITY);
+        assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER);
     }
 
     @Test
@@ -306,6 +306,6 @@ public class TamaSchedulerServiceTest {
 
         assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
         assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
-        assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_DAILY_ADHERENCE_QUALITY);
+        assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER);
     }
 }
