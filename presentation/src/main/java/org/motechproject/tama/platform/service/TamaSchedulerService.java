@@ -92,7 +92,7 @@ public class TamaSchedulerService {
         LocalDate startDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice).plusDays(4 + 14); // days to recall + 2 weeks offset
 
         for (int count = 0; count <= daysToRetry; count++) {
-            DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1);
+            DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1); // +1 is so that it is scheduled at midnight. 12:00 AM of NEXT day
             FourDayRecallEventPayloadBuilder paramsBuilder = new FourDayRecallEventPayloadBuilder()
                     .withJobId(count + patientDocId)
                     .withPatientDocId(patientDocId);
@@ -210,7 +210,7 @@ public class TamaSchedulerService {
             MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER, eventParams);
 
             Date jobStartDate = getJobStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
-            Date jobEndDate = getJobEndDate(treatmentAdvice);
+            Date jobEndDate = treatmentAdvice.getEndDate() == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).plusDays(1).toDate();
 
             Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
 

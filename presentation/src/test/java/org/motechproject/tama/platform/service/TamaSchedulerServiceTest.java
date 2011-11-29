@@ -20,6 +20,7 @@ import org.motechproject.tama.domain.*;
 import org.motechproject.tama.listener.FourDayRecallListener;
 import org.motechproject.tama.repository.AllPatients;
 import org.motechproject.util.DateUtil;
+import org.quartz.CronTrigger;
 
 import java.util.*;
 
@@ -159,8 +160,6 @@ public class TamaSchedulerServiceTest {
         assertEquals(cronExpression, cronSchedulableJob.getCronExpression());
         assertEquals(startTime, cronSchedulableJob.getStartTime());
         assertEquals(endTime, cronSchedulableJob.getEndTime());
-        //assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
-        //assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
     @Test
@@ -316,7 +315,7 @@ public class TamaSchedulerServiceTest {
         final MotechEvent motechEventInScheduledJob = jobScheduledWithParams.getMotechEvent();
         Map<String, Object> paramsInScheduledJob = motechEventInScheduledJob.getParameters();
 
-        assertCronSchedulableJob(jobScheduledWithParams, "0 0 0 * * ?", startDate.toDate(), endDate.toDate());
+        assertCronSchedulableJob(jobScheduledWithParams, "0 0 0 * * ?", startDate.toDate(), endDate.plusDays(1).toDate());
 
         assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
         assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
@@ -349,7 +348,7 @@ public class TamaSchedulerServiceTest {
         DateTime rightNow = DateUtil.now();
         assertTrue("And the time when it was scheduled should be a bit in past.", rightNow.isAfter(actualTimeWhenTriggerWasActivated));
 
-        assertEquals(jobScheduledWithParams.getEndTime(), endDate.toDate());
+        assertEquals(jobScheduledWithParams.getEndTime(), endDate.plusDays(1).toDate());
 
         assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
         assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);

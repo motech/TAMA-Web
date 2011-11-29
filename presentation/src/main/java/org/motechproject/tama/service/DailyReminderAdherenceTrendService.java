@@ -65,4 +65,7 @@ public class DailyReminderAdherenceTrendService {
         patientAlertService.createAlert(patientId, TAMAConstants.FALLING_ADHERENCE_ALERT_PRIORITY, "Falling Adherence", description, PatientAlertType.FallingAdherence, data);
     }
 
+    public void raiseRedAlert(String patientId, Double adherencePercentage) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
 }
