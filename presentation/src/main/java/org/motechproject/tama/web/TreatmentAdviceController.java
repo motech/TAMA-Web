@@ -67,8 +67,7 @@ public class TreatmentAdviceController extends BaseController {
     public
     @ResponseBody
     List<Regimen> allRegimens() {
-        List<Regimen> allRegimens = this.allRegimens.getAll();
-        return allRegimens;
+        return this.allRegimens.getAll();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/changeRegimen")
@@ -79,20 +78,25 @@ public class TreatmentAdviceController extends BaseController {
         createForm(patientId, uiModel);
         return "treatmentadvices/update";
     }
-                    
+
     @RequestMapping(method = RequestMethod.POST)
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, Model uiModel, HttpServletRequest httpServletRequest) {
         endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
         uiModel.asMap().clear();
+        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         allTreatmentAdvices.add(treatmentAdvice);
-        if(allPatients.get(treatmentAdvice.getPatientId()).getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)){
+        final CallPreference callPreference = patient.getPatientPreferences().getCallPreference();
+        if (callPreference.equals(CallPreference.DailyPillReminder)) {
             TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
             pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
+            //TODO falling adherence alerts are triggered as a part of adherence trend jobs
             schedulerService.unscheduleJobForAdherenceTrendFeedback(oldTreatmentAdvice);
             schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        } else if (CallPreference.FourDayRecall.equals(callPreference)) {
+            schedulerService.unscheduleFallingAdherenceAlertJobs(treatmentAdvice.getPatientId());
+            schedulerService.scheduleFallingAdherenceAlertJobs(patient, treatmentAdvice);
         }
-        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
-        
+
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
 

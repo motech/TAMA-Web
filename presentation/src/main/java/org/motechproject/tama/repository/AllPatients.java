@@ -67,8 +67,7 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
 
     @View(name = "find_by_mobile_number", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber) {emit(doc.mobilePhoneNumber, doc._id);}}")
     public List<Patient> findAllByMobileNumber(String phoneNumber) {
-        String mobileNumber = phoneNumber.length() > 10 ? phoneNumber.substring(1) : phoneNumber;
-        ViewQuery q = createQuery("find_by_mobile_number").key(mobileNumber).includeDocs(true);
+        ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
         for (Patient patient : patients) {
             loadPatientDependencies(patient);
@@ -78,8 +77,7 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
 
     @View(name = "find_by_mobile_number_and_passcode", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber && doc.patientPreferences.passcode) {emit([doc.mobilePhoneNumber, doc.patientPreferences.passcode], doc._id);}}")
     public Patient findByMobileNumberAndPasscode(String phoneNumber, String passcode) {
-        String mobileNumber = phoneNumber.length() > 10 ? phoneNumber.substring(1) : phoneNumber;
-        ComplexKey key = ComplexKey.of(mobileNumber, passcode);
+        ComplexKey key = ComplexKey.of(phoneNumber, passcode);
         ViewQuery q = createQuery("find_by_mobile_number_and_passcode").key(key).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
         Patient patient = singleResult(patients);

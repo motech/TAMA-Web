@@ -73,7 +73,7 @@ public class TamaSchedulerService {
         motechSchedulerService.scheduleJob(cronJobForFourDayRecall);
     }
 
-    void scheduleFallingAdherenceAlertJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
+    public void scheduleFallingAdherenceAlertJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
         String patientDocId = patient.getId();
         DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
@@ -90,6 +90,13 @@ public class TamaSchedulerService {
             if (count == daysToRetry) paramsBuilder.withLastRetryDayFlagSet();
 
             scheduleWeeklyEvent(getJobStartDate(startDate), getJobEndDate(treatmentAdvice), eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT);
+        }
+    }
+
+    public void unscheduleFallingAdherenceAlertJobs(String patientId) {
+        Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
+        for (int count = 0; count <= daysToRetry; count++) {
+            motechSchedulerService.unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, count + patientId);
         }
     }
 
