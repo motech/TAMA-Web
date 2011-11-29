@@ -52,7 +52,8 @@ public class TamaSchedulerService {
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4);
+        LocalDate weeklyAdherenceTrackingStartDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(4);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek day = dayOfWeek(dayOfWeeklyCall, count);
@@ -63,6 +64,13 @@ public class TamaSchedulerService {
 
             scheduleWeeklyEvent(getJobStartDate(startDate), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
         }
+    }
+
+    private LocalDate getWeeklyAdherenceTrackingStartDate(Patient patient, TreatmentAdvice treatmentAdvice) {
+        LocalDate weeklyAdherenceTrackingStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
+        if (patient.getPatientPreferences().getCallPreferenceTransitionDate() != null && weeklyAdherenceTrackingStartDate.isBefore(patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate()))
+            weeklyAdherenceTrackingStartDate = patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate();
+        return weeklyAdherenceTrackingStartDate;
     }
 
     private void scheduleWeeklyEvent(Date jobStartDate, Date jobEndDate, DayOfWeek day, Time time, Map<String, Object> params, String eventName) {
@@ -79,7 +87,9 @@ public class TamaSchedulerService {
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4 + 14); // days to recall + 2 weeks offset
+
+
+        LocalDate startDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice).plusDays(4 + 14); // days to recall + 2 weeks offset
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1);

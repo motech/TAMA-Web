@@ -1,5 +1,6 @@
 package org.motechproject.tama.service;
 
+import org.joda.time.DateTime;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.TamaException;
 import org.motechproject.tama.domain.*;
@@ -58,6 +59,11 @@ public class PatientService {
             }
             throw e;
         }
+
+        if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
+            patient.getPatientPreferences().setCallPreferenceTransitionDate(DateTime.now());
+        }
+
         allPatients.update(patient);
         postUpdate(patient, dbPatient);
     }
@@ -148,3 +154,9 @@ public class PatientService {
         }
     }
 }
+
+
+
+
+
+

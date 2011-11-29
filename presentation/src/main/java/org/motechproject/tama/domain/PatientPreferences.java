@@ -1,6 +1,7 @@
 package org.motechproject.tama.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.joda.time.DateTime;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.TAMAConstants;
 import org.motechproject.tama.TAMAMessages;
@@ -25,6 +26,8 @@ public class PatientPreferences extends BaseEntity {
     private DayOfWeek dayOfWeeklyCall;
 
     private TimeOfDay bestCallTime;
+
+    private DateTime callPreferenceTransitionDate;
 
     public CallPreference getCallPreference() {
         return this.callPreference;
@@ -84,5 +87,13 @@ public class PatientPreferences extends BaseEntity {
 
     public boolean hasAgreedToBeCalledAtBestCallTime() {
         return bestCallTime != null && bestCallTime.getHour() != null;
+    }
+
+    public DateTime getCallPreferenceTransitionDate() {
+        return callPreferenceTransitionDate;
+    }
+
+    public void setCallPreferenceTransitionDate(DateTime callPreferenceTransitionDate) {
+        this.callPreferenceTransitionDate = callPreferenceTransitionDate;
     }
 }

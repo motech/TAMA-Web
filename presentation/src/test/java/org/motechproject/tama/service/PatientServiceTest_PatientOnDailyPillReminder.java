@@ -11,10 +11,13 @@ import org.motechproject.tama.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.domain.*;
 import org.motechproject.tama.platform.service.TamaSchedulerService;
 import org.motechproject.tama.repository.*;
+import org.motechproject.tama.testutil.FixedDateTimeSource;
 import org.motechproject.tama.web.view.SuspendedAdherenceData;
+import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -64,10 +67,14 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         ArgumentCaptor<Patient> captor = ArgumentCaptor.forClass(Patient.class);
         verify(allPatients).update(captor.capture());
         assertEquals(captor.getValue().getMobilePhoneNumber(), "7777777777");
+        assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
     }
 
     @Test
     public void shouldUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall_AndPatientHasATreatmentAdvice() {
+        final DateTime now = DateUtil.now();
+        DateTimeSourceUtil.SourceInstance = new FixedDateTimeSource(now);
+        DateUtil.now();
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(null, null, null)).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withPatientId("patient_id").build();
 
@@ -75,6 +82,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         patientService.update(patient);
 
         verify(pillReminderService).unscheduleJobs(patient.getId());
+        assertEquals(now.getMillis(), patient.getPatientPreferences().getCallPreferenceTransitionDate().getMillis());
     }
 
     @Test

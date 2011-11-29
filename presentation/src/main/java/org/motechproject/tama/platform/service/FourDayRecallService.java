@@ -138,7 +138,14 @@ public class FourDayRecallService {
 
     public boolean isAdherenceBeingCapturedForFirstWeek(String patientId) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        Patient patient = allPatients.get(patientId);
         LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
+        DateTime callPreferenceTransitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
+
+        if (callPreferenceTransitionDate != null && callPreferenceTransitionDate.toLocalDate().isAfter(treatmentAdviceStartDate)) {
+            return DateUtil.today().minusWeeks(1).isBefore(callPreferenceTransitionDate.toLocalDate());
+        }
+
         return getStartDateForCurrentWeek(patientId).equals(treatmentAdviceStartDate);
     }
 
