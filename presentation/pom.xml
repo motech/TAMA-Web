@@ -516,7 +516,6 @@
             <groupId>org.motechproject</groupId>
             <artifactId>tama-symptoms-reporting</artifactId>
             <version>0.3-SNAPSHOT</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>

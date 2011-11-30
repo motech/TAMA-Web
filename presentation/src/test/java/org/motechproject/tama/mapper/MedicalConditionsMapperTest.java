@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.builder.*;
 import org.motechproject.tama.domain.*;
+import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;

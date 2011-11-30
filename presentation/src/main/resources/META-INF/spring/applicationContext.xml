@@ -35,6 +35,7 @@
     <import resource="classpath:applicationOutboxAPI.xml"/>
     <import resource="classpath:applicationContextAlert.xml"/>
     <import resource="classpath:applicationPlatformScheduler.xml"/>
+    <import resource="classpath:applicationContextSymptomReporting.xml"/>
 
     <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
         <property name="algorithm" value="PBEWithMD5AndDES"/>
@@ -49,16 +50,4 @@
         <constructor-arg value="tama-web"/>
         <constructor-arg ref="tamaCouchDbInstance"/>
     </bean>
-    <drools:kbase id="symptomReportingRules">
-        <drools:resources>
-            <drools:resource source="classpath:regimen1.drl" type="DRL"/>
-            <drools:resource source="classpath:regimen2.drl" type="DRL"/>
-            <drools:resource source="classpath:regimen3.drl" type="DRL"/>
-            <drools:resource source="classpath:regimen4.drl" type="DRL"/>
-            <drools:resource source="classpath:regimen5.drl" type="DRL"/>
-            <drools:resource source="classpath:regimen6.drl" type="DRL"/>
-            <drools:resource source="classpath:commonInferences.drl" type="DRL"/>
-        </drools:resources>
-    </drools:kbase>
-    <drools:ksession id="ksession" type="stateless" kbase="symptomReportingRules"/>
 </beans>
