@@ -26,7 +26,7 @@ public class PlayAdherenceTrendFeedbackCommand {
         String patientId = outboxContext.partyId();
         DateTime now = DateUtil.now();
 
-        double adherencePercentageAsOfNow = dailyReminderAdherenceTrendService.getAdherencePercentage(patientId);
+        double adherencePercentageAsOfNow = dailyReminderAdherenceTrendService.getAdherence(patientId);
         boolean falling = dailyReminderAdherenceTrendService.isAdherenceFalling(patientId);
 
         if (adherencePercentageAsOfNow > 0.9) {

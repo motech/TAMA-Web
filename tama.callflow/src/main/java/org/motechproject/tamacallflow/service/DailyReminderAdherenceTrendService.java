@@ -1,10 +1,8 @@
 package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacallflow.util.DosageUtil;
 import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.domain.PatientAlert;
 import org.motechproject.tamadomain.domain.PatientAlertType;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
@@ -22,49 +20,40 @@ public class DailyReminderAdherenceTrendService {
     public static final String FALLING_ADHERENCE = "Falling Adherence";
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
-    private PillReminderService pillReminderService;
+    private TAMAPillReminderService pillReminderService;
 
     private PatientAlertService patientAlertService;
 
     @Autowired
-    public DailyReminderAdherenceTrendService(AllDosageAdherenceLogs allDosageAdherenceLogs, PillReminderService pillReminderService, PatientAlertService alertService) {
+    public DailyReminderAdherenceTrendService(AllDosageAdherenceLogs allDosageAdherenceLogs, TAMAPillReminderService pillReminderService, PatientAlertService alertService) {
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.pillReminderService = pillReminderService;
         this.patientAlertService = alertService;
     }
 
     public boolean isAdherenceFalling(String patientId) {
-        return getAdherencePercentageForCurrentWeek(patientId) < getAdherencePercentageForLastWeek(patientId);
+        DateTime now = DateUtil.now();
+        return getAdherenceAsOf(patientId, now) < getAdherenceAsOf(patientId, now.minusWeeks(1));
     }
 
-    public double getAdherencePercentage(String patientId) {
-        return getAdherencePercentageForCurrentWeek(patientId);
+    public double getAdherence(String patientId) {
+        return getAdherenceAsOf(patientId, DateUtil.now());
     }
 
-    protected double getAdherencePercentageForCurrentWeek(String patientId) {
-        return getAdherencePercentage(patientId, DateUtil.now());
+    double getAdherenceAsOf(String patientId, DateTime asOfDate) {
+        int totalDosages = pillReminderService.getPillRegimen(patientId).getDosageCount(asOfDate.minusWeeks(4), asOfDate);
+        int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate()).size();
+        return ((double) dosagesTakenForLastFourWeeks) / totalDosages;
     }
 
-    protected double getAdherencePercentageForLastWeek(String patientId) {
-        return getAdherencePercentage(patientId, DateUtil.now().minusWeeks(1));
-    }
-
-    protected double getAdherencePercentage(String patientId, DateTime asOfDate) {
-        PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patientId);
-        String regimenId = pillRegimen.getPillRegimenId();
-        int scheduledDosagesTotalCountForLastFourWeeksAsOfNow = DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(asOfDate.minusWeeks(4), asOfDate, pillRegimen);
-        int dosagesTakenForLastFourWeeksAsOfNow = allDosageAdherenceLogs.findScheduledDosagesSuccessCount(regimenId,
-                asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate());
-        return ((double) dosagesTakenForLastFourWeeksAsOfNow) / scheduledDosagesTotalCountForLastFourWeeksAsOfNow * 100.0;
-    }
-
-    public void raiseAdherenceFallingAlert(String patientId) {
-        if (!isAdherenceFalling(patientId)) return;
-        final Map<String, String> data = new HashMap<String, String>();
-        final double adherencePercentageForLastWeek =  getAdherencePercentageForLastWeek(patientId);
-        final double adherencePercentageForCurrentWeek =  getAdherencePercentageForCurrentWeek(patientId);
-        final double fallPercent =  ((adherencePercentageForLastWeek - adherencePercentageForCurrentWeek)/adherencePercentageForLastWeek)*100;
-        final String description = String.format("Adherence fell by %2.2f%%, from %2.2f%% to %2.2f%%",fallPercent, adherencePercentageForLastWeek, adherencePercentageForCurrentWeek);
+    public void raiseAlertIfAdherenceTrendIsFalling(String patientId) {
+        if (!isAdherenceFalling(patientId))
+            return;
+        Map<String, String> data = new HashMap<String, String>();
+        double adherenceAsOfLastWeek = getAdherenceAsOf(patientId, DateUtil.now().minusWeeks(1));
+        double adherenceAsOfCurrentWeek = getAdherence(patientId);
+        double fallPercent = ((adherenceAsOfLastWeek - adherenceAsOfCurrentWeek) / adherenceAsOfLastWeek) * 100;
+        String description = String.format("Adherence fell by %2.2f%%, from %2.2f%% to %2.2f%%", fallPercent, adherenceAsOfLastWeek, adherenceAsOfCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 

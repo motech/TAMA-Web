@@ -50,7 +50,7 @@ public class PlayAdherenceTrendFeedbackCommandTest {
         String[] result;
 
         context.partyId(externalId);
-        when(dailyReminderAdherenceTrendService.getAdherencePercentage(externalId)).thenReturn(0.8);
+        when(dailyReminderAdherenceTrendService.getAdherence(externalId)).thenReturn(0.8);
         when(dailyReminderAdherenceTrendService.isAdherenceFalling(externalId)).thenReturn(true);
 
         result = playAdherenceTrendFeedbackCommand.execute(context);

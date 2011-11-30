@@ -2,6 +2,7 @@ package org.motechproject.tamacallflow.domain;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
@@ -61,6 +62,17 @@ public class DosageTimeLineTest {
         try {
             dosageTimeLine.next();
             fail();
+        } catch (ArrayIndexOutOfBoundsException ex) {
+        }
+    }
+
+    @Test
+    @Ignore
+    public void shouldFetchOnlyDosagesInInterimPeriodIfPatientIsSuspendedAndActivatedOnSameDay1() {
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1), DateUtil.newDateTime(fromDate.minusDays(1), 6, 0, 0), DateUtil.newDateTime(fromDate.minusDays(1), 17, 0, 0));
+        try {
+            dosageTimeLine.next();
+            fail("No dosage is valid yet");
         } catch (ArrayIndexOutOfBoundsException ex) {
         }
     }

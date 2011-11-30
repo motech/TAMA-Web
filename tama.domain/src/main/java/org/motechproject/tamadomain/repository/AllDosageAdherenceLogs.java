@@ -67,4 +67,11 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         if (adherenceLogs != null && !adherenceLogs.isEmpty()) return adherenceLogs.get(0);
         return null;
     }
+
+    @View(name = "find_by_dosage_status_and_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageStatus, doc.dosageDate], doc._id);}}")
+    public List<DosageAdherenceLog> findByStatusAndDateRange(DosageStatus dosageStatus, LocalDate from, LocalDate till) {
+        ViewQuery q = createQuery("find_by_dosage_status_and_date_range").startKey(ComplexKey.of(dosageStatus, from)).endKey(ComplexKey.of(dosageStatus, till)).inclusiveEnd(true).includeDocs(true);
+        List<DosageAdherenceLog> result = db.queryView(q, DosageAdherenceLog.class);
+        return result;
+    }
 }

@@ -15,7 +15,6 @@ public class TAMAPillReminderService {
         this.pillReminderService = pillReminderService;
     }
 
-
     public TAMAPillRegimen getPillRegimen(String patientId) {
         return new TAMAPillRegimen(pillReminderService.getPillRegimen(patientId));
     }

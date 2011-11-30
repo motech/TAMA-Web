@@ -20,6 +20,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class AdherenceQualityListenerTest {
+
     @Mock
     private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
     @Mock
@@ -41,7 +42,7 @@ public class AdherenceQualityListenerTest {
         double adherencePercentage = 69d;
 
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
-        when(dailyReminderAdherenceTrendService.getAdherencePercentage(patientId)).thenReturn(adherencePercentage);
+        when(dailyReminderAdherenceTrendService.getAdherence(patientId)).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String,Object> parameters = motechEvent.getParameters();
@@ -49,7 +50,7 @@ public class AdherenceQualityListenerTest {
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
-        verify(dailyReminderAdherenceTrendService).getAdherencePercentage(eq(patientId));
+        verify(dailyReminderAdherenceTrendService).getAdherence(eq(patientId));
         verify(dailyReminderAdherenceTrendService, times(1)).raiseAdherenceInRedAlert(eq(patientId), eq(adherencePercentage));
     }
 
@@ -60,7 +61,7 @@ public class AdherenceQualityListenerTest {
         double adherencePercentage = 70.001;
 
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
-        when(dailyReminderAdherenceTrendService.getAdherencePercentage(patientId)).thenReturn(adherencePercentage);
+        when(dailyReminderAdherenceTrendService.getAdherence(patientId)).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String,Object> parameters = motechEvent.getParameters();
@@ -68,7 +69,7 @@ public class AdherenceQualityListenerTest {
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
-        verify(dailyReminderAdherenceTrendService).getAdherencePercentage(eq(patientId));
+        verify(dailyReminderAdherenceTrendService).getAdherence(eq(patientId));
         verify(dailyReminderAdherenceTrendService, never()).raiseAdherenceInRedAlert(Matchers.<String>any(), Matchers.<Double>any());
     }
 
