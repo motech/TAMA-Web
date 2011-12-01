@@ -333,7 +333,6 @@ public class TamaSchedulerServiceTest {
 
         assertCronSchedulableJob(jobScheduledWithParams, "0 0 0 * * ?", startDate.toDate(), endDate.plusDays(1).toDate());
 
-        assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
         assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
         assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER);
     }
@@ -366,7 +365,6 @@ public class TamaSchedulerServiceTest {
 
         assertEquals(jobScheduledWithParams.getEndTime(), endDate.plusDays(1).toDate());
 
-        assertEquals(paramsInScheduledJob.get(EventKeys.SCHEDULE_JOB_ID_KEY), patientId);
         assertEquals(paramsInScheduledJob.get(EventKeys.EXTERNAL_ID_KEY), patientId);
         assertEquals(motechEventInScheduledJob.getSubject(), TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER);
     }

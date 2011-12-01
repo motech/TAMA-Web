@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/clinicvisits")
 @Controller
 public class ClinicVisitsController extends BaseController {
-
-
     @Qualifier("treatmentAdviceController")
     @Autowired
     private TreatmentAdviceController treatmentAdviceController;

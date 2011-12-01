@@ -9,4 +9,5 @@
     <import resource="classpath:applicationContext-TAMACallFlow.xml"/>
     <context:component-scan base-package="org.motechproject.tama.*"/>
     <context:component-scan base-package="org.motechproject.tamahealthtip*"/>
+    <import resource="classpath:/placeholderPluginContext.xml"/>
 </beans>

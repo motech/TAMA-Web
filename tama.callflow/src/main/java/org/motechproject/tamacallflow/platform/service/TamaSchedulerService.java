@@ -148,7 +148,7 @@ public class TamaSchedulerService {
         MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
         LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
-        Date jobStartDate = startDate.toDate();//getJobStartDate(startDate);
+        Date jobStartDate = startDate.toDate();
         CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, jobStartDate, treatmentAdvice.getEndDate());
         motechSchedulerService.scheduleJob(adherenceJob);
     }

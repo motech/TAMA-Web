@@ -40,7 +40,6 @@ public class TreatmentAdviceController extends BaseController {
     private AllTreatmentAdvices allTreatmentAdvices;
     @Autowired
     private AllPatients allPatients;
-    @Qualifier("pillReminderService")
     @Autowired
     private PillReminderService pillReminderService;
     @Autowired
@@ -64,7 +63,6 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
-    public
     @ResponseBody
     List<Regimen> allRegimens() {
         return this.allRegimens.getAll();
@@ -96,7 +94,6 @@ public class TreatmentAdviceController extends BaseController {
             schedulerService.unscheduleFallingAdherenceAlertJobs(treatmentAdvice.getPatientId());
             schedulerService.scheduleFallingAdherenceAlertJobs(patient, treatmentAdvice);
         }
-
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
 

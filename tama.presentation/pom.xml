@@ -620,6 +620,11 @@
             <artifactId>motech-kookoo-automation</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject.deliverytools</groupId>
+            <artifactId>motech-deliverytools-common</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

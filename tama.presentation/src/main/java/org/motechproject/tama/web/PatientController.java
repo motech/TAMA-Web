@@ -141,6 +141,7 @@ public class PatientController extends BaseController {
             //TODO: This code should be moved to PatientService
             allPatients.addToClinic(patient, loggedInClinic(request));
             //TODO: Instead of calling patient to get data and checking on that, patient should have method like hasAgreedToBeCalledAtBestCallTime
+            //TODO: scheduling rescheduling codes have duplication in it
             if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
                     patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
                 schedulerService.scheduleJobForOutboxCall(patient);

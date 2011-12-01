@@ -103,6 +103,7 @@ public class PatientService {
             tamaSchedulerService.unscheduleJobForOutboxCall(patient);
             tamaSchedulerService.unscheduleRepeatingJobForOutboxCall(patient.getId());
         }
+        //TODO: scheduling rescheduling codes have duplication in it
         if (shouldScheduleOutboxCallsFor(updatedPatient)) {
             tamaSchedulerService.scheduleJobForOutboxCall(updatedPatient);
         }

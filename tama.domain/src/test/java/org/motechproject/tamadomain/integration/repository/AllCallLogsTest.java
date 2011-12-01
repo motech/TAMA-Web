@@ -12,10 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static junit.framework.Assert.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:applicationContext.xml")
 public class AllCallLogsTest extends SpringIntegrationTest {
-
     @Autowired
     private AllCallLogs allCallLogs;
 

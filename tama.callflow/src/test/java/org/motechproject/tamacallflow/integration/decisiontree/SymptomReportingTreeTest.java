@@ -15,7 +15,6 @@ import static junit.framework.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml")
 public class SymptomReportingTreeTest  {
-
     @Autowired
     private SymptomReportingTreeInterceptor symptomReportingTreeInterceptor;
     @Autowired

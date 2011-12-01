@@ -2,6 +2,7 @@ package org.motechproject.tamafunctional.ivr;
 
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.motechproject.deliverytools.kookoo.IncomingCall;
 import org.motechproject.deliverytools.kookoo.QueryParams;
@@ -18,7 +19,6 @@ import org.motechproject.tamafunctional.testdata.ivrrequest.OutgoingCallInfo;
 import java.io.IOException;
 import java.util.Set;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 public class Caller extends FunctionalTestObject {
@@ -34,8 +34,8 @@ public class Caller extends FunctionalTestObject {
         this.webClient = webClient;
     }
 
-    public Caller(String phoneNumber, MyWebClient webClient) {
-        this("irrelevant", phoneNumber, webClient);
+    private Caller(MyWebClient webClient) {
+        this("irrelevant", null, webClient);
     }
 
     public IVRResponse call() {
@@ -109,17 +109,26 @@ public class Caller extends FunctionalTestObject {
         hangedUp = false;
     }
 
-    public void receiveCall() throws IOException {
-        WebResponse webResponse = webClient.getWebResponse(TamaUrl.baseFor("motech-delivery-tools/outbound/lastreceived"), new QueryParams());
-        assertEquals(200, webResponse.getStatusCode());
-
-        String incomingCallRequest = webResponse.getContentAsString();
-        logInfo("Incoming call: %s", incomingCallRequest);
+    public static Caller receiveCall(MyWebClient webClient, int waitInSeconds) throws IOException {
+        String incomingCallRequest = incomingCall(webClient, waitInSeconds);
+        Caller caller = new Caller(webClient);
+        caller.logInfo("Incoming call: %s", incomingCallRequest);
         IncomingCall incomingCall = new IncomingCall(incomingCallRequest);
         assertNotNull(incomingCall.apiKey());
-        assertEquals(true, incomingCall.phoneNumber().contains(phoneNumber));
+        assertNotNull(incomingCall.phoneNumber());
 
-        callInfo = new OutgoingCallInfo(incomingCall.customParams());
-        replyToCall(callInfo);
+        caller.phoneNumber = incomingCall.phoneNumber();
+        caller.replyToCall(new OutgoingCallInfo(incomingCall.customParams()));
+        return caller;
+    }
+
+    public static boolean gotCall(MyWebClient webClient, int waitInSeconds) {
+        String response = incomingCall(webClient, waitInSeconds);
+        return StringUtils.isNotEmpty(response);
+    }
+
+    private static String incomingCall(MyWebClient webClient, int waitInSeconds) {
+        WebResponse webResponse = webClient.getWebResponse(TamaUrl.baseFor("motech-delivery-tools/outbound/lastreceived"), new QueryParams().put("waitForSeconds", waitInSeconds));
+        return webResponse.getContentAsString();
     }
 }

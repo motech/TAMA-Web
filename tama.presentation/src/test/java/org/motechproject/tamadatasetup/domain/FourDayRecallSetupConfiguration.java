@@ -1,5 +1,7 @@
 package org.motechproject.tamadatasetup.domain;
 
+import org.joda.time.LocalDate;
+import org.motechproject.model.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -11,14 +13,20 @@ public class FourDayRecallSetupConfiguration extends DataSetupConfiguration {
     @Autowired
     public FourDayRecallSetupConfiguration(@Qualifier("fourDayRecallDataSetup") Properties properties) {
         super(properties);
+        validate();
     }
 
-    public String patientsDocumentId() {
-        return stringValue("patientsDocumentId");
+    private void validate() {
+        patientDocId();
+        pinNumber();
+        adherenceResponse();
+        startFromWeeksAfterTreatmentAdvice();
+        bestCallTime();
+        treatmentAdviceGivenDate();
     }
 
-    public String phoneNumber() {
-        return stringValue("phoneNumber");
+    public String patientDocId() {
+        return stringValue("patientDocId");
     }
 
     public String pinNumber() {
@@ -27,5 +35,17 @@ public class FourDayRecallSetupConfiguration extends DataSetupConfiguration {
 
     public String adherenceResponse() {
         return stringValue("adherenceResponse");
+    }
+
+    public int startFromWeeksAfterTreatmentAdvice() {
+        return intValue("startFromWeeksAfterTreatmentAdvice", 0);
+    }
+
+    public Time bestCallTime() {
+        return timeValue("bestCallTime");
+    }
+
+    public LocalDate treatmentAdviceGivenDate() {
+        return dateValue("treatmentAdviceGivenDate");
     }
 }
