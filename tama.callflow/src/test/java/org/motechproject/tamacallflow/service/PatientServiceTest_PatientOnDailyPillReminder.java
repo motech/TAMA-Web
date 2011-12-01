@@ -43,9 +43,9 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     @Mock
     private AllVitalStatistics allVitalStatistics;
     @Mock
-    private WeeklyAdherenceService weeklyAdherenceService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
     @Mock
-    private DosageAdherenceService dosageAdherenceService;
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     @Before
     public void setUp() {
@@ -53,7 +53,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, weeklyAdherenceService, dosageAdherenceService);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, fourDayRecallAdherenceService, dailyReminderAdherenceService);
     }
 
     @Test
@@ -153,7 +153,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         when(allPatients.get("patientId")).thenReturn(patient);
         SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
         patientService.reActivate("patientId", suspendedAdherenceData);
-        verify(dosageAdherenceService).recordAdherence(suspendedAdherenceData);
+        verify(dailyReminderAdherenceService).recordAdherence(suspendedAdherenceData);
         assertEquals(suspendedDate, suspendedAdherenceData.suspendedFrom());
     }
 

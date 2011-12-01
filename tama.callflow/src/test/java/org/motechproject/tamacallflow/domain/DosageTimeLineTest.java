@@ -6,7 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.tamacallflow.ivr.DosageResponseWithDate;
+import org.motechproject.tamacallflow.ivr.Dosage;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class DosageTimeLineTest {
     public void setUp() {
         fromDate = DateUtil.newDate(2011, 11, 11);
         dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        dosageResponse2 = new DosageResponse("dosageId", new Time(07, 00), fromDate, null, null, null);
+        dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
     }
 
     @Test
@@ -39,12 +39,12 @@ public class DosageTimeLineTest {
         dosageTimeLine.next();
         dosageTimeLine.next();
         dosageTimeLine.next();
-        DosageResponseWithDate actualDosageResponse = dosageTimeLine.next();
+        Dosage actualDosageResponse = dosageTimeLine.next();
         assertDosageResponse(dosageResponse2, fromDate.plusDays(2), actualDosageResponse);
     }
 
     @Test
-    public void shouldNotFetchAnyDosageIfPatientIsSuspendedAndActivatedBetweenDosageTimes() {
+    public void shouldNotFetchAnyDosageIfPatientIsSuspendedAndActivatedBetweenDosageTimes() {  // where the hell is the patient??
         LocalDate toDate = DateUtil.newDate(2011, 11, 11);
         DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.newDateTime(toDate, 12, 00, 00));
         try {
@@ -67,8 +67,7 @@ public class DosageTimeLineTest {
     }
 
     @Test
-    @Ignore
-    public void shouldFetchOnlyDosagesInInterimPeriodIfPatientIsSuspendedAndActivatedOnSameDay1() {
+    public void shouldNotFetchAnyDosage() {
         DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1), DateUtil.newDateTime(fromDate.minusDays(1), 6, 0, 0), DateUtil.newDateTime(fromDate.minusDays(1), 17, 0, 0));
         try {
             dosageTimeLine.next();
@@ -115,7 +114,7 @@ public class DosageTimeLineTest {
         DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.newDateTime(toDate, 12, 00, 00));
         dosageTimeLine.next();
         dosageTimeLine.next();
-        DosageResponseWithDate actualDosageResponse = dosageTimeLine.next();
+        Dosage actualDosageResponse = dosageTimeLine.next();
         assertDosageResponse(dosageResponse1, fromDate.plusDays(1), actualDosageResponse);
         actualDosageResponse = dosageTimeLine.next();
         assertDosageResponse(dosageResponse2, fromDate.plusDays(2), actualDosageResponse);
@@ -151,8 +150,8 @@ public class DosageTimeLineTest {
         assertFalse(dosageTimeLine.hasNext());
     }
 
-    public void assertDosageResponse(DosageResponse expectedDosageResponse, LocalDate expectedDosageDate, DosageResponseWithDate actualResponse) {
-        assertEquals(expectedDosageResponse, actualResponse.getDosage());
+    public void assertDosageResponse(DosageResponse expectedDosageResponse, LocalDate expectedDosageDate, Dosage actualResponse) {
+        assertEquals("Expected " + expectedDosageResponse.getDosageId() + " but was " + actualResponse.getDosageId(),expectedDosageResponse, actualResponse.getDosage());
         assertEquals(expectedDosageDate, actualResponse.getDosageDate());
     }
 }

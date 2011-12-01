@@ -24,14 +24,14 @@ public class PatientService {
     private TamaSchedulerService tamaSchedulerService;
     private AllLabResults allLabResults;
     private AllRegimens allRegimens;
-    private WeeklyAdherenceService weeklyAdherenceService;
-    private DosageAdherenceService dosageAdherenceService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     @Autowired
     public PatientService(TamaSchedulerService tamaSchedulerService, PillReminderService pillReminderService, AllPatients allPatients,
                           AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllRegimens allRegimens,
-                          AllUniquePatientFields allUniquePatientFields, AllVitalStatistics allVitalStatistics, WeeklyAdherenceService weeklyAdherenceService,
-                          DosageAdherenceService dosageAdherenceService) {
+                          AllUniquePatientFields allUniquePatientFields, AllVitalStatistics allVitalStatistics, FourDayRecallAdherenceService fourDayRecallAdherenceService,
+                          DailyReminderAdherenceService dailyReminderAdherenceService) {
 
         this.allPatients = allPatients;
         this.allUniquePatientFields = allUniquePatientFields;
@@ -41,8 +41,8 @@ public class PatientService {
         this.allLabResults = allLabResults;
         this.allRegimens = allRegimens;
         this.allVitalStatistics = allVitalStatistics;
-        this.weeklyAdherenceService = weeklyAdherenceService;
-        this.dosageAdherenceService = dosageAdherenceService;
+        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
+        this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }
 
     public void update(Patient patient) {
@@ -151,9 +151,9 @@ public class PatientService {
         Patient patient = allPatients.get(patientId);
         suspendedAdherenceData.suspendedFrom(patient.getLastSuspendedDate());
         if(patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall){
-            weeklyAdherenceService.recordAdherence(suspendedAdherenceData);
+            fourDayRecallAdherenceService.recordAdherence(suspendedAdherenceData);
         }else{
-            dosageAdherenceService.recordAdherence(suspendedAdherenceData);
+            dailyReminderAdherenceService.recordAdherence(suspendedAdherenceData);
         }
     }
 }

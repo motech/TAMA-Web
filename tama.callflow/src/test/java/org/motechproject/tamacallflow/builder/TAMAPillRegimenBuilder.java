@@ -5,8 +5,8 @@ import org.mockito.Matchers;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.tamacallflow.domain.DosageTimeLine;
-import org.motechproject.tamacallflow.domain.TAMAPillRegimen;
-import org.motechproject.tamacallflow.ivr.DosageResponseWithDate;
+import org.motechproject.tamacallflow.domain.PillRegimen;
+import org.motechproject.tamacallflow.ivr.Dosage;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -18,11 +18,11 @@ import static org.mockito.Mockito.when;
 
 public class TAMAPillRegimenBuilder {
 
-    private TAMAPillRegimen tamaPillRegimen;
+    private PillRegimen pillRegimen;
     private Properties properties;
 
     private TAMAPillRegimenBuilder(){
-        tamaPillRegimen = mock(TAMAPillRegimen.class);
+        pillRegimen = mock(PillRegimen.class);
     }
 
     public static TAMAPillRegimenBuilder startRecording(){
@@ -31,10 +31,10 @@ public class TAMAPillRegimenBuilder {
 
     public TAMAPillRegimenBuilder withTwoDosagesFrom(DateTime dateTime) {
         DosageTimeLine dosageTimeLine = mock(DosageTimeLine.class);
-        DosageResponseWithDate dosageResponse1 = new DosageResponseWithDate(new DosageResponse("dosageId1", new Time(10, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
-        DosageResponseWithDate dosageResponse2 = new DosageResponseWithDate(new DosageResponse("dosageId2", new Time(11, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
-        when(tamaPillRegimen.getDosageResponses()).thenReturn(Arrays.<DosageResponse>asList(dosageResponse1, dosageResponse2));
-        when(tamaPillRegimen.getDosageTimeLine(Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(dosageTimeLine);
+        Dosage dosageResponse1 = new Dosage(new DosageResponse("dosageId1", new Time(10, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
+        Dosage dosageResponse2 = new Dosage(new DosageResponse("dosageId2", new Time(11, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
+        when(pillRegimen.getDosageResponses()).thenReturn(Arrays.<DosageResponse>asList(dosageResponse1, dosageResponse2));
+        when(pillRegimen.getDosageTimeLine(Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(dosageTimeLine);
         when(dosageTimeLine.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
         when(dosageTimeLine.next()).thenReturn(dosageResponse1).thenReturn(dosageResponse2);
         return this;
@@ -42,17 +42,17 @@ public class TAMAPillRegimenBuilder {
 
     public TAMAPillRegimenBuilder withThreeDosagesInTotal() {
         DosageTimeLine dosageTimeLine = mock(DosageTimeLine.class);
-        DosageResponseWithDate dosageResponse1 = new DosageResponseWithDate(new DosageResponse("dosageId1", new Time(10, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
-        DosageResponseWithDate dosageResponse2 = new DosageResponseWithDate(new DosageResponse("dosageId2", new Time(11, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
-        DosageResponseWithDate dosageResponse3 = new DosageResponseWithDate(new DosageResponse("dosageId3", new Time(12, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
-        when(tamaPillRegimen.getDosageResponses()).thenReturn(Arrays.<DosageResponse>asList(dosageResponse1, dosageResponse2, dosageResponse3));
-        when(tamaPillRegimen.getDosageTimeLine()).thenReturn(dosageTimeLine);
+        Dosage dosageResponse1 = new Dosage(new DosageResponse("dosageId1", new Time(10, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
+        Dosage dosageResponse2 = new Dosage(new DosageResponse("dosageId2", new Time(11, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
+        Dosage dosageResponse3 = new Dosage(new DosageResponse("dosageId3", new Time(12, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
+        when(pillRegimen.getDosageResponses()).thenReturn(Arrays.<DosageResponse>asList(dosageResponse1, dosageResponse2, dosageResponse3));
+        when(pillRegimen.getDosageTimeLine()).thenReturn(dosageTimeLine);
         when(dosageTimeLine.hasNext()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
         when(dosageTimeLine.next()).thenReturn(dosageResponse1).thenReturn(dosageResponse2).thenReturn(dosageResponse3);
         return this;
     }
 
-    public TAMAPillRegimen build(){
-        return tamaPillRegimen;
+    public PillRegimen build(){
+        return pillRegimen;
     }
 }

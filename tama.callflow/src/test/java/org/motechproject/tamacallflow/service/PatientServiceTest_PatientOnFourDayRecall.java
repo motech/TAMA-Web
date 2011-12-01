@@ -39,9 +39,9 @@ public class PatientServiceTest_PatientOnFourDayRecall {
     @Mock
     private AllVitalStatistics allVitalStatistics;
     @Mock
-    private WeeklyAdherenceService weeklyAdherenceService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
     @Mock
-    private DosageAdherenceService dosageAdherenceService;
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     @Before
     public void setUp() {
@@ -49,7 +49,7 @@ public class PatientServiceTest_PatientOnFourDayRecall {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.FourDayRecall)
                 .withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, weeklyAdherenceService, dosageAdherenceService);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, fourDayRecallAdherenceService, dailyReminderAdherenceService);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class PatientServiceTest_PatientOnFourDayRecall {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("patientId").withLastSuspendedDate(suspendedDate).withCallPreference(CallPreference.FourDayRecall).build();
         when(allPatients.get("patientId")).thenReturn(patient);
         patientService.reActivate("patientId", suspendedAdherenceData);
-        verify(weeklyAdherenceService).recordAdherence(suspendedAdherenceData);
+        verify(fourDayRecallAdherenceService).recordAdherence(suspendedAdherenceData);
         assertEquals(suspendedDate, suspendedAdherenceData.suspendedFrom());
     }
 

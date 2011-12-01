@@ -4,15 +4,16 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tamacallflow.ivr.Dosage;
 import org.motechproject.util.DateUtil;
 
 import java.util.List;
 
-public class TAMAPillRegimen {
+public class PillRegimen {
 
     private PillRegimenResponse pillRegimenResponse;
 
-    public TAMAPillRegimen(PillRegimenResponse pillRegimenResponse) {
+    public PillRegimen(PillRegimenResponse pillRegimenResponse) {
         this.pillRegimenResponse = pillRegimenResponse;
     }
 
@@ -40,5 +41,10 @@ public class TAMAPillRegimen {
             dosageTimeLine.next();
         }
         return count;
+    }
+
+    public int getDosageCount(DateTime now) {
+        DateTime startOfTime = new DateTime(0);
+        return getDosageCount(startOfTime, now);
     }
 }

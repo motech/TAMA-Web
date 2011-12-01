@@ -25,7 +25,7 @@ public class PreviousDosageReminderTreeTest {
         assertEquals(UpdatePreviousPillAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
         assertEquals(2, nextNode.getPrompts().size());
         assertEquals(MessageOnPreviousPillTaken.class, nextNode.getPrompts().get(0).getCommand().getClass());
-        assertEquals(MessageForAdherenceWhenPreviousDosageNotCapturedCommand.class, nextNode.getPrompts().get(1).getCommand().getClass());
+        assertEquals(AdherenceMessageCommand.class, nextNode.getPrompts().get(1).getCommand().getClass());
     }
 
     @Test
@@ -36,6 +36,6 @@ public class PreviousDosageReminderTreeTest {
         assertEquals(UpdatePreviousPillAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
         assertEquals(2, nextNode.getPrompts().size());
         assertEquals(MessageOnPreviousPillNotTaken.class, nextNode.getPrompts().get(0).getCommand().getClass());
-        assertEquals(MessageForAdherenceWhenPreviousDosageNotCapturedCommand.class, nextNode.getPrompts().get(1).getCommand().getClass());
+        assertEquals(AdherenceMessageCommand.class, nextNode.getPrompts().get(1).getCommand().getClass());
     }
 }

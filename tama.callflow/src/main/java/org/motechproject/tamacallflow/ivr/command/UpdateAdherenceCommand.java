@@ -26,7 +26,7 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
         String dosageId = getDosageId(ivrContext);
 
         DosageAdherenceLog log = logs.findByDosageIdAndDate(dosageId, getDosageDate(ivrContext));
-        DosageAdherenceLog newLog = new DosageAdherenceLog(ivrContext.patientId(), pillRegimen(ivrContext).getPillRegimenId(),
+        DosageAdherenceLog newLog = new DosageAdherenceLog(ivrContext.patientId(), pillRegimenResponse(ivrContext).getPillRegimenId(),
                 dosageId,
                 newStatus, getDosageDate(ivrContext));
 

@@ -1,7 +1,7 @@
 package org.motechproject.tamacallflow.service;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacallflow.domain.TAMAPillRegimen;
+import org.motechproject.tamacallflow.domain.PillRegimen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class TAMAPillReminderService {
         this.pillReminderService = pillReminderService;
     }
 
-    public TAMAPillRegimen getPillRegimen(String patientId) {
-        return new TAMAPillRegimen(pillReminderService.getPillRegimen(patientId));
+    public PillRegimen getPillRegimen(String patientId) {
+        return new PillRegimen(pillReminderService.getPillRegimen(patientId));
     }
 }

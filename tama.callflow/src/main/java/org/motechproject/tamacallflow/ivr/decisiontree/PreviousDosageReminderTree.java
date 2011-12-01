@@ -17,7 +17,7 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private MessageOnPreviousPillNotTaken messageOnPreviousPillNotTaken;
     @Autowired
-    private MessageForAdherenceWhenPreviousDosageNotCapturedCommand messageForAdherenceWhenPreviousDosageNotCapturedCommand;
+    private AdherenceMessageCommand adherenceMessageCommand;
     @Autowired
     private UpdatePreviousPillAdherenceCommand updatePreviousPillAdherenceCommand;
     @Autowired
@@ -34,7 +34,7 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
                                                 .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPreviousPillTaken),
-                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand)
+                                                        new AudioPrompt().setCommand(adherenceMessageCommand)
                                                 )
                                 )
 
@@ -45,7 +45,7 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
                                                 .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPreviousPillNotTaken),
-                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageNotCapturedCommand)
+                                                        new AudioPrompt().setCommand(adherenceMessageCommand)
                                                 )
                                 )
                         }

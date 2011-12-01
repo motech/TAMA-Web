@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DateUtil.class)
-public class WeeklyAdherenceServiceTest {
+public class FourDayRecallAdherenceServiceTest {
     @Mock
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     @Mock
@@ -43,7 +43,7 @@ public class WeeklyAdherenceServiceTest {
     @Mock
     private Properties properties;
 
-    private WeeklyAdherenceService weeklyAdherenceService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
     private static String DAYS_TO_RETRY = "2";
 
 
@@ -51,7 +51,7 @@ public class WeeklyAdherenceServiceTest {
     public void setUp() {
         initMocks(this);
         mockStatic(DateUtil.class);
-        weeklyAdherenceService = new WeeklyAdherenceService(allWeeklyAdherenceLogs, allPatients, allTreatmentAdvices, fourDayRecallService, properties);
+        fourDayRecallAdherenceService = new FourDayRecallAdherenceService(allWeeklyAdherenceLogs, allPatients, allTreatmentAdvices, fourDayRecallService, properties);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class WeeklyAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(true);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 5));
 
-        weeklyAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromWeekBeforeLastWithAnyStatus(toDate));
+        fourDayRecallAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromWeekBeforeLastWithAnyStatus(toDate));
         verify(allWeeklyAdherenceLogs, times(3)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
@@ -94,7 +94,7 @@ public class WeeklyAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(true);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 5));
 
-        weeklyAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromWeekBeforeLastWithAnyStatus(toDate));
+        fourDayRecallAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromWeekBeforeLastWithAnyStatus(toDate));
         verify(allWeeklyAdherenceLogs, times(2)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
@@ -116,7 +116,7 @@ public class WeeklyAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(true);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 10));
 
-        weeklyAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromWeekBeforeLastWithAnyStatus(toDate));
+        fourDayRecallAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromWeekBeforeLastWithAnyStatus(toDate));
         verify(allWeeklyAdherenceLogs, times(2)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
@@ -139,7 +139,7 @@ public class WeeklyAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(false);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 10));
 
-        weeklyAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromFourteenDaysBackWithAnyStatus(toDate));
+        fourDayRecallAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromFourteenDaysBackWithAnyStatus(toDate));
         verify(allWeeklyAdherenceLogs, times(3)).add(Matchers.<WeeklyAdherenceLog>any());
     }
     

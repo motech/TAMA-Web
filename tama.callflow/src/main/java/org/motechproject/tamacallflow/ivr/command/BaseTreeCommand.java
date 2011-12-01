@@ -20,15 +20,15 @@ public abstract class BaseTreeCommand implements ITreeCommand {
     }
 
     protected PillRegimenSnapshot pillRegimenSnapshot(TAMAIVRContext tamaivrContext) {
-        PillRegimenResponse pillRegimenResponse = pillRegimen(tamaivrContext);
+        PillRegimenResponse pillRegimenResponse = pillRegimenResponse(tamaivrContext);
         return new PillRegimenSnapshot(tamaivrContext, pillRegimenResponse);
     }
 
     protected PillRegimenResponse pillRegimen(KooKooIVRContext kooKooIVRContext) {
-        return pillRegimen(new TAMAIVRContext(kooKooIVRContext));
+        return pillRegimenResponse(new TAMAIVRContext(kooKooIVRContext));
     }
 
-    protected PillRegimenResponse pillRegimen(TAMAIVRContext tamaivrContext) {
+    protected PillRegimenResponse pillRegimenResponse(TAMAIVRContext tamaivrContext) {
         return tamaivrContext.pillRegimen(pillReminderService);
     }
 

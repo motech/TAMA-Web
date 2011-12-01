@@ -40,9 +40,9 @@ public class PatientServiceTest {
     @Mock
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
     @Mock
-    private WeeklyAdherenceService weeklyAdherenceService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
     @Mock
-    private DosageAdherenceService dosageAdherenceService;
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     private final String patientId = "patientId";
     PatientService patientService;
@@ -50,7 +50,7 @@ public class PatientServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, weeklyAdherenceService, dosageAdherenceService);
+        patientService = new PatientService(tamaSchedulerService, pillReminderService, allPatients, allTreatmentAdvices, allLabResults, allRegimens, allUniquePatientFields, allVitalStatistics, fourDayRecallAdherenceService, dailyReminderAdherenceService);
     }
 
     @Test

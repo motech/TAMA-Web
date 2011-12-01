@@ -25,9 +25,9 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private UpdateAdherenceCommand updateAdherenceCommand;
     @Autowired
-    private MessageForAdherenceWhenPreviousDosageCapturedCommand messageForAdherenceWhenPreviousDosageCapturedCommand;
+    private AdherenceMessageWhenPreviousDosageCapturedCommand adherenceWhenPreviousDosageCapturedCommand;
     @Autowired
-    private MessageForMissedPillFeedbackCommand messageForMissedPillFeedbackCommand;
+    private MissedPillFeedbackCommand forMissedPillFeedbackCommand;
 
     protected Node createRootNode() {
         return new Node()
@@ -42,7 +42,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
-                                                        new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand)
+                                                        new AudioPrompt().setCommand(adherenceWhenPreviousDosageCapturedCommand)
                                                 ))
                         },
                         {"2", new Transition()
@@ -58,7 +58,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                         new Node()
                                                 .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
                                                 .setPrompts(
-                                                        new AudioPrompt().setCommand(messageForMissedPillFeedbackCommand),
+                                                        new AudioPrompt().setCommand(forMissedPillFeedbackCommand),
                                                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU))
                                                 .setTransitions(new Object[][]{
                                                         {"1", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
@@ -67,14 +67,14 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
                                                                         .setPrompts(
                                                                                 new AudioPrompt().setName(TamaIVRMessage.PLEASE_CARRY_SMALL_BOX),
-                                                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand)
+                                                                                new AudioPrompt().setCommand(adherenceWhenPreviousDosageCapturedCommand)
                                                                         ))
                                                         },
                                                         {"3", new Transition()
                                                                 .setDestinationNode(new Node()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
                                                                         .setPrompts(
-                                                                                new AudioPrompt().setCommand(messageForAdherenceWhenPreviousDosageCapturedCommand)
+                                                                                new AudioPrompt().setCommand(adherenceWhenPreviousDosageCapturedCommand)
                                                                         ))
                                                         }
                                                 }))

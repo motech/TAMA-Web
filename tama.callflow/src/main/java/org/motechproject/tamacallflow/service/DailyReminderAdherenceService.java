@@ -4,8 +4,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.tamacallflow.domain.DosageTimeLine;
-import org.motechproject.tamacallflow.domain.TAMAPillRegimen;
-import org.motechproject.tamacallflow.ivr.DosageResponseWithDate;
+import org.motechproject.tamacallflow.domain.PillRegimen;
+import org.motechproject.tamacallflow.ivr.Dosage;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.DosageAdherenceLog;
 import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Service
-public class DosageAdherenceService {
+public class DailyReminderAdherenceService {
 
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
     private TAMAPillReminderService pillReminderService;
@@ -34,20 +34,20 @@ public class DosageAdherenceService {
     private int currentDosageIndex = 0;
 
     @Autowired
-    public DosageAdherenceService(AllDosageAdherenceLogs allDosageAdherenceLogs, TAMAPillReminderService pillReminderService, @Qualifier("ivrProperties") Properties properties) {
+    public DailyReminderAdherenceService(AllDosageAdherenceLogs allDosageAdherenceLogs, TAMAPillReminderService pillReminderService, @Qualifier("ivrProperties") Properties properties) {
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.pillReminderService = pillReminderService;
         this.properties = properties;
     }
 
     public void recordAdherence(SuspendedAdherenceData suspendedAdherenceData) {
-        TAMAPillRegimen pillRegimen = pillReminderService.getPillRegimen(suspendedAdherenceData.patientId());
+        PillRegimen pillRegimen = pillReminderService.getPillRegimen(suspendedAdherenceData.patientId());
         from = suspendedAdherenceData.suspendedFrom();
         dosageResponses = pillRegimen.getDosageResponses();
         resetSuspensionDateBasedOnPreviousDosageStatus(sort(dosageResponses));
         DosageTimeLine dosageTimeLine = pillRegimen.getDosageTimeLine(from, DateUtil.now());
         while (dosageTimeLine.hasNext()) {
-            DosageResponseWithDate dosage = dosageTimeLine.next();
+            Dosage dosage = dosageTimeLine.next();
             DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(suspendedAdherenceData.patientId(), pillRegimen.getId(), dosage.getDosageId(), suspendedAdherenceData.getAdherenceDataWhenPatientWasSuspended().getStatus(), dosage.getDosageDate());
             allDosageAdherenceLogs.add(dosageAdherenceLog);
         }
@@ -81,7 +81,7 @@ public class DosageAdherenceService {
         } else {
             previousDosageIndex = previousDosageIndex - 1;
         }
-        if (isSuspensionTimeWithinPillWindowOfPreviousDosage(new DosageResponseWithDate(dosageResponses.get(currentDosageIndex), iteratingDate.toLocalDate())) && isPreviousDosageNotCaptured(previous())) {
+        if (isSuspensionTimeWithinPillWindowOfPreviousDosage(new Dosage(dosageResponses.get(currentDosageIndex), iteratingDate.toLocalDate())) && isPreviousDosageNotCaptured(previous())) {
             DosageResponse previousDosage = dosageResponses.get(previousDosageIndex);
             if (currentDosageIndex == 0) {
                 from = from.minusDays(1);
@@ -92,8 +92,8 @@ public class DosageAdherenceService {
         }
     }
 
-    private boolean isPreviousDosageNotCaptured(DosageResponseWithDate previousDosageResponseWithDate) {
-        DosageAdherenceLog previousDosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(previousDosageResponseWithDate.getDosageId(), previousDosageResponseWithDate.getDosageDate());
+    private boolean isPreviousDosageNotCaptured(Dosage previousDosage) {
+        DosageAdherenceLog previousDosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(previousDosage.getDosageId(), previousDosage.getDosageDate());
         return previousDosageAdherenceLog == null ? true : false;
     }
 
@@ -115,10 +115,10 @@ public class DosageAdherenceService {
         return false;
     }
 
-    private boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(DosageResponseWithDate currentDosageResponseWithDate) {
-        DosageResponseWithDate previousDosageResponse = previous();
+    private boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(Dosage currentDosage) {
+        Dosage previousDosageResponse = previous();
         int previousDosageTimeInMinutes = (previousDosageResponse.getDosageHour() * 60) + previousDosageResponse.getDosageMinute();
-        int currentDosageTimeInMinutes = (currentDosageResponseWithDate.getDosageHour() * 60) + currentDosageResponseWithDate.getDosageMinute();
+        int currentDosageTimeInMinutes = (currentDosage.getDosageHour() * 60) + currentDosage.getDosageMinute();
         int timeInMinutes = (actualSuspensionDateAndTime.getHourOfDay() * 60) + actualSuspensionDateAndTime.getMinuteOfHour();
         int pillWindowInMinutes = (Integer.parseInt(properties.getProperty(TAMAConstants.PILL_WINDOW))) * 60;
         if (timeInMinutes <= (currentDosageTimeInMinutes - pillWindowInMinutes)) {
@@ -130,7 +130,7 @@ public class DosageAdherenceService {
         return false;
     }
 
-    public DosageResponseWithDate previous() {
+    public Dosage previous() {
         DosageResponse dosageResponseToReturn;
         DateTime dateToReturn;
         if (currentDosageIndex == 0) {
@@ -140,7 +140,7 @@ public class DosageAdherenceService {
             dosageResponseToReturn = dosageResponses.get(previousDosageIndex - 1);
             dateToReturn = DateUtil.newDateTime(iteratingDate.toLocalDate(), dosageResponseToReturn.getDosageHour(), dosageResponseToReturn.getDosageMinute(), 0);
         }
-        return new DosageResponseWithDate(dosageResponseToReturn, dateToReturn.toLocalDate());
+        return new Dosage(dosageResponseToReturn, dateToReturn.toLocalDate());
     }
 
     private boolean isLastDay(DateTime day) {

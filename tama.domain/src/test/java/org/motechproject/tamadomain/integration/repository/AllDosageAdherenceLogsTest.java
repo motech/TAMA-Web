@@ -10,8 +10,6 @@ import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -44,7 +42,7 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
 
         markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4);
-        assertEquals(1, allDosageAdherenceLogs.findScheduledDosagesSuccessCount("1"));
+        assertEquals(1, allDosageAdherenceLogs.getDosageTakenCount("1"));
     }
 
     private DosageAdherenceLog adherenceLog(String regimenId, DosageStatus dosageStatus) {
@@ -55,7 +53,25 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldFindTakenDosagesByDateRange() {
+    public void shouldGetCountOfDosagesTaken() {
+        LocalDate someDay = new LocalDate(2011, 10, 22);
+        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, someDay);
+        allDosageAdherenceLogs.add(dosageAdherenceLog1);
+        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, someDay.minusDays(1));
+        allDosageAdherenceLogs.add(dosageAdherenceLog2);
+        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2));
+        allDosageAdherenceLogs.add(dosageAdherenceLog3);
+        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, someDay.minusDays(3));
+        allDosageAdherenceLogs.add(dosageAdherenceLog4);
+        DosageAdherenceLog dosageAdherenceLog5 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, someDay.minusDays(4));
+        allDosageAdherenceLogs.add(dosageAdherenceLog5);
+        markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4, dosageAdherenceLog5);
+
+        assertEquals(3, allDosageAdherenceLogs.getDosageTakenCount("regimen_id"));
+    }
+
+    @Test
+    public void shouldFindByDosageStatusAndDateRange() {
         LocalDate someDay = new LocalDate(2011, 10, 22);
         DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, someDay);
         allDosageAdherenceLogs.add(dosageAdherenceLog1);

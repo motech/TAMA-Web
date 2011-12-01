@@ -44,7 +44,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
     }
 
     @View(name = "find_success_log_count", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus], doc._id);}}", reduce = "_count")
-    public int findScheduledDosagesSuccessCount(String regimenId) {
+    public int getDosageTakenCount(String regimenId) {
         ComplexKey key = ComplexKey.of(regimenId, DosageStatus.TAKEN);
         ViewQuery q = createQuery("find_success_log_count").key(key);
         ViewResult viewResult = db.queryView(q);

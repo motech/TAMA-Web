@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Properties;
 
 @Service
-public class WeeklyAdherenceService {
+public class FourDayRecallAdherenceService {
 
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
@@ -27,7 +27,7 @@ public class WeeklyAdherenceService {
     private Properties properties;
 
     @Autowired
-    public WeeklyAdherenceService(AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, FourDayRecallService fourDayRecallService, @Qualifier("ivrProperties") Properties properties) {
+    public FourDayRecallAdherenceService(AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, FourDayRecallService fourDayRecallService, @Qualifier("ivrProperties") Properties properties) {
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
