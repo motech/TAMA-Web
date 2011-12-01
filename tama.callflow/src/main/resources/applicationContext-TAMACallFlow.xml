@@ -19,8 +19,10 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <import resource="classpath:applicationPlatformServerAPI.xml"/>
+    <context:component-scan base-package="org.motechproject.tamacommon*"/>
+    <context:component-scan base-package="org.motechproject.tamadomain*"/>
+    <context:component-scan base-package="org.motechproject.tamacallflow*"/>
     <context:component-scan base-package="org.motechproject.ivr.kookoo"/>
-    <context:component-scan base-package="org.motechproject.tama*"/>
     <context:component-scan base-package="org.motechproject.eventtracking"/>
 
     <import resource="classpath:applicationPillReminderAPI.xml"/>
