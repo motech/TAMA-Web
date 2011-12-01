@@ -8,26 +8,24 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
+import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tamacallflow.service.PatientAlertService;
-import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static junit.framework.Assert.*;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -47,6 +45,8 @@ public class FourDayRecallServiceTest {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     @Mock
     private TreatmentAdvice treatmentAdvice;
+    @Mock
+    private Properties properties;
 
     @Mock
     private PatientAlertService patientAlertService;
@@ -57,7 +57,7 @@ public class FourDayRecallServiceTest {
     public void setUp() {
         initMocks(this);
         mockStatic(DateUtil.class);
-        fourDayRecallService = new FourDayRecallService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, patientAlertService);
+        fourDayRecallService = new FourDayRecallService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, patientAlertService, properties);
     }
 
     @Test
@@ -102,35 +102,6 @@ public class FourDayRecallServiceTest {
         boolean capturedForCurrentWeek = fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientId, treatmentAdviceId);
 
         assertFalse(capturedForCurrentWeek);
-    }
-
-    @Test
-    public void shouldGetAdherenceLogForPreviousWeek() {
-        String treatmentAdviceID = "treatmentAdviceID";
-        LocalDate today = new LocalDate(2011, 10, 19);
-        LocalDate startDateOfTreatmentAdvice = new LocalDate(2011, 10, 5);
-
-        Patient patient = new Patient();
-        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Wednesday);
-
-        LocalDate logDate = DateUtil.newDate(2011, 10, 12);
-        List<WeeklyAdherenceLog> logs = new ArrayList<WeeklyAdherenceLog>();
-        logs.add(new WeeklyAdherenceLog(patientId, treatmentAdviceID, startDateOfTreatmentAdvice, logDate, 2));
-
-        when(DateUtil.today()).thenReturn(today);
-        when(DateUtil.newDate(startDateOfTreatmentAdvice.toDate())).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
-        when(allPatients.get(patientId)).thenReturn(patient);
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceID, new LocalDate(2011, 10, 5))).thenReturn(logs);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice.toDate());
-        when(treatmentAdvice.getId()).thenReturn(treatmentAdviceID);
-
-        WeeklyAdherenceLog logForPreviousWeek = fourDayRecallService.getAdherenceLogForPreviousWeek(patientId);
-
-        assertNotNull(logForPreviousWeek);
-        assertEquals(logDate, logForPreviousWeek.getLogDate());
-        assertEquals(patientId, logForPreviousWeek.getPatientId());
-        assertEquals(treatmentAdviceID, logForPreviousWeek.getTreatmentAdviceId());
     }
 
     @Test
@@ -337,7 +308,7 @@ public class FourDayRecallServiceTest {
     public void shouldDetermineIfTheCurrentAdherenceIsFalling() {
         final int numberOfDaysMissed = 2;
         final String testPatientId = "testPatientId";
-        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, null) {
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, null, properties) {
             @Override
             public int adherencePercentageFor(int daysMissed) {
                 if (numberOfDaysMissed == daysMissed) return 23;
@@ -345,7 +316,7 @@ public class FourDayRecallServiceTest {
             }
 
             @Override
-            public int adherencePercentageForPreviousWeek(String patientId) {
+            public int getAdherencePercentageForPreviousWeek(String patientId) {
                 if (patientId.equals(testPatientId)) return 34;
                 return 0;
             }
@@ -356,26 +327,25 @@ public class FourDayRecallServiceTest {
     @Test
     public void shouldRaiseAnAlertIfAdherenceTrendIsFalling() {
         final String testPatientId = "testPatientId";
-        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, patientAlertService) {
-            @Override
-            public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
-                if (patientId.equals(testPatientId)) return true;
-                return false;
-            }
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, patientAlertService, properties) {
 
             @Override
-            protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
-                final WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
-                weeklyAdherenceLog.setNumberOfDaysMissed(1);
-                return weeklyAdherenceLog;
+            protected int getAdherencePercentageForCurrentWeek(String patientId) {
+                return 0;
+            }
+            @Override
+            public int getAdherencePercentageForPreviousWeek(String patientId) {
+                return 10;
             }
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
-        verify(patientAlertService).createAlert(Matchers.<String>any(), Matchers.<Integer>any(), Matchers.<String>any(), Matchers.<String>any(), any(PatientAlertType.class), Matchers.<Map<String, String>>any());
+        verify(patientAlertService).createAlert(eq(testPatientId), eq(TAMAConstants.NO_ALERT_PRIORITY),
+                eq(DailyReminderAdherenceTrendService.FALLING_ADHERENCE), eq("Adherence fell by 100.00% from 10% to 0%"),
+                eq(PatientAlertType.FallingAdherence), Matchers.<Map<String, String>>any());
     }
 
     @Test
-    public void shouldReturnTrue_WhenAdherenceAlertHasAlreadyBeenRaised() {
+    public void shouldReturnTrue_WhenAdherenceFallingAlertHasAlreadyBeenRaised() {
         final PatientAlerts patientAlerts = new PatientAlerts() {{
             add(new PatientAlert());
         }};
@@ -392,7 +362,7 @@ public class FourDayRecallServiceTest {
     }
 
     @Test
-    public void shouldReturnFalse_WhenAdherenceAlertHasNotBeenRaised() {
+    public void shouldReturnFalse_WhenAdherenceFallingAlertHasNotBeenRaised() {
         final PatientAlerts patientAlerts = new PatientAlerts();
         Patient patient = new Patient();
         patient.setId(patientId);
@@ -404,6 +374,77 @@ public class FourDayRecallServiceTest {
 
         when(patientAlertService.getFallingAdherenceAlerts(eq(patientId), Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(patientAlerts);
         assertEquals(false, fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientId));
+    }
+
+    @Test
+    public void shouldRaiseARedAlertIfAdherenceIsLessThanThreshold() {
+        when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn("70");
+        final String testPatientId = "testPatientId";
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, patientAlertService, properties) {
+
+            @Override
+            protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
+                final WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
+                weeklyAdherenceLog.setNumberOfDaysMissed(2);
+                return weeklyAdherenceLog;
+            }
+        };
+        fourDayRecallService.raiseAdherenceInRedAlert(testPatientId);
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.ADHERENCE, Double.toString(50));
+        verify(patientAlertService).createAlert(testPatientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.ADHERENCE_IN_RED_ALERT,
+                "Adherence percentage is 50.00%", PatientAlertType.AdherenceInRed, data);
+
+    }
+
+    @Test
+    public void shouldNotRaiseRedAlertIfAdherenceIsNotLessThanThreshold() {
+        when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn("70");
+        final String testPatientId = "testPatientId";
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, patientAlertService, properties) {
+
+            @Override
+            protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
+                final WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
+                weeklyAdherenceLog.setNumberOfDaysMissed(1);
+                return weeklyAdherenceLog;
+            }
+        };
+        fourDayRecallService.raiseAdherenceInRedAlert(testPatientId);
+        verify(patientAlertService, never()).createAlert(Matchers.<String>any(), Matchers.<Integer>any(), Matchers.<String>any(), Matchers.<String>any(), Matchers.<PatientAlertType>any(), Matchers.<Map<String, String>>any());
+
+    }
+
+    @Test
+    public void shouldReturnTrue_WhenAdherenceInRedAlertHasAlreadyBeenRaised() {
+        final PatientAlerts patientAlerts = new PatientAlerts() {{
+            add(new PatientAlert());
+        }};
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Saturday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 9, 27).toDate();
+        LocalDate today = new LocalDate(2011, 10, 16);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+
+        when(patientAlertService.getAdherenceInRedAlerts(eq(patientId), Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(patientAlerts);
+        assertEquals(true, fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientId));
+    }
+
+    @Test
+    public void shouldReturnFalse_WhenAdherenceInRedAlertHasNotBeenRaised() {
+        final PatientAlerts patientAlerts = new PatientAlerts();
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Saturday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 9, 27).toDate();
+        LocalDate today = new LocalDate(2011, 10, 16);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+
+        when(patientAlertService.getAdherenceInRedAlerts(eq(patientId), Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(patientAlerts);
+        assertEquals(false, fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientId));
     }
 
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {

@@ -68,7 +68,7 @@ public class DailyReminderAdherenceTrendService {
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 
-    public void raiseRedAlert(String patientId, Double adherencePercentage) {
+    public void raiseAdherenceInRedAlert(String patientId, Double adherencePercentage) {
         String description = String.format("Adherence percentage is %.2f%%", adherencePercentage);
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.ADHERENCE, adherencePercentage.toString());

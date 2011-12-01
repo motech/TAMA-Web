@@ -59,14 +59,18 @@ public class FourDayRecallListener {
     }
 
     @MotechListener(subjects = TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT)
-    public void handleWeeklyFallingAdherence(MotechEvent motechEvent) {
+    public void handleWeeklyFallingAdherenceAndRedAlert(MotechEvent motechEvent) {
         String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
         Patient patient = allPatients.get(patientDocId);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
 
         if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()) || isLastRetryDay(motechEvent)) {
-            if (fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId)) return;
-            fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
+
+            if (!fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId))
+                fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
+
+            if (!fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientDocId))
+                fourDayRecallService.raiseAdherenceInRedAlert(patientDocId);
         }
     }
 

@@ -5,7 +5,10 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.tamacallflow.ivr.DosageResponseWithDate;
 import org.motechproject.util.DateUtil;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 public class DosageTimeLine implements Iterator<DosageResponseWithDate> {
 
@@ -52,20 +55,20 @@ public class DosageTimeLine implements Iterator<DosageResponseWithDate> {
 
     @Override
     public DosageResponseWithDate next() {
+        if (!isDosageApplicableForDate(dosageResponses.get(index), iteratingDate))
+            throw new ArrayIndexOutOfBoundsException("There are no more dosages to return");
+
         DosageResponse dosageResponseToReturn = dosageResponses.get(index);
         DateTime dateToReturn = iteratingDate;
-        if (isDosageApplicableForDate(dosageResponseToReturn, iteratingDate)) {
-            if (index == dosageResponses.size() - 1) {
-                iteratingDate = iteratingDate.plusDays(1);
-                index = 0;
-            } else {
-                index++;
-            }
-            DosageResponse nextDosage = dosageResponses.get(index);
-            iteratingDate = iteratingDate.withHourOfDay(nextDosage.getDosageHour()).withMinuteOfHour(nextDosage.getDosageMinute());
-            return new DosageResponseWithDate(dosageResponseToReturn, dateToReturn.toLocalDate());
+        if (index == dosageResponses.size() - 1) {
+            iteratingDate = iteratingDate.plusDays(1);
+            index = 0;
+        } else {
+            index++;
         }
-        throw new ArrayIndexOutOfBoundsException("There are no more dosages to return");
+        DosageResponse nextDosage = dosageResponses.get(index);
+        iteratingDate = iteratingDate.withHourOfDay(nextDosage.getDosageHour()).withMinuteOfHour(nextDosage.getDosageMinute());
+        return new DosageResponseWithDate(dosageResponseToReturn, dateToReturn.toLocalDate());
     }
 
     private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime day) {

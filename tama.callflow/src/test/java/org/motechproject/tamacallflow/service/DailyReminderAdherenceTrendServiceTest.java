@@ -141,7 +141,7 @@ public class DailyReminderAdherenceTrendServiceTest {
         String patientId = "patientId";
         double adherencePercentage = 69.9;
 
-        dailyReminderAdherenceTrendService.raiseRedAlert(patientId, adherencePercentage);
+        dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
 
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.ADHERENCE, adherencePercentage+"");

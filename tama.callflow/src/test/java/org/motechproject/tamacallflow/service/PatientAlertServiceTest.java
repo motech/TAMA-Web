@@ -290,4 +290,29 @@ public class PatientAlertServiceTest {
         assertEquals(1, fallingAdherenceAlerts.get(0).getAlert().getPriority());
         assertEquals(1, fallingAdherenceAlerts.get(1).getAlert().getPriority());
     }
+
+    @Test
+    public void shouldGetAdherenceInRedAlerts() {
+        final String patientId = "patientId";
+        final DateTime startDate = DateUtil.now().minusDays(2);
+        final DateTime endDate = DateUtil.now().plusDays(2);
+        final Patient patient = new PatientBuilder().withId(patientId).build();
+        when(allPatients.get(patientId)).thenReturn(patient);
+        when(alertService.getBy(patient.getId(), null, null, null, 100)).thenReturn(new ArrayList<Alert>() {{
+            final HashMap<String, String> data = new HashMap<String, String>() {{
+                put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.name());
+            }};
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data ) {{ setDateTime( DateUtil.now().plusDays(7));}});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{ setDateTime( DateUtil.now().minusDays(7));}});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, new HashMap<String, String>()));
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, null));
+        }});
+
+        final PatientAlerts adherenceInRedAlerts = patientAlertService.getAdherenceInRedAlerts(patientId, startDate, endDate);
+        assertEquals(2, adherenceInRedAlerts.size());
+        assertEquals(1, adherenceInRedAlerts.get(0).getAlert().getPriority());
+        assertEquals(1, adherenceInRedAlerts.get(1).getAlert().getPriority());
+    }
 }

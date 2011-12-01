@@ -5,22 +5,22 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
+import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.PatientAlertType;
-import org.motechproject.tamadomain.domain.WeeklyAdherenceLog;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
+import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @Service
 public class FourDayRecallService {
@@ -31,13 +31,16 @@ public class FourDayRecallService {
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
     private PatientAlertService patientAlertService;
+    private Properties properties;
 
     @Autowired
-    public FourDayRecallService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, PatientAlertService patientAlertService) {
+    public FourDayRecallService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs,
+                                PatientAlertService patientAlertService, @Qualifier("ivrProperties") Properties properties) {
         this.allPatients = allPatients;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.patientAlertService = patientAlertService;
+        this.properties = properties;
     }
 
     public boolean isAdherenceCapturedForCurrentWeek(String patientDocId, String treatmentAdviceId) {
@@ -110,13 +113,8 @@ public class FourDayRecallService {
         }
     }
 
-    public int adherencePercentageForPreviousWeek(String patientId) {
-        int previousWeekAdherencePercentage = 0;
-        WeeklyAdherenceLog logForPreviousWeek = getAdherenceLogForPreviousWeek(patientId);
-        if (logForPreviousWeek != null) {
-            previousWeekAdherencePercentage = adherencePercentageFor(logForPreviousWeek);
-        }
-        return previousWeekAdherencePercentage;
+    public int getAdherencePercentageForPreviousWeek(String patientId) {
+        return adherencePercentageFor(getAdherenceLog(patientId, 1));
     }
 
     public int adherencePercentageFor(int numDaysMissed) {
@@ -124,12 +122,8 @@ public class FourDayRecallService {
     }
 
     protected int adherencePercentageFor(WeeklyAdherenceLog weeklyAdherenceLog) {
+        if(weeklyAdherenceLog == null) return 0;
         return adherencePercentageFor(weeklyAdherenceLog.getNumberOfDaysMissed());
-    }
-
-    protected WeeklyAdherenceLog getAdherenceLogForPreviousWeek(String patientId) {
-        final int weeksBefore = 1;
-        return getAdherenceLog(patientId, weeksBefore);
     }
 
     protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
@@ -158,20 +152,22 @@ public class FourDayRecallService {
     }
 
     public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
-        return adherencePercentageFor(dosageMissedDays) < adherencePercentageForPreviousWeek(patientId);
+        return adherencePercentageFor(dosageMissedDays) < getAdherencePercentageForPreviousWeek(patientId);
     }
 
     public void raiseAdherenceFallingAlert(String patientId) {
-        final int weeksBefore = 0;
-        int dosageMissedDays = getAdherenceLog(patientId, weeksBefore).getNumberOfDaysMissed();
-        if (!isAdherenceFalling(dosageMissedDays, patientId)) return;
+        int adherencePercentageForCurrentWeek = getAdherencePercentageForCurrentWeek(patientId);
+        if (adherencePercentageForCurrentWeek >= getAdherencePercentageForPreviousWeek(patientId)) return;
 
         final Map<String, String> data = new HashMap<String, String>();
-        final int previousWeekPercentage = adherencePercentageForPreviousWeek(patientId);
-        final int thisWeekPercentage = adherencePercentageFor(dosageMissedDays);
-        final double fall = ((previousWeekPercentage - thisWeekPercentage) / previousWeekPercentage) * 100.0;
-        final String description = String.format("Adherence fell by %2.2f%% from %d%% to %d%%", fall, previousWeekPercentage, thisWeekPercentage);
-        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, description, "Falling Adherence", PatientAlertType.FallingAdherence, data);
+        final int previousWeekPercentage = getAdherencePercentageForPreviousWeek(patientId);
+        final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / previousWeekPercentage) * 100.0;
+        final String description = String.format("Adherence fell by %2.2f%% from %d%% to %d%%", fall, previousWeekPercentage, adherencePercentageForCurrentWeek);
+        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
+    }
+
+    protected int getAdherencePercentageForCurrentWeek(String patientId) {
+        return adherencePercentageFor(getAdherenceLog(patientId, 0));
     }
 
     public boolean hasAdherenceFallingAlertBeenRaisedForCurrentWeek(String patientDocId) {
@@ -196,5 +192,21 @@ public class FourDayRecallService {
 
     boolean isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(LocalDate treatmentAdviceStartDate, LocalDate fourDayRecallDate) {
         return treatmentAdviceStartDate.plusDays(DAYS_TO_RECALL).isBefore(fourDayRecallDate) || treatmentAdviceStartDate.plusDays(DAYS_TO_RECALL).isEqual(fourDayRecallDate);
+    }
+
+    public void raiseAdherenceInRedAlert(String patientId) {
+        double adherencePercentage = getAdherencePercentageForCurrentWeek(patientId);
+        double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
+        if(adherencePercentage >= acceptableAdherencePercentage) return;
+
+        String description = String.format("Adherence percentage is %.2f%%", adherencePercentage);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.ADHERENCE, Double.toString(adherencePercentage));
+        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);
+    }
+
+    public boolean hasAdherenceInRedAlertBeenRaisedForCurrentWeek(String patientId) {
+       DateTime startDateForCurrentWeek = DateUtil.newDateTime(getStartDateForCurrentWeek(patientId), 0, 0, 0);
+       return patientAlertService.getAdherenceInRedAlerts(patientId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
     }
 }

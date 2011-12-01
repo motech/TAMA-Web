@@ -37,7 +37,7 @@ public class WeeklyAdherencePercentageTest {
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan90() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(100);
-        when(fourDayRecallService.adherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(50);
+        when(fourDayRecallService.getAdherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(50);
         ivrContext.dtmfInput("0");
         when(ivrMessage.getNumberFilename(100)).thenReturn("Num_100");
 

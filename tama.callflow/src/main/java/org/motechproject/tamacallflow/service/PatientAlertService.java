@@ -110,17 +110,29 @@ public class PatientAlertService {
     }
 
     public PatientAlerts getFallingAdherenceAlerts(String patientID, final DateTime startDate, final DateTime endDate) {
+        return getAlertsOfSpecificTypeAndForDateRange(patientID, PatientAlertType.FallingAdherence, startDate, endDate);
+    }
+
+    public PatientAlerts getAdherenceInRedAlerts(String patientID, final DateTime startDate, final DateTime endDate) {
+        return getAlertsOfSpecificTypeAndForDateRange(patientID, PatientAlertType.AdherenceInRed, startDate, endDate);
+    }
+
+    private PatientAlerts getAlertsOfSpecificTypeAndForDateRange(String patientID, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
         PatientAlerts allAlerts = getAllAlertsBy(patientID);
         ArrayList<PatientAlert> filteredAlerts = new ArrayList<PatientAlert>();
-        CollectionUtils.select(allAlerts, new Predicate() {
+        CollectionUtils.select(allAlerts, getSelectorForAlertTypeAndDateRange(patientAlertType, startDate, endDate), filteredAlerts);
+        return new PatientAlerts(filteredAlerts);
+    }
+
+    private Predicate getSelectorForAlertTypeAndDateRange(final PatientAlertType patientAlertType, final DateTime startDate, final DateTime endDate) {
+        return new Predicate() {
             @Override
             public boolean evaluate(Object o) {
                 PatientAlert patientAlert = (PatientAlert) o;
                 DateTime alertTime = patientAlert.getAlert().getDateTime();
-                boolean isFallingAdherenceAlertType = patientAlert.getAlert().getData() != null && PatientAlertType.FallingAdherence.name().equals(patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE));
-                return isFallingAdherenceAlertType && alertTime.isAfter(startDate) && alertTime.isBefore(endDate);
+                boolean isOfRequiredAlertType = patientAlert.getAlert().getData() != null && patientAlertType.name().equals(patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE));
+                return isOfRequiredAlertType && alertTime.isAfter(startDate) && alertTime.isBefore(endDate);
             }
-        }, filteredAlerts);
-        return new PatientAlerts(filteredAlerts);
+        };
     }
 }

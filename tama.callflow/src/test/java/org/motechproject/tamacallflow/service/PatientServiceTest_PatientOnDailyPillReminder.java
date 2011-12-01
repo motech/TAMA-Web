@@ -110,7 +110,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         TreatmentAdvice treatmentAdvice = TreatmentAdvice.newDefault();
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
-        verify(tamaSchedulerService).unscheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        verify(tamaSchedulerService).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
     }
 
     @Test

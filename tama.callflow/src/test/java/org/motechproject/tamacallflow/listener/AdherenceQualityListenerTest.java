@@ -8,7 +8,6 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.tamacallflow.listener.AdherenceQualityListener;
 
 import java.util.Map;
 import java.util.Properties;
@@ -51,7 +50,7 @@ public class AdherenceQualityListenerTest {
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
         verify(dailyReminderAdherenceTrendService).getAdherencePercentage(eq(patientId));
-        verify(dailyReminderAdherenceTrendService, times(1)).raiseRedAlert(eq(patientId), eq(adherencePercentage));
+        verify(dailyReminderAdherenceTrendService, times(1)).raiseAdherenceInRedAlert(eq(patientId), eq(adherencePercentage));
     }
 
     @Test
@@ -70,7 +69,7 @@ public class AdherenceQualityListenerTest {
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
         verify(dailyReminderAdherenceTrendService).getAdherencePercentage(eq(patientId));
-        verify(dailyReminderAdherenceTrendService, never()).raiseRedAlert(Matchers.<String>any(), Matchers.<Double>any());
+        verify(dailyReminderAdherenceTrendService, never()).raiseAdherenceInRedAlert(Matchers.<String>any(), Matchers.<Double>any());
     }
 
 

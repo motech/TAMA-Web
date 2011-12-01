@@ -46,7 +46,7 @@ public class TamaSchedulerService {
 
     public void scheduleJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
         scheduleFourDayRecallCalls(patient, treatmentAdvice);
-        scheduleFallingAdherenceAlertJobs(patient, treatmentAdvice);
+        scheduleFallingAdherenceAlertJobsForFourDayRecall(patient, treatmentAdvice);
     }
 
     private void scheduleFourDayRecallCalls(Patient patient, TreatmentAdvice treatmentAdvice) {
@@ -56,7 +56,7 @@ public class TamaSchedulerService {
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
         LocalDate weeklyAdherenceTrackingStartDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
-        LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(4);
+        LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(FourDayRecallService.DAYS_TO_RECALL);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek day = dayOfWeek(dayOfWeeklyCall, count);
@@ -84,7 +84,7 @@ public class TamaSchedulerService {
         motechSchedulerService.scheduleJob(cronJobForFourDayRecall);
     }
 
-    public void scheduleFallingAdherenceAlertJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
+    public void scheduleFallingAdherenceAlertJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
         String patientDocId = patient.getId();
         DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
@@ -141,7 +141,7 @@ public class TamaSchedulerService {
         motechSchedulerService.scheduleRepeatingJob(repeatingSchedulableJob);
     }
 
-    public void scheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
+    public void scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getPatientId())
                 .withExternalId(treatmentAdvice.getPatientId())
                 .payload();
@@ -157,7 +157,7 @@ public class TamaSchedulerService {
         return DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
     }
 
-    public void unscheduleJobForAdherenceTrendFeedback(TreatmentAdvice treatmentAdvice) {
+    public void unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {
         motechSchedulerService.unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, treatmentAdvice.getPatientId());
     }
 
@@ -204,22 +204,21 @@ public class TamaSchedulerService {
     }
 
     public void scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient, TreatmentAdvice treatmentAdvice) {
-        if(patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) {
-            Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patient.getId())
-                    .withExternalId(patient.getId())
-                    .payload();
-            MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER, eventParams);
+        if (!patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) return;
+        Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patient.getId())
+                .withExternalId(patient.getId())
+                .payload();
+        MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER, eventParams);
 
-            Date jobStartDate = getJobStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
-            Date jobEndDate = treatmentAdvice.getEndDate() == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).plusDays(1).toDate();
+        Date jobStartDate = getJobStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
+        Date jobEndDate = treatmentAdvice.getEndDate() == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).plusDays(1).toDate();
 
-            Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
+        Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
 
-            CronJobSimpleExpressionBuilder cronJobSimpleExpressionBuilder = new CronJobSimpleExpressionBuilder(eventTime);
-            CronSchedulableJob jobToDetermineAdherenceQuality = new CronSchedulableJob(eventToDetermineAdherenceInRed, cronJobSimpleExpressionBuilder.build(), jobStartDate, jobEndDate);
+        CronJobSimpleExpressionBuilder cronJobSimpleExpressionBuilder = new CronJobSimpleExpressionBuilder(eventTime);
+        CronSchedulableJob jobToDetermineAdherenceQuality = new CronSchedulableJob(eventToDetermineAdherenceInRed, cronJobSimpleExpressionBuilder.build(), jobStartDate, jobEndDate);
 
-            motechSchedulerService.scheduleJob(jobToDetermineAdherenceQuality);
-        }
+        motechSchedulerService.scheduleJob(jobToDetermineAdherenceQuality);
     }
 
     public void unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient) {
@@ -227,26 +226,26 @@ public class TamaSchedulerService {
     }
 
     public void scheduleJobForDeterminingAdherenceQualityInFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
-        if(patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall)) {
-            String patientDocId = patient.getId();
-            DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
-            Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
-            Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
+        if (!patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall)) return;
 
-            LocalDate fourDaysAfterAdviceStarts = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(4);
-            Date jobStartDate = getJobStartDate(fourDaysAfterAdviceStarts);
-            Date jobEndDate = getJobEndDate(treatmentAdvice);
+        String patientDocId = patient.getId();
+        DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
+        Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
+        Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-            for (int count = 0; count <= daysToRetry; count++) {
-                DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1);
-                FourDayRecallEventPayloadBuilder paramsBuilder = new FourDayRecallEventPayloadBuilder()
-                        .withJobId(count + patientDocId)
-                        .withPatientDocId(patientDocId);
+        LocalDate fourDaysAfterAdviceStarts = DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(FourDayRecallService.DAYS_TO_RECALL);
+        Date jobStartDate = getJobStartDate(fourDaysAfterAdviceStarts);
+        Date jobEndDate = getJobEndDate(treatmentAdvice);
 
-                if (count == daysToRetry) paramsBuilder.withLastRetryDayFlagSet();
+        for (int count = 0; count <= daysToRetry; count++) {
+            DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1);
+            FourDayRecallEventPayloadBuilder paramsBuilder = new FourDayRecallEventPayloadBuilder()
+                    .withJobId(count + patientDocId)
+                    .withPatientDocId(patientDocId);
 
-                scheduleWeeklyEvent(jobStartDate, jobEndDate, eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_FOUR_DAY_RECALL);
-            }
+            if (count == daysToRetry) paramsBuilder.withLastRetryDayFlagSet();
+
+            scheduleWeeklyEvent(jobStartDate, jobEndDate, eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_FOUR_DAY_RECALL);
         }
     }
 

@@ -15,13 +15,13 @@ import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamacallflow.ivr.call.IvrCall;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
-import org.motechproject.tamacallflow.listener.FourDayRecallListener;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.util.DateUtil;
 
 import java.util.Map;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -47,6 +47,7 @@ public class FourDayRecallListenerTest {
     private TreatmentAdvice treatmentAdvice;
 
     FourDayRecallListener fourDayRecallListener;
+    private Patient patient;
 
     @Before
     public void setUp() {
@@ -122,85 +123,96 @@ public class FourDayRecallListenerTest {
         Mockito.verifyZeroInteractions(ivrCall, schedulerService, fourDayRecallService);
     }
 
-    @Test
-    public void shouldRaiseAdherenceFallingAlert_WhenAdherenceIsCaptured() {
-        Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
-                .withJobId("job_id")
-                .withPatientDocId(PATIENT_ID).payload();
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
-        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(true);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
+    private void setUpPatientWithDefaults() {
+        patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+    }
 
-        fourDayRecallListener.handleWeeklyFallingAdherence(motechEvent);
-
-        verify(fourDayRecallService).raiseAdherenceFallingAlert(PATIENT_ID);
+    private MotechEvent getFourDayRecallEvent(boolean isLastRetryFlagSet) {
+        FourDayRecallEventPayloadBuilder dataBuilder = new FourDayRecallEventPayloadBuilder()
+                .withJobId("job_id")
+                .withPatientDocId(PATIENT_ID);
+        if(isLastRetryFlagSet) dataBuilder.withLastRetryDayFlagSet();
+        return new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, dataBuilder.payload());
     }
 
     @Test
-    public void shouldNotRaiseAdherenceFallingAlert_WhenAdherenceIsNotCaptured() {
-        Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
-                .withJobId("job_id")
-                .withPatientDocId(PATIENT_ID).payload();
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
-        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(false);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+    public void shouldRaiseAdherenceFallingAlertAndRedAlert_WhenAdherenceIsCaptured() {
+        setUpPatientWithDefaults();
+        MotechEvent motechEvent = getFourDayRecallEvent(false);
+        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(true);
 
-        fourDayRecallListener.handleWeeklyFallingAdherence(motechEvent);
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
+
+        verify(fourDayRecallService).raiseAdherenceFallingAlert(PATIENT_ID);
+        verify(fourDayRecallService).raiseAdherenceInRedAlert(PATIENT_ID);
+    }
+
+    @Test
+    public void shouldNotRaiseAdherenceFallingAlertOrRedAlert_WhenAdherenceIsNotCaptured() {
+        setUpPatientWithDefaults();
+        MotechEvent motechEvent = getFourDayRecallEvent(false);
+        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(false);
+
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
+
         verify(fourDayRecallService).isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID);
         verifyNoMoreInteractions(fourDayRecallService);
     }
 
     @Test
-    public void shouldRaiseAdherenceFallingAlert_ForLastRetryDay_EvenWhenAdherenceIsNotCaptured() {
-        Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
-                .withJobId("job_id")
-                .withPatientDocId(PATIENT_ID)
-                .withLastRetryDayFlagSet().payload();
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
+    public void shouldRaiseAdherenceFallingAlertAndRedAlert_ForLastRetryDay_EvenWhenAdherenceIsNotCaptured() {
+        setUpPatientWithDefaults();
+        MotechEvent motechEvent = getFourDayRecallEvent(true);
         when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(false);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        fourDayRecallListener.handleWeeklyFallingAdherence(motechEvent);
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
         verify(fourDayRecallService).isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID);
         verify(fourDayRecallService).raiseAdherenceFallingAlert(PATIENT_ID);
+        verify(fourDayRecallService).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
     @Test
-    public void shouldRaiseAdherenceFallingAlert_ForLastRetryDay_WhenAdherenceIsCaptured() {
-        Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
-                .withJobId("job_id")
-                .withPatientDocId(PATIENT_ID)
-                .withLastRetryDayFlagSet().payload();
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
+    public void shouldRaiseAdherenceFallingAlertAndRedAlert_ForLastRetryDay_WhenAdherenceIsCaptured() {
+        setUpPatientWithDefaults();
+        MotechEvent motechEvent = getFourDayRecallEvent(true);
         when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(true);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        fourDayRecallListener.handleWeeklyFallingAdherence(motechEvent);
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
         verify(fourDayRecallService).isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID);
         verify(fourDayRecallService).raiseAdherenceFallingAlert(PATIENT_ID);
+        verify(fourDayRecallService).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
     @Test
     public void shouldNotRaiseAdherenceFallingAlert_WhenAlertHasAlreadyBeenCreated() {
-        Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
-                .withJobId("job_id")
-                .withPatientDocId(PATIENT_ID).payload();
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
+        setUpPatientWithDefaults();
+        MotechEvent motechEvent = getFourDayRecallEvent(false);
         when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(true);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
 
-        fourDayRecallListener.handleWeeklyFallingAdherence(motechEvent);
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
+
         verify(fourDayRecallService).isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID);
         verify(fourDayRecallService).hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_ID);
-
-        verifyNoMoreInteractions(fourDayRecallService);
+        verify(fourDayRecallService, never()).raiseAdherenceFallingAlert(PATIENT_ID);
     }
+
+    @Test
+    public void shouldNotRaiseRedAlert_WhenAlertHasAlreadyBeenCreated() {
+        setUpPatientWithDefaults();
+        MotechEvent motechEvent = getFourDayRecallEvent(false);
+        when(fourDayRecallService.isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID)).thenReturn(true);
+        when(fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
+
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
+
+        verify(fourDayRecallService).isAdherenceCapturedForCurrentWeek(PATIENT_ID, TREATMENT_ADVICE_ID);
+        verify(fourDayRecallService).hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID);
+        verify(fourDayRecallService, never()).raiseAdherenceInRedAlert(PATIENT_ID);
+    }
+
+
 }

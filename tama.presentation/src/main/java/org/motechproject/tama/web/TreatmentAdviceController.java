@@ -88,11 +88,13 @@ public class TreatmentAdviceController extends BaseController {
             TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
             pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
             //TODO falling adherence alerts are triggered as a part of adherence trend jobs
-            schedulerService.unscheduleJobForAdherenceTrendFeedback(oldTreatmentAdvice);
-            schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+            schedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(oldTreatmentAdvice);
+            schedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+            schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+            schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
         } else if (CallPreference.FourDayRecall.equals(callPreference)) {
             schedulerService.unscheduleFallingAdherenceAlertJobs(treatmentAdvice.getPatientId());
-            schedulerService.scheduleFallingAdherenceAlertJobs(patient, treatmentAdvice);
+            schedulerService.scheduleFallingAdherenceAlertJobsForFourDayRecall(patient, treatmentAdvice);
         }
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
@@ -120,7 +122,8 @@ public class TreatmentAdviceController extends BaseController {
             schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
         } else {
             pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
-            schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+            schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+            schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
         }
     }
 

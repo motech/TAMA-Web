@@ -20,7 +20,6 @@ import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.listener.FourDayRecallListener;
-import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.util.DateUtil;
 
 import java.util.*;
@@ -164,7 +163,7 @@ public class TamaSchedulerServiceTest {
         LocalDate expectedFallingAdherenceAlertJobStartDate = dayWhenFirstCallIsMade.plusDays(1);
         Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()))).thenReturn(dayWhenFirstCallIsMade);
 
-        schedulerService.scheduleFallingAdherenceAlertJobs(patient, treatmentAdvice);
+        schedulerService.scheduleFallingAdherenceAlertJobsForFourDayRecall(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService, times(3)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
@@ -207,7 +206,7 @@ public class TamaSchedulerServiceTest {
 
     @Test
     public void shouldScheduleWeeklyAdherenceTrendJob() {
-        schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
@@ -220,7 +219,7 @@ public class TamaSchedulerServiceTest {
         LocalDate today = now.toLocalDate();
         treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusMonths(2));
 
-        schedulerService.scheduleJobForAdherenceTrendFeedback(treatmentAdvice);
+        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
 
@@ -378,6 +377,14 @@ public class TamaSchedulerServiceTest {
         verify(motechSchedulerService).unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, 0 + patient_id);
         verify(motechSchedulerService).unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, 1 + patient_id);
         verify(motechSchedulerService).unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, 2 + patient_id);
+    }
+
+    @Test
+    public void shouldUnScheduleJobForDeterminingAdherenceQualityInDailyPillReminder() {
+        final String patientId = "123456";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
+        schedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+        verify(motechSchedulerService).unscheduleJob(TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER, patientId);
     }
 
 }

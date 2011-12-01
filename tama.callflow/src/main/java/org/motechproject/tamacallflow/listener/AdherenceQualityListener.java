@@ -29,7 +29,7 @@ public class AdherenceQualityListener {
         String patientId = motechEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
         double adherencePercentage = dailyReminderAdherenceTrendService.getAdherencePercentage(patientId);
         if(adherencePercentage < acceptableAdherencePercentage) {
-            dailyReminderAdherenceTrendService.raiseRedAlert(patientId, adherencePercentage);
+            dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
         }
     }
 
