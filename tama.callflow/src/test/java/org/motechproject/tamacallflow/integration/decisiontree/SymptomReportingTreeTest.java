@@ -3,10 +3,9 @@ package org.motechproject.tamacallflow.integration.decisiontree;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Tree;
-import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
+import org.motechproject.tama.ivr.decisiontree.service.SymptomReportingTreeService;
 import org.motechproject.tamacallflow.ivr.decisiontree.SymptomReportingTree;
 import org.motechproject.tamacallflow.ivr.decisiontree.SymptomReportingTreeInterceptor;
-import org.motechproject.tama.ivr.decisiontree.service.SymptomReportingTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -15,7 +14,7 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:applicationTAMACallFlowContext.xml")
-public class SymptomReportingTreeTest extends SpringIntegrationTest {
+public class SymptomReportingTreeTest  {
 
     @Autowired
     private SymptomReportingTreeInterceptor symptomReportingTreeInterceptor;
