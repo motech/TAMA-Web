@@ -8,6 +8,12 @@
     <context:component-scan base-package="org.motechproject.tama" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
+    <context:component-scan base-package="org.motechproject.tamacallflow" use-default-filters="false">
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
+    <context:component-scan base-package="org.motechproject.tamahealthtip" use-default-filters="false">
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
     <context:component-scan base-package="org.motechproject.ivr.kookoo.controller" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
