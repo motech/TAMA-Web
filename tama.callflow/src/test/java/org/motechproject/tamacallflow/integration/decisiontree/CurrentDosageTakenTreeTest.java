@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:applicationTAMACallFlowContext.xml")
+@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml")
 public class CurrentDosageTakenTreeTest {
     @Autowired
     private TestConfirmTree testConfirmTree;

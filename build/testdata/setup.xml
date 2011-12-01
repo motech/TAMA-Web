@@ -11,7 +11,7 @@
     </path>
 
     <target name="setup.clinic">
-        <java fork="false" classname="org.motechproject.tama.tools.SetupClinic">
+        <java fork="false" classname="org.motechproject.tamatools.tools.SetupClinic">
             <classpath>
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
@@ -21,7 +21,7 @@
     </target>
 
     <target name="setup.clinician">
-        <java fork="false" classname="org.motechproject.tama.tools.SetupClinician">
+        <java fork="false" classname="org.motechproject.tamatools.tools.SetupClinician">
             <classpath>
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
@@ -31,7 +31,7 @@
     </target>
 
     <target name="setup.patient">
-        <java fork="false" classname="org.motechproject.tama.tools.SetupPatient">
+        <java fork="false" classname="org.motechproject.tamatools.tools.SetupPatient">
             <classpath>
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
@@ -41,7 +41,7 @@
     </target>
 
     <target name="setup.weekly.adherence.logs">
-        <java fork="false" classname="org.motechproject.tama.tools.SetupPatient">
+        <java fork="false" classname="org.motechproject.tamatools.tools.SetupPatient">
             <classpath>
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
@@ -51,7 +51,7 @@
     </target>
 
     <target name="update.treatment.advice">
-        <java fork="false" classname="org.motechproject.tama.tools.UpdateTreatmentAdvice">
+        <java fork="false" classname="org.motechproject.tamatools.tools.UpdateTreatmentAdvice">
             <classpath>
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
@@ -61,7 +61,7 @@
     </target>
 
     <target name="drop.all.weekly.logs">
-        <java fork="false" classname="org.motechproject.tama.tools.DeleteAllWeeklyAdherenceLogs">
+        <java fork="false" classname="org.motechproject.tamatools.tools.DeleteAllWeeklyAdherenceLogs">
             <classpath>
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>
@@ -70,7 +70,7 @@
     </target>
 
     <target name="trigger.four.day.recall.event">
-        <java fork="false" classname="org.motechproject.tama.tools.TriggerFourDayRecallEvent">
+        <java fork="false" classname="org.motechproject.tamatools.tools.TriggerFourDayRecallEvent">
             <classpath>
                 <path location="../../target/tama-0.3-SNAPSHOT/WEB-INF/classes"/>
                 <path refid="lib.path"/>

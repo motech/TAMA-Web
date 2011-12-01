@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:applicationTAMACallFlowContext.xml")
+@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml")
 public class SymptomReportingTreeTest  {
 
     @Autowired

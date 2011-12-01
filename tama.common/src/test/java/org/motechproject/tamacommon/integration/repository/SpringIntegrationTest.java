@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:applicationTAMACommonContext.xml")
+@ContextConfiguration(locations = "classpath*:applicationContext-TAMACommon.xml")
 public abstract class SpringIntegrationTest {
 
     @Qualifier("tamaDbConnector")

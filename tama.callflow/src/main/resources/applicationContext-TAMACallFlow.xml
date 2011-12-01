@@ -32,5 +32,5 @@
     <import resource="classpath:applicationContextAlert.xml"/>
     <import resource="classpath:applicationPlatformScheduler.xml"/>
     <import resource="classpath:applicationContextSymptomReporting.xml"/>
-    <import resource="classpath:applicationTAMACommonContext.xml"/>
+    <import resource="classpath:applicationContext-TAMACommon.xml"/>
 </beans>

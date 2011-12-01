@@ -16,7 +16,7 @@ import static ch.lambdaj.Lambda.on;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:applicationTAMACallFlowContext.xml")
+@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml")
 public class AllHealthTipsHistoryTest {
 
     @Autowired

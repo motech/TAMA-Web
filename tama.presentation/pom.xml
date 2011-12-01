@@ -529,6 +529,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.tools</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.domain</artifactId>
             <version>0.3-SNAPSHOT</version>
             <classifier>tests</classifier>
@@ -728,7 +733,7 @@
                             <target>
                                 <echo message="Recreating DB: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <java classname="org.motechproject.tama.tools.RecreateDB">
+                                <java classname="org.motechproject.tamatools.tools.RecreateDB">
                                     <classpath>
                                         <pathelement path="${compile_classpath}"/>
                                     </classpath>
@@ -747,7 +752,7 @@
                             <target>
                                 <echo message="Seed data loading: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <java classname="org.motechproject.tama.tools.seed.SetupSeedData">
+                                <java classname="org.motechproject.tamatools.tools.seed.SetupSeedData">
                                     <classpath>
                                         <pathelement path="${compile_classpath}"/>
                                     </classpath>

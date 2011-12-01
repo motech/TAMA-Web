@@ -14,26 +14,26 @@
         <logout logout-url="/resources/j_spring_security_logout" logout-success-url="/login" invalidate-session="true" />
 
         <!-- Only admin -->
-        <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')" requires-channel="any"/>
 
         <!-- Only clinicians -->
-        <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/labresults/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/vital_statistics/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/alerts/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST" requires-channel="any"/>
+        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/labresults/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/vital_statistics/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/alerts/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
 
         <!-- Both admin and clinicians -->
-        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/changePassword/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/passwordReset/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
-        <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/changePassword/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/passwordReset/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
 
         <!-- None -->
-        <intercept-url pattern="/patients/**" method="DELETE" access="denyAll" requires-channel="${web.protocol}"/>
+        <intercept-url pattern="/patients/**" method="DELETE" access="denyAll" requires-channel="any"/>
     </http>
 
     <beans:bean name="authenticationProvider" class="org.motechproject.tama.security.AuthenticationProvider">
