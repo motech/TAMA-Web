@@ -30,15 +30,18 @@ public class TamaSchedulerService {
     private Properties properties;
     @Autowired
     private AllPatients allPatients;
+    @Autowired
+    private FourDayRecallService fourDayRecallService;
 
 
     public TamaSchedulerService() {
     }
 
-    public TamaSchedulerService(MotechSchedulerService motechSchedulerService, Properties properties, AllPatients allPatients) {
+    public TamaSchedulerService(MotechSchedulerService motechSchedulerService, Properties properties, AllPatients allPatients, FourDayRecallService fourDayRecallService) {
         this.motechSchedulerService = motechSchedulerService;
         this.properties = properties;
         this.allPatients = allPatients;
+        this.fourDayRecallService = fourDayRecallService;
     }
 
     public void scheduleJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
@@ -87,9 +90,7 @@ public class TamaSchedulerService {
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-
-
-        LocalDate startDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice).plusDays(4 + 14); // days to recall + 2 weeks offset
+        LocalDate startDate = fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(patientDocId, getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).plusDays(1);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1); // +1 is so that it is scheduled at midnight. 12:00 AM of NEXT day

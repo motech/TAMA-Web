@@ -228,7 +228,7 @@ public class FourDayRecallServiceTest {
     }
 
     @Test
-    public void shouldGetTheFourDayRecallDateForAnyWeekSpecified() {
+    public void shouldGetTheFourDayRecallDateForAnyWeekSpecified_WhenStartDayIsBeforeDayOfBestWeeklyCall() {
         Patient patient = new Patient();
         patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
         Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 7).toDate();
@@ -239,6 +239,56 @@ public class FourDayRecallServiceTest {
         LocalDate fourDayRecallDateForCurrentWeek = fourDayRecallService.findFourDayRecallDateForAnyWeek(patientId, today);
         
         assertEquals(new LocalDate(2011, 11, 25), fourDayRecallDateForCurrentWeek);
+    }
+
+    @Test
+    public void shouldGetTheFourDayRecallDateForAnyWeekSpecified_WhenStartDayIsAfterDayOfBestWeeklyCall() {
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Tuesday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 9).toDate();
+        LocalDate today = new LocalDate(2011, 11, 9);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+
+        LocalDate fourDayRecallDateForCurrentWeek = fourDayRecallService.findFourDayRecallDateForAnyWeek(patientId, today);
+
+        assertEquals(new LocalDate(2011, 11, 8), fourDayRecallDateForCurrentWeek);
+    }
+
+    @Test
+    public void shouldGetTheFirstFourDayRecallDateForTreatmentAdviceStarting2DaysBeforeBestCallDay() {
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 9).toDate();
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, DateUtil.newDate(startDateOfTreatmentAdvice));
+
+        LocalDate firstFourDayRecallDateForTreatmentAdvice = fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(patientId, DateUtil.newDate(treatmentAdvice.getStartDate()));
+
+        assertEquals(new LocalDate(2011, 11, 18), firstFourDayRecallDateForTreatmentAdvice);
+    }
+
+    @Test
+    public void shouldGetTheFirstFourDayRecallDateForAnyTreatmentAdviceStarting5DaysBeforeBestCallDay() {
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 6).toDate();
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, DateUtil.newDate(startDateOfTreatmentAdvice));
+
+        LocalDate firstFourDayRecallDateForTreatmentAdvice = fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(patientId, DateUtil.newDate(treatmentAdvice.getStartDate()));
+
+        assertEquals(new LocalDate(2011, 11, 11), firstFourDayRecallDateForTreatmentAdvice);
+    }
+
+    @Test
+    public void shouldReturnTrueIfDateIsAtLeast4DaysAfterStartDate() {
+        assertTrue(fourDayRecallService.isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(new LocalDate(2011, 11, 8), new LocalDate(2011, 11, 12)));
+        assertTrue(fourDayRecallService.isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(new LocalDate(2011, 11, 8), new LocalDate(2011, 11, 13)));
+        assertFalse(fourDayRecallService.isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(new LocalDate(2011, 11, 8), new LocalDate(2011, 11, 11)));
+        assertFalse(fourDayRecallService.isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(new LocalDate(2011, 11, 8), new LocalDate(2011, 11, 8)));
+        assertTrue(fourDayRecallService.isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(new LocalDate(2011, 11, 11), new LocalDate(2011, 11, 16)));
+        assertFalse(fourDayRecallService.isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(new LocalDate(2011, 11, 12), new LocalDate(2011, 11, 8)));
     }
 
     @Test

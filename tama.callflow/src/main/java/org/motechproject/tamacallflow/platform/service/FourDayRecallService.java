@@ -59,16 +59,15 @@ public class FourDayRecallService {
         DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
 
         int retryDayCount = 0;
-        boolean isRetry = DateUtil.today().getDayOfWeek() != preferredDayOfWeek.getValue();
-        if (isRetry) retryDayCount = getRetryDaysCount(preferredDayOfWeek);
+        boolean isRetry = week.getDayOfWeek() != preferredDayOfWeek.getValue();
+        if (isRetry) retryDayCount = getRetryDaysCount(preferredDayOfWeek, week);
 
         DayOfWeek treatmentAdviceStartDay = DayOfWeek.getDayOfWeek(DateUtil.newDate(treatmentAdvice.getStartDate()));
         return dateWith(treatmentAdviceStartDay, DAYS_TO_RECALL, week.minusDays(retryDayCount));
     }
 
-    private int getRetryDaysCount(DayOfWeek preferredDayOfWeek) {
+    private int getRetryDaysCount(DayOfWeek preferredDayOfWeek, LocalDate date) {
         int count = 0;
-        LocalDate date = DateUtil.today();
         while (date.getDayOfWeek() != preferredDayOfWeek.getValue()) {
             date = date.minusDays(1);
             count++;
@@ -97,12 +96,17 @@ public class FourDayRecallService {
     public LocalDate findFourDayRecallDateForAnyWeek(String patientDocId, LocalDate week) {
         Patient patient = allPatients.get(patientDocId);
         LocalDate startDayOfWeek = getStartDateForAnyWeek(patientDocId, week);
+        LocalDate iteratingDayOfWeek = startDayOfWeek;
         DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
         while (true){
-            if(startDayOfWeek.getDayOfWeek() == preferredDayOfWeek.getValue()){
-                return startDayOfWeek;
+            if(iteratingDayOfWeek.getDayOfWeek() == preferredDayOfWeek.getValue()){
+                if(isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(startDayOfWeek, iteratingDayOfWeek)){
+                    return iteratingDayOfWeek;
+                } else{
+                    return iteratingDayOfWeek.plusWeeks(1);
+                }
             }
-            startDayOfWeek = startDayOfWeek.plusDays(1);
+            iteratingDayOfWeek = iteratingDayOfWeek.plusDays(1);
         }
     }
 
@@ -143,10 +147,14 @@ public class FourDayRecallService {
         DateTime callPreferenceTransitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
 
         if (callPreferenceTransitionDate != null && callPreferenceTransitionDate.toLocalDate().isAfter(treatmentAdviceStartDate)) {
-            return DateUtil.today().minusWeeks(1).isBefore(callPreferenceTransitionDate.toLocalDate());
+            return dateIsAtLeastOneWeekAgo(callPreferenceTransitionDate);
         }
 
         return getStartDateForCurrentWeek(patientId).equals(treatmentAdviceStartDate);
+    }
+
+    private boolean dateIsAtLeastOneWeekAgo(DateTime date) {
+        return DateUtil.today().minusWeeks(1).isBefore(date.toLocalDate());
     }
 
     public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
@@ -169,5 +177,24 @@ public class FourDayRecallService {
     public boolean hasAdherenceFallingAlertBeenRaisedForCurrentWeek(String patientDocId) {
         DateTime startDateForCurrentWeek = DateUtil.newDateTime(getStartDateForCurrentWeek(patientDocId), 0, 0, 0);
         return patientAlertService.getFallingAdherenceAlerts(patientDocId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
+    }
+
+    public LocalDate findFirstFourDayRecallDateForTreatmentAdvice(String patientId, LocalDate treatmentAdviceStartDate) {
+        LocalDate fourDayRecallDate = findFourDayRecallDateForAnyWeek(patientId, treatmentAdviceStartDate);
+        while (true){
+            if(fourDayRecallDate.isBefore(treatmentAdviceStartDate)){
+                fourDayRecallDate = fourDayRecallDate.plusWeeks(1);
+            } else {
+                if (isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(treatmentAdviceStartDate, fourDayRecallDate)){
+                    return fourDayRecallDate;
+                } else {
+                    return fourDayRecallDate.plusWeeks(1);
+                }
+            }
+        }
+    }
+
+    boolean isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(LocalDate treatmentAdviceStartDate, LocalDate fourDayRecallDate) {
+        return treatmentAdviceStartDate.plusDays(DAYS_TO_RECALL).isBefore(fourDayRecallDate) || treatmentAdviceStartDate.plusDays(DAYS_TO_RECALL).isEqual(fourDayRecallDate);
     }
 }

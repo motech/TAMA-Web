@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
@@ -34,7 +35,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TamaSchedulerServiceTest {
     public static final int DAYS_AFTER_CALL_PREFERENCE_CHANGES = 3;
-    public static final int TWO_WEEK_IN_DAYS = 14;
     public static final int WAIT_TIME_TO_START_FOURDAY_RECALL = 4;
     private final LocalDate TREATMENT_ADVICE_START_DATE = DateUtil.newDate(2012, 12, 12);
     private final LocalDate TREATMENT_ADVICE_END_DATE = DateUtil.newDate(2012, 12, 24);
@@ -46,6 +46,8 @@ public class TamaSchedulerServiceTest {
 
     @Mock
     MotechSchedulerService motechSchedulerService;
+    @Mock
+    FourDayRecallService fourDayRecallService;
     @Mock
     private Properties properties;
     @Mock
@@ -61,7 +63,7 @@ public class TamaSchedulerServiceTest {
             setId(PATIENT_ID);
             getPatientPreferences().setBestCallTime(bestCallTime);
         }};
-        schedulerService = new TamaSchedulerService(motechSchedulerService, properties, allPatients);
+        schedulerService = new TamaSchedulerService(motechSchedulerService, properties, allPatients, fourDayRecallService);
     }
 
     @Test
@@ -71,6 +73,9 @@ public class TamaSchedulerServiceTest {
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
 
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
+        LocalDate dayWhenFirstCallIsMade = DateUtil.today().plusDays(10);
+        LocalDate expectedFallingAdherenceAlertJobStartDate = dayWhenFirstCallIsMade.plusDays(1);
+        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()))).thenReturn(dayWhenFirstCallIsMade);
 
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
 
@@ -82,9 +87,9 @@ public class TamaSchedulerServiceTest {
         assertFourDayRecallCallJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7");
         assertFourDayRecallCallJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1");
 
-        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(3), "0 0 0 ? * 7", false);
-        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(4), "0 0 0 ? * 1", false);
-        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(5), "0 0 0 ? * 2", true);
+        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(3), "0 0 0 ? * 7", false, expectedFallingAdherenceAlertJobStartDate);
+        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(4), "0 0 0 ? * 1", false, expectedFallingAdherenceAlertJobStartDate);
+        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(5), "0 0 0 ? * 2", true, expectedFallingAdherenceAlertJobStartDate);
 
     }
 
@@ -97,6 +102,10 @@ public class TamaSchedulerServiceTest {
         patient.getPatientPreferences().setCallPreferenceTransitionDate(TREATMENT_ADVICE_START_DATE.plusDays(DAYS_AFTER_CALL_PREFERENCE_CHANGES).toDateTimeAtCurrentTime());
 
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
+        LocalDate dayWhenFirstCallIsMade = DateUtil.today().plusDays(10);
+        LocalDate expectedFallingAdherenceAlertJobStartDate = dayWhenFirstCallIsMade.plusDays(1);
+
+        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(DAYS_AFTER_CALL_PREFERENCE_CHANGES))).thenReturn(dayWhenFirstCallIsMade);
 
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
 
@@ -108,9 +117,9 @@ public class TamaSchedulerServiceTest {
         assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(1), "0 30 10 ? * 7");
         assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(2), "0 30 10 ? * 1");
 
-        assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(3), "0 0 0 ? * 7", false);
-        assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(4), "0 0 0 ? * 1", false);
-        assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(5), "0 0 0 ? * 2", true);
+        assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(3), "0 0 0 ? * 7", false, expectedFallingAdherenceAlertJobStartDate);
+        assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(4), "0 0 0 ? * 1", false, expectedFallingAdherenceAlertJobStartDate);
+        assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(5), "0 0 0 ? * 2", true, expectedFallingAdherenceAlertJobStartDate);
 
     }
 
@@ -125,6 +134,12 @@ public class TamaSchedulerServiceTest {
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
         treatmentAdvice.getDrugDosages().get(0).setStartDate(treatmentAdviceStartDate);
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
+
+        LocalDate dayWhenFirstCallIsMade = DateUtil.today();
+
+        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, treatmentAdviceStartDate)).thenReturn(dayWhenFirstCallIsMade);
+
+
         schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
@@ -145,15 +160,18 @@ public class TamaSchedulerServiceTest {
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
 
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
+        LocalDate dayWhenFirstCallIsMade = DateUtil.today().plusDays(10);
+        LocalDate expectedFallingAdherenceAlertJobStartDate = dayWhenFirstCallIsMade.plusDays(1);
+        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()))).thenReturn(dayWhenFirstCallIsMade);
 
         schedulerService.scheduleFallingAdherenceAlertJobs(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService, times(3)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
-        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(0), "0 0 0 ? * 7", false);
-        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(1), "0 0 0 ? * 1", false);
-        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(2), "0 0 0 ? * 2", true);
+        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(0), "0 0 0 ? * 7", false, expectedFallingAdherenceAlertJobStartDate);
+        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(1), "0 0 0 ? * 1", false, expectedFallingAdherenceAlertJobStartDate);
+        assertFallingAdherenceAlertJob(cronSchedulableJobList.get(2), "0 0 0 ? * 2", true, expectedFallingAdherenceAlertJobStartDate);
     }
 
     private void assertCronSchedulableJob(CronSchedulableJob cronSchedulableJob, String cronExpression, Date startTime, Date endTime) {
@@ -267,20 +285,18 @@ public class TamaSchedulerServiceTest {
         assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
-    private void assertFallingAdherenceAlertJob(CronSchedulableJob cronSchedulableJob, String cronExpression, boolean isLastRetryJob) {
+    private void assertFallingAdherenceAlertJob(CronSchedulableJob cronSchedulableJob, String cronExpression, boolean isLastRetryJob, LocalDate jobStartDate) {
         
-        int offsetDays  = WAIT_TIME_TO_START_FOURDAY_RECALL + TWO_WEEK_IN_DAYS;
-        assertCronJob(cronSchedulableJob, cronExpression, isLastRetryJob, offsetDays);
+        assertCronJob(cronSchedulableJob, cronExpression, isLastRetryJob, jobStartDate);
     }
 
-    private void assertFallingAdherenceAlertJobWhenCallPreferenceChanged(CronSchedulableJob cronSchedulableJob, String cronExpression, boolean isLastRetryJob) {
+    private void assertFallingAdherenceAlertJobWhenCallPreferenceChanged(CronSchedulableJob cronSchedulableJob, String cronExpression, boolean isLastRetryJob, LocalDate jobStartDate) {
 
-        int offsetDays  = WAIT_TIME_TO_START_FOURDAY_RECALL + TWO_WEEK_IN_DAYS + DAYS_AFTER_CALL_PREFERENCE_CHANGES;
-        assertCronJob(cronSchedulableJob, cronExpression, isLastRetryJob, offsetDays);
+        assertCronJob(cronSchedulableJob, cronExpression, isLastRetryJob, jobStartDate);
     }
 
-    private void assertCronJob(CronSchedulableJob cronSchedulableJob, String cronExpression, boolean isLastRetryJob, int offsetDays) {
-        assertCronSchedulableJob(cronSchedulableJob, cronExpression, TREATMENT_ADVICE_START_DATE.plusDays(offsetDays).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
+    private void assertCronJob(CronSchedulableJob cronSchedulableJob, String cronExpression, boolean isLastRetryJob, LocalDate jobStartDate) {
+        assertCronSchedulableJob(cronSchedulableJob, cronExpression, jobStartDate.toDate(), TREATMENT_ADVICE_END_DATE.toDate());
         assertEquals(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, cronSchedulableJob.getMotechEvent().getSubject());
         assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
         if (isLastRetryJob) {
