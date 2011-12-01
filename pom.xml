@@ -7,7 +7,12 @@
     <packaging>pom</packaging>
     <version>0.3-SNAPSHOT</version>
     <modules>
-        <module>presentation</module>
+        <module>tama.common</module>
+        <module>tama.domain</module>
+        <module>tama.callflow</module>
+        <module>tama.healthtip</module>
+        <module>tama.tools</module>
+        <module>tama.presentation</module>
     </modules>
     <name>tama-all</name>
     <properties>

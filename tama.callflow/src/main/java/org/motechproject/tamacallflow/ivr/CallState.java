@@ -1,0 +1,5 @@
+package org.motechproject.tamacallflow.ivr;
+
+public enum CallState {
+    STARTED, AUTHENTICATED, ALL_TREES_COMPLETED, SYMPTOM_REPORTING, SYMPTOM_REPORTING_TREE, OUTBOX, HEALTH_TIPS, END_OF_FLOW;
+}
