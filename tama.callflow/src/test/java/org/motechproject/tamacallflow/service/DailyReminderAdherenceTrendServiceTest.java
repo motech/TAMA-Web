@@ -92,7 +92,7 @@ public class DailyReminderAdherenceTrendServiceTest {
         PowerMockito.when(DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(Mockito.any(DateTime.class), Mockito.any(DateTime.class), Mockito.any(PillRegimenResponse.class))).thenReturn(scheduledDosageCount);
 
         DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService);
-        assertEquals(0.25, dailyReminderAdherenceTrendService.getAdherencePercentage(externalId));
+        assertEquals(25.0, dailyReminderAdherenceTrendService.getAdherencePercentage(externalId));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class DailyReminderAdherenceTrendServiceTest {
             }
 
             @Override
-            public double getAdherencePercentage(String patientId) {
+            public double getAdherencePercentageForCurrentWeek(String patientId) {
                 return 20.0;
             }
 
@@ -117,7 +117,7 @@ public class DailyReminderAdherenceTrendServiceTest {
 
 
         dailyReminderAdherenceTrendService.raiseAdherenceFallingAlert(patientId);
-        verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), eq("Adherence fell by 0.00%, from 30.00% to 30.00%"), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
+        verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), eq("Adherence fell by 33.33%, from 30.00% to 20.00%"), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
     }
 
     @Test

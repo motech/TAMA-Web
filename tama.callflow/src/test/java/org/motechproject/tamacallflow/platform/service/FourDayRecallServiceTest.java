@@ -340,7 +340,7 @@ public class FourDayRecallServiceTest {
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
         verify(patientAlertService).createAlert(eq(testPatientId), eq(TAMAConstants.NO_ALERT_PRIORITY),
-                eq(DailyReminderAdherenceTrendService.FALLING_ADHERENCE), eq("Adherence fell by 100.00% from 10% to 0%"),
+                eq(DailyReminderAdherenceTrendService.FALLING_ADHERENCE), eq("Adherence fell by 100.00% from 10.00% to 0.00%"),
                 eq(PatientAlertType.FallingAdherence), Matchers.<Map<String, String>>any());
     }
 
