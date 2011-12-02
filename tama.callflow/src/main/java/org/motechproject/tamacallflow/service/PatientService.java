@@ -1,13 +1,13 @@
 package org.motechproject.tamacallflow.service;
 
-import org.joda.time.DateTime;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacommon.TamaException;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.tamacallflow.mapper.MedicalConditionsMapper;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
+import org.motechproject.tamacommon.TamaException;
+import org.motechproject.tamadomain.domain.*;
+import org.motechproject.tamadomain.repository.*;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +61,7 @@ public class PatientService {
         }
 
         if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
-            patient.getPatientPreferences().setCallPreferenceTransitionDate(DateTime.now());
+            patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now());
         }
 
         allPatients.update(patient);

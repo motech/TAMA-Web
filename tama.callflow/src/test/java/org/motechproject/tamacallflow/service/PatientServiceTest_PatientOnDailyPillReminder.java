@@ -2,7 +2,6 @@ package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -71,11 +70,10 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     }
 
     @Test
-    @Ignore
     public void shouldUnschedulePillReminderCalls_WhenCallPreferenceIsChangedToFourDayRecall_AndPatientHasATreatmentAdvice() {
         final DateTime now = DateUtil.now();
         DateTimeSourceUtil.SourceInstance = new FixedDateTimeSource(now);
-        DateUtil.now();
+
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(null, null, null)).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withPatientId("patient_id").build();
 
