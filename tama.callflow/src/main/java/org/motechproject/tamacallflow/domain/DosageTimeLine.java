@@ -2,7 +2,7 @@ package org.motechproject.tamacallflow.domain;
 
 import org.joda.time.DateTime;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.tamacallflow.ivr.Dosage;
+import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.util.DateUtil;
 
 import java.util.Collections;
@@ -10,14 +10,13 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class DosageTimeLine implements Iterator<Dosage> {
+public class DosageTimeLine implements Iterator<Dose> {
 
     private List<DosageResponse> dosageResponses;
     private DateTime from;
     private DateTime to;
     private int index;
     private DateTime iteratingDate;
-    private boolean dosageExists;
 
     public DosageTimeLine(List<DosageResponse> dosageResponses, DateTime from) {
         this(dosageResponses, from, null);
@@ -31,18 +30,21 @@ public class DosageTimeLine implements Iterator<Dosage> {
     }
 
     private void initializeDosageIndexAndIteratingDate() {
-        DosageResponse earliestDosage = earliestDosage();
-        DateTime earliestDosageTime = DateUtil.newDateTime(earliestDosage.getStartDate(), earliestDosage.getDosageHour(), earliestDosage.getDosageMinute(), 0);
-        iteratingDate = earliestDosageTime.isAfter(from)? earliestDosageTime : from;
         int i = 0;
-        dosageExists = false;
+        boolean found = false;
         for (DosageResponse dosageResponse : dosageResponses) {
-            if (isDosageApplicableForDate(dosageResponse, iteratingDate)) {
+            if (isDosageApplicableForDate(dosageResponse, from)) {
                 index = i;
-                dosageExists = true;
+                found = true;
                 break;
             }
             i++;
+        }
+        if (found) {
+            iteratingDate = from;
+        } else {
+            DosageResponse nextDosage = dosageResponses.get(index);
+            iteratingDate = from.plusDays(1).withHourOfDay(nextDosage.getDosageHour()).withMinuteOfHour(nextDosage.getDosageMinute());
         }
     }
 
@@ -52,7 +54,7 @@ public class DosageTimeLine implements Iterator<Dosage> {
     }
 
     @Override
-    public Dosage next() {
+    public Dose next() {
         if (!isDosageApplicableForDate(dosageResponses.get(index), iteratingDate))
             throw new ArrayIndexOutOfBoundsException("There are no more dosages to return");
 
@@ -66,21 +68,24 @@ public class DosageTimeLine implements Iterator<Dosage> {
         }
         DosageResponse nextDosage = dosageResponses.get(index);
         iteratingDate = iteratingDate.withHourOfDay(nextDosage.getDosageHour()).withMinuteOfHour(nextDosage.getDosageMinute());
-        return new Dosage(dosageResponseToReturn, dateToReturn.toLocalDate());
+        return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
     }
 
-    private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime day) {
+    private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime iteratingDateTime) {
         int dosageTimeInMinutes = (dosageResponse.getDosageHour() * 60) + dosageResponse.getDosageMinute();
-        if ((day.isEqual(from)) && !isLastDay(day)) {
-            int timeInMinutes = (day.getHourOfDay() * 60) + day.getMinuteOfHour();
+        DateTime dosageStartTime = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
+        if (to.isBefore(dosageStartTime))
+            return false;
+        if ((iteratingDateTime.isEqual(from))) {
+            int timeInMinutes = (from.getHourOfDay() * 60) + from.getMinuteOfHour();
             return timeInMinutes <= dosageTimeInMinutes;
-        } else if (isLastDay(day) && !day.isEqual(from)) {
+        } else if (isLastDay(iteratingDateTime)) {
             int timeInMinutes = (to.getHourOfDay() * 60) + to.getMinuteOfHour();
             return timeInMinutes >= dosageTimeInMinutes;
-        } else if (day.isAfter(from) && day.isBefore(to)) {
+        } else if (iteratingDateTime.isAfter(from) && iteratingDateTime.isBefore(to)) {
             return true;
-        } else if (day.isEqual(from) && isLastDay(day)) {
-            int startTime = (day.getHourOfDay() * 60) + day.getMinuteOfHour();
+        } else if (iteratingDateTime.isEqual(from) && isLastDay(iteratingDateTime)) {
+            int startTime = (from.getHourOfDay() * 60) + from.getMinuteOfHour();
             int endTime = (to.getHourOfDay() * 60) + to.getMinuteOfHour();
             return dosageTimeInMinutes >= startTime ? dosageTimeInMinutes <= endTime : false;
         }
@@ -90,6 +95,7 @@ public class DosageTimeLine implements Iterator<Dosage> {
     private boolean isLastDay(DateTime day) {
         return (day.toLocalDate().compareTo(to.toLocalDate())) == 0;
     }
+
 
     @Override
     public void remove() {
@@ -106,15 +112,5 @@ public class DosageTimeLine implements Iterator<Dosage> {
             }
         });
         return dosageResponses;
-    }
-
-    private DosageResponse earliestDosage() {
-        DosageResponse earliestDosage = dosageResponses.get(0);
-        for (DosageResponse dosageResponse : dosageResponses) {
-            if (dosageResponse.getStartDate().isBefore(earliestDosage.getStartDate())) {
-                earliestDosage = dosageResponse;
-            }
-        }
-        return earliestDosage;
     }
 }

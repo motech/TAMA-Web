@@ -1,7 +1,7 @@
 package org.motechproject.tamacallflow.ivr.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacallflow.ivr.Dosage;
+import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,8 +15,8 @@ public class StopPreviousPillReminderCommand extends BaseTreeCommand {
 
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
-        Dosage currentDosage = pillRegimenSnapshot(ivrContext).getPreviousDosage();
-        pillReminderService.dosageStatusKnown(pillRegimenResponse(ivrContext).getPillRegimenId(), currentDosage.getDosageId(), currentDosage.getDosageDate());
+        Dose currentDose = pillRegimenSnapshot(ivrContext).getPreviousDosage();
+        pillReminderService.dosageStatusKnown(pillRegimenResponse(ivrContext).getPillRegimenId(), currentDose.getDosageId(), currentDose.getDosageDate());
         return new String[0];
     }
 }

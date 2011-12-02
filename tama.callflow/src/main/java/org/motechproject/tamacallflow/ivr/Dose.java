@@ -1,16 +1,17 @@
 package org.motechproject.tamacallflow.ivr;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 
-public class Dosage extends DosageResponse {
+public class Dose extends DosageResponse {
 
     private final DosageResponse dosageResponse;
 
     private final LocalDate dosageDate;
 
-    public Dosage(DosageResponse dosageResponse, LocalDate dosageDate) {
+    public Dose(DosageResponse dosageResponse, LocalDate dosageDate) {
         super(dosageResponse.getDosageId(), new Time(dosageResponse.getDosageHour(), dosageResponse.getDosageMinute()),
                 dosageResponse.getStartDate(), dosageResponse.getEndDate(), dosageResponse.getResponseLastCapturedDate(),
                 dosageResponse.getMedicines());
@@ -27,7 +28,7 @@ public class Dosage extends DosageResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Dosage that = (Dosage) o;
+        Dose that = (Dose) o;
 
         if (dosageResponse != null ? !dosageResponse.equals(that.dosageResponse) : that.dosageResponse != null)
             return false;

@@ -1,12 +1,11 @@
 package org.motechproject.tamacallflow.domain;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.tamacallflow.ivr.Dosage;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PillRegimen {
@@ -33,18 +32,22 @@ public class PillRegimen {
         return pillRegimenResponse.getDosages();
     }
 
-    public int getDosageCount(DateTime from, DateTime till) {
+    public int getNumberOfDosagesBetween(DateTime from, DateTime till) {
         int count = 0;
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(pillRegimenResponse.getDosages(), from, till);
-        while(dosageTimeLine.hasNext()){
-            count++;
-            dosageTimeLine.next();
-        }
+        for (Dosage dosage : getDosages())
+            count += dosage.getNumberOfDosagesBetween(from, till);
         return count;
     }
 
-    public int getDosageCount(DateTime now) {
+    private List<Dosage> getDosages() {
+        List<Dosage> dosages = new ArrayList<Dosage>();
+        for (DosageResponse dosageResponse : pillRegimenResponse.getDosages())
+            dosages.add(new Dosage(dosageResponse));
+        return dosages;
+    }
+
+    public int getNumberOfDosagesAsOf(DateTime till) {
         DateTime startOfTime = new DateTime(0);
-        return getDosageCount(startOfTime, now);
+        return getNumberOfDosagesBetween(startOfTime, till);
     }
 }

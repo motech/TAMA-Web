@@ -5,7 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.tamacallflow.domain.DosageTimeLine;
 import org.motechproject.tamacallflow.domain.PillRegimen;
-import org.motechproject.tamacallflow.ivr.Dosage;
+import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.DosageAdherenceLog;
 import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
@@ -47,8 +47,8 @@ public class DailyReminderAdherenceService {
         resetSuspensionDateBasedOnPreviousDosageStatus(sort(dosageResponses));
         DosageTimeLine dosageTimeLine = pillRegimen.getDosageTimeLine(from, DateUtil.now());
         while (dosageTimeLine.hasNext()) {
-            Dosage dosage = dosageTimeLine.next();
-            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(suspendedAdherenceData.patientId(), pillRegimen.getId(), dosage.getDosageId(), suspendedAdherenceData.getAdherenceDataWhenPatientWasSuspended().getStatus(), dosage.getDosageDate());
+            Dose dose = dosageTimeLine.next();
+            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(suspendedAdherenceData.patientId(), pillRegimen.getId(), dose.getDosageId(), suspendedAdherenceData.getAdherenceDataWhenPatientWasSuspended().getStatus(), dose.getDosageDate());
             allDosageAdherenceLogs.add(dosageAdherenceLog);
         }
     }
@@ -81,7 +81,7 @@ public class DailyReminderAdherenceService {
         } else {
             previousDosageIndex = previousDosageIndex - 1;
         }
-        if (isSuspensionTimeWithinPillWindowOfPreviousDosage(new Dosage(dosageResponses.get(currentDosageIndex), iteratingDate.toLocalDate())) && isPreviousDosageNotCaptured(previous())) {
+        if (isSuspensionTimeWithinPillWindowOfPreviousDosage(new Dose(dosageResponses.get(currentDosageIndex), iteratingDate.toLocalDate())) && isPreviousDosageNotCaptured(previous())) {
             DosageResponse previousDosage = dosageResponses.get(previousDosageIndex);
             if (currentDosageIndex == 0) {
                 from = from.minusDays(1);
@@ -92,8 +92,8 @@ public class DailyReminderAdherenceService {
         }
     }
 
-    private boolean isPreviousDosageNotCaptured(Dosage previousDosage) {
-        DosageAdherenceLog previousDosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(previousDosage.getDosageId(), previousDosage.getDosageDate());
+    private boolean isPreviousDosageNotCaptured(Dose previousDose) {
+        DosageAdherenceLog previousDosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(previousDose.getDosageId(), previousDose.getDosageDate());
         return previousDosageAdherenceLog == null ? true : false;
     }
 
@@ -115,22 +115,22 @@ public class DailyReminderAdherenceService {
         return false;
     }
 
-    private boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(Dosage currentDosage) {
-        Dosage previousDosageResponse = previous();
-        int previousDosageTimeInMinutes = (previousDosageResponse.getDosageHour() * 60) + previousDosageResponse.getDosageMinute();
-        int currentDosageTimeInMinutes = (currentDosage.getDosageHour() * 60) + currentDosage.getDosageMinute();
+    private boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(Dose currentDose) {
+        Dose previousDoseResponse = previous();
+        int previousDosageTimeInMinutes = (previousDoseResponse.getDosageHour() * 60) + previousDoseResponse.getDosageMinute();
+        int currentDosageTimeInMinutes = (currentDose.getDosageHour() * 60) + currentDose.getDosageMinute();
         int timeInMinutes = (actualSuspensionDateAndTime.getHourOfDay() * 60) + actualSuspensionDateAndTime.getMinuteOfHour();
         int pillWindowInMinutes = (Integer.parseInt(properties.getProperty(TAMAConstants.PILL_WINDOW))) * 60;
         if (timeInMinutes <= (currentDosageTimeInMinutes - pillWindowInMinutes)) {
             LocalDate actualSuspensionDate = actualSuspensionDateAndTime.toLocalDate();
-            LocalDate previousDosageDosageDate = previousDosageResponse.getDosageDate();
+            LocalDate previousDosageDosageDate = previousDoseResponse.getDosageDate();
             if(previousDosageDosageDate.isBefore(actualSuspensionDate) || (previousDosageDosageDate.isEqual(actualSuspensionDate) && previousDosageTimeInMinutes <= timeInMinutes))
             return true;
         }
         return false;
     }
 
-    public Dosage previous() {
+    public Dose previous() {
         DosageResponse dosageResponseToReturn;
         DateTime dateToReturn;
         if (currentDosageIndex == 0) {
@@ -140,7 +140,7 @@ public class DailyReminderAdherenceService {
             dosageResponseToReturn = dosageResponses.get(previousDosageIndex - 1);
             dateToReturn = DateUtil.newDateTime(iteratingDate.toLocalDate(), dosageResponseToReturn.getDosageHour(), dosageResponseToReturn.getDosageMinute(), 0);
         }
-        return new Dosage(dosageResponseToReturn, dateToReturn.toLocalDate());
+        return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
     }
 
     private boolean isLastDay(DateTime day) {

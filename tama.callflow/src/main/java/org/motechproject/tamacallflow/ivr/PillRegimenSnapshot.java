@@ -36,12 +36,12 @@ public class PillRegimenSnapshot {
         this.tamaIVRContext = tamaIVRContext;
     }
 
-    public Dosage getPreviousDosage() {
+    public Dose getPreviousDosage() {
         List<DosageResponse> allDosages = getSortedDosages();
         if (allDosages == null) return null;
-        Dosage currentDosage = getCurrentDosage();
-        int currentDosageIndex = allDosages.indexOf(currentDosage.getDosage());
-        return currentDosageIndex == 0 ? getLastDosage(allDosages, currentDosage.getDosageDate()) : new Dosage(allDosages.get(currentDosageIndex - 1), currentDosage.getDosageDate());
+        Dose currentDose = getCurrentDosage();
+        int currentDosageIndex = allDosages.indexOf(currentDose.getDosage());
+        return currentDosageIndex == 0 ? getLastDosage(allDosages, currentDose.getDosageDate()) : new Dose(allDosages.get(currentDosageIndex - 1), currentDose.getDosageDate());
     }
 
     public boolean isPreviousDosageCaptured() {
@@ -49,33 +49,33 @@ public class PillRegimenSnapshot {
     }
 
     public DateTime getPreviousDosageTime() {
-        Dosage previousDosage = getPreviousDosage();
-        if (previousDosage == null) return null;
-        if (isTodaysDosage(previousDosage))
-            return new Time(previousDosage.getDosageHour(), previousDosage.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime());
+        Dose previousDose = getPreviousDosage();
+        if (previousDose == null) return null;
+        if (isTodaysDosage(previousDose))
+            return new Time(previousDose.getDosageHour(), previousDose.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime());
         else
-            return new Time(previousDosage.getDosageHour(), previousDosage.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime().minusDays(1));
+            return new Time(previousDose.getDosageHour(), previousDose.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime().minusDays(1));
     }
 
-    public Dosage getNextDosage() {
+    public Dose getNextDosage() {
         List<DosageResponse> allDosages = getSortedDosages();
         if (allDosages == null) return null;
-        Dosage currentDosage = getCurrentDosage();
-        int currentDosageIndex = allDosages.indexOf(currentDosage.getDosage());
-        return currentDosageIndex == allDosages.size() - 1 ? new Dosage(allDosages.get(0), currentDosage.getDosageDate().plusDays(1)) :
-                new Dosage(allDosages.get(currentDosageIndex + 1), currentDosage.getDosageDate());
+        Dose currentDose = getCurrentDosage();
+        int currentDosageIndex = allDosages.indexOf(currentDose.getDosage());
+        return currentDosageIndex == allDosages.size() - 1 ? new Dose(allDosages.get(0), currentDose.getDosageDate().plusDays(1)) :
+                new Dose(allDosages.get(currentDosageIndex + 1), currentDose.getDosageDate());
     }
 
     public DateTime getNextDosageTime() {
-        Dosage nextDosage = getNextDosage();
-        if (nextDosage == null) return null;
-        if (isTodaysDosage(nextDosage))
-            return new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime());
+        Dose nextDose = getNextDosage();
+        if (nextDose == null) return null;
+        if (isTodaysDosage(nextDose))
+            return new Time(nextDose.getDosageHour(), nextDose.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime());
         else
-            return new Time(nextDosage.getDosageHour(), nextDosage.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime().plusDays(1));
+            return new Time(nextDose.getDosageHour(), nextDose.getDosageMinute()).getDateTime(tamaIVRContext.callStartTime().plusDays(1));
     }
 
-    public Dosage getCurrentDosage() {
+    public Dose getCurrentDosage() {
         if (tamaIVRContext.isIncomingCall()) {
             List<DosageResponse> dosageResponses = getSortedDosages();
             DosageResponse currentDosage = null;
@@ -89,7 +89,7 @@ public class PillRegimenSnapshot {
         }
     }
 
-    private Dosage getCurrentDosageWithDosageDate(List<DosageResponse> dosageResponses, DosageResponse currentDosage) {
+    private Dose getCurrentDosageWithDosageDate(List<DosageResponse> dosageResponses, DosageResponse currentDosage) {
         LocalDate today = tamaIVRContext.callStartTime().toLocalDate();
         if (currentDosage == null) {
             return getLastDosage(dosageResponses, today);
@@ -98,10 +98,10 @@ public class PillRegimenSnapshot {
         int pillWindowStartHour = tamaIVRContext.callStartTime().withHourOfDay(currentDosage.getDosageHour()).minusHours(pillRegimen.getReminderRepeatWindowInHours()).getHourOfDay();
         boolean isTomorrowsDosage = pillWindowStartHour > currentDosage.getDosageHour();
         if (isTomorrowsDosage) {
-            return new Dosage(currentDosage, today.plusDays(1));
+            return new Dose(currentDosage, today.plusDays(1));
         }
 
-        return new Dosage(currentDosage, today);
+        return new Dose(currentDosage, today);
     }
 
     public int getScheduledDosagesTotalCountForLastFourWeeks() {
@@ -118,13 +118,13 @@ public class PillRegimenSnapshot {
     }
 
     public boolean isCurrentDosageTaken() {
-        Dosage currentDosage = getCurrentDosage();
-        boolean currentDosageIsUndefined = currentDosage.getDosageDate().isBefore(currentDosage.getStartDate());
-        return currentDosageIsUndefined || (currentDosage.getResponseLastCapturedDate() != null && currentDosage.getResponseLastCapturedDate().equals(currentDosage.getDosageDate()));
+        Dose currentDose = getCurrentDosage();
+        boolean currentDosageIsUndefined = currentDose.getDosageDate().isBefore(currentDose.getStartDate());
+        return currentDosageIsUndefined || (currentDose.getResponseLastCapturedDate() != null && currentDose.getResponseLastCapturedDate().equals(currentDose.getDosageDate()));
     }
 
-    public boolean isTodaysDosage(Dosage dosage) {
-        return tamaIVRContext.callStartTime().toLocalDate().equals(dosage.getDosageDate());
+    public boolean isTodaysDosage(Dose dose) {
+        return tamaIVRContext.callStartTime().toLocalDate().equals(dose.getDosageDate());
     }
 
     public boolean isTimeToTakeCurrentPill() {
@@ -134,16 +134,16 @@ public class PillRegimenSnapshot {
     }
 
     public boolean isEarlyToTakeDosage(int dosageIntervalInMinutes) {
-        Dosage currentDosage = getCurrentDosage();
-        DateTime dosageTime = DateUtil.newDateTime(currentDosage.getDosageDate(), currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
+        Dose currentDose = getCurrentDosage();
+        DateTime dosageTime = DateUtil.newDateTime(currentDose.getDosageDate(), currentDose.getDosageHour(), currentDose.getDosageMinute(), 0);
         DateTime dosageWindowStart = dosageTime.minusMinutes(dosageIntervalInMinutes);
         DateTime pillWindowStart = dosageTime.minusHours(pillRegimen.getReminderRepeatWindowInHours());
         return tamaIVRContext.callStartTime().isAfter(pillWindowStart) && tamaIVRContext.callStartTime().isBefore(dosageWindowStart);
     }
 
     public boolean isLateToTakeDosage() {
-        Dosage currentDosage = getCurrentDosage();
-        DateTime dosageTime = DateUtil.newDateTime(currentDosage.getDosageDate(), currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
+        Dose currentDose = getCurrentDosage();
+        DateTime dosageTime = DateUtil.newDateTime(currentDose.getDosageDate(), currentDose.getDosageHour(), currentDose.getDosageMinute(), 0);
         DateTime pillWindowEnd = dosageTime.plusHours(pillRegimen.getReminderRepeatWindowInHours());
         return tamaIVRContext.callStartTime().isAfter(pillWindowEnd);
     }
@@ -153,9 +153,9 @@ public class PillRegimenSnapshot {
     }
 
     private boolean nowIsWithin(int dosageIntervalInMinutes) {
-        Dosage dosage = getCurrentDosage();
-        int dosageHour = dosage.getDosageHour();
-        int dosageMinute = dosage.getDosageMinute();
+        Dose dose = getCurrentDosage();
+        int dosageHour = dose.getDosageHour();
+        int dosageMinute = dose.getDosageMinute();
 
         DateTime dosageTime = tamaIVRContext.callStartTime().withHourOfDay(dosageHour).withMinuteOfHour(dosageMinute);
 
@@ -174,16 +174,16 @@ public class PillRegimenSnapshot {
     }
 
     private boolean isVeryFirstDosageCall() {
-        Dosage currentDosage = getCurrentDosage();
-        boolean noResponseCapturedForCurrentDosage = currentDosage.getResponseLastCapturedDate() == null;
-        boolean dosageStartedToday = currentDosage.getStartDate().equals(currentDosage.getDosageDate());
-        boolean firstDosageInTheDay = getSortedDosages().get(0).equals(currentDosage.getDosage());
+        Dose currentDose = getCurrentDosage();
+        boolean noResponseCapturedForCurrentDosage = currentDose.getResponseLastCapturedDate() == null;
+        boolean dosageStartedToday = currentDose.getStartDate().equals(currentDose.getDosageDate());
+        boolean firstDosageInTheDay = getSortedDosages().get(0).equals(currentDose.getDosage());
         return noResponseCapturedForCurrentDosage && dosageStartedToday && firstDosageInTheDay;
     }
 
     private boolean wasPreviousDosageCapturedYesterday() {
-        Dosage previousDosage = getPreviousDosage();
-        return previousDosage.getResponseLastCapturedDate() != null && !previousDosage.getResponseLastCapturedDate().isBefore(previousDosage.getDosageDate());
+        Dose previousDose = getPreviousDosage();
+        return previousDose.getResponseLastCapturedDate() != null && !previousDose.getResponseLastCapturedDate().isBefore(previousDose.getDosageDate());
     }
 
     protected List<DosageResponse> getSortedDosages() {
@@ -210,13 +210,13 @@ public class PillRegimenSnapshot {
         }, sortedDosages);
     }
 
-    private List<String> medicinesFor(Dosage dosage) {
-        if (dosage == null) return new ArrayList<String>();
+    private List<String> medicinesFor(Dose dose) {
+        if (dose == null) return new ArrayList<String>();
         List<String> medicines = new ArrayList<String>();
 
-        for (MedicineResponse medicine : dosage.getMedicines()) {
-            if (!dosage.getDosageDate().isBefore(medicine.getStartDate()) &&
-                    (medicine.getEndDate() == null || !dosage.getDosageDate().isAfter(medicine.getEndDate())))
+        for (MedicineResponse medicine : dose.getMedicines()) {
+            if (!dose.getDosageDate().isBefore(medicine.getStartDate()) &&
+                    (medicine.getEndDate() == null || !dose.getDosageDate().isAfter(medicine.getEndDate())))
                 medicines.add(String.format("pill%s", medicine.getName()));
         }
         return medicines;
@@ -230,14 +230,14 @@ public class PillRegimenSnapshot {
         return callStartTime.isAfter(callStartTime.withHourOfDay(hourToCaptureDosage).withMinuteOfHour(minuteToCaptureDosage));
     }
 
-    private Dosage getLastDosage(List<DosageResponse> dosageResponses, LocalDate currentDoseDate) {
-        return new Dosage(dosageResponses.get(dosageResponses.size() - 1), currentDoseDate.minusDays(1));
+    private Dose getLastDosage(List<DosageResponse> dosageResponses, LocalDate currentDoseDate) {
+        return new Dose(dosageResponses.get(dosageResponses.size() - 1), currentDoseDate.minusDays(1));
     }
 
-    private Dosage getDosage(String dosageId) {
+    private Dose getDosage(String dosageId) {
         if (pillRegimen == null) return null;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
-            if (dosageResponse.getDosageId().equals(dosageId)) return new Dosage(dosageResponse, tamaIVRContext.callStartTime().toLocalDate());
+            if (dosageResponse.getDosageId().equals(dosageId)) return new Dose(dosageResponse, tamaIVRContext.callStartTime().toLocalDate());
         }
         return null;
     }

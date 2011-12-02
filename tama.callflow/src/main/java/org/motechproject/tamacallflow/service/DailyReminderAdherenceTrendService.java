@@ -40,8 +40,8 @@ public class DailyReminderAdherenceTrendService {
         return getAdherenceAsOf(patientId, DateUtil.now());
     }
 
-    double getAdherenceAsOf(String patientId, DateTime asOfDate) {
-        int totalDosages = pillReminderService.getPillRegimen(patientId).getDosageCount(asOfDate.minusWeeks(4), asOfDate);
+    protected double getAdherenceAsOf(String patientId, DateTime asOfDate) {
+        int totalDosages = pillReminderService.getPillRegimen(patientId).getNumberOfDosagesBetween(asOfDate.minusWeeks(4), asOfDate);
         int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate()).size();
         return ((double) dosagesTakenForLastFourWeeks) / totalDosages;
     }

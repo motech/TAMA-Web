@@ -1,12 +1,9 @@
 package org.motechproject.tamacallflow.ivr.command;
 
-import org.joda.time.LocalDate;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
