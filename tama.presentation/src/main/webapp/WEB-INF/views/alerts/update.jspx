@@ -8,7 +8,14 @@
         <util:panel id="ps_org_motechproject_tama_alert" title="${alert_title} " openPane="true" >
             <field:display field="patientId" id="s_org_motechproject_tama_alert_id" object="${alertInfo}" label="Patient Id"/>
             <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
-            <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time Of Call"/>
+            <c:choose >
+                <c:when test="${alertInfo.type == 'SymptomReporting'}">
+                    <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time Of Call"/>
+                </c:when>
+                <c:otherwise>
+                    <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time"/>
+                </c:otherwise>
+            </c:choose>
             <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Alert Type"/>
             <c:choose >
                 <c:when test="${alertInfo.type == 'SymptomReporting'}">

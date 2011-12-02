@@ -161,8 +161,8 @@ public class FourDayRecallService {
 
         final Map<String, String> data = new HashMap<String, String>();
         final int previousWeekPercentage = getAdherencePercentageForPreviousWeek(patientId);
-        final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / previousWeekPercentage) * 100.0;
-        final String description = String.format("Adherence fell by %2.2f%% from %d%% to %d%%", fall, previousWeekPercentage, adherencePercentageForCurrentWeek);
+        final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / (double)previousWeekPercentage) * 100.0;
+        final String description = String.format("Adherence fell by %2.2f%% from %2.2f%% to %2.2f%%", fall, (double)previousWeekPercentage, (double)adherencePercentageForCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 
