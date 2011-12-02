@@ -1,6 +1,5 @@
 package org.motechproject.tamafunctional.test;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -26,11 +25,6 @@ public class CallLogsTest extends BaseIVRTest{
 
     @Autowired
     private ScheduledJobDataService scheduledJobDataService;
-
-    @Before
-    public void testSetUp() {
-        scheduledJobDataService.clearJobs();
-    }
 
     @Test
     public void shouldLogCallLogForPillReminderCall(){

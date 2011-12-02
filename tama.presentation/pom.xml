@@ -99,6 +99,11 @@
             <url>http://maven.springframework.org/milestone</url>
         </repository>
         <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
             <id>spring-roo-repository</id>
             <name>Spring Roo Repository</name>
             <url>http://spring-roo-repository.springsource.org/release</url>
@@ -625,6 +630,11 @@
             <artifactId>motech-deliverytools-common</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.junitum</groupId>
+            <artifactId>junitum</artifactId>
+            <version>0.92-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -903,7 +913,8 @@
                     </systemProperties>
                     <runOrder>reversealphabetical</runOrder>
                     <parallel>methods</parallel>
-                    <threadCount>20</threadCount>
+                    <threadCount>5</threadCount>
+                    <perCoreThreadCount>true</perCoreThreadCount>
                     <includes>
                         <include>**/tamafunctional/**/*Test.java</include>
                         <include>**/integration/**/*.java</include>

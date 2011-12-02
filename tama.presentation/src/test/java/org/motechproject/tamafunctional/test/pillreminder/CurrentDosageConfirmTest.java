@@ -10,8 +10,6 @@ import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
-import org.motechproject.tamafunctional.testdataservice.ScheduledJobDataService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,13 +20,9 @@ import static org.motechproject.tamacallflow.ivr.TamaIVRMessage.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class CurrentDosageConfirmTest extends BaseIVRTest {
-    @Autowired
-    private ScheduledJobDataService scheduledJobDataService;
 
     @Before
     public void testSetUp() throws Exception {
-        scheduledJobDataService.clearJobs();
-
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));

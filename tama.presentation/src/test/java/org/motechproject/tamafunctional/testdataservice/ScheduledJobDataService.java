@@ -32,20 +32,6 @@ public class ScheduledJobDataService {
         return properties.getProperty(String.format("org.quartz.dataSource.motechDS.%s", propertyName));
     }
 
-    public void clearJobs() {
-        Connection connection = null;
-        try {
-            connection = createConnection();
-            clearTable(connection, "QRTZ_CRON_TRIGGERS");
-            clearTable(connection, "QRTZ_SIMPLE_TRIGGERS");
-            clearTable(connection, "QRTZ_TRIGGERS");
-            clearTable(connection, QRTZ_JOB_DETAILS_TABLE);
-        } catch (SQLException e) {
-            closeHandles(connection, null, null);
-            e.printStackTrace();
-        }
-    }
-
     private Connection createConnection() throws SQLException {
         return DriverManager.getConnection(property("URL"), property("user"), property("password"));
     }
@@ -82,11 +68,5 @@ public class ScheduledJobDataService {
             if (connection != null) connection.close();
         } catch (SQLException ignored) {
         }
-    }
-
-    private void clearTable(Connection connection, String tableName) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(String.format("delete from %s", tableName));
-        preparedStatement.execute();
-        preparedStatement.close();
     }
 }
