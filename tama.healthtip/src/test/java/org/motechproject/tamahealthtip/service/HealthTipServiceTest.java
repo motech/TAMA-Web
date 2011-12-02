@@ -1,10 +1,17 @@
 package org.motechproject.tamahealthtip.service;
 
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.motechproject.tamadomain.builder.PatientBuilder;
+import org.motechproject.tamadomain.domain.Patient;
+import org.motechproject.tamadomain.domain.TreatmentAdvice;
+import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamahealthtip.domain.HealthTipsHistory;
+import org.motechproject.tamahealthtip.repository.AllHealthTips;
 import org.motechproject.tamahealthtip.repository.AllHealthTipsHistory;
 import org.motechproject.util.DateUtil;
 
@@ -20,12 +27,25 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class HealthTipServiceTest {
 
-    HealthTipService healthTipService;
+    @Mock
+    private AllHealthTipsHistory allHealthTipsHistory;
+
+    @Mock
+    private StatelessKnowledgeSession healthTipsSession;
+    @Mock
+    private AllHealthTips allHealthTips;
+    @Mock
+    private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllPatients allPatients;
+    @Mock
+    private TreatmentAdvice treatmentAdvice;
+    private Patient patient;
+
     private String patientId;
     private String patientDocId;
 
-    @Mock
-    private AllHealthTipsHistory allHealthTipsHistory;
+    HealthTipService healthTipService;
 
     @Before()
     public void setUp() {
@@ -33,42 +53,50 @@ public class HealthTipServiceTest {
 
         patientId = "patientId";
         patientDocId = "patientDocId";
+        patient = PatientBuilder.startRecording().withDefaults().build();
+        when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        healthTipService = new HealthTipService(allHealthTipsHistory);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
+        when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
 
+        healthTipService = new HealthTipService(allHealthTipsHistory, allHealthTips, allTreatmentAdvices, allPatients);
         healthTipService = Mockito.spy(healthTipService);
-        Map<String, Integer> healthTipMap = new HashMap<String, Integer>();
-        healthTipMap.put("healthTipOne.wav", 1);
-        healthTipMap.put("healthTipTwo.wav", 2);
-        healthTipMap.put("healthTipThree.wav", 3);
-        healthTipMap.put("healthTipFour.wav", 2);
-        healthTipMap.put("healthTipFive.wav", 1);
-        healthTipMap.put("healthTipSix.wav", 1);
-        healthTipMap.put("healthTipSeven.wav", 2);
-        healthTipMap.put("healthTipEight.wav", 3);
-        healthTipMap.put("healthTipNine.wav", 2);
-        when(healthTipService.runHealthTipRules()).thenReturn(healthTipMap);
+
+        Map<String, String> healthTipMap = new HashMap<String, String>();
+        healthTipMap.put("healthTipOne", "1");
+        healthTipMap.put("healthTipTwo", "2");
+        healthTipMap.put("healthTipThree", "3");
+        healthTipMap.put("healthTipFour", "2");
+        healthTipMap.put("healthTipFive", "1");
+        healthTipMap.put("healthTipSix", "1");
+        healthTipMap.put("healthTipSeven", "2");
+        healthTipMap.put("healthTipEight", "3");
+        healthTipMap.put("healthTipNine", "2");
 
         List<HealthTipsHistory> healthTipsHistory = new ArrayList<HealthTipsHistory>();
-        healthTipsHistory.add(new HealthTipsHistory(patientDocId, "healthTipOne.wav", DateUtil.now().minusDays(6)));
-        healthTipsHistory.add(new HealthTipsHistory(patientDocId, "healthTipNine.wav", DateUtil.now().minusDays(7)));
-        healthTipsHistory.add(new HealthTipsHistory(patientDocId, "healthTipTwo.wav", DateUtil.now().minusDays(21)));
-        healthTipsHistory.add(new HealthTipsHistory(patientDocId, "healthTipFive.wav", DateUtil.now().minusDays(22)));
-        healthTipsHistory.add(new HealthTipsHistory(patientDocId, "healthTipSeven.wav", DateUtil.now().minusDays(13)));
-        healthTipsHistory.add(new HealthTipsHistory(patientDocId, "healthTipEight.wav", DateUtil.now().minusDays(14)));
-        when(allHealthTipsHistory.findByPatientId(patientDocId)).thenReturn(healthTipsHistory);
+        healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipOne", DateUtil.now().minusDays(6)));
+        healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipNine", DateUtil.now().minusDays(7)));
+        healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipTwo", DateUtil.now().minusDays(21)));
+        healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipFive", DateUtil.now().minusDays(22)));
+        healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipSeven", DateUtil.now().minusDays(13)));
+        healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipEight", DateUtil.now().minusDays(14)));
+
+        when(allHealthTips.findBy(DateUtil.today(), patient)).thenReturn(healthTipMap);
+        when(allHealthTipsHistory.findByPatientId(patient.getId())).thenReturn(healthTipsHistory);
     }
 
     @Test
     public void shouldReturnApplicableHealthTipsWithHistory() {
-        List<HealthTipService.PrioritizedHealthTip> applicableHealthTips = healthTipService.getApplicableHealthTips(patientDocId);
-        assertEqualsIgnoreOrder(Arrays.asList("healthTipOne.wav", "healthTipTwo.wav", "healthTipThree.wav", "healthTipFour.wav", "healthTipFive.wav", "healthTipSix.wav", "healthTipSeven.wav", "healthTipEight.wav", "healthTipNine.wav"),
+        List<HealthTipService.PrioritizedHealthTip> applicableHealthTips = healthTipService.getApplicableHealthTips(patient.getId());
+        assertEqualsIgnoreOrder(Arrays.asList("healthTipOne", "healthTipTwo", "healthTipThree", "healthTipFour", "healthTipFive", "healthTipSix", "healthTipSeven", "healthTipEight", "healthTipNine"),
                 extract(applicableHealthTips, on(HealthTipService.PrioritizedHealthTip.class).getHealthTipsHistory().getAudioFilename()));
+        verify(allHealthTips).findBy(DateUtil.today(), patient);
     }
 
     @Test
     public void shouldFilterRecentlyPlayedTipsBasedOnTheirPriority() {
-        assertEquals(Arrays.asList("healthTipSix.wav", "healthTipFive.wav", "healthTipFour.wav", "healthTipTwo.wav", "healthTipThree.wav"), healthTipService.getPlayList(patientDocId));
+        assertEquals(Arrays.asList("healthTipSix", "healthTipFive", "healthTipFour", "healthTipTwo", "healthTipThree"), healthTipService.getPlayList(patient.getId()));
+        verify(allHealthTips).findBy(DateUtil.today(), patient);
     }
 
     @Test
@@ -86,7 +114,7 @@ public class HealthTipServiceTest {
         verify(allHealthTipsHistory).add(any(HealthTipsHistory.class));
     }
 
-    private void assertEqualsIgnoreOrder(Collection<? extends Object> list1, Collection<? extends Object> list2) {
-        assertEquals(new HashSet(list1), new HashSet(list2));
+    private void assertEqualsIgnoreOrder(Collection<String> list1, Collection<String> list2) {
+        assertEquals(new HashSet<String>(list1), new HashSet<String>(list2));
     }
 }

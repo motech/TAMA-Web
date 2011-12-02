@@ -4,7 +4,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
+import org.motechproject.tamadomain.domain.Patient;
+import org.motechproject.tamadomain.domain.TreatmentAdvice;
+import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamahealthtip.domain.HealthTipsHistory;
+import org.motechproject.tamahealthtip.repository.AllHealthTips;
 import org.motechproject.tamahealthtip.repository.AllHealthTipsHistory;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +29,10 @@ public class HealthTipService {
     public static final int PRIORITY_3_EXPIRY = 21;
     public static final int START_OF_TIME = 0;
 
-    AllHealthTipsHistory allHealthTipsHistory;
+    private AllHealthTipsHistory allHealthTipsHistory;
+    private AllHealthTips allHealthTips;
+    private AllTreatmentAdvices allTreatmentAdvices;
+    private AllPatients allPatients;
 
     Integer playListSize = 2; //TODO: read from properties.
 
@@ -56,8 +64,11 @@ public class HealthTipService {
     }
 
     @Autowired
-    public HealthTipService(AllHealthTipsHistory allHealthTipsHistory) {
+    public HealthTipService(AllHealthTipsHistory allHealthTipsHistory, AllHealthTips allHealthTips, AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients) {
         this.allHealthTipsHistory = allHealthTipsHistory;
+        this.allHealthTips = allHealthTips;
+        this.allTreatmentAdvices = allTreatmentAdvices;
+        this.allPatients = allPatients;
     }
 
     public void markAsPlayed(String patientDocumentId, String audioFilename) {
@@ -71,35 +82,22 @@ public class HealthTipService {
         }
     }
 
-    List<PrioritizedHealthTip> getApplicableHealthTips(String patientId) {
-        Map<String, Integer> healthTipFiles = runHealthTipRules();
+    List<PrioritizedHealthTip> getApplicableHealthTips(String patientDocId) {
+        final Patient patient = allPatients.get(patientDocId);
+        final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
+        Map<String, String> healthTipFiles = allHealthTips.findBy(DateUtil.newDate(treatmentAdvice.getStartDate()), patient);
 
-        List<HealthTipsHistory> healthTipsHistories = allHealthTipsHistory.findByPatientId(patientId);
+        List<HealthTipsHistory> healthTipsHistories = allHealthTipsHistory.findByPatientId(patientDocId);
 
         List<PrioritizedHealthTip> prioritizedHealthTips = new ArrayList<PrioritizedHealthTip>();
         for (String audioFilename : healthTipFiles.keySet()) {
             HealthTipsHistory healthTipsHistory = selectFirst(healthTipsHistories, having(on(HealthTipsHistory.class).getAudioFilename(), equalTo(audioFilename)));
             if (healthTipsHistory == null) {
-                healthTipsHistory = new HealthTipsHistory(patientId, audioFilename, new DateTime(START_OF_TIME));
+                healthTipsHistory = new HealthTipsHistory(patientDocId, audioFilename, new DateTime(START_OF_TIME));
             }
-            prioritizedHealthTips.add(new PrioritizedHealthTip(healthTipsHistory, healthTipFiles.get(audioFilename)));
+            prioritizedHealthTips.add(new PrioritizedHealthTip(healthTipsHistory, Integer.parseInt(healthTipFiles.get(audioFilename))));
         }
         return prioritizedHealthTips;
-    }
-
-    //TODO: duh
-    Map<String, Integer> runHealthTipRules() {
-        Map<String, Integer> healthTips = new HashMap<String, Integer>();
-        healthTips.put("healthTipOne.wav", 1);
-        healthTips.put("healthTipTwo.wav", 2);
-        healthTips.put("healthTipThree.wav", 3);
-        healthTips.put("healthTipFour.wav", 2);
-        healthTips.put("healthTipFive.wav", 1);
-        healthTips.put("healthTipSix.wav", 1);
-        healthTips.put("healthTipSeven.wav", 2);
-        healthTips.put("healthTipEight.wav", 3);
-        healthTips.put("healthTipNine.wav", 2);
-        return healthTips;
     }
 
     public List<String> getPlayList(String patientId) {
@@ -116,8 +114,9 @@ public class HealthTipService {
             @Override
             public boolean evaluate(Object o) {
                 PrioritizedHealthTip healthTip = (PrioritizedHealthTip) o;
-                if (healthTip.getHealthTipsHistory().getLastPlayed() == null) return true;
-                return healthTip.getHealthTipsHistory().getLastPlayed().isBefore(now.minusDays(priorityExpiries[healthTip.getPriority() - 1]));
+                DateTime lastPlayed = healthTip.getHealthTipsHistory().getLastPlayed();
+                if (lastPlayed == null) return true;
+                return lastPlayed.isBefore(now.minusDays(priorityExpiries[healthTip.getPriority() - 1]));
             }
         });
     }

@@ -34,6 +34,8 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private String preferredLanguage;
     private String isOutboundCall;
     private String symptomReportingTree;
+    private String lastPlayedHealthTip;
+    private int numberOfHealthTipsPlayed;
     private int retryInterval;
     private List<String> completedTrees = new ArrayList<String>();
 
@@ -241,7 +243,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
 
     @Override
     public void symptomReportingTree(String symptomReportingTree) {
-        this.symptomReportingTree  = symptomReportingTree;
+        this.symptomReportingTree = symptomReportingTree;
     }
 
     public TAMAIVRContextForTest retryInterval(int retryInterval) {
@@ -267,5 +269,25 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     @Override
     public void addLastCompletedTreeToListOfCompletedTrees(String treeName) {
         this.completedTrees.add(treeName);
+    }
+
+    @Override
+    public void setLastPlayedHealthTip(String message) {
+        this.lastPlayedHealthTip = message;
+    }
+
+    @Override
+    public String getLastPlayedHealthTip() {
+        return this.lastPlayedHealthTip;
+    }
+
+    @Override
+    public void setPlayedHealthTipsCount(int count) {
+        numberOfHealthTipsPlayed = count;
+    }
+
+    @Override
+    public int getPlayedHealthTipsCount() {
+        return numberOfHealthTipsPlayed;
     }
 }

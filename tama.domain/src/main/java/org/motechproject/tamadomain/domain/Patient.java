@@ -80,6 +80,11 @@ public class Patient extends CouchEntity {
         return this;
     }
 
+    @JsonIgnore
+    public boolean isOnDailyPillReminder() {
+        return CallPreference.DailyPillReminder.equals(this.patientPreferences.getCallPreference());
+    }
+
     public String getPatientId() {
         return this.patientId;
     }

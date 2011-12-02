@@ -58,5 +58,4 @@ public class OutboxController extends SafeIVRController {
         messageResponseFactory.voiceMessageResponse(kooKooIVRContext, outboxContext, nextMessage, ivrResponseBuilder);
         return ivrResponseBuilder;
     }
-
 }

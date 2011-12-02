@@ -13,6 +13,7 @@ import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacommon.ControllerURLs;
 import org.motechproject.tamahealthtip.service.HealthTipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -25,8 +26,7 @@ public class HealthTipsController extends SafeIVRController {
 
     public static final String HEALTH_TIP_PLAY_COUNT = "healthtip.playcount";
     private HealthTipService healthTipService;
-    static final String LAST_PLAYED_HEALTH_TIP = "lastPlayedHealthTip";
-    static final String HEALTH_TIPS_PLAYED_COUNT = "healthTipsPlayedCount";
+    private TAMAIVRContextFactory tamaivrContextFactory;
 
     Properties ivrProperties;
 
@@ -34,23 +34,33 @@ public class HealthTipsController extends SafeIVRController {
     public HealthTipsController(HealthTipService healthTipService, IVRMessage ivrMessage,
                                 KookooCallDetailRecordsService callDetailRecordsService,
                                 StandardResponseController standardResponseController,
-                                Properties ivrProperties) {
+                                @Qualifier("ivrProperties") Properties ivrProperties) {
+        this(healthTipService, ivrMessage, callDetailRecordsService, standardResponseController, ivrProperties, new TAMAIVRContextFactory());
+    }
+
+    public HealthTipsController(HealthTipService healthTipService, IVRMessage ivrMessage,
+                                KookooCallDetailRecordsService callDetailRecordsService,
+                                StandardResponseController standardResponseController,
+                                Properties ivrProperties,
+                                TAMAIVRContextFactory tamaivrContextFactory) {
         super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.healthTipService = healthTipService;
         this.ivrProperties = ivrProperties;
+        this.tamaivrContextFactory = tamaivrContextFactory;
     }
 
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
+        TAMAIVRContext tamaivrContext = tamaivrContextFactory.create(kooKooIVRContext);
         String patientId = kooKooIVRContext.externalId();
+
         KookooIVRResponseBuilder ivrResponseBuilder = KookooResponseFactory.empty(kooKooIVRContext.callId()).language(kooKooIVRContext.preferredLanguage());
 
-        String lastPlayedMessage = getLastPlayedMessage(kooKooIVRContext);
+        String lastPlayedMessage = tamaivrContext.getLastPlayedHealthTip();
         if (lastPlayedMessage != null) healthTipService.markAsPlayed(patientId, lastPlayedMessage);
-        int playedCount = getPlayedCount(kooKooIVRContext);
-        TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
-        Integer maxPlayCount1 = Integer.valueOf((String) ivrProperties.get(HEALTH_TIP_PLAY_COUNT));
-        if (playedCount == maxPlayCount1) {
+        int playedCount = tamaivrContext.getPlayedHealthTipsCount();
+        Integer maxPlayCount = Integer.valueOf((String) ivrProperties.get(HEALTH_TIP_PLAY_COUNT));
+        if (playedCount == maxPlayCount) {
             endHealthTipFlow(tamaivrContext);
             return ivrResponseBuilder;
         }
@@ -58,9 +68,9 @@ public class HealthTipsController extends SafeIVRController {
         List<String> playList = healthTipService.getPlayList(patientId);
         if (playList != null && playList.size() > 0) {
             String message = playList.get(0);
-            setLastPlayedMessage(kooKooIVRContext, message);
+            tamaivrContext.setLastPlayedHealthTip(message);
             ivrResponseBuilder.withPlayAudios(message);
-            setPlayedCount(kooKooIVRContext, playedCount + 1);
+            tamaivrContext.setPlayedHealthTipsCount(playedCount + 1);
         } else {
             endHealthTipFlow(tamaivrContext);
         }
@@ -69,23 +79,7 @@ public class HealthTipsController extends SafeIVRController {
 
     private void endHealthTipFlow(TAMAIVRContext tamaivrContext) {
         tamaivrContext.callState(CallState.END_OF_FLOW);
-    }
-
-    private void setPlayedCount(KooKooIVRContext kooKooIVRContext, int count) {
-        kooKooIVRContext.cookies().add(HEALTH_TIPS_PLAYED_COUNT, String.valueOf(count));
-    }
-
-    private int getPlayedCount(KooKooIVRContext kooKooIVRContext) {
-        String value = kooKooIVRContext.cookies().getValue(HEALTH_TIPS_PLAYED_COUNT);
-        return value==null?0:Integer.valueOf(value);
-    }
-
-    private void setLastPlayedMessage(KooKooIVRContext kooKooIVRContext, String message) {
-        kooKooIVRContext.cookies().add(LAST_PLAYED_HEALTH_TIP, message);
-    }
-
-    private String getLastPlayedMessage(KooKooIVRContext kooKooIVRContext) {
-        return kooKooIVRContext.cookies().getValue(LAST_PLAYED_HEALTH_TIP);
+        tamaivrContext.setPlayedHealthTipsCount(0);
     }
 
 }

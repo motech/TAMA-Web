@@ -76,30 +76,10 @@ public class PatientBuilder {
         return this;
     }
 
-    public Patient build() {
-        return this.patient;
-    }
-
-    public static PatientBuilder startRecording() {
-        return new PatientBuilder();
-    }
-
     public PatientBuilder withClinic(Clinic clinic) {
         patient.setClinic(clinic);
         patient.setClinic_id(clinic.getId());
         return this;
-    }
-
-    public PatientBuilder withDefaults() {
-        return this.withPatientId("1234_" + DateUtil.now().getMillis()).
-                withDateOfBirth(DateUtil.newDate(1990, 5, 21)).
-                withMobileNumber(Long.toString(UniqueMobileNumber.generate())).
-                withPasscode("1234").
-                withClinic(Clinic.newClinic()).
-                withTravelTimeToClinicInDays(1).
-                withTravelTimeToClinicInHours(2).
-                withTravelTimeToClinicInHours(3).
-                withMedicalHistory(MedicalHistoryBuilder.startRecording().withDefaults().build());
     }
 
     public PatientBuilder withCallPreference(CallPreference callPreference) {
@@ -115,6 +95,26 @@ public class PatientBuilder {
     public PatientBuilder withBestCallTime(TimeOfDay bestCallTime) {
         patient.getPatientPreferences().setBestCallTime(bestCallTime);
         return this;
+    }
+
+    public PatientBuilder withDefaults() {
+        return this.withPatientId("1234_" + DateUtil.now().getMillis()).
+                withDateOfBirth(DateUtil.newDate(1990, 5, 21)).
+                withMobileNumber(Long.toString(UniqueMobileNumber.generate())).
+                withPasscode("1234").
+                withClinic(Clinic.newClinic()).
+                withTravelTimeToClinicInDays(1).
+                withTravelTimeToClinicInHours(2).
+                withTravelTimeToClinicInHours(3).
+                withMedicalHistory(MedicalHistoryBuilder.startRecording().withDefaults().build());
+    }
+
+    public Patient build() {
+        return this.patient;
+    }
+
+    public static PatientBuilder startRecording() {
+        return new PatientBuilder();
     }
 
     public PatientBuilder withLastSuspendedDate(DateTime suspendedDate) {

@@ -7,12 +7,11 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
+import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacallflow.ivr.factory.VoiceMessageResponseFactory;
 import org.motechproject.tamahealthtip.service.HealthTipService;
-import org.motechproject.util.Cookies;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -36,33 +35,32 @@ public class HealthTipsControllerTest {
     @Mock
     private KooKooIVRContext kookooIVRContext;
     @Mock
-    private HttpServletRequest request;
+    private TAMAIVRContextFactory tamaivrContextFactory;
     @Mock
-    private HttpServletResponse response;
+    private TAMAIVRContext tamaIVRContext;
 
     HealthTipsController healthTipsController;
-    @Mock
-    private Cookies cookie;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         initMocks(this);
         String patientId = "patientId";
         Properties ivrProperties = new Properties();
         ivrProperties.put(HealthTipsController.HEALTH_TIP_PLAY_COUNT, "2");
         healthTipsController = new HealthTipsController(healthTipService, tamaIvrMessage,
-                callDetailRecordsService, standardResponseController,ivrProperties);
+                                   callDetailRecordsService, standardResponseController, ivrProperties, tamaivrContextFactory);
         when(kookooIVRContext.callId()).thenReturn("34");
         when(kookooIVRContext.preferredLanguage()).thenReturn("en");
         when(kookooIVRContext.externalId()).thenReturn(patientId);
         when(healthTipService.getPlayList(patientId)).thenReturn(Arrays.asList("fooBar.wav", "fuuQux.wav"));
-        when(kookooIVRContext.cookies()).thenReturn(cookie);
+        when(tamaivrContextFactory.create(kookooIVRContext)).thenReturn(tamaIVRContext);
+        when(tamaIVRContext.getPlayedHealthTipsCount()).thenReturn(0);
     }
 
     @Test
     public void shouldPlayKookooPlayAudioFromPlaylist() {
         assertEquals("fooBar.wav", healthTipsController.gotDTMF(kookooIVRContext).getPlayAudios().get(0));
-        verify(cookie).add(HealthTipsController.LAST_PLAYED_HEALTH_TIP, "fooBar.wav");
-        verify(cookie).add(HealthTipsController.HEALTH_TIPS_PLAYED_COUNT, "1");
+        verify(tamaIVRContext).setLastPlayedHealthTip("fooBar.wav");
+        verify(tamaIVRContext).setPlayedHealthTipsCount(1);
     }
 }

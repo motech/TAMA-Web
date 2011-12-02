@@ -7,6 +7,7 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <import resource="classpath:applicationContext-TAMACallFlow.xml"/>
+    <import resource="classpath:applicationContext-TAMAHealthTip.xml"/>
     <context:component-scan base-package="org.motechproject.tama.*"/>
     <context:component-scan base-package="org.motechproject.tamahealthtip*"/>
     <import resource="classpath:/placeholderPluginContext.xml"/>

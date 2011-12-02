@@ -58,11 +58,12 @@ public class TAMACallFlowController implements CallFlowController {
         if (callState.equals(CallState.STARTED)) return AUTHENTICATION_URL;
         if (symptomsReportingContext.isDialState()) return DIAL_URL;
         if (callState.equals(CallState.SYMPTOM_REPORTING)) return SYMPTOM_REPORTING_URL;
-        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE))
+        if (callState.equals(CallState.HEALTH_TIPS)) return HEALTH_TIPS_URL;
+        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE)) {
             return AllIVRURLs.DECISION_TREE_URL;
+        }
         if (tamaivrContext.hasOutboxCompleted()) return MENU_REPEAT;
         if (callState.equals(CallState.OUTBOX)) return OUTBOX_URL;
-        if (callState.equals(CallState.HEALTH_TIPS)) return HEALTH_TIPS_URL;
         if (callState.equals(CallState.END_OF_FLOW)) return MENU_REPEAT;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
             return hasPendingOutboxMessages(tamaivrContext) ? PRE_OUTBOX_URL : MENU_REPEAT;

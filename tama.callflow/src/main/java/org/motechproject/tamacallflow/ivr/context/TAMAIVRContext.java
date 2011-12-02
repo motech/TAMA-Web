@@ -6,12 +6,11 @@ import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamadomain.domain.IVRAuthenticationStatus;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.CallState;
 import org.motechproject.tamacallflow.ivr.PillRegimenSnapshot;
 import org.motechproject.tamacallflow.ivr.call.PillReminderCall;
+import org.motechproject.tamadomain.domain.IVRAuthenticationStatus;
+import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.util.Cookies;
 import org.motechproject.util.DateUtil;
@@ -35,6 +34,9 @@ public class TAMAIVRContext {
     private static final String RETRY_INTERVAL = PillReminderCall.RETRY_INTERVAL;
     public static final String IS_OUTBOX_CALL = "outbox_call";
     private static final String LAST_COMPLETED_TREE = "LastCompletedTree";
+    private static final String HEALTH_TIPS_PLAYED_COUNT = "healthTipsPlayedCount";
+    private static final String LAST_PLAYED_HEALTH_TIP = "lastPlayedHealthTip";
+
 
     private KookooRequest kookooRequest;
     private HttpServletRequest httpRequest;
@@ -224,5 +226,22 @@ public class TAMAIVRContext {
         this.lastCompletedTree(null);
         setInSession(PILL_REGIMEN, null);
         this.callState(CallState.AUTHENTICATED);
+    }
+
+    public void setPlayedHealthTipsCount(int count) {
+        this.cookies.add(HEALTH_TIPS_PLAYED_COUNT, String.valueOf(count));
+    }
+
+    public int getPlayedHealthTipsCount() {
+        String value = this.cookies.getValue(HEALTH_TIPS_PLAYED_COUNT);
+        return value == null ? 0 : Integer.valueOf(value);
+    }
+
+    public void setLastPlayedHealthTip(String message) {
+        this.cookies.add(LAST_PLAYED_HEALTH_TIP, message);
+    }
+
+    public String getLastPlayedHealthTip() {
+        return this.cookies.getValue(LAST_PLAYED_HEALTH_TIP);
     }
 }
