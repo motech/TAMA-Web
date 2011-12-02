@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/upload" var="form_url"/>
+    <util:panel id="fc_org_motechproject_tama_wav_fileupload" title="Upload Wave Files" openPane="true">
+        <form:form modelAttribute="model" action="${form_url}" method="POST" enctype="multipart/form-data">
+            <field:select field="language" disableDefaultSelection="true" id="c_org_motechproject_tama_domain_patient_language" label="Language" itemValue="code" items="${model.ivrLanguages}" path="/name" required="true" />
+            <label for="file">Upload File :</label>
+            <input type="file" name="attach" id="attach"></input><br/><br/>
+            <div class="submit" id="uploadFile">
+                <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'uploadFile', event:'onclick'}));</script>
+                <input id="clickToUploadFile" type="submit" value="Upload File"/>
+            </div>
+        </form:form>
+    </util:panel>
+</div>

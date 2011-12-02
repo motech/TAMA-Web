@@ -14,5 +14,8 @@
         <menu:category id="c_summary">
             <menu:item id="i_logs_list" messageCode="global_menu_list" url="/callsummary?form"/>
         </menu:category>
+        <menu:category id="c_upload">
+            <menu:item id="i_upload_wav_file" label="Upload New Wave Files" url="/upload"/>
+        </menu:category>
     </menu:menu>
 </div>
