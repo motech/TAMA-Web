@@ -902,6 +902,8 @@
                         </property>
                     </systemProperties>
                     <runOrder>reversealphabetical</runOrder>
+                    <parallel>classes</parallel>
+                    <threadCount>10</threadCount>
                     <includes>
                         <include>**/tamafunctional/**/*Test.java</include>
                         <include>**/integration/**/*.java</include>
