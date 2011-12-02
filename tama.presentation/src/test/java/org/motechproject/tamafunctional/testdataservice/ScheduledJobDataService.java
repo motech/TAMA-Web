@@ -50,7 +50,7 @@ public class ScheduledJobDataService {
         return DriverManager.getConnection(property("URL"), property("user"), property("password"));
     }
 
-    public String currentDosageId() {
+    public String currentDosageId(String patientId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -59,9 +59,14 @@ public class ScheduledJobDataService {
             preparedStatement = connection.prepareStatement(String.format("select job_data from %s where job_name like '%s%%'", QRTZ_JOB_DETAILS_TABLE, EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER));
             resultSet = preparedStatement.executeQuery();
             if (!resultSet.first()) throw new RuntimeException("Not job not scheduled.");
-            Blob blob = resultSet.getBlob(1);
-            InputStream blobStream = blob.getBinaryStream();
-            JobDataMap jobDataMap = (JobDataMap) SerializationUtils.deserialize(blobStream);
+            JobDataMap jobDataMap = null;
+            while (!resultSet.isAfterLast()) {
+                Blob blob = resultSet.getBlob(1);
+                InputStream blobStream = blob.getBinaryStream();
+                jobDataMap = (JobDataMap) SerializationUtils.deserialize(blobStream);
+                if (jobDataMap.get(EventKeys.EXTERNAL_ID_KEY).equals(patientId)) break;
+                resultSet.next();
+            }
             return jobDataMap.get(EventKeys.DOSAGE_ID_KEY).toString();
         } catch (SQLException e) {
             throw new RuntimeException(e);

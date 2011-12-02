@@ -25,13 +25,14 @@ import static org.motechproject.tamacallflow.ivr.TamaIVRMessage.*;
 public class CurrentDosageReminderTest extends BaseIVRTest {
     @Autowired
     private ScheduledJobDataService scheduledJobDataService;
+    private TestPatient patient;
 
     @Before
     public void testSetUp() throws Exception {
         scheduledJobDataService.clearJobs();
 
         TestClinician clinician = TestClinician.withMandatory();
-        TestPatient patient = TestPatient.withMandatory();
+        patient = TestPatient.withMandatory();
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
@@ -41,7 +42,7 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
 
     @Test
     public void dosageTakenFlow_WhenTAMA_CallsPatient() throws IOException {
-        String currentDosageId = scheduledJobDataService.currentDosageId();
+        String currentDosageId = scheduledJobDataService.currentDosageId(patient.id());
         logInfo("{CurrentDosageId}{Id={%s}}", currentDosageId);
 
         caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
