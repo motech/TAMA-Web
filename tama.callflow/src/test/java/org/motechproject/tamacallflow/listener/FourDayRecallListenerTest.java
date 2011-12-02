@@ -118,7 +118,7 @@ public class FourDayRecallListenerTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, data);
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, data);
         fourDayRecallListener.handle(motechEvent);
         Mockito.verifyZeroInteractions(ivrCall, schedulerService, fourDayRecallService);
     }
@@ -133,7 +133,7 @@ public class FourDayRecallListenerTest {
                 .withJobId("job_id")
                 .withPatientDocId(PATIENT_ID);
         if(isLastRetryFlagSet) dataBuilder.withLastRetryDayFlagSet();
-        return new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT, dataBuilder.payload());
+        return new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, dataBuilder.payload());
     }
 
     @Test

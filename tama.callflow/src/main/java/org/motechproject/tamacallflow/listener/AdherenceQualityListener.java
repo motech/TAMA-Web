@@ -23,7 +23,7 @@ public class AdherenceQualityListener {
         this.properties = properties;
     }
 
-    @MotechListener(subjects = TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER)
+    @MotechListener(subjects = TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT)
     public void determineAdherenceQualityAndRaiseAlert(MotechEvent motechEvent) {
         double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
         String patientId = motechEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();

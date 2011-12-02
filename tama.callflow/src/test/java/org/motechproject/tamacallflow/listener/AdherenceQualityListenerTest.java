@@ -43,7 +43,7 @@ public class AdherenceQualityListenerTest {
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
         when(dailyReminderAdherenceTrendService.getAdherencePercentage(patientId)).thenReturn(adherencePercentage);
 
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER);
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String,Object> parameters = motechEvent.getParameters();
         parameters.put(EventKeys.EXTERNAL_ID_KEY, patientId);
 
@@ -62,7 +62,7 @@ public class AdherenceQualityListenerTest {
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
         when(dailyReminderAdherenceTrendService.getAdherencePercentage(patientId)).thenReturn(adherencePercentage);
 
-        MotechEvent motechEvent = new MotechEvent(TAMAConstants.DETERMINE_ADHERENCE_QUALITY_IN_DAILY_PILL_REMINDER);
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String,Object> parameters = motechEvent.getParameters();
         parameters.put(EventKeys.EXTERNAL_ID_KEY, patientId);
 

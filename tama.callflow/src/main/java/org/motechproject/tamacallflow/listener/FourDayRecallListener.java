@@ -58,7 +58,7 @@ public class FourDayRecallListener {
         }
     }
 
-    @MotechListener(subjects = TAMAConstants.WEEKLY_FALLING_TREND_SUBJECT)
+    @MotechListener(subjects = TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT)
     public void handleWeeklyFallingAdherenceAndRedAlert(MotechEvent motechEvent) {
         String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
         Patient patient = allPatients.get(patientDocId);

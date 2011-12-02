@@ -9,12 +9,12 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
+import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -22,14 +22,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.*;
 
 import static junit.framework.Assert.*;
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DateUtil.class)
@@ -208,7 +205,7 @@ public class FourDayRecallServiceTest {
         setupExpectations(patient, startDateOfTreatmentAdvice, today);
 
         LocalDate fourDayRecallDateForCurrentWeek = fourDayRecallService.findFourDayRecallDateForAnyWeek(patientId, today);
-        
+
         assertEquals(new LocalDate(2011, 11, 25), fourDayRecallDateForCurrentWeek);
     }
 
@@ -333,15 +330,35 @@ public class FourDayRecallServiceTest {
             protected int getAdherencePercentageForCurrentWeek(String patientId) {
                 return 0;
             }
+
             @Override
             public int getAdherencePercentageForPreviousWeek(String patientId) {
                 return 10;
+            }
+
+            @Override
+            public boolean isCurrentWeekTheFirstWeekOfTreatmentAdvice(String patientId) {
+                return false;
             }
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
         verify(patientAlertService).createAlert(eq(testPatientId), eq(TAMAConstants.NO_ALERT_PRIORITY),
                 eq(DailyReminderAdherenceTrendService.FALLING_ADHERENCE), eq("Adherence fell by 100.00% from 10.00% to 0.00%"),
                 eq(PatientAlertType.FallingAdherence), Matchers.<Map<String, String>>any());
+    }
+
+    @Test
+    public void shouldNotRaiseAnAlertForFirstWeek() {
+        final String testPatientId = "testPatientId";
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, patientAlertService, properties) {
+
+            @Override
+            public boolean isCurrentWeekTheFirstWeekOfTreatmentAdvice(String patientId) {
+                return true;
+            }
+        };
+        fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
+        verify(patientAlertService, never()).createAlert(Matchers.<String>any(), Matchers.<Integer>any(), Matchers.<String>any(), Matchers.<String>any(), Matchers.<PatientAlertType>any(), Matchers.<Map<String, String>>any());
     }
 
     @Test
@@ -445,6 +462,71 @@ public class FourDayRecallServiceTest {
 
         when(patientAlertService.getAdherenceInRedAlerts(eq(patientId), Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(patientAlerts);
         assertEquals(false, fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientId));
+    }
+
+    @Test
+    public void shouldReturnTrueIfCurrentWeekIsFirstWeekOfTreatmentAdvice_WhenTodayIsBeforeBestCallDay_AndBestCallDayIsWithin4DaysOfStartDate() {
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 7);
+        LocalDate today = new LocalDate(2011, 11, 8);
+
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Wednesday);
+        setupExpectations(patient, treatmentAdviceStartDate.toDate(), today);
+
+        assertTrue(fourDayRecallService.isCurrentWeekTheFirstWeekOfTreatmentAdvice(patientId));
+    }
+
+    @Test
+    public void shouldReturnTrueIfCurrentWeekIsFirstWeekOfTreatmentAdvice_WhenTodayIsAfterBestCallDay_AndBestCallIsAfter4DaysOfStartDate() {
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 7);
+        LocalDate today = new LocalDate(2011, 11, 12);
+
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        setupExpectations(patient, treatmentAdviceStartDate.toDate(), today);
+
+        assertTrue(fourDayRecallService.isCurrentWeekTheFirstWeekOfTreatmentAdvice(patientId));
+    }
+
+    @Test
+    public void shouldReturnFalseIfCurrentWeekIsNotFirstWeekOfTreatmentAdvice() {
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 7);
+        LocalDate today = new LocalDate(2011, 11, 18);
+
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        setupExpectations(patient, treatmentAdviceStartDate.toDate(), today);
+
+        assertFalse(fourDayRecallService.isCurrentWeekTheFirstWeekOfTreatmentAdvice(patientId));
+    }
+
+    @Test
+    public void shouldReturnTransitionDateAsStartDate_WhenThereIsATransition() {
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 1, 1);
+        LocalDate transitionDay = new LocalDate(2011, 11, 10);
+        DateTime transitionDateTime = transitionDay.toDateTimeAtCurrentTime();
+
+        Patient patient = new Patient();
+        patient.getPatientPreferences().setCallPreferenceTransitionDate(transitionDateTime);
+        setupExpectations(patient, treatmentAdviceStartDate.toDate(), null);
+
+        assertEquals(transitionDay, fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice));
+    }
+
+    @Test
+    public void shouldReturnTreatmentAdviseStartDateAsStartDate_WhenThereIsNoTransition() {
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 1, 1);
+
+        Patient patient = new Patient();
+        setupExpectations(patient, treatmentAdviceStartDate.toDate(), null);
+
+        assertEquals(treatmentAdviceStartDate, fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice));
     }
 
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {

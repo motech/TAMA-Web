@@ -156,6 +156,8 @@ public class FourDayRecallService {
     }
 
     public void raiseAdherenceFallingAlert(String patientId) {
+        if(isCurrentWeekTheFirstWeekOfTreatmentAdvice(patientId)) return;
+
         int adherencePercentageForCurrentWeek = getAdherencePercentageForCurrentWeek(patientId);
         if (adherencePercentageForCurrentWeek >= getAdherencePercentageForPreviousWeek(patientId)) return;
 
@@ -164,6 +166,21 @@ public class FourDayRecallService {
         final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / (double)previousWeekPercentage) * 100.0;
         final String description = String.format("Adherence fell by %2.2f%% from %2.2f%% to %2.2f%%", fall, (double)previousWeekPercentage, (double)adherencePercentageForCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
+    }
+
+    public LocalDate getWeeklyAdherenceTrackingStartDate(Patient patient, TreatmentAdvice treatmentAdvice) {
+        LocalDate weeklyAdherenceTrackingStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
+        if (patient.getPatientPreferences().getCallPreferenceTransitionDate() != null && weeklyAdherenceTrackingStartDate.isBefore(patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate()))
+            weeklyAdherenceTrackingStartDate = patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate();
+        return weeklyAdherenceTrackingStartDate;
+    }
+
+    boolean isCurrentWeekTheFirstWeekOfTreatmentAdvice(String patientId) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        Patient patient = allPatients.get(patientId);
+        LocalDate weeklyAdherenceTrackingStartDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate calculatedStartDateForCurrentWeek = getStartDateForCurrentWeek(patientId);
+        return weeklyAdherenceTrackingStartDate.isEqual(calculatedStartDateForCurrentWeek) || calculatedStartDateForCurrentWeek.isBefore(weeklyAdherenceTrackingStartDate);
     }
 
     protected int getAdherencePercentageForCurrentWeek(String patientId) {
