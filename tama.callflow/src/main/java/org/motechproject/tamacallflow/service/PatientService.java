@@ -137,6 +137,7 @@ public class PatientService {
         if (treatmentAdvice != null) {
             pillReminderService.unscheduleJobs(patient.getId());
             tamaSchedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+            tamaSchedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
         }
     }
 
