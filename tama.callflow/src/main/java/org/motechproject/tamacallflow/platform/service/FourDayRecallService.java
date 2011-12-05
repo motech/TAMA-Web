@@ -48,7 +48,7 @@ public class FourDayRecallService {
     }
 
     public boolean isAdherenceCapturedForAnyWeek(String patientDocId, String treatmentAdviceId, LocalDate weekStartDate) {
-        return 1 == allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientDocId, treatmentAdviceId, weekStartDate).size();
+        return allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientDocId, treatmentAdviceId, weekStartDate).size() > 0;
     }
 
     public LocalDate getStartDateForCurrentWeek(String patientDocId) {
@@ -67,6 +67,18 @@ public class FourDayRecallService {
 
         DayOfWeek treatmentAdviceStartDay = DayOfWeek.getDayOfWeek(DateUtil.newDate(treatmentAdvice.getStartDate()));
         return dateWith(treatmentAdviceStartDay, DAYS_TO_RECALL, week.minusDays(retryDayCount));
+    }
+
+    public LocalDate getMostRecentBestCallDay(String patientDocId) {
+        LocalDate today = DateUtil.today();
+        Patient patient = allPatients.get(patientDocId);
+
+        DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
+
+        if (today.getDayOfWeek() != preferredDayOfWeek.getValue()) {
+            return today.minusDays(getRetryDaysCount(preferredDayOfWeek, today));
+        }
+        else return today;
     }
 
     private int getRetryDaysCount(DayOfWeek preferredDayOfWeek, LocalDate date) {
@@ -188,7 +200,7 @@ public class FourDayRecallService {
     }
 
     public boolean hasAdherenceFallingAlertBeenRaisedForCurrentWeek(String patientDocId) {
-        DateTime startDateForCurrentWeek = DateUtil.newDateTime(getStartDateForCurrentWeek(patientDocId), 0, 0, 0);
+        DateTime startDateForCurrentWeek = DateUtil.newDateTime(getMostRecentBestCallDay(patientDocId), 0, 0, 0);
         return patientAlertService.getFallingAdherenceAlerts(patientDocId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
     }
 
@@ -223,7 +235,7 @@ public class FourDayRecallService {
     }
 
     public boolean hasAdherenceInRedAlertBeenRaisedForCurrentWeek(String patientId) {
-       DateTime startDateForCurrentWeek = DateUtil.newDateTime(getStartDateForCurrentWeek(patientId), 0, 0, 0);
+       DateTime startDateForCurrentWeek = DateUtil.newDateTime(getMostRecentBestCallDay(patientId), 0, 0, 0);
        return patientAlertService.getAdherenceInRedAlerts(patientId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
     }
 }

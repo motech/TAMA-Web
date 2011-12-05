@@ -11,6 +11,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
@@ -23,7 +24,8 @@ import java.util.*;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -359,6 +361,86 @@ public class FourDayRecallServiceTest {
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
         verify(patientAlertService, never()).createAlert(Matchers.<String>any(), Matchers.<Integer>any(), Matchers.<String>any(), Matchers.<String>any(), Matchers.<PatientAlertType>any(), Matchers.<Map<String, String>>any());
+    }
+
+    @Test
+    public void shouldReturnToday_WhenTodaysDayIsBestCallDay() {
+        Patient patient = new PatientBuilder().build();
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        LocalDate startDate = new LocalDate(2011, 11, 7);
+        LocalDate today = new LocalDate(2011, 11, 25);
+        setupExpectations(patient, startDate.toDate(), today);
+
+        assertEquals(today, fourDayRecallService.getMostRecentBestCallDay(patientId));
+    }
+
+    @Test
+    public void shouldReturnLastBestCallDay_WhenTodayIsOneDayAfterBestCallDay() {
+        Patient patient = new PatientBuilder().build();
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        LocalDate startDate = new LocalDate(2011, 11, 7);
+        LocalDate expectedBestCallDay = new LocalDate(2011, 11, 25);
+        LocalDate today = new LocalDate(2011, 11, 26);
+        setupExpectations(patient, startDate.toDate(), today);
+
+        assertEquals(expectedBestCallDay, fourDayRecallService.getMostRecentBestCallDay(patientId));
+    }
+
+    @Test
+    public void shouldReturnLastBestCallDay_WhenTodayIsOneDayBeforeBestCallDay() {
+        Patient patient = new PatientBuilder().build();
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        LocalDate startDate = new LocalDate(2011, 11, 7);
+        LocalDate expectedBestCallDay = new LocalDate(2011, 11, 18);
+        LocalDate today = new LocalDate(2011, 11, 24);
+        setupExpectations(patient, startDate.toDate(), today);
+
+        assertEquals(expectedBestCallDay, fourDayRecallService.getMostRecentBestCallDay(patientId));
+    }
+
+    @Test
+    public void hasAdherenceFallingAlertBeenRaisedForCurrentWeek_shouldUsePreviousBestCallDay() {
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 7).toDate();
+        LocalDate today = new LocalDate(2011, 11, 24);
+        LocalDate expectedStartDate = new LocalDate(2011, 11, 18);
+        DateTime expectedStartDateTime = new DateTime(2011, 11, 18, 0, 0, 0);
+        DateTime expectedEndDateTime = new DateTime(2011, 11, 24, 0, 0, 0);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+        when(DateUtil.newDateTime((expectedStartDate), 0, 0, 0)).thenReturn(expectedStartDateTime);
+        when(DateUtil.now()).thenReturn(expectedEndDateTime);
+        when(patientAlertService.getFallingAdherenceAlerts(patientId, expectedStartDateTime, expectedEndDateTime)).thenReturn(new PatientAlerts());
+
+
+        fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientId);
+        verify(patientAlertService).getFallingAdherenceAlerts(patientId, expectedStartDateTime, expectedEndDateTime);
+    }
+
+    @Test
+    public void hasAdherenceInRedAlertBeenRaisedForCurrentWeek_shouldUsePreviousBestCallDay() {
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        Date startDateOfTreatmentAdvice = new LocalDate(2011, 11, 7).toDate();
+        LocalDate today = new LocalDate(2011, 11, 24);
+        LocalDate expectedStartDate = new LocalDate(2011, 11, 18);
+        DateTime expectedStartDateTime = new DateTime(2011, 11, 18, 0, 0, 0);
+        DateTime expectedEndDateTime = new DateTime(2011, 11, 24, 0, 0, 0);
+
+        setupExpectations(patient, startDateOfTreatmentAdvice, today);
+        when(DateUtil.newDateTime((expectedStartDate), 0, 0, 0)).thenReturn(expectedStartDateTime);
+        when(DateUtil.now()).thenReturn(expectedEndDateTime);
+        when(patientAlertService.getAdherenceInRedAlerts(patientId, expectedStartDateTime, expectedEndDateTime)).thenReturn(new PatientAlerts());
+
+
+        fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientId);
+        verify(patientAlertService).getAdherenceInRedAlerts(patientId, expectedStartDateTime, expectedEndDateTime);
     }
 
     @Test
