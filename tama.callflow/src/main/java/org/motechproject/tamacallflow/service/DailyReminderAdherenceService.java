@@ -2,12 +2,15 @@ package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.tamacallflow.domain.Dosage;
 import org.motechproject.tamacallflow.domain.DosageTimeLine;
 import org.motechproject.tamacallflow.domain.PillRegimen;
 import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.DosageAdherenceLog;
+import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
@@ -38,6 +41,19 @@ public class DailyReminderAdherenceService {
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.pillReminderService = pillReminderService;
         this.properties = properties;
+    }
+
+    public double getAdherence(String patientId, DateTime asOfDate) {
+        int totalDosages = pillReminderService.getPillRegimen(patientId).getNumberOfDosesBetween(asOfDate.minusWeeks(4), asOfDate);
+        int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate()).size();
+        return ((double) dosagesTakenForLastFourWeeks) / totalDosages;
+    }
+
+    public double getAdherenceAsOfLastRecordedDose(String patientId) {
+        DosageAdherenceLog latestLog = allDosageAdherenceLogs.getLatestLogForPatient(patientId);
+        Dosage dosage = pillReminderService.getPillRegimen(patientId).getDosage(latestLog.getDosageId());
+        DateTime lastDoseDateTime = DateUtil.newDateTime(latestLog.getDosageDate(), new Time(dosage.getHour(), dosage.getMinute()));
+        return getAdherence(patientId, lastDoseDateTime);
     }
 
     public void recordAdherence(SuspendedAdherenceData suspendedAdherenceData) {
@@ -143,6 +159,7 @@ public class DailyReminderAdherenceService {
         return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
     }
 
+
     private boolean isLastDay(DateTime day) {
         return (day.toLocalDate().compareTo(DateUtil.now().toLocalDate())) == 0;
     }
@@ -158,6 +175,4 @@ public class DailyReminderAdherenceService {
         });
         return dosageResponses;
     }
-
-
 }

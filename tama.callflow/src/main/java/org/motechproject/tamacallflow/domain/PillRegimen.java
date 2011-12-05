@@ -32,10 +32,10 @@ public class PillRegimen {
         return pillRegimenResponse.getDosages();
     }
 
-    public int getNumberOfDosagesBetween(DateTime from, DateTime till) {
+    public int getNumberOfDosesBetween(DateTime from, DateTime till) {
         int count = 0;
         for (Dosage dosage : getDosages())
-            count += dosage.getNumberOfDosagesBetween(from, till);
+            count += dosage.getNumberOfDosesBetween(from, till);
         return count;
     }
 
@@ -46,8 +46,17 @@ public class PillRegimen {
         return dosages;
     }
 
-    public int getNumberOfDosagesAsOf(DateTime till) {
+    public int getNumberOfDosesAsOf(DateTime till) {
         DateTime startOfTime = new DateTime(0);
-        return getNumberOfDosagesBetween(startOfTime, till);
+        return getNumberOfDosesBetween(startOfTime, till);
+    }
+
+    public Dosage getDosage(String dosageId) {
+       for (DosageResponse dosageResponse : pillRegimenResponse.getDosages()){
+           if(dosageResponse.getDosageId().endsWith(dosageId)){
+               return new Dosage(dosageResponse);
+           }
+       }
+       return null;
     }
 }

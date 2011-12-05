@@ -56,7 +56,7 @@ public class AdherenceTrendListener {
             voiceMessage.setParameters(parameters);
             outboxService.addMessage(voiceMessage);
 
-            dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(externalId);
+            dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(externalId, DateUtil.now());
         }
     }
 }

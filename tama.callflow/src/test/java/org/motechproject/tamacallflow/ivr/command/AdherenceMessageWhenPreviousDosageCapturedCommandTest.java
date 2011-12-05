@@ -4,24 +4,19 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -41,13 +36,16 @@ public class AdherenceMessageWhenPreviousDosageCapturedCommandTest {
     @Mock
     private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
+    @Mock
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
+
     private TAMAIVRContextForTest ivrContext;
     private AdherenceMessageWhenPreviousDosageCapturedCommand command;
 
     @Before
     public void setup() {
         initMocks(this);
-        command = new AdherenceMessageWhenPreviousDosageCapturedCommand(allDosageAdherenceLogs, new TamaIVRMessage(null), null, dailyReminderAdherenceTrendService);
+        command = new AdherenceMessageWhenPreviousDosageCapturedCommand(allDosageAdherenceLogs, new TamaIVRMessage(null), null, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
     }
 
     @Test
@@ -60,7 +58,7 @@ public class AdherenceMessageWhenPreviousDosageCapturedCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 0, 0, dosageResponses);
         ivrContext = new TAMAIVRContextForTest().patientId("p1").dosageId("currentDosageId").pillRegimen(pillRegimenResponse).callStartTime(now).callDirection(CallDirection.Outbound);
 
-        when(dailyReminderAdherenceTrendService.getAdherence("p1")).thenReturn(1.0);
+        when(dailyReminderAdherenceService.getAdherenceAsOfLastRecordedDose("p1")).thenReturn(1.0);
 
         assertArrayEquals(new String[]{TamaIVRMessage.YOUR_ADHERENCE_IS_NOW, "Num_100", TamaIVRMessage.PERCENT}, command.executeCommand(ivrContext));
     }

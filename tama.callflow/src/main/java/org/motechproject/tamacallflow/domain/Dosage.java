@@ -14,8 +14,8 @@ public class Dosage {
         this.dosageResponse = dosageResponse;
     }
 
-    // range is open ended on from close ended on till
-    public int getNumberOfDosagesBetween(DateTime from, DateTime till) {
+    // range is open ended on from and close ended on till
+    public int getNumberOfDosesBetween(DateTime from, DateTime till) {
         DateTime dosageStartDateTime = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
         LocalDate dosageEndDate = dosageResponse.getEndDate() != null ? dosageResponse.getEndDate() : till.toLocalDate();
         DateTime dosageEndDateTime = DateUtil.newDateTime(dosageEndDate, dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
@@ -23,16 +23,31 @@ public class Dosage {
             from = dosageStartDateTime;
         if (!till.isBefore(dosageEndDateTime))
             till = dosageEndDateTime;
-        return Days.daysBetween(from.toLocalDate().plusDays(1), till.toLocalDate()).getDays() + numberOfdosesOnFirstDayAt(from) + numberOfDosesOnLastDayAt(till);
+        return numberOfdosesOnFirstDay(from) + numberOfDosesOnLastDay(till) + numberOfDoesesBetweenFirstAndLastDay(from, till);
     }
 
-    private int numberOfdosesOnFirstDayAt(DateTime dateTime) {
+    private int numberOfDoesesBetweenFirstAndLastDay(DateTime from, DateTime till) {
+        DateTime dayAfterFrom = from.plusDays(1);
+        if (dayAfterFrom.isAfter(till))
+            return 0;
+        return Days.daysBetween(dayAfterFrom.toLocalDate(), till.toLocalDate()).getDays();
+    }
+
+    private int numberOfdosesOnFirstDay(DateTime dateTime) {
         DateTime doseDateTime = dateTime.withTime(dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0, 0);
         return !dateTime.isAfter(doseDateTime)? 1 : 0;
     }
 
-    private int numberOfDosesOnLastDayAt(DateTime dateTime) {
+    private int numberOfDosesOnLastDay(DateTime dateTime) {
         DateTime doseDateTime = dateTime.withTime(dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0, 0);
         return dateTime.isAfter(doseDateTime)? 1 : 0;
+    }
+
+    public int getHour() {
+        return dosageResponse.getDosageHour();
+    }
+
+    public int getMinute() {
+        return dosageResponse.getDosageMinute();
     }
 }

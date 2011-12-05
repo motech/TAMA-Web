@@ -5,12 +5,14 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -30,12 +33,15 @@ public class MissedPillFeedbackCommandTest {
     @Mock
     private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
+    @Mock
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
+
     private MissedPillFeedbackCommand forMissedPillFeedbackCommand;
 
     @Before
     public void setup() {
         initMocks(this);
-        forMissedPillFeedbackCommand = new MissedPillFeedbackCommand(allDosageAdherenceLogs, null, dailyReminderAdherenceTrendService);
+        forMissedPillFeedbackCommand = new MissedPillFeedbackCommand(allDosageAdherenceLogs, null, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
     }
 
     @Test
@@ -81,7 +87,7 @@ public class MissedPillFeedbackCommandTest {
         TAMAIVRContextForTest context = new TAMAIVRContextForTest().callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientId("p1").dosageId("d1").pillRegimen(pillRegimenResponse);
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(51);
-        when(dailyReminderAdherenceTrendService.getAdherence("p1")).thenReturn(0.91);
+        when(dailyReminderAdherenceService.getAdherence(same("p1"), Matchers.<DateTime>any())).thenReturn(0.91);
 
         assertArrayEquals(new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_MORE_THAN_90}, forMissedPillFeedbackCommand.executeCommand(context));
     }
@@ -101,7 +107,7 @@ public class MissedPillFeedbackCommandTest {
         TAMAIVRContextForTest context = new TAMAIVRContextForTest().callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientId("p1").dosageId("d1").pillRegimen(pillRegimenResponse);
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(51);
-        when(dailyReminderAdherenceTrendService.getAdherence("p1")).thenReturn(0.89);
+        when(dailyReminderAdherenceService.getAdherence(same("p1"), Matchers.<DateTime>any())).thenReturn(0.89);
 
         assertArrayEquals(new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90}, forMissedPillFeedbackCommand.executeCommand(context));
     }

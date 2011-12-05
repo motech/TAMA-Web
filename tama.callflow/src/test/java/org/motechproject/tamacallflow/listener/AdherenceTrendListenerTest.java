@@ -1,5 +1,6 @@
 package org.motechproject.tamacallflow.listener;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -14,10 +15,12 @@ import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
+import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.util.Map;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -50,7 +53,7 @@ public class AdherenceTrendListenerTest {
         final MotechEvent motechEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
         adherenceTrendListener.handleWeeklyAdherenceTrendToOutboxEvent(motechEvent);
         verify(outboxService).addMessage(Matchers.<OutboundVoiceMessage>any());
-        verify(dailyReminderAdherenceTrendService).raiseAlertIfAdherenceTrendIsFalling(patientId);
+        verify(dailyReminderAdherenceTrendService).raiseAlertIfAdherenceTrendIsFalling(eq(patientId), Matchers.<DateTime>any());
     }
 
     @Test

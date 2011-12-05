@@ -1,5 +1,6 @@
 package org.motechproject.tamadomain.repository;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -73,5 +75,12 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         ViewQuery q = createQuery("find_by_dosage_status_and_date_range").startKey(ComplexKey.of(dosageStatus, from)).endKey(ComplexKey.of(dosageStatus, till)).inclusiveEnd(true).includeDocs(true);
         List<DosageAdherenceLog> result = db.queryView(q, DosageAdherenceLog.class);
         return result;
+    }
+
+    @View(name = "ordered_by_date", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.patientId, doc.dosageDate], doc._id);}}")
+    public DosageAdherenceLog getLatestLogForPatient(String patientId) {
+        ViewQuery q = createQuery("ordered_by_date").startKey(patientId).includeDocs(true);
+        List<DosageAdherenceLog> logsSortedOnDateAscending = db.queryView(q, DosageAdherenceLog.class);
+        return CollectionUtils.isEmpty(logsSortedOnDateAscending)? null : logsSortedOnDateAscending.get(logsSortedOnDateAscending.size() - 1);
     }
 }

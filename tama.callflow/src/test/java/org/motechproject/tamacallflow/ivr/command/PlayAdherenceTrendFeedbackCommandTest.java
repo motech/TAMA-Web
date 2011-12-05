@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.OutboxContextForTest;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -26,7 +27,11 @@ public class PlayAdherenceTrendFeedbackCommandTest {
     @Mock
     private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
+    @Mock
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
+
     private OutboxContextForTest context;
+
     private DateTime dateTime = DateTime.now();
 
     @Before
@@ -35,7 +40,7 @@ public class PlayAdherenceTrendFeedbackCommandTest {
         mockStatic(DateUtil.class);
          dateTime = new DateTime();
         setUpDate();
-        playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(dailyReminderAdherenceTrendService);
+        playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
         context = new OutboxContextForTest();
 
     }
@@ -50,8 +55,8 @@ public class PlayAdherenceTrendFeedbackCommandTest {
         String[] result;
 
         context.partyId(externalId);
-        when(dailyReminderAdherenceTrendService.getAdherence(externalId)).thenReturn(0.8);
-        when(dailyReminderAdherenceTrendService.isAdherenceFalling(externalId)).thenReturn(true);
+        when(dailyReminderAdherenceService.getAdherence(externalId, dateTime)).thenReturn(0.8);
+        when(dailyReminderAdherenceTrendService.isAdherenceFallingAsOf(externalId, DateUtil.now())).thenReturn(true);
 
         result = playAdherenceTrendFeedbackCommand.execute(context);
 

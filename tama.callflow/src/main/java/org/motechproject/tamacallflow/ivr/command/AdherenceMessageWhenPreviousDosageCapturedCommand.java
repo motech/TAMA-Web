@@ -4,6 +4,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tamacallflow.ivr.PillRegimenSnapshot;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdherenceMessageWhenPreviousDosageCapturedCommand extends AdherenceMessageCommand {
     @Autowired
-    public AdherenceMessageWhenPreviousDosageCapturedCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, PillReminderService pillReminderService, DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService) {
-        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService);
+    public AdherenceMessageWhenPreviousDosageCapturedCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, PillReminderService pillReminderService, DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyReminderAdherenceService dailyReminderAdherenceService) {
+        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
     }
 
     @Override

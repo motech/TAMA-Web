@@ -10,6 +10,9 @@ import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -88,5 +91,31 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         assertArrayEquals(new DosageAdherenceLog[]{ dosageAdherenceLog5, dosageAdherenceLog4, dosageAdherenceLog2 }, allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, someDay.minusDays(5), someDay).toArray());
 
         assertArrayEquals(new DosageAdherenceLog[]{ dosageAdherenceLog4, dosageAdherenceLog2 }, allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, someDay.minusDays(3), someDay).toArray());
+    }
+
+    @Test
+    public void shouldGetTheLastestDosageAdherenceLogForThePatient() {
+        LocalDate createdOn = new LocalDate(2011, 10, 10);
+        List<DosageAdherenceLog> dosageAdherenceLogs = Arrays.asList(
+                new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, createdOn),
+                new DosageAdherenceLog("patient_id", "regimen_id", "dosage2_id", DosageStatus.NOT_TAKEN, createdOn.plusDays(1))
+        );
+        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(0));
+        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(1));
+        markForDeletion(dosageAdherenceLogs.toArray());
+        assertEquals(dosageAdherenceLogs.get(1), allDosageAdherenceLogs.getLatestLogForPatient("patientId"));
+    }
+
+    @Test
+    public void shouldGetRecentlyAddedLogWhenTwoLogsHaveSameDate() {
+        LocalDate createdOn = new LocalDate(2011, 10, 10);
+        List<DosageAdherenceLog> dosageAdherenceLogs = Arrays.asList(
+                new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, createdOn),
+                new DosageAdherenceLog("patient_id", "regimen_id", "dosage2_id", DosageStatus.NOT_TAKEN, createdOn)
+        );
+        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(0));
+        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(1));
+        markForDeletion(dosageAdherenceLogs.toArray());
+        assertEquals(dosageAdherenceLogs.get(1), allDosageAdherenceLogs.getLatestLogForPatient("patientId"));
     }
 }

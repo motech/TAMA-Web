@@ -2,8 +2,10 @@ package org.motechproject.tamacallflow.ivr.command;
 
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,17 +15,19 @@ public class AdherenceMessageCommand extends BaseTreeCommand {
     protected AllDosageAdherenceLogs allDosageAdherenceLogs;
     protected TamaIVRMessage ivrMessage;
     protected DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
+    protected DailyReminderAdherenceService dailyReminderAdherenceService;
 
     @Autowired
-    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage tamaIVRMessage, DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService) {
+    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage tamaIVRMessage, DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyReminderAdherenceService dailyReminderAdherenceService) {
         super(null);
         this.ivrMessage = tamaIVRMessage;
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
+        this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }
 
     protected String[] getAdherenceMessage(TAMAIVRContext ivrContext) {
-        int adherencePercentage = (int) (dailyReminderAdherenceTrendService.getAdherence(ivrContext.patientId()) * 100);
+        int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherenceAsOfLastRecordedDose(ivrContext.patientId()) * 100);
         return new String[]{
                 TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
                 ivrMessage.getNumberFilename(adherencePercentage),

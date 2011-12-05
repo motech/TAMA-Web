@@ -24,6 +24,7 @@ import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DateUtil.class})
@@ -41,6 +42,9 @@ public class DailyReminderAdherenceTrendServiceTest {
     @Mock
     private PillRegimenResponse pillRegimenResponse;
 
+    @Mock
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
+
     private DateTime dateTime = DateTime.now();
 
     private DailyReminderAdherenceTrendService service;
@@ -51,49 +55,37 @@ public class DailyReminderAdherenceTrendServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         emptyMapMatcher = new EmptyMapMatcher();
-        service = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService);
+        service = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
     }
 
     @Test
     public void shouldRaiseAlertWhenAdherenceIsFalling(){
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService) {
-            @Override
-            public boolean isAdherenceFalling(String patientId) {
-                return true;
-            }
-
-            @Override
-            public double getAdherence(String patientId) {
-                return 20.0;
-            }
-
-            @Override
-            protected double getAdherenceAsOf(String patientId, DateTime asOfDate) {
-                return 30.0;
-            }
-        };
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
         final String patientId = "patientId";
-        dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(patientId);
+        DateTime now = DateUtil.now();
+        when(dailyReminderAdherenceService.getAdherence("patientId", now.minusWeeks(1))).thenReturn(30.0);
+        when(dailyReminderAdherenceService.getAdherence("patientId", now)).thenReturn(20.0);
+        dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(patientId, now);
         verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), eq("Adherence fell by 33.33%, from 30.00% to 20.00%"), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
     }
 
     @Test
     public void shouldNotRaiseAlertWhenAdherenceIsNotFalling(){
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService) {
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService) {
             @Override
-            public boolean isAdherenceFalling(String patientId) {
+            public boolean isAdherenceFallingAsOf(String patientId, DateTime asOf) {
                 return false;
             }
         };
         final String patientId = "patientId";
 
-        dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(patientId);
+        dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(patientId, DateUtil.now());
         verify(patientAlertService, never()).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), Matchers.<String>any(), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
     }
 
     @Test
     public void shouldRaiseRedAlertForThePatient() {
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService);
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
         String patientId = "patientId";
         double adherencePercentage = 69.9;
 

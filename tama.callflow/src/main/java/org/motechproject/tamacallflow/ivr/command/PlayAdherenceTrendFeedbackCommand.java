@@ -3,6 +3,7 @@ package org.motechproject.tamacallflow.ivr.command;
 import org.joda.time.DateTime;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.OutboxContext;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,12 @@ public class PlayAdherenceTrendFeedbackCommand {
 
     private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
+
     @Autowired
-    public PlayAdherenceTrendFeedbackCommand(DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService) {
+    public PlayAdherenceTrendFeedbackCommand(DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyReminderAdherenceService dailyReminderAdherenceService) {
         this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
+        this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }
 
     public String[] execute(OutboxContext outboxContext) {
@@ -26,8 +30,8 @@ public class PlayAdherenceTrendFeedbackCommand {
         String patientId = outboxContext.partyId();
         DateTime now = DateUtil.now();
 
-        double adherencePercentageAsOfNow = dailyReminderAdherenceTrendService.getAdherence(patientId);
-        boolean falling = dailyReminderAdherenceTrendService.isAdherenceFalling(patientId);
+        double adherencePercentageAsOfNow = dailyReminderAdherenceService.getAdherence(patientId, now);
+        boolean falling = dailyReminderAdherenceTrendService.isAdherenceFallingAsOf(patientId, DateUtil.now());
 
         if (adherencePercentageAsOfNow > 0.9) {
             // A message saying indicating that I’ve done well and should
