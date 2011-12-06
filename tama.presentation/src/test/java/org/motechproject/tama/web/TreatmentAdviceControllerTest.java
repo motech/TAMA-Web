@@ -229,7 +229,7 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService, never()).renew(any(DailyPillRegimenRequest.class));
-        verify(schedulerService).unscheduleFallingAdherenceAlertJobs(PATIENT_ID);
+        verify(schedulerService).unScheduleFourDayRecallJobs(patient);
         verify(schedulerService, never()).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(existingTreatmentAdvice);
         verify(schedulerService, never()).unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
         verify(schedulerService, never()).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
