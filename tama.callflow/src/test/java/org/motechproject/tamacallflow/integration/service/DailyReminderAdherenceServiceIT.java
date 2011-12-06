@@ -3,6 +3,7 @@ package org.motechproject.tamacallflow.integration.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,7 +12,6 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.domain.PillRegimen;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
-import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.tamacallflow.service.TAMAPillReminderService;
 import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
@@ -28,12 +28,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 @PrepareForTest(DateUtil.class)
+@Ignore
 public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
 
     @Mock

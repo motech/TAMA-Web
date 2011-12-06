@@ -3,6 +3,7 @@ package org.motechproject.tamacallflow.integration.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -26,12 +27,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 @PrepareForTest(DateUtil.class)
+@Ignore
 public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest {
 
     @Mock

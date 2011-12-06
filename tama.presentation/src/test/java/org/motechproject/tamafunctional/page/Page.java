@@ -16,7 +16,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public abstract class Page extends FunctionalTestObject {
     protected WebDriver webDriver;
-    private static final long MaxPageLoadTime = 15;
+    private static final long MaxPageLoadTime = 30;
     protected WebDriverWait wait;
 
     public Page(WebDriver webDriver) {
