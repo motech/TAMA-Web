@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.test;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -36,17 +35,6 @@ public class ChangePasswordTest extends BaseTest {
     public void testShouldNavigateToLoginPageWhenUserNotLoggedIn() {
         webDriver.get(ChangePasswordPage.CHANGE_PASSWORD_URL);
         assertEquals(LoginPage.LOGIN_URL, webDriver.getCurrentUrl());
-    }
-
-    @Test
-    @Ignore
-    public void testChangePasswordForAdministrator() {
-        ListClinicsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
-        ChangePasswordPage changePasswordPage = homePage.goToChangePasswordPage();
-        PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput("password", "newPassword", "newPassword");
-
-        assertNotNull(successPage.getSuccessMessageElement());
-        cleanUp("newPassword", "password");
     }
 
     @Test

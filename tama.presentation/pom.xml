@@ -896,35 +896,62 @@
                 <version>2.9</version>
                 <executions>
                     <execution>
+                        <id>serial-func-tests</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                            <argLine>-XX:MaxPermSize=1024M</argLine>
+                            <systemProperties>
+                                <property>
+                                    <name>jetty.port</name>
+                                    <value>${jetty.port}</value>
+                                </property>
+                                <property>
+                                    <name>test.driver</name>
+                                    <value>${test.driver}</value>
+                                </property>
+                            </systemProperties>
+                            <runOrder>reversealphabetical</runOrder>
+                            <includes>
+                                <include>**/tamafunctional/**/serial/*Test.java</include>
+                            </includes>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>parallel-func-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <argLine>-XX:MaxPermSize=1024M</argLine>
+                            <systemProperties>
+                                <property>
+                                    <name>jetty.port</name>
+                                    <value>${jetty.port}</value>
+                                </property>
+                                <property>
+                                    <name>test.driver</name>
+                                    <value>${test.driver}</value>
+                                </property>
+                            </systemProperties>
+                            <runOrder>reversealphabetical</runOrder>
+                            <parallel>classes</parallel>
+                            <threadCount>4</threadCount>
+                            <perCoreThreadCount>false</perCoreThreadCount>
+                            <includes>
+                                <include>**/tamafunctional/**/*Test.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/tamafunctional/**/serial/*Test.java</exclude>
+                            </excludes>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <argLine>-XX:MaxPermSize=1024M</argLine>
-                    <systemProperties>
-                        <property>
-                            <name>jetty.port</name>
-                            <value>${jetty.port}</value>
-                        </property>
-                        <property>
-                            <name>test.driver</name>
-                            <value>${test.driver}</value>
-                        </property>
-                    </systemProperties>
-                    <runOrder>reversealphabetical</runOrder>
-                    <parallel>classes</parallel>
-                    <threadCount>4</threadCount>
-                    <perCoreThreadCount>false</perCoreThreadCount>
-                    <includes>
-                        <include>**/tamafunctional/**/*Test.java</include>
-                    </includes>
-                    <excludes>
-                    </excludes>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                </configuration>
             </plugin>
 
             <plugin>
