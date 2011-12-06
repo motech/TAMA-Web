@@ -72,6 +72,10 @@ public class PatientAlert {
         return this.alert.getName();
     }
 
+    public String getPatientCallPreference(){
+        return this.alert.getData().get(PATIENT_CALL_PREFERENCE);
+    }
+
     public String getName() {
         return this.alert.getName();
     }

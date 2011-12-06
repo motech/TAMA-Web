@@ -7,10 +7,22 @@
     <definition extends="default" name="alerts/read">
         <put-attribute name="body" value="/WEB-INF/views/alerts/readlist.jspx"/>
     </definition>
-    <definition extends="default" name="alerts/show">
-        <put-attribute name="body" value="/WEB-INF/views/alerts/show.jspx"/>
+    <definition extends="default" name="alerts/showAdherenceInRed">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/showAdherenceInRed.jspx"/>
     </definition>
-    <definition extends="default" name="alerts/update">
-        <put-attribute name="body" value="/WEB-INF/views/alerts/update.jspx"/>
+    <definition extends="default" name="alerts/showAdherenceFalling">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/showAdherenceFalling.jspx"/>
+    </definition>
+    <definition extends="default" name="alerts/showSymptomReporting">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/showSymptomReporting.jspx"/>
+    </definition>
+    <definition extends="default" name="alerts/updateAdherenceInRed">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/updateAdherenceInRed.jspx"/>
+    </definition>
+    <definition extends="default" name="alerts/updateAdherenceFalling">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/updateAdherenceFalling.jspx"/>
+    </definition>
+    <definition extends="default" name="alerts/updateSymptomReporting">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/updateSymptomReporting.jspx"/>
     </definition>
 </tiles-definitions>

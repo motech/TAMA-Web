@@ -4,6 +4,7 @@ import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
@@ -29,6 +30,7 @@ public class PatientAlertService {
 
     private AllPatients allPatients;
     private AlertService alertService;
+    private Logger logger = Logger.getLogger(PatientAlertService.class);
 
     @Autowired
     public PatientAlertService(AllPatients allPatients, AlertService alertService) {
@@ -93,12 +95,18 @@ public class PatientAlertService {
         return sort(flatten(convert(patients, patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
 
-    public void updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType) {
-        if (PatientAlertType.SymptomReporting.name().equals(patientAlertType)) {
-            alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
-            alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+    public boolean updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType) {
+        try {
+            if (PatientAlertType.SymptomReporting.name().equals(patientAlertType)) {
+                alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
+                alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+            }
+            alertService.setData(alertId, PatientAlert.NOTES, notes);
+        } catch (RuntimeException e) {
+            logger.error(e);
+            return false;
         }
-        alertService.setData(alertId, PatientAlert.NOTES, notes);
+        return true;
     }
 
     public void updateDoctorConnectedToDuringSymptomCall(String patientId, String doctorName) {

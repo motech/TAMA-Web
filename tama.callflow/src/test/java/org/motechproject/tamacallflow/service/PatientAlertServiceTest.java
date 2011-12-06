@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class PatientAlertServiceTest {
@@ -314,5 +316,11 @@ public class PatientAlertServiceTest {
         assertEquals(2, adherenceInRedAlerts.size());
         assertEquals(1, adherenceInRedAlerts.get(0).getAlert().getPriority());
         assertEquals(1, adherenceInRedAlerts.get(1).getAlert().getPriority());
+    }
+
+    @Test
+    public void shouldReturnFalseWhenUpdateUnSuccessful(){
+        doThrow(new RuntimeException("update exception")).when(alertService).setData(anyString(), anyString(), anyString());
+        assertFalse(patientAlertService.updateAlert(anyString(), anyString(), anyString(), anyString(), anyString()));
     }
 }

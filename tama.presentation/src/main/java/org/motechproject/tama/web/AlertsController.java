@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.tamadomain.domain.PatientAlert;
 import org.motechproject.tamadomain.domain.SymptomsAlertStatus;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +40,16 @@ public class AlertsController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-        uiModel.addAttribute("alertInfo", patientAlertService.getPatientAlert(id));
-        return "alerts/show";
+        PatientAlert patientAlert = patientAlertService.getPatientAlert(id);
+        uiModel.addAttribute("alertInfo", patientAlert);
+        return "alerts/show" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-        initUIModel(id, uiModel);
-        return "alerts/update";
+        PatientAlert patientAlert = patientAlertService.getPatientAlert(id);
+        initUIModel(id, uiModel, patientAlert);
+        return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -55,14 +58,15 @@ public class AlertsController extends BaseController {
             patientAlertService.updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes, type);
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
-            initUIModel(alertId, uiModel);
+            PatientAlert patientAlert = patientAlertService.getPatientAlert(alertId);
+            initUIModel(alertId, uiModel, patientAlert);
             return "alerts/update";
         }
         return "redirect:/alerts/" + encodeUrlPathSegment(alertId, request);
     }
 
-    private void initUIModel(String id, Model uiModel) {
-        uiModel.addAttribute("alertInfo", patientAlertService.getPatientAlert(id));
+    private void initUIModel(String id, Model uiModel, PatientAlert patientAlert) {
+        uiModel.addAttribute("alertInfo", patientAlert);
         uiModel.addAttribute("symptomsStatuses", Arrays.asList(SymptomsAlertStatus.values()));
     }
 }

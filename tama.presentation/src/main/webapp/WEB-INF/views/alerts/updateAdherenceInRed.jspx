@@ -8,32 +8,13 @@
         <util:panel id="ps_org_motechproject_tama_alert" title="${alert_title} " openPane="true" >
             <field:display field="patientId" id="s_org_motechproject_tama_alert_id" object="${alertInfo}" label="Patient Id"/>
             <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
-            <c:choose >
-                <c:when test="${alertInfo.type == 'SymptomReporting'}">
-                    <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time Of Call"/>
-                </c:when>
-                <c:otherwise>
-                    <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time"/>
-                </c:otherwise>
-            </c:choose>
+            <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time"/>
             <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Alert Type"/>
-            <c:choose >
-                <c:when test="${alertInfo.type == 'SymptomReporting'}">
-                    <field:display field="symptomReported" id="s_org_motechproject_tama_alert_SymptomReported" object="${alertInfo}" label="Symptoms Reported"/>
-                    <quote><field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/></quote>
-                </c:when>
-                <c:otherwise>
-                   <field:display field="description" id="s_org_motechproject_tama_alert_Description" object="${alertInfo}" label="Description"/>
-                </c:otherwise>
-            </c:choose>
+            <field:display field="description" id="s_org_motechproject_tama_alert_Description" object="${alertInfo}" label="Description"/>
+            <field:display field="patientCallPreference" id="s_org_motechproject_tama_alert_CallPreference" object="${alertInfo}" label="Type Of Service"/>
             <form:form action="" method="POST" modelAttribute="alertInfo" enctype="${enctype}">
                 <form:hidden path="type" value="${alertInfo.type}"/>
                 <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
-                <c:if test="${alertInfo.type == 'SymptomReporting'}">
-                    <field:select field="symptomsAlertStatus" label= "Symptoms Call Status" id="s_org_motechproject_tama_alert_symptomsStatus" required="true" items="${symptomsStatuses}" path="/symptomsStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
-                    <field:display field="connectedToDoctor" id="s_org_motechproject_tama_alert_connectedToDoctor" object="${alertInfo}" label="Connected to Doctor"/>
-                    <field:textarea field="doctorsNotes" label="Doctor’s Notes based on direct contact" id="s_org_motechproject_tama_alert_doctorsNotes"  required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" /><br/>
-                </c:if>
                 <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                 <form:hidden path="alertId" value="${alertInfo.alertId}"/>
                 <div class="submit">
