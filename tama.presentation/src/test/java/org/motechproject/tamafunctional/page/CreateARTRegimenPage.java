@@ -52,9 +52,6 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "nextToRegisterNewTreatmentAdvice")
     private WebElement nextToRegisterNewTreatmentAdvice;
 
-    @FindBy(how = How.ID, using = "proceed")
-    private WebElement saveElement;
-
     public CreateARTRegimenPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -118,7 +115,7 @@ public class CreateARTRegimenPage extends Page {
             drug2EveningDosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
 
-        saveElement.click();
+        drug1MealAdviceTypeElement.submit();
     }
 
     private void logDosage(TestDrugDosage drugDosage) {
