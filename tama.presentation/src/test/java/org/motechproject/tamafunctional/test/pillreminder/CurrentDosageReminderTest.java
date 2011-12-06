@@ -28,7 +28,8 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
     private TestPatient patient;
 
     @Before
-    public void testSetUp() throws Exception {
+    public void setUp() {
+        super.setUp();
         TestClinician clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));

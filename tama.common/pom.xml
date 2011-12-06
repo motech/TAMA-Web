@@ -157,7 +157,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--Unit tests-->
+            <!--Unit and Integration tests-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -172,5 +172,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

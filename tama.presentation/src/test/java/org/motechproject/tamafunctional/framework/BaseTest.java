@@ -9,8 +9,12 @@ import org.motechproject.tamafunctional.context.Context;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.util.DateUtil;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 
 public abstract class BaseTest extends FunctionalTestObject {
@@ -21,9 +25,20 @@ public abstract class BaseTest extends FunctionalTestObject {
 
     @Before
     public void setUp() {
-        webDriver = WebDriverFactory.getInstance();
+        createWebDriver();
         logInfo("Using login URL as %s", LoginPage.LOGIN_URL);
         webDriver.get(LoginPage.LOGIN_URL);
+    }
+
+    private void createWebDriver() {
+        try {
+            webDriver = WebDriverFactory.getInstance();
+        }
+        catch (WebDriverException e) {
+            if (e.getMessage().contains("Unable to bind to locking port")) {
+                createWebDriver();
+            }
+        }
     }
 
     protected void buildContexts(Context... contexts) {
@@ -40,6 +55,7 @@ public abstract class BaseTest extends FunctionalTestObject {
     public void tearDown() throws IOException {
         String testMethodName = testName.getMethodName();
         testMethodName = StringUtils.isEmpty(testMethodName) ? DateUtil.now().toString("yyyy-MM-dd HH-mm") : testMethodName;
+        if (webDriver == null) return;
         String pageSource = webDriver.getPageSource();
 
         File file = new File(System.getProperty("base.dir"), String.format("target/%s.html", testMethodName));
@@ -52,7 +68,7 @@ public abstract class BaseTest extends FunctionalTestObject {
             e.printStackTrace();
         } finally {
             webDriver.manage().deleteAllCookies();
-            webDriver.close();
+            webDriver.quit();
             if (output != null)
                 output.close();
         }

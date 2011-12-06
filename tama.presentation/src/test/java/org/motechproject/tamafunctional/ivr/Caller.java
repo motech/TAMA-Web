@@ -44,7 +44,7 @@ public class Caller extends FunctionalTestObject {
     }
 
     private QueryParams paramsFor(IVREvent event, String sid, String data) {
-        QueryParams queryParams = new QueryParams().put("sid", sid).put("event", event).put("data", data);
+        QueryParams queryParams = new QueryParams().put("sid", sid).put("cid", phoneNumber).put("event", event).put("data", data);
         callInfo.appendDataMapTo(queryParams);
         return queryParams;
     }

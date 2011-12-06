@@ -22,7 +22,8 @@ import static org.motechproject.tamacallflow.ivr.TamaIVRMessage.*;
 public class CurrentDosageConfirmTest extends BaseIVRTest {
 
     @Before
-    public void testSetUp() throws Exception {
+    public void setUp() {
+        super.setUp();
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));

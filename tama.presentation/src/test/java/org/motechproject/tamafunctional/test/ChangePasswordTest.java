@@ -1,7 +1,7 @@
 package org.motechproject.tamafunctional.test;
 
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -39,6 +39,7 @@ public class ChangePasswordTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     public void testChangePasswordForAdministrator() {
         ListClinicsPage homePage = MyPageFactory.initElements(webDriver, LoginPage.class).loginWithCorrectAdminUserNamePassword();
         ChangePasswordPage changePasswordPage = homePage.goToChangePasswordPage();

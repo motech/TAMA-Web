@@ -1,7 +1,5 @@
 package org.motechproject.tamafunctional.page;
 
-import org.motechproject.tamacallflow.domain.Dosage;
-import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
@@ -100,7 +98,8 @@ public class CreateARTRegimenPage extends Page {
     private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
         logDosage(drugDosage1);
-        ((ExtendedWebElement) drug1DosageTypeElement).select(drugDosage1.dosageType());
+        drug1DosageTypeElement.clear();
+        drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
         drug1MealAdviceTypeElement.click();
         if (drugDosage1.isMorningDosage())
             drug1MorningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
@@ -110,7 +109,8 @@ public class CreateARTRegimenPage extends Page {
 
         TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);
         logDosage(drugDosage2);
-        ((ExtendedWebElement) drug2DosageTypeElement).select(drugDosage2.dosageType());
+        drug2DosageTypeElement.clear();
+        drug2DosageTypeElement.sendKeys(drugDosage1.dosageType());
         drug2MealAdviceTypeElement.click();
         if (drugDosage2.isMorningDosage())
             drug2MorningDosageTimeElement.sendKeys(drugDosage2.dosageSchedule());

@@ -1,6 +1,5 @@
 package org.motechproject.tamafunctional.test;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
@@ -14,7 +13,6 @@ import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.openqa.selenium.By;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;

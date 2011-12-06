@@ -1,8 +1,9 @@
 package org.motechproject.tamafunctional.test;
 
+import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
-import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
@@ -22,18 +23,11 @@ import static junit.framework.Assert.assertEquals;
 public class DialClinicianTest extends BaseIVRTest {
     private TestClinician clinician;
     private TestPatient patient;
-
-    @Override
-    public void setUp() {
-        super.setUp();
-        clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
-        patient = TestPatient.withMandatory();
-        new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
-    }
+    private XStream xStream = new XStream();
 
     @Test
     public void shouldDialClinicianContacts_InCertain_SymptomReportedCallFlows_AndAClinicianRespondsToTheCall() throws IOException {
+        setupDataForSymptomReporting();
         caller = caller(patient);
         patientCallsTAMA_AndListensToPillMenu();
         patientReportsSymptoms();
@@ -47,6 +41,7 @@ public class DialClinicianTest extends BaseIVRTest {
 
     @Test
     public void shouldDialClinicianContacts_InCertain_SymptomReportedCallFlows_AndNoClinicianRespondsToTheCall() throws IOException {
+        setupDataForSymptomReporting();
         caller = caller(patient);
         patientCallsTAMA_AndListensToPillMenu();
         patientReportsSymptoms();
@@ -58,11 +53,21 @@ public class DialClinicianTest extends BaseIVRTest {
         caller.hangup();
     }
 
+    private void setupDataForSymptomReporting() {
+        clinician = TestClinician.withMandatory();
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        patient = TestPatient.withMandatory();
+        new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
+    }
+
     private void patientCallsTAMA_AndListensToPillMenu() {
         IVRResponse ivrResponse = caller.call();
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
+        logInfo("****************************************************************************************************");
+        logInfo(xStream.toXML(ivrResponse));
+        logInfo("****************************************************************************************************");
         asksForCollectDtmfWith(ivrResponse, "welcome_to_" + clinician.clinic().name(), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
     }
 

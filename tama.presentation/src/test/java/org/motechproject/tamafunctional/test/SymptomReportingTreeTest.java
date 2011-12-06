@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.test;
 
+import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -23,18 +24,11 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
     private TestClinician clinician;
     private TestPatient patient;
-
-    @Override
-    public void setUp() {
-        super.setUp();
-        clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
-        patient = TestPatient.withMandatory();
-        new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
-    }
+    private XStream xStream = new XStream();
 
     @Test
     public void shouldTakeThePatientToTheCorrectSymptomReportingTreeAndCreateAlert() throws IOException {
+        setupDataForSymptomReporting();
         assertSymptomReportingCallFlow(clinician, patient);
 
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
@@ -50,6 +44,13 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         assertShowAlert(notes, status, showAlertPage);
 
         assertAlertIsUpdated(patient, listPatientsPage, status, notes);
+    }
+
+    private void setupDataForSymptomReporting() {
+        clinician = TestClinician.withMandatory();
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        patient = TestPatient.withMandatory();
+        new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
     }
 
     private void assertShowAlert(String notes, String status, ShowAlertPage showAlertPage) {
@@ -104,6 +105,9 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
+        logInfo("****************************************************************************************************");
+        logInfo(xStream.toXML(ivrResponse));
+        logInfo("****************************************************************************************************");
         asksForCollectDtmfWith(ivrResponse, "welcome_to_" + clinician.clinic().name(), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
 
         // Regimen4_2

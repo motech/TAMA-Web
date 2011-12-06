@@ -24,7 +24,6 @@ public abstract class BaseIVRTest extends BaseTest {
     }
 
     @After
-    @Override
     public void tearDown() throws IOException {
         if (caller != null) {
             try {
@@ -39,7 +38,7 @@ public abstract class BaseIVRTest extends BaseTest {
     }
 
     protected Caller caller(TestPatient patient) {
-        return new Caller("123", patient.mobileNumber(), webClient);
+        return new Caller(unique("sid"), patient.mobileNumber(), webClient);
     }
 
     protected void asksForCollectDtmfWith(IVRResponse ivrResponse, String ... names) {

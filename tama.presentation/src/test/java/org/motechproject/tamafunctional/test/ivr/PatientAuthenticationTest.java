@@ -16,9 +16,11 @@ import static junit.framework.Assert.*;
 public class PatientAuthenticationTest extends BaseIVRTest {
     @Test
     public void shouldTestConversationForNonExistentPatient() throws IOException {
-        caller = new Caller("123", "1234567890", webClient);
+        String sid = unique("sid");
+        String phoneNumber = unique("phonenumber");
+        caller = new Caller(sid, phoneNumber, webClient);
         IVRResponse ivrResponse = caller.call();
-        assertEquals("123", ivrResponse.sid());
+        assertEquals(sid, ivrResponse.sid());
         assertNotNull(ivrResponse.isHangedUp());
     }
 
