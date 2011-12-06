@@ -879,6 +879,7 @@
                     <printSummary>true</printSummary>
                     <includes>
                         <include>**/tama/**/*Test.java</include>
+                        <include>**/*IT.java</include>
                     </includes>
                     <excludes>
                         <exclude>**/*_Roo_*</exclude>

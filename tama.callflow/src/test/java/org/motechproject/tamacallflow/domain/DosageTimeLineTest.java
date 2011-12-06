@@ -1,7 +1,6 @@
 package org.motechproject.tamacallflow.domain;
 
 import org.joda.time.LocalDate;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
@@ -124,78 +123,5 @@ public class DosageTimeLineTest {
     public void assertDosageResponse(DosageResponse expectedDosageResponse, LocalDate expectedDosageDate, Dose actualResponse) {
         assertEquals("Expected " + expectedDosageResponse.getDosageId() + " but was " + actualResponse.getDosageId(),expectedDosageResponse, actualResponse.getDosage());
         assertEquals(expectedDosageDate, actualResponse.getDosageDate());
-    }
-
-    @Test
-    @Ignore //TODO: Make this an integration test
-    public void shouldNotReturnDosagesCapturedBeforeSuspensionOnStartDate_AndNotReturnAnyDosagesThatCanBeCapturedAfterReactivation(){
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
-
-        LocalDate toDate = DateUtil.newDate(2011, 11, 13);
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 14, 00, 00), DateUtil.newDateTime(toDate, 05, 0, 0));
-        assertDosageResponse(dosageResponse2, fromDate.plusDays(1), dosageTimeLine.next());
-        assertDosageResponse(dosageResponse1, fromDate.plusDays(1), dosageTimeLine.next());
-        try {
-            dosageTimeLine.next();
-            fail();
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
-    }
-
-    @Test
-    @Ignore //TODO: Make this an integration test
-    public void shouldFetchOnlyTheApplicableDosageForDayOfResume() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
-
-        LocalDate toDate = DateUtil.newDate(2011, 11, 13);
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.newDateTime(toDate, 12, 00, 00));
-        dosageTimeLine.next();
-        dosageTimeLine.next();
-        Dose actualDoseResponse = dosageTimeLine.next();
-        assertDosageResponse(dosageResponse1, fromDate.plusDays(1), actualDoseResponse);
-        actualDoseResponse = dosageTimeLine.next();
-        assertDosageResponse(dosageResponse2, fromDate.plusDays(2), actualDoseResponse);
-        try {
-            dosageTimeLine.next();
-            fail();
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
-    }
-
-    @Test
-    @Ignore //TODO: Make this an integration test
-    public void shouldNotFetchAnyDosageIfPatientIsSuspendedAndActivatedBetweenDosageTimes() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
-
-        LocalDate toDate = DateUtil.newDate(2011, 11, 11);
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.newDateTime(toDate, 14, 00, 00));
-        try {
-            dosageTimeLine.next();
-            fail();
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
-    }
-
-    @Test
-    @Ignore //TODO: Make this an integration test
-    public void shouldFetchOnlyDosagesInInterimPeriodIfPatientIsSuspendedAndActivatedOnSameDay() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
-
-        LocalDate toDate = DateUtil.newDate(2011, 11, 11);
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 6, 00, 00), DateUtil.newDateTime(toDate, 12, 00, 00));
-        assertDosageResponse(dosageResponse2, fromDate, dosageTimeLine.next());
-        try {
-            dosageTimeLine.next();
-            fail();
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
     }
 }
