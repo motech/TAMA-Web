@@ -93,8 +93,8 @@ public class TreatmentAdviceController extends BaseController {
             schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
             schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
         } else if (CallPreference.FourDayRecall.equals(callPreference)) {
-            schedulerService.unscheduleFallingAdherenceAlertJobs(treatmentAdvice.getPatientId());
-            schedulerService.scheduleFallingAdherenceAlertJobsForFourDayRecall(patient, treatmentAdvice);
+            schedulerService.unScheduleFourDayRecallJobs(patient);
+            schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
         }
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
