@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
 
-import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebElement;
@@ -43,10 +42,6 @@ public class CreateBasicPatientInformationSection {
         patientId.sendKeys(patient.patientId());
         mobileNumber.sendKeys(patient.mobileNumber());
         dateOfBirth.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
-        ((ExtendedWebElement)travelTimeInDays).select(patient.travelTimeToClinicInDays());
-        ((ExtendedWebElement)travelTimeInHrs).select(patient.travelTimeToClinicInHours());
-        ((ExtendedWebElement)travelTimeInMins).select(String.valueOf(patient.travelTimeToClinicInMinutes()));
-
         nextToMedicalHistory.click();
     }
 }

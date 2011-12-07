@@ -430,11 +430,15 @@
             <artifactId>selenium</artifactId>
             <version>2.0a7</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <version>2.14.0</version>
+        </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>2.0a7</version>
+            <version>2.14.0</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -939,6 +943,9 @@
                                 </property>
                             </systemProperties>
                             <runOrder>reversealphabetical</runOrder>
+                            <parallel>classes</parallel>
+                            <threadCount>5</threadCount>
+                            <perCoreThreadCount>false</perCoreThreadCount>
                             <includes>
                                 <include>**/tamafunctional/**/*Test.java</include>
                             </includes>
