@@ -11,7 +11,6 @@ import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamahealthtip.domain.HealthTipsHistory;
-import org.motechproject.tamahealthtip.repository.HealthTipRuleService;
 import org.motechproject.tamahealthtip.repository.AllHealthTipsHistory;
 import org.motechproject.util.DateUtil;
 

@@ -18,7 +18,7 @@ import org.motechproject.tamadomain.domain.CallPreference;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamahealthtip.repository.HealthTipRuleService;
+import org.motechproject.tamahealthtip.service.HealthTipRuleService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -58,10 +58,7 @@ public class HealthTipRuleServiceTest {
 
         when(adherenceService.isDosageMissedLastWeek(patient)).thenReturn(false);
         healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService);
-        //TreatmentAdvice adviceStartingToday = TreatmentAdviceBuilder.startRecording().withDefaults().withPatientId("1111").withStartDate(today).build();
-        //pillReminderService.createNew();
-        //allPatients.add(patient);
-    }
+       }
 
     @Test
     public void shouldReturnRelevantPriority2HealthTipsWhenPatientIsLessThan1MonthIntoART() {
@@ -107,4 +104,6 @@ public class HealthTipRuleServiceTest {
         assertEquals("2", healthTips.get("HT020a"));
         assertEquals("2", healthTips.get("HT022a"));
     }
+
+
 }

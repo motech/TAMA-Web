@@ -2,18 +2,18 @@ import org.motechproject.tamahealthtip.domain.HealthTipParams;
 import java.util.Arrays;
 import java.util.List;
 
-global java.util.Map healthTips;
+global org.motechproject.tamahealthtip.service.HealthTipRuleService.HealthTipList  healthTips;
 
 rule "Less than 1 month into ART"
     when
         HealthTipParams(numberOfMonthsSinceTreatmentStarted < 1)
     then
         for (String file : Arrays.asList("HT001a", "HT002a", "HT003a", "HT004a", "HT005a","HT011a", "HT012a", "HT013a", "HT017a", "HT018a")) {
-            healthTips.put(file, "2");
+            healthTips.addHealthTip(file, "2");
         }
 
         for (String file : Arrays.asList("HT033a", "HT034a", "HT035a", "HT036a", "HT037a", "HT038a", "HT039a", "HT040a")) {
-            healthTips.put(file, "3");
+            healthTips.addHealthTip(file, "3");
         }
 end
 
@@ -23,7 +23,7 @@ rule "Less than 1 month into ART and patient on daily pill reminder"
         HealthTipParams(patientOnDailyPillReminder == "true")
     then
         for (String file : Arrays.asList("HT014a", "HT019a", "HT021a")) {
-            healthTips.put(file, "2");
+            healthTips.addHealthTip(file, "2");
         }
 end
 
@@ -33,7 +33,7 @@ rule "Less than 1 month into ART and patient not on daily pill reminder"
         HealthTipParams(patientOnDailyPillReminder == "false")
     then
         for (String file : Arrays.asList("HT015a", "HT020a", "HT022a")) {
-            healthTips.put(file, "2");
+            healthTips.addHealthTip(file, "2");
         }
 end
 
@@ -42,7 +42,7 @@ rule "Dosage Missed Last Week"
         HealthTipParams(dosageMissedLastWeek == "true")
     then
         for (String file : Arrays.asList("HT004a", "HT002a", "HT011a", "HT012a")) {
-            healthTips.put(file, "1");
+            healthTips.addHealthTip(file, "1");
         }
 end
 
@@ -52,7 +52,7 @@ rule "Dosage Missed Last Week and user on daily reminder"
         HealthTipParams(patientOnDailyPillReminder == "true")
     then
         for (String file : Arrays.asList("HT021a", "HT014a")) {
-            healthTips.put(file, "1");
+            healthTips.addHealthTip(file, "1");
         }
 end
 
@@ -62,6 +62,6 @@ rule "Dosage Missed Last Week and user on four day recall"
         HealthTipParams(patientOnDailyPillReminder == "false")
     then
         for (String file : Arrays.asList("HT022a", "HT015a")) {
-            healthTips.put(file, "1");
+            healthTips.addHealthTip(file, "1");
         }
 end
