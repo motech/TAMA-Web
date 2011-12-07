@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.framework;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
@@ -16,12 +17,17 @@ public class TamaWebElement implements ExtendedWebElement {
 
     @Override
     public void click() {
-        webElement.click();
+        try {
+            webElement.click();
+        }
+        catch (Exception e){
+            webElement.click();
+        }
     }
 
     @Override
     public void submit() {
-        webElement.submit();
+        webElement.sendKeys(Keys.ENTER);
     }
 
     @Override

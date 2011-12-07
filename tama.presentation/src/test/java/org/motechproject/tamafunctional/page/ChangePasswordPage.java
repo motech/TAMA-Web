@@ -8,9 +8,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverName;
-import static org.motechproject.tamafunctional.framework.TestEnvironment.webserverPort;
-
 public class ChangePasswordPage extends Page {
 
     private static final String OLD_PASSWORD_ID = "j_oldPassword";

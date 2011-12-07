@@ -49,8 +49,4 @@ public class CreateBasicPatientInformationSection {
 
         nextToMedicalHistory.click();
     }
-
-    public WebElement getPatientId() {
-        return patientId;
-    }
 }

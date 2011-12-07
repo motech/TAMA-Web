@@ -28,10 +28,6 @@ public class CreateLabResultsPage extends Page {
     @FindBy(how = How.ID, using = "_labResults[1].result_id")
     private WebElement resultForPVL;
 
-    @FindBy(how = How.ID, using = "proceed")
-    private WebElement submitButton;
-
-
     public CreateLabResultsPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -57,7 +53,6 @@ public class CreateLabResultsPage extends Page {
     }
 
     private void enterTestData(TestLabResult labResult) {
-
         testDateForCD4.sendKeys(labResult.testDates().get(0));
         testDateForPVL.sendKeys(labResult.testDates().get(1));
     }
@@ -68,7 +63,7 @@ public class CreateLabResultsPage extends Page {
     }
 
     public ShowLabResultsPage submit() {
-        submitButton.click();
+        resultForCD4.submit();
 
         wait.until(new ExpectedCondition<Boolean>() {
             @Override

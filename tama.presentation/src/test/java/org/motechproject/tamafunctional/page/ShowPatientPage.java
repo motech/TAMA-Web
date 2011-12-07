@@ -121,14 +121,6 @@ public class ShowPatientPage extends Page {
         return passcode.getText();
     }
 
-    public String getDayOfWeeklyCall() {
-        return dayOfWeeklyCall.getText();
-    }
-
-    public String getBestCallTime() {
-        return bestCallTime.getText();
-    }
-
     public String getStatus() {
         return status.getText();
     }

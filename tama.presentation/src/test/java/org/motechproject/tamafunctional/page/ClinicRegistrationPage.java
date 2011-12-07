@@ -79,7 +79,7 @@ public class ClinicRegistrationPage extends Page {
         clinicianContact1Number.sendKeys(clinic.clinicianContact1Number());
         clinicianContact2Name.sendKeys(clinic.clinicianContact2Name());
         clinicianContact2Number.sendKeys(clinic.clinicianContact2Number());
-        registerClinicLink.click();
+        name.submit();
         return MyPageFactory.initElements(webDriver, ShowClinicPage.class);
     }
 }

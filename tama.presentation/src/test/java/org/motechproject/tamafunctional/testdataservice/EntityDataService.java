@@ -1,6 +1,5 @@
 package org.motechproject.tamafunctional.testdataservice;
 
-import org.apache.log4j.Logger;
 import org.motechproject.tamafunctional.framework.FunctionalTestObject;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;

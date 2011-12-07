@@ -3,12 +3,10 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class FormVitalStatisticsPage extends Page {
 
@@ -31,9 +29,6 @@ public class FormVitalStatisticsPage extends Page {
 
     @FindBy(how = How.ID, using = "_pulse_id")
     private WebElement pulseElement;
-
-    @FindBy(how = How.ID, using = "proceed")
-    private WebElement saveElement;
 
     public FormVitalStatisticsPage(WebDriver webDriver) {
         super(webDriver);
@@ -67,7 +62,7 @@ public class FormVitalStatisticsPage extends Page {
         diastolicElement.sendKeys(testVitalStatistics.diastolicBp().toString());
         temperatureElement.sendKeys(testVitalStatistics.temperatureInFahrenheit().toString());
         pulseElement.sendKeys(testVitalStatistics.pulse().toString());
-        saveElement.click();
+        weightElement.submit();
         return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
     }
 }

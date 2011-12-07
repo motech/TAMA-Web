@@ -5,12 +5,11 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.motechproject.deliverytools.kookoo.QueryParams;
+
 import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class MyWebClientTest {
     @Test

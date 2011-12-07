@@ -3,14 +3,8 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 public class UpdateAlertPage extends Page{
-
-
-
     public static final String SYMPTOMS_ALERT_STATUS_ID = "_symptomsAlertStatus_id";
     public static final String NOTES_ID = "_notes_id";
 

@@ -31,10 +31,6 @@ public class TestPatient extends TestEntity {
                 patientPreferences(TestPatientPreferences.withMandatory());
     }
 
-    public static TestPatient withMandatory(TestClinician clinician) {
-        return withMandatory();
-    }
-
     public TestHIVMedicalHistory hivMedicalHistory() {
         return hivMedicalHistory;
     }

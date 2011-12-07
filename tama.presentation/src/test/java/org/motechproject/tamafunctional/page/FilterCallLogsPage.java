@@ -39,7 +39,7 @@ public class FilterCallLogsPage extends Page {
     public ShowCallLogsPage filterCallLogs(Date startDate, Date endDate) {
         this.startDate.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(startDate));
         this.endDate.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(endDate));
-        getLogsButton.click();
+        this.startDate.submit();
         return MyPageFactory.initElements(webDriver, ShowCallLogsPage.class);
     }
 

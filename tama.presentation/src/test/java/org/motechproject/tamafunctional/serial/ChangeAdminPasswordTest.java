@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.serial;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;

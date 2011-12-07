@@ -50,10 +50,4 @@ public class ChangePasswordTest extends BaseTest {
         PasswordSuccessPage successPage = changePasswordPage.submitWithValidInput(testClinician.password(), "newPassword", "newPassword");
         assertNotNull(successPage.getSuccessMessageElement());
     }
-
-    private void cleanUp(String oldPassword, String newPassword) {
-        webDriver.get(ChangePasswordPage.CHANGE_PASSWORD_URL);
-        ChangePasswordPage changePasswordPage = MyPageFactory.initElements(webDriver, ChangePasswordPage.class);
-        changePasswordPage.submitWithValidInput(oldPassword, newPassword, newPassword);
-    }
 }

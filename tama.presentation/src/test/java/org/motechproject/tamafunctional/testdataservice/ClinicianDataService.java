@@ -1,6 +1,5 @@
 package org.motechproject.tamafunctional.testdataservice;
 
-import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;

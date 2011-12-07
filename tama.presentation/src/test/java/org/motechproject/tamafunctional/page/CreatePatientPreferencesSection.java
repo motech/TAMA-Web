@@ -38,4 +38,8 @@ public class CreatePatientPreferencesSection {
             bestCallTime.sendKeys(patient.patientPreferences().bestCallTime());
         }
     }
+
+    public WebElement getPasscode() {
+        return passcode;
+    }
 }

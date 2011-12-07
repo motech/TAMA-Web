@@ -12,8 +12,6 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertEquals;
-
 public class PatientDataService extends EntityDataService {
     public PatientDataService(WebDriver webDriver) {
         super(webDriver);

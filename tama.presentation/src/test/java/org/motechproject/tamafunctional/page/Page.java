@@ -53,7 +53,7 @@ public abstract class Page extends FunctionalTestObject {
     private void searchById(String id) {
         searchBox = WebDriverFactory.createWebElement(searchBox);
         searchBox.sendKeys(id);
-        searchButton.click();
+        searchBox.submit();
     }
 
     public String getPatientSearchErrorMessage() {

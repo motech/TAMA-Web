@@ -11,7 +11,8 @@ import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 
 import java.io.IOException;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class PatientAuthenticationTest extends BaseIVRTest {
     @Test

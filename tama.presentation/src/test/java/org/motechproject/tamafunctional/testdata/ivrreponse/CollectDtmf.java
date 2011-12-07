@@ -1,8 +1,6 @@
 package org.motechproject.tamafunctional.testdata.ivrreponse;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

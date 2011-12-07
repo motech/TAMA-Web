@@ -35,7 +35,7 @@ public class PatientRegistrationPage extends Page {
         createBasicPatientInformationSection.enterDetails(patient);
         createPatientMedicalHistorySection.enterDetails(patient);
         createPatientPreferencesSection.enterDetails(patient);
-        createBasicPatientInformationSection.getPatientId().submit();
+        createPatientPreferencesSection.getPasscode().submit();
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 }

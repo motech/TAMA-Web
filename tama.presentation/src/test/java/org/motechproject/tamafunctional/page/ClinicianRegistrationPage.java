@@ -54,7 +54,7 @@ public class ClinicianRegistrationPage extends Page {
         password.sendKeys(clinician.password());
         TestClinic clinic = clinician.clinic();
         clinicElement.sendKeys(new StringBuilder().append(clinic.name()).append(", ").append(clinic.city()).toString());
-        registerClinicianLink.click();
+        name.submit();
         return MyPageFactory.initElements(webDriver, ShowClinicianPage.class);
     }
 }
