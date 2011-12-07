@@ -94,6 +94,20 @@ public class DailyReminderAdherenceServiceTest {
 
         assertEquals(0.25, dailyReminderAdherenceService.getAdherenceAsOfLastRecordedDose(patientId));
     }
+
+    @Test
+    public void shouldReturnAdherenceForLastWeek () {
+        LocalDate doseDate = new LocalDate(2011, 10, 10);
+        String patientId = "patientId";
+        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, "regimenId", "dosageId", DosageStatus.TAKEN, doseDate);
+        PillRegimen pillRegimen = mock(PillRegimen.class);
+        when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
+        when(pillRegimen.getDosage("dosageId")).thenReturn(new Dosage(new DosageResponse("dosageId", new Time(10, 0), null, null, doseDate, null)));
+        DateTime doseDateTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
+        when(pillRegimen.getNumberOfDosesBetween(doseDateTime.minusWeeks(1), doseDateTime)).thenReturn(14);
+        when(allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDate)).thenReturn(new ArrayList<DosageAdherenceLog>(Arrays.asList(dosageAdherenceLog)));
+        assertEquals(1.0/14.0, dailyReminderAdherenceService.getAdherenceForLastWeek(patientId, doseDateTime));
+    }
 }
 
 

@@ -9,7 +9,7 @@ import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamahealthtip.domain.HealthTipsHistory;
-import org.motechproject.tamahealthtip.repository.AllHealthTips;
+import org.motechproject.tamahealthtip.repository.HealthTipRuleService;
 import org.motechproject.tamahealthtip.repository.AllHealthTipsHistory;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class HealthTipService {
     public static final int START_OF_TIME = 0;
 
     private AllHealthTipsHistory allHealthTipsHistory;
-    private AllHealthTips allHealthTips;
+    private HealthTipRuleService healthTipRuleService;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
 
@@ -64,9 +64,9 @@ public class HealthTipService {
     }
 
     @Autowired
-    public HealthTipService(AllHealthTipsHistory allHealthTipsHistory, AllHealthTips allHealthTips, AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients) {
+    public HealthTipService(AllHealthTipsHistory allHealthTipsHistory, HealthTipRuleService healthTipRuleService, AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients) {
         this.allHealthTipsHistory = allHealthTipsHistory;
-        this.allHealthTips = allHealthTips;
+        this.healthTipRuleService = healthTipRuleService;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
     }
@@ -85,7 +85,7 @@ public class HealthTipService {
     List<PrioritizedHealthTip> getApplicableHealthTips(String patientDocId) {
         final Patient patient = allPatients.get(patientDocId);
         final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-        Map<String, String> healthTipFiles = allHealthTips.findBy(DateUtil.newDate(treatmentAdvice.getStartDate()), patient);
+        Map<String, String> healthTipFiles = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.newDate(treatmentAdvice.getStartDate()), patient);
 
         List<HealthTipsHistory> healthTipsHistories = allHealthTipsHistory.findByPatientId(patientDocId);
 

@@ -37,4 +37,31 @@ rule "Less than 1 month into ART and patient not on daily pill reminder"
         }
 end
 
+rule "Dosage Missed Last Week"
+    when
+        HealthTipParams(dosageMissedLastWeek == "true")
+    then
+        for (String file : Arrays.asList("HT004a", "HT002a", "HT011a", "HT012a")) {
+            healthTips.put(file, "1");
+        }
+end
 
+rule "Dosage Missed Last Week and user on daily reminder"
+    when
+        HealthTipParams(dosageMissedLastWeek == "true")
+        HealthTipParams(patientOnDailyPillReminder == "true")
+    then
+        for (String file : Arrays.asList("HT021a", "HT014a")) {
+            healthTips.put(file, "1");
+        }
+end
+
+rule "Dosage Missed Last Week and user on four day recall"
+    when
+        HealthTipParams(dosageMissedLastWeek == "true")
+        HealthTipParams(patientOnDailyPillReminder == "false")
+    then
+        for (String file : Arrays.asList("HT022a", "HT015a")) {
+            healthTips.put(file, "1");
+        }
+end

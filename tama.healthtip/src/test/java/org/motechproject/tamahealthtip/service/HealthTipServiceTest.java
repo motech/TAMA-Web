@@ -11,7 +11,7 @@ import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamahealthtip.domain.HealthTipsHistory;
-import org.motechproject.tamahealthtip.repository.AllHealthTips;
+import org.motechproject.tamahealthtip.repository.HealthTipRuleService;
 import org.motechproject.tamahealthtip.repository.AllHealthTipsHistory;
 import org.motechproject.util.DateUtil;
 
@@ -33,7 +33,7 @@ public class HealthTipServiceTest {
     @Mock
     private StatelessKnowledgeSession healthTipsSession;
     @Mock
-    private AllHealthTips allHealthTips;
+    private HealthTipRuleService healthTipRuleService;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
@@ -59,7 +59,7 @@ public class HealthTipServiceTest {
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
 
-        healthTipService = new HealthTipService(allHealthTipsHistory, allHealthTips, allTreatmentAdvices, allPatients);
+        healthTipService = new HealthTipService(allHealthTipsHistory, healthTipRuleService, allTreatmentAdvices, allPatients);
         healthTipService = Mockito.spy(healthTipService);
 
         Map<String, String> healthTipMap = new HashMap<String, String>();
@@ -81,7 +81,7 @@ public class HealthTipServiceTest {
         healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipSeven", DateUtil.now().minusDays(13)));
         healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipEight", DateUtil.now().minusDays(14)));
 
-        when(allHealthTips.findBy(DateUtil.today(), patient)).thenReturn(healthTipMap);
+        when(healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today(), patient)).thenReturn(healthTipMap);
         when(allHealthTipsHistory.findByPatientId(patient.getId())).thenReturn(healthTipsHistory);
     }
 
@@ -90,13 +90,13 @@ public class HealthTipServiceTest {
         List<HealthTipService.PrioritizedHealthTip> applicableHealthTips = healthTipService.getApplicableHealthTips(patient.getId());
         assertEqualsIgnoreOrder(Arrays.asList("healthTipOne", "healthTipTwo", "healthTipThree", "healthTipFour", "healthTipFive", "healthTipSix", "healthTipSeven", "healthTipEight", "healthTipNine"),
                 extract(applicableHealthTips, on(HealthTipService.PrioritizedHealthTip.class).getHealthTipsHistory().getAudioFilename()));
-        verify(allHealthTips).findBy(DateUtil.today(), patient);
+        verify(healthTipRuleService).getHealthTipsFromRuleEngine(DateUtil.today(), patient);
     }
 
     @Test
     public void shouldFilterRecentlyPlayedTipsBasedOnTheirPriority() {
         assertEquals(Arrays.asList("healthTipSix", "healthTipFive", "healthTipFour", "healthTipTwo", "healthTipThree"), healthTipService.getPlayList(patient.getId()));
-        verify(allHealthTips).findBy(DateUtil.today(), patient);
+        verify(healthTipRuleService).getHealthTipsFromRuleEngine(DateUtil.today(), patient);
     }
 
     @Test

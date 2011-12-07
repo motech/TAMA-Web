@@ -7,10 +7,12 @@ public class HealthTipParams {
 
     private MedicalCondition medicalCondition;
     private Patient patient;
+    private boolean dosageMissedLastWeek;
 
-    public HealthTipParams(MedicalCondition medicalCondition, Patient patient) {
+    public HealthTipParams(MedicalCondition medicalCondition, Patient patient, boolean dosageMissedLastWeek) {
         this.medicalCondition = medicalCondition;
         this.patient = patient;
+        this.dosageMissedLastWeek = dosageMissedLastWeek;
     }
 
     public int numberOfMonthsSinceTreatmentStarted() {
@@ -19,5 +21,9 @@ public class HealthTipParams {
 
     public boolean isPatientOnDailyPillReminder() {
         return patient.isOnDailyPillReminder();
+    }
+
+    public boolean isDosageMissedLastWeek() {
+        return dosageMissedLastWeek;
     }
 }

@@ -29,12 +29,10 @@ public class DailyReminderAdherenceService {
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
     private TAMAPillReminderService pillReminderService;
     private Properties properties;
-    private DateTime from;
-    private DateTime actualSuspensionDateAndTime;
-    private int previousDosageIndex = 0;
+
     private List<DosageResponse> dosageResponses;
-    private DateTime iteratingDate;
-    private int currentDosageIndex = 0;
+
+
 
     @Autowired
     public DailyReminderAdherenceService(AllDosageAdherenceLogs allDosageAdherenceLogs, TAMAPillReminderService pillReminderService, @Qualifier("ivrProperties") Properties properties) {
@@ -44,9 +42,16 @@ public class DailyReminderAdherenceService {
     }
 
     public double getAdherence(String patientId, DateTime asOfDate) {
-        PillRegimen pillRegimen = pillReminderService.getPillRegimen(patientId);
-        int totalDosages = pillRegimen.getNumberOfDosesBetween(asOfDate.minusWeeks(4).withTime(0, 0, 0, 0), asOfDate.withTime(0, 0, 0, 0));
-        int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, asOfDate.minusWeeks(4).toLocalDate(), asOfDate.toLocalDate());
+        int numberOfWeeks = 4;
+        return getAdherenceForWeeks(patientId, asOfDate, numberOfWeeks);
+    }
+    public double getAdherenceForLastWeek(String patientId, DateTime asOfDate) {
+        return getAdherenceForWeeks(patientId, asOfDate, 1);
+    }
+
+    private double getAdherenceForWeeks(String patientId, DateTime asOfDate, int numberOfWeeks) {
+        int totalDosages = pillReminderService.getPillRegimen(patientId).getNumberOfDosesBetween(asOfDate.minusWeeks(numberOfWeeks).withTime(0,0,0,0), asOfDate.withTime(0,0,0,0));
+        int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.countBy(DosageStatus.TAKEN, asOfDate.minusWeeks(numberOfWeeks).toLocalDate(), asOfDate.toLocalDate());
         return ((double) dosagesTakenForLastFourWeeks) / totalDosages;
     }
 
@@ -59,9 +64,9 @@ public class DailyReminderAdherenceService {
 
     public void recordAdherence(SuspendedAdherenceData suspendedAdherenceData) {
         PillRegimen pillRegimen = pillReminderService.getPillRegimen(suspendedAdherenceData.patientId());
-        from = suspendedAdherenceData.suspendedFrom();
+        DateTime from = suspendedAdherenceData.suspendedFrom();
         dosageResponses = pillRegimen.getDosageResponses();
-        resetSuspensionDateBasedOnPreviousDosageStatus(sort(dosageResponses));
+        resetSuspensionDateBasedOnPreviousDosageStatus(sort(dosageResponses), from);
         DosageTimeLine dosageTimeLine = pillRegimen.getDosageTimeLine(from, DateUtil.now());
         while (dosageTimeLine.hasNext()) {
             Dose dose = dosageTimeLine.next();
@@ -70,14 +75,15 @@ public class DailyReminderAdherenceService {
         }
     }
 
-    private void resetSuspensionDateBasedOnPreviousDosageStatus(List<DosageResponse> dosageResponses) {
+    private void resetSuspensionDateBasedOnPreviousDosageStatus(List<DosageResponse> dosageResponses, DateTime from) {
+        DateTime iteratingDate = from;
+        int currentDosageIndex = 0;
         currentDosageIndex = 0;
-        previousDosageIndex = 0;
+        int previousDosageIndex = 0;
         boolean found = false;
-        iteratingDate = from;
-        actualSuspensionDateAndTime = from;
+        DateTime actualSuspensionDateAndTime = from;
         for (DosageResponse dosageResponse : dosageResponses) {
-            if (isDosageApplicableForDate(dosageResponse, from)) {
+            if (isDosageApplicableForDate(dosageResponse, from, from)) {
                 previousDosageIndex = currentDosageIndex;
                 found = true;
                 break;
@@ -98,7 +104,9 @@ public class DailyReminderAdherenceService {
         } else {
             previousDosageIndex = previousDosageIndex - 1;
         }
-        if (isSuspensionTimeWithinPillWindowOfPreviousDosage(new Dose(dosageResponses.get(currentDosageIndex), iteratingDate.toLocalDate())) && isPreviousDosageNotCaptured(previous())) {
+        if (isSuspensionTimeWithinPillWindowOfPreviousDosage(
+                new Dose(dosageResponses.get(currentDosageIndex), iteratingDate.toLocalDate()), currentDosageIndex, previousDosageIndex, iteratingDate, actualSuspensionDateAndTime)
+                && isPreviousDosageNotCaptured(previous(currentDosageIndex, iteratingDate, previousDosageIndex))) {
             DosageResponse previousDosage = dosageResponses.get(previousDosageIndex);
             if (currentDosageIndex == 0) {
                 from = from.minusDays(1);
@@ -114,7 +122,7 @@ public class DailyReminderAdherenceService {
         return previousDosageAdherenceLog == null ? true : false;
     }
 
-    private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime day) {
+    private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime day, DateTime from) {
         int dosageTimeInMinutes = (dosageResponse.getDosageHour() * 60) + dosageResponse.getDosageMinute();
         if ((day.isEqual(from)) && !isLastDay(day)) {
             int timeInMinutes = (from.getHourOfDay() * 60) + from.getMinuteOfHour();
@@ -132,8 +140,8 @@ public class DailyReminderAdherenceService {
         return false;
     }
 
-    private boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(Dose currentDose) {
-        Dose previousDoseResponse = previous();
+    protected boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(Dose currentDose, int currentDosageIndex, int previousDosageIndex, DateTime iteratingDate, DateTime actualSuspensionDateAndTime) {
+        Dose previousDoseResponse = previous(currentDosageIndex, iteratingDate, previousDosageIndex);
         int previousDosageTimeInMinutes = (previousDoseResponse.getDosageHour() * 60) + previousDoseResponse.getDosageMinute();
         int currentDosageTimeInMinutes = (currentDose.getDosageHour() * 60) + currentDose.getDosageMinute();
         int timeInMinutes = (actualSuspensionDateAndTime.getHourOfDay() * 60) + actualSuspensionDateAndTime.getMinuteOfHour();
@@ -147,7 +155,7 @@ public class DailyReminderAdherenceService {
         return false;
     }
 
-    public Dose previous() {
+    public Dose previous(int currentDosageIndex, DateTime iteratingDate, int previousDosageIndex) {
         DosageResponse dosageResponseToReturn;
         DateTime dateToReturn;
         if (currentDosageIndex == 0) {
