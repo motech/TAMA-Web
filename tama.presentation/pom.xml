@@ -940,7 +940,7 @@
                             </systemProperties>
                             <runOrder>reversealphabetical</runOrder>
                             <parallel>classes</parallel>
-                            <threadCount>4</threadCount>
+                            <threadCount>3</threadCount>
                             <perCoreThreadCount>false</perCoreThreadCount>
                             <includes>
                                 <include>**/tamafunctional/**/*Test.java</include>
