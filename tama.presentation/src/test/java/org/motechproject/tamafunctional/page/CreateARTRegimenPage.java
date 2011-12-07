@@ -4,10 +4,12 @@ import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class CreateARTRegimenPage extends Page {
 
@@ -30,6 +32,9 @@ public class CreateARTRegimenPage extends Page {
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].eveningTime_id")
     private WebElement drug1EveningDosageTimeElement;
+
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].advice_id")
+    private WebElement drug1AdviceTypeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].mealAdviceId_id")
     private WebElement drug1MealAdviceTypeElement;
@@ -63,6 +68,7 @@ public class CreateARTRegimenPage extends Page {
         drug1DosageTypeElement = WebDriverFactory.createWebElement(drug1DosageTypeElement);
         drug1MorningDosageTimeElement = WebDriverFactory.createWebElement(drug1MorningDosageTimeElement);
         drug1EveningDosageTimeElement = WebDriverFactory.createWebElement(drug1EveningDosageTimeElement);
+        drug1AdviceTypeElement = WebDriverFactory.createWebElement(drug1AdviceTypeElement);
         drug1MealAdviceTypeElement = WebDriverFactory.createWebElement(drug1MealAdviceTypeElement);
         drug2DosageTypeElement = WebDriverFactory.createWebElement(drug2DosageTypeElement);
         drug2MorningDosageTimeElement = WebDriverFactory.createWebElement(drug2MorningDosageTimeElement);
@@ -80,7 +86,12 @@ public class CreateARTRegimenPage extends Page {
 
     public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         setupNewARTRegimen(treatmentAdvice);
-        this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(By.id(ShowPatientPage.PATIENT_ID_ID)) != null;
+            }
+        });
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
@@ -115,7 +126,7 @@ public class CreateARTRegimenPage extends Page {
             drug2EveningDosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
         drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
 
-        drug1MealAdviceTypeElement.submit();
+        drug1AdviceTypeElement.submit();
     }
 
     private void logDosage(TestDrugDosage drugDosage) {
