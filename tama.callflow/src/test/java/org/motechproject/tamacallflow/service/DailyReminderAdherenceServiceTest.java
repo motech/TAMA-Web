@@ -18,6 +18,8 @@ import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
@@ -73,7 +75,7 @@ public class DailyReminderAdherenceServiceTest {
         when(pillRegimen.getNumberOfDosesBetween(asOfDate.minusWeeks(4).withTime(0, 0, 0, 0), asOfDate.withTime(0, 0, 0, 0))).thenReturn(totalDoses);
 
         when(allDosageAdherenceLogs.countBy(same("regimenId"), same(DosageStatus.TAKEN), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(dosesTaken);
-        assertEquals(((double)dosesTaken / totalDoses), dailyReminderAdherenceService.getAdherence(patientId, asOfDate));
+        assertEquals(((double) dosesTaken / totalDoses), dailyReminderAdherenceService.getAdherence(patientId, asOfDate));
     }
 
     @Test
@@ -105,7 +107,7 @@ public class DailyReminderAdherenceServiceTest {
         when(pillRegimen.getDosage("dosageId")).thenReturn(new Dosage(new DosageResponse("dosageId", new Time(10, 0), null, null, doseDate, null)));
         DateTime doseDateTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
         when(pillRegimen.getNumberOfDosesBetween(doseDateTime.minusWeeks(1), doseDateTime)).thenReturn(14);
-        when(allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDate)).thenReturn(new ArrayList<DosageAdherenceLog>(Arrays.asList(dosageAdherenceLog)));
+        when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDate)).thenReturn(1);
         assertEquals(1.0/14.0, dailyReminderAdherenceService.getAdherenceForLastWeek(patientId, doseDateTime));
     }
 }
