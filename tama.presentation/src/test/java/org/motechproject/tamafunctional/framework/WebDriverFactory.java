@@ -4,7 +4,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 public class WebDriverFactory {
@@ -21,9 +20,7 @@ public class WebDriverFactory {
         FIREFOX("firefox") {
             @Override
             WebDriver give() {
-                FirefoxProfile profile = new FirefoxProfile();
-                profile.setEnableNativeEvents(true);
-                return new FirefoxDriver(profile);
+                return new FirefoxDriver();
             }
         },
 
