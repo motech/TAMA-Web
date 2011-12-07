@@ -32,7 +32,7 @@ public class AdherenceQualityListener {
         double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
         String patientId = motechEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
         double adherencePercentage = dailyReminderAdherenceService.getAdherence(patientId, DateUtil.now());
-        if(adherencePercentage < acceptableAdherencePercentage) {
+        if (adherencePercentage * 100 < acceptableAdherencePercentage) {
             dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
         }
     }

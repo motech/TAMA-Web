@@ -16,14 +16,14 @@ import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
+import org.powermock.api.mockito.PowerMockito;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 public class DailyReminderAdherenceServiceTest {
 
@@ -32,24 +32,48 @@ public class DailyReminderAdherenceServiceTest {
     @Mock
     private TAMAPillReminderService pillReminderService;
     @Mock
-    private Properties properties;
+    private Properties ivrProperties;
 
     private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        dailyReminderAdherenceService = new DailyReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, properties);
+        dailyReminderAdherenceService = new DailyReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties);
+        setUpTime();
+    }
+
+    private void setUpTime() {
+        DateTime now = new DateTime(2011, 11, 29, 10, 30, 0);
+        PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
+        final LocalDate today = now.toLocalDate();
+        PowerMockito.stub(method(DateUtil.class, "today")).toReturn(today);
     }
 
     @Test
     public void shouldCreateAdherenceLogsForEveryDosageWhenRecordingAdherence() {
         SuspendedAdherenceData suspendedAdherenceData = SuspendedAdherenceDataPreset.fromYesterdayWithAnyStatus();
         PillRegimen pillRegimen = TAMAPillRegimenBuilder.startRecording().withThreeDosagesInTotal().withTwoDosagesFrom(suspendedAdherenceData.suspendedFrom()).build();
-        when(properties.getProperty(any(String.class))).thenReturn("2");
+        when(ivrProperties.getProperty(any(String.class))).thenReturn("2");
         when(pillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
         dailyReminderAdherenceService.recordAdherence(suspendedAdherenceData);
         verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
+    }
+
+    @Test
+    public void shouldCalculateTheAdherenceForPatient(){
+        String patientId = "patientId";
+        int dosesTaken = 7;
+        int totalDoses = 28;
+
+        PillRegimen pillRegimen = mock(PillRegimen.class);
+        when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
+        DateTime asOfDate = DateUtil.now();
+        when(pillRegimen.getId()).thenReturn("regimenId");
+        when(pillRegimen.getNumberOfDosesBetween(asOfDate.minusWeeks(4).withTime(0, 0, 0, 0), asOfDate.withTime(0, 0, 0, 0))).thenReturn(totalDoses);
+
+        when(allDosageAdherenceLogs.countBy(same("regimenId"), same(DosageStatus.TAKEN), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(dosesTaken);
+        assertEquals(((double)dosesTaken / totalDoses), dailyReminderAdherenceService.getAdherence(patientId, asOfDate));
     }
 
     @Test
@@ -58,12 +82,16 @@ public class DailyReminderAdherenceServiceTest {
         String patientId = "patientId";
         DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, "regimenId", "dosageId", DosageStatus.TAKEN, doseDate);
         when(allDosageAdherenceLogs.getLatestLogForPatient(patientId)).thenReturn(dosageAdherenceLog);
+
         PillRegimen pillRegimen = mock(PillRegimen.class);
+        when(pillRegimen.getId()).thenReturn("regimenId");
         when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
+
         when(pillRegimen.getDosage("dosageId")).thenReturn(new Dosage(new DosageResponse("dosageId", new Time(10, 0), null, null, doseDate, null)));
         DateTime doseTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
-        when(pillRegimen.getNumberOfDosesBetween(doseTime.minusWeeks(4), doseTime)).thenReturn(4);
-        when(allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, doseTime.minusWeeks(4).toLocalDate(), doseTime.toLocalDate())).thenReturn(new ArrayList<DosageAdherenceLog>(Arrays.asList(dosageAdherenceLog)));
+        when(pillRegimen.getNumberOfDosesBetween(doseTime.minusWeeks(4).withTime(0, 0, 0, 0), doseTime.withTime(0, 0, 0, 0))).thenReturn(4);
+        when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseTime.minusWeeks(4).toLocalDate(), doseTime.toLocalDate())).thenReturn(1);
+
         assertEquals(0.25, dailyReminderAdherenceService.getAdherenceAsOfLastRecordedDose(patientId));
     }
 }

@@ -14,7 +14,7 @@ public class Dosage {
         this.dosageResponse = dosageResponse;
     }
 
-    // range is open ended on from and close ended on till
+    // range is inclusive of from and exclusive of till
     public int getNumberOfDosesBetween(DateTime from, DateTime till) {
         DateTime dosageStartDateTime = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
         LocalDate dosageEndDate = dosageResponse.getEndDate() != null ? dosageResponse.getEndDate() : till.toLocalDate();
@@ -23,17 +23,17 @@ public class Dosage {
             from = dosageStartDateTime;
         if (!till.isBefore(dosageEndDateTime))
             till = dosageEndDateTime;
-        return numberOfdosesOnFirstDay(from) + numberOfDosesOnLastDay(till) + numberOfDoesesBetweenFirstAndLastDay(from, till);
+        return numberOfDosesOnFirstDay(from) + numberOfDosesOnLastDay(till) + numberOfDosesBetweenFirstAndLastDay(from, till);
     }
 
-    private int numberOfDoesesBetweenFirstAndLastDay(DateTime from, DateTime till) {
+    private int numberOfDosesBetweenFirstAndLastDay(DateTime from, DateTime till) {
         DateTime dayAfterFrom = from.plusDays(1);
         if (dayAfterFrom.isAfter(till))
             return 0;
         return Days.daysBetween(dayAfterFrom.toLocalDate(), till.toLocalDate()).getDays();
     }
 
-    private int numberOfdosesOnFirstDay(DateTime dateTime) {
+    private int numberOfDosesOnFirstDay(DateTime dateTime) {
         DateTime doseDateTime = dateTime.withTime(dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0, 0);
         return !dateTime.isAfter(doseDateTime)? 1 : 0;
     }

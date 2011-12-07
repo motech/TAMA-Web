@@ -70,11 +70,10 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return null;
     }
 
-    @View(name = "find_by_dosage_status_and_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.dosageStatus, doc.dosageDate], doc._id);}}")
-    public List<DosageAdherenceLog> findByStatusAndDateRange(DosageStatus dosageStatus, LocalDate from, LocalDate till) {
-        ViewQuery q = createQuery("find_by_dosage_status_and_date_range").startKey(ComplexKey.of(dosageStatus, from)).endKey(ComplexKey.of(dosageStatus, till)).inclusiveEnd(true).includeDocs(true);
-        List<DosageAdherenceLog> result = db.queryView(q, DosageAdherenceLog.class);
-        return result;
+    @View(name = "find_by_regimen_and_dosage_status_and_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageStatus, doc.dosageDate], doc._id);}}")
+    public int countBy(String regimenId, DosageStatus dosageStatus, LocalDate from, LocalDate till) {
+        ViewQuery q = createQuery("find_by_regimen_and_dosage_status_and_date_range").startKey(ComplexKey.of(regimenId, dosageStatus, from)).endKey(ComplexKey.of(regimenId, dosageStatus, till)).inclusiveEnd(true).includeDocs(true);
+        return db.queryView(q, DosageAdherenceLog.class).size();
     }
 
     @View(name = "ordered_by_date", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.patientId, doc.dosageDate], doc._id);}}")

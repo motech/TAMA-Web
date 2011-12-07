@@ -88,13 +88,13 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLog5);
         markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4, dosageAdherenceLog5);
 
-        assertArrayEquals(new DosageAdherenceLog[]{ dosageAdherenceLog5, dosageAdherenceLog4, dosageAdherenceLog2 }, allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, someDay.minusDays(5), someDay).toArray());
-
-        assertArrayEquals(new DosageAdherenceLog[]{ dosageAdherenceLog4, dosageAdherenceLog2 }, allDosageAdherenceLogs.findByStatusAndDateRange(DosageStatus.TAKEN, someDay.minusDays(3), someDay).toArray());
+        assertEquals(3, allDosageAdherenceLogs.countBy("regimen_id", DosageStatus.TAKEN, someDay.minusDays(5), someDay));
+        assertEquals(2, allDosageAdherenceLogs.countBy("regimen_id", DosageStatus.TAKEN, someDay.minusDays(3), someDay));
+        assertEquals(0, allDosageAdherenceLogs.countBy("regimen_id", DosageStatus.TAKEN, someDay.minusDays(6), someDay.minusDays(5)));
     }
 
     @Test
-    public void shouldGetTheLastestDosageAdherenceLogForThePatient() {
+    public void shouldGetTheLatestDosageAdherenceLogForThePatient() {
         LocalDate createdOn = new LocalDate(2011, 10, 10);
         List<DosageAdherenceLog> dosageAdherenceLogs = Arrays.asList(
                 new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, createdOn),

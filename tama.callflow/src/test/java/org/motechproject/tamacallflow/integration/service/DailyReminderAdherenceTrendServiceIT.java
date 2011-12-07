@@ -24,8 +24,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -34,7 +37,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 @PrepareForTest(DateUtil.class)
-@Ignore
+@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
 public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest {
 
     @Mock
@@ -46,9 +49,12 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     @Autowired
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
+    @Autowired
+    @Qualifier("ivrProperties")
+    private Properties ivrProperties;
+
     private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
-    @Mock
     private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     @Rule
@@ -57,6 +63,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     @Before
     public void setUp() {
         initMocks(this);
+        dailyReminderAdherenceService = new DailyReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties);
         dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
     }
 

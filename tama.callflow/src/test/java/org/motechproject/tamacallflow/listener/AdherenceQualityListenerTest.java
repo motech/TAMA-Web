@@ -45,7 +45,7 @@ public class AdherenceQualityListenerTest {
     public void shouldDetermineAdherenceQualityAndRaiseRedAlertIfAdherenceIsBelowAcceptablePercentage() throws Exception {
         String patientId = "patient_UUId";
         String acceptableAdherence = "70";
-        double adherencePercentage = 69d;
+        double adherencePercentage = 0.69;
 
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
         when(dailyReminderAdherenceService.getAdherence(same(patientId), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
@@ -64,7 +64,7 @@ public class AdherenceQualityListenerTest {
     public void shouldDetermineAdherenceQualityAndNotRaiseRedAlertIfAdherencePercentageIsAcceptable() throws Exception {
         String patientId = "patient_UUId";
         String acceptableAdherence = "70";
-        double adherencePercentage = 70.001;
+        double adherencePercentage = 0.70;
 
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
         when(dailyReminderAdherenceService.getAdherence(same(patientId), Matchers.<DateTime>any())).thenReturn(adherencePercentage);

@@ -28,7 +28,7 @@ public class DosageTest {
     }
 
     @Test
-    public void numberOfdosagesSinceDosageStartShouldBe28() {
+    public void numberOfDosagesSinceDosageStartShouldBe28() {
         DateTime today = new DateTime(2011, 10, 29, 10, 0, 0, 0);
         final DateTime dosageStartDateTime = today.minusWeeks(4);
         Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
@@ -37,7 +37,7 @@ public class DosageTest {
     }
 
     @Test
-    public void numberOfdosagesADayAfterDosageStartShouldBe27() {
+    public void numberOfDosagesADayAfterDosageStartShouldBe27() {
         DateTime today = new DateTime(2011, 10, 2, 10, 0, 0, 0);
         final DateTime dosageStartDateTime = today.minusWeeks(4);
         Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
