@@ -127,13 +127,7 @@ public class ShowPatientPage extends Page {
 
     public ShowPatientPage activatePatient() {
         this.activationLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(DEACTIVATE_PATIENT_ID)) != null;
-            }
-        });
-
+        waitForElementWithIdToLoad(DEACTIVATE_PATIENT_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
@@ -141,46 +135,25 @@ public class ShowPatientPage extends Page {
         this.deactivationReasonDropdown.clear();
         this.deactivationReasonDropdown.sendKeys(reason);
         this.deactivationLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(ACTIVATE_PATIENT_ID)) != null;
-            }
-        });
+        waitForElementWithIdToLoad(ACTIVATE_PATIENT_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
     public CreateARTRegimenPage goToCreateARTRegimenPage() {
         this.clinicVisitsLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                final WebElement element = webDriver.findElement(By.id(CreateARTRegimenPage.DRUG_BRAND1_ID));
-                return element != null;
-            }
-        });
+        waitForElementWithIdToLoad(CreateARTRegimenPage.DRUG_BRAND1_ID);
         return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
     }
 
     public ShowARTRegimenPage goToViewARTRegimenPage() {
         this.clinicVisitsLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(ShowARTRegimenPage.REGIMEN_TEXT_ID)) != null;
-            }
-        });
+        waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
         return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
     }
 
     public CreateLabResultsPage goToLabResultsPage() {
         this.labResultsLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(CreateLabResultsPage.TEST_DATE_ELEMENT)) != null;
-            }
-        });
+        waitForElementWithIdToLoad(CreateLabResultsPage.TEST_DATE_ELEMENT);
         return MyPageFactory.initElements(webDriver, CreateLabResultsPage.class);
     }
 
@@ -203,37 +176,19 @@ public class ShowPatientPage extends Page {
 
     public FormVitalStatisticsPage clickVitalStatisticsLink_WhenPatientHasNone() {
         this.showOrCreateVitalStatisticsLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                final WebElement element = webDriver.findElement(By.id(FormVitalStatisticsPage.PAGE_LOAD_MARKER));
-                return element != null;
-            }
-        });
+        waitForElementWithIdToLoad(FormVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, FormVitalStatisticsPage.class);
     }
 
     public ShowVitalStatisticsPage clickVitalStatisticsLink_WhenPatientHasOne() {
         this.showOrCreateVitalStatisticsLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                final WebElement element = webDriver.findElement(By.id(ShowVitalStatisticsPage.PAGE_LOAD_MARKER));
-                return element != null;
-            }
-        });
+        waitForElementWithIdToLoad(ShowVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
     }
 
     public ShowVitalStatisticsPage goToShowVitalStatisticsPage() {
         this.showOrCreateVitalStatisticsLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                final WebElement element = webDriver.findElement(By.id(ShowVitalStatisticsPage.PAGE_LOAD_MARKER));
-                return element != null;
-            }
-        });
+        waitForElementWithIdToLoad(ShowVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
     }
 }

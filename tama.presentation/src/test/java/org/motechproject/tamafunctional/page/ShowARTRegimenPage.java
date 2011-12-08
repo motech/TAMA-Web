@@ -1,12 +1,10 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class ShowARTRegimenPage extends Page {
 
@@ -47,12 +45,7 @@ public class ShowARTRegimenPage extends Page {
 
     public CreateARTRegimenPage goToChangeARTRegimenPage() {
         this.changeRegimenElement.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(CreateARTRegimenPage.DISCONTINUATION_REASON_ID)) != null;
-            }
-        });
+        waitForElementWithIdToLoad(CreateARTRegimenPage.DISCONTINUATION_REASON_ID);
         return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
     }
 }

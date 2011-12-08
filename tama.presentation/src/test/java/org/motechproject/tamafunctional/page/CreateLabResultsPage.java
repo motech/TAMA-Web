@@ -3,12 +3,10 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestLabResult;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import java.util.List;
 
@@ -64,14 +62,7 @@ public class CreateLabResultsPage extends Page {
 
     public ShowLabResultsPage submit() {
         resultForCD4.submit();
-
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(ShowLabResultsPage.EDIT_LAB_RESULT_LINK)) != null;
-            }
-        });
-
+        waitForElementWithIdToLoad(ShowLabResultsPage.EDIT_LAB_RESULT_LINK);
         return MyPageFactory.initElements(webDriver, ShowLabResultsPage.class);
     }
 }

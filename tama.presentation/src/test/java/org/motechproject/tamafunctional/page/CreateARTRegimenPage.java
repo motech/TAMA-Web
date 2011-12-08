@@ -4,12 +4,10 @@ import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class CreateARTRegimenPage extends Page {
 
@@ -17,6 +15,10 @@ public class CreateARTRegimenPage extends Page {
     public static final String DISCONTINUATION_REASON_ID = "_discontinuationReason_id";
 
     public static final String DRUG_BRAND1_ID = "_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id";
+    public static final String TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID = "_treatmentAdvice.drugDosages[0].morningTime_id";
+    public static final String TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID = "_treatmentAdvice.drugDosages[0].eveningTime_id";
+    public static final String TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID = "_treatmentAdvice.drugDosages[1].morningTime_id";
+    public static final String TREATMENT_ADVICE_DRUG_DOSAGES_1_EVENING_TIME_ID = "_treatmentAdvice.drugDosages[1].eveningTime_id";
 
     @FindBy(how = How.ID, using = REGIMEN_ID)
     private WebElement regimenElement;
@@ -27,10 +29,10 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageTypeId_id")
     private WebElement drug1DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].morningTime_id")
+    @FindBy(how = How.ID, using = TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID)
     private WebElement drug1MorningDosageTimeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].eveningTime_id")
+    @FindBy(how = How.ID, using = TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID)
     private WebElement drug1EveningDosageTimeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].advice_id")
@@ -42,10 +44,10 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageTypeId_id")
     private WebElement drug2DosageTypeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].morningTime_id")
+    @FindBy(how = How.ID, using = TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID)
     private WebElement drug2MorningDosageTimeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].eveningTime_id")
+    @FindBy(how = How.ID, using = TREATMENT_ADVICE_DRUG_DOSAGES_1_EVENING_TIME_ID)
     private WebElement drug2EveningDosageTimeElement;
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
@@ -86,12 +88,7 @@ public class CreateARTRegimenPage extends Page {
 
     public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
         setupNewARTRegimen(treatmentAdvice);
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(By.id(ShowPatientPage.PATIENT_ID_ID)) != null;
-            }
-        });
+        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
@@ -99,34 +96,50 @@ public class CreateARTRegimenPage extends Page {
         discontinuationReasonElement.sendKeys(treatmentAdvice.discontinuationReason());
         nextToRegisterNewTreatmentAdvice.click();
         setupNewARTRegimen(treatmentAdvice);
-        this.waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
+        waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
         return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
     }
 
     private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
-        TestDrugDosage drugDosage1 = treatmentAdvice.drugDosages().get(0);
+        TestDrugDosage testDrugDosage1 = treatmentAdvice.drugDosages().get(0);
+        TestDrugDosage testDrugDosage2 = treatmentAdvice.drugDosages().get(1);
+        String dosageType = testDrugDosage1.dosageType();
+        createFirstDosage(testDrugDosage1, dosageType);
+        createSecondDosage(testDrugDosage2, dosageType);
+        drug1AdviceTypeElement.submit();
+    }
+
+    private void createFirstDosage(TestDrugDosage testDrugDosage1, String dosageType) {
+        TestDrugDosage drugDosage1 = testDrugDosage1;
         logDosage(drugDosage1);
         drug1DosageTypeElement.clear();
-        drug1DosageTypeElement.sendKeys(drugDosage1.dosageType());
+        drug1DosageTypeElement.sendKeys(dosageType);
         drug1MealAdviceTypeElement.click();
-        if (drugDosage1.isMorningDosage())
+        if (drugDosage1.isMorningDosage()) {
+            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID);
             drug1MorningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
-        else
+        }
+        else {
+            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID);
             drug1EveningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
+        }
         drug1MealAdviceTypeElement.sendKeys(drugDosage1.mealAdvice());
+    }
 
-        TestDrugDosage drugDosage2 = treatmentAdvice.drugDosages().get(1);
-        logDosage(drugDosage2);
+    private void createSecondDosage(TestDrugDosage testDrugDosage2, String dosageType) {
+        logDosage(testDrugDosage2);
         drug2DosageTypeElement.clear();
-        drug2DosageTypeElement.sendKeys(drugDosage1.dosageType());
+        drug2DosageTypeElement.sendKeys(dosageType);
         drug2MealAdviceTypeElement.click();
-        if (drugDosage2.isMorningDosage())
-            drug2MorningDosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
-        else
-            drug2EveningDosageTimeElement.sendKeys(drugDosage2.dosageSchedule());
-        drug2MealAdviceTypeElement.sendKeys(drugDosage2.mealAdvice());
-
-        drug1AdviceTypeElement.submit();
+        if (testDrugDosage2.isMorningDosage()) {
+            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID);
+            drug2MorningDosageTimeElement.sendKeys(testDrugDosage2.dosageSchedule());
+        }
+        else {
+            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_EVENING_TIME_ID);
+            drug2EveningDosageTimeElement.sendKeys(testDrugDosage2.dosageSchedule());
+        }
+        drug2MealAdviceTypeElement.sendKeys(testDrugDosage2.mealAdvice());
     }
 
     private void logDosage(TestDrugDosage drugDosage) {

@@ -1,12 +1,10 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class ShowVitalStatisticsPage extends Page {
 
@@ -68,13 +66,7 @@ public class ShowVitalStatisticsPage extends Page {
 
     public FormVitalStatisticsPage goToEditVitalStatisticsPage() {
         this.editLink.click();
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                final WebElement element = webDriver.findElement(By.id(FormVitalStatisticsPage.PAGE_LOAD_MARKER));
-                return element != null;
-            }
-        });
+        waitForElementWithIdToLoad(FormVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, FormVitalStatisticsPage.class);
     }
 }

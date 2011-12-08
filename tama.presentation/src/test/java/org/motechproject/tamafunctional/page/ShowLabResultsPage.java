@@ -1,12 +1,10 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,27 +54,13 @@ public class ShowLabResultsPage extends Page {
 
     public ListPatientsPage gotoHomePage() {
         homePageLink.click();
-
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver input) {
-                return input.findElement(By.id(ListPatientsPage.LIST_PATIENT_PANE_ID)) != null;
-            }
-        });
-
+        waitForElementWithIdToLoad(ListPatientsPage.LIST_PATIENT_PANE_ID);
         return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
     public CreateLabResultsPage gotoEditPage() {
         editLink.click();
-
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver input) {
-                return input.findElement(By.id(CreateLabResultsPage.TEST_DATE_ELEMENT)) != null;
-            }
-        });
-
+        waitForElementWithIdToLoad(CreateLabResultsPage.TEST_DATE_ELEMENT);
         return MyPageFactory.initElements(webDriver, CreateLabResultsPage.class);
     }
 }
