@@ -25,7 +25,12 @@ public class AdherenceService {
            adherenceForLastWeek = dailyReminderAdherenceService.getAdherenceForLastWeek(patient.getId(), DateUtil.now());
        } else {
            adherenceForLastWeek = fourDayRecallService.getAdherencePercentageForPreviousWeek(patient.getId());
+           if( adherenceForLastWeek == 0.0 &&
+               fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient).isAfter(DateUtil.now()))
+                  return false;
        }
        return (adherenceForLastWeek != 100.0);
     }
+
+
 }

@@ -1,14 +1,12 @@
 package org.motechproject.tamacallflow.platform.service;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
+import org.joda.time.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.*;
+import org.motechproject.tamadomain.domain.TimeOfDay;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
@@ -17,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 @Service
 public class FourDayRecallService {
@@ -32,6 +27,7 @@ public class FourDayRecallService {
     private AllPatients allPatients;
     private PatientAlertService patientAlertService;
     private Properties properties;
+
 
     @Autowired
     public FourDayRecallService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs,
@@ -237,5 +233,18 @@ public class FourDayRecallService {
     public boolean hasAdherenceInRedAlertBeenRaisedForCurrentWeek(String patientId) {
        DateTime startDateForCurrentWeek = DateUtil.newDateTime(getMostRecentBestCallDay(patientId), 0, 0, 0);
        return patientAlertService.getAdherenceInRedAlerts(patientId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
+    }
+
+    public DateTime getFirstWeeksFourDayRecallRetryEndDate(Patient patient) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        LocalDate weeklyAdherenceTrakingStratDate=getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate firstRecallDate = weeklyAdherenceTrakingStratDate.plusDays(DAYS_TO_RECALL);
+        DayOfWeek preferredDayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
+        while (preferredDayOfWeeklyCall.getValue() != firstRecallDate.getDayOfWeek()){
+            firstRecallDate = firstRecallDate.plusDays(1);
+        }
+        Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
+        TimeOfDay bestCallTime = patient.getPatientPreferences().getBestCallTime();
+        return firstRecallDate.plusDays(daysToRetry).toDateTime(new LocalTime(bestCallTime.getHour(), bestCallTime.getMinute()));
     }
 }

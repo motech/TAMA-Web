@@ -603,12 +603,40 @@ public class FourDayRecallServiceTest {
 
     @Test
     public void shouldReturnTreatmentAdviseStartDateAsStartDate_WhenThereIsNoTransition() {
-        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 1, 1);
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 12, 1);
 
         Patient patient = new Patient();
         setupExpectations(patient, treatmentAdviceStartDate.toDate(), null);
 
         assertEquals(treatmentAdviceStartDate, fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice));
+    }
+
+    @Test
+    public void shouldTestFourDayRecallRetryEndDateForFirstCall() {
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011,12,1);
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        patient.getPatientPreferences().setBestCallTime(new TimeOfDay(10,10, TimeMeridiem.AM));
+        setupExpectations(patient, treatmentAdviceStartDate.toDate(), treatmentAdviceStartDate.plusDays(3));
+        when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn("2");
+        assertEquals(new DateTime(2011, 12, 11, 10, 10), fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient));
+    }
+
+    @Test
+    public void shouldTestFourDayRecallRetryEndDateForFirstCallWhenPatientMovedFromDailyToFDR() {
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011,11,1);
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
+        patient.getPatientPreferences().setBestCallTime(new TimeOfDay(10,10, TimeMeridiem.AM));
+        patient.getPatientPreferences().setCallPreferenceTransitionDate(new LocalDate(2011, 12, 1).toDateTimeAtCurrentTime());
+        setupExpectations(patient, treatmentAdviceStartDate.toDate(), treatmentAdviceStartDate.plusDays(3));
+
+        when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn("2");
+        assertEquals(new DateTime(2011, 12, 11, 10, 10), fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient));
     }
 
     private void setupExpectations(Patient patient, Date startDateOfTreatmentAdvice, LocalDate today) {
@@ -618,4 +646,5 @@ public class FourDayRecallServiceTest {
         when(treatmentAdvice.getStartDate()).thenReturn(startDateOfTreatmentAdvice);
         when(DateUtil.newDate(startDateOfTreatmentAdvice)).thenReturn(new LocalDate(startDateOfTreatmentAdvice));
     }
+
 }
