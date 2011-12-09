@@ -34,10 +34,11 @@ public class MessageOnPreviousPillNotTakenTest {
         TAMAIVRContextForTest context = new TAMAIVRContextForTest().dosageId("currentDosageId").callStartTime(new DateTime(2010, 10, 10, 16, 0, 0)).pillRegimen(pillRegimenResponse);
         context.callDirection(CallDirection.Outbound);
         String[] messages = messageOnPreviousPillNotTaken.executeCommand(context);
-        assertEquals(4, messages.length);
+        assertEquals(5, messages.length);
         assertEquals(TamaIVRMessage.YOU_SAID_YOU_DID_NOT_TAKE, messages[0]);
-        assertEquals(TamaIVRMessage.MORNING, messages[1]);
-        assertEquals(TamaIVRMessage.DOSE, messages[2]);
-        assertEquals(TamaIVRMessage.TRY_NOT_TO_MISS, messages[3]);
+        assertEquals(TamaIVRMessage.MORNING_CONFIRMATION, messages[1]);
+        assertEquals(TamaIVRMessage.DOSE_NOT_TAKEN, messages[2]);
+        assertEquals(TamaIVRMessage.DOSE_RECORDED, messages[3]);
+        assertEquals(TamaIVRMessage.TRY_NOT_TO_MISS, messages[4]);
     }
 }

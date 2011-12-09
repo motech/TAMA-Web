@@ -5,7 +5,6 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -55,60 +54,42 @@ public class IVRDayMessageBuilderTest {
     }
 
     @Test
-    public void constructMessageWhenPreviousDosageIsForTodayMorning() {
+    public void constructMessageWhenPreviousDosageIsForYesterday() {
+        DateTime time = DateUtil.now().minusDays(1).withHourOfDay(10).withMinuteOfHour(20);
+
+        String message = ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAY_IN_THE_MORNING(time);
+        assertEquals("001_07_04_doseTimeAtYesterday", message);
+    }
+
+    @Test
+    public void constructMessageWhenPreviousDosageIsForMorning() {
         DateTime time = DateUtil.now().withHourOfDay(10).withMinuteOfHour(20);
 
-        List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
-        assertEquals(1, messages.size());
-        assertEquals("001_07_02_doseTimeOfMorning", messages.get(0));
+        String message = ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(time);
+        assertEquals("001_07_02_doseTimeOfMorning", message);
     }
 
     @Test
-    public void constructMessageWhenPreviousDosageIsForYesterdaysMorning() {
-        DateTime time = DateUtil.now().minusDays(1).withHourOfDay(10).withMinuteOfHour(20);
+    public void constructMessageWhenPreviousDosageIsForAfternoon() {
+        DateTime time = DateUtil.now().withHourOfDay(12).withMinuteOfHour(00);
 
-        List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
-        assertEquals(2, messages.size());
-        assertEquals("001_07_02_doseTimeOfYesterdays", messages.get(0));
-        assertEquals("001_07_02_doseTimeOfMorning", messages.get(1));
+        String message = ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(time);
+        assertEquals("001_07_02_doseTimeOfAfternoon", message);
     }
 
     @Test
-    public void constructMessageWhenPreviousDosageIsForYesterdayInTheMorning() {
-        DateTime time = DateUtil.now().minusDays(1).withHourOfDay(10).withMinuteOfHour(20);
+    public void constructMessageWhenPreviousDosageIsForEvening() {
+        DateTime time = DateUtil.now().withHourOfDay(16).withMinuteOfHour(00);
 
-        List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAY_IN_THE_MORNING(time);
-        assertEquals(2, messages.size());
-        assertEquals("001_07_04_doseTimeAtYesterday", messages.get(0));
-        assertEquals("001_07_04_doseTimeAtMorning", messages.get(1));
-    }
-
-    @Test
-    public void constructMessageWhenPreviousDosageIsForYesterdaysAfternoon() {
-        DateTime time = DateUtil.now().minusDays(1).withHourOfDay(12).withMinuteOfHour(00);
-
-        List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
-        assertEquals(2, messages.size());
-        assertEquals("001_07_02_doseTimeOfYesterdays", messages.get(0));
-        assertEquals("001_07_02_doseTimeOfAfternoon", messages.get(1));
-    }
-
-    @Test
-    public void constructMessageWhenPreviousDosageIsForYesterdaysEvening() {
-        DateTime time = DateUtil.now().minusDays(1).withHourOfDay(16).withMinuteOfHour(00);
-
-        List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
-        assertEquals(2, messages.size());
-        assertEquals("001_07_02_doseTimeOfYesterdays", messages.get(0));
-        assertEquals("001_07_02_doseTimeOfEvening", messages.get(1));
+        String message = ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(time);
+        assertEquals("001_07_02_doseTimeOfEvening", message);
     }
 
     @Test
     public void constructMessageWhenPreviousDosageIsForLastNight() {
-        DateTime time = DateUtil.now().minusDays(1).withHourOfDay(20).withMinuteOfHour(00);
+        DateTime time = DateUtil.now().withHourOfDay(20).withMinuteOfHour(00);
 
-        List<String> messages = ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(time);
-        assertEquals(1, messages.size());
-        assertEquals("001_07_02_doseTimeOfLastnight", messages.get(0));
+        String message = ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(time);
+        assertEquals("001_07_02_doseTimeOfLastnight", message);
     }
 }

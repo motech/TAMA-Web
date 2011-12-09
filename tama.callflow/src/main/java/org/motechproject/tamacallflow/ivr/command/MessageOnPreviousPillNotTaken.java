@@ -24,8 +24,9 @@ public class MessageOnPreviousPillNotTaken extends BaseTreeCommand {
     public String[] executeCommand(TAMAIVRContext ivrContext) {
         ArrayList<String> messages = new ArrayList<String>();
         messages.add(TamaIVRMessage.YOU_SAID_YOU_DID_NOT_TAKE);
-        messages.addAll(ivrDayMessageBuilder.getMessageForPreviousDosage_YESTERDAYS_MORNING(pillRegimenSnapshot(ivrContext).getPreviousDosageTime()));
-        messages.add(TamaIVRMessage.DOSE);
+        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageConfirmation_YESTERDAYS_MORNING(pillRegimenSnapshot(ivrContext).getPreviousDosageTime()));
+        messages.add(TamaIVRMessage.DOSE_NOT_TAKEN);
+        messages.add(TamaIVRMessage.DOSE_RECORDED);
         messages.add(TamaIVRMessage.TRY_NOT_TO_MISS);
         return messages.toArray(new String[messages.size()]);
     }

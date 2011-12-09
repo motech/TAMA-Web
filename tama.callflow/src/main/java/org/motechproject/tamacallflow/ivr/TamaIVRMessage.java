@@ -10,6 +10,7 @@ import java.util.Properties;
 
 @Component
 public class TamaIVRMessage implements IVRMessage {
+
     public static final String WAV = ".wav";
 
     public static final String NUMBER_WAV_FORMAT = "Num_%03d";
@@ -21,8 +22,6 @@ public class TamaIVRMessage implements IVRMessage {
     /*----------------MENU---------------*/
     public static final String SYMPTOMS_REPORTING_MENU_OPTION = "010_00_00_mainMenu_symptoms";
     public static final String OUTBOX_MENU_OPTION = "010_00_00_mainMenu_messages";
-
-
     public static final String DOSE_TAKEN_MENU_OPTION = "010_00_00_mainMenu_doseTaken";
 
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
@@ -43,29 +42,37 @@ public class TamaIVRMessage implements IVRMessage {
 
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "001_07_01_your";
+
     public static final String YESTERDAYS = "001_07_02_doseTimeOfYesterdays";
     public static final String MORNING = "001_07_02_doseTimeOfMorning";
     public static final String AFTERNOON = "001_07_02_doseTimeOfAfternoon";
-
     public static final String EVENING = "001_07_02_doseTimeOfEvening";
-
     public static final String LAST_NIGHT = "001_07_02_doseTimeOfLastnight";
+
     public static final String DOSE_NOT_RECORDED = "001_07_03_doseNotRecorded";
+
     public static final String YESTERDAY = "001_07_04_doseTimeAtYesterday";
     public static final String IN_THE_MORNING = "001_07_04_doseTimeAtMorning";
     public static final String IN_THE_AFTERNOON = "001_07_04_doseTimeAtAfternoon";
-
     public static final String IN_THE_EVENING = "001_07_04_doseTimeAtEvening";
     public static final String IN_THE_LAST_NIGHT = "001_07_04_doseTimeAtLastnight";
+
+    public static final String YESTERDAYS_CONFIRMATION = "001_08_02_doseTimeOfYesterdays";
+    public static final String MORNING_CONFIRMATION = "001_08_02_doseTimeOfMorning";
+    public static final String AFTERNOON_CONFIRMATION = "001_08_02_doseTimeOfAfternoon";
+    public static final String EVENING_CONFIRMATION = "001_08_02_doseTimeOfEvening";
+    public static final String LAST_NIGHT_CONFIRMATION = "001_08_02_doseTimeOfLastnight";
+
     public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
     public static final String FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
-
     public static final String PREVIOUS_DOSE_MENU = "001_07_08_lastDoseMenu";
+
     /* ------------------- */
     public static final String YOU_SAID_YOU_TOOK = "001_08_01_youSaidYouTook";
 
     public static final String YOU_SAID_YOU_DID_NOT_TAKE = "001_09_01_youSaidYouTookNot";
-    public static final String DOSE = "001_08_03_doseTaken";
+    public static final String DOSE_TAKEN = "001_08_03_doseTaken";
+    public static final String DOSE_NOT_TAKEN = "001_09_03_doseNotTaken";
     public static final String TRY_NOT_TO_MISS = "001_09_05_tryNotToMiss";
     public static final String TOOK_DOSE_LATE = "010_10_01_tookDoseLate";
     public static final String TOOK_DOSE_BEFORE_TIME = "010_09_01_tookDoseBeforeTime";

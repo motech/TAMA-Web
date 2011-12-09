@@ -18,29 +18,27 @@ public class IVRDayMessageBuilder {
         return messages;
     }
 
-    public List<String> getMessageForPreviousDosage_YESTERDAYS_MORNING(DateTime previousDosageDateTime) {
+    public String getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(DateTime previousDosageDateTime) {
         return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAYS, TamaIVRMessage.MORNING, TamaIVRMessage.AFTERNOON, TamaIVRMessage.EVENING, TamaIVRMessage.LAST_NIGHT);
     }
 
-    public List<String> getMessageForPreviousDosage_YESTERDAY_IN_THE_MORNING(DateTime previousDosageDateTime) {
+    public String getMessageForPreviousDosageQuestion_YESTERDAY_IN_THE_MORNING(DateTime previousDosageDateTime) {
         return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAY, TamaIVRMessage.IN_THE_MORNING, TamaIVRMessage.IN_THE_AFTERNOON, TamaIVRMessage.IN_THE_EVENING, TamaIVRMessage.IN_THE_LAST_NIGHT);
     }
 
-    private List<String> getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening, String lastNight) {
-        List<String> messages = new ArrayList<String>();
+    public String getMessageForPreviousDosageConfirmation_YESTERDAYS_MORNING(DateTime previousDosageDateTime) {
+        return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAYS_CONFIRMATION, TamaIVRMessage.MORNING_CONFIRMATION, TamaIVRMessage.AFTERNOON_CONFIRMATION, TamaIVRMessage.EVENING_CONFIRMATION, TamaIVRMessage.LAST_NIGHT_CONFIRMATION);
+    }
 
-        if (previousDosageDateTime.plusDays(1).toLocalDate().equals(DateUtil.today()) && previousDosageDateTime.getHourOfDay() < 20)
-            messages.add(yesterday);
-
-        if (previousDosageDateTime.getHourOfDay() < 12)
-            messages.add(morning);
+    private String getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening, String lastNight) {
+        if (previousDosageDateTime.plusDays(1).toLocalDate().equals(DateUtil.today()))
+           return yesterday;
+        else if (previousDosageDateTime.getHourOfDay() < 12)
+            return morning;
         else if (previousDosageDateTime.getHourOfDay() < 16)
-            messages.add(afternoon);
+            return afternoon;
         else if (previousDosageDateTime.getHourOfDay() < 20)
-            messages.add(evening);
-        else if (previousDosageDateTime.getHourOfDay() >= 20)
-            messages.add(lastNight);
-
-        return messages;
+            return evening;
+        return lastNight;
     }
 }
