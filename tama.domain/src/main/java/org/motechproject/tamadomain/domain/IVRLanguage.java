@@ -10,6 +10,14 @@ public class IVRLanguage extends CouchEntity {
     private String name;
     private String code;
 
+    public static final String ENGLISH_CODE = "en";
+    public static final String HINDI_CODE = "hi";
+    public static final String MARATHI_CODE = "mr";
+    public static final String TAMIL_CODE = "ta";
+    public static final String TELUGU_CODE = "te";
+    public static final String KANNADA_CODE = "kn";
+    public static final String MANIPURI_CODE = "mni";
+
     public IVRLanguage() {
     }
 
@@ -40,5 +48,4 @@ public class IVRLanguage extends CouchEntity {
         ivrLanguage.setCode(code);
         return ivrLanguage;
     }
-
 }
