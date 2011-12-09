@@ -2,9 +2,10 @@ package org.motechproject.tamahealthtip.service;
 
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.joda.time.LocalDate;
-import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.tamacallflow.service.AdherenceService;
+import org.motechproject.tamadomain.domain.LabResults;
 import org.motechproject.tamadomain.domain.Patient;
+import org.motechproject.tamadomain.repository.AllLabResults;
 import org.motechproject.tamahealthtip.domain.HealthTipParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,24 +33,31 @@ public class HealthTipRuleService {
 
     private StatelessKnowledgeSession healthTipsSession;
     private AdherenceService adherenceService;
+    private AllLabResults allLabResults;
 
     @Autowired
-    public HealthTipRuleService(StatelessKnowledgeSession healthTipsSession, AdherenceService adherenceService) {
+    public HealthTipRuleService(StatelessKnowledgeSession healthTipsSession, AdherenceService adherenceService, AllLabResults allLabResults) {
         this.healthTipsSession = healthTipsSession;
         this.adherenceService = adherenceService;
+        this.allLabResults = allLabResults;
     }
 
     public Map<String, String> getHealthTipsFromRuleEngine(LocalDate treatmentStartDate, Patient patient) {
-        HealthTipParams params = setupParams(treatmentStartDate, patient);
         HealthTipList healthTipList = new HealthTipList();
         healthTipsSession.setGlobal("healthTips", healthTipList);
+        LabResults labResults = allLabResults.findByPatientId(patient.getId());
+        LocalDate latestCD4LabTestDate = labResults.latestLabTestDate();
+        int latestCD4Count = labResults.latestCD4Count();
+        HealthTipParams params = setupParams(treatmentStartDate, patient, latestCD4LabTestDate, latestCD4Count);
         healthTipsSession.execute(params);
         return healthTipList.getHealthTips();
     }
 
-    private HealthTipParams setupParams(LocalDate treatmentStartDate, Patient patient) {
-        MedicalCondition medicalCondition = new MedicalCondition();
-        medicalCondition.treatmentStartDate(treatmentStartDate);
-        return new HealthTipParams(medicalCondition, patient, adherenceService.isDosageMissedLastWeek(patient));
+    private HealthTipParams setupParams(LocalDate treatmentStartDate, Patient patient, LocalDate latestCD4LabTestDate, int latestCD4Count) {
+        HealthTipParams healthTipParams = new HealthTipParams(patient, adherenceService.isDosageMissedLastWeek(patient));
+        healthTipParams.treatmentAdviceStartDate(treatmentStartDate);
+        healthTipParams.lastCD4TestDate(latestCD4LabTestDate);
+        healthTipParams.lastCD4Count(latestCD4Count);
+        return healthTipParams;
     }
 }

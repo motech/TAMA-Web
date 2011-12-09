@@ -1,5 +1,7 @@
 package org.motechproject.tamadomain.domain;
 
+import org.joda.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,4 +24,15 @@ public class LabResults extends ArrayList<LabResult> {
         }
         return LabResult.INVALID_CD4_COUNT;
     }
+
+    public LocalDate latestLabTestDate() {
+        Collections.sort(this, new LabResult.LabResultComparator());
+        for (LabResult result : this) {
+            if (result.isCD4()) {
+                return result.getTestDate();
+            }
+        }
+        return null;
+    }
+
 }

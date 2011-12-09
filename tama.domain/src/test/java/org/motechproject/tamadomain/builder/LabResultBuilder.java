@@ -2,6 +2,7 @@ package org.motechproject.tamadomain.builder;
 
 import org.joda.time.LocalDate;
 import org.motechproject.tamadomain.domain.LabResult;
+import org.motechproject.tamadomain.domain.LabTest;
 
 public class LabResultBuilder {
 
@@ -11,6 +12,7 @@ public class LabResultBuilder {
     private String id;
     private String revision;
     private LocalDate testDate;
+    private LabTest labTest;
 
     public static LabResultBuilder startRecording() {
         return new LabResultBuilder();
@@ -30,11 +32,17 @@ public class LabResultBuilder {
         labResult.setPatientId(patientId);
         labResult.setResult(result);
         labResult.setTestDate(testDate);
+        labResult.setLabTest(labTest);
         return labResult;
     }
 
     public LabResultBuilder withLabTest_id(String labTestId) {
         this.labTestId = labTestId;
+        return this;
+    }
+
+    public LabResultBuilder withLabTest(LabTest labTest){
+        this.labTest = labTest;
         return this;
     }
 

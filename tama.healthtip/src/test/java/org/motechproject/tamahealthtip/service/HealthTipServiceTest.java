@@ -28,7 +28,6 @@ public class HealthTipServiceTest {
 
     @Mock
     private AllHealthTipsHistory allHealthTipsHistory;
-
     @Mock
     private StatelessKnowledgeSession healthTipsSession;
     @Mock
@@ -39,10 +38,10 @@ public class HealthTipServiceTest {
     private AllPatients allPatients;
     @Mock
     private TreatmentAdvice treatmentAdvice;
-    private Patient patient;
 
     private String patientId;
     private String patientDocId;
+    private Patient patient;
 
     HealthTipService healthTipService;
 

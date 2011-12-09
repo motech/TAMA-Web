@@ -81,6 +81,17 @@ public class HealthTipService {
         }
     }
 
+    public String nextHealthTip(String patientId) {
+        return getPlayList(patientId).get(0);
+    }
+
+    List<String> getPlayList(String patientId) {
+        List<PrioritizedHealthTip> healthTips = getApplicableHealthTips(patientId);
+        filterExpiredHealthTips(healthTips);
+        sortBasedOnPriorityThenByLastPlayedDate(healthTips);
+        return extract(healthTips, on(PrioritizedHealthTip.class).getHealthTipsHistory().getAudioFilename());
+    }
+
     List<PrioritizedHealthTip> getApplicableHealthTips(String patientDocId) {
         final Patient patient = allPatients.get(patientDocId);
         final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
@@ -97,13 +108,6 @@ public class HealthTipService {
             prioritizedHealthTips.add(new PrioritizedHealthTip(healthTipsHistory, Integer.parseInt(healthTipFiles.get(audioFilename))));
         }
         return prioritizedHealthTips;
-    }
-
-    public List<String> getPlayList(String patientId) {
-        List<PrioritizedHealthTip> healthTips = getApplicableHealthTips(patientId);
-        filterExpiredHealthTips(healthTips);
-        sortBasedOnPriorityThenByLastPlayedDate(healthTips);
-        return extract(healthTips, on(PrioritizedHealthTip.class).getHealthTipsHistory().getAudioFilename());
     }
 
     private void filterExpiredHealthTips(List<PrioritizedHealthTip> healthTips) {

@@ -1,5 +1,6 @@
 package org.motechproject.tamahealthtip.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooResponseFactory;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 import java.util.Properties;
 
 @Controller
@@ -65,11 +65,10 @@ public class HealthTipsController extends SafeIVRController {
             return ivrResponseBuilder;
         }
 
-        List<String> playList = healthTipService.getPlayList(patientId);
-        if (playList != null && playList.size() > 0) {
-            String message = playList.get(0);
-            tamaivrContext.setLastPlayedHealthTip(message);
-            ivrResponseBuilder.withPlayAudios(message);
+        String healthTip = healthTipService.nextHealthTip(patientId);
+        if (!StringUtils.isEmpty(healthTip)) {
+            tamaivrContext.setLastPlayedHealthTip(healthTip);
+            ivrResponseBuilder.withPlayAudios(healthTip);
             tamaivrContext.setPlayedHealthTipsCount(playedCount + 1);
         } else {
             endHealthTipFlow(tamaivrContext);

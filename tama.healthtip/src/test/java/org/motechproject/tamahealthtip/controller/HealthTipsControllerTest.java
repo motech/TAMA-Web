@@ -12,7 +12,6 @@ import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacallflow.ivr.factory.VoiceMessageResponseFactory;
 import org.motechproject.tamahealthtip.service.HealthTipService;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -52,15 +51,15 @@ public class HealthTipsControllerTest {
         when(kookooIVRContext.callId()).thenReturn("34");
         when(kookooIVRContext.preferredLanguage()).thenReturn("en");
         when(kookooIVRContext.externalId()).thenReturn(patientId);
-        when(healthTipService.getPlayList(patientId)).thenReturn(Arrays.asList("fooBar.wav", "fuuQux.wav"));
+        when(healthTipService.nextHealthTip(patientId)).thenReturn("fuuQux.wav");
         when(tamaivrContextFactory.create(kookooIVRContext)).thenReturn(tamaIVRContext);
         when(tamaIVRContext.getPlayedHealthTipsCount()).thenReturn(0);
     }
 
     @Test
     public void shouldPlayKookooPlayAudioFromPlaylist() {
-        assertEquals("fooBar.wav", healthTipsController.gotDTMF(kookooIVRContext).getPlayAudios().get(0));
-        verify(tamaIVRContext).setLastPlayedHealthTip("fooBar.wav");
+        assertEquals("fuuQux.wav", healthTipsController.gotDTMF(kookooIVRContext).getPlayAudios().get(0));
+        verify(tamaIVRContext).setLastPlayedHealthTip("fuuQux.wav");
         verify(tamaIVRContext).setPlayedHealthTipsCount(1);
     }
 }
