@@ -1,14 +1,13 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatientPreferences;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -132,8 +131,7 @@ public class ShowPatientPage extends Page {
     }
 
     public ShowPatientPage deactivatePatient(String reason) {
-        this.deactivationReasonDropdown.clear();
-        this.deactivationReasonDropdown.sendKeys(reason);
+        ((ExtendedWebElement)this.deactivationReasonDropdown).select(reason);
         this.deactivationLink.click();
         waitForElementWithIdToLoad(ACTIVATE_PATIENT_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);

@@ -38,8 +38,7 @@ public class TamaWebElement implements ExtendedWebElement {
     @Override
     public void sendKeys(CharSequence... charSequences) {
         click();
-        if (webElement.getText().length() != 0 || webElement.getValue().length() != 0)
-            clear();
+        clear();
         webElement.sendKeys(charSequences);
     }
 
@@ -99,8 +98,8 @@ public class TamaWebElement implements ExtendedWebElement {
 
     @Override
     public void select(String value) {
-        webElement.clear();
-        webElement.sendKeys(value);
+        sendKeys(value);
+        click(); // required to simulate onKeyPress that sets the dojo backing element
     }
 
     @Override

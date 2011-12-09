@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
@@ -110,26 +111,23 @@ public class CreateARTRegimenPage extends Page {
     }
 
     private void createFirstDosage(TestDrugDosage testDrugDosage1, String dosageType) {
-        TestDrugDosage drugDosage1 = testDrugDosage1;
-        logDosage(drugDosage1);
-        drug1DosageTypeElement.clear();
-        drug1DosageTypeElement.sendKeys(dosageType);
+        logDosage(testDrugDosage1);
+        ((ExtendedWebElement)drug1DosageTypeElement).select(dosageType);
         drug1MealAdviceTypeElement.click();
-        if (drugDosage1.isMorningDosage()) {
+        if (testDrugDosage1.isMorningDosage()) {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID);
-            drug1MorningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
+            drug1MorningDosageTimeElement.sendKeys(testDrugDosage1.dosageSchedule());
         }
         else {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID);
-            drug1EveningDosageTimeElement.sendKeys(drugDosage1.dosageSchedule());
+            drug1EveningDosageTimeElement.sendKeys(testDrugDosage1.dosageSchedule());
         }
-        drug1MealAdviceTypeElement.sendKeys(drugDosage1.mealAdvice());
+        drug1MealAdviceTypeElement.sendKeys(testDrugDosage1.mealAdvice());
     }
 
     private void createSecondDosage(TestDrugDosage testDrugDosage2, String dosageType) {
         logDosage(testDrugDosage2);
-        drug2DosageTypeElement.clear();
-        drug2DosageTypeElement.sendKeys(dosageType);
+        ((ExtendedWebElement)drug2DosageTypeElement).select(dosageType);
         drug2MealAdviceTypeElement.click();
         if (testDrugDosage2.isMorningDosage()) {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID);

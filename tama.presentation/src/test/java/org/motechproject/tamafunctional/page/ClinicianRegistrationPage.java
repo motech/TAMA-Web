@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestClinic;
@@ -53,7 +54,7 @@ public class ClinicianRegistrationPage extends Page {
         alternateContactNumber.sendKeys(clinician.alternateContactNumber());
         password.sendKeys(clinician.password());
         TestClinic clinic = clinician.clinic();
-        clinicElement.sendKeys(new StringBuilder().append(clinic.name()).append(", ").append(clinic.city()).toString());
+        ((ExtendedWebElement)clinicElement).select(new StringBuilder().append(clinic.name()).append(", ").append(clinic.city()).toString());
         name.submit();
         return MyPageFactory.initElements(webDriver, ShowClinicianPage.class);
     }

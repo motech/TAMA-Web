@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
 
+import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebElement;
@@ -35,8 +36,8 @@ public class CreatePatientMedicalHistorySection {
     }
 
     public void enterDetails(TestPatient patient) {
-        hivTestReason.sendKeys(patient.hivMedicalHistory().testReason());
-        modeOfTransmission.sendKeys(patient.hivMedicalHistory().modeOfTransmission());
+        ((ExtendedWebElement)hivTestReason).select(patient.hivMedicalHistory().testReason());
+        ((ExtendedWebElement)modeOfTransmission).select(patient.hivMedicalHistory().modeOfTransmission());
         arvAllergy.click();
         arvAllergyDescription.sendKeys("arvAllergyDescription");
         drdRash.click();
