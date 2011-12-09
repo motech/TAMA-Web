@@ -15,9 +15,9 @@ public class MessageOnPreviousPillNotTaken extends BaseTreeCommand {
     private IVRDayMessageBuilder ivrDayMessageBuilder;
 
     @Autowired
-    public MessageOnPreviousPillNotTaken(IVRDayMessageBuilder ivrDayMessageBuilder, PillReminderService pillReminderService) {
+    public MessageOnPreviousPillNotTaken(PillReminderService pillReminderService) {
         super(pillReminderService);
-        this.ivrDayMessageBuilder = ivrDayMessageBuilder;
+        this.ivrDayMessageBuilder = new IVRDayMessageBuilder();
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamacallflow.ivr.builder.IVRDayMessageBuilder;
 import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -32,7 +31,7 @@ public class PillsDelayWarningTest {
     public void setup() {
         initMocks(this);
         retryInterval = 15;
-        pillsDelayWarning = new PillsDelayWarning(new IVRDayMessageBuilder(), new TamaIVRMessage(null), null);
+        pillsDelayWarning = new PillsDelayWarning(new TamaIVRMessage(null), null);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         context = new TAMAIVRContextForTest().pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0)).retryInterval(retryInterval).preferredLanguage("en");
         mockStatic(DateUtil.class);

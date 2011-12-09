@@ -17,9 +17,9 @@ public class NextCallDetails extends BaseTreeCommand {
     private IVRDayMessageBuilder ivrDayMessageBuilder;
 
     @Autowired
-    public NextCallDetails(IVRDayMessageBuilder ivrDayMessageBuilder, PillReminderService pillReminderService) {
+    public NextCallDetails(PillReminderService pillReminderService) {
         super(pillReminderService);
-        this.ivrDayMessageBuilder = ivrDayMessageBuilder;
+        this.ivrDayMessageBuilder = new IVRDayMessageBuilder();
     }
 
     @Override

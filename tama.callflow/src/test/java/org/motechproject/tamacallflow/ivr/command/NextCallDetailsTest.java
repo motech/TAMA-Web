@@ -8,10 +8,8 @@ import org.junit.runner.RunWith;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
-import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamacallflow.ivr.builder.IVRDayMessageBuilder;
 import org.motechproject.tamacallflow.ivr.decisiontree.TAMATreeRegistry;
+import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -32,7 +30,7 @@ public class NextCallDetailsTest {
     @Before
     public void setup() {
         initMocks(this);
-        nextCallDetails = new NextCallDetails(new IVRDayMessageBuilder(), null);
+        nextCallDetails = new NextCallDetails(null);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         context = new TAMAIVRContextForTest().pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0)).preferredLanguage("en");
         mockStatic(DateUtil.class);

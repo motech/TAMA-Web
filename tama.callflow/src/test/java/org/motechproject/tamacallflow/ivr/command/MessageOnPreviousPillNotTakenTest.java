@@ -7,9 +7,8 @@ import org.junit.runner.RunWith;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamacallflow.ivr.builder.IVRDayMessageBuilder;
+import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -25,7 +24,7 @@ public class MessageOnPreviousPillNotTakenTest {
     @Before
     public void setup() {
         initMocks(this);
-        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken(new IVRDayMessageBuilder(), null);
+        messageOnPreviousPillNotTaken = new MessageOnPreviousPillNotTaken(null);
     }
 
     @Test

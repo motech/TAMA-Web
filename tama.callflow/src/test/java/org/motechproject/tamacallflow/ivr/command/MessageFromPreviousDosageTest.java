@@ -12,7 +12,6 @@ import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamacallflow.ivr.builder.IVRDayMessageBuilder;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -36,7 +35,7 @@ public class MessageFromPreviousDosageTest {
     @Before
     public void setup() {
         initMocks(this);
-        messageFromPreviousDosage = new MessageFromPreviousDosage(new IVRDayMessageBuilder(), null);
+        messageFromPreviousDosage = new MessageFromPreviousDosage(null);
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));

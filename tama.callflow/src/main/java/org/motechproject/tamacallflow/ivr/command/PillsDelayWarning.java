@@ -15,13 +15,12 @@ import java.util.List;
 public class PillsDelayWarning extends BaseTreeCommand {
 
     private IVRDayMessageBuilder ivrDayMessageBuilder;
-
     private TamaIVRMessage ivrMessage;
 
     @Autowired
-    public PillsDelayWarning(IVRDayMessageBuilder ivrDayMessageBuilder, TamaIVRMessage ivrMessage, PillReminderService pillReminderService) {
+    public PillsDelayWarning(TamaIVRMessage ivrMessage, PillReminderService pillReminderService) {
         super(pillReminderService);
-        this.ivrDayMessageBuilder = ivrDayMessageBuilder;
+        this.ivrDayMessageBuilder = new IVRDayMessageBuilder();
         this.ivrMessage = ivrMessage;
     }
 

@@ -16,9 +16,9 @@ public class MessageFromPreviousDosage extends BaseTreeCommand {
     private IVRDayMessageBuilder ivrDayMessageBuilder;
 
     @Autowired
-    public MessageFromPreviousDosage(IVRDayMessageBuilder ivrDayMessageBuilder, PillReminderService pillReminderService) {
+    public MessageFromPreviousDosage(PillReminderService pillReminderService) {
         super(pillReminderService);
-        this.ivrDayMessageBuilder = ivrDayMessageBuilder;
+        this.ivrDayMessageBuilder = new IVRDayMessageBuilder();
     }
 
     @Override
