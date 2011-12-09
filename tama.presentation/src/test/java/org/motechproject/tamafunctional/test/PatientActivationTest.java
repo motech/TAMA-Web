@@ -3,24 +3,27 @@ package org.motechproject.tamafunctional.test;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.motechproject.tamadomain.domain.Status;
-import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
+import org.motechproject.tamafunctional.testdata.TestClinic;
+import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 
 public class PatientActivationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientActivation() {
-        ClinicianContext clinicianContext = new ClinicianContext();
-        buildContexts(clinicianContext);
+        TestClinician clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
+                loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
+
         Assert.assertEquals(showPatientPage.getStatus().trim(), Status.Inactive.toString());
 
         ShowPatientPage pageAfterActivation = showPatientPage.activatePatient();
@@ -31,19 +34,18 @@ public class PatientActivationTest extends BaseTest {
 
     @Test
     public void testPatientDeactivation() {
-        ClinicianContext clinicianContext = new ClinicianContext();
-        buildContexts(clinicianContext);
+        TestClinician clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
+                loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
 
         showPatientPage.activatePatient();
 
         ShowPatientPage pageAfterDeactivation = showPatientPage.deactivatePatient("Study complete");
-
         Assert.assertEquals("Study complete", pageAfterDeactivation.getStatus().trim());
 
         pageAfterDeactivation.logout();

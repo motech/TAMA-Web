@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.motechproject.tamafunctional.context.Context;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.util.DateUtil;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +14,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 
 public abstract class BaseTest extends FunctionalTestObject {
     @Rule
@@ -38,12 +36,6 @@ public abstract class BaseTest extends FunctionalTestObject {
             if (e.getMessage().contains("Unable to bind to locking port")) {
                 createWebDriver();
             }
-        }
-    }
-
-    protected void buildContexts(Context... contexts) {
-        for (Context context : Arrays.asList(contexts)) {
-            context.build(webDriver);
         }
     }
 

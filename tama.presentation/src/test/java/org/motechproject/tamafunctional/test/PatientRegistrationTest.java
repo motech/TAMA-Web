@@ -3,25 +3,27 @@ package org.motechproject.tamafunctional.test;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamafunctional.context.ClinicianContext;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
+import org.motechproject.tamafunctional.testdata.TestClinic;
+import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 
 import java.text.SimpleDateFormat;
 
 public class PatientRegistrationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientRegistration() {
-        ClinicianContext clinicianContext = new ClinicianContext();
-        buildContexts(clinicianContext);
+        TestClinician clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
+        new ClinicianDataService(webDriver).createWithClinc(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
 
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinicianContext.getUsername(), clinicianContext.getPassword()).
+                loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
 
