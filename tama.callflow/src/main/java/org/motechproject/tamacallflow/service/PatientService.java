@@ -48,6 +48,7 @@ public class PatientService {
     public void update(Patient patient) {
         Patient dbPatient = allPatients.get(patient.getId());
         patient.setRevision(dbPatient.getRevision());
+        patient.setRegistrationDate(dbPatient.getRegistrationDate());
 
         List<UniquePatientField> oldUniquePatientFields = allUniquePatientFields.get(patient);
         allUniquePatientFields.remove(patient);
