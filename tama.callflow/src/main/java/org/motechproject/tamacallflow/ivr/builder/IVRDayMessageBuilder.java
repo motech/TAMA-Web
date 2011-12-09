@@ -2,34 +2,19 @@ package org.motechproject.tamacallflow.ivr.builder;
 
 import org.joda.time.DateTime;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamacallflow.ivr.builder.timeconstruct.TimeConstructBuilder;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class IVRDayMessageBuilder {
-    private TamaIVRMessage iVRMessage;
 
-    @Autowired
-    public IVRDayMessageBuilder(TamaIVRMessage iVRMessage) {
-        this.iVRMessage = iVRMessage;
-    }
-
-    public List<String> getMessageForNextDosage(DateTime nextDosageDateTime) {
+    public List<String> getMessageForNextDosage(DateTime nextDosageDateTime, String preferredLanguage) {
         List<String> messages = new ArrayList<String>();
-        if (nextDosageDateTime.getHourOfDay() == 0 || nextDosageDateTime.getHourOfDay() == 12) {
-            messages.add(iVRMessage.getNumberFilename(12));
-        } else {
-            messages.add(iVRMessage.getNumberFilename(nextDosageDateTime.getHourOfDay() % 12));
-        }
-        if(nextDosageDateTime.getMinuteOfHour() != 0){
-            messages.add(iVRMessage.getNumberFilename(nextDosageDateTime.getMinuteOfHour()));
-        }
-        messages.add(nextDosageDateTime.getHourOfDay() < 12 ? TamaIVRMessage.IN_THE_MORNING : TamaIVRMessage.IN_THE_EVENING);
         messages.add(nextDosageDateTime.toLocalDate().equals(DateUtil.today()) ? TamaIVRMessage.TODAY : TamaIVRMessage.TOMORROW);
+        messages.add(TamaIVRMessage.AT);
+        messages.addAll(new TimeConstructBuilder(preferredLanguage).build(nextDosageDateTime.toLocalTime()));
         return messages;
     }
 

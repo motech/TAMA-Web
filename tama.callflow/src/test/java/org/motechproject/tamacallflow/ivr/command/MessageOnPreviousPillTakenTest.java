@@ -25,7 +25,7 @@ public class MessageOnPreviousPillTakenTest {
     @Before
     public void setup() {
         initMocks(this);
-        messageOnPreviousPillTaken = new MessageOnPreviousPillTaken(new IVRDayMessageBuilder(new TamaIVRMessage(null)), null);
+        messageOnPreviousPillTaken = new MessageOnPreviousPillTaken(new IVRDayMessageBuilder(), null);
     }
 
     @Test

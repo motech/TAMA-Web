@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamacallflow.ivr.builder.IVRDayMessageBuilder;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -25,7 +24,7 @@ public class IVRDayMessageBuilderTest {
 
     @Before
     public void setup() {
-        ivrDayMessageBuilder = new IVRDayMessageBuilder(new TamaIVRMessage(null));
+        ivrDayMessageBuilder = new IVRDayMessageBuilder();
         PowerMockito.mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 0, 00, 00));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
@@ -35,33 +34,24 @@ public class IVRDayMessageBuilderTest {
     public void shouldReturnWavFilesForTomorrowMorning() {
         DateTime time = DateUtil.now().plusDays(1).withHourOfDay(10).withMinuteOfHour(20);
 
-        List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time);
-        assertEquals("Num_010", messages.get(0));
-        assertEquals("Num_020", messages.get(1));
-        assertEquals("001_07_04_doseTimeAtMorning", messages.get(2));
-        assertEquals("timeOfDayTomorrow", messages.get(3));
-    }
-
-    @Test
-    public void shouldReturnWavFilesForTomorrowEvening() {
-        DateTime time = DateUtil.now().plusDays(1).withHourOfDay(19).withMinuteOfHour(20);
-
-        List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time);
-        assertEquals("Num_007", messages.get(0));
-        assertEquals("Num_020", messages.get(1));
-        assertEquals("001_07_04_doseTimeAtEvening", messages.get(2));
-        assertEquals("timeOfDayTomorrow", messages.get(3));
+        List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time, "en");
+        assertEquals("timeOfDayTomorrow", messages.get(0));
+        assertEquals("timeOfDayAt", messages.get(1));
+        assertEquals("Num_010", messages.get(2));
+        assertEquals("Num_020", messages.get(3));
+        assertEquals("AM", messages.get(4));
     }
 
     @Test
     public void shouldReturnWavFilesForTodayEvening() {
         DateTime time = DateUtil.now().withHourOfDay(19).withMinuteOfHour(20);
 
-        List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time);
-        assertEquals("Num_007", messages.get(0));
-        assertEquals("Num_020", messages.get(1));
-        assertEquals("001_07_04_doseTimeAtEvening", messages.get(2));
-        assertEquals("timeOfDayToday", messages.get(3));
+        List<String> messages = ivrDayMessageBuilder.getMessageForNextDosage(time, "en");
+        assertEquals("timeOfDayToday", messages.get(0));
+        assertEquals("timeOfDayAt", messages.get(1));
+        assertEquals("Num_007", messages.get(2));
+        assertEquals("Num_020", messages.get(3));
+        assertEquals("PM", messages.get(4));
     }
 
     @Test

@@ -36,7 +36,7 @@ public class MessageFromPreviousDosageTest {
     @Before
     public void setup() {
         initMocks(this);
-        messageFromPreviousDosage = new MessageFromPreviousDosage(new IVRDayMessageBuilder(new TamaIVRMessage(null)), null);
+        messageFromPreviousDosage = new MessageFromPreviousDosage(new IVRDayMessageBuilder(), null);
         mockStatic(DateUtil.class);
         when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));

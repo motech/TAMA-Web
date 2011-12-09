@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
@@ -31,8 +32,9 @@ public class NextCallDetailsTest {
     @Before
     public void setup() {
         initMocks(this);
-        nextCallDetails = new NextCallDetails(new IVRDayMessageBuilder(new TamaIVRMessage(null)), null);
-        context = new TAMAIVRContextForTest().pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0));
+        nextCallDetails = new NextCallDetails(new IVRDayMessageBuilder(), null);
+        PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
+        context = new TAMAIVRContextForTest().pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0)).preferredLanguage("en");
         mockStatic(DateUtil.class);
         when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
     }
@@ -44,11 +46,11 @@ public class NextCallDetailsTest {
         String[] messages = nextCallDetails.executeCommand(context);
         assertEquals(7, messages.length);
         assertEquals("010_04_01_nextDoseIs1", messages[0]);
-        assertEquals("timeOfDayAt", messages[1]);
-        assertEquals("Num_010", messages[2]);
-        assertEquals("Num_005", messages[3]);
-        assertEquals("001_07_04_doseTimeAtEvening", messages[4]);
-        assertEquals("timeOfDayToday", messages[5]);
+        assertEquals("timeOfDayToday", messages[1]);
+        assertEquals("timeOfDayAt", messages[2]);
+        assertEquals("Num_010", messages[3]);
+        assertEquals("Num_005", messages[4]);
+        assertEquals("PM", messages[5]);
         assertEquals("010_04_06_nextDoseIs2", messages[6]);
     }
 
