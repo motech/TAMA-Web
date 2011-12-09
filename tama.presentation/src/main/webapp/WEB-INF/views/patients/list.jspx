@@ -7,12 +7,10 @@
     <script src="${list_patients_js}" type="text/javascript"/>
 
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
-        <c:forEach items="${patients}" var="patient" varStatus="logIndex">
-            <c:choose>
-                <c:when test="${patient.status.suspended}">
+
                     <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients" z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE="
-                             customAction="true" customActionPath="patients/revive" customActionLabel="Reactivate"
-                             customActionCondition="item.status.active" delete="false" update="false">
+                             customAction="true" customActionPath="patients/revive" customActionLabel="Activate"
+                             customActionCondition="item.status.active or item.status.suspended"  customActionLabel2="Reactivate" customActionCondition2="item.status.active or !item.status.suspended" delete="false" update="false">
                     <table:column id="c_org_motechproject_tama_domain_patient_patientId" property="patientId" z="4I1LBMUNYSxNw1zomaU2BkBlauc="/>
                     <table:column id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" property="mobilePhoneNumber" z="7Q1JZV8VeDnWQrIfdkR4tVmzIOQ="/>
                     <table:column date="true" dateTimePattern="dd/MM/yyyy" id="c_org_motechproject_tama_domain_patient_dateOfBirth" property="dateOfBirthAsDate" z="lOla2UTSFt+Jb+D2uFWNFNLkszo="/>
@@ -21,21 +19,6 @@
                     <table:column date="true" dateTimePattern="dd/MM/yyyy" id="c_org_motechproject_tama_domain_patient_registrationDate" property="registrationDateAsDate" z="user-managed"/>
                     <table:column id="c_org_motechproject_tama_domain_patient_status" property="status" z="user-managed"/>
                     </table:table>
-                </c:when>
-                <c:otherwise>
-                    <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients" z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE="
-                                 customAction="true" customActionPath="patients/activate" customActionLabel="Activate"
-                                 customActionCondition="item.status.active" delete="false" update="false">
-                        <table:column id="c_org_motechproject_tama_domain_patient_patientId" property="patientId" z="4I1LBMUNYSxNw1zomaU2BkBlauc="/>
-                        <table:column id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" property="mobilePhoneNumber" z="7Q1JZV8VeDnWQrIfdkR4tVmzIOQ="/>
-                        <table:column date="true" dateTimePattern="dd/MM/yyyy" id="c_org_motechproject_tama_domain_patient_dateOfBirth" property="dateOfBirthAsDate" z="lOla2UTSFt+Jb+D2uFWNFNLkszo="/>
-                        <table:column id="c_org_motechproject_tama_domain_patient_gender" property="genderType" z="user-managed"/>
-                        <table:column id="c_org_motechproject_tama_domain_patient_clinic" property="clinic" z="user-managed"/>
-                        <table:column date="true" dateTimePattern="dd/MM/yyyy" id="c_org_motechproject_tama_domain_patient_registrationDate" property="registrationDateAsDate" z="user-managed"/>
-                        <table:column id="c_org_motechproject_tama_domain_patient_status" property="status" z="user-managed"/>
-                    </table:table>
-                </c:otherwise>
-            </c:choose>
-        </c:forEach>
+
     </page:list>
 </div>
