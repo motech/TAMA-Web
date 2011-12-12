@@ -22,6 +22,7 @@ public class TamaIVRMessage implements IVRMessage {
     /*----------------MENU---------------*/
     public static final String SYMPTOMS_REPORTING_MENU_OPTION = "010_00_00_mainMenu_symptoms";
     public static final String OUTBOX_MENU_OPTION = "010_00_00_mainMenu_messages";
+    public static final String HEALTH_TIPS_MENU_OPTION = "010_00_00_mainMenu_healthTips";
     public static final String DOSE_TAKEN_MENU_OPTION = "010_00_00_mainMenu_doseTaken";
 
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
