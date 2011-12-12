@@ -29,10 +29,7 @@ public class DailyReminderAdherenceService {
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
     private TAMAPillReminderService pillReminderService;
     private Properties properties;
-
     private List<DosageResponse> dosageResponses;
-
-
 
     @Autowired
     public DailyReminderAdherenceService(AllDosageAdherenceLogs allDosageAdherenceLogs, TAMAPillReminderService pillReminderService, @Qualifier("ivrProperties") Properties properties) {
@@ -45,15 +42,16 @@ public class DailyReminderAdherenceService {
         int numberOfWeeks = 4;
         return getAdherenceForWeeks(patientId, asOfDate, numberOfWeeks);
     }
+
     public double getAdherenceForLastWeek(String patientId, DateTime asOfDate) {
         return getAdherenceForWeeks(patientId, asOfDate, 1);
     }
 
     private double getAdherenceForWeeks(String patientId, DateTime asOfDate, int numberOfWeeks) {
         PillRegimen pillRegimen = pillReminderService.getPillRegimen(patientId);
-        int totalDosages = pillRegimen.getNumberOfDosesBetween(asOfDate.minusWeeks(numberOfWeeks).withTime(0, 0, 0, 0), asOfDate.withTime(0, 0, 0, 0));
+        int totalDoses = pillRegimen.getDosesIn(numberOfWeeks, asOfDate);
         int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, asOfDate.minusWeeks(numberOfWeeks).toLocalDate(), asOfDate.toLocalDate());
-        return ((double) dosagesTakenForLastFourWeeks) / totalDosages;
+        return ((double) dosagesTakenForLastFourWeeks) / totalDoses;
     }
 
     public double getAdherenceAsOfLastRecordedDose(String patientId) {

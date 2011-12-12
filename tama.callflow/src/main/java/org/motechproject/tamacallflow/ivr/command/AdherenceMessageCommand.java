@@ -27,7 +27,7 @@ public class AdherenceMessageCommand extends BaseTreeCommand {
     }
 
     protected String[] getAdherenceMessage(TAMAIVRContext ivrContext) {
-        int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherenceAsOfLastRecordedDose(ivrContext.patientId()) * 100);
+        int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherence(ivrContext.patientId(), DateUtil.now()) * 100);
         return new String[]{
                 TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
                 ivrMessage.getNumberFilename(adherencePercentage),

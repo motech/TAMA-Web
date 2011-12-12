@@ -39,6 +39,13 @@ public class PillRegimen {
         return count;
     }
 
+    public int getDosesIn(int numberOfWeeks, DateTime asOfDate) {
+        int count = 0;
+        for (Dosage dosage : getDosages())
+            count += dosage.getDosesIn(numberOfWeeks, asOfDate);
+        return count;
+    }
+
     private List<Dosage> getDosages() {
         List<Dosage> dosages = new ArrayList<Dosage>();
         for (DosageResponse dosageResponse : pillRegimenResponse.getDosages())

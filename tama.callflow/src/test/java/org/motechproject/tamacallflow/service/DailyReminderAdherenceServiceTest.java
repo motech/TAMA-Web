@@ -63,7 +63,7 @@ public class DailyReminderAdherenceServiceTest {
     }
 
     @Test
-    public void shouldCalculateTheAdherenceForPatient(){
+    public void shouldCalculateTheAdherenceForPatient() {
         String patientId = "patientId";
         int dosesTaken = 7;
         int totalDoses = 28;
@@ -72,7 +72,7 @@ public class DailyReminderAdherenceServiceTest {
         when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
         DateTime asOfDate = DateUtil.now();
         when(pillRegimen.getId()).thenReturn("regimenId");
-        when(pillRegimen.getNumberOfDosesBetween(asOfDate.minusWeeks(4).withTime(0, 0, 0, 0), asOfDate.withTime(0, 0, 0, 0))).thenReturn(totalDoses);
+        when(pillRegimen.getDosesIn(4, asOfDate)).thenReturn(totalDoses);
 
         when(allDosageAdherenceLogs.countBy(same("regimenId"), same(DosageStatus.TAKEN), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(dosesTaken);
         assertEquals(((double) dosesTaken / totalDoses), dailyReminderAdherenceService.getAdherence(patientId, asOfDate));
@@ -91,25 +91,24 @@ public class DailyReminderAdherenceServiceTest {
 
         when(pillRegimen.getDosage("dosageId")).thenReturn(new Dosage(new DosageResponse("dosageId", new Time(10, 0), null, null, doseDate, null)));
         DateTime doseTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
-        when(pillRegimen.getNumberOfDosesBetween(doseTime.minusWeeks(4).withTime(0, 0, 0, 0), doseTime.withTime(0, 0, 0, 0))).thenReturn(4);
+        when(pillRegimen.getDosesIn(4, doseTime)).thenReturn(4);
         when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseTime.minusWeeks(4).toLocalDate(), doseTime.toLocalDate())).thenReturn(1);
 
         assertEquals(0.25, dailyReminderAdherenceService.getAdherenceAsOfLastRecordedDose(patientId));
     }
 
     @Test
-    public void shouldReturnAdherenceForLastWeek () {
+    public void shouldReturnAdherenceForLastWeek() {
         LocalDate doseDate = new LocalDate(2011, 10, 10);
         String patientId = "patientId";
-        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, "regimenId", "dosageId", DosageStatus.TAKEN, doseDate);
         PillRegimen pillRegimen = mock(PillRegimen.class);
         when(pillRegimen.getId()).thenReturn("regimenId");
         when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
         when(pillRegimen.getDosage("dosageId")).thenReturn(new Dosage(new DosageResponse("dosageId", new Time(10, 0), null, null, doseDate, null)));
         DateTime doseDateTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
-        when(pillRegimen.getNumberOfDosesBetween(doseDateTime.minusWeeks(1).withTime(0, 0, 0, 0), doseDateTime.withTime(0, 0, 0, 0))).thenReturn(14);
+        when(pillRegimen.getDosesIn(1, doseDateTime)).thenReturn(14);
         when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDateTime.toLocalDate())).thenReturn(1);
-        assertEquals(1.0/14.0, dailyReminderAdherenceService.getAdherenceForLastWeek(patientId, doseDateTime));
+        assertEquals(1.0 / 14.0, dailyReminderAdherenceService.getAdherenceForLastWeek(patientId, doseDateTime));
     }
 }
 

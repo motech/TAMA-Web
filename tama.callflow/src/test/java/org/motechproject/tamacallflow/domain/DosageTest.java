@@ -10,74 +10,63 @@ import static junit.framework.Assert.assertEquals;
 public class DosageTest {
 
     @Test
-    public void numberOfDosagesShouldBe2() {
-        DateTime today = new DateTime(2011, 10, 3, 10, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusDays(2);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
+    public void totalDosesInAWeek(){
+        DateTime now = new DateTime(2011, 10, 3, 10, 0, 0, 0);
+        final DateTime dosageStartTime = now.minusWeeks(1);
+        final DateTime dosageEndTime = now.plusDays(1);
+        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartTime.getHourOfDay(), dosageStartTime.getMinuteOfHour()), dosageStartTime.toLocalDate(), dosageEndTime.toLocalDate(), null, null));
 
-        assertEquals(2, dosage.getNumberOfDosesBetween(dosageStartDateTime, today));
+        assertEquals(7, dosage.getDosesIn(1, now));
     }
 
     @Test
-    public void numberOfDosagesShouldBe3() {
-        DateTime today = new DateTime(2011, 10, 3, 10, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusDays(3);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
+    public void totalDosesForDosageStartingYesterday() {
+        DateTime now = new DateTime(2011, 10, 3, 10, 0, 0, 0);
+        final DateTime dosageStartTime = now.minusDays(1);
+        final DateTime dosageEndTime = now.plusDays(1);
+        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartTime.getHourOfDay(), dosageStartTime.getMinuteOfHour()), dosageStartTime.toLocalDate(), dosageEndTime.toLocalDate(), null, null));
 
-        assertEquals(3, dosage.getNumberOfDosesBetween(dosageStartDateTime, today));
+        assertEquals(2, dosage.getNumberOfDosesBetween(dosageStartTime, now));
     }
 
     @Test
-    public void numberOfDosagesSinceDosageStartShouldBe28() {
-        DateTime today = new DateTime(2011, 10, 29, 10, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusWeeks(4);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
+    public void totalDosesWhenStartTimeIsBeforeDosageStartTime() {
+        DateTime now = new DateTime(2011, 10, 3, 10, 0, 0, 0);
+        final DateTime dosageStartTime = now.minusDays(1);
+        final DateTime startTime = dosageStartTime.minusDays(1);
+        final DateTime dosageEndTime = now.plusDays(1);
+        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartTime.getHourOfDay(), dosageStartTime.getMinuteOfHour()), dosageStartTime.toLocalDate(), dosageEndTime.toLocalDate(), null, null));
 
-        assertEquals(28, dosage.getNumberOfDosesBetween(dosageStartDateTime, today));
+        assertEquals(2, dosage.getNumberOfDosesBetween(startTime, now));
     }
 
     @Test
-    public void numberOfDosagesADayAfterDosageStartShouldBe27() {
-        DateTime today = new DateTime(2011, 10, 2, 10, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusWeeks(4);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
+    public void totalDosesWhenEndTimeIsGreaterThanDosageEndTime() {
+        DateTime now = new DateTime(2011, 10, 3, 10, 0, 0, 0);
+        final DateTime dosageStartTime = now;
+        final DateTime dosageEndTime = now.plusDays(1);
+        final DateTime endTime = dosageEndTime.plusDays(1);
+        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartTime.getHourOfDay(), dosageStartTime.getMinuteOfHour()), dosageStartTime.toLocalDate(), dosageEndTime.toLocalDate(), null, null));
 
-        assertEquals(27, dosage.getNumberOfDosesBetween(dosageStartDateTime.plusDays(1), today));
+        assertEquals(2, dosage.getNumberOfDosesBetween(dosageStartTime, endTime));
     }
 
     @Test
-    public void shouldExcludeDoseBeforeDoseStartTime() {
-        DateTime today = new DateTime(2011, 10, 2, 10, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusWeeks(4);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
+    public void totalDosesWhenEndTimeIsNull() {
+        DateTime now = new DateTime(2011, 10, 3, 10, 0, 0, 0);
+        final DateTime dosageStartTime = now.minusDays(1);
+        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartTime.getHourOfDay(), dosageStartTime.getMinuteOfHour()), dosageStartTime.toLocalDate(), null, null, null));
 
-        assertEquals(28, dosage.getNumberOfDosesBetween(dosageStartDateTime.minusDays(1), today));
+        assertEquals(2, dosage.getNumberOfDosesBetween(dosageStartTime, now));
     }
 
     @Test
-    public void numberOfDosesIsOneWhenFromDateEqualsToDateEqualsDosageDate() {
-        DateTime today = new DateTime(2011, 10, 2, 10, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusWeeks(4);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
+    public void totalDosesWhenDosageStartDateEqualsDosageEndDate() {
+        DateTime now = new DateTime(2011, 10, 2, 10, 0, 0, 0);
+        final DateTime dosageStartTime = now;
+        final DateTime dosageEndTime = dosageStartTime;
+        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartTime.getHourOfDay(), dosageStartTime.getMinuteOfHour()), dosageStartTime.toLocalDate(), dosageEndTime.toLocalDate(), null, null));
 
-        assertEquals(1, dosage.getNumberOfDosesBetween(dosageStartDateTime, dosageStartDateTime));
-    }
-
-    @Test
-    public void shouldExcludeDoseAfterDoseEndTime() {
-        DateTime today = new DateTime(2011, 10, 29, 10, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusWeeks(4);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), today.toLocalDate(), null, null));
-
-        assertEquals(28, dosage.getNumberOfDosesBetween(dosageStartDateTime, today.plusDays(1)));
-    }
-
-    @Test
-    public void shouldNotFailWhenDoseTimeIsMidnight() {
-        DateTime today = new DateTime(2011, 10, 29, 0, 0, 0, 0);
-        final DateTime dosageStartDateTime = today.minusWeeks(4);
-        Dosage dosage = new Dosage(new DosageResponse("dosage_id", new Time(dosageStartDateTime.getHourOfDay(), dosageStartDateTime.getMinuteOfHour()), dosageStartDateTime.toLocalDate(), null, null, null));
-
-        assertEquals(28, dosage.getNumberOfDosesBetween(dosageStartDateTime.minusDays(1), today));
+        assertEquals(1, dosage.getNumberOfDosesBetween(dosageStartTime, dosageEndTime));
     }
 }

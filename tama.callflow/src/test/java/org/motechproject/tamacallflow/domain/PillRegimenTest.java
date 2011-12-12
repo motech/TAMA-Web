@@ -20,7 +20,7 @@ public class PillRegimenTest {
         }});
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
-        DateTime today = dosageStartDate.plusWeeks(4);
+        DateTime today = dosageStartDate.plusWeeks(4).minusDays(1);
         assertEquals(28, pillRegimen.getNumberOfDosesBetween(dosageStartDate, today));
     }
 
@@ -32,7 +32,7 @@ public class PillRegimenTest {
         }});
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
-        DateTime today = dosageStartDate.plusWeeks(4);
+        DateTime today = dosageStartDate.plusWeeks(4).minusDays(1);
         assertEquals(28, pillRegimen.getNumberOfDosesAsOf(today));
     }
 
@@ -40,14 +40,14 @@ public class PillRegimenTest {
     public void dosagesForLastFourWeeksShouldBe51ForTwoDoseRegimen() {
         final DateTime dosage1StartDate = new DateTime(2011, 10, 2, 10, 0, 0, 0);
         final DateTime dosage2StartDate = new DateTime(2011, 10, 7, 13, 0, 0, 0);
-        final DateTime today = new DateTime(2011, 10, 30, 12, 0, 0, 0);
+        final DateTime today = new DateTime(2011, 10, 30, 13, 0, 0, 0);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", 2, 15, new ArrayList<DosageResponse>(){{
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
             add(new DosageResponse("dosage2_id", new Time(dosage2StartDate.getHourOfDay(), dosage2StartDate.getMinuteOfHour()), dosage2StartDate.toLocalDate(), null, null, null));
         }});
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
-        assertEquals(51, pillRegimen.getNumberOfDosesBetween(dosage1StartDate, today));
+        assertEquals(51, pillRegimen.getNumberOfDosesBetween(dosage1StartDate, today.minusDays(1)));
     }
 
 }
