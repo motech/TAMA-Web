@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
 
-import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.openqa.selenium.WebElement;
@@ -33,9 +32,6 @@ public class CreateBasicPatientInformationSection {
         patientId = WebDriverFactory.createWebElement(patientId);
         mobileNumber = WebDriverFactory.createWebElement(mobileNumber);
         dateOfBirth = WebDriverFactory.createWebElement(dateOfBirth);
-        travelTimeInDays = WebDriverFactory.createWebElement(travelTimeInDays);
-        travelTimeInHrs = WebDriverFactory.createWebElement(travelTimeInHrs);
-        travelTimeInMins = WebDriverFactory.createWebElement(travelTimeInMins);
         gender = WebDriverFactory.createWebElement(gender);
     }
 
@@ -43,10 +39,9 @@ public class CreateBasicPatientInformationSection {
         patientId.sendKeys(patient.patientId());
         mobileNumber.sendKeys(patient.mobileNumber());
         dateOfBirth.sendKeys(new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
-        ((ExtendedWebElement)travelTimeInDays).select(patient.travelTimeToClinicInDays());
-        ((ExtendedWebElement)travelTimeInHrs).select(patient.travelTimeToClinicInHours());
-        ((ExtendedWebElement)travelTimeInMins).select(String.valueOf(patient.travelTimeToClinicInMinutes()));
-
+        travelTimeInDays.sendKeys(patient.travelTimeToClinicInDays());
+        travelTimeInHrs.sendKeys((patient.travelTimeToClinicInHours()));
+        travelTimeInMins.sendKeys((String.valueOf(patient.travelTimeToClinicInMinutes())));
         nextToMedicalHistory.click();
     }
 }
