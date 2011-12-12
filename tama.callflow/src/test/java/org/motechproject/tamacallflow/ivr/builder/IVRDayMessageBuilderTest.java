@@ -38,7 +38,7 @@ public class IVRDayMessageBuilderTest {
         assertEquals("timeOfDayAt", messages.get(1));
         assertEquals("Num_010", messages.get(2));
         assertEquals("Num_020", messages.get(3));
-        assertEquals("AM", messages.get(4));
+        assertEquals("timeofDayAM", messages.get(4));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class IVRDayMessageBuilderTest {
         assertEquals("timeOfDayAt", messages.get(1));
         assertEquals("Num_007", messages.get(2));
         assertEquals("Num_020", messages.get(3));
-        assertEquals("PM", messages.get(4));
+        assertEquals("timeofDayPM", messages.get(4));
     }
 
     @Test

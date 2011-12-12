@@ -21,7 +21,7 @@ public class EnglishTimeConstructBuilder {
         if (localTime.getMinuteOfHour() != 0) {
             messages.add(getNumberFilename(DateTimeFormat.forPattern(TimeConstructBuilder.MINUTE_OF_THE_HOUR).print(localTime)));
         }
-        messages.add(DateTimeFormat.forPattern(TimeConstructBuilder.AM_PM).print(localTime));
+        messages.add(String.format(TamaIVRMessage.TIME_OF_DAY_AM_PM, DateTimeFormat.forPattern(TimeConstructBuilder.AM_PM).print(localTime)));
         return messages;
     }
 

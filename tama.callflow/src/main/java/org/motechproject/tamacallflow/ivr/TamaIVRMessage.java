@@ -152,6 +152,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String TIME_OF_DAY_NIGHT = "timeOfDayNight";
     public static final String TIME_OF_DAY_MIDNIGHT = "timeOfDayMidnight";
     public static final String TIME_OF_DAY_EARLY_MORNING = "timeofDayEarlyMorning";
+    public static final String TIME_OF_DAY_AM_PM = "timeofDay%s";
 
     /* ---------- Four Day Recall ----------*/
     private Properties properties;

@@ -17,7 +17,7 @@ public class TimeConstructBuilder_ForEnglish_Test {
         List<String> timeConstructWAVs = new TimeConstructBuilder(IVRLanguage.ENGLISH_CODE).build(tenAM);
         assertEquals(2, timeConstructWAVs.size());
         assertEquals("Num_010", timeConstructWAVs.get(0));
-        assertEquals("AM", timeConstructWAVs.get(1));
+        assertEquals("timeofDayAM", timeConstructWAVs.get(1));
     }
 
     @Test
@@ -27,7 +27,7 @@ public class TimeConstructBuilder_ForEnglish_Test {
         assertEquals(3, timeConstructWAVs.size());
         assertEquals("Num_010", timeConstructWAVs.get(0));
         assertEquals("Num_030", timeConstructWAVs.get(1));
-        assertEquals("AM", timeConstructWAVs.get(2));
+        assertEquals("timeofDayAM", timeConstructWAVs.get(2));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class TimeConstructBuilder_ForEnglish_Test {
         List<String> timeConstructWAVs = new TimeConstructBuilder(IVRLanguage.ENGLISH_CODE).build(midnight);
         assertEquals(2, timeConstructWAVs.size());
         assertEquals("Num_012", timeConstructWAVs.get(0));
-        assertEquals("AM", timeConstructWAVs.get(1));
+        assertEquals("timeofDayAM", timeConstructWAVs.get(1));
     }
 
     @Test
@@ -45,6 +45,6 @@ public class TimeConstructBuilder_ForEnglish_Test {
         List<String> timeConstructWAVs = new TimeConstructBuilder(IVRLanguage.ENGLISH_CODE).build(noon);
         assertEquals(2, timeConstructWAVs.size());
         assertEquals("Num_012", timeConstructWAVs.get(0));
-        assertEquals("PM", timeConstructWAVs.get(1));
+        assertEquals("timeofDayPM", timeConstructWAVs.get(1));
     }
 }
