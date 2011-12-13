@@ -98,8 +98,18 @@ public class FourDayRecallAdherenceService {
     }
 
     private boolean patientsBestCallTimeFallsWithinSuspensionPeriod(DateTime fromDate, DateTime toDate, Patient suspendedPatient, boolean isFirstDayOfSuspensionPeriod, boolean isLastDayOfSuspensionPeriod) {
-        return ((suspendedPatient.getPatientPreferences().getBestCallTime().toTime().getDateTime(toDate).compareTo(toDate) <= 0 && isLastDayOfSuspensionPeriod)
-                || (suspendedPatient.getPatientPreferences().getBestCallTime().toTime().getDateTime(fromDate).compareTo(fromDate) >= 0 && isFirstDayOfSuspensionPeriod));
+        return ((patientsBestCallTimeBeforeReactivationTime(toDate, suspendedPatient) && isLastDayOfSuspensionPeriod && !isFirstDayOfSuspensionPeriod)
+                || (patientsBestCallTimeAfterSuspensionTime(fromDate, suspendedPatient) && isFirstDayOfSuspensionPeriod && !isLastDayOfSuspensionPeriod)
+                || (patientsBestCallTimeBeforeReactivationTime(toDate, suspendedPatient) && isLastDayOfSuspensionPeriod 
+                    && patientsBestCallTimeAfterSuspensionTime(fromDate, suspendedPatient) && isFirstDayOfSuspensionPeriod));
+    }
+
+    private boolean patientsBestCallTimeBeforeReactivationTime(DateTime toDate, Patient suspendedPatient) {
+        return suspendedPatient.getPatientPreferences().getBestCallTime().toTime().getDateTime(toDate).compareTo(toDate) <= 0;
+    }
+
+    private boolean patientsBestCallTimeAfterSuspensionTime(DateTime fromDate, Patient suspendedPatient) {
+        return suspendedPatient.getPatientPreferences().getBestCallTime().toTime().getDateTime(fromDate).compareTo(fromDate) >= 0;
     }
 
     private boolean isLastDayOfSuspensionPeriod(DateTime toDate, DateTime iteratingDate) {
