@@ -1,7 +1,6 @@
 package org.motechproject.tamatools.tools.seed;
 
 import org.motechproject.tamadomain.domain.Brand;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.domain.Company;
 import org.motechproject.tamadomain.domain.Drug;
 import org.motechproject.tamadomain.repository.AllDrugs;
@@ -83,7 +82,7 @@ public class DrugSeed extends Seed {
 		Drug drug8 = new Drug("TDF+FTC");
 		drug8.addBrand(new Brand("Tenvir-EM",allCompanies.get("Cipla")));
 		drug8.addBrand(new Brand("Forstavir-EM",allCompanies.get("Aurobindo")));
-		drug8.addBrand(new Brand("Tavin EM",allCompanies.get("Emcure")));
+		drug8.addBrand(new Brand("Tavin-EM",allCompanies.get("Emcure")));
 		drugs.add(drug8);
 		
 		Drug drug9 = new Drug("TDF+3TC+EFV");
