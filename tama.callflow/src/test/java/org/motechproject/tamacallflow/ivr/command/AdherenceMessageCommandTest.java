@@ -40,7 +40,6 @@ public class AdherenceMessageCommandTest {
     @Before
     public void setup() {
         initMocks(this);
-        mockStatic(DateUtil.class);
         TamaIVRMessage tamaIvrMessage = new TamaIVRMessage(null);
         adherenceMessageCommand = new AdherenceMessageCommand(null, tamaIvrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
