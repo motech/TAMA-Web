@@ -117,7 +117,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void previousDosageIsNotTakenWhenTheLastNightDoseWasNotTaken() {
+    public void previousDosageIsNotTakenWhenYesterdaysDoseWasNotTaken() {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate currentDosageLastTakenDate = DateUtil.today();
@@ -133,7 +133,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void previousDosageIsTakenWhenTheLastNightDoseWasTaken() {
+    public void previousDosageIsTakenWhenYesterdaysDoseWasTaken() {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate currentDosageLastTakenDate = DateUtil.today();

@@ -19,26 +19,24 @@ public class IVRDayMessageBuilder {
     }
 
     public String getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(DateTime previousDosageDateTime) {
-        return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAYS, TamaIVRMessage.MORNING, TamaIVRMessage.AFTERNOON, TamaIVRMessage.EVENING, TamaIVRMessage.LAST_NIGHT);
+        return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAYS, TamaIVRMessage.MORNING, TamaIVRMessage.AFTERNOON, TamaIVRMessage.EVENING);
     }
 
     public String getMessageForPreviousDosageQuestion_YESTERDAY_IN_THE_MORNING(DateTime previousDosageDateTime) {
-        return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAY, TamaIVRMessage.IN_THE_MORNING, TamaIVRMessage.IN_THE_AFTERNOON, TamaIVRMessage.IN_THE_EVENING, TamaIVRMessage.IN_THE_LAST_NIGHT);
+        return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAY, TamaIVRMessage.IN_THE_MORNING, TamaIVRMessage.IN_THE_AFTERNOON, TamaIVRMessage.IN_THE_EVENING);
     }
 
     public String getMessageForPreviousDosageConfirmation_YESTERDAYS_MORNING(DateTime previousDosageDateTime) {
-        return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAYS_CONFIRMATION, TamaIVRMessage.MORNING_CONFIRMATION, TamaIVRMessage.AFTERNOON_CONFIRMATION, TamaIVRMessage.EVENING_CONFIRMATION, TamaIVRMessage.LAST_NIGHT_CONFIRMATION);
+        return getMessageForPreviousDosage(previousDosageDateTime, TamaIVRMessage.YESTERDAYS_CONFIRMATION, TamaIVRMessage.MORNING_CONFIRMATION, TamaIVRMessage.AFTERNOON_CONFIRMATION, TamaIVRMessage.EVENING_CONFIRMATION);
     }
 
-    private String getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening, String lastNight) {
+    private String getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening) {
         if (previousDosageDateTime.plusDays(1).toLocalDate().equals(DateUtil.today()))
            return yesterday;
         else if (previousDosageDateTime.getHourOfDay() < 12)
             return morning;
         else if (previousDosageDateTime.getHourOfDay() < 16)
             return afternoon;
-        else if (previousDosageDateTime.getHourOfDay() < 20)
-            return evening;
-        return lastNight;
+        return evening;
     }
 }

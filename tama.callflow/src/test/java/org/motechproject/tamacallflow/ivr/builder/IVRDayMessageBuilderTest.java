@@ -78,7 +78,7 @@ public class IVRDayMessageBuilderTest {
     }
 
     @Test
-    public void constructMessageWhenPreviousDosageIsForEvening() {
+    public void constructMessageWhenPreviousDosageIsForEvening_Case1() {
         DateTime time = DateUtil.now().withHourOfDay(16).withMinuteOfHour(00);
 
         String message = ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(time);
@@ -86,10 +86,10 @@ public class IVRDayMessageBuilderTest {
     }
 
     @Test
-    public void constructMessageWhenPreviousDosageIsForLastNight() {
+    public void constructMessageWhenPreviousDosageIsForEvening_Case2() {
         DateTime time = DateUtil.now().withHourOfDay(20).withMinuteOfHour(00);
 
         String message = ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(time);
-        assertEquals("001_07_02_doseTimeOfLastnight", message);
+        assertEquals("001_07_02_doseTimeOfEvening", message);
     }
 }
