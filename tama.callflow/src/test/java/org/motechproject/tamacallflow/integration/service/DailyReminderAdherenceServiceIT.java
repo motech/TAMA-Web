@@ -144,6 +144,22 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     }
 
     @Test
+    public void adherenceWhenOneDoseOfAKindIsTaken() {
+        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+            add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today(), null, null, null));
+            add(new DosageResponse("dosage2Id", new Time(11, 30), DateUtil.today(), null, null, null));
+        }});
+        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(regimenStartingToday));
+
+        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, DateUtil.today());
+        allDosageAdherenceLogs.add(dosageAdherenceLog);
+        markForDeletion(dosageAdherenceLog);
+
+        DateTime timeOfFirstDose = DateUtil.now().withHourOfDay(10).withMinuteOfHour(30);
+        assertEquals(100.0, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", timeOfFirstDose));
+    }
+
+    @Test
     public void adherenceWhenADoseOfAKindIsMissed() {
         PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today(), null, null, null));

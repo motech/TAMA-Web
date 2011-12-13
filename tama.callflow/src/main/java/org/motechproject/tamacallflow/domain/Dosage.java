@@ -32,7 +32,11 @@ public class Dosage {
             till = dosageEndTime;
         if (from.isEqual(till)) {
             return 1;
-        } else {
+        }
+        else if (till.isBefore(from)) {
+            return 0;
+        }
+        else {
             return numberOfDosesOnFirstDay(from) + numberOfDosesBetweenFirstAndLastDay(from, till) + numberOfDosesOnLastDay(till);
         }
     }
