@@ -27,7 +27,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 @PrepareForTest(DateUtil.class)
@@ -66,7 +65,7 @@ public class AdherenceMessageWhenPreviousDoseCapturedCommandTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 0, 0, dosageResponses);
         ivrContext = new TAMAIVRContextForTest().patientId("p1").dosageId("currentDosageId").pillRegimen(pillRegimenResponse).callStartTime(now).callDirection(CallDirection.Outbound);
 
-        when(dailyReminderAdherenceService.getAdherence("p1", now)).thenReturn(1.0);
+        when(dailyReminderAdherenceService.getAdherenceInPercentage("p1", now)).thenReturn(100.0);
         assertArrayEquals(new String[]{TamaIVRMessage.YOUR_ADHERENCE_IS_NOW, "Num_100", TamaIVRMessage.PERCENT}, command.executeCommand(ivrContext));
 
     }

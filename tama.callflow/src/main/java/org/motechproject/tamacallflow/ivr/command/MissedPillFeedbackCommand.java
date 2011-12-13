@@ -30,7 +30,7 @@ public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
             case 4:
                 return new String[]{ TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME };
             default:
-                int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherence(ivrContext.patientId(), ivrContext.callStartTime()) * 100);
+                int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherenceInPercentage(ivrContext.patientId(), ivrContext.callStartTime()));
                 return new String[]{ getMissedPillFeedbackMessageFor(adherencePercentage) };
         }
     }

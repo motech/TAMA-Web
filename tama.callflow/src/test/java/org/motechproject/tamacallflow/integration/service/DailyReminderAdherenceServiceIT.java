@@ -3,7 +3,6 @@ package org.motechproject.tamacallflow.integration.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -78,12 +77,11 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         }});
         when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(regimenStartingToday));
 
-        /*Yesterday's dose was taken*/
         DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosageId", DosageStatus.TAKEN, DateUtil.today());
         allDosageAdherenceLogs.add(dosageAdherenceLog);
         markForDeletion(dosageAdherenceLog);
 
-        assertEquals(1.0, dailyReminderAdherenceService.getAdherence("patientId", DateUtil.now()));
+        assertEquals(100.0, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", DateUtil.now()));
     }
 
     @Test
@@ -98,7 +96,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLog);
         markForDeletion(dosageAdherenceLog);
 
-        assertEquals(0.0, dailyReminderAdherenceService.getAdherence("patientId", DateUtil.now()));
+        assertEquals(0.0, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", DateUtil.now()));
     }
 
     @Test
@@ -120,7 +118,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
             markForDeletion(dosageAdherenceLog);
         }
 
-        assertEquals(1.0, dailyReminderAdherenceService.getAdherence("patientId", DateUtil.now()));
+        assertEquals(100.0, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", DateUtil.now()));
     }
 
     @Test
@@ -142,7 +140,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         }
 
         DateTime timeOfSecondDose = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
-        assertEquals(1.0, dailyReminderAdherenceService.getAdherence("patientId", timeOfSecondDose));
+        assertEquals(100.0, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", timeOfSecondDose));
     }
 
     @Test
@@ -159,7 +157,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         markForDeletion(dosageAdherenceLog);
 
         DateTime timeOfSecondDose = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
-        assertEquals(0.5, dailyReminderAdherenceService.getAdherence("patientId", timeOfSecondDose));
+        assertEquals(50.0, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", timeOfSecondDose));
     }
 
     @Test
@@ -196,8 +194,8 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
 
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
 
-        int dosesTakenTheLastFourWeeks = 7;
-        assertEquals(dosesTakenTheLastFourWeeks / DOSES_IN_FOUR_WEEKS, dailyReminderAdherenceService.getAdherence("patientId", DateUtil.now()));
+        // 7/28
+        assertEquals(25.0, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", DateUtil.now()));
     }
 
     @Test
@@ -238,7 +236,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         int numberOfDosages = 2;
         double totalDosesInFourWeeks = DOSES_IN_FOUR_WEEKS * numberOfDosages;
         DateTime timeOfSecondDosage = DateUtil.now().withHourOfDay(16).withMinuteOfHour(30);
-        assertEquals(dosesTakenTheLastFourWeeks / totalDosesInFourWeeks, dailyReminderAdherenceService.getAdherence("patientId", timeOfSecondDosage));
+        assertEquals(dosesTakenTheLastFourWeeks / totalDosesInFourWeeks * 100, dailyReminderAdherenceService.getAdherenceInPercentage("patientId", timeOfSecondDosage));
     }
 
 }

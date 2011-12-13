@@ -30,14 +30,14 @@ public class PlayAdherenceTrendFeedbackCommand {
         String patientId = outboxContext.partyId();
         DateTime now = DateUtil.now();
 
-        double adherencePercentageAsOfNow = dailyReminderAdherenceService.getAdherence(patientId, now);
+        double adherencePercentageAsOfNow = dailyReminderAdherenceService.getAdherenceInPercentage(patientId, now);
         boolean falling = dailyReminderAdherenceTrendService.isAdherenceFallingAsOf(patientId, DateUtil.now());
 
-        if (adherencePercentageAsOfNow > 0.9) {
+        if (adherencePercentageAsOfNow > 90) {
             // A message saying indicating that I’ve done well and should
             // try not to miss a single dose is played to me
             result.add(TamaIVRMessage.M02_04_ADHERENCE_COMMENT_GT95_FALLING);
-        } else if (adherencePercentageAsOfNow > 0.7) {
+        } else if (adherencePercentageAsOfNow > 70) {
             if (falling) {
                 // A message saying my adherence can improve and I need to
                 // take my doses more regularly should be played to me

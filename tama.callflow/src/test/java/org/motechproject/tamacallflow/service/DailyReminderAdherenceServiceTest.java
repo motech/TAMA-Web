@@ -18,8 +18,6 @@ import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
@@ -75,26 +73,7 @@ public class DailyReminderAdherenceServiceTest {
         when(pillRegimen.getDosesIn(4, asOfDate)).thenReturn(totalDoses);
 
         when(allDosageAdherenceLogs.countBy(same("regimenId"), same(DosageStatus.TAKEN), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(dosesTaken);
-        assertEquals(((double) dosesTaken / totalDoses), dailyReminderAdherenceService.getAdherence(patientId, asOfDate));
-    }
-
-    @Test
-    public void shouldCalculateAdherenceAsOfLastTakenDosage() {
-        LocalDate doseDate = new LocalDate(2011, 10, 10);
-        String patientId = "patientId";
-        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, "regimenId", "dosageId", DosageStatus.TAKEN, doseDate);
-        when(allDosageAdherenceLogs.getLatestLogForPatient(patientId)).thenReturn(dosageAdherenceLog);
-
-        PillRegimen pillRegimen = mock(PillRegimen.class);
-        when(pillRegimen.getId()).thenReturn("regimenId");
-        when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
-
-        when(pillRegimen.getDosage("dosageId")).thenReturn(new Dosage(new DosageResponse("dosageId", new Time(10, 0), null, null, doseDate, null)));
-        DateTime doseTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
-        when(pillRegimen.getDosesIn(4, doseTime)).thenReturn(4);
-        when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseTime.minusWeeks(4).toLocalDate(), doseTime.toLocalDate())).thenReturn(1);
-
-        assertEquals(0.25, dailyReminderAdherenceService.getAdherenceAsOfLastRecordedDose(patientId));
+        assertEquals(((double) dosesTaken / totalDoses) * 100, dailyReminderAdherenceService.getAdherenceInPercentage(patientId, asOfDate));
     }
 
     @Test

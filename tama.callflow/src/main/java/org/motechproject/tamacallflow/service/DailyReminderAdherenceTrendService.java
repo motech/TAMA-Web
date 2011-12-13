@@ -32,17 +32,17 @@ public class DailyReminderAdherenceTrendService {
     }
 
     public boolean isAdherenceFallingAsOf(String patientId, DateTime asOf) {
-        return dailyReminderAdherenceService.getAdherence(patientId, asOf) < dailyReminderAdherenceService.getAdherence(patientId, asOf.minusWeeks(1));
+        return dailyReminderAdherenceService.getAdherenceInPercentage(patientId, asOf) < dailyReminderAdherenceService.getAdherenceInPercentage(patientId, asOf.minusWeeks(1));
     }
 
     public void raiseAlertIfAdherenceTrendIsFalling(String patientId, DateTime asOf) {
         if (!isAdherenceFallingAsOf(patientId, asOf))
             return;
         Map<String, String> data = new HashMap<String, String>();
-        double adherenceAsOfLastWeek = dailyReminderAdherenceService.getAdherence(patientId, asOf.minusWeeks(1));
-        double adherenceAsOfCurrentWeek = dailyReminderAdherenceService.getAdherence(patientId, asOf);
-        double fallPercent = ((adherenceAsOfLastWeek - adherenceAsOfCurrentWeek) / adherenceAsOfLastWeek) * 100;
-        String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fallPercent, adherenceAsOfLastWeek, adherenceAsOfCurrentWeek);
+        double adherencePercentageAsOfLastWeek = dailyReminderAdherenceService.getAdherenceInPercentage(patientId, asOf.minusWeeks(1));
+        double adherencePercentageAsOfCurrentWeek = dailyReminderAdherenceService.getAdherenceInPercentage(patientId, asOf);
+        double fallPercent = ((adherencePercentageAsOfLastWeek - adherencePercentageAsOfCurrentWeek) / adherencePercentageAsOfLastWeek) * 100;
+        String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fallPercent, adherencePercentageAsOfLastWeek, adherencePercentageAsOfCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 

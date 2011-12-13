@@ -2,9 +2,7 @@ package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.tamacallflow.domain.Dosage;
 import org.motechproject.tamacallflow.domain.DosageTimeLine;
 import org.motechproject.tamacallflow.domain.PillRegimen;
 import org.motechproject.tamacallflow.ivr.Dose;
@@ -38,9 +36,9 @@ public class DailyReminderAdherenceService {
         this.properties = properties;
     }
 
-    public double getAdherence(String patientId, DateTime asOfDate) {
+    public double getAdherenceInPercentage(String patientId, DateTime asOfDate) {
         int numberOfWeeks = 4;
-        return getAdherenceForWeeks(patientId, asOfDate, numberOfWeeks);
+        return getAdherenceForWeeks(patientId, asOfDate, numberOfWeeks) * 100;
     }
 
     public double getAdherenceForLastWeek(String patientId, DateTime asOfDate) {
@@ -52,13 +50,6 @@ public class DailyReminderAdherenceService {
         int totalDoses = pillRegimen.getDosesIn(numberOfWeeks, asOfDate);
         int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, asOfDate.minusWeeks(numberOfWeeks).toLocalDate(), asOfDate.toLocalDate());
         return ((double) dosagesTakenForLastFourWeeks) / totalDoses;
-    }
-
-    public double getAdherenceAsOfLastRecordedDose(String patientId) {
-        DosageAdherenceLog latestLog = allDosageAdherenceLogs.getLatestLogForPatient(patientId);
-        Dosage dosage = pillReminderService.getPillRegimen(patientId).getDosage(latestLog.getDosageId());
-        DateTime lastDoseDateTime = DateUtil.newDateTime(latestLog.getDosageDate(), new Time(dosage.getHour(), dosage.getMinute()));
-        return getAdherence(patientId, lastDoseDateTime);
     }
 
     public void recordAdherence(SuspendedAdherenceData suspendedAdherenceData) {
