@@ -9,4 +9,7 @@ public class TAMAMessages {
 
     public static final String TEST_DATE_MUST_BE_IN_PAST = "Test date must be in the past.";
     public static final String TEST_DATE_NOT_EMPTY = "Test date must not be empty";
+
+    public static final String ADHERENCE_FALLING_FROM_TO = "Adherence fell by " + TAMAConstants.PERCENTAGE_FORMAT + ", from " + TAMAConstants.PERCENTAGE_FORMAT + " to " + TAMAConstants.PERCENTAGE_FORMAT;
+    public static final String ADHERENCE_PERCENTAGE_IS = "Adherence percentage is " + TAMAConstants.PERCENTAGE_FORMAT;
 }

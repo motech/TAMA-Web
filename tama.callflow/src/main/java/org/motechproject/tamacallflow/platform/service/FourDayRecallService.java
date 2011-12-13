@@ -5,6 +5,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tamacommon.TAMAMessages;
 import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.domain.TimeOfDay;
 import org.motechproject.tamadomain.repository.AllPatients;
@@ -172,7 +173,7 @@ public class FourDayRecallService {
         final Map<String, String> data = new HashMap<String, String>();
         final int previousWeekPercentage = getAdherencePercentageForPreviousWeek(patientId);
         final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / (double)previousWeekPercentage) * 100.0;
-        final String description = String.format("Adherence fell by %2.2f%% from %2.2f%% to %2.2f%%", fall, (double)previousWeekPercentage, (double)adherencePercentageForCurrentWeek);
+        final String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fall, (double)previousWeekPercentage, (double)adherencePercentageForCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 
@@ -224,7 +225,7 @@ public class FourDayRecallService {
         double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
         if(adherencePercentage >= acceptableAdherencePercentage) return;
 
-        String description = String.format("Adherence percentage is %.2f%%", adherencePercentage);
+        String description = String.format(TAMAMessages.ADHERENCE_PERCENTAGE_IS, adherencePercentage);
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.ADHERENCE, Double.toString(adherencePercentage));
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);

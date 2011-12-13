@@ -2,6 +2,7 @@ package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
 import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tamacommon.TAMAMessages;
 import org.motechproject.tamadomain.domain.PatientAlert;
 import org.motechproject.tamadomain.domain.PatientAlertType;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
@@ -41,12 +42,12 @@ public class DailyReminderAdherenceTrendService {
         double adherenceAsOfLastWeek = dailyReminderAdherenceService.getAdherence(patientId, asOf.minusWeeks(1));
         double adherenceAsOfCurrentWeek = dailyReminderAdherenceService.getAdherence(patientId, asOf);
         double fallPercent = ((adherenceAsOfLastWeek - adherenceAsOfCurrentWeek) / adherenceAsOfLastWeek) * 100;
-        String description = String.format("Adherence fell by %2.2f%%, from %2.2f%% to %2.2f%%", fallPercent, adherenceAsOfLastWeek, adherenceAsOfCurrentWeek);
+        String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fallPercent, adherenceAsOfLastWeek, adherenceAsOfCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 
     public void raiseAdherenceInRedAlert(String patientId, Double adherencePercentage) {
-        String description = String.format("Adherence percentage is %.2f%%", adherencePercentage);
+        String description = String.format(TAMAMessages.ADHERENCE_PERCENTAGE_IS, adherencePercentage);
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.ADHERENCE, adherencePercentage.toString());
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);

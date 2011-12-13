@@ -14,6 +14,7 @@ public class TAMAConstants {
     public static final String REMINDER_LAG = "reminder.lag.mins";
     public static final String DOSAGE_INTERVAL = "dosage.interval";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
+    public static final String PERCENTAGE_FORMAT = "%2.2f%%";
     public static final int DAYS_IN_FOUR_WEEKS = 28;
     public static final String BASE_SUBJECT = "org.motechproject.server";
     public static final String ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT = BASE_SUBJECT + ".adherence.weeklyTrendFeedback";
