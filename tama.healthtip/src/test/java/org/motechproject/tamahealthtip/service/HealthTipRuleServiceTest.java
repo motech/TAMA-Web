@@ -152,6 +152,15 @@ public class HealthTipRuleServiceTest {
         assertOnPriority3HealthTipsForPatientMoreThanTwoMonthsIntoART(healthTips);
     }
 
+    //  rule "Greater than 8 weeks but less than 3 months into ART"
+    @Test
+    public void shouldReturnRelevantPriority3HealthTipsWhenPatientMoreThan8WeeksAndLessThan3MonthsIntoART() {
+        setupLabResults(DateUtil.today().minusMonths(1), "300", DateUtil.today().minusMonths(2), "450");
+        when(allLabResults.findByPatientId("patientDocId")).thenReturn(labResults);
+        Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(2).minusWeeks(1), patient);
+        assertOnPriority3HealthTipsForPatientMoreThanTwoMonthsIntoART(healthTips);
+    }
+
     //  rule "Greater than 2 months into ART and patient on Daily Pill Reminder"
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientMoreThanTwoMonthsIntoART_AndPatientOnDailyPillReminder() {

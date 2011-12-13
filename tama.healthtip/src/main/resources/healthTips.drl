@@ -110,7 +110,7 @@ end
 
 rule "Greater than 2 months into ART"
     when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 2)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 2)
     then
         for (String file : Arrays.asList("HT001a", "HT002a", "HT003a", "HT004a", "HT005a",
                                          "HT006a", "HT007a", "HT008a", "HT009a", "HT011a",
@@ -123,7 +123,7 @@ end
 
 rule "Greater than 2 months into ART and patient on Daily Pill Reminder"
    when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 2)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 2)
         HealthTipParams(patientOnDailyPillReminder == "true")
    then
         for (String file : Arrays.asList("HT021a", "HT014a", "HT019a")) {
@@ -133,7 +133,7 @@ end
 
 rule "Greater than 2 months into ART and patient not on Daily Pill Reminder"
    when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 2)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 2)
         HealthTipParams(patientOnDailyPillReminder == "false")
    then
         for (String file : Arrays.asList("HT022a", "HT015a", "HT020a")) {
@@ -143,7 +143,7 @@ end
 
 rule "Less than 12 months but more than 2 months into ART and date of last CD4 test more than two and half months ago"
     when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 2)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 2)
         HealthTipParams(numberOfMonthsSinceTreatmentStarted < 12)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 10)
     then
@@ -154,7 +154,7 @@ end
 
 rule "Less than 12 months but more than 2 months into ART and date of last CD4 test less than two and half months ago"
     when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 2)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 2)
         HealthTipParams(numberOfMonthsSinceTreatmentStarted < 12)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 10)
     then
@@ -165,7 +165,7 @@ end
 
 rule "Greater than 12 months into ART, last CD4 count < 350 and date of last CD4 test more than two and half months ago but less than five and a half months ago"
     when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 12)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
         HealthTipParams(lastCD4Count < 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 22)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 10)
@@ -177,7 +177,7 @@ end
     
 rule "Greater than 12 months into ART, last CD4 count < 350 and date of last CD4 test less than two and half months ago"
     when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 12)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
         HealthTipParams(lastCD4Count < 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 10)
     then
@@ -188,7 +188,7 @@ end
 
 rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4 test more than five and a half months ago"
     when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 12)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
         HealthTipParams(lastCD4Count > 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 22)
     then
@@ -199,7 +199,7 @@ end
 
 rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4 test less than less than five and a half months ago but more than two and a half months ago"
     when
-        HealthTipParams(numberOfMonthsSinceTreatmentStarted > 12)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
         HealthTipParams(lastCD4Count > 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 22)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 10)
