@@ -82,7 +82,11 @@ public class HealthTipService {
     }
 
     public String nextHealthTip(String patientId) {
-        return getPlayList(patientId).get(0);
+        List<String> playList = getPlayList(patientId);
+        if(playList.size() > 0) {
+            return playList.get(0);
+        }
+        return "";
     }
 
     List<String> getPlayList(String patientId) {

@@ -111,6 +111,12 @@ public class HealthTipServiceTest {
         healthTipService.markAsPlayed(patientDocId, AUDIO_FILE);
         verify(allHealthTipsHistory).add(any(HealthTipsHistory.class));
     }
+    
+    @Test
+    public void shouldReturnEmptyStringWhenNoHealthTipsAreAvailable() {
+        Mockito.doReturn(new ArrayList<String>()).when(healthTipService).getPlayList(patient.getId());
+        assertEquals("", healthTipService.nextHealthTip(patient.getId()));
+    }
 
     private void assertEqualsIgnoreOrder(Collection<String> list1, Collection<String> list2) {
         assertEquals(new HashSet<String>(list1), new HashSet<String>(list2));
