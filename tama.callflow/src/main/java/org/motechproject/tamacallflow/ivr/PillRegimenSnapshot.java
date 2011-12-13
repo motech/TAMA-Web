@@ -237,9 +237,10 @@ public class PillRegimenSnapshot {
     private Dose getDosage(String dosageId) {
         if (pillRegimen == null) return null;
         for (DosageResponse dosageResponse : pillRegimen.getDosages()) {
-            if (dosageResponse.getDosageId().equals(dosageId)) return new Dose(dosageResponse, tamaIVRContext.callStartTime().toLocalDate());
+            if (dosageResponse.getDosageId().equals(dosageId)) {
+                return new Dose(dosageResponse, tamaIVRContext.callStartTime().toLocalDate());
+            }
         }
         return null;
     }
-
 }

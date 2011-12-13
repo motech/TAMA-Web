@@ -63,9 +63,11 @@ public class AdherenceMessageWhenPreviousDoseCapturedCommandTest {
                 new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 1), null, today, null),
                 new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), null, today, null));
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 0, 0, dosageResponses);
-        ivrContext = new TAMAIVRContextForTest().patientId("p1").dosageId("currentDosageId").pillRegimen(pillRegimenResponse).callStartTime(now).callDirection(CallDirection.Outbound);
+        DosageResponse currentDosage = dosageResponses.get(1);
+        DateTime callStartTime = DateUtil.newDateTime(currentDosage.getStartDate(), currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
+        ivrContext = new TAMAIVRContextForTest().patientId("p1").dosageId("currentDosageId").pillRegimen(pillRegimenResponse).callStartTime(callStartTime).callDirection(CallDirection.Outbound);
 
-        when(dailyReminderAdherenceService.getAdherenceInPercentage("p1", now)).thenReturn(100.0);
+        when(dailyReminderAdherenceService.getAdherenceInPercentage("p1", callStartTime)).thenReturn(100.0);
         assertArrayEquals(new String[]{TamaIVRMessage.YOUR_ADHERENCE_IS_NOW, "Num_100", TamaIVRMessage.PERCENT}, command.executeCommand(ivrContext));
 
     }
