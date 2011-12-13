@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.util.DateUtil;
 
 public class Dose extends DosageResponse {
 
@@ -21,6 +22,10 @@ public class Dose extends DosageResponse {
 
     public LocalDate getDosageDate() {
         return dosageDate;
+    }
+
+    public DateTime getDoseTime() {
+        return DateUtil.newDateTime(dosageDate, dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
     }
 
     @Override
