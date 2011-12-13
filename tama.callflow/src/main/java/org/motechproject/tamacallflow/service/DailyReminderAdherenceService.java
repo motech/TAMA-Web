@@ -62,6 +62,7 @@ public class DailyReminderAdherenceService {
             Dose dose = dosageTimeLine.next();
             DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(suspendedAdherenceData.patientId(), pillRegimen.getId(), dose.getDosageId(), suspendedAdherenceData.getAdherenceDataWhenPatientWasSuspended().getStatus(), dose.getDosageDate());
             allDosageAdherenceLogs.add(dosageAdherenceLog);
+            pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDosageDate());
         }
     }
 

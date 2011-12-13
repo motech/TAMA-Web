@@ -1,5 +1,6 @@
 package org.motechproject.tamacallflow.service;
 
+import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tamacallflow.domain.PillRegimen;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,5 +18,9 @@ public class TAMAPillReminderService {
 
     public PillRegimen getPillRegimen(String patientId) {
         return new PillRegimen(pillReminderService.getPillRegimen(patientId));
+    }
+
+    public void setLastCapturedDate(String pillRegimenId, String dosageId, LocalDate lastCapturedDate){
+        pillReminderService.dosageStatusKnown(pillRegimenId, dosageId, lastCapturedDate);
     }
 }
