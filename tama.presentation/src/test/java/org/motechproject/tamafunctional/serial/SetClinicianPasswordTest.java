@@ -1,10 +1,12 @@
-package org.motechproject.tamafunctional.test;
+package org.motechproject.tamafunctional.serial;
 
 
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.page.SetClinicianPasswordPage;
+import org.motechproject.tamafunctional.page.SetPasswordSuccessPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
