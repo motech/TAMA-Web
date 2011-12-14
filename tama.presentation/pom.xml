@@ -845,38 +845,6 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-
-                    <execution>
-                        <id>inject-schedule-job-controller</id>
-                        <phase>pre-integration-test</phase>
-                        <configuration>
-                            <target>
-                                <echo message="STARTING: Copying the applicationScheduleJobContext.xml to placeholderPluginContext.xml"/>
-                                <copy file="src/main/resources/placeholderPluginContext.xml" tofile="src/main/resources/placeholderPluginContext.xml.bak" overwrite="false"/>
-                                <copy file="src/test/resources/applicationScheduleJobContext.xml" tofile="src/main/resources/placeholderPluginContext.xml" overwrite="true"/>
-                                <echo message="DONE: Copying the applicationScheduleJobContext.xml to placeholderPluginContext.xml"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-
-                    <execution>
-                        <id>unwire-schedule-job-controller</id>
-                        <phase>post-integration-test</phase>
-                        <configuration>
-                            <target>
-                                <echo message="STARTING: Copying the placeholderPluginContext.xml.bak to placeholderPluginContext.xml"/>
-                                <copy file="src/main/resources/placeholderPluginContext.xml.bak" tofile="src/main/resources/placeholderPluginContext.xml" overwrite="true"/>
-                                <echo message="DONE: Copying the placeholderPluginContext.xml.bak to placeholderPluginContext.xml"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-
                 </executions>
             </plugin>
 
