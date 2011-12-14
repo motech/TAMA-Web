@@ -2,6 +2,7 @@ package org.motechproject.tamafunctional.testdata.treatmentadvice;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.tamafunctional.testdata.TestEntity;
 import org.motechproject.util.DateUtil;
 
@@ -14,6 +15,7 @@ public class TestDrugDosage  extends TestEntity {
     private String mealAdvice;
     private String brandName;
     private String dosageType;
+    private LocalDate startDate;
 
     private TestDrugDosage() {
     }
@@ -29,7 +31,7 @@ public class TestDrugDosage  extends TestEntity {
         String dosageSchedule = hourNowIn12HourFormat.toString("HH:mm");
         ArrayList<TestDrugDosage> drugDosages = new ArrayList<TestDrugDosage>();
         for (String brandName : brandNames) {
-            drugDosages.add(withExtrinsic().dosageType(dosageType).dosageSchedule(dosageSchedule).brandName(brandName));
+            drugDosages.add(withExtrinsic().dosageType(dosageType).dosageSchedule(dosageSchedule).brandName(brandName).startDate(DateUtil.today()));
         }
         return drugDosages.toArray(new TestDrugDosage[brandNames.length]);
     }
@@ -59,6 +61,15 @@ public class TestDrugDosage  extends TestEntity {
 
     public String mealAdvice() {
         return mealAdvice;
+    }
+
+    public String startDate() {
+        return startDate.toString("dd/MM/yyyy");
+    }
+
+    public TestDrugDosage startDate(LocalDate startDate) {
+        this.startDate = startDate;
+        return this;
     }
 
     public TestDrugDosage dosageSchedule(String dosageSchedule) {

@@ -30,6 +30,9 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].dosageTypeId_id")
     private WebElement drug1DosageTypeElement;
 
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].startDateAsDate_id")
+    private WebElement drug1StartDateElement;
+
     @FindBy(how = How.ID, using = TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID)
     private WebElement drug1MorningDosageTimeElement;
 
@@ -44,6 +47,9 @@ public class CreateARTRegimenPage extends Page {
 
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].dosageTypeId_id")
     private WebElement drug2DosageTypeElement;
+
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].startDateAsDate_id")
+    private WebElement drug2StartDateElement;
 
     @FindBy(how = How.ID, using = TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID)
     private WebElement drug2MorningDosageTimeElement;
@@ -69,11 +75,13 @@ public class CreateARTRegimenPage extends Page {
         regimenElement = WebDriverFactory.createWebElement(regimenElement);
         drugCompositionGroupElement = WebDriverFactory.createWebElement(drugCompositionGroupElement);
         drug1DosageTypeElement = WebDriverFactory.createWebElement(drug1DosageTypeElement);
+        drug1StartDateElement = WebDriverFactory.createWebElement(drug1StartDateElement);
         drug1MorningDosageTimeElement = WebDriverFactory.createWebElement(drug1MorningDosageTimeElement);
         drug1EveningDosageTimeElement = WebDriverFactory.createWebElement(drug1EveningDosageTimeElement);
         drug1AdviceTypeElement = WebDriverFactory.createWebElement(drug1AdviceTypeElement);
         drug1MealAdviceTypeElement = WebDriverFactory.createWebElement(drug1MealAdviceTypeElement);
         drug2DosageTypeElement = WebDriverFactory.createWebElement(drug2DosageTypeElement);
+        drug2StartDateElement = WebDriverFactory.createWebElement(drug2StartDateElement);
         drug2MorningDosageTimeElement = WebDriverFactory.createWebElement(drug2MorningDosageTimeElement);
         drug2EveningDosageTimeElement = WebDriverFactory.createWebElement(drug2EveningDosageTimeElement);
         drug2MealAdviceTypeElement = WebDriverFactory.createWebElement(drug2MealAdviceTypeElement);
@@ -113,7 +121,7 @@ public class CreateARTRegimenPage extends Page {
     private void createFirstDosage(TestDrugDosage testDrugDosage1, String dosageType) {
         logDosage(testDrugDosage1);
         ((ExtendedWebElement)drug1DosageTypeElement).select(dosageType);
-        drug1MealAdviceTypeElement.click();
+        ((ExtendedWebElement)drug1StartDateElement).select(testDrugDosage1.startDate());
         if (testDrugDosage1.isMorningDosage()) {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID);
             drug1MorningDosageTimeElement.sendKeys(testDrugDosage1.dosageSchedule());
@@ -128,7 +136,7 @@ public class CreateARTRegimenPage extends Page {
     private void createSecondDosage(TestDrugDosage testDrugDosage2, String dosageType) {
         logDosage(testDrugDosage2);
         ((ExtendedWebElement)drug2DosageTypeElement).select(dosageType);
-        drug2MealAdviceTypeElement.click();
+        ((ExtendedWebElement)drug2StartDateElement).select(testDrugDosage2.startDate());
         if (testDrugDosage2.isMorningDosage()) {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID);
             drug2MorningDosageTimeElement.sendKeys(testDrugDosage2.dosageSchedule());
