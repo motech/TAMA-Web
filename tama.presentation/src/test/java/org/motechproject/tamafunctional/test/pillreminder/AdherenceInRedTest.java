@@ -2,6 +2,7 @@ package org.motechproject.tamafunctional.test.pillreminder;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -48,6 +49,7 @@ public class AdherenceInRedTest extends BaseIVRTest {
     }
 
     @Test
+    @Ignore
     public void shouldRaise_RedAlert_WhenAdherenceFalls_Below70Percent() throws IOException {
         triggrerRedAlertJob();
         verifyCreationOfRedAlertForThePatient();
