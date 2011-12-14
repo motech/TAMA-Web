@@ -122,6 +122,6 @@ public class DosageTimeLineTest {
 
     public void assertDosageResponse(DosageResponse expectedDosageResponse, LocalDate expectedDosageDate, Dose actualResponse) {
         assertEquals("Expected " + expectedDosageResponse.getDosageId() + " but was " + actualResponse.getDosageId(),expectedDosageResponse, actualResponse.getDosage());
-        assertEquals(expectedDosageDate, actualResponse.getDosageDate());
+        assertEquals(expectedDosageDate, actualResponse.getDate());
     }
 }

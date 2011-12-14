@@ -27,7 +27,7 @@ public class PillsDelayWarning extends BaseTreeCommand {
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
         if (isLastReminder(ivrContext)) {
-            DateTime nextDosageTime = pillRegimenSnapshot(ivrContext).getNextDosageTime();
+            DateTime nextDosageTime = pillRegimenSnapshot(ivrContext).getNextDoseTime();
             List<String> messages = new ArrayList<String>();
             messages.add(TamaIVRMessage.LAST_REMINDER_WARNING);
             messages.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime, ivrContext.preferredLanguage()));

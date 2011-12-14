@@ -44,7 +44,7 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        List<String> medicines = pillRegimenSnapshot.medicinesForCurrentDosage();
+        List<String> medicines = pillRegimenSnapshot.medicinesForCurrentDose();
         assertEquals(2, medicines.size());
         assertEquals("pillmedicine1", medicines.get(0));
         assertEquals("pillmedicine2", medicines.get(1));
@@ -55,7 +55,7 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        List<String> medicines = pillRegimenSnapshot.medicinesForPreviousDosage();
+        List<String> medicines = pillRegimenSnapshot.medicinesForPreviousDose();
         assertEquals(1, medicines.size());
         assertEquals("pillmedicine3", medicines.get(0));
     }
@@ -65,7 +65,7 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        DosageResponse previousDosage = pillRegimenSnapshot.getPreviousDosage();
+        DosageResponse previousDosage = pillRegimenSnapshot.getPreviousDose();
         assertEquals("previousDosageId", previousDosage.getDosageId());
     }
 
@@ -74,7 +74,7 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        DosageResponse previousDosage = pillRegimenSnapshot.getNextDosage();
+        DosageResponse previousDosage = pillRegimenSnapshot.getNextDose();
         assertEquals("nextDosageId", previousDosage.getDosageId());
     }
 
@@ -86,8 +86,8 @@ public class PillRegimenSnapshotTest {
         pillRegimen.getDosages().remove(1);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertEquals("currentDosageId", pillRegimenSnapshot.getPreviousDosage().getDosageId());
-        assertEquals("currentDosageId", pillRegimenSnapshot.getNextDosage().getDosageId());
+        assertEquals("currentDosageId", pillRegimenSnapshot.getPreviousDose().getDosageId());
+        assertEquals("currentDosageId", pillRegimenSnapshot.getNextDose().getDosageId());
     }
 
     @Test
@@ -251,8 +251,8 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertNotNull(pillRegimenSnapshot.getCurrentDosage());
-        assertEquals(10, pillRegimenSnapshot.getCurrentDosage().getDosageHour());
+        assertNotNull(pillRegimenSnapshot.getCurrentDose());
+        assertEquals(10, pillRegimenSnapshot.getCurrentDose().getDosageHour());
     }
 
     @Test
@@ -267,7 +267,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertTrue(pillRegimenSnapshot.isCurrentDosageTaken());
+        assertTrue(pillRegimenSnapshot.isCurrentDoseTaken());
     }
 
     @Test
@@ -276,7 +276,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         ivrContext.pillRegimen(pillRegimen).callDirection(CallDirection.Inbound).callStartTime(DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11), 15, 40, 0));
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        assertTrue(pillRegimenSnapshot.isCurrentDosageTaken());
+        assertTrue(pillRegimenSnapshot.isCurrentDoseTaken());
     }
 
     @Test
@@ -291,7 +291,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertTrue(pillRegimenSnapshot.isCurrentDosageTaken());
+        assertTrue(pillRegimenSnapshot.isCurrentDoseTaken());
     }
 
     @Test
@@ -307,7 +307,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertEquals(dosages.get(0).getDosageHour(), pillRegimenSnapshot.getCurrentDosage().getDosageHour());
+        assertEquals(dosages.get(0).getDosageHour(), pillRegimenSnapshot.getCurrentDose().getDosageHour());
     }
 
     @Test
@@ -321,7 +321,7 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Inbound);
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        assertEquals(DateUtil.today().plusDays(1), pillRegimenSnapshot.getCurrentDosage().getDosageDate());
+        assertEquals(DateUtil.today().plusDays(1), pillRegimenSnapshot.getCurrentDose().getDate());
     }
 
     @Test
@@ -401,7 +401,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertTrue(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+        assertTrue(pillRegimenSnapshot.isEarlyToTakeDose(15));
     }
 
     @Test
@@ -417,7 +417,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertFalse(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+        assertFalse(pillRegimenSnapshot.isEarlyToTakeDose(15));
     }
 
     @Test
@@ -433,7 +433,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertFalse(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+        assertFalse(pillRegimenSnapshot.isEarlyToTakeDose(15));
     }
 
     @Test
@@ -448,7 +448,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertTrue(pillRegimenSnapshot.isEarlyToTakeDosage(15));
+        assertTrue(pillRegimenSnapshot.isEarlyToTakeDose(15));
     }
 
     @Test
@@ -464,7 +464,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertTrue(pillRegimenSnapshot.isLateToTakeDosage());
+        assertTrue(pillRegimenSnapshot.isLateToTakeDose());
     }
 
     @Test
@@ -480,7 +480,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertFalse(pillRegimenSnapshot.isLateToTakeDosage());
+        assertFalse(pillRegimenSnapshot.isLateToTakeDose());
     }
 
     @Test
@@ -495,7 +495,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertTrue(pillRegimenSnapshot.isLateToTakeDosage());
+        assertTrue(pillRegimenSnapshot.isLateToTakeDose());
     }
 
     @Test
@@ -539,7 +539,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertEquals(DateUtil.today(), new LocalDate(pillRegimenSnapshot.getNextDosageTime()));
+        assertEquals(DateUtil.today(), new LocalDate(pillRegimenSnapshot.getNextDoseTime()));
 
     }
 

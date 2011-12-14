@@ -9,7 +9,6 @@ import org.motechproject.tamacallflow.ivr.PillRegimenSnapshot;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.decisiontree.TAMATreeRegistry;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,7 @@ public class MessageForMedicinesDuringIncomingCall extends BaseTreeCommand {
         } else {
             messages.add(TamaIVRMessage.NOT_REPORTED_IF_TAKEN);
         }
-        for (String medicine : pillRegimenSnapshot.medicinesForCurrentDosage()) {
+        for (String medicine : pillRegimenSnapshot.medicinesForCurrentDose()) {
             messages.add(medicine);
         }
         messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);

@@ -109,7 +109,7 @@ public class TAMACallFlowController implements CallFlowController {
                 if (patient.getStatus().isSuspended())
                     return TAMATreeRegistry.MENU_TREE;
                 PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(tamaivrContext);
-                if (pillRegimenSnapshot.isCurrentDosageTaken()) {
+                if (pillRegimenSnapshot.isCurrentDoseTaken()) {
                     return TAMATreeRegistry.CURRENT_DOSAGE_TAKEN;
                 } else {
                     return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM;

@@ -65,7 +65,7 @@ public class TAMACallFlowControllerScenarioTest {
     }
 
     private void currentDosageTaken(boolean taken) {
-        when(pillRegimenSnapshot.isCurrentDosageTaken()).thenReturn(taken);
+        when(pillRegimenSnapshot.isCurrentDoseTaken()).thenReturn(taken);
     }
 
     private void previousDosageCaptured(boolean captured) {

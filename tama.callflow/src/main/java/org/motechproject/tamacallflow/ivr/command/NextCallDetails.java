@@ -28,7 +28,7 @@ public class NextCallDetails extends BaseTreeCommand {
             return new String[0];
         }
 
-        DateTime nextDosageTime = pillRegimenSnapshot(ivrContext).getNextDosageTime();
+        DateTime nextDosageTime = pillRegimenSnapshot(ivrContext).getNextDoseTime();
         List<String> messageForNextDosage = new ArrayList<String>();
         messageForNextDosage.add(TamaIVRMessage.YOUR_NEXT_DOSE_IS);
         messageForNextDosage.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime, ivrContext.preferredLanguage()));

@@ -10,22 +10,22 @@ public class Dose extends DosageResponse {
 
     private final DosageResponse dosageResponse;
 
-    private final LocalDate dosageDate;
+    private final LocalDate date;
 
-    public Dose(DosageResponse dosageResponse, LocalDate dosageDate) {
+    public Dose(DosageResponse dosageResponse, LocalDate date) {
         super(dosageResponse.getDosageId(), new Time(dosageResponse.getDosageHour(), dosageResponse.getDosageMinute()),
                 dosageResponse.getStartDate(), dosageResponse.getEndDate(), dosageResponse.getResponseLastCapturedDate(),
                 dosageResponse.getMedicines());
         this.dosageResponse = dosageResponse;
-        this.dosageDate = dosageDate;
+        this.date = date;
     }
 
-    public LocalDate getDosageDate() {
-        return dosageDate;
+    public LocalDate getDate() {
+        return date;
     }
 
     public DateTime getDoseTime() {
-        return DateUtil.newDateTime(dosageDate, dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
+        return DateUtil.newDateTime(date, dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
     }
 
     @Override

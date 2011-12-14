@@ -19,6 +19,8 @@ public class DosageAdherenceLog extends CouchEntity {
 
     private DosageNotTakenReason reason;
 
+    private boolean dosageTakenLate;
+
     public DosageAdherenceLog() {
     }
 
@@ -66,6 +68,10 @@ public class DosageAdherenceLog extends CouchEntity {
         return dosageStatus;
     }
 
+    public boolean isDosageTakenLate() {
+        return dosageTakenLate;
+    }
+
     public void setDosageStatus(DosageStatus dosageStatus) {
         this.dosageStatus = dosageStatus;
     }
@@ -76,6 +82,14 @@ public class DosageAdherenceLog extends CouchEntity {
 
     public void setReason(DosageNotTakenReason reason) {
         this.reason = reason;
+    }
+
+    public void dosageIsTakenLate() {
+        this.dosageTakenLate = true;
+    }
+
+    public void setDosageTakenLate(boolean value){
+        dosageTakenLate = value;
     }
 
     @Override

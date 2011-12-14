@@ -61,10 +61,43 @@ public class DailyReminderAdherenceService {
         DosageTimeLine dosageTimeLine = pillRegimen.getDosageTimeLine(from, DateUtil.now());
         while (dosageTimeLine.hasNext()) {
             Dose dose = dosageTimeLine.next();
-            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(suspendedAdherenceData.patientId(), pillRegimen.getId(), dose.getDosageId(), suspendedAdherenceData.getAdherenceDataWhenPatientWasSuspended().getStatus(), dose.getDosageDate());
+            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(suspendedAdherenceData.patientId(), pillRegimen.getId(), dose.getDosageId(), suspendedAdherenceData.getAdherenceDataWhenPatientWasSuspended().getStatus(), dose.getDate());
             allDosageAdherenceLogs.add(dosageAdherenceLog);
-            pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDosageDate());
+            pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDate());
         }
+    }
+
+    public void recordAdherence(String patientId, String regimenId, Dose dose, DosageStatus status, DateTime doseTakenTime) {
+        DosageAdherenceLog existingLog = allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate());
+
+        if (existingLog == null) {
+            DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), status, dose.getDate());
+            if (doseIsLate(dose, doseTakenTime)) adherenceLog.dosageIsTakenLate();
+            allDosageAdherenceLogs.add(adherenceLog);
+        } else {
+            existingLog.setDosageStatus(status);
+            if (doseIsLate(dose, doseTakenTime)) existingLog.dosageIsTakenLate();
+            allDosageAdherenceLogs.update(existingLog);
+        }
+    }
+
+    public Dose previous(int currentDosageIndex, DateTime iteratingDate, int previousDosageIndex) {
+        DosageResponse dosageResponseToReturn;
+        DateTime dateToReturn;
+        if (currentDosageIndex == 0) {
+            dosageResponseToReturn = dosageResponses.get(dosageResponses.size() - 1);
+            dateToReturn = DateUtil.newDateTime(iteratingDate.toLocalDate().minusDays(1), dosageResponseToReturn.getDosageHour(), dosageResponseToReturn.getDosageMinute(), 0);
+        } else {
+            dosageResponseToReturn = dosageResponses.get(previousDosageIndex - 1);
+            dateToReturn = DateUtil.newDateTime(iteratingDate.toLocalDate(), dosageResponseToReturn.getDosageHour(), dosageResponseToReturn.getDosageMinute(), 0);
+        }
+        return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
+    }
+
+    private boolean doseIsLate(Dose dose, DateTime doseTakenTime) {
+        Integer dosageInterval = Integer.parseInt(properties.getProperty(TAMAConstants.DOSAGE_INTERVAL));
+        DateTime scheduledDoseInterval = dose.getDoseTime().plusMinutes(dosageInterval);
+        return doseTakenTime.isAfter(scheduledDoseInterval);
     }
 
     private void resetSuspensionDateBasedOnPreviousDosageStatus(List<DosageResponse> dosageResponses, DateTime from) {
@@ -109,8 +142,9 @@ public class DailyReminderAdherenceService {
         }
     }
 
+
     private boolean isPreviousDosageNotCaptured(Dose previousDose) {
-        DosageAdherenceLog previousDosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(previousDose.getDosageId(), previousDose.getDosageDate());
+        DosageAdherenceLog previousDosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(previousDose.getDosageId(), previousDose.getDate());
         return previousDosageAdherenceLog == null ? true : false;
     }
 
@@ -132,7 +166,7 @@ public class DailyReminderAdherenceService {
         return false;
     }
 
-    protected boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(Dose currentDose, int currentDosageIndex, int previousDosageIndex, DateTime iteratingDate, DateTime actualSuspensionDateAndTime) {
+    private boolean isSuspensionTimeWithinPillWindowOfPreviousDosage(Dose currentDose, int currentDosageIndex, int previousDosageIndex, DateTime iteratingDate, DateTime actualSuspensionDateAndTime) {
         Dose previousDoseResponse = previous(currentDosageIndex, iteratingDate, previousDosageIndex);
         int previousDosageTimeInMinutes = (previousDoseResponse.getDosageHour() * 60) + previousDoseResponse.getDosageMinute();
         int currentDosageTimeInMinutes = (currentDose.getDosageHour() * 60) + currentDose.getDosageMinute();
@@ -140,26 +174,12 @@ public class DailyReminderAdherenceService {
         int pillWindowInMinutes = (Integer.parseInt(properties.getProperty(TAMAConstants.PILL_WINDOW))) * 60;
         if (timeInMinutes <= (currentDosageTimeInMinutes - pillWindowInMinutes)) {
             LocalDate actualSuspensionDate = actualSuspensionDateAndTime.toLocalDate();
-            LocalDate previousDosageDosageDate = previousDoseResponse.getDosageDate();
-            if(previousDosageDosageDate.isBefore(actualSuspensionDate) || (previousDosageDosageDate.isEqual(actualSuspensionDate) && previousDosageTimeInMinutes <= timeInMinutes))
-            return true;
+            LocalDate previousDosageDosageDate = previousDoseResponse.getDate();
+            if (previousDosageDosageDate.isBefore(actualSuspensionDate) || (previousDosageDosageDate.isEqual(actualSuspensionDate) && previousDosageTimeInMinutes <= timeInMinutes))
+                return true;
         }
         return false;
     }
-
-    public Dose previous(int currentDosageIndex, DateTime iteratingDate, int previousDosageIndex) {
-        DosageResponse dosageResponseToReturn;
-        DateTime dateToReturn;
-        if (currentDosageIndex == 0) {
-            dosageResponseToReturn = dosageResponses.get(dosageResponses.size() - 1);
-            dateToReturn = DateUtil.newDateTime(iteratingDate.toLocalDate().minusDays(1), dosageResponseToReturn.getDosageHour(), dosageResponseToReturn.getDosageMinute(), 0);
-        } else {
-            dosageResponseToReturn = dosageResponses.get(previousDosageIndex - 1);
-            dateToReturn = DateUtil.newDateTime(iteratingDate.toLocalDate(), dosageResponseToReturn.getDosageHour(), dosageResponseToReturn.getDosageMinute(), 0);
-        }
-        return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
-    }
-
 
     private boolean isLastDay(DateTime day) {
         return (day.toLocalDate().compareTo(DateUtil.now().toLocalDate())) == 0;

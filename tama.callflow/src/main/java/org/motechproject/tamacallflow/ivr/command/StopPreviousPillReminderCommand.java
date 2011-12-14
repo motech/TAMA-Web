@@ -15,8 +15,8 @@ public class StopPreviousPillReminderCommand extends BaseTreeCommand {
 
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
-        Dose currentDose = pillRegimenSnapshot(ivrContext).getPreviousDosage();
-        pillReminderService.dosageStatusKnown(pillRegimenResponse(ivrContext).getPillRegimenId(), currentDose.getDosageId(), currentDose.getDosageDate());
+        Dose currentDose = pillRegimenSnapshot(ivrContext).getPreviousDose();
+        pillReminderService.dosageStatusKnown(pillRegimenResponse(ivrContext).getPillRegimenId(), currentDose.getDosageId(), currentDose.getDate());
         return new String[0];
     }
 }

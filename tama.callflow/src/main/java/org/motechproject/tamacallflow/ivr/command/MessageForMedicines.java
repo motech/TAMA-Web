@@ -7,7 +7,6 @@ import org.motechproject.tamadomain.repository.AllClinics;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +43,6 @@ public class MessageForMedicines extends BaseTreeCommand {
     }
 
     private List<String> getMedicines(TAMAIVRContext ivrContext) {
-        return pillRegimenSnapshot(ivrContext).medicinesForCurrentDosage();
+        return pillRegimenSnapshot(ivrContext).medicinesForCurrentDose();
     }
 }

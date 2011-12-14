@@ -26,9 +26,9 @@ public class MessageOnPillTakenDuringIncomingCall extends BaseTreeCommand {
 
         ArrayList<String> messages = new ArrayList<String>();
         PillRegimenSnapshot pillRegimenResponse = pillRegimenSnapshot(ivrContext);
-        if (pillRegimenResponse.isEarlyToTakeDosage(dosageInterval))
+        if (pillRegimenResponse.isEarlyToTakeDose(dosageInterval))
             messages.add(TamaIVRMessage.TOOK_DOSE_BEFORE_TIME);
-        else if (pillRegimenResponse.isLateToTakeDosage())
+        else if (pillRegimenResponse.isLateToTakeDose())
             messages.add(TamaIVRMessage.TOOK_DOSE_LATE);
         else if (pillRegimenResponse.hasTakenDosageOnTime(dosageInterval))
             messages.add(TamaIVRMessage.DOSE_TAKEN_ON_TIME);

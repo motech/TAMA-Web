@@ -65,7 +65,7 @@ public class TAMACallFlowControllerInboundCallTest {
         when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
         when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
-        when(pillRegimenSnapshot.isCurrentDosageTaken()).thenReturn(true);
+        when(pillRegimenSnapshot.isCurrentDoseTaken()).thenReturn(true);
 
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
@@ -81,7 +81,7 @@ public class TAMACallFlowControllerInboundCallTest {
         when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
         when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
-        when(pillRegimenSnapshot.isCurrentDosageTaken()).thenReturn(false);
+        when(pillRegimenSnapshot.isCurrentDoseTaken()).thenReturn(false);
 
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }

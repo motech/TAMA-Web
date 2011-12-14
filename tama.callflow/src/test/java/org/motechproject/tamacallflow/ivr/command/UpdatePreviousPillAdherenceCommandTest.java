@@ -1,72 +1,61 @@
 package org.motechproject.tamacallflow.ivr.command;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.model.Time;
+import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.tamadomain.domain.DosageAdherenceLog;
 import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UpdatePreviousPillAdherenceCommandTest {
-    public static final String PREVIOUS_DOSAGE_ID = "previousDosageId";
-    public static final String PATIENT_ID = "patientId";
-    public static final String REGIMEN_ID = "regimenId";
     @Mock
-    private AllDosageAdherenceLogs logs;
-    private TAMAIVRContextForTest ivrContext;
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
+    private TAMAIVRContextForTest context;
+    private UpdateAdherenceCommand command;
 
     @Before
     public void setup() {
         initMocks(this);
-        PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        ivrContext = new TAMAIVRContextForTest().dosageId("currentDosageId").patientId(PATIENT_ID).pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
+        command = new UpdatePreviousPillAdherenceCommand(null, dailyReminderAdherenceService);
+        context = new TAMAIVRContextForTest().dtmfInput("1");
     }
 
     @Test
-    public void shouldCreateAnAdherenceLogIfThereIsNoLogFound() {
-        ivrContext.dtmfInput("1");
-        when(logs.findByDosageIdAndDate(eq(PREVIOUS_DOSAGE_ID), any(LocalDate.class))).thenReturn(null);
+    public void recordsAdherenceToPreviousDosage() {
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, Arrays.asList(
+                new DosageResponse("currentDosageId", new Time(19, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()),
+                new DosageResponse("previousDosageId", new Time(9, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()
+                )));
+        DateTime doseTakenTime = DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11), 18, 59, 0);
+        context.patientId("patientId").pillRegimen(pillRegimen).callDirection(CallDirection.Inbound).callStartTime(doseTakenTime);
 
-        UpdatePreviousPillAdherenceCommand command = new UpdatePreviousPillAdherenceCommand(logs, null);
-        command.executeCommand(ivrContext);
+        command.executeCommand(context);
 
-        verify(logs).add(any(DosageAdherenceLog.class));
-    }
-
-    @Test
-    public void shouldUpdateAnAdherenceLogIfThereIsAlreadyOneForTheCurrentDate() {
-        DosageAdherenceLog log = new DosageAdherenceLog(PATIENT_ID, REGIMEN_ID, PREVIOUS_DOSAGE_ID, DosageStatus.NOT_TAKEN, DateUtil.today());
-        ivrContext.dtmfInput("1");
-        when(logs.findByDosageIdAndDate(eq(PREVIOUS_DOSAGE_ID), any(LocalDate.class))).thenReturn(log);
-
-        UpdatePreviousPillAdherenceCommand command = new UpdatePreviousPillAdherenceCommand(logs, null);
-        command.executeCommand(ivrContext);
-
-        verify(logs, never()).add(any(DosageAdherenceLog.class));
-        verify(logs).update(log);
-    }
-
-    @Test
-    public void shouldNotUpdateOrCreateIfThereAreNotAnyChanges() {
-        DosageAdherenceLog log = new DosageAdherenceLog(PATIENT_ID, REGIMEN_ID, PREVIOUS_DOSAGE_ID, DosageStatus.NOT_TAKEN, DateUtil.today());
-
-        ivrContext.dtmfInput("3");
-        when(logs.findByDosageIdAndDate(eq(PREVIOUS_DOSAGE_ID), any(LocalDate.class))).thenReturn(log);
-
-        UpdatePreviousPillAdherenceCommand command = new UpdatePreviousPillAdherenceCommand(logs, null);
-        command.executeCommand(ivrContext);
-
-        verify(logs, never()).add(any(DosageAdherenceLog.class));
-        verify(logs, never()).update(log);
+        ArgumentCaptor<Dose> doseCaptor = ArgumentCaptor.forClass(Dose.class);
+        verify(dailyReminderAdherenceService).recordAdherence(eq("patientId"), eq("regimenId"), doseCaptor.capture(), eq(DosageStatus.TAKEN), eq(doseTakenTime));
+        assertEquals("previousDosageId", doseCaptor.getValue().getDosageId());
     }
 }

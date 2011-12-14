@@ -30,11 +30,11 @@ public class MessageFromPreviousDosage extends BaseTreeCommand {
         List<String> messages = new ArrayList<String>();
 
         messages.add(TamaIVRMessage.YOUR);
-        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(pillRegimenSnapshot.getPreviousDosageTime()));
+        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAYS_MORNING(pillRegimenSnapshot.getPreviousDoseTime()));
         messages.add(TamaIVRMessage.DOSE_NOT_RECORDED);
-        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAY_IN_THE_MORNING(pillRegimenSnapshot.getPreviousDosageTime()));
+        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAY_IN_THE_MORNING(pillRegimenSnapshot.getPreviousDoseTime()));
         messages.add(TamaIVRMessage.YOU_WERE_SUPPOSED_TO_TAKE);
-        messages.addAll(pillRegimenSnapshot.medicinesForPreviousDosage());
+        messages.addAll(pillRegimenSnapshot.medicinesForPreviousDose());
         messages.add(TamaIVRMessage.FROM_THE_BOTTLE);
         messages.add(TamaIVRMessage.PREVIOUS_DOSE_MENU);
 

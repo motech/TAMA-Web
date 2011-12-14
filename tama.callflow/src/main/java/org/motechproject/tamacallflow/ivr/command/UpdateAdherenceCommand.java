@@ -1,9 +1,9 @@
 package org.motechproject.tamacallflow.ivr.command;
 
-import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
-import org.motechproject.tamadomain.domain.DosageAdherenceLog;
+import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,40 +11,32 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UpdateAdherenceCommand extends BaseTreeCommand {
-    private AllDosageAdherenceLogs logs;
+
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     @Autowired
-    public UpdateAdherenceCommand(AllDosageAdherenceLogs logs, PillReminderService pillReminderService) {
+    public UpdateAdherenceCommand(PillReminderService pillReminderService, DailyReminderAdherenceService dailyReminderAdherenceService) {
         super(pillReminderService);
-        this.logs = logs;
+        this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }
 
     @Override
     public String[] executeCommand(TAMAIVRContext ivrContext) {
-        //TODO: Commands should be treated as controllers. This logic should be moved behind a service which is agnostic of IVRContext
         DosageStatus newStatus = DosageStatus.from(ivrContext.dtmfInput());
-        String dosageId = getDosageId(ivrContext);
-
-        DosageAdherenceLog log = logs.findByDosageIdAndDate(dosageId, getDosageDate(ivrContext));
-        DosageAdherenceLog newLog = new DosageAdherenceLog(ivrContext.patientId(), pillRegimenResponse(ivrContext).getPillRegimenId(),
-                dosageId,
-                newStatus, getDosageDate(ivrContext));
-
-        if (log == null) {
-            logs.add(newLog);
-        } else if (!log.equals(newLog)) {
-            log.setDosageStatus(newStatus);
-            logs.update(log);
-        }
+        dailyReminderAdherenceService.recordAdherence(ivrContext.patientId(),
+                                                      pillRegimenResponse(ivrContext).getPillRegimenId(),
+                                                      getDose(ivrContext),
+                                                      newStatus,
+                                                      ivrContext.callStartTime());
 
         return new String[0];
     }
 
-    protected LocalDate getDosageDate(TAMAIVRContext ivrContext) {
-        return pillRegimenSnapshot(ivrContext).getCurrentDosage().getDosageDate();
+    protected Dose getDose(TAMAIVRContext ivrContext) {
+        return pillRegimenSnapshot(ivrContext).getCurrentDose();
     }
 
     protected String getDosageId(TAMAIVRContext ivrContext) {
-        return pillRegimenSnapshot(ivrContext).getCurrentDosage().getDosageId();
+        return pillRegimenSnapshot(ivrContext).getCurrentDose().getDosageId();
     }
 }

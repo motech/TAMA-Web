@@ -41,7 +41,7 @@ public class PillRegimenSnapshotNextDosageTest {
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 19, 0, 0));
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        DateTime nextDosageTime = pillRegimenSnapshot.getNextDosageTime();
+        DateTime nextDosageTime = pillRegimenSnapshot.getNextDoseTime();
 
         assertEquals(10, nextDosageTime.getHourOfDay());
         assertEquals(5, nextDosageTime.getMinuteOfHour());
@@ -60,7 +60,7 @@ public class PillRegimenSnapshotNextDosageTest {
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        DateTime nextDosageTime = pillRegimenSnapshot.getNextDosageTime();
+        DateTime nextDosageTime = pillRegimenSnapshot.getNextDoseTime();
 
         assertEquals(20, nextDosageTime.getHourOfDay());
         assertEquals(5, nextDosageTime.getMinuteOfHour());
@@ -78,7 +78,7 @@ public class PillRegimenSnapshotNextDosageTest {
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        DateTime nextDosageTime = pillRegimenSnapshot.getNextDosageTime();
+        DateTime nextDosageTime = pillRegimenSnapshot.getNextDoseTime();
 
         assertEquals(10, nextDosageTime.getHourOfDay());
         assertEquals(5, nextDosageTime.getMinuteOfHour());
