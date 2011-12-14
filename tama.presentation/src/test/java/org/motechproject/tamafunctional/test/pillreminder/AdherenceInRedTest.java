@@ -2,10 +2,11 @@ package org.motechproject.tamafunctional.test.pillreminder;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.tamacallflow.listener.AdherenceQualityListener;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
 import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowAlertPage;
@@ -15,9 +16,7 @@ import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
-import org.motechproject.tamafunctional.testdataservice.ScheduledJobDataService;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -28,10 +27,9 @@ import static junit.framework.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class AdherenceInRedTest extends BaseIVRTest {
-    @Autowired
-    private ScheduledJobDataService scheduledJobDataService;
-    private TestClinician clinician;
     private TestPatient patient;
+    private TestClinician clinician;
+    private ScheduledTaskManager scheduledTaskManager;
 
     @Before
     public void setUp() {
@@ -46,17 +44,17 @@ public class AdherenceInRedTest extends BaseIVRTest {
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        scheduledTaskManager = new ScheduledTaskManager(webClient);
     }
 
     @Test
-    @Ignore
     public void shouldRaise_RedAlert_WhenAdherenceFalls_Below70Percent() throws IOException {
         triggrerRedAlertJob();
         verifyCreationOfRedAlertForThePatient();
     }
 
     private void triggrerRedAlertJob() {
-        scheduledJobDataService.triggerRedAlertAdherenceJob(patient.id());
+        scheduledTaskManager.trigger(AdherenceQualityListener.class, "determineAdherenceQualityAndRaiseAlert", patient.id());
     }
 
     private void verifyCreationOfRedAlertForThePatient() {

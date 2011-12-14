@@ -1,33 +1,23 @@
 package org.motechproject.tamafunctional.testdataservice;
 
 import org.apache.commons.lang.SerializationUtils;
-import org.joda.time.DateTime;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.server.pillreminder.EventKeys;
-import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.util.DateUtil;
 import org.quartz.JobDataMap;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.sql.*;
-import java.util.Map;
 import java.util.Properties;
 
 @Component
 public class ScheduledJobDataService {
-    private SchedulerFactoryBean schedulerFactoryBean;
     private Properties properties;
     private String QRTZ_JOB_DETAILS_TABLE = "QRTZ_JOB_DETAILS";
 
     @Autowired
-    public ScheduledJobDataService(SchedulerFactoryBean schedulerFactoryBean, @Qualifier("quartzProperties") Properties properties) {
-        this.schedulerFactoryBean = schedulerFactoryBean;
+    public ScheduledJobDataService(@Qualifier("quartzProperties") Properties properties) {
         this.properties = properties;
 
         try {
@@ -77,20 +67,6 @@ public class ScheduledJobDataService {
             if (statement != null) statement.close();
             if (connection != null) connection.close();
         } catch (SQLException ignored) {
-        }
-    }
-
-    public void triggerRedAlertAdherenceJob(String patientId) {
-        try {
-            DateTime now = DateUtil.now();
-            DateTime nowPlus1Minute = now.plusMinutes(1);
-            while (nowPlus1Minute.isAfter(DateUtil.now())) {
-                String jobName = String.format("%s-%s", TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patientId);
-                schedulerFactoryBean.getScheduler().triggerJob(jobName, null);
-            }
-        }
-        catch (SchedulerException e) {
-            e.printStackTrace();
         }
     }
 }

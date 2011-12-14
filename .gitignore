@@ -9,6 +9,7 @@ logs/
 maven-eclipse.xml
 *.iml
 *.ipr
+*.bak
 *.iws
 .idea
 log.roo
