@@ -54,8 +54,8 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
     }
 
     private void assertShowAlert(String notes, String status, ShowAlertPage showAlertPage) {
-        assertEquals(status, showAlertPage.getAlertStatus());
-        assertEquals(notes, showAlertPage.getNotes());
+        assertEquals(status, showAlertPage.alertStatus());
+        assertEquals(notes, showAlertPage.notes());
     }
 
     private void assertAlertIsUpdated(TestPatient patient, ListPatientsPage listPatientsPage, String status, String notes) {
