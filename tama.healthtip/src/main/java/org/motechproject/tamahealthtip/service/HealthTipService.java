@@ -132,7 +132,7 @@ public class HealthTipService {
         Collections.sort(healthTips, new Comparator<PrioritizedHealthTip>() {
             @Override
             public int compare(PrioritizedHealthTip tip1, PrioritizedHealthTip tip2) {
-                if (tip1.getPriority() != tip2.getPriority())
+                if (!tip1.getPriority().equals(tip2.getPriority()))
                     return (tip1.getPriority() - tip2.getPriority());
                 return DateTimeComparator.getInstance().compare(tip1.getHealthTipsHistory().getLastPlayed(), tip2.getHealthTipsHistory().getLastPlayed());
             }
