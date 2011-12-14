@@ -31,6 +31,14 @@
         <put-attribute name="body" value="/WEB-INF/views/changePassword.jspx"/>
     </definition>
 
+    <definition extends="default" name="setClinicianPassword">
+        <put-attribute name="body" value="/WEB-INF/views/setClinicianPassword.jspx"/>
+    </definition>
+
+    <definition extends="default" name="setClinicianPasswordSuccess">
+        <put-attribute name="body" value="/WEB-INF/views/setClinicianPasswordSuccess.jspx"/>
+    </definition>
+
     <definition extends="default" name="passwordReset">
         <put-attribute name="body" value="/WEB-INF/views/passwordReset.jspx"/>
     </definition>

@@ -17,6 +17,9 @@
         <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="any"/>
         <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')" requires-channel="any"/>
         <intercept-url pattern="/upload/**" access="hasRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/setClinicianPassword/**" access="hasAnyRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/security/resetClinicianPassword/**" access="hasAnyRole('ADMIN')" requires-channel="any"/>
+
 
         <!-- Only clinicians -->
         <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>

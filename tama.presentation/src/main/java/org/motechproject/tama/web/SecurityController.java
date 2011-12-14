@@ -4,11 +4,13 @@ package org.motechproject.tama.web;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tamacommon.TAMAMessages;
+import org.motechproject.tamadomain.domain.Clinician;
 import org.motechproject.tamadomain.repository.AllTAMAUsers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +49,27 @@ public class SecurityController extends BaseController{
             allTAMAUsers.update(user.getTAMAUser());
             return "passwordReset";
         }
+    }
+
+    @RequestMapping(value = "resetClinicianPassword/{id}", method = RequestMethod.GET)
+    public String resetClinicianPassword(@PathVariable("id") String id, Model uiModel){
+        uiModel.addAttribute("clinicianId", id);
+        return "setClinicianPassword";
+    }
+
+    @RequestMapping(value = "resetClinicianPassword/{id}", method = RequestMethod.POST)
+    public String resetClinicianPasswordPost(@PathVariable("id") String id, @RequestParam(value = "j_newPassword", required = true) String newPassword,
+                                 @RequestParam(value = "j_newPasswordConfirm", required = true) String newPasswordConfirmation,
+                                 Model uiModel){
+        if(!newPassword.equals(newPasswordConfirmation)){
+            uiModel.addAttribute("errors",new FieldError("password","j_newPasswordConfirm", TAMAMessages.NEW_PASSWORD_MISMATCH));
+            uiModel.addAttribute("clinicianId", id);
+            return "setClinicianPassword";
+        }
+        Clinician clinician = allTAMAUsers.getClinician(id);
+        clinician.setPassword(newPassword);
+        allTAMAUsers.update(clinician);
+        return "setClinicianPasswordSuccess";
     }
 
     @RequestMapping(value="passwordReset", method = RequestMethod.GET)

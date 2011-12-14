@@ -24,4 +24,7 @@ public class AllTAMAUsers {
        }
 
     }
+    public Clinician getClinician(String id){
+        return allClinicians.get(id);
+    }
 }
