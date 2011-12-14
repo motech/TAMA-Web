@@ -21,6 +21,9 @@ public class ListClinicsPage extends Page {
     @FindBy(how = How.ID, using = "_title_pl_org_motechproject_tama_domain_Clinic_id")
     private WebElement listClinicsPane;
 
+    @FindBy(how = How.XPATH, using = "//li[@id='i_clinician_list']/a")
+    private WebElement listCliniciansLink;
+
     public ListClinicsPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -48,5 +51,10 @@ public class ListClinicsPage extends Page {
 
     public String getListClinicsPane() {
         return listClinicsPane.getText();
+    }
+
+    public ListCliniciansPage goToListCliniciansPage() {
+        listCliniciansLink.click();
+        return MyPageFactory.initElements(webDriver, ListCliniciansPage.class);
     }
 }

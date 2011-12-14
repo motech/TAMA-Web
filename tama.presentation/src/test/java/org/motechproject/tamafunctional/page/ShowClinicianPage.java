@@ -1,5 +1,7 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.test.SetClinicianPasswordPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -8,10 +10,6 @@ import org.openqa.selenium.support.How;
 public class ShowClinicianPage extends Page {
 
     public static final String CLINICIAN_NAME_NAME_ID = "_s_org_motechproject_tama_domain_Clinician_name_name_id";
-
-    public ShowClinicianPage(WebDriver webDriver) {
-        super(webDriver);
-    }
 
     @FindBy(how = How.ID, using = CLINICIAN_NAME_NAME_ID)
     private WebElement name;
@@ -25,6 +23,13 @@ public class ShowClinicianPage extends Page {
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_Clinician_username_username_id")
     private WebElement username;
+
+    @FindBy(how = How.ID, using = "setPasswordLink")
+    private WebElement changePasswordLink;
+
+    public ShowClinicianPage(WebDriver webDriver) {
+        super(webDriver);
+    }
 
     @Override
     protected void waitForPageToLoad() {
@@ -49,5 +54,10 @@ public class ShowClinicianPage extends Page {
 
     public String getUsername() {
         return username.getText();
+    }
+
+    public SetClinicianPasswordPage goToSetClinicianPasswordPage() {
+        changePasswordLink.click();
+        return MyPageFactory.initElements(webDriver, SetClinicianPasswordPage.class);
     }
 }
