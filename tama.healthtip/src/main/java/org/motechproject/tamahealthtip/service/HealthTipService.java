@@ -8,6 +8,7 @@ import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
+import org.motechproject.tamahealthtip.domain.HealthTipsProperties;
 import org.motechproject.tamahealthtip.domain.HealthTipsHistory;
 import org.motechproject.tamahealthtip.repository.AllHealthTipsHistory;
 import org.motechproject.util.DateUtil;
@@ -22,18 +23,13 @@ import static org.hamcrest.Matchers.equalTo;
 @Service
 public class HealthTipService {
 
-    //TODO: make it configurable
-    public static final int PRIORITY_1_EXPIRY = 7;
-    public static final int PRIORITY_2_EXPIRY = 14;
-    public static final int PRIORITY_3_EXPIRY = 21;
     public static final int START_OF_TIME = 0;
 
     private AllHealthTipsHistory allHealthTipsHistory;
     private HealthTipRuleService healthTipRuleService;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
-
-    Integer playListSize = 2; //TODO: read from properties.
+    private HealthTipsProperties healthTipsProperties;
 
     public static class PrioritizedHealthTip {
 
@@ -63,11 +59,14 @@ public class HealthTipService {
     }
 
     @Autowired
-    public HealthTipService(AllHealthTipsHistory allHealthTipsHistory, HealthTipRuleService healthTipRuleService, AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients) {
+    public HealthTipService(AllHealthTipsHistory allHealthTipsHistory, HealthTipRuleService healthTipRuleService,
+                            AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients,
+                            HealthTipsProperties healthTipsProperties) {
         this.allHealthTipsHistory = allHealthTipsHistory;
         this.healthTipRuleService = healthTipRuleService;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
+        this.healthTipsProperties = healthTipsProperties;
     }
 
     public void markAsPlayed(String patientDocumentId, String audioFilename) {
@@ -83,7 +82,7 @@ public class HealthTipService {
 
     public String nextHealthTip(String patientId) {
         List<String> playList = getPlayList(patientId);
-        if(playList.size() > 0) {
+        if (playList.size() > 0) {
             return playList.get(0);
         }
         return "";
@@ -115,7 +114,7 @@ public class HealthTipService {
     }
 
     private void filterExpiredHealthTips(List<PrioritizedHealthTip> healthTips) {
-        final int[] priorityExpiries = {PRIORITY_1_EXPIRY, PRIORITY_2_EXPIRY, PRIORITY_3_EXPIRY};
+        final int[] priorityExpiries = {healthTipsProperties.getExpiryForPriority1Tips(), healthTipsProperties.getExpiryForPriority2Tips(), healthTipsProperties.getExpiryForPriority3Tips()};
         final DateTime now = DateUtil.now();
         CollectionUtils.filter(healthTips, new Predicate() {
             @Override

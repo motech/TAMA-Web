@@ -10,7 +10,9 @@ import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
+import org.motechproject.tamahealthtip.constants.HealthTipPropertiesForTest;
 import org.motechproject.tamahealthtip.domain.HealthTipsHistory;
+import org.motechproject.tamahealthtip.domain.HealthTipsProperties;
 import org.motechproject.tamahealthtip.repository.AllHealthTipsHistory;
 import org.motechproject.util.DateUtil;
 
@@ -39,6 +41,9 @@ public class HealthTipServiceTest {
     @Mock
     private TreatmentAdvice treatmentAdvice;
 
+    private HealthTipPropertiesForTest healthTipPropertiesForTest;
+
+
     private String patientId;
     private String patientDocId;
     private Patient patient;
@@ -52,13 +57,15 @@ public class HealthTipServiceTest {
         patientId = "patientId";
         patientDocId = "patientDocId";
         patient = PatientBuilder.startRecording().withDefaults().build();
+        healthTipPropertiesForTest = new HealthTipPropertiesForTest();
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
 
-        healthTipService = new HealthTipService(allHealthTipsHistory, healthTipRuleService, allTreatmentAdvices, allPatients);
+        healthTipService = new HealthTipService(allHealthTipsHistory, healthTipRuleService, allTreatmentAdvices, allPatients, healthTipPropertiesForTest);
         healthTipService = Mockito.spy(healthTipService);
+
 
         Map<String, String> healthTipMap = new HashMap<String, String>();
         healthTipMap.put("healthTipOne", "1");

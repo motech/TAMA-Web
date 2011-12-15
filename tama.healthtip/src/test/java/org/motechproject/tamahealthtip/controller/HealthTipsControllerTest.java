@@ -10,6 +10,8 @@ import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacallflow.ivr.factory.VoiceMessageResponseFactory;
+import org.motechproject.tamahealthtip.constants.HealthTipPropertiesForTest;
+import org.motechproject.tamahealthtip.domain.HealthTipsProperties;
 import org.motechproject.tamahealthtip.service.HealthTipService;
 
 import java.util.Properties;
@@ -38,16 +40,15 @@ public class HealthTipsControllerTest {
     @Mock
     private TAMAIVRContext tamaIVRContext;
 
-    HealthTipsController healthTipsController;
+    private HealthTipsController healthTipsController;
 
     @Before
     public void setUp() {
         initMocks(this);
         String patientId = "patientId";
-        Properties ivrProperties = new Properties();
-        ivrProperties.put(HealthTipsController.HEALTH_TIP_PLAY_COUNT, "2");
+        HealthTipPropertiesForTest properties = new HealthTipPropertiesForTest();
         healthTipsController = new HealthTipsController(healthTipService, tamaIvrMessage,
-                                   callDetailRecordsService, standardResponseController, ivrProperties, tamaivrContextFactory);
+                                   callDetailRecordsService, standardResponseController, properties, tamaivrContextFactory);
         when(kookooIVRContext.callId()).thenReturn("34");
         when(kookooIVRContext.preferredLanguage()).thenReturn("en");
         when(kookooIVRContext.externalId()).thenReturn(patientId);

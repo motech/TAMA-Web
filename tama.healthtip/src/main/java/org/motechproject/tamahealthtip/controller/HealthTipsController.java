@@ -12,40 +12,37 @@ import org.motechproject.tamacallflow.ivr.CallState;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacommon.ControllerURLs;
+import org.motechproject.tamahealthtip.domain.HealthTipsProperties;
 import org.motechproject.tamahealthtip.service.HealthTipService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Properties;
 
 @Controller
 @RequestMapping(ControllerURLs.HEALTH_TIPS_URL)
 public class HealthTipsController extends SafeIVRController {
 
-    public static final String HEALTH_TIP_PLAY_COUNT = "healthtip.playcount";
     private HealthTipService healthTipService;
     private TAMAIVRContextFactory tamaivrContextFactory;
 
-    Properties ivrProperties;
+    private HealthTipsProperties healthTipsProperties;
 
     @Autowired
     public HealthTipsController(HealthTipService healthTipService, IVRMessage ivrMessage,
                                 KookooCallDetailRecordsService callDetailRecordsService,
                                 StandardResponseController standardResponseController,
-                                @Qualifier("ivrProperties") Properties ivrProperties) {
-        this(healthTipService, ivrMessage, callDetailRecordsService, standardResponseController, ivrProperties, new TAMAIVRContextFactory());
+                                HealthTipsProperties healthTipsProperties) {
+        this(healthTipService, ivrMessage, callDetailRecordsService, standardResponseController, healthTipsProperties, new TAMAIVRContextFactory());
     }
 
     public HealthTipsController(HealthTipService healthTipService, IVRMessage ivrMessage,
                                 KookooCallDetailRecordsService callDetailRecordsService,
                                 StandardResponseController standardResponseController,
-                                Properties ivrProperties,
+                                HealthTipsProperties healthTipsProperties,
                                 TAMAIVRContextFactory tamaivrContextFactory) {
         super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.healthTipService = healthTipService;
-        this.ivrProperties = ivrProperties;
+        this.healthTipsProperties = healthTipsProperties;
         this.tamaivrContextFactory = tamaivrContextFactory;
     }
 
@@ -59,7 +56,7 @@ public class HealthTipsController extends SafeIVRController {
         String lastPlayedMessage = tamaivrContext.getLastPlayedHealthTip();
         if (lastPlayedMessage != null) healthTipService.markAsPlayed(patientId, lastPlayedMessage);
         int playedCount = tamaivrContext.getPlayedHealthTipsCount();
-        Integer maxPlayCount = Integer.valueOf((String) ivrProperties.get(HEALTH_TIP_PLAY_COUNT));
+        Integer maxPlayCount = healthTipsProperties.getHealthTipPlayCount();
         if (playedCount == maxPlayCount) {
             endHealthTipFlow(tamaivrContext);
             return ivrResponseBuilder;
