@@ -8,7 +8,6 @@ import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
-import org.motechproject.tamacallflow.ivr.controller.MenuRepeatController;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 
 import static org.mockito.Matchers.any;
@@ -34,13 +33,13 @@ public class MenuRepeatControllerTest {
     }
 
     @Test
-    public void shouldResetContextForRepeatingTheCallFLow(){
+    public void shouldResetContextForRepeatingTheCallFLow() {
         when(tamaivrContextFactory.create(any(KooKooIVRContext.class))).thenReturn(tamaivrContext);
 
         MenuRepeatController menuRepeatController = new MenuRepeatController(ivrMessage, kookooCallDetailRecordsService, tamaivrContextFactory, standardResponseController);
         menuRepeatController.gotDTMF(null);
 
         verify(tamaivrContext).resetForMenuRepeat();
-        
+
     }
 }

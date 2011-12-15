@@ -87,7 +87,8 @@ public class TreatmentAdviceController extends BaseController {
         if (callPreference.equals(CallPreference.DailyPillReminder)) {
             TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
             pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
-            //TODO falling adherence alerts are triggered as a part of adherence trend jobs
+            //TODO falling adherence alerts are triggered as a part of adherence trend jobs.
+            //TODO Instead of the four calls below we should put all of these in single service
             schedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(oldTreatmentAdvice);
             schedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
             schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);

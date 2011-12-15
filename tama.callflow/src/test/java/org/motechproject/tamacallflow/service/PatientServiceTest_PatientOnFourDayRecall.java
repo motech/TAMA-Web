@@ -69,7 +69,7 @@ public class PatientServiceTest_PatientOnFourDayRecall {
         PatientPreferences patientPreferences = dbPatient.getPatientPreferences();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(patientPreferences.getCallPreference()).withBestCallTime(patientPreferences.getBestCallTime()).withId("patient_id").build();
         patientService.update(patient);
-        verify(pillReminderService, never()).unscheduleJobs(patient.getId());
+        verify(pillReminderService, never()).remove(patient.getId());
     }
 
 

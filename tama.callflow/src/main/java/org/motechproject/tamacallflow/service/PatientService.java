@@ -136,7 +136,7 @@ public class PatientService {
     private void unscheduleDailyReminderJobs(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (treatmentAdvice != null) {
-            pillReminderService.unscheduleJobs(patient.getId());
+            pillReminderService.remove(patient.getId());
             tamaSchedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
             tamaSchedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
         }

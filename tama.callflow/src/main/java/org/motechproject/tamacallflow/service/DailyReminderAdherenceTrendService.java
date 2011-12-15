@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Component
 public class DailyReminderAdherenceTrendService {
-
     public static final String ADHERENCE_IN_RED_ALERT = "Adherence in Red";
     public static final String FALLING_ADHERENCE = "Falling Adherence";
     private AllDosageAdherenceLogs allDosageAdherenceLogs;

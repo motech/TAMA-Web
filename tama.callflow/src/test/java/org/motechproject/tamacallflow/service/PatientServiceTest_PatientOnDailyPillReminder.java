@@ -80,7 +80,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
         patientService.update(patient);
 
-        verify(pillReminderService).unscheduleJobs(patient.getId());
+        verify(pillReminderService).remove(patient.getId());
         assertEquals(now.getMillis(), patient.getPatientPreferences().getCallPreferenceTransitionDate().getMillis());
     }
 
@@ -91,7 +91,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(null);
 
         patientService.update(patient);
-        verify(pillReminderService, never()).unscheduleJobs(patient.getId());
+        verify(pillReminderService, never()).remove(patient.getId());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
         PatientPreferences patientPreferences = dbPatient.getPatientPreferences();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(patientPreferences.getCallPreference()).withBestCallTime(patientPreferences.getBestCallTime()).withId("patient_id").build();
         patientService.update(patient);
-        verify(pillReminderService, never()).unscheduleJobs(patient.getId());
+        verify(pillReminderService, never()).remove(patient.getId());
     }
 
     @Test
