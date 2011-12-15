@@ -48,6 +48,7 @@ public class DailyReminderAdherenceService {
     private double getAdherenceForWeeks(String patientId, DateTime asOfDate, int numberOfWeeks) {
         PillRegimen pillRegimen = pillReminderService.getPillRegimen(patientId);
         int totalDoses = pillRegimen.getDosesIn(numberOfWeeks, asOfDate);
+        if (totalDoses == 0) return 1;
         int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, asOfDate.minusWeeks(numberOfWeeks).toLocalDate(), asOfDate.toLocalDate());
         return ((double) dosagesTakenForLastFourWeeks) / totalDoses;
     }
