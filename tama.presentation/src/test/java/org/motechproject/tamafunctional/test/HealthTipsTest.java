@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.test;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
@@ -55,6 +56,7 @@ public class HealthTipsTest extends BaseIVRTest {
         return priorityMap;
     } 
 
+    @Ignore
     @Test
     public void shouldPlayHealthTips_WhenARTLessThan1MonthAndPatientOnDailyPill() throws IOException {
         assertHealthTipsForMissedDoseIsPlayed();
