@@ -1,4 +1,4 @@
-package org.motechproject.tamafunctional.serial;
+package org.motechproject.tamafunctional.test;
 
 
 import org.junit.Test;
