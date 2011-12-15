@@ -632,6 +632,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.deliverytools</groupId>
+            <artifactId>motech-datetime-simulator</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.deliverytools</groupId>
             <artifactId>motech-job-handler-invoker</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>

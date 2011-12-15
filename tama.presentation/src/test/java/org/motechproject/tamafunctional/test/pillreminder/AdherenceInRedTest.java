@@ -49,11 +49,11 @@ public class AdherenceInRedTest extends BaseIVRTest {
 
     @Test
     public void shouldRaise_RedAlert_WhenAdherenceFalls_Below70Percent() throws IOException {
-        triggrerRedAlertJob();
+        triggerRedAlertJob();
         verifyCreationOfRedAlertForThePatient();
     }
 
-    private void triggrerRedAlertJob() {
+    private void triggerRedAlertJob() {
         scheduledTaskManager.trigger(AdherenceQualityListener.class, "determineAdherenceQualityAndRaiseAlert", patient.id());
     }
 
