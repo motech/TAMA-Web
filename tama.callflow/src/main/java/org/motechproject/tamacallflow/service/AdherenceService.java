@@ -29,7 +29,7 @@ public class AdherenceService {
                fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient).isAfter(DateUtil.now()))
                   return false;
        }
-       return (adherenceForLastWeek != 100.0);
+       return (adherenceForLastWeek != 1.0);
     }
 
 
