@@ -103,8 +103,6 @@ public class TamaIVRMessage implements IVRMessage {
 
     public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
 
-    public static final String MENU_010_05_01_MAINMENU4 = "010_05_01_MainMenu4";
-
     public static final String HANGUP_OR_MAIN_MENU = "010_08_01_HangUpOrMainMenu";
 
     public static final String NO_MESSAGES = "010_07_03_NoOutboxMessages";
@@ -113,7 +111,6 @@ public class TamaIVRMessage implements IVRMessage {
     /*----------Outbox -------------------------*/
     public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1";
     public static final String THOSE_WERE_YOUR_MESSAGES = "001_06_05_mayEndThisCallNow2";
-    public static final String MORE_OPTIONS = "001_06_05_moreOptions";
     public static final String THESE_WERE_YOUR_MESSAGES_FOR_NOW = "001_06_05_thoseWereYourMessages";
 
 
@@ -122,7 +119,7 @@ public class TamaIVRMessage implements IVRMessage {
     /* ---------- Four Day Recall ----------*/
     // Common
     public static final String FDR_GREETING = "025_02_02_4DayRecallGreeting";
-    public static final String FDR_ALL_DOSAGES_TAKEN = "025_10_01_ haveBeenTakingWell";
+    public static final String FDR_ALL_DOSAGES_TAKEN = "025_10_01_haveBeenTakingWell";
     public static final String FDR_TAKE_DOSAGES_REGULARLY = "025_11_01_takeRegularly";
     public static final String FDR_YOUR_WEEKLY_ADHERENCE_IS = "M02_01_adherence1";
     public static final String FDR_PERCENT = "M02_03_adherenceLow2";

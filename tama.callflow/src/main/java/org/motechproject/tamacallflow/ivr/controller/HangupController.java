@@ -31,7 +31,7 @@ public class HangupController extends SafeIVRController {
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext ivrContext = ivrContextFactory.create(kooKooIVRContext);
-        return new KookooIVRResponseBuilder().withSid(ivrContext.callId()).withPlayAudios(TamaIVRMessage.MORE_OPTIONS, TamaIVRMessage.END_OF_CALL).
+        return new KookooIVRResponseBuilder().withSid(ivrContext.callId()).withPlayAudios(TamaIVRMessage.END_OF_CALL).
                 language(ivrContext.preferredLanguage()).withHangUp();
     }
 }
