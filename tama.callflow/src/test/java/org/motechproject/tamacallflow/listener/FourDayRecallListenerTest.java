@@ -21,6 +21,8 @@ import org.motechproject.util.DateUtil;
 
 import java.util.Map;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -124,7 +126,7 @@ public class FourDayRecallListenerTest {
     }
 
     private void setUpPatientWithDefaults() {
-        patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
+        patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
     }
 
@@ -214,5 +216,15 @@ public class FourDayRecallListenerTest {
         verify(fourDayRecallService, never()).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
+    @Test
+    public void shouldNotRaiseAdherenceFallingAlertOrRedAlert_WhenPatientIsSuspended() {
+        setUpPatientWithDefaults();
+        patient.setStatus(Status.Suspended);
+        MotechEvent motechEvent = getFourDayRecallEvent(false);
+
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
+
+        verifyNoMoreInteractions(fourDayRecallService);
+    }
 
 }

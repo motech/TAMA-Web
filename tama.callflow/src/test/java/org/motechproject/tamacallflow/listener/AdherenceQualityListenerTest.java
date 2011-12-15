@@ -10,6 +10,10 @@ import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tamadomain.builder.PatientBuilder;
+import org.motechproject.tamadomain.domain.Patient;
+import org.motechproject.tamadomain.domain.Status;
+import org.motechproject.tamadomain.repository.AllPatients;
 
 import java.util.Map;
 import java.util.Properties;
@@ -18,6 +22,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.verifyNoMoreInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class AdherenceQualityListenerTest {
@@ -26,54 +31,74 @@ public class AdherenceQualityListenerTest {
     private DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService;
     @Mock
     private Properties properties;
+    @Mock
+    private AllPatients allPatients;
 
     @Mock
     private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     private AdherenceQualityListener adherenceQualityListener;
+    
+    private Patient patient;
+    private static String PATIENT_ID = "patient_UUId";
 
     @Before
     public void setUp() {
         initMocks(this);
-        adherenceQualityListener = new AdherenceQualityListener(dailyReminderAdherenceTrendService, properties, dailyReminderAdherenceService);
+        adherenceQualityListener = new AdherenceQualityListener(dailyReminderAdherenceTrendService, properties, dailyReminderAdherenceService, allPatients);
+
+        patient = new PatientBuilder().withId(PATIENT_ID).withDefaults().withStatus(Status.Active).build();
+        when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn("70");
+
     }
 
     @Test
     public void shouldDetermineAdherenceQualityAndRaiseRedAlertIfAdherenceIsBelowAcceptablePercentage() throws Exception {
-        String patientId = "patient_UUId";
-        String acceptableAdherence = "70";
         double adherencePercentage = 69.0;
 
-        when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
-        when(dailyReminderAdherenceService.getAdherenceInPercentage(same(patientId), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(dailyReminderAdherenceService.getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String,Object> parameters = motechEvent.getParameters();
-        parameters.put(EventKeys.EXTERNAL_ID_KEY, patientId);
+        parameters.put(EventKeys.EXTERNAL_ID_KEY, PATIENT_ID);
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
-        verify(dailyReminderAdherenceService).getAdherenceInPercentage(same(patientId), Matchers.<DateTime>any());
-        verify(dailyReminderAdherenceTrendService, times(1)).raiseAdherenceInRedAlert(eq(patientId), eq(adherencePercentage));
+        verify(dailyReminderAdherenceService).getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any());
+        verify(dailyReminderAdherenceTrendService, times(1)).raiseAdherenceInRedAlert(eq(PATIENT_ID), eq(adherencePercentage));
     }
 
     @Test
     public void shouldDetermineAdherenceQualityAndNotRaiseRedAlertIfAdherencePercentageIsAcceptable() throws Exception {
-        String patientId = "patient_UUId";
-        String acceptableAdherence = "70";
         double adherencePercentage = 70.0;
 
-        when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn(acceptableAdherence);
-        when(dailyReminderAdherenceService.getAdherenceInPercentage(same(patientId), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(dailyReminderAdherenceService.getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String,Object> parameters = motechEvent.getParameters();
-        parameters.put(EventKeys.EXTERNAL_ID_KEY, patientId);
+        parameters.put(EventKeys.EXTERNAL_ID_KEY, PATIENT_ID);
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
-        verify(dailyReminderAdherenceService).getAdherenceInPercentage(same(patientId), Matchers.<DateTime>any());
+        verify(dailyReminderAdherenceService).getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any());
         verify(dailyReminderAdherenceTrendService, never()).raiseAdherenceInRedAlert(Matchers.<String>any(), Matchers.<Double>any());
+    }
+    
+    @Test
+    public void shouldNotRaiseRedAlertWhenPatientIsSuspended() throws Exception {
+        patient.setStatus(Status.Suspended);
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
+        Map<String,Object> parameters = motechEvent.getParameters();
+        parameters.put(EventKeys.EXTERNAL_ID_KEY, PATIENT_ID);
+
+        adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
+
+        verifyNoMoreInteractions(dailyReminderAdherenceService);
+        verifyNoMoreInteractions(dailyReminderAdherenceTrendService);
     }
 
 

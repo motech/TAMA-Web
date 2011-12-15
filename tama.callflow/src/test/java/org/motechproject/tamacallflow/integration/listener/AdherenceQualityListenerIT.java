@@ -20,9 +20,13 @@ import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService
 import org.motechproject.tamacallflow.service.TAMAPillReminderService;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
+import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.domain.DosageAdherenceLog;
 import org.motechproject.tamadomain.domain.DosageStatus;
+import org.motechproject.tamadomain.domain.Patient;
+import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
+import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -67,6 +71,9 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
     @Qualifier("ivrProperties")
     private Properties properties;
 
+    @Mock
+    private AllPatients allPatients;
+
     private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     private AdherenceQualityListener adherenceQualityListener;
@@ -84,7 +91,9 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
         setUpTime();
         properties.setProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE, ADHERENCE_THRESHOLD);
         dailyReminderAdherenceService = new DailyReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, properties);
-        adherenceQualityListener = new AdherenceQualityListener(dailyReminderAdherenceTrendService, properties, dailyReminderAdherenceService);
+        adherenceQualityListener = new AdherenceQualityListener(dailyReminderAdherenceTrendService, properties, dailyReminderAdherenceService, allPatients);
+        Patient patient = new PatientBuilder().withDefaults().withStatus(Status.Active).build();
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
     }
 
     public void setUpAdherenceBelowThreshold() {

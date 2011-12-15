@@ -2,14 +2,14 @@ package org.motechproject.tamacallflow.listener;
 
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.tamacallflow.ivr.call.IvrCall;
+import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
+import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
-import org.motechproject.tamacallflow.ivr.call.IvrCall;
-import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
-import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,15 +62,17 @@ public class FourDayRecallListener {
     public void handleWeeklyFallingAdherenceAndRedAlert(MotechEvent motechEvent) {
         String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
         Patient patient = allPatients.get(patientDocId);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        if (patient != null && patient.allowAdherenceCalls()) {
+            TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
 
-        if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()) || isLastRetryDay(motechEvent)) {
+            if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()) || isLastRetryDay(motechEvent)) {
 
-            if (!fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId))
-                fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
+                if (!fourDayRecallService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId))
+                    fourDayRecallService.raiseAdherenceFallingAlert(patientDocId);
 
-            if (!fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientDocId))
-                fourDayRecallService.raiseAdherenceInRedAlert(patientDocId);
+                if (!fourDayRecallService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientDocId))
+                    fourDayRecallService.raiseAdherenceInRedAlert(patientDocId);
+            }
         }
     }
 
