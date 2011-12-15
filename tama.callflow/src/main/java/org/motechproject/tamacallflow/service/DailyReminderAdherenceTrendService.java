@@ -5,7 +5,6 @@ import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamacommon.TAMAMessages;
 import org.motechproject.tamadomain.domain.PatientAlert;
 import org.motechproject.tamadomain.domain.PatientAlertType;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,16 +15,12 @@ import java.util.Map;
 public class DailyReminderAdherenceTrendService {
     public static final String ADHERENCE_IN_RED_ALERT = "Adherence in Red";
     public static final String FALLING_ADHERENCE = "Falling Adherence";
-    private AllDosageAdherenceLogs allDosageAdherenceLogs;
     public DailyReminderAdherenceService dailyReminderAdherenceService;
-    private TAMAPillReminderService pillReminderService;
 
     private PatientAlertService patientAlertService;
 
     @Autowired
-    public DailyReminderAdherenceTrendService(AllDosageAdherenceLogs allDosageAdherenceLogs, TAMAPillReminderService pillReminderService, PatientAlertService alertService, DailyReminderAdherenceService dailyReminderAdherenceService) {
-        this.allDosageAdherenceLogs = allDosageAdherenceLogs;
-        this.pillReminderService = pillReminderService;
+    public DailyReminderAdherenceTrendService(PatientAlertService alertService, DailyReminderAdherenceService dailyReminderAdherenceService) {
         this.patientAlertService = alertService;
         this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }

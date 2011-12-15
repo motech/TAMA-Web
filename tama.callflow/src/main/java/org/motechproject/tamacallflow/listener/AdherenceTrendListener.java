@@ -36,7 +36,7 @@ public class AdherenceTrendListener {
     }
 
     @MotechListener(subjects = TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT)
-    public void handleWeeklyAdherenceTrendToOutboxEvent(MotechEvent motechEvent) {
+    public void handleWeeklyAdherence(MotechEvent motechEvent) {
         String externalId = (String) motechEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY);
         final Patient patient = allPatients.get(externalId);
 

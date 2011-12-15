@@ -74,7 +74,7 @@ public class DailyPillReminderSetup extends FunctionalTestObject {
 
             if (dailyPatientEvents.runAdherenceTrendJob()) {
                 logInfo("RUNNING ADHERENCE TREND JOB");
-                scheduledTaskManager.trigger(AdherenceTrendListener.class, "handleWeeklyAdherenceTrendToOutboxEvent", configuration.patientDocId());
+                scheduledTaskManager.trigger(AdherenceTrendListener.class, "handleWeeklyAdherence", configuration.patientDocId());
             }
 
             if (dailyPatientEvents.dosageTaken()) {

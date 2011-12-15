@@ -64,7 +64,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     public void setUp() {
         initMocks(this);
         dailyReminderAdherenceService = new DailyReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties);
-        dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
+        dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
     }
 
 

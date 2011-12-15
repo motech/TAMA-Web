@@ -15,7 +15,6 @@ import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.util.Map;
@@ -51,7 +50,7 @@ public class AdherenceTrendListenerTest {
                 .withExternalId(patientId)
                 .payload();
         final MotechEvent motechEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
-        adherenceTrendListener.handleWeeklyAdherenceTrendToOutboxEvent(motechEvent);
+        adherenceTrendListener.handleWeeklyAdherence(motechEvent);
         verify(outboxService).addMessage(Matchers.<OutboundVoiceMessage>any());
         verify(dailyReminderAdherenceTrendService).raiseAlertIfAdherenceTrendIsFalling(eq(patientId), Matchers.<DateTime>any());
     }
@@ -66,7 +65,7 @@ public class AdherenceTrendListenerTest {
                 .withExternalId(patientId)
                 .payload();
 
-        adherenceTrendListener.handleWeeklyAdherenceTrendToOutboxEvent(new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams));
+        adherenceTrendListener.handleWeeklyAdherence(new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams));
         verifyZeroInteractions(outboxService);
         verifyZeroInteractions(dailyReminderAdherenceTrendService);
     }

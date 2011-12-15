@@ -12,7 +12,6 @@ import org.motechproject.tamacallflow.util.EmptyMapMatcher;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.domain.PatientAlert;
 import org.motechproject.tamadomain.domain.PatientAlertType;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -22,19 +21,11 @@ import java.util.Map;
 
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DateUtil.class})
 public class DailyReminderAdherenceTrendServiceTest {
-
-    @Mock
-    private TAMAPillReminderService pillReminderService;
-
-    @Mock
-    private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
     @Mock
     private PatientAlertService patientAlertService;
@@ -55,12 +46,12 @@ public class DailyReminderAdherenceTrendServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         emptyMapMatcher = new EmptyMapMatcher();
-        service = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
+        service = new DailyReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
     }
 
     @Test
     public void shouldRaiseAlertWhenAdherenceIsFalling(){
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
         final String patientId = "patientId";
         DateTime now = DateUtil.now();
         when(dailyReminderAdherenceService.getAdherenceInPercentage("patientId", now.minusWeeks(1))).thenReturn(30.0);
@@ -71,7 +62,7 @@ public class DailyReminderAdherenceTrendServiceTest {
 
     @Test
     public void shouldNotRaiseAlertWhenAdherenceIsNotFalling(){
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService) {
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService) {
             @Override
             public boolean isAdherenceFallingAsOf(String patientId, DateTime asOf) {
                 return false;
@@ -85,7 +76,7 @@ public class DailyReminderAdherenceTrendServiceTest {
 
     @Test
     public void shouldRaiseRedAlertForThePatient() {
-        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(allDosageAdherenceLogs, pillReminderService, patientAlertService, dailyReminderAdherenceService);
+        DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
         String patientId = "patientId";
         double adherencePercentage = 69.9;
 
