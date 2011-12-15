@@ -41,8 +41,8 @@ public class DailyReminderAdherenceService {
         return getAdherenceForWeeks(patientId, asOfDate, numberOfWeeks) * 100;
     }
 
-    public double getAdherenceForLastWeek(String patientId, DateTime asOfDate) {
-        return getAdherenceForWeeks(patientId, asOfDate, 1);
+    public double getAdherenceForLastWeekInPercentage(String patientId, DateTime asOfDate) {
+        return getAdherenceForWeeks(patientId, asOfDate, 1) * 100.0;
     }
 
     private double getAdherenceForWeeks(String patientId, DateTime asOfDate, int numberOfWeeks) {

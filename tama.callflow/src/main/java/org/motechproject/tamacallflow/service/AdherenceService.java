@@ -22,14 +22,14 @@ public class AdherenceService {
     public boolean isDosageMissedLastWeek(Patient patient) {
        double adherenceForLastWeek = 0;
        if (patient.isOnDailyPillReminder()) {
-           adherenceForLastWeek = dailyReminderAdherenceService.getAdherenceForLastWeek(patient.getId(), DateUtil.now());
+           adherenceForLastWeek = dailyReminderAdherenceService.getAdherenceForLastWeekInPercentage(patient.getId(), DateUtil.now());
        } else {
            adherenceForLastWeek = fourDayRecallService.getAdherencePercentageForPreviousWeek(patient.getId());
            if( adherenceForLastWeek == 0.0 &&
                fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient).isAfter(DateUtil.now()))
                   return false;
        }
-       return (adherenceForLastWeek != 1.0);
+       return (adherenceForLastWeek != 100.0);
     }
 
 

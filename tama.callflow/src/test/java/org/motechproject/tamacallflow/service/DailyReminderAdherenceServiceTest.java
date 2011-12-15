@@ -87,7 +87,7 @@ public class DailyReminderAdherenceServiceTest {
         DateTime doseDateTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
         when(pillRegimen.getDosesIn(1, doseDateTime)).thenReturn(14);
         when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDateTime.toLocalDate())).thenReturn(1);
-        assertEquals(1.0 / 14.0, dailyReminderAdherenceService.getAdherenceForLastWeek(patientId, doseDateTime));
+        assertEquals(1.0 / 14.0 *100, dailyReminderAdherenceService.getAdherenceForLastWeekInPercentage(patientId, doseDateTime));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class DailyReminderAdherenceServiceTest {
         DateTime doseDateTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
         when(pillRegimen.getDosesIn(1, doseDateTime)).thenReturn(0);
         when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDateTime.toLocalDate())).thenReturn(1);
-        assertEquals(1.0 , dailyReminderAdherenceService.getAdherenceForLastWeek(patientId, doseDateTime));
+        assertEquals(100.0 , dailyReminderAdherenceService.getAdherenceForLastWeekInPercentage(patientId, doseDateTime));
     }
 }
 

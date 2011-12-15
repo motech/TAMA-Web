@@ -43,7 +43,7 @@ public class AdherenceServiceTest {
         when(patient.isOnDailyPillReminder()).thenReturn(true);
         when(patient.getId()).thenReturn(patientId);
         when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.now().minusDays(3).toDate());
-        when(dailyReminderAdherenceService.getAdherenceForLastWeek(patientId, asOfDate)).thenReturn(98.0);
+        when(dailyReminderAdherenceService.getAdherenceForLastWeekInPercentage(patientId, asOfDate)).thenReturn(98.0);
         AdherenceService adherenceService = new AdherenceService(dailyReminderAdherenceService, fourDayRecallService);
         assertTrue(adherenceService.isDosageMissedLastWeek(patient));
     }
