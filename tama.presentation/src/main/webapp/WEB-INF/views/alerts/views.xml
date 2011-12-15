@@ -10,8 +10,8 @@
     <definition extends="default" name="alerts/showAdherenceInRed">
         <put-attribute name="body" value="/WEB-INF/views/alerts/showAdherenceInRed.jspx"/>
     </definition>
-    <definition extends="default" name="alerts/showAdherenceFalling">
-        <put-attribute name="body" value="/WEB-INF/views/alerts/showAdherenceFalling.jspx"/>
+    <definition extends="default" name="alerts/showFallingAdherence">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/showFallingAdherence.jspx"/>
     </definition>
     <definition extends="default" name="alerts/showSymptomReporting">
         <put-attribute name="body" value="/WEB-INF/views/alerts/showSymptomReporting.jspx"/>
