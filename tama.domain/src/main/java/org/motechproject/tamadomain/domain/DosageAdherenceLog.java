@@ -85,7 +85,7 @@ public class DosageAdherenceLog extends CouchEntity {
     }
 
     public void dosageIsTakenLate() {
-        this.dosageTakenLate = true;
+        if (DosageStatus.TAKEN.equals(dosageStatus)) this.dosageTakenLate = true;
     }
 
     public void setDosageTakenLate(boolean value){

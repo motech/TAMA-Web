@@ -10,13 +10,15 @@ public class HealthTipParams {
 
     private Patient patient;
     private boolean dosageMissedLastWeek;
+    private boolean anyDoseTakenLateLastWeek;
     private LocalDate treatmentStartDate;
     private LocalDate lastCD4TestDate;
     private int lastCD4Count;
 
-    public HealthTipParams(Patient patient, boolean dosageMissedLastWeek) {
+    public HealthTipParams(Patient patient, boolean dosageMissedLastWeek, boolean anyDoseTakenLateLastWeek) {
         this.patient = patient;
         this.dosageMissedLastWeek = dosageMissedLastWeek;
+        this.anyDoseTakenLateLastWeek = anyDoseTakenLateLastWeek;
     }
 
     public int numberOfMonthsSinceTreatmentStarted() {
@@ -37,6 +39,10 @@ public class HealthTipParams {
 
     public boolean isDosageMissedLastWeek() {
         return dosageMissedLastWeek;
+    }
+
+    public boolean isAnyDoseTakenLateLastWeek(){
+        return anyDoseTakenLateLastWeek;
     }
 
     public void lastCD4TestDate(LocalDate lastCD4TestDate) {

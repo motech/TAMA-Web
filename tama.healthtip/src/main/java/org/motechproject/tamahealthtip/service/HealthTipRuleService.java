@@ -7,6 +7,7 @@ import org.motechproject.tamadomain.domain.LabResults;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.repository.AllLabResults;
 import org.motechproject.tamahealthtip.domain.HealthTipParams;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +55,10 @@ public class HealthTipRuleService {
     }
 
     private HealthTipParams setupParams(LocalDate treatmentStartDate, Patient patient, LocalDate latestCD4LabTestDate, int latestCD4Count) {
-        HealthTipParams healthTipParams = new HealthTipParams(patient, adherenceService.isDosageMissedLastWeek(patient));
+        LocalDate lastSevenDays = DateUtil.today().minusDays(6);
+        boolean anyDoseTakenLateLastWeek = adherenceService.anyDoseTakenLateSince(patient, lastSevenDays);
+        boolean dosageMissedLastWeek = adherenceService.isDosageMissedLastWeek(patient);
+        HealthTipParams healthTipParams = new HealthTipParams(patient, dosageMissedLastWeek, anyDoseTakenLateLastWeek);
         healthTipParams.treatmentAdviceStartDate(treatmentStartDate);
         healthTipParams.lastCD4TestDate(latestCD4LabTestDate);
         healthTipParams.lastCD4Count(latestCD4Count);

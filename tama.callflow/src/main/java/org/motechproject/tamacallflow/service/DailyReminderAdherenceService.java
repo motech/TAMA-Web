@@ -94,6 +94,10 @@ public class DailyReminderAdherenceService {
         return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
     }
 
+    public boolean anyDoseTakenLateSince(String patientId, LocalDate since) {
+        return allDosageAdherenceLogs.getDoseTakenLateCount(patientId, since, true) > 0;
+    }
+
     private boolean doseIsLate(Dose dose, DateTime doseTakenTime) {
         Integer dosageInterval = Integer.parseInt(properties.getProperty(TAMAConstants.DOSAGE_INTERVAL));
         DateTime scheduledDoseInterval = dose.getDoseTime().plusMinutes(dosageInterval);

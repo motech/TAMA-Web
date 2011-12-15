@@ -46,6 +46,16 @@ rule "Dosage Missed Last Week"
         }
 end
 
+rule "Dosage Taken Late Last Week and user on daily reminder"
+    when
+        HealthTipParams(anyDoseTakenLateLastWeek == "true")
+        HealthTipParams(patientOnDailyPillReminder == "true")
+    then
+        for (String file : Arrays.asList("HT013a", "HT018a")) {
+            healthTips.addHealthTip(file, "1");
+        }
+end
+
 rule "Dosage Missed Last Week and user on daily reminder"
     when
         HealthTipParams(dosageMissedLastWeek == "true")

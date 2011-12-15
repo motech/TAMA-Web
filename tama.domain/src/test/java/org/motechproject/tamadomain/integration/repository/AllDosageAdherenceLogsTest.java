@@ -8,6 +8,7 @@ import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest
 import org.motechproject.tamadomain.domain.DosageAdherenceLog;
 import org.motechproject.tamadomain.domain.DosageStatus;
 import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
-    
+
     @Autowired
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
@@ -117,5 +118,30 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLogs.get(1));
         markForDeletion(dosageAdherenceLogs.toArray());
         assertEquals(dosageAdherenceLogs.get(1), allDosageAdherenceLogs.getLatestLogForPatient("patientId"));
+    }
+
+    @Test
+    public void shouldGetCountOfDoseTakenSinceGivenDate() {
+        LocalDate today = DateUtil.today();
+        DosageAdherenceLog doseTakenLateBeforeGivenDate = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, today.minusWeeks(1));
+        doseTakenLateBeforeGivenDate.dosageIsTakenLate();
+        DosageAdherenceLog doseTakenLate_1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, today.minusDays(3));
+        doseTakenLate_1.dosageIsTakenLate();
+        DosageAdherenceLog doseTakenLate_2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, today.minusDays(1));
+        doseTakenLate_2.dosageIsTakenLate();
+        DosageAdherenceLog doseTakenLate_3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, today);
+        doseTakenLate_3.dosageIsTakenLate();
+        DosageAdherenceLog doseTakenOnTime = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, today);
+
+        allDosageAdherenceLogs.add(doseTakenLateBeforeGivenDate);
+        allDosageAdherenceLogs.add(doseTakenLate_1);
+        allDosageAdherenceLogs.add(doseTakenOnTime);
+        allDosageAdherenceLogs.add(doseTakenLate_2);
+        allDosageAdherenceLogs.add(doseTakenLate_3);
+
+        markForDeletion(doseTakenLateBeforeGivenDate, doseTakenLate_1, doseTakenLate_2, doseTakenOnTime, doseTakenLate_3);
+
+        assertEquals(3, allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", today.minusWeeks(1).plusDays(1), true));
+
     }
 }

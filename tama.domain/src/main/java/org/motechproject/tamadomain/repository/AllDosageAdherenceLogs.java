@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -81,5 +80,12 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         ViewQuery q = createQuery("ordered_by_date").startKey(patientId).includeDocs(true);
         List<DosageAdherenceLog> logsSortedOnDateAscending = db.queryView(q, DosageAdherenceLog.class);
         return CollectionUtils.isEmpty(logsSortedOnDateAscending)? null : logsSortedOnDateAscending.get(logsSortedOnDateAscending.size() - 1);
+    }
+
+    @View(name = "count_of_dose_taken_late_since", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.patientId, doc.dosageTakenLate, doc.dosageDate], doc._id);}}", reduce = "_count")
+    public int getDoseTakenLateCount(String patientId, LocalDate since, boolean doseTakenLate) {
+        ViewQuery q = createQuery("count_of_dose_taken_late_since").startKey(ComplexKey.of(patientId, doseTakenLate, since)).endKey(ComplexKey.of(patientId, doseTakenLate, DateUtil.today()));
+        ViewResult viewResult = db.queryView(q);
+        return rowCount(viewResult);
     }
 }

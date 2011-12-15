@@ -2,10 +2,15 @@ package org.motechproject.tamacallflow.service;
 
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.mockito.Mock;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
+import org.motechproject.tamadomain.builder.PatientBuilder;
+import org.motechproject.tamadomain.domain.CallPreference;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.util.DateUtil;
@@ -13,29 +18,32 @@ import org.motechproject.util.DateUtil;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+
 public class AdherenceServiceTest {
-    
+
     @Mock
     Patient patient;
 
     @Mock
     TreatmentAdvice treatmentAdvice;
-    
+
     @Mock
     DailyReminderAdherenceService dailyReminderAdherenceService;
-    
+
     @Mock
     FourDayRecallService fourDayRecallService;
-    
+
+    private AdherenceService adherenceService;
 
     @Before
     public void setup() {
         initMocks(this);
-
+        adherenceService = new AdherenceService(dailyReminderAdherenceService, fourDayRecallService);
     }
-    
+
     @Test
     public void shouldCheckForAnyMissedDosageInThePreviousWeekForDailyReminderPatient() {
         final DateTime asOfDate = DateUtil.now();
@@ -57,7 +65,6 @@ public class AdherenceServiceTest {
         when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.now().minusDays(20).toDate());
         when(fourDayRecallService.getAdherencePercentageForPreviousWeek(patientId)).thenReturn(100);
         when(fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient)).thenReturn(DateUtil.now().minusDays(6));
-        AdherenceService adherenceService = new AdherenceService(dailyReminderAdherenceService, fourDayRecallService);
         assertFalse(adherenceService.isDosageMissedLastWeek(patient));
     }
 
@@ -70,7 +77,6 @@ public class AdherenceServiceTest {
         when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.now().minusDays(3).toDate());
         when(fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient)).thenReturn(DateUtil.now().plusDays(6));
         when(fourDayRecallService.getAdherencePercentageForPreviousWeek(patientId)).thenReturn(0);
-        AdherenceService adherenceService = new AdherenceService(dailyReminderAdherenceService, fourDayRecallService);
         assertFalse(adherenceService.isDosageMissedLastWeek(patient));
     }
 
@@ -83,8 +89,32 @@ public class AdherenceServiceTest {
         when(patient.getId()).thenReturn(patientId);
         when(fourDayRecallService.getAdherencePercentageForPreviousWeek(patientId)).thenReturn(23);
         when(fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient)).thenReturn(DateUtil.now().plusDays(6));
-        AdherenceService adherenceService = new AdherenceService(dailyReminderAdherenceService, fourDayRecallService);
         assertTrue(adherenceService.isDosageMissedLastWeek(patient));
     }
-    
+
+
+    @Test
+    public void anyDoseTakenLateSinceShouldBeTrueWhenAnyDoseWasTakenLateSinceGivenTime_PatientOnDailyPillReminder() {
+        patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
+        LocalDate since = DateUtil.newDate(2011, 10, 1);
+        when(dailyReminderAdherenceService.anyDoseTakenLateSince("externalId", since)).thenReturn(true);
+        assertTrue(adherenceService.anyDoseTakenLateSince(patient, since));
+    }
+
+    @Test
+    public void anyDoseTakenLateSinceShouldBeFalseWhenNoDoseWasTakenLateSinceGivenTime_PatientOnDailyPillReminder() {
+        patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
+        LocalDate since = DateUtil.newDate(2011, 10, 1);
+        when(dailyReminderAdherenceService.anyDoseTakenLateSince("externalId", since)).thenReturn(false);
+        assertFalse(adherenceService.anyDoseTakenLateSince(patient, since));
+    }
+
+
+    @Test
+    public void doseTakenLateShouldReturnFalseWhenPatientIsOnFourDayRecall() {
+        patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.FourDayRecall).build();
+        LocalDate since = DateUtil.newDate(2011, 10, 1);
+        assertFalse(adherenceService.anyDoseTakenLateSince(patient, since));
+        verifyZeroInteractions(dailyReminderAdherenceService);
+    }
 }

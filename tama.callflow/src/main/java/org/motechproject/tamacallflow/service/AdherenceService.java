@@ -1,5 +1,6 @@
 package org.motechproject.tamacallflow.service;
 
+import org.joda.time.LocalDate;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.util.DateUtil;
@@ -9,9 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdherenceService {
 
-
-    DailyReminderAdherenceService dailyReminderAdherenceService;
-    FourDayRecallService fourDayRecallService;
+    private DailyReminderAdherenceService dailyReminderAdherenceService;
+    private FourDayRecallService fourDayRecallService;
 
     @Autowired
     public AdherenceService(DailyReminderAdherenceService dailyReminderAdherenceService, FourDayRecallService fourDayRecallService) {
@@ -32,5 +32,8 @@ public class AdherenceService {
        return (adherenceForLastWeek != 100.0);
     }
 
-
+    public boolean anyDoseTakenLateSince(Patient patient, LocalDate since) {
+        if (!patient.isOnDailyPillReminder()) return false;
+        return dailyReminderAdherenceService.anyDoseTakenLateSince(patient.getId(), since);
+    }
 }

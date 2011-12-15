@@ -24,7 +24,6 @@ import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -146,7 +145,6 @@ public class DailyReminderAdherenceServiceTest {
         }
     }
 
-
     public static class RecordAdherenceForSuspendedPeriod extends TestSubject {
         @Test
         public void createsAdherenceLogsForEveryDosage() {
@@ -200,6 +198,24 @@ public class DailyReminderAdherenceServiceTest {
             when(pillRegimen.getDosesIn(1, doseDateTime)).thenReturn(0);
             when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDateTime.toLocalDate())).thenReturn(1);
             assertEquals(100.0, dailyReminderAdherenceService.getAdherenceForLastWeekInPercentage(patientId, doseDateTime));
+        }
+    }
+
+    public static class AnyDoseTakenLateSince extends TestSubject{
+        @Test
+        public void shouldBeTrueWhenAtLeastOneDoseWasTakenSinceGivenDate(){
+            LocalDate someDate = DateUtil.newDate(2011, 10, 10);
+            when(allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", someDate, true)).thenReturn(1);
+
+            assertTrue(dailyReminderAdherenceService.anyDoseTakenLateSince("patient_id", someDate));
+        }
+
+        @Test
+        public void shouldBeFalseWhenNoDoseWasTakenLateLastWeek(){
+            LocalDate someDate = DateUtil.newDate(2011, 10, 10);
+            when(allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", someDate, true)).thenReturn(0);
+
+            assertFalse(dailyReminderAdherenceService.anyDoseTakenLateSince("patient_id", someDate));
         }
     }
 }
