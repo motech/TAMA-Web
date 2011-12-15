@@ -1,15 +1,18 @@
 package org.motechproject.tamafunctional.test;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.TestClinician;
+import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
-import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,9 +34,26 @@ public class HealthTipsTest extends BaseIVRTest {
     public void setUp() {
         super.setUp();
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
         patient = TestPatient.withMandatory();
-        new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
+        patient.patientPreferences().passcode("5678");
+
+        PatientDataService patientDataService = new PatientDataService(webDriver);
+
+        TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFromYesterday();
+
+        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+
+        TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
+        patientDataService.setupLabResult(patient, clinician, labResult);
+
+    }
+
+    private TestTreatmentAdvice setUpTreatmentAdviceToStartFromYesterday() {
+        TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
+        LocalDate yesterday = DateUtil.today().minusDays(1);
+        drugDosages[0].startDate(yesterday);
+        drugDosages[1].startDate(yesterday);
+        return TestTreatmentAdvice.withExtrinsic(drugDosages);
     }
 
     public Map<String, List> getHealthTipsWithPriorityWhenARTLessThan1MonthAndPatientOnDailyPillAndDosageMissed() {
@@ -56,11 +76,10 @@ public class HealthTipsTest extends BaseIVRTest {
         return priorityMap;
     } 
 
-    @Ignore
     @Test
     public void shouldPlayHealthTips_WhenARTLessThan1MonthAndPatientOnDailyPill() throws IOException {
         assertHealthTipsForMissedDoseIsPlayed();
-        recordDosageAsTaken();
+        recordCurrentDosageAsTaken();
         assertHealthTipsForRegimenLessThanOneMonthIsPlayed();
     }
 
@@ -81,15 +100,13 @@ public class HealthTipsTest extends BaseIVRTest {
 
     }
 
-    public void recordDosageAsTaken() throws IOException {
+    public void recordCurrentDosageAsTaken() throws IOException {
         caller = caller(patient);
         caller.call();
         IVRResponse ivrResponse = caller.enter("5678");
         asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
         ivrResponse = caller.enter("1");
         assertAudioFilesPresent(ivrResponse, DOSE_TAKEN_ON_TIME);
-        ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
         caller.hangup();
     }
 
