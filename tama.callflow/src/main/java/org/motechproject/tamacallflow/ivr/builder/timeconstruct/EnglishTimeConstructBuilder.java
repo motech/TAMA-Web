@@ -7,25 +7,24 @@ import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnglishTimeConstructBuilder {
+public class EnglishTimeConstructBuilder extends SlotBasedTimeConstructBuilder{
 
-    private LocalTime localTime;
+    static final LocalTime AM_START = new LocalTime(0, 0, 0);
+    static final LocalTime PM_START = new LocalTime(12, 0, 0);
+    static final LocalTime PM_END = new LocalTime(23, 59, 59, 999);
 
-    public EnglishTimeConstructBuilder(LocalTime localTime) {
-        this.localTime = localTime;
+    public EnglishTimeConstructBuilder(){
+        addSlot(AM_START, PM_START, TamaIVRMessage.TIME_OF_DAY_AM);
+        addSlot(PM_START, PM_END, TamaIVRMessage.TIME_OF_DAY_PM);
     }
 
-    public List<String> build() {
+    public List<String> build(LocalTime localTime) {
         ArrayList<String> messages = new ArrayList<String>();
         messages.add(getNumberFilename(DateTimeFormat.forPattern(TimeConstructBuilder.HOUR_OF_HALF_DAY).print(localTime)));
         if (localTime.getMinuteOfHour() != 0) {
             messages.add(getNumberFilename(DateTimeFormat.forPattern(TimeConstructBuilder.MINUTE_OF_THE_HOUR).print(localTime)));
         }
-        messages.add(String.format(TamaIVRMessage.TIME_OF_DAY_AM_PM, DateTimeFormat.forPattern(TimeConstructBuilder.AM_PM).print(localTime)));
+        messages.add(getTimePeriod(localTime));
         return messages;
-    }
-
-    private String getNumberFilename(String number) {
-        return String.format(TamaIVRMessage.NUMBER_WAV_FORMAT, Integer.parseInt(number));
     }
 }
