@@ -3,8 +3,11 @@ package org.motechproject.tamacallflow.ivr;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 
 public class StandardIVRResponse {
+
+    public static final int PASSCODE_DTMF_LENGTH = 4;
+
     public static KookooIVRResponseBuilder signatureTuneAndCollectDTMF(String callId) {
-        return signatureTune(callId).collectDtmfLength(10);
+        return signatureTune(callId).collectDtmfLength(PASSCODE_DTMF_LENGTH);
     }
 
     public static KookooIVRResponseBuilder endOfCallTuneAndHangup(String callId) {

@@ -69,7 +69,7 @@ public class IVRAuthenticationControllerTest {
         when(tamaivrContextFactory.initialize(kooKooIVRContext)).thenReturn(tamaivrContext);
         when(authenticationService.allowAccess(callerId, callId)).thenReturn(true);
         KookooIVRResponseBuilder kookooIVRResponseBuilder = ivrAuthenticationController.newCall(kooKooIVRContext);
-        assertTrue(kookooIVRResponseBuilder.create(ivrMessage).contains("collectdtmf l=\"10\""));
+        assertTrue(kookooIVRResponseBuilder.create(ivrMessage).contains("collectdtmf l=\"4\""));
     }
 
     @Test

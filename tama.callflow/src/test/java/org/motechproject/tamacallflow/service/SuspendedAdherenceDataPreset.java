@@ -2,12 +2,13 @@ package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
 import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
+import org.motechproject.util.DateUtil;
 
 public class SuspendedAdherenceDataPreset {
 
     public static SuspendedAdherenceData fromYesterdayWithAnyStatus() {
         SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
-        DateTime suspendedFromDate = new DateTime();
+        DateTime suspendedFromDate = DateUtil.now();
         suspendedAdherenceData.suspendedFrom(suspendedFromDate);
         suspendedAdherenceData.patientId("patientId");
         suspendedAdherenceData.setAdherenceDataWhenPatientWasSuspended(SuspendedAdherenceData.DosageStatusWhenSuspended.DOSE_TAKEN);
