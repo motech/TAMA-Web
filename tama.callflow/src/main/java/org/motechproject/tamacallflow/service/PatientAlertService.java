@@ -27,6 +27,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 @Component
 public class PatientAlertService {
+    
+    public final static String  RED_ALERT_MESSAGE_NO_RESPONSE = "No response was recorded";
 
     private AllPatients allPatients;
     private AlertService alertService;

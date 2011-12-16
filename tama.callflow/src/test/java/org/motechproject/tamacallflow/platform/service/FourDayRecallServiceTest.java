@@ -497,6 +497,24 @@ public class FourDayRecallServiceTest {
     }
 
     @Test
+    public void shouldRaiseANoResponseRedAlertIfNoResponseCaptured() {
+        when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn("70");
+        final String testPatientId = "testPatientId";
+        FourDayRecallService fourDayRecallService = new FourDayRecallService(null, null, null, patientAlertService, properties) {
+            @Override
+            protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
+                return null;
+            }
+        };
+        fourDayRecallService.raiseAdherenceInRedAlert(testPatientId);
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.ADHERENCE, Double.toString(0));
+        verify(patientAlertService).createAlert(testPatientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.ADHERENCE_IN_RED_ALERT,
+                PatientAlertService.RED_ALERT_MESSAGE_NO_RESPONSE, PatientAlertType.AdherenceInRed, data);
+
+    }
+
+    @Test
     public void shouldNotRaiseRedAlertIfAdherenceIsNotLessThanThreshold() {
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn("70");
         final String testPatientId = "testPatientId";

@@ -221,11 +221,15 @@ public class FourDayRecallService {
     }
 
     public void raiseAdherenceInRedAlert(String patientId) {
-        double adherencePercentage = getAdherencePercentageForCurrentWeek(patientId);
-        double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
-        if(adherencePercentage >= acceptableAdherencePercentage) return;
+        WeeklyAdherenceLog adherenceLog = getAdherenceLog(patientId, 0);
+        String description =PatientAlertService.RED_ALERT_MESSAGE_NO_RESPONSE;
+        double adherencePercentage = adherencePercentageFor(adherenceLog);
 
-        String description = String.format(TAMAMessages.ADHERENCE_PERCENTAGE_IS, adherencePercentage);
+        if (adherenceLog != null) {
+            double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
+            if(adherencePercentage >= acceptableAdherencePercentage) return;
+            description = String.format(TAMAMessages.ADHERENCE_PERCENTAGE_IS, adherencePercentage);
+        }
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.ADHERENCE, Double.toString(adherencePercentage));
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);
