@@ -44,5 +44,33 @@
             <springform:select id="ampm" items="${timeMeridiems}" path="patientPreferences.bestCallTime.timeMeridiem" />
         </div>
 
+        <div class='OTC_advice_via_SMS section'>
+            <label class='left_pane'>
+                Wish to receive OTC advice via SMS * :
+            </label>
+            <div class='right_pane'>
+                <div class='radio_group'>
+                    <springform:radiobutton id="receiveOTCAdviceYes" path="patientPreferences.receiveOTCAdvice" value="true" label="Yes"/>
+                </div>
+                <div class='radio_group'>
+                    <springform:radiobutton id="receiveOTCAdviceNo" path="patientPreferences.receiveOTCAdvice" value="false" label="No"/>
+                </div>
+            </div>
+        </div>
+
+        <div class='activate_appointment_reminder section'>
+            <label class='left_pane'>
+                Activate Appointment Reminder * :
+            </label>
+            <div class='right_pane'>
+                <div class='radio_group'>
+                    <springform:radiobutton id="activateAppointmentRemindersYes" path="patientPreferences.activateAppointmentReminders" value="true" label="Yes"/>
+                </div>
+                <div class='radio_group'>
+                    <springform:radiobutton id="activateAppointmentRemindersNo" path="patientPreferences.activateAppointmentReminders" value="false" label="No"/>
+                </div>
+            </div>
+        </div>
+
     </util:panel>
 </div>

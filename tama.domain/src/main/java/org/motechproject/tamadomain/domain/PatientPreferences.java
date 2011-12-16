@@ -28,6 +28,10 @@ public class PatientPreferences extends BaseEntity {
 
     private TimeOfDay bestCallTime;
 
+    private boolean receiveOTCAdvice = true;
+
+    private boolean activateAppointmentReminders = true;
+
     private DateTime callPreferenceTransitionDate;
 
     public CallPreference getCallPreference() {
@@ -96,5 +100,21 @@ public class PatientPreferences extends BaseEntity {
 
     public void setCallPreferenceTransitionDate(DateTime callPreferenceTransitionDate) {
         this.callPreferenceTransitionDate = callPreferenceTransitionDate;
+    }
+
+    public boolean getReceiveOTCAdvice() {
+        return receiveOTCAdvice;
+    }
+
+    public void setReceiveOTCAdvice(boolean receiveOTCAdvice) {
+        this.receiveOTCAdvice = receiveOTCAdvice;
+    }
+
+    public boolean getActivateAppointmentReminders() {
+        return activateAppointmentReminders;
+    }
+
+    public void setActivateAppointmentReminders(boolean activateAppointmentReminders) {
+        this.activateAppointmentReminders = activateAppointmentReminders;
     }
 }
