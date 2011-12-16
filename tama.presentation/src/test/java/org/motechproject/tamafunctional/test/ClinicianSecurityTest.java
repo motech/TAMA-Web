@@ -19,9 +19,9 @@ public class ClinicianSecurityTest extends BaseTest {
     @Test
     public void shouldVerifyIfCorrectPatientsAreSeenByLoggedInClinician() {
         TestClinician clinician1 = TestClinician.withMandatory().clinic(TestClinic.withMandatory().name(unique("securityTest")));
-        new ClinicianDataService(webDriver).createWithClinc(clinician1);
+        new ClinicianDataService(webDriver).createWithClinic(clinician1);
         TestClinician clinician2 = TestClinician.withMandatory().clinic(TestClinic.withMandatory().name(unique("securityTest")));
-        new ClinicianDataService(webDriver).createWithClinc(clinician2);
+        new ClinicianDataService(webDriver).createWithClinic(clinician2);
 
         TestPatient patientUnderClinican1 = TestPatient.withMandatory();
         new PatientDataService(webDriver).register(patientUnderClinican1, clinician1);

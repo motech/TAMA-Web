@@ -42,7 +42,7 @@ public class ChangePasswordTest extends BaseTest {
         TestClinic testClinic = TestClinic.withMandatory().name("clinicForPasswordChangeTest");
         String clinicianName = unique("clinicianForPasswordChangeTest");
         TestClinician testClinician = TestClinician.withMandatory().name(clinicianName).userName(clinicianName).password("clinicianPassword").clinic(testClinic);
-        new ClinicianDataService(webDriver).createWithClinc(testClinician);
+        new ClinicianDataService(webDriver).createWithClinic(testClinician);
 
         ChangePasswordPage changePasswordPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinicianName, testClinician.password()).goToChangePasswordPage();

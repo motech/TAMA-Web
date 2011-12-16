@@ -26,7 +26,7 @@ public class SearchPatientByIdTest extends BaseTest {
     public void setUp() {
         super.setUp();
         clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
     }
 
     @Test

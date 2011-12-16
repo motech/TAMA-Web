@@ -28,7 +28,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
     @Test
     public void shouldTestConversationForActivatedPatientAndWrongPasscode() throws IOException {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         patient.patientPreferences().passcode("5678");

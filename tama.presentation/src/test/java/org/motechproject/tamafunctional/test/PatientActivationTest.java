@@ -16,7 +16,7 @@ public class PatientActivationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientActivation() {
         TestClinician clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
@@ -35,7 +35,7 @@ public class PatientActivationTest extends BaseTest {
     @Test
     public void testPatientDeactivation() {
         TestClinician clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).

@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctional.testdataservice;
 
 import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.page.ShowClinicianPage;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.openqa.selenium.WebDriver;
 
@@ -9,17 +10,25 @@ public class ClinicianDataService extends EntityDataService {
         super(webDriver);
     }
 
-    public void create(TestClinician clinician) {
-        page(LoginPage.class)
-                .loginWithCorrectAdminUserNamePassword()
-                .goToClinicianRegistrationPage()
-                .registerClinician(clinician)
-                .logout();
-        logInfo("{Created}{Clinician}{UserName=%s}", clinician.userName());
+    public void createWithClinic(TestClinician clinician) {
+        createWithClinicAndDontLogout(clinician).logout();
     }
 
-    public void createWithClinc(TestClinician clinician) {
+    public void create(TestClinician clinician) {
+        createWithoutLogout(clinician).logout();
+    }
+
+    public ShowClinicianPage createWithClinicAndDontLogout(TestClinician clinician) {
         new ClinicDataService(webDriver).create(clinician.clinic());
-        create(clinician);
+        return createWithoutLogout(clinician);
+    }
+
+    private ShowClinicianPage createWithoutLogout(TestClinician clinician) {
+        ShowClinicianPage showClinicianPage = page(LoginPage.class)
+                .loginWithCorrectAdminUserNamePassword()
+                .goToClinicianRegistrationPage()
+                .registerClinician(clinician);
+        logInfo("{Created}{Clinician}{UserName=%s}", clinician.userName());
+        return showClinicianPage;
     }
 }

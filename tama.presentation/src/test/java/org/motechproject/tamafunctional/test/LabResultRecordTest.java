@@ -98,7 +98,7 @@ public class LabResultRecordTest extends BaseTest {
         clinician.clinic(clinic);
 
         ClinicianDataService clinicianDataService = new ClinicianDataService(webDriver);
-        clinicianDataService.createWithClinc(clinician);
+        clinicianDataService.createWithClinic(clinician);
     }
 
 

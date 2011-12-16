@@ -16,7 +16,7 @@ public class PatientARTRegimenTest extends BaseTest {
     @Test
     public void testCreateARTRegimenForPatientOnDailyCall() {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
@@ -33,7 +33,7 @@ public class PatientARTRegimenTest extends BaseTest {
     @Test
     public void testCreateARTRegimenForPatientOnWeeklyCall() {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         patient.patientPreferences().callPreference(TestPatientPreferences.CallPreference.WEEKLY_CALL);
@@ -53,7 +53,7 @@ public class PatientARTRegimenTest extends BaseTest {
     @Test
     public void shouldChangeRegimenForPatientOnDailyCall() {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);

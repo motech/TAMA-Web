@@ -18,7 +18,7 @@ public class PatientRegistrationTest extends BaseTest {
     @Test
     public void testSuccessfulPatientRegistration() {
         TestClinician clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         TestPatient patient = TestPatient.withMandatory();
 

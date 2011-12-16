@@ -48,7 +48,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
     private void setupDataForSymptomReporting() {
         clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
         patient = TestPatient.withMandatory();
         new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
     }

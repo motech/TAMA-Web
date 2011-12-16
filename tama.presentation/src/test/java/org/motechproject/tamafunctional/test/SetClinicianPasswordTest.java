@@ -3,8 +3,6 @@ package org.motechproject.tamafunctional.test;
 
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
-import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.SetClinicianPasswordPage;
 import org.motechproject.tamafunctional.page.SetPasswordSuccessPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
@@ -20,10 +18,7 @@ public class SetClinicianPasswordTest extends BaseTest {
         TestClinic testClinic = TestClinic.withMandatory().name("clinicForClinicianPasswordChangeTest");
         String clinicianName = unique("clinicianForClinicianPasswordChangeTest");
         TestClinician testClinician = TestClinician.withMandatory().name(clinicianName).userName(clinicianName).password("clinicianOldPassword").clinic(testClinic);
-        new ClinicianDataService(webDriver).createWithClinc(testClinician);
-
-        SetClinicianPasswordPage clinicianSetPasswordPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithCorrectAdminUserNamePassword().goToListCliniciansPage().goToShowClinicianPage().goToSetClinicianPasswordPage();
+        SetClinicianPasswordPage clinicianSetPasswordPage = new ClinicianDataService(webDriver).createWithClinicAndDontLogout(testClinician).goToSetClinicianPasswordPage();
 
         SetPasswordSuccessPage successPage = clinicianSetPasswordPage.submitWithValidInput("clinicianNewPassword", "clinicianNewPassword");
         assertNotNull(successPage.getSuccessMessageElement());

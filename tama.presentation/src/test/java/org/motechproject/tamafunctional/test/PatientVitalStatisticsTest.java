@@ -15,7 +15,7 @@ public class PatientVitalStatisticsTest extends BaseTest {
     @Test
     public void enterVitalStatisticsForActivePatient() {
         TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinc(clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
     
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
