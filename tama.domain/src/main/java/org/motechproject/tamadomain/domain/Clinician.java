@@ -5,6 +5,7 @@ import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamacommon.TAMAMessages;
 import org.motechproject.tamacommon.domain.CouchEntity;
+import org.motechproject.tamacommon.domain.TAMAUser;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;

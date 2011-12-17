@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config/>
+    <context:spring-configured/>
+    <context:component-scan base-package="org.motechproject.tama.refdata"/>
+    <import resource="classpath:applicationContext-TAMACommon.xml"/>
+    <bean id="seedLoader" class="org.motechproject.tama.refdata.SeedLoader">
+        <constructor-arg>
+            <list>
+                <ref bean="mealAdviceTypeSeed"/>
+                <ref bean="genderSeed"/>
+                <ref bean="modeOfTransmissionSeed"/>
+                <ref bean="HIVTestReasonSeed"/>
+                <ref bean="IVRLanguageSeed"/>
+                <ref bean="dosageTypeSeed"/>
+                <ref bean="companySeed"/>
+                <ref bean="drugSeed"/>
+                <ref bean="regimenSeed"/>
+                <ref bean="citySeed"/>
+                <ref bean="administratorSeed"/>
+                <ref bean="labTestSeed"/>
+            </list>
+        </constructor-arg>
+    </bean>
+</beans>

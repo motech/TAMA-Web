@@ -6,8 +6,6 @@ import org.mockito.Mock;
 import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllIVRCallAudits;
 import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamacallflow.platform.service.AuthenticationService;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;

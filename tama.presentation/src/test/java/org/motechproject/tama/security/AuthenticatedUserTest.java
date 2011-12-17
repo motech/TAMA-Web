@@ -2,8 +2,8 @@ package org.motechproject.tama.security;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tamacommon.domain.TAMAUser;
 import org.motechproject.tamadomain.domain.Administrator;
-import org.motechproject.tamadomain.domain.TAMAUser;
 
 import java.util.Collections;
 

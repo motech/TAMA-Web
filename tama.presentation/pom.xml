@@ -792,7 +792,7 @@
                             <target>
                                 <echo message="Seed data loading: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <java classname="org.motechproject.tamatools.tools.seed.SetupSeedData">
+                                <java classname="org.motechproject.tama.refdata.SetupSeedData">
                                     <classpath>
                                         <pathelement path="${compile_classpath}"/>
                                     </classpath>

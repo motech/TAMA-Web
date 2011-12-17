@@ -18,33 +18,33 @@ import java.util.ArrayList;
 public abstract class SpringIntegrationTest {
     @Qualifier("tamaDbConnector")
     @Autowired
-	protected CouchDbConnector tamaDbConnector;
+    protected CouchDbConnector tamaDbConnector;
 
-	protected ArrayList<BulkDeleteDocument> toDelete;
+    protected ArrayList<BulkDeleteDocument> toDelete;
 
-	@Before
-	public void before() {
-		toDelete = new ArrayList<BulkDeleteDocument>();
-	}
+    @Before
+    public void before() {
+        toDelete = new ArrayList<BulkDeleteDocument>();
+    }
 
-	@After
-	public void after() {
+    @After
+    public void after() {
         deleteAll();
-	}
+    }
 
     protected void deleteAll() {
         tamaDbConnector.executeBulk(toDelete);
         toDelete.clear();
     }
 
-    protected void markForDeletion(Object ... documents) {
+    protected void markForDeletion(Object... documents) {
         for (Object document : documents)
-		    markForDeletion(document);
-	}
+            markForDeletion(document);
+    }
 
-	protected void markForDeletion(Object document) {
-		toDelete.add(BulkDeleteDocument.of(document));
-	}
+    protected void markForDeletion(Object document) {
+        toDelete.add(BulkDeleteDocument.of(document));
+    }
 
     protected String unique(String name) {
         return name + DateUtil.now().toInstant().getMillis();

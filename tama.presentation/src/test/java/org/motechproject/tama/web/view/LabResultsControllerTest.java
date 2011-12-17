@@ -12,7 +12,6 @@ import org.motechproject.tamadomain.domain.LabTest;
 import org.motechproject.tamadomain.domain.LabResults;
 import org.motechproject.tamadomain.repository.AllLabResults;
 import org.motechproject.tamadomain.repository.AllLabTests;
-import org.motechproject.tamadomain.repository.AllLabResults;
 import org.motechproject.tama.web.LabResultsController;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;

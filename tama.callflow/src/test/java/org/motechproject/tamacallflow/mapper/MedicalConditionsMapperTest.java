@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.motechproject.tamadomain.builder.*;
 import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
-import org.motechproject.tamacallflow.mapper.MedicalConditionsMapper;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;

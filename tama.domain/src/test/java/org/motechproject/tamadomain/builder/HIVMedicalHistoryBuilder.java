@@ -1,6 +1,5 @@
 package org.motechproject.tamadomain.builder;
 
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.domain.ModeOfTransmission;
 import org.motechproject.tamadomain.domain.HIVMedicalHistory;
 import org.motechproject.tamadomain.domain.HIVTestReason;

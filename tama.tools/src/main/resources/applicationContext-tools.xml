@@ -21,7 +21,7 @@
     </context:component-scan>
     <import resource="classpath:applicationContext-TAMACallFlow.xml"/>
 
-    <bean id="seedLoader" class="org.motechproject.tamatools.tools.seed.SeedLoader">
+    <bean id="seedLoader" class="org.motechproject.tama.refdata.SeedLoader">
         <constructor-arg>
             <list>
                 <ref bean="mealAdviceTypeSeed"/>
@@ -40,7 +40,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="audioSeedLoader" class="org.motechproject.tamatools.tools.seed.SeedLoader">
+    <bean id="audioSeedLoader" class="org.motechproject.tama.refdata.SeedLoader">
         <constructor-arg>
             <list>
                 <ref bean="audioSeed"/>

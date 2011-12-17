@@ -9,16 +9,16 @@ import java.util.List;
 
 public abstract class AbstractCouchRepository<T> extends CouchDbRepositorySupport<T> {
 
-	public AbstractCouchRepository(Class<T> clazz, CouchDbConnector db) {
-		super(clazz, db);
-		initStandardDesignDocument();
-	}
+    public AbstractCouchRepository(Class<T> clazz, CouchDbConnector db) {
+        super(clazz, db);
+        initStandardDesignDocument();
+    }
 
     @GenerateView
-	@Override
-	public List<T> getAll() {
-		return super.getAll();
-	}
+    @Override
+    public List<T> getAll() {
+        return super.getAll();
+    }
 
     protected int rowCount(ViewResult viewResult) {
         if (viewResult.getRows().size() == 0) return 0;

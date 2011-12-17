@@ -1,6 +1,6 @@
 package org.motechproject.tama.security.profiles;
 
-import org.motechproject.tamadomain.domain.TAMAUser;
+import org.motechproject.tamacommon.domain.TAMAUser;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
 import org.springframework.security.core.GrantedAuthority;
