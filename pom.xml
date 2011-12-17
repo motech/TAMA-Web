@@ -14,7 +14,7 @@
         <module>tama.callflow</module>
         <module>tama.healthtips</module>
         <module>tama.tools</module>
-        <module>tama.presentation</module>
+        <module>tama.web</module>
     </modules>
     <name>tama-all</name>
     <properties>
