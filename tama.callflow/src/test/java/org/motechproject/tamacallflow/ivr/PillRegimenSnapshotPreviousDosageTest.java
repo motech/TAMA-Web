@@ -10,7 +10,7 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
+import org.motechproject.tamacallflow.builder.PillRegimenResponseBuilder;
 
 import java.util.ArrayList;
 
@@ -38,7 +38,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsYesterday_AndCurrentDoseIsInTheMorning() {
         ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        LocalDate startDate = new LocalDate(2010, 1,1);
+        LocalDate startDate = new LocalDate(2010, 1, 1);
         dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("previousDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
@@ -56,7 +56,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsToday_AndCurrentDoseIsInTheEvening() {
         ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        LocalDate startDate = new LocalDate(2010, 1,1);
+        LocalDate startDate = new LocalDate(2010, 1, 1);
         dosages.add(new DosageResponse(currentDosageId, new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
@@ -75,7 +75,7 @@ public class PillRegimenSnapshotPreviousDosageTest {
     public void shouldGetPreviousDosageTimeWhenPreviousDosageIsYesterday_AndCurrentDoseIsInTheMorningForDailyDosage() {
         ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        LocalDate startDate = new LocalDate(2010, 1,1);
+        LocalDate startDate = new LocalDate(2010, 1, 1);
         dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);

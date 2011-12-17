@@ -2,14 +2,14 @@ package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.WeeklyAdherenceLog;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
+import org.motechproject.tamacallflow.domain.WeeklyAdherenceLog;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
-import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tamacallflow.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,7 +47,7 @@ public class FourDayRecallAdherenceService {
         boolean isLastDayOfSuspensionPeriod;
 
         LocalDate startDateForAnyWeek = fourDayRecallService.getStartDateForAnyWeek(patientId, iteratingDate.toLocalDate());
-        if(suspensionStartDateFallsInRetryIntervalAndAdherenceHasNotBeenRecordedForTheWeek(suspendedAdherenceData, iteratingDate, startDateForAnyWeek, treatmentAdviceDocId, patientLastRecallDate)){
+        if (suspensionStartDateFallsInRetryIntervalAndAdherenceHasNotBeenRecordedForTheWeek(suspendedAdherenceData, iteratingDate, startDateForAnyWeek, treatmentAdviceDocId, patientLastRecallDate)) {
             createWeeklyAdherenceLogForTheWeek(suspendedAdherenceData, startDateForAnyWeek, treatmentAdviceDocId);
         }
         while (iteratingDateIsOnOrBeforeReactivationDate(toDate, iteratingDate)) {
@@ -56,7 +56,7 @@ public class FourDayRecallAdherenceService {
                 isFirstDayOfSuspensionPeriod = isFirstDayOfSuspensionPeriod(fromDate, iteratingDate);
                 isLastDayOfSuspensionPeriod = isLastDayOfSuspensionPeriod(toDate, iteratingDate);
                 if ((isFirstDayOfSuspensionPeriod || isLastDayOfSuspensionPeriod)
-                     && suspendedPatient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
+                        && suspendedPatient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
                     if (patientsBestCallTimeFallsWithinSuspensionPeriod(fromDate, toDate, suspendedPatient, isFirstDayOfSuspensionPeriod, isLastDayOfSuspensionPeriod)) {
                         createWeeklyAdherenceLogForTheWeek(suspendedAdherenceData, startDateForAnyWeek, treatmentAdviceDocId);
                     }
@@ -76,13 +76,13 @@ public class FourDayRecallAdherenceService {
 
     private boolean suspensionStartDateFallsInRetryIntervalAndAdherenceHasNotBeenRecordedForTheWeek(SuspendedAdherenceData suspendedAdherenceData, DateTime iteratingDate, LocalDate startDateForAnyWeek, String treatmentAdviceDocId, LocalDate patientLastRecallDate) {
         return isIteratingDateInRetryIntervalOfPatientLastRecallDate(iteratingDate, patientLastRecallDate) && !fourDayRecallService.isAdherenceCapturedForAnyWeek(suspendedAdherenceData.patientId(),
-                                                                     treatmentAdviceDocId, startDateForAnyWeek);
+                treatmentAdviceDocId, startDateForAnyWeek);
     }
 
     private boolean isIteratingDateInRetryIntervalOfPatientLastRecallDate(DateTime iteratingDate, LocalDate patientLastRecallDate) {
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
-        for(int i = 1; i <= daysToRetry; i++){
-            if((patientLastRecallDate.plusDays(i).compareTo(iteratingDate.toLocalDate()) == 0)){
+        for (int i = 1; i <= daysToRetry; i++) {
+            if ((patientLastRecallDate.plusDays(i).compareTo(iteratingDate.toLocalDate()) == 0)) {
                 return true;
             }
         }
@@ -100,8 +100,8 @@ public class FourDayRecallAdherenceService {
     private boolean patientsBestCallTimeFallsWithinSuspensionPeriod(DateTime fromDate, DateTime toDate, Patient suspendedPatient, boolean isFirstDayOfSuspensionPeriod, boolean isLastDayOfSuspensionPeriod) {
         return ((patientsBestCallTimeBeforeReactivationTime(toDate, suspendedPatient) && isLastDayOfSuspensionPeriod && !isFirstDayOfSuspensionPeriod)
                 || (patientsBestCallTimeAfterSuspensionTime(fromDate, suspendedPatient) && isFirstDayOfSuspensionPeriod && !isLastDayOfSuspensionPeriod)
-                || (patientsBestCallTimeBeforeReactivationTime(toDate, suspendedPatient) && isLastDayOfSuspensionPeriod 
-                    && patientsBestCallTimeAfterSuspensionTime(fromDate, suspendedPatient) && isFirstDayOfSuspensionPeriod));
+                || (patientsBestCallTimeBeforeReactivationTime(toDate, suspendedPatient) && isLastDayOfSuspensionPeriod
+                && patientsBestCallTimeAfterSuspensionTime(fromDate, suspendedPatient) && isFirstDayOfSuspensionPeriod));
     }
 
     private boolean patientsBestCallTimeBeforeReactivationTime(DateTime toDate, Patient suspendedPatient) {

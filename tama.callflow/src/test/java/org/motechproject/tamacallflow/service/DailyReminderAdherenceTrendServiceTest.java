@@ -8,10 +8,10 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.PatientAlertType;
 import org.motechproject.tamacallflow.util.EmptyMapMatcher;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.PatientAlert;
-import org.motechproject.tamadomain.domain.PatientAlertType;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -50,7 +50,7 @@ public class DailyReminderAdherenceTrendServiceTest {
     }
 
     @Test
-    public void shouldRaiseAlertWhenAdherenceIsFalling(){
+    public void shouldRaiseAlertWhenAdherenceIsFalling() {
         DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
         final String patientId = "patientId";
         DateTime now = DateUtil.now();
@@ -61,7 +61,7 @@ public class DailyReminderAdherenceTrendServiceTest {
     }
 
     @Test
-    public void shouldNotRaiseAlertWhenAdherenceIsNotFalling(){
+    public void shouldNotRaiseAlertWhenAdherenceIsNotFalling() {
         DailyReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService) {
             @Override
             public boolean isAdherenceFallingAsOf(String patientId, DateTime asOf) {
@@ -83,7 +83,7 @@ public class DailyReminderAdherenceTrendServiceTest {
         dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
 
         Map<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.ADHERENCE, adherencePercentage+"");
+        data.put(PatientAlert.ADHERENCE, adherencePercentage + "");
         verify(patientAlertService).createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, "Adherence in Red", "Adherence percentage is 69.90%", PatientAlertType.AdherenceInRed, data);
     }
 }

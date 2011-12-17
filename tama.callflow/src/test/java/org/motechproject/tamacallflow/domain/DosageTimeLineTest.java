@@ -69,7 +69,7 @@ public class DosageTimeLineTest {
     }
 
     @Test
-    public void shouldReturnOnlyTheDosageThatFallsInInterimPeriod(){
+    public void shouldReturnOnlyTheDosageThatFallsInInterimPeriod() {
         LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
         DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
         DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
@@ -85,7 +85,7 @@ public class DosageTimeLineTest {
     }
 
     @Test
-    public void shouldReturnTheUpcomingDosagesWithOnlyOneDosePerDay(){
+    public void shouldReturnTheUpcomingDosagesWithOnlyOneDosePerDay() {
         LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
         DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
 
@@ -121,7 +121,7 @@ public class DosageTimeLineTest {
     }
 
     public void assertDosageResponse(DosageResponse expectedDosageResponse, LocalDate expectedDosageDate, Dose actualResponse) {
-        assertEquals("Expected " + expectedDosageResponse.getDosageId() + " but was " + actualResponse.getDosageId(),expectedDosageResponse, actualResponse.getDosage());
+        assertEquals("Expected " + expectedDosageResponse.getDosageId() + " but was " + actualResponse.getDosageId(), expectedDosageResponse, actualResponse.getDosage());
         assertEquals(expectedDosageDate, actualResponse.getDate());
     }
 }

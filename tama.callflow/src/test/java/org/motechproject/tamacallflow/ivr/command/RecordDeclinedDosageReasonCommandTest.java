@@ -5,11 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tamacallflow.builder.PillRegimenResponseBuilder;
+import org.motechproject.tamacallflow.domain.DosageAdherenceLog;
+import org.motechproject.tamacallflow.domain.DosageStatus;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
-import org.motechproject.tamadomain.domain.DosageAdherenceLog;
-import org.motechproject.tamadomain.domain.DosageStatus;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 
 import static org.mockito.Matchers.any;

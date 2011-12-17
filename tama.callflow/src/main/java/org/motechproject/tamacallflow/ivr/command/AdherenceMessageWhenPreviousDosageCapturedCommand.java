@@ -4,9 +4,9 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tamacallflow.ivr.PillRegimenSnapshot;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

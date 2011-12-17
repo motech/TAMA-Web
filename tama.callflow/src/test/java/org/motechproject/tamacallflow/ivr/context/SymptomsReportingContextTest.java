@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tamacallflow.ivr.context.SymptomsReportingContext;
 import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;

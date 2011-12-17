@@ -19,9 +19,8 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <import resource="classpath:applicationPlatformServerAPI.xml"/>
-    <context:component-scan base-package="org.motechproject.tamacommon*"/>
-    <context:component-scan base-package="org.motechproject.tamadomain*"/>
-    <context:component-scan base-package="org.motechproject.tamacallflow*"/>
+    <import resource="classpath:applicationPatientContext.xml"/>
+    <context:component-scan base-package="org.motechproject.tamacallflow"/>
     <context:component-scan base-package="org.motechproject.ivr.kookoo"/>
     <context:component-scan base-package="org.motechproject.eventtracking"/>
 
@@ -34,5 +33,4 @@
     <import resource="classpath:applicationContextAlert.xml"/>
     <import resource="classpath:applicationPlatformScheduler.xml"/>
     <import resource="classpath:applicationContextSymptomReporting.xml"/>
-    <import resource="classpath:applicationCommonContext.xml"/>
 </beans>

@@ -1,7 +1,7 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tamadomain.domain.PatientAlert;
-import org.motechproject.tamadomain.domain.SymptomsAlertStatus;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.SymptomsAlertStatus;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

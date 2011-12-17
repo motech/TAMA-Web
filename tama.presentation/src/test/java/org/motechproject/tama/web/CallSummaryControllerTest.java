@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.CallLog;
+import org.motechproject.tamacallflow.domain.CallLog;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tamacallflow.service.CallLogService;

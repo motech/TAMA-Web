@@ -7,11 +7,11 @@ import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.kookoo.extensions.CallFlowController;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacommon.ControllerURLs;
-import org.motechproject.tamacommon.TamaException;
-import org.motechproject.tamadomain.domain.CallPreference;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.common.ControllerURLs;
+import org.motechproject.tama.common.TamaException;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.CallState;
 import org.motechproject.tamacallflow.ivr.PillRegimenSnapshot;
 import org.motechproject.tamacallflow.ivr.context.SymptomsReportingContext;
@@ -129,8 +129,7 @@ public class TAMACallFlowController implements CallFlowController {
 
         if (isPatientOnDailyPillReminder && !tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER)) {
             return TAMATreeRegistry.CURRENT_DOSAGE_REMINDER;
-        }
-        else {
+        } else {
             return TAMATreeRegistry.FOUR_DAY_RECALL;
         }
     }

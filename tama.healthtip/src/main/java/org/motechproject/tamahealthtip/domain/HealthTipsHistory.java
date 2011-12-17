@@ -1,6 +1,7 @@
 package org.motechproject.tamahealthtip.domain;
 
 import org.joda.time.DateTime;
+import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.validation.constraints.NotNull;
 

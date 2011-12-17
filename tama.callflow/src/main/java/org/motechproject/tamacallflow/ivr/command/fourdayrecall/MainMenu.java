@@ -2,10 +2,10 @@ package org.motechproject.tamacallflow.ivr.command.fourdayrecall;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
-import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

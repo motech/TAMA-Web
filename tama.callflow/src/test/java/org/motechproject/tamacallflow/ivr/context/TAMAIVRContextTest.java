@@ -6,13 +6,13 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.tamacallflow.ivr.CallState;
-import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -27,7 +27,7 @@ public class TAMAIVRContextTest {
     private KooKooIVRContext kooKooIVRContext;
     @Mock
     private HttpSession httpSession;
-    
+
     public TAMAIVRContext tamaivrContext;
 
     @Before
@@ -63,9 +63,9 @@ public class TAMAIVRContextTest {
         verify(httpSession).setAttribute("PillRegimen", null);
         verify(httpSession).setAttribute("call_state", CallState.AUTHENTICATED.toString());
     }
-    
+
     @Test
-    public void shouldAddLastCompletedTreeToListOfCompletedTrees(){
+    public void shouldAddLastCompletedTreeToListOfCompletedTrees() {
         String lastTreeName = "lastTreeName";
         when(kooKooIVRContext.cookies()).thenReturn(cookies);
 

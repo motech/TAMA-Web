@@ -38,14 +38,14 @@ public class PlayAdherenceTrendFeedbackCommandTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         mockStatic(DateUtil.class);
-         dateTime = new DateTime();
+        dateTime = new DateTime();
         setUpDate();
         playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
         context = new OutboxContextForTest();
 
     }
 
-    private void setUpDate(){
+    private void setUpDate() {
         when(DateUtil.now()).thenReturn(dateTime);
     }
 

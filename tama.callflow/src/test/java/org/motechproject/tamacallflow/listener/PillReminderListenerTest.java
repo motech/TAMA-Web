@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tamacallflow.ivr.call.PillReminderCall;
-import org.motechproject.tamacallflow.listener.PillReminderListener;
 
 import java.util.HashMap;
 import java.util.Map;

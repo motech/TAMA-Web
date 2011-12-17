@@ -10,7 +10,7 @@ import static junit.framework.Assert.assertEquals;
 public class DosageTest {
 
     @Test
-    public void totalDosesInAWeek(){
+    public void totalDosesInAWeek() {
         DateTime now = new DateTime(2011, 10, 3, 10, 0, 0, 0);
         final DateTime dosageStartTime = now.minusWeeks(1);
         final DateTime dosageEndTime = now.plusDays(1);

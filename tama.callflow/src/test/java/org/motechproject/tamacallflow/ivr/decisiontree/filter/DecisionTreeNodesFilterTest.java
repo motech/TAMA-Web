@@ -7,13 +7,12 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tamacallflow.ivr.decisiontree.filter.DecisionTreeNodesFilter;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.equalTo;
 
 public class DecisionTreeNodesFilterTest {

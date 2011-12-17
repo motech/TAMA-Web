@@ -2,9 +2,9 @@ package org.motechproject.tamacallflow.ivr.command;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.Status;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacallflow.service.PatientService;

@@ -10,9 +10,13 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.PatientAlertType;
+import org.motechproject.tamacallflow.domain.PatientAlerts;
+import org.motechproject.tamacallflow.domain.SymptomsAlertStatus;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,8 +31,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 @Component
 public class PatientAlertService {
-    
-    public final static String  RED_ALERT_MESSAGE_NO_RESPONSE = "No response was recorded";
+
+    public final static String RED_ALERT_MESSAGE_NO_RESPONSE = "No response was recorded";
 
     private AllPatients allPatients;
     private AlertService alertService;

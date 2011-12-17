@@ -1,11 +1,11 @@
 package org.motechproject.tamacallflow.ivr.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tamacallflow.domain.DeclinedDosageLog;
+import org.motechproject.tamacallflow.domain.DosageAdherenceLog;
+import org.motechproject.tamacallflow.domain.DosageNotTakenReason;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
-import org.motechproject.tamadomain.domain.DeclinedDosageLog;
-import org.motechproject.tamadomain.domain.DosageAdherenceLog;
-import org.motechproject.tamadomain.domain.DosageNotTakenReason;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

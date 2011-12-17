@@ -7,13 +7,13 @@ import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnglishTimeConstructBuilder extends SlotBasedTimeConstructBuilder{
+public class EnglishTimeConstructBuilder extends SlotBasedTimeConstructBuilder {
 
     static final LocalTime AM_START = new LocalTime(0, 0, 0);
     static final LocalTime PM_START = new LocalTime(12, 0, 0);
     static final LocalTime PM_END = new LocalTime(23, 59, 59, 999);
 
-    public EnglishTimeConstructBuilder(){
+    public EnglishTimeConstructBuilder() {
         addSlot(AM_START, PM_START, TamaIVRMessage.TIME_OF_DAY_AM);
         addSlot(PM_START, PM_END, TamaIVRMessage.TIME_OF_DAY_PM);
     }

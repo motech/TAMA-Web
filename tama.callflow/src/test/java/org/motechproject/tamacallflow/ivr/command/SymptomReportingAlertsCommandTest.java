@@ -9,10 +9,10 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.PatientAlertType;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.PatientAlert;
-import org.motechproject.tamadomain.domain.PatientAlertType;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 
@@ -34,8 +34,8 @@ public class SymptomReportingAlertsCommandTest {
     @Mock
     private Node node;
     private SymptomReportingAlertsCommand command;
-    private ArgumentMatcher<Map<String,String>> naReportedTypeDataMatcher;
-    private ArgumentMatcher<Map<String,String>> notReportedTypeDataMatcher;
+    private ArgumentMatcher<Map<String, String>> naReportedTypeDataMatcher;
+    private ArgumentMatcher<Map<String, String>> notReportedTypeDataMatcher;
 
     @Before
     public void setup() {

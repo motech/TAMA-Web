@@ -2,21 +2,28 @@ package org.motechproject.tamacallflow.platform.service;
 
 import org.joda.time.*;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.TAMAMessages;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TimeOfDay;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.PatientAlertType;
+import org.motechproject.tamacallflow.domain.WeeklyAdherenceLog;
+import org.motechproject.tamacallflow.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacallflow.service.PatientAlertService;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamacommon.TAMAMessages;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.domain.TimeOfDay;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
-import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 @Service
 public class FourDayRecallService {
@@ -74,8 +81,7 @@ public class FourDayRecallService {
 
         if (today.getDayOfWeek() != preferredDayOfWeek.getValue()) {
             return today.minusDays(getRetryDaysCount(preferredDayOfWeek, today));
-        }
-        else return today;
+        } else return today;
     }
 
     private int getRetryDaysCount(DayOfWeek preferredDayOfWeek, LocalDate date) {
@@ -110,11 +116,11 @@ public class FourDayRecallService {
         LocalDate startDayOfWeek = getStartDateForAnyWeek(patientDocId, week);
         LocalDate iteratingDayOfWeek = startDayOfWeek;
         DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
-        while (true){
-            if(iteratingDayOfWeek.getDayOfWeek() == preferredDayOfWeek.getValue()){
-                if(isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(startDayOfWeek, iteratingDayOfWeek)){
+        while (true) {
+            if (iteratingDayOfWeek.getDayOfWeek() == preferredDayOfWeek.getValue()) {
+                if (isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(startDayOfWeek, iteratingDayOfWeek)) {
                     return iteratingDayOfWeek;
-                } else{
+                } else {
                     return iteratingDayOfWeek.plusWeeks(1);
                 }
             }
@@ -131,7 +137,7 @@ public class FourDayRecallService {
     }
 
     protected int adherencePercentageFor(WeeklyAdherenceLog weeklyAdherenceLog) {
-        if(weeklyAdherenceLog == null) return 0;
+        if (weeklyAdherenceLog == null) return 0;
         return adherencePercentageFor(weeklyAdherenceLog.getNumberOfDaysMissed());
     }
 
@@ -165,15 +171,15 @@ public class FourDayRecallService {
     }
 
     public void raiseAdherenceFallingAlert(String patientId) {
-        if(isCurrentWeekTheFirstWeekOfTreatmentAdvice(patientId)) return;
+        if (isCurrentWeekTheFirstWeekOfTreatmentAdvice(patientId)) return;
 
         int adherencePercentageForCurrentWeek = getAdherencePercentageForCurrentWeek(patientId);
         if (adherencePercentageForCurrentWeek >= getAdherencePercentageForPreviousWeek(patientId)) return;
 
         final Map<String, String> data = new HashMap<String, String>();
         final int previousWeekPercentage = getAdherencePercentageForPreviousWeek(patientId);
-        final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / (double)previousWeekPercentage) * 100.0;
-        final String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fall, (double)previousWeekPercentage, (double)adherencePercentageForCurrentWeek);
+        final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / (double) previousWeekPercentage) * 100.0;
+        final String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fall, (double) previousWeekPercentage, (double) adherencePercentageForCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, DailyReminderAdherenceTrendService.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 
@@ -203,11 +209,11 @@ public class FourDayRecallService {
 
     public LocalDate findFirstFourDayRecallDateForTreatmentAdvice(String patientId, LocalDate treatmentAdviceStartDate) {
         LocalDate fourDayRecallDate = findFourDayRecallDateForAnyWeek(patientId, treatmentAdviceStartDate);
-        while (true){
-            if(fourDayRecallDate.isBefore(treatmentAdviceStartDate)){
+        while (true) {
+            if (fourDayRecallDate.isBefore(treatmentAdviceStartDate)) {
                 fourDayRecallDate = fourDayRecallDate.plusWeeks(1);
             } else {
-                if (isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(treatmentAdviceStartDate, fourDayRecallDate)){
+                if (isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(treatmentAdviceStartDate, fourDayRecallDate)) {
                     return fourDayRecallDate;
                 } else {
                     return fourDayRecallDate.plusWeeks(1);
@@ -222,12 +228,12 @@ public class FourDayRecallService {
 
     public void raiseAdherenceInRedAlert(String patientId) {
         WeeklyAdherenceLog adherenceLog = getAdherenceLog(patientId, 0);
-        String description =PatientAlertService.RED_ALERT_MESSAGE_NO_RESPONSE;
+        String description = PatientAlertService.RED_ALERT_MESSAGE_NO_RESPONSE;
         double adherencePercentage = adherencePercentageFor(adherenceLog);
 
         if (adherenceLog != null) {
             double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
-            if(adherencePercentage >= acceptableAdherencePercentage) return;
+            if (adherencePercentage >= acceptableAdherencePercentage) return;
             description = String.format(TAMAMessages.ADHERENCE_PERCENTAGE_IS, adherencePercentage);
         }
         Map<String, String> data = new HashMap<String, String>();
@@ -236,16 +242,16 @@ public class FourDayRecallService {
     }
 
     public boolean hasAdherenceInRedAlertBeenRaisedForCurrentWeek(String patientId) {
-       DateTime startDateForCurrentWeek = DateUtil.newDateTime(getMostRecentBestCallDay(patientId), 0, 0, 0);
-       return patientAlertService.getAdherenceInRedAlerts(patientId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
+        DateTime startDateForCurrentWeek = DateUtil.newDateTime(getMostRecentBestCallDay(patientId), 0, 0, 0);
+        return patientAlertService.getAdherenceInRedAlerts(patientId, startDateForCurrentWeek, DateUtil.now()).size() > 0;
     }
 
     public DateTime getFirstWeeksFourDayRecallRetryEndDate(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        LocalDate weeklyAdherenceTrakingStratDate=getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate weeklyAdherenceTrakingStratDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
         LocalDate firstRecallDate = weeklyAdherenceTrakingStratDate.plusDays(DAYS_TO_RECALL);
         DayOfWeek preferredDayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
-        while (preferredDayOfWeeklyCall.getValue() != firstRecallDate.getDayOfWeek()){
+        while (preferredDayOfWeeklyCall.getValue() != firstRecallDate.getDayOfWeek()) {
             firstRecallDate = firstRecallDate.plusDays(1);
         }
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));

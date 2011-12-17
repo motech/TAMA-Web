@@ -7,14 +7,14 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.model.CallDetailRecord;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tamacallflow.domain.CallLog;
 import org.motechproject.tamacallflow.mapper.CallLogMapper;
-import org.motechproject.tamadomain.builder.ClinicBuilder;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.CallLog;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllCallLogs;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tamacallflow.repository.AllCallLogs;
 
 import java.util.ArrayList;
 
@@ -58,7 +58,9 @@ public class CallLogServiceTest {
         String callId = "callId";
 
         when(allPatients.get(patientDocId)).thenReturn(patient);
-        when(allPatients.findAllByMobileNumber("phoneNumber")).thenReturn(new ArrayList<Patient>() {{ add(patient); }});
+        when(allPatients.findAllByMobileNumber("phoneNumber")).thenReturn(new ArrayList<Patient>() {{
+            add(patient);
+        }});
         when(kookooCallDetailRecordsService.get(callId)).thenReturn(kookooCallDetailRecord);
         when(callLogMapper.toCallLog(patientDocId, kookooCallDetailRecord)).thenReturn(new CallLog());
         callLoggingService.log(callId, patientDocId);
@@ -78,7 +80,9 @@ public class CallLogServiceTest {
         String callId = "callId";
         when(kookooCallDetailRecordsService.get(callId)).thenReturn(kookooCallDetailRecord);
         when(allPatients.get(patient.getId())).thenReturn(patient);
-        when(allPatients.findAllByMobileNumber("phoneNumber")).thenReturn(new ArrayList<Patient>() {{ add(patient); }});
+        when(allPatients.findAllByMobileNumber("phoneNumber")).thenReturn(new ArrayList<Patient>() {{
+            add(patient);
+        }});
         when(callLogMapper.toCallLog(patientDocumentId, kookooCallDetailRecord)).thenReturn(new CallLog());
         callLoggingService.log(callId, patientDocumentId);
 

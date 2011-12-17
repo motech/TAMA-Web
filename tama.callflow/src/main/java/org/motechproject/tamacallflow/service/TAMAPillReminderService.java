@@ -20,7 +20,7 @@ public class TAMAPillReminderService {
         return new PillRegimen(pillReminderService.getPillRegimen(patientId));
     }
 
-    public void setLastCapturedDate(String pillRegimenId, String dosageId, LocalDate lastCapturedDate){
+    public void setLastCapturedDate(String pillRegimenId, String dosageId, LocalDate lastCapturedDate) {
         pillReminderService.dosageStatusKnown(pillRegimenId, dosageId, lastCapturedDate);
     }
 }

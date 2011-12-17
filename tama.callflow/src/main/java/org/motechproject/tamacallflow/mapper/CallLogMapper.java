@@ -2,7 +2,7 @@ package org.motechproject.tamacallflow.mapper;
 
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.model.CallDetailRecord;
-import org.motechproject.tamadomain.domain.CallLog;
+import org.motechproject.tamacallflow.domain.CallLog;
 import org.motechproject.util.DateUtil;
 import org.springframework.stereotype.Component;
 

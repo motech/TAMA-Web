@@ -6,25 +6,22 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.Status;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tamacallflow.ivr.call.IvrCall;
-import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallEventPayloadBuilder;
+import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.util.DateUtil;
 
 import java.util.Map;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -133,7 +130,7 @@ public class FourDayRecallListenerTest {
         FourDayRecallEventPayloadBuilder dataBuilder = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
                 .withPatientDocId(PATIENT_ID);
-        if(isLastRetryFlagSet) dataBuilder.withLastRetryDayFlagSet();
+        if (isLastRetryFlagSet) dataBuilder.withLastRetryDayFlagSet();
         return new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, dataBuilder.payload());
     }
 

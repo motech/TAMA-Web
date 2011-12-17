@@ -1,10 +1,10 @@
 package org.motechproject.tamacallflow.ivr.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamacallflow.ivr.PillRegimenSnapshot;
-import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,10 +1,10 @@
 package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamacommon.TAMAMessages;
-import org.motechproject.tamadomain.domain.PatientAlert;
-import org.motechproject.tamadomain.domain.PatientAlertType;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.TAMAMessages;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.PatientAlertType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

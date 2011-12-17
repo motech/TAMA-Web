@@ -11,13 +11,13 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tamacallflow.builder.PillRegimenResponseBuilder;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.builder.ClinicBuilder;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllClinics;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -107,14 +107,14 @@ public class MessageForMedicinesDuringIncomingCallTest {
         assertEquals("pillmedicine3", messages[2]);
         assertEquals("001_07_07_fromTheBottle1", messages[3]);
     }
-    
+
     @Test
-    public void shouldNotPlayWelcomeMessageDuringMenuRepeat(){
+    public void shouldNotPlayWelcomeMessageDuringMenuRepeat() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
         context.dosageId("currentDosageId").callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
         context.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
-        
+
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
 
         assertEquals(4, messages.length);

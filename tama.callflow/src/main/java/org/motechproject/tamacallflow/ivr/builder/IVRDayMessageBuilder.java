@@ -32,7 +32,7 @@ public class IVRDayMessageBuilder {
 
     private String getMessageForPreviousDosage(DateTime previousDosageDateTime, String yesterday, String morning, String afternoon, String evening) {
         if (previousDosageDateTime.plusDays(1).toLocalDate().equals(DateUtil.today()))
-           return yesterday;
+            return yesterday;
         else if (previousDosageDateTime.getHourOfDay() < 12)
             return morning;
         else if (previousDosageDateTime.getHourOfDay() < 16)

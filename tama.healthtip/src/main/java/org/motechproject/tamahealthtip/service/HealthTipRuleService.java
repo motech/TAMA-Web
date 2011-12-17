@@ -2,10 +2,10 @@ package org.motechproject.tamahealthtip.service;
 
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.joda.time.LocalDate;
+import org.motechproject.tama.patient.domain.LabResults;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tamacallflow.service.AdherenceService;
-import org.motechproject.tamadomain.domain.LabResults;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllLabResults;
 import org.motechproject.tamahealthtip.domain.HealthTipParams;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

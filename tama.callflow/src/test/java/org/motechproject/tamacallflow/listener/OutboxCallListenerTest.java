@@ -10,11 +10,11 @@ import org.motechproject.ivr.kookoo.KookooCallServiceImpl;
 import org.motechproject.ivr.service.CallRequest;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.VoiceOutboxService;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.Status;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 
 import java.util.HashMap;

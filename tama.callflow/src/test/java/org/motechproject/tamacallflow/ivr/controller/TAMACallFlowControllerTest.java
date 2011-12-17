@@ -7,13 +7,13 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.CallPreference;
-import org.motechproject.tamadomain.domain.Status;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.CallState;
 import org.motechproject.tamacallflow.ivr.PillRegimenSnapshot;
+import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.context.SymptomsReportingContext;
 import org.motechproject.tamacallflow.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
@@ -199,16 +199,16 @@ public class TAMACallFlowControllerTest {
     }
 
     @Test
-    public void shouldTransitionToCurrentDosageReminderTreeForPatientOnDailyPillReminder(){
+    public void shouldTransitionToCurrentDosageReminderTreeForPatientOnDailyPillReminder() {
         tamaIVRContext.callState(CallState.AUTHENTICATED);
         tamaIVRContext.patient(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
         tamaIVRContext.callDirection(CallDirection.Outbound);
 
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
-    
+
     @Test
-    public void shouldTransitionToMenuRepeatWhenCallStateIs_EndOfFlow(){
+    public void shouldTransitionToMenuRepeatWhenCallStateIs_EndOfFlow() {
         tamaIVRContext.callState(CallState.END_OF_FLOW);
         tamaIVRContext.patient(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
         tamaIVRContext.callDirection(CallDirection.Outbound);

@@ -9,15 +9,15 @@ import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
+import org.motechproject.tamacallflow.domain.DosageAdherenceLog;
+import org.motechproject.tamacallflow.domain.DosageStatus;
 import org.motechproject.tamacallflow.domain.PillRegimen;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacallflow.service.PatientAlertService;
 import org.motechproject.tamacallflow.service.TAMAPillReminderService;
-import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
-import org.motechproject.tamadomain.domain.DosageAdherenceLog;
-import org.motechproject.tamadomain.domain.DosageStatus;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -68,7 +68,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
 
 
     @Test
-    public void adherenceTrendIsFallingWhenAdherenceTodayIsLessThanAdherenceOnLastWeek_SingleDoseRegimen(){
+    public void adherenceTrendIsFallingWhenAdherenceTodayIsLessThanAdherenceOnLastWeek_SingleDoseRegimen() {
         DateTime now = new DateTime(2011, 11, 29, 10, 30, 0);
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();
@@ -94,7 +94,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     }
 
     @Test
-    public void adherenceTrendIsFallingWhenAdherenceTodayIsLessThanAdherenceOnLastWeek_DoubleDoseRegimen(){
+    public void adherenceTrendIsFallingWhenAdherenceTodayIsLessThanAdherenceOnLastWeek_DoubleDoseRegimen() {
         DateTime now = new DateTime(2011, 11, 29, 10, 30, 0);
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();
@@ -124,7 +124,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     }
 
     @Test
-    public void adherenceTrendIsNotFallingWhenAdherenceTodayIsNotLessThanAdherenceOnLastWeek_SingleDoseRegimen(){
+    public void adherenceTrendIsNotFallingWhenAdherenceTodayIsNotLessThanAdherenceOnLastWeek_SingleDoseRegimen() {
         DateTime now = new DateTime(2011, 11, 29, 10, 30, 0);
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();
@@ -146,7 +146,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     }
 
     @Test
-    public void adherenceTrendIsNotFallingWhenAdherenceTodayIsNotLessThanAdherenceOnLastWeek_DoubleDoseRegimen(){
+    public void adherenceTrendIsNotFallingWhenAdherenceTodayIsNotLessThanAdherenceOnLastWeek_DoubleDoseRegimen() {
         DateTime now = new DateTime(2011, 11, 29, 10, 30, 0);
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();

@@ -96,7 +96,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.domain</artifactId>
+            <artifactId>tama.patient</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -109,7 +109,23 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.domain</artifactId>
+            <artifactId>tama.refdata</artifactId>
+            <version>0.3-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.facility</artifactId>
+            <version>0.3-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.patient</artifactId>
             <version>0.3-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>

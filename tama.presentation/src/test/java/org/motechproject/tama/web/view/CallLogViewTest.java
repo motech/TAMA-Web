@@ -3,7 +3,7 @@ package org.motechproject.tama.web.view;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.motechproject.ivr.model.CallDirection;
-import org.motechproject.tamadomain.domain.CallLog;
+import org.motechproject.tamacallflow.domain.CallLog;
 
 import java.util.ArrayList;
 

@@ -2,7 +2,6 @@ package org.motechproject.tamacallflow.ivr;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 
 import java.util.Properties;
 
@@ -23,8 +22,8 @@ public class TamaIVRMessageTest {
         properties.put(TamaIVRMessage.CONTENT_LOCATION_URL, "http://localhost/stream/");
         properties.put("mayo", "clinic.welcome.mayo");
 
-        assertEquals("http://localhost/stream/en/clinic.welcome.mayo.wav", messages.getWav("mayo","en"));
-        assertEquals("http://localhost/stream/en/apollo.wav", messages.getWav("apollo","en"));
+        assertEquals("http://localhost/stream/en/clinic.welcome.mayo.wav", messages.getWav("mayo", "en"));
+        assertEquals("http://localhost/stream/en/apollo.wav", messages.getWav("apollo", "en"));
     }
 
     @Test

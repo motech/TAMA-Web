@@ -3,9 +3,9 @@ package org.motechproject.tamacallflow.ivr.command;
 import org.motechproject.tamacallflow.domain.PillRegimen;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +24,14 @@ public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
         int dosagesNotTaken = pillRegimen.getNumberOfDosesAsOf(ivrContext.callStartTime()) - dosagesTaken;
         switch (dosagesNotTaken) {
             case 1:
-                return new String[]{ TamaIVRMessage.MISSED_PILL_FEEDBACK_FIRST_TIME };
+                return new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_FIRST_TIME};
             case 2:
             case 3:
             case 4:
-                return new String[]{ TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME };
+                return new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME};
             default:
                 int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherenceInPercentage(ivrContext.patientId(), ivrContext.callStartTime()));
-                return new String[]{ getMissedPillFeedbackMessageFor(adherencePercentage) };
+                return new String[]{getMissedPillFeedbackMessageFor(adherencePercentage)};
         }
     }
 

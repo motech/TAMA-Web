@@ -31,34 +31,24 @@
     <dependencies>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.common</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.common</artifactId>
-            <version>0.3-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.refdata</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.refdata</artifactId>
-            <version>0.3-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
             <version>0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.common</artifactId>
+            <version>0.3-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.refdata</artifactId>
+            <version>0.3-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
@@ -219,6 +209,19 @@
                     <target>1.6</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-test-classes</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!--Unit and Integration tests-->
             <plugin>

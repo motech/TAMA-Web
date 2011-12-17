@@ -6,11 +6,14 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.*;
+import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tamacallflow.util.FixedDateTimeSource;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
 
@@ -22,7 +25,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class PatientServiceTest_PatientOnDailyPillReminder {
 
     private PatientService patientService;
-    
+
     private Patient dbPatient;
 
     @Mock
@@ -146,7 +149,7 @@ public class PatientServiceTest_PatientOnDailyPillReminder {
     }
 
     @Test
-    public void shouldUpdate_DosageAdherenceLogsForPatientOnDailyPillReminder(){
+    public void shouldUpdate_DosageAdherenceLogsForPatientOnDailyPillReminder() {
         DateTime suspendedDate = DateUtil.now();
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("patientId").withLastSuspendedDate(suspendedDate).withCallPreference(CallPreference.DailyPillReminder).build();
         when(allPatients.get("patientId")).thenReturn(patient);

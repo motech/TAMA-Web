@@ -7,13 +7,13 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.Status;
-import org.motechproject.tamadomain.repository.AllPatients;
 
 import java.util.Map;
 import java.util.Properties;
@@ -38,7 +38,7 @@ public class AdherenceQualityListenerTest {
     private DailyReminderAdherenceService dailyReminderAdherenceService;
 
     private AdherenceQualityListener adherenceQualityListener;
-    
+
     private Patient patient;
     private static String PATIENT_ID = "patient_UUId";
 
@@ -60,7 +60,7 @@ public class AdherenceQualityListenerTest {
         when(dailyReminderAdherenceService.getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
-        Map<String,Object> parameters = motechEvent.getParameters();
+        Map<String, Object> parameters = motechEvent.getParameters();
         parameters.put(EventKeys.EXTERNAL_ID_KEY, PATIENT_ID);
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
@@ -77,7 +77,7 @@ public class AdherenceQualityListenerTest {
         when(dailyReminderAdherenceService.getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
-        Map<String,Object> parameters = motechEvent.getParameters();
+        Map<String, Object> parameters = motechEvent.getParameters();
         parameters.put(EventKeys.EXTERNAL_ID_KEY, PATIENT_ID);
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
@@ -85,14 +85,14 @@ public class AdherenceQualityListenerTest {
         verify(dailyReminderAdherenceService).getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any());
         verify(dailyReminderAdherenceTrendService, never()).raiseAdherenceInRedAlert(Matchers.<String>any(), Matchers.<Double>any());
     }
-    
+
     @Test
     public void shouldNotRaiseRedAlertWhenPatientIsSuspended() throws Exception {
         patient.setStatus(Status.Suspended);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
-        Map<String,Object> parameters = motechEvent.getParameters();
+        Map<String, Object> parameters = motechEvent.getParameters();
         parameters.put(EventKeys.EXTERNAL_ID_KEY, PATIENT_ID);
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);

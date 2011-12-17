@@ -6,11 +6,11 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.CallPreference;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.assertFalse;

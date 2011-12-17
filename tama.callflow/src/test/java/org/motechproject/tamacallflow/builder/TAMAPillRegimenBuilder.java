@@ -21,11 +21,11 @@ public class TAMAPillRegimenBuilder {
     private PillRegimen pillRegimen;
     private Properties properties;
 
-    private TAMAPillRegimenBuilder(){
+    private TAMAPillRegimenBuilder() {
         pillRegimen = mock(PillRegimen.class);
     }
 
-    public static TAMAPillRegimenBuilder startRecording(){
+    public static TAMAPillRegimenBuilder startRecording() {
         return new TAMAPillRegimenBuilder();
     }
 
@@ -52,7 +52,7 @@ public class TAMAPillRegimenBuilder {
         return this;
     }
 
-    public PillRegimen build(){
+    public PillRegimen build() {
         return pillRegimen;
     }
 }

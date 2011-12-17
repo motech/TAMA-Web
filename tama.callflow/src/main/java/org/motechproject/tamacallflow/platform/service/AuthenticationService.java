@@ -1,12 +1,12 @@
 package org.motechproject.tamacallflow.platform.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tamacallflow.domain.IVRAuthenticationStatus;
+import org.motechproject.tamacallflow.domain.IVRCallAudit;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
-import org.motechproject.tamadomain.domain.IVRAuthenticationStatus;
-import org.motechproject.tamadomain.domain.IVRCallAudit;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllIVRCallAudits;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tamacallflow.repository.AllIVRCallAudits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

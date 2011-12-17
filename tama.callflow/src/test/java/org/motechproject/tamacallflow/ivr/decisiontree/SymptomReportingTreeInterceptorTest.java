@@ -9,7 +9,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamacallflow.ivr.command.SuspendAdherenceCallsCommand;
 import org.motechproject.tamacallflow.ivr.command.SymptomReportingAlertsCommand;
 import org.motechproject.tamacallflow.ivr.command.callforwarding.DialStateCommand;

@@ -8,14 +8,18 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.PatientAlertType;
+import org.motechproject.tamacallflow.domain.PatientAlerts;
+import org.motechproject.tamacallflow.domain.WeeklyAdherenceLog;
+import org.motechproject.tamacallflow.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
 import org.motechproject.tamacallflow.service.PatientAlertService;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
-import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -631,12 +635,12 @@ public class FourDayRecallServiceTest {
 
     @Test
     public void shouldTestFourDayRecallRetryEndDateForFirstCall() {
-        LocalDate treatmentAdviceStartDate = new LocalDate(2011,12,1);
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 12, 1);
         Patient patient = new Patient();
         patient.setId(patientId);
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
-        patient.getPatientPreferences().setBestCallTime(new TimeOfDay(10,10, TimeMeridiem.AM));
+        patient.getPatientPreferences().setBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM));
         setupExpectations(patient, treatmentAdviceStartDate.toDate(), treatmentAdviceStartDate.plusDays(3));
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn("2");
         assertEquals(new DateTime(2011, 12, 11, 10, 10), fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient));
@@ -644,12 +648,12 @@ public class FourDayRecallServiceTest {
 
     @Test
     public void shouldTestFourDayRecallRetryEndDateForFirstCallWhenPatientMovedFromDailyToFDR() {
-        LocalDate treatmentAdviceStartDate = new LocalDate(2011,11,1);
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 1);
         Patient patient = new Patient();
         patient.setId(patientId);
         patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
         patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
-        patient.getPatientPreferences().setBestCallTime(new TimeOfDay(10,10, TimeMeridiem.AM));
+        patient.getPatientPreferences().setBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM));
         patient.getPatientPreferences().setCallPreferenceTransitionDate(new LocalDate(2011, 12, 1).toDateTimeAtCurrentTime());
         setupExpectations(patient, treatmentAdviceStartDate.toDate(), treatmentAdviceStartDate.plusDays(3));
 

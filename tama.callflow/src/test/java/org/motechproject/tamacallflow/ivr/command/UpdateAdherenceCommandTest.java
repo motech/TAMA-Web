@@ -3,30 +3,26 @@ package org.motechproject.tamacallflow.ivr.command;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tamacallflow.domain.DosageStatus;
 import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
-import org.motechproject.tamadomain.domain.DosageAdherenceLog;
-import org.motechproject.tamadomain.domain.DosageStatus;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UpdateAdherenceCommandTest {

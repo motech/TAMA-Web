@@ -7,11 +7,11 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientPreferences;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.domain.CallPreference;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.PatientPreferences;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 

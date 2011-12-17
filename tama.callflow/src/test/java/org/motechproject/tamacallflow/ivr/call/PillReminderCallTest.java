@@ -8,8 +8,8 @@ import org.mockito.Mockito;
 import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.ivr.service.CallRequest;
 import org.motechproject.ivr.service.IVRService;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.service.CallLogService;
 
 import java.util.Map;
@@ -39,7 +39,7 @@ public class PillReminderCallTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pillReminderCall = Mockito.spy(new PillReminderCall(callService, allPatients , new Properties()));
+        pillReminderCall = Mockito.spy(new PillReminderCall(callService, allPatients, new Properties()));
         Mockito.doReturn("").when(pillReminderCall).getApplicationUrl();
     }
 
@@ -73,7 +73,7 @@ public class PillReminderCallTest {
 
         ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
         verify(callService).initiateCall(callRequestArgumentCaptor.capture());
-        Map<String,String> payload = callRequestArgumentCaptor.getValue().getPayload();
+        Map<String, String> payload = callRequestArgumentCaptor.getValue().getPayload();
         assertEquals(String.valueOf(TOTAL_TIMES_TO_SEND), payload.get(PillReminderCall.TOTAL_TIMES_TO_SEND));
         assertEquals(String.valueOf(TIMES_SENT), payload.get(PillReminderCall.TIMES_SENT));
         assertEquals(String.valueOf(RETRY_INTERVAL), payload.get(PillReminderCall.RETRY_INTERVAL));

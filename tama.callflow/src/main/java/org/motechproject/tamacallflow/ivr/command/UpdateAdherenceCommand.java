@@ -1,11 +1,10 @@
 package org.motechproject.tamacallflow.ivr.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tamacallflow.domain.DosageStatus;
 import org.motechproject.tamacallflow.ivr.Dose;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
-import org.motechproject.tamadomain.domain.DosageStatus;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,10 +23,10 @@ public class UpdateAdherenceCommand extends BaseTreeCommand {
     public String[] executeCommand(TAMAIVRContext ivrContext) {
         DosageStatus newStatus = DosageStatus.from(ivrContext.dtmfInput());
         dailyReminderAdherenceService.recordAdherence(ivrContext.patientId(),
-                                                      pillRegimenResponse(ivrContext).getPillRegimenId(),
-                                                      getDose(ivrContext),
-                                                      newStatus,
-                                                      ivrContext.callStartTime());
+                pillRegimenResponse(ivrContext).getPillRegimenId(),
+                getDose(ivrContext),
+                newStatus,
+                ivrContext.callStartTime());
 
         return new String[0];
     }

@@ -24,7 +24,7 @@ public class SymptomAndOutboxMenuCommand extends BaseTreeCommand {
     public String[] executeCommand(TAMAIVRContext ivrContext) {
         List<String> menuOptions = new ArrayList<String>();
         menuOptions.add(TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
-        if(voiceOutboxService.getNumberPendingMessages(ivrContext.patientId()) != 0) {
+        if (voiceOutboxService.getNumberPendingMessages(ivrContext.patientId()) != 0) {
             menuOptions.add(TamaIVRMessage.OUTBOX_MENU_OPTION);
         }
         return menuOptions.toArray(new String[menuOptions.size()]);

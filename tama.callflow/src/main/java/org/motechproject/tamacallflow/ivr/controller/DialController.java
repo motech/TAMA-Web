@@ -7,9 +7,9 @@ import org.motechproject.ivr.kookoo.controller.SafeIVRController;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
-import org.motechproject.tamacommon.util.StringUtil;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.common.util.StringUtil;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.SymptomsReportingContext;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
@@ -56,8 +56,7 @@ public class DialController extends SafeIVRController {
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder().language(tamaivrContext.preferredLanguage());
         if (kooKooIVRContext.isAnswered()) {
             updateAlertAndEndCurrentCall(tamaivrContext, symptomsReportingContext, clinicianContacts);
-        }
-        else {
+        } else {
             tryAndDialTheNextClinician(symptomsReportingContext, clinicianContacts, kookooIVRResponseBuilder);
         }
         return kookooIVRResponseBuilder;
@@ -72,10 +71,9 @@ public class DialController extends SafeIVRController {
     private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
         String nextClinicianPhoneNumber = getNextClinicianPhoneNumber(symptomsReportingContext, clinicianContacts);
         boolean canCallClinician = StringUtils.isNotEmpty(nextClinicianPhoneNumber);
-        if (canCallClinician){
+        if (canCallClinician) {
             kookooIVRResponseBuilder.withPlayAudios(TamaIVRMessage.CONNECTING_TO_DOCTOR).withPhoneNumber(StringUtil.ivrMobilePhoneNumber(nextClinicianPhoneNumber));
-        }
-        else {
+        } else {
             kookooIVRResponseBuilder.withPlayAudios(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR);
             symptomsReportingContext.endCall();
         }

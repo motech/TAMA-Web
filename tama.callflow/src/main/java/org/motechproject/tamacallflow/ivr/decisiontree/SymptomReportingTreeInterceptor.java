@@ -3,7 +3,7 @@ package org.motechproject.tamacallflow.ivr.decisiontree;
 import org.apache.commons.lang.ArrayUtils;
 import org.motechproject.decisiontree.model.DialPrompt;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamacallflow.ivr.command.SuspendAdherenceCallsCommand;
 import org.motechproject.tamacallflow.ivr.command.SymptomReportingAlertsCommand;
 import org.motechproject.tamacallflow.ivr.command.callforwarding.DialStateCommand;

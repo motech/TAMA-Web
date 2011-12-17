@@ -12,9 +12,9 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class MissedPillFeedbackCommandTest {
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(63);
 
-        assertArrayEquals(new String[] { TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME }, forMissedPillFeedbackCommand.executeCommand(context));
+        assertArrayEquals(new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME}, forMissedPillFeedbackCommand.executeCommand(context));
     }
 
     @Test
@@ -79,8 +79,8 @@ public class MissedPillFeedbackCommandTest {
         final LocalDate dosage2StartDate = dosage1StartDate.plusDays(4);
         final LocalDate dosage2EndDate = dosage2StartDate.plusWeeks(4);
         List<DosageResponse> dosageResponses = Arrays.asList(
-            new DosageResponse("d1", new Time(9, 5), dosage1StartDate, dosage1EndDate, DateUtil.today(), null),
-            new DosageResponse("d2", new Time(15, 5), dosage2StartDate, dosage2EndDate, DateUtil.today(), null)
+                new DosageResponse("d1", new Time(9, 5), dosage1StartDate, dosage1EndDate, DateUtil.today(), null),
+                new DosageResponse("d2", new Time(15, 5), dosage2StartDate, dosage2EndDate, DateUtil.today(), null)
         );
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 
@@ -99,8 +99,8 @@ public class MissedPillFeedbackCommandTest {
         final LocalDate dosage2StartDate = dosage1StartDate.plusDays(4);
         final LocalDate dosage2EndDate = dosage2StartDate.plusWeeks(4);
         List<DosageResponse> dosageResponses = Arrays.asList(
-            new DosageResponse("d1", new Time(9, 5), dosage1StartDate, dosage1EndDate, DateUtil.today(), null),
-            new DosageResponse("d2", new Time(15, 5), dosage2StartDate, dosage2EndDate, DateUtil.today(), null)
+                new DosageResponse("d1", new Time(9, 5), dosage1StartDate, dosage1EndDate, DateUtil.today(), null),
+                new DosageResponse("d2", new Time(15, 5), dosage2StartDate, dosage2EndDate, DateUtil.today(), null)
         );
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 

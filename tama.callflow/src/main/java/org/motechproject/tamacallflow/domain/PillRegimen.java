@@ -20,15 +20,15 @@ public class PillRegimen {
         return pillRegimenResponse.getPillRegimenId();
     }
 
-    public DosageTimeLine getDosageTimeLine(){
+    public DosageTimeLine getDosageTimeLine() {
         return new DosageTimeLine(pillRegimenResponse.getDosages(), DateUtil.now());
     }
 
-    public DosageTimeLine getDosageTimeLine(DateTime from, DateTime to){
+    public DosageTimeLine getDosageTimeLine(DateTime from, DateTime to) {
         return new DosageTimeLine(pillRegimenResponse.getDosages(), from, to);
     }
 
-    public List<DosageResponse> getDosageResponses(){
+    public List<DosageResponse> getDosageResponses() {
         return pillRegimenResponse.getDosages();
     }
 
@@ -59,11 +59,11 @@ public class PillRegimen {
     }
 
     public Dosage getDosage(String dosageId) {
-       for (DosageResponse dosageResponse : pillRegimenResponse.getDosages()){
-           if(dosageResponse.getDosageId().endsWith(dosageId)){
-               return new Dosage(dosageResponse);
-           }
-       }
-       return null;
+        for (DosageResponse dosageResponse : pillRegimenResponse.getDosages()) {
+            if (dosageResponse.getDosageId().endsWith(dosageId)) {
+                return new Dosage(dosageResponse);
+            }
+        }
+        return null;
     }
 }

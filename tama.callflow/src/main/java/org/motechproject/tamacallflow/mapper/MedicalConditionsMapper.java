@@ -1,6 +1,8 @@
 package org.motechproject.tamacallflow.mapper;
 
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.util.DateUtil;
 
 import java.util.List;
@@ -47,8 +49,8 @@ public class MedicalConditionsMapper {
 
     private boolean hasHistoryOfPsychiatricIllness() {
         List<SystemCategory> systemCategories = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories();
-        for(SystemCategory category : systemCategories) {
-            if(SystemCategoryDefinition.Psychiatric.getCategoryName().equals(category.getName()))
+        for (SystemCategory category : systemCategories) {
+            if (SystemCategoryDefinition.Psychiatric.getCategoryName().equals(category.getName()))
                 return category.getAilments().getOtherAilments().get(0).everHadTheAilment();
         }
         return false;
@@ -56,8 +58,8 @@ public class MedicalConditionsMapper {
 
     private boolean hasBaselineHBLowerThan10() {
         List<MedicalHistoryQuestion> medicalHistoryQuestions = patient.getMedicalHistory().getNonHivMedicalHistory().getQuestions();
-        for(MedicalHistoryQuestion question: medicalHistoryQuestions) {
-            if(MedicalHistoryQuestions.baseLinePretherapy().getQuestion().equals(question.getQuestion())) {
+        for (MedicalHistoryQuestion question : medicalHistoryQuestions) {
+            if (MedicalHistoryQuestions.baseLinePretherapy().getQuestion().equals(question.getQuestion())) {
                 return question.isHistoryPresent();
             }
         }

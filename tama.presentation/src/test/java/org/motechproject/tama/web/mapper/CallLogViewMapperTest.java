@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.web.view.CallLogView;
+import org.motechproject.tamacallflow.domain.CallLog;
 import org.motechproject.tamadomain.builder.ClinicBuilder;
 import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.CallLog;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 

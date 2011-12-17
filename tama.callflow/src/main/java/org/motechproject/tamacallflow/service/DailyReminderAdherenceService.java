@@ -3,14 +3,10 @@ package org.motechproject.tamacallflow.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.tamacallflow.domain.DosageTimeLine;
-import org.motechproject.tamacallflow.domain.PillRegimen;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tamacallflow.domain.*;
 import org.motechproject.tamacallflow.ivr.Dose;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.DosageAdherenceLog;
-import org.motechproject.tamadomain.domain.DosageStatus;
-import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,7 +45,7 @@ public class DailyReminderAdherenceService {
         PillRegimen pillRegimen = pillReminderService.getPillRegimen(patientId);
         int totalDoses = pillRegimen.getDosesIn(numberOfWeeks, asOfDate);
         if (totalDoses == 0) return 1;
-        int dosagesTakenForLastFourWeeks =  allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, asOfDate.minusWeeks(numberOfWeeks).toLocalDate(), asOfDate.toLocalDate());
+        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, asOfDate.minusWeeks(numberOfWeeks).toLocalDate(), asOfDate.toLocalDate());
         return ((double) dosagesTakenForLastFourWeeks) / totalDoses;
     }
 

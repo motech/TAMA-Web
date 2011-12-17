@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tamacallflow.ivr.context.SymptomsReportingContext;
-import org.motechproject.tamacallflow.ivr.command.callforwarding.DialStateCommand;
 import org.motechproject.util.Cookies;
 
 import static org.mockito.Mockito.verify;

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SlotBasedTimeConstructBuilder {
-
     class TimeSlot {
         LocalTime startTime;
         LocalTime endTime;

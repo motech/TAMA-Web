@@ -3,9 +3,13 @@ package org.motechproject.tamacallflow.platform.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.AllIVRCallAudits;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientPreferences;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.IVRLanguage;
+import org.motechproject.tamacallflow.domain.IVRAuthenticationStatus;
+import org.motechproject.tamacallflow.repository.AllIVRCallAudits;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;

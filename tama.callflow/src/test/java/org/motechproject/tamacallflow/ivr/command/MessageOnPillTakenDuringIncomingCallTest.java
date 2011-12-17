@@ -6,9 +6,9 @@ import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tamacallflow.builder.PillRegimenResponseBuilder;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.util.DateUtil;
 

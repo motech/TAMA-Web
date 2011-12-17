@@ -3,9 +3,11 @@ package org.motechproject.tamacallflow.ivr.decisiontree.filter;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.on;
 
 public abstract class DecisionTreeNodesFilter {
 
@@ -17,7 +19,7 @@ public abstract class DecisionTreeNodesFilter {
 
     private List<Node> dfs(Node node) {
         List<Node> resultNodes = new ArrayList<Node>();
-        if (select(node)){
+        if (select(node)) {
             resultNodes.add(node);
         }
         for (Node next : getChildNodes(node)) {

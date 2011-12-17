@@ -3,7 +3,7 @@ package org.motechproject.tamahealthtip.domain;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
-import org.motechproject.tamadomain.domain.Patient;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
 
 public class HealthTipParams {

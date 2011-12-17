@@ -8,10 +8,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.Status;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacallflow.service.PatientService;
 import org.motechproject.util.DateUtil;
@@ -42,7 +42,7 @@ public class SuspendAdherenceCallsCommandTest {
     }
 
     @Test
-    public void shouldChangeStatusToSuspended(){
+    public void shouldChangeStatusToSuspended() {
         final Patient patient = new Patient();
         final TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest();
         tamaivrContextForTest.patient(patient);

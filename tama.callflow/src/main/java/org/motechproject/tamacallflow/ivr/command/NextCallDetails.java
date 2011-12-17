@@ -2,9 +2,9 @@ package org.motechproject.tamacallflow.ivr.command;
 
 import org.joda.time.DateTime;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.builder.IVRDayMessageBuilder;
+import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.decisiontree.TAMATreeRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,11 +1,15 @@
 package org.motechproject.tamacallflow.service;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.*;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
 import org.motechproject.tamacallflow.mapper.MedicalConditionsMapper;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
-import org.motechproject.tamacommon.TamaException;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -149,9 +153,9 @@ public class PatientService {
         allPatients.activate(patientId);
         Patient patient = allPatients.get(patientId);
         suspendedAdherenceData.suspendedFrom(patient.getLastSuspendedDate());
-        if(patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall){
+        if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
             fourDayRecallAdherenceService.recordAdherence(suspendedAdherenceData);
-        }else{
+        } else {
             dailyReminderAdherenceService.recordAdherence(suspendedAdherenceData);
         }
     }

@@ -12,24 +12,18 @@ import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamacallflow.builder.TAMAPillRegimenBuilder;
-import org.motechproject.tamacallflow.domain.Dosage;
-import org.motechproject.tamacallflow.domain.PillRegimen;
+import org.motechproject.tamacallflow.domain.*;
 import org.motechproject.tamacallflow.ivr.Dose;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.DosageAdherenceLog;
-import org.motechproject.tamadomain.domain.DosageStatus;
-import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
-import org.motechproject.tamadomain.repository.AllDosageAdherenceLogs;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.util.Collections;
 import java.util.Properties;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
@@ -201,9 +195,9 @@ public class DailyReminderAdherenceServiceTest {
         }
     }
 
-    public static class AnyDoseTakenLateSince extends TestSubject{
+    public static class AnyDoseTakenLateSince extends TestSubject {
         @Test
-        public void shouldBeTrueWhenAtLeastOneDoseWasTakenSinceGivenDate(){
+        public void shouldBeTrueWhenAtLeastOneDoseWasTakenSinceGivenDate() {
             LocalDate someDate = DateUtil.newDate(2011, 10, 10);
             when(allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", someDate, true)).thenReturn(1);
 
@@ -211,7 +205,7 @@ public class DailyReminderAdherenceServiceTest {
         }
 
         @Test
-        public void shouldBeFalseWhenNoDoseWasTakenLateLastWeek(){
+        public void shouldBeFalseWhenNoDoseWasTakenLateLastWeek() {
             LocalDate someDate = DateUtil.newDate(2011, 10, 10);
             when(allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", someDate, true)).thenReturn(0);
 

@@ -8,10 +8,10 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
-import org.motechproject.tamacallflow.ivr.CallState;
-import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.tama.ivr.decisiontree.service.SymptomReportingTreeService;
+import org.motechproject.tamacallflow.ivr.CallState;
+import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tamacallflow.service.PatientService;
 

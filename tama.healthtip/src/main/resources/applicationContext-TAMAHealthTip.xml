@@ -8,12 +8,12 @@
                            http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="classpath:applicationContext-TAMACallFlow.xml"/>
     <util:properties id="healthtipConstants" location="classpath:/healthtips.properties"/>
     <context:annotation-config/>
     <context:spring-configured/>
     <context:property-placeholder location="classpath*:/*.properties"/>
 
+    <import resource="classpath:applicationContext-TAMACallFlow.xml"/>
     <context:component-scan base-package="org.motechproject.tamahealthtip"/>
     <context:component-scan base-package="org.motechproject.tamacallflow.ivr.factory"/>
 

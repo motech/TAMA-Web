@@ -8,13 +8,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
-import org.motechproject.tamadomain.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tamacallflow.domain.WeeklyAdherenceLog;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
+import org.motechproject.tamacallflow.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -55,7 +56,7 @@ public class FourDayRecallAdherenceServiceTest {
     }
 
     @Test
-    public void shouldRecordAdherenceForPastThreeWeeks(){
+    public void shouldRecordAdherenceForPastThreeWeeks() {
         DateTime toDate = new DateTime(2011, 11, 26, 23, 0, 0);
         LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 6);
         when(DateUtil.now()).thenReturn(toDate);
@@ -77,7 +78,7 @@ public class FourDayRecallAdherenceServiceTest {
     }
 
     @Test
-    public void shouldRecordAdherenceForOnlyTwoWeeksIfPatientsBestCallTimeForLastWeekFallsOutsideSuspensionPeriod(){
+    public void shouldRecordAdherenceForOnlyTwoWeeksIfPatientsBestCallTimeForLastWeekFallsOutsideSuspensionPeriod() {
         DateTime toDate = new DateTime(2011, 11, 26, 21, 0, 0);
         LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 6);
         when(DateUtil.now()).thenReturn(toDate);
@@ -99,7 +100,7 @@ public class FourDayRecallAdherenceServiceTest {
     }
 
     @Test
-    public void shouldRecordAdherenceForOnlyTwoWeeksIfPatientsBestCallTimeForFirstWeekFallsOutsideSuspensionPeriod(){
+    public void shouldRecordAdherenceForOnlyTwoWeeksIfPatientsBestCallTimeForFirstWeekFallsOutsideSuspensionPeriod() {
         DateTime toDate = new DateTime(2011, 11, 26, 23, 0, 0);
         LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 6);
         when(DateUtil.now()).thenReturn(toDate);
@@ -121,7 +122,7 @@ public class FourDayRecallAdherenceServiceTest {
     }
 
     @Test
-    public void shouldRecordAdherenceForThreeWeeksIfPatientsAdherenceHasNotBeenCapturedForPreviousWeekAndTheSuspensionStartDateFallsInTheRetryInterval(){
+    public void shouldRecordAdherenceForThreeWeeksIfPatientsAdherenceHasNotBeenCapturedForPreviousWeekAndTheSuspensionStartDateFallsInTheRetryInterval() {
         DAYS_TO_RETRY = "3";
         DateTime toDate = new DateTime(2011, 11, 27, 23, 0, 0);
         LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 6);
@@ -142,17 +143,17 @@ public class FourDayRecallAdherenceServiceTest {
         fourDayRecallAdherenceService.recordAdherence(SuspendedAdherenceDataPreset.fromFourteenDaysBackWithAnyStatus(toDate));
         verify(allWeeklyAdherenceLogs, times(3)).add(Matchers.<WeeklyAdherenceLog>any());
     }
-    
+
     private void setupExpectations(String patientId, Patient testPatient, TreatmentAdvice testTreatmentAdvice) {
         when(allPatients.get(patientId)).thenReturn(testPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(testTreatmentAdvice);
         when(fourDayRecallService.getStartDateForAnyWeek(any(String.class), any(LocalDate.class)))
-                                 .thenReturn(new LocalDate(2011, 11, 6))
-                                 .thenReturn(new LocalDate(2011, 11, 6))
-                                 .thenReturn(new LocalDate(2011, 11, 13))
-                                 .thenReturn(new LocalDate(2011, 11, 13))
-                                 .thenReturn(new LocalDate(2011, 11, 20))
-                                 .thenReturn(new LocalDate(2011, 11, 20));
+                .thenReturn(new LocalDate(2011, 11, 6))
+                .thenReturn(new LocalDate(2011, 11, 6))
+                .thenReturn(new LocalDate(2011, 11, 13))
+                .thenReturn(new LocalDate(2011, 11, 13))
+                .thenReturn(new LocalDate(2011, 11, 20))
+                .thenReturn(new LocalDate(2011, 11, 20));
         when(properties.getProperty(any(String.class))).thenReturn(DAYS_TO_RETRY);
     }
 

@@ -1,6 +1,9 @@
 package org.motechproject.tamacallflow.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.*;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.MenuAudioPrompt;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tamacallflow.ivr.CallState;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.command.*;

@@ -2,8 +2,8 @@ package org.motechproject.tamacallflow.ivr.call;
 
 import org.motechproject.ivr.service.CallRequest;
 import org.motechproject.ivr.service.IVRService;
-import org.motechproject.tamacommon.util.StringUtil;
-import org.motechproject.tamadomain.domain.Patient;
+import org.motechproject.tama.common.util.StringUtil;
+import org.motechproject.tama.patient.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

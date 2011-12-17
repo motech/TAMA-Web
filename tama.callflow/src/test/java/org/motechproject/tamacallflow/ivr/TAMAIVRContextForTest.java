@@ -4,9 +4,9 @@ import org.joda.time.DateTime;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tamadomain.domain.IVRAuthenticationStatus;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tamacallflow.domain.IVRAuthenticationStatus;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 
 import java.util.ArrayList;

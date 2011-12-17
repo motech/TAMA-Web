@@ -539,14 +539,6 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.domain</artifactId>
-            <version>0.3-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
             <version>0.3-SNAPSHOT</version>
             <classifier>tests</classifier>

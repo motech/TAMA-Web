@@ -14,8 +14,8 @@ public class DisableOutboxCallRetryCommand implements ITreeCommand {
 
     @Override
     public String[] execute(Object obj) {
-        if (obj instanceof KooKooIVRContext){
-            KooKooIVRContext ctx = (KooKooIVRContext)obj;
+        if (obj instanceof KooKooIVRContext) {
+            KooKooIVRContext ctx = (KooKooIVRContext) obj;
             tamaSchedulerService.unscheduleRepeatingJobForOutboxCall(ctx.externalId());
         }
         return new String[0];

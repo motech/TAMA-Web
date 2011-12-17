@@ -7,7 +7,6 @@ import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
-import org.motechproject.tamadomain.domain.CallLog;
 import org.motechproject.tamacallflow.ivr.StandardIVRResponse;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 
@@ -47,7 +46,7 @@ public class CallLogTest {
     private CallLog callWhichGoesBeyondAuthentication() {
         CallLog callLog = new CallLog("patientID");
         callLog.setCallEvents(Arrays.asList(addAuthenticationEventCustomData(new CallEvent(IVREvent.GotDTMF.toString())),
-                                            appendNonAuthenticationEventParams(new CallEvent(IVREvent.GotDTMF.toString()))));
+                appendNonAuthenticationEventParams(new CallEvent(IVREvent.GotDTMF.toString()))));
         return callLog;
     }
 

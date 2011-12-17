@@ -1,7 +1,7 @@
 package org.motechproject.tamacallflow.ivr;
 
 import org.motechproject.ivr.message.IVRMessage;
-import org.motechproject.tamacommon.util.FileUtil;
+import org.motechproject.tama.common.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -172,7 +172,7 @@ public class TamaIVRMessage implements IVRMessage {
     }
 
     @Override
-	public String getWav(String key, String preferredLangCode) {
+    public String getWav(String key, String preferredLangCode) {
         String file = get(key) != null ? get(key) : FileUtil.sanitizeFilename(key);
         return String.format("%s%s/%s%s", properties.get(CONTENT_LOCATION_URL), preferredLangCode, file, WAV);
     }

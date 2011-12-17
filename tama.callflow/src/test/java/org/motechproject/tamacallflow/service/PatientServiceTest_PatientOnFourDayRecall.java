@@ -6,9 +6,12 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.*;
+import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;

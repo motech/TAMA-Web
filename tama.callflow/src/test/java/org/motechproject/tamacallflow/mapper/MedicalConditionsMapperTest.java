@@ -5,6 +5,16 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
+import org.motechproject.tama.patient.builder.LabResultBuilder;
+import org.motechproject.tama.patient.builder.MedicalHistoryBuilder;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.refdata.builder.LabTestBuilder;
+import org.motechproject.tama.refdata.builder.RegimenBuilder;
+import org.motechproject.tama.refdata.domain.Gender;
+import org.motechproject.tama.refdata.domain.LabTest;
+import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -18,7 +28,7 @@ public class MedicalConditionsMapperTest {
     private Regimen regimen;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         String patientId = "patientId";
         LocalDate dateOfBirth = new LocalDate(1971, 05, 03);
         patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(dateOfBirth).build();

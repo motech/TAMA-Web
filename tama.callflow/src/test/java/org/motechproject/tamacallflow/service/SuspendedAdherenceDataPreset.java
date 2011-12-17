@@ -1,7 +1,7 @@
 package org.motechproject.tamacallflow.service;
 
 import org.joda.time.DateTime;
-import org.motechproject.tamadomain.domain.SuspendedAdherenceData;
+import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
 import org.motechproject.util.DateUtil;
 
 public class SuspendedAdherenceDataPreset {

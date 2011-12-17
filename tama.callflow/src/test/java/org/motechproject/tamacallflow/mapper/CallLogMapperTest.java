@@ -4,8 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.model.CallDetailRecord;
-import org.motechproject.tamadomain.domain.CallLog;
-import org.motechproject.tamacallflow.mapper.CallLogMapper;
+import org.motechproject.tamacallflow.domain.CallLog;
 import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.assertEquals;
@@ -15,8 +14,8 @@ public class CallLogMapperTest {
     private CallLogMapper callLogMapper;
 
     @Before
-    public void setUp(){
-      callLogMapper = new CallLogMapper();
+    public void setUp() {
+        callLogMapper = new CallLogMapper();
     }
 
     @Test

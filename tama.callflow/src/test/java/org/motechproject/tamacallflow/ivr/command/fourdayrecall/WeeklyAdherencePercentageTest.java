@@ -52,7 +52,7 @@ public class WeeklyAdherencePercentageTest {
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan70_AndFalling() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(80);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(),anyString())).thenReturn(true);
+        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(true);
         ivrContext.dtmfInput("1");
         when(ivrMessage.getNumberFilename(80)).thenReturn("Num_80");
 
@@ -67,7 +67,7 @@ public class WeeklyAdherencePercentageTest {
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan70_AndRising() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(80);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(),anyString())).thenReturn(false);
+        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(false);
         ivrContext.dtmfInput("1");
         when(ivrMessage.getNumberFilename(80)).thenReturn("Num_80");
 
@@ -83,7 +83,7 @@ public class WeeklyAdherencePercentageTest {
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndFalling() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(60);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(),anyString())).thenReturn(true);
+        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(true);
         ivrContext.dtmfInput("2");
         when(ivrMessage.getNumberFilename(60)).thenReturn("Num_60");
 
@@ -99,7 +99,7 @@ public class WeeklyAdherencePercentageTest {
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndRising() {
         when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(60);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(),anyString())).thenReturn(false);
+        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(false);
         ivrContext.dtmfInput("2");
         when(ivrMessage.getNumberFilename(60)).thenReturn("Num_60");
 

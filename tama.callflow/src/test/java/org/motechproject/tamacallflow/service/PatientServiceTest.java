@@ -7,9 +7,20 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
+import org.motechproject.tama.patient.builder.LabResultBuilder;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.*;
+import org.motechproject.tama.refdata.builder.LabTestBuilder;
+import org.motechproject.tama.refdata.builder.RegimenBuilder;
+import org.motechproject.tama.refdata.domain.Gender;
+import org.motechproject.tama.refdata.domain.LabTest;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
+import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -85,7 +96,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void shouldActivateWhenPatientIsReActivated(){
+    public void shouldActivateWhenPatientIsReActivated() {
         when(allPatients.get("patientId")).thenReturn(PatientBuilder.startRecording().withDefaults().withPatientId("patientId").withLastSuspendedDate(new DateTime(2011, 11, 11, 0, 0, 0)).build());
         patientService.reActivate("patientId", new SuspendedAdherenceData());
         verify(allPatients).activate("patientId");

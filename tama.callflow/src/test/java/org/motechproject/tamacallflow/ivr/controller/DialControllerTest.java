@@ -9,9 +9,9 @@ import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.ivr.model.IVRStatus;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.ivr.context.SymptomsReportingContext;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
@@ -57,7 +57,8 @@ public class DialControllerTest {
             this.add(new Clinic.ClinicianContact("name3", "ph3"));
         }});
         Patient patient = new Patient() {{
-            this.setClinic(clinic);setId("patientId");
+            this.setClinic(clinic);
+            setId("patientId");
         }};
 
         kookooRequest = new KookooRequest("", "", "Dial", "", IVRStatus.NotAnswered.toString());

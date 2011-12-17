@@ -9,10 +9,16 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tamacallflow.domain.PatientAlert;
+import org.motechproject.tamacallflow.domain.PatientAlertType;
+import org.motechproject.tamacallflow.domain.PatientAlerts;
+import org.motechproject.tamacallflow.domain.SymptomsAlertStatus;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -278,8 +284,12 @@ public class PatientAlertServiceTest {
             final HashMap<String, String> data = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
             }};
-            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data ) {{ setDateTime( DateUtil.now().plusDays(7));}});
-            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{ setDateTime( DateUtil.now().minusDays(7));}});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{
+                setDateTime(DateUtil.now().plusDays(7));
+            }});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{
+                setDateTime(DateUtil.now().minusDays(7));
+            }});
             add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
             add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
             add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, new HashMap<String, String>()));
@@ -303,8 +313,12 @@ public class PatientAlertServiceTest {
             final HashMap<String, String> data = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.name());
             }};
-            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data ) {{ setDateTime( DateUtil.now().plusDays(7));}});
-            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{ setDateTime( DateUtil.now().minusDays(7));}});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{
+                setDateTime(DateUtil.now().plusDays(7));
+            }});
+            add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, data) {{
+                setDateTime(DateUtil.now().minusDays(7));
+            }});
             add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
             add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data));
             add(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, new HashMap<String, String>()));
@@ -318,7 +332,7 @@ public class PatientAlertServiceTest {
     }
 
     @Test
-    public void shouldReturnFalseWhenUpdateUnSuccessful(){
+    public void shouldReturnFalseWhenUpdateUnSuccessful() {
         doThrow(new RuntimeException("update exception")).when(alertService).setData(anyString(), anyString(), anyString());
         assertFalse(patientAlertService.updateAlert(anyString(), anyString(), anyString(), anyString(), anyString()));
     }

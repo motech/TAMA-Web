@@ -13,8 +13,8 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamacallflow.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.tamacallflow.ivr.command.*;
+import org.motechproject.tamacallflow.ivr.decisiontree.CurrentDosageReminderTree;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,12 +24,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml")
+@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
 public class CurrentDosageReminderTreeTest {
     @Autowired
     private TestTree currentDosageReminderTree;

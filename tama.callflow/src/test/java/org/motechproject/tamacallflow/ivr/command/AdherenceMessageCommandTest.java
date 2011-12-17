@@ -8,17 +8,16 @@ import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tamacallflow.builder.PillRegimenResponseBuilder;
 import org.motechproject.tamacallflow.ivr.TAMAIVRContextForTest;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceService;
 import org.motechproject.tamacallflow.service.DailyReminderAdherenceTrendService;
-import org.motechproject.tamadomain.builder.PillRegimenResponseBuilder;
 import org.motechproject.util.DateUtil;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class AdherenceMessageCommandTest {
