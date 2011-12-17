@@ -1,23 +1,25 @@
-package org.motechproject.tamadomain.integration.repository;
+package org.motechproject.tama.facility.integration.repository;
 
 import org.ektorp.UpdateConflictException;
 import org.junit.Test;
-import org.motechproject.tamadomain.builder.ClinicBuilder;
-import org.motechproject.tamadomain.builder.ClinicianBuilder;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.facility.builder.ClinicianBuilder;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.repository.AllClinicianIds;
+import org.motechproject.tama.facility.repository.AllClinicians;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.repository.AllCities;
 import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
-import org.motechproject.tamadomain.domain.Clinician;
-import org.motechproject.tamadomain.domain.City;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.repository.AllCities;
-import org.motechproject.tamadomain.repository.AllClinicianIds;
-import org.motechproject.tamadomain.repository.AllClinicians;
-import org.motechproject.tamadomain.repository.AllClinics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
+import org.springframework.test.context.ContextConfiguration;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
+@ContextConfiguration(locations = "classpath*:applicationFacilityContext.xml", inheritLocations = false)
 public class CliniciansTest extends SpringIntegrationTest {
 
     @Autowired
@@ -110,7 +112,7 @@ public class CliniciansTest extends SpringIntegrationTest {
 
     @Test
     public void shouldUpdateClinicianPassword() {
-       City city = City.newCity("Test");
+        City city = City.newCity("Test");
         allCities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
         allClinics.add(clinic);
@@ -118,12 +120,12 @@ public class CliniciansTest extends SpringIntegrationTest {
         Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withPassword("bar").withUserName(clinicianId).build();
         allClinicians.add(clinician);
         Clinician returnedClinician = allClinicians.findByUsername(clinicianId);
-        assertEquals("bar",returnedClinician.getPassword());
+        assertEquals("bar", returnedClinician.getPassword());
 
         returnedClinician.setPassword("foobar");
         allClinicians.updatePassword(returnedClinician);
         returnedClinician = allClinicians.findByUsername(clinicianId);
-        assertEquals("foobar",returnedClinician.getPassword());
+        assertEquals("foobar", returnedClinician.getPassword());
 
         markForDeletion(city, clinic, returnedClinician);
     }

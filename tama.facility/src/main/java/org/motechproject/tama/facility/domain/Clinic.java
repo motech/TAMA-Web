@@ -1,7 +1,8 @@
-package org.motechproject.tamadomain.domain;
+package org.motechproject.tama.facility.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamacommon.TAMAMessages;
 import org.motechproject.tamacommon.domain.CouchEntity;
@@ -118,7 +119,7 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
         @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
         private String phoneNumber;
 
-        public ClinicianContact(){
+        public ClinicianContact() {
         }
 
         public ClinicianContact(String name, String phoneNumber) {

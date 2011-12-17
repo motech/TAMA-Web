@@ -1,16 +1,18 @@
-package org.motechproject.tamadomain.integration.repository;
+package org.motechproject.tama.facility.integration.repository;
 
 import org.ektorp.DocumentNotFoundException;
 import org.junit.Test;
+import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.domain.ClinicianId;
+import org.motechproject.tama.facility.repository.AllClinicianIds;
 import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
-import org.motechproject.tamadomain.domain.Clinician;
-import org.motechproject.tamadomain.domain.ClinicianId;
-import org.motechproject.tamadomain.repository.AllClinicianIds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
+import org.springframework.test.context.ContextConfiguration;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertEquals;
 
+@ContextConfiguration(locations = "classpath*:applicationFacilityContext.xml", inheritLocations = false)
 public class ClinicianIdsTest extends SpringIntegrationTest {
 
     @Autowired
@@ -30,7 +32,7 @@ public class ClinicianIdsTest extends SpringIntegrationTest {
 
     @Test
     @ExpectedException(DocumentNotFoundException.class)
-    public void shouldRemoveClinicianId(){
+    public void shouldRemoveClinicianId() {
         Clinician clinician = new Clinician();
         clinician.setUsername("CL1");
 

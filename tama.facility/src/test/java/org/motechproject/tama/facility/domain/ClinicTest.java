@@ -1,8 +1,8 @@
-package org.motechproject.tamadomain.domain;
+package org.motechproject.tama.facility.domain;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tamadomain.testutil.ValidationUtil;
+import org.motechproject.tamacommon.util.ValidationUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -15,7 +15,7 @@ public class ClinicTest {
     private Validator validator;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }

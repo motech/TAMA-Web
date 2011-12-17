@@ -1,4 +1,4 @@
-package org.motechproject.tamadomain.testutil;
+package org.motechproject.tamacommon.util;
 
 import junit.framework.Assert;
 

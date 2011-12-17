@@ -1,19 +1,21 @@
-package org.motechproject.tamadomain.integration.repository;
+package org.motechproject.tama.facility.integration.repository;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tamadomain.builder.ClinicBuilder;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.repository.AllCities;
 import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
-import org.motechproject.tamadomain.domain.City;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.repository.AllCities;
-import org.motechproject.tamadomain.repository.AllClinics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
+@ContextConfiguration(locations = "classpath*:applicationFacilityContext.xml", inheritLocations = false)
 public class ClinicsTest extends SpringIntegrationTest {
 
     @Autowired

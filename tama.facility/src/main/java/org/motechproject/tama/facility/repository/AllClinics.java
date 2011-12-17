@@ -1,9 +1,10 @@
-package org.motechproject.tamadomain.repository;
+package org.motechproject.tama.facility.repository;
 
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.refdata.repository.AllCities;
 import org.motechproject.tamacommon.repository.AbstractCouchRepository;
-import org.motechproject.tamadomain.domain.Clinic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -25,7 +26,7 @@ public class AllClinics extends AbstractCouchRepository<Clinic> {
     @Override
     public List<Clinic> getAll() {
         List<Clinic> clinicList = super.getAll();
-        for(Clinic clinic : clinicList) {
+        for (Clinic clinic : clinicList) {
             if (!StringUtils.isEmpty(clinic.getCityId()))
                 clinic.setCity(allCities.get(clinic.getCityId()));
         }

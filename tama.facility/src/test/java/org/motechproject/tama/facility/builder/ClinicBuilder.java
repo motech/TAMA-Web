@@ -1,7 +1,7 @@
-package org.motechproject.tamadomain.builder;
+package org.motechproject.tama.facility.builder;
 
-import org.motechproject.tamadomain.domain.City;
-import org.motechproject.tamadomain.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.refdata.domain.City;
 
 import java.util.Arrays;
 
@@ -13,9 +13,8 @@ public class ClinicBuilder {
         return this.clinic;
     }
 
-
     public static ClinicBuilder startRecording() {
-        return  new ClinicBuilder();
+        return new ClinicBuilder();
     }
 
     public ClinicBuilder withId(String id) {
@@ -49,7 +48,7 @@ public class ClinicBuilder {
     }
 
     public ClinicBuilder withDefaults() {
-        Clinic.ClinicianContact contact = new Clinic.ClinicianContact("drpujari","0987654321");
+        Clinic.ClinicianContact contact = new Clinic.ClinicianContact("drpujari", "0987654321");
         this.withName("DefaultName")
                 .withPhoneNumber("1234567890")
                 .withAddress("DefaultAddress")

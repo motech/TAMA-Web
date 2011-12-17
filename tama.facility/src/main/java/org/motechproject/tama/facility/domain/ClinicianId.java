@@ -1,4 +1,4 @@
-package org.motechproject.tamadomain.domain;
+package org.motechproject.tama.facility.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tamacommon.domain.CouchEntity;

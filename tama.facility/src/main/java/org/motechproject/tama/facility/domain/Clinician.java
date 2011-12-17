@@ -1,4 +1,4 @@
-package org.motechproject.tamadomain.domain;
+package org.motechproject.tama.facility.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;

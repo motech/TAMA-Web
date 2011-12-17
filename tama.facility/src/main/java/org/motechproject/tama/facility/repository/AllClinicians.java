@@ -1,11 +1,11 @@
-package org.motechproject.tamadomain.repository;
+package org.motechproject.tama.facility.repository;
 
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.GenerateView;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
+import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tamacommon.repository.AbstractCouchRepository;
-import org.motechproject.tamadomain.domain.Clinician;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -67,7 +67,7 @@ public class AllClinicians extends AbstractCouchRepository<Clinician> {
         super.update(clinician);
     }
 
-    public void updatePassword(Clinician clinician){
+    public void updatePassword(Clinician clinician) {
         Clinician dbClinician = get(clinician.getId());
         clinician.setRevision(dbClinician.getRevision());
         clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
@@ -77,14 +77,14 @@ public class AllClinicians extends AbstractCouchRepository<Clinician> {
     @Override
     public List<Clinician> getAll() {
         List<Clinician> clinicianList = super.getAll();
-        for(Clinician clinician : clinicianList) {
+        for (Clinician clinician : clinicianList) {
             loadDependencies(clinician);
         }
         return clinicianList;
     }
 
     private void loadDependencies(Clinician clinician) {
-        if(!StringUtils.isEmpty(clinician.getClinicId())) clinician.setClinic(allClinics.get(clinician.getClinicId()));
+        if (!StringUtils.isEmpty(clinician.getClinicId())) clinician.setClinic(allClinics.get(clinician.getClinicId()));
     }
 
     @Override

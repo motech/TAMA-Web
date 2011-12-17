@@ -6,7 +6,6 @@ import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.repository.AllClinics;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

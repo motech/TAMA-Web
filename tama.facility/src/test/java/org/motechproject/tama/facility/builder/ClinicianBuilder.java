@@ -1,7 +1,7 @@
-package org.motechproject.tamadomain.builder;
+package org.motechproject.tama.facility.builder;
 
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.domain.Clinician;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinician;
 
 import java.util.Calendar;
 import java.util.Date;
