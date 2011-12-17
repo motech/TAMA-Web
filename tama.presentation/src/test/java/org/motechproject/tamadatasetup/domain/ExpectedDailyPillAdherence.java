@@ -10,7 +10,7 @@ public class ExpectedDailyPillAdherence {
     public ExpectedDailyPillAdherence(int numberOfDays, int percentage, Time morningDoseTime, Time eveningDoseTime) {
         this.percentage = percentage;
         this.dosagePerDay = (morningDoseTime == null ? 0 : 1) +
-                                    (eveningDoseTime == null ? 0 : 1);
+                (eveningDoseTime == null ? 0 : 1);
         totalNumberOfDosages = numberOfDays * dosagePerDay;
     }
 

@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static junit.framework.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
+@ContextConfiguration(locations = "classpath*:applicationCallFlowContext.xml", inheritLocations = false)
 public class IVRCallAuditsTest extends SpringIntegrationTest {
 
     @Autowired

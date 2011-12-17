@@ -5,10 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.motechproject.tamadomain.domain.City;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.repository.AllCities;
-import org.motechproject.tamadomain.repository.AllClinics;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 

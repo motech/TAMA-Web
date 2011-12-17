@@ -3,7 +3,6 @@ package org.motechproject.tamafunctional.test;
 import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
@@ -138,7 +137,7 @@ public class DialClinicianTest extends BaseIVRTest {
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 gotoShowPatientPage(patient);
-        assertEquals(Status.Suspended.toString(), showPatientPage.getStatus().trim());
+        assertEquals("Suspended adherence calls", showPatientPage.getStatus().trim());
         showPatientPage.logout();
     }
 }

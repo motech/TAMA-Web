@@ -74,7 +74,7 @@ public class HealthTipsTest extends BaseIVRTest {
         priorityMap.put("3", priority3Array);
 
         return priorityMap;
-    } 
+    }
 
     @Test
     public void shouldPlayHealthTips_WhenARTLessThan1MonthAndPatientOnDailyPill() throws IOException {
@@ -172,7 +172,7 @@ public class HealthTipsTest extends BaseIVRTest {
     }
 
     private String getHealthTipName(String audioFile) {
-        int beginIndex = audioFile.lastIndexOf(File.separator) >0 ? audioFile.lastIndexOf(File.separator) + 1: 0;
+        int beginIndex = audioFile.lastIndexOf(File.separator) > 0 ? audioFile.lastIndexOf(File.separator) + 1 : 0;
         int endIndex = audioFile.length() > 4 ? audioFile.length() - 4 : audioFile.length();
         return audioFile.substring(beginIndex, endIndex);
     }

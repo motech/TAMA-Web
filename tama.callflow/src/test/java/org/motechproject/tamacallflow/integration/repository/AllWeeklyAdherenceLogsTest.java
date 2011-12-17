@@ -13,7 +13,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
+@ContextConfiguration(locations = "classpath*:applicationCallFlowContext.xml", inheritLocations = false)
 public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
 
     @Autowired

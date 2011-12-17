@@ -8,10 +8,10 @@ import java.util.List;
 
 public class CollectDtmf {
 
-    @XStreamImplicit(itemFieldName="playaudio")
+    @XStreamImplicit(itemFieldName = "playaudio")
     private List<String> playaudios = new ArrayList<String>();
 
-    @XStreamImplicit(itemFieldName="playtext")
+    @XStreamImplicit(itemFieldName = "playtext")
     private List<String> playtexts = new ArrayList<String>();
 
     private boolean isPlayAudio;
@@ -34,13 +34,13 @@ public class CollectDtmf {
     }
 
     public List<String> responsePlayed() {
-        if(playaudios != null){
+        if (playaudios != null) {
             setPlayAudio(true);
             return playaudios;
-        }else if(playtexts != null){
+        } else if (playtexts != null) {
             setPlayText(true);
             return playtexts;
-        }else {
+        } else {
             return Collections.emptyList();
         }
     }

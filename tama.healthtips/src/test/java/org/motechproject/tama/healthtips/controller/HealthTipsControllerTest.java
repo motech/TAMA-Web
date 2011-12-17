@@ -45,7 +45,7 @@ public class HealthTipsControllerTest {
         String patientId = "patientId";
         HealthTipPropertiesForTest properties = new HealthTipPropertiesForTest();
         healthTipsController = new HealthTipsController(healthTipService, tamaIvrMessage,
-                                   callDetailRecordsService, standardResponseController, properties, tamaivrContextFactory);
+                callDetailRecordsService, standardResponseController, properties, tamaivrContextFactory);
         when(kookooIVRContext.callId()).thenReturn("34");
         when(kookooIVRContext.preferredLanguage()).thenReturn("en");
         when(kookooIVRContext.externalId()).thenReturn(patientId);

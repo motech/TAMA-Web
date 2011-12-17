@@ -9,7 +9,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 
-public class UnreadAlertsPage extends Page{
+public class UnreadAlertsPage extends Page {
 
     public static final String LIST_ALERT_PANE_ID = "_title_pl_org_motechproject_tama_domain_patientalert_id_pane";
 

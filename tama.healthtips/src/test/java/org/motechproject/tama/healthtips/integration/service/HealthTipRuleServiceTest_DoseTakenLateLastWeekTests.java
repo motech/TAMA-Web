@@ -86,7 +86,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
     }
 
     @Test
-    public void healthTip13HasPriority1WhenDoseTakenLateLastWeek(){
+    public void healthTip13HasPriority1WhenDoseTakenLateLastWeek() {
         /*When Patient Is On Daily PillReminder*/
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         /*When Patient took a dose late last week*/
@@ -108,7 +108,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
     }
 
     @Test
-    public void healthTip18HasPriority1WhenDoseTakenLateLastWeek(){
+    public void healthTip18HasPriority1WhenDoseTakenLateLastWeek() {
         /*When Patient Is On Daily PillReminder*/
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         /*When Patient took a dose late last week*/

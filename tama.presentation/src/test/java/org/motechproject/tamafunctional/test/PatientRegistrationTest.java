@@ -2,7 +2,7 @@ package org.motechproject.tamafunctional.test;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;

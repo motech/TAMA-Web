@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class UpdateAlertPage extends Page{
+public class UpdateAlertPage extends Page {
     public static final String SYMPTOMS_ALERT_STATUS_ID = "_symptomsAlertStatus_id";
     public static final String NOTES_ID = "_notes_id";
 
@@ -40,7 +40,7 @@ public class UpdateAlertPage extends Page{
 
 
     public void changeAlertStatus(String status) {
-        ((ExtendedWebElement)alertStatus).select(status);
+        ((ExtendedWebElement) alertStatus).select(status);
     }
 
     public ShowAlertPage save() {

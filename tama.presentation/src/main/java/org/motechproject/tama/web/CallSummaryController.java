@@ -2,10 +2,10 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
-import org.motechproject.tamacallflow.service.CallLogService;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.view.CallLogPreferencesFilter;
 import org.motechproject.tama.web.view.CallLogView;
+import org.motechproject.tamacallflow.service.CallLogService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -51,12 +51,12 @@ public class CallSummaryController {
         List<CallLogView> callLogViews;
         if (user.isAdministrator()) {
             callLogViews = callLogViewMapper.toCallLogView(callLogService.getLogsBetweenDates(DateUtil.newDateTime(callLogPreferencesFilter.getCallLogStartDate()),
-                           DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY).plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).
-                           plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY)));
+                    DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY).plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).
+                            plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY)));
         } else {
             callLogViews = callLogViewMapper.toCallLogView(callLogService.getByClinicId(DateUtil.newDateTime(callLogPreferencesFilter.getCallLogStartDate()),
-                           DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY).plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).
-                           plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY), user.getClinicId()));
+                    DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY).plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).
+                            plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY), user.getClinicId()));
         }
         uiModel.addAttribute("callsummary", callLogViews);
         return LIST_VIEW;

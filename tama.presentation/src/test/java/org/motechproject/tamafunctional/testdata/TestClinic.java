@@ -71,16 +71,16 @@ public class TestClinic extends TestEntity {
 
     public static TestClinic withMandatory() {
         return new TestClinic()
-                    .name(unique("DefaultName"))
-                    .phoneNumber("1234567890")
-                    .address("DefaultAddress")
-                    .city("Pune")
-                    .clinicianContact0Name("pujari")
-                    .clinicianContact0Number("1111111111")
-                    .clinicianContact1Name("pujari1")
-                    .clinicianContact1Number("2222222222")
-                    .clinicianContact2Name("pujari2")
-                    .clinicianContact2Number("3333333333");
+                .name(unique("DefaultName"))
+                .phoneNumber("1234567890")
+                .address("DefaultAddress")
+                .city("Pune")
+                .clinicianContact0Name("pujari")
+                .clinicianContact0Number("1111111111")
+                .clinicianContact1Name("pujari1")
+                .clinicianContact1Number("2222222222")
+                .clinicianContact2Name("pujari2")
+                .clinicianContact2Number("3333333333");
     }
 
     public String name() {

@@ -19,8 +19,7 @@ public class TamaWebElement implements ExtendedWebElement {
     public void click() {
         try {
             webElement.click();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             webElement.click();
         }
     }

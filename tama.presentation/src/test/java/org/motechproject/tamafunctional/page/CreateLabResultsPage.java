@@ -31,7 +31,7 @@ public class CreateLabResultsPage extends Page {
     }
 
     public ShowLabResultsPage registerNewLabResult(TestLabResult labResult) {
-        waitForDojoElementToLoad(TEST_DATE_ELEMENT,"dijitInputInner");
+        waitForDojoElementToLoad(TEST_DATE_ELEMENT, "dijitInputInner");
         enterTestData(labResult);
         results(labResult.results());
         return submit();

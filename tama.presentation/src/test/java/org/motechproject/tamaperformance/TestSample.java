@@ -31,7 +31,7 @@ public class TestSample {
     }};
 
     public TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-    
+
     private TestPatient patient1 = TestPatient.withMandatory().patientId("p1").mobileNumber("1111111111");
     private TestPatient patient2 = TestPatient.withMandatory().patientId("p2").mobileNumber("2222222222");
     private TestPatient patient3 = TestPatient.withMandatory().patientId("p3").mobileNumber("3333333333");

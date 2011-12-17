@@ -3,7 +3,7 @@ package org.motechproject.tamafunctional.testdata.ivrreponse;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.motechproject.tamacommon.util.StringUtil;
+import org.motechproject.tama.common.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class IVRResponse {
 
     private String dial;
 
-    @XStreamImplicit(itemFieldName="playaudio")
+    @XStreamImplicit(itemFieldName = "playaudio")
     private List<String> playaudios = new ArrayList<String>();
 
     private Hangup hangup;

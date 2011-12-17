@@ -116,7 +116,7 @@ public class HealthTipServiceTest {
         healthTipService.markAsPlayed(patientDocId, AUDIO_FILE);
         verify(allHealthTipsHistory).add(any(HealthTipsHistory.class));
     }
-    
+
     @Test
     public void shouldReturnEmptyStringWhenNoHealthTipsAreAvailable() {
         Mockito.doReturn(new ArrayList<String>()).when(healthTipService).getPlayList(patient.getId());

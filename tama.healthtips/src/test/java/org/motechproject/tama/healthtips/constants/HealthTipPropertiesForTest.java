@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class HealthTipPropertiesForTest extends HealthTipsProperties {
 
-    public HealthTipPropertiesForTest(){
+    public HealthTipPropertiesForTest() {
         super(new Properties());
     }
 

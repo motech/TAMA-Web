@@ -51,7 +51,7 @@ public class ClinicRegistrationPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForDojoElementToLoad("_name_id","dijitInputInner");
+        waitForDojoElementToLoad("_name_id", "dijitInputInner");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ClinicRegistrationPage extends Page {
         name.sendKeys(clinic.name());
         address.sendKeys(clinic.address());
         phoneNumber.sendKeys(clinic.phoneNumber());
-        ((ExtendedWebElement)city).select(clinic.city());
+        ((ExtendedWebElement) city).select(clinic.city());
         clinicianContact0Name.sendKeys(clinic.clinicianContact0Name());
         clinicianContact0Number.sendKeys(clinic.clinicianContact0Number());
         clinicianContact1Name.sendKeys(clinic.clinicianContact1Name());

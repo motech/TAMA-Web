@@ -32,7 +32,7 @@ public class LoginPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForDojoElementToLoad(USERNAME_ID,"dijitInputInner");
+        waitForDojoElementToLoad(USERNAME_ID, "dijitInputInner");
     }
 
     public void postInitialize() {
@@ -56,8 +56,8 @@ public class LoginPage extends Page {
         this.userName.submit();
     }
 
-    public String errorMessage(){
-      return errorMessage.getText();
+    public String errorMessage() {
+        return errorMessage.getText();
     }
 
     public ListPatientsPage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {

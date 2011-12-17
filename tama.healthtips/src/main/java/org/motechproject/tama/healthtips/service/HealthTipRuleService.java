@@ -16,17 +16,19 @@ import java.util.Map;
 
 @Component
 public class HealthTipRuleService {
-    
+
     public static class HealthTipList {
         Map<String, String> healthTips = new HashMap<String, String>();
+
         public void addHealthTip(String filename, String priority) {
             String oldPriority = healthTips.get(filename);
             if (oldPriority != null) {
                 int oldPriorityValue = Integer.valueOf(oldPriority);
-                if(Integer.valueOf(priority) >= oldPriorityValue) return;
+                if (Integer.valueOf(priority) >= oldPriorityValue) return;
             }
             healthTips.put(filename, priority);
         }
+
         public Map<String, String> getHealthTips() {
             return healthTips;
         }

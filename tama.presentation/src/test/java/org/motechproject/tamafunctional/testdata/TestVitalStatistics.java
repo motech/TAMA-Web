@@ -16,7 +16,7 @@ public class TestVitalStatistics {
         TestVitalStatistics testVitalStatistics = new TestVitalStatistics();
         return testVitalStatistics.weightInKg(new Double(60.2)).heightInCm(new Double(140)).diastolicBp(new Integer(100)).systolicBp(new Integer(50)).pulse(new Integer(72)).temperatureInFahrenheit(new Double(98.4));
     }
-    
+
     public Double weightInKg() {
         return weightInKg;
     }

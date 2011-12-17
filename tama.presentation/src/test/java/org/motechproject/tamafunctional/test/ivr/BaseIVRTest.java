@@ -2,7 +2,7 @@ package org.motechproject.tamafunctional.test.ivr;
 
 import org.junit.After;
 import org.junit.Before;
-import org.motechproject.tamacommon.util.FileUtil;
+import org.motechproject.tama.common.util.FileUtil;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyWebClient;
 import org.motechproject.tamafunctional.ivr.Caller;
@@ -41,7 +41,7 @@ public abstract class BaseIVRTest extends BaseTest {
         return new Caller(unique("sid"), patient.mobileNumber(), webClient);
     }
 
-    protected void asksForCollectDtmfWith(IVRResponse ivrResponse, String ... names) {
+    protected void asksForCollectDtmfWith(IVRResponse ivrResponse, String... names) {
         assertTrue(ivrResponse.collectDtmf());
         assertAudioFilesPresent(ivrResponse, names);
     }

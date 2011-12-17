@@ -8,7 +8,7 @@ import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 
-public class TestDrugDosage  extends TestEntity {
+public class TestDrugDosage extends TestEntity {
     public static String MORNING_DAILY = "Morning Daily";
     public static String EVENING_DAILY = "Evening Daily";
     private String dosageSchedule;

@@ -6,10 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.domain.Clinician;
-import org.motechproject.tamadomain.repository.AllClinicians;
-import org.motechproject.tamadomain.repository.AllClinics;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.repository.AllClinicians;
+import org.motechproject.tama.facility.repository.AllClinics;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -51,7 +51,7 @@ public class ClinicianControllerTest {
         String page = controller.create(clinician, bindingResult, uiModel, request);
 
         verify(bindingResult).addError(new FieldError("Clinician", "username", clinician.getUsername(), false,
-                    new String[]{"clinician_username_not_unique"}, new Object[]{}, ClinicianController.USERNAME_ALREADY_IN_USE));
+                new String[]{"clinician_username_not_unique"}, new Object[]{}, ClinicianController.USERNAME_ALREADY_IN_USE));
         verify(uiModel).addAttribute("clinician", clinician);
         assertEquals("clinicians/create", page);
     }

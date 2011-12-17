@@ -2,7 +2,6 @@ package org.motechproject.tama.security;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.security.profiles.SecurityGroup;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;

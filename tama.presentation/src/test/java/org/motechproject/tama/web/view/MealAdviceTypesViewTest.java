@@ -3,9 +3,8 @@ package org.motechproject.tama.web.view;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.MealAdviceType;
-import org.motechproject.tamadomain.repository.AllMealAdviceTypes;
-import org.motechproject.tamadomain.repository.AllMealAdviceTypes;
+import org.motechproject.tama.refdata.domain.MealAdviceType;
+import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 
 import java.util.ArrayList;
 
@@ -15,8 +14,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 
 public class MealAdviceTypesViewTest {
-
-
     private MealAdviceTypesView mealAdviceTypesView;
 
     @Mock
@@ -53,5 +50,4 @@ public class MealAdviceTypesViewTest {
         assertEquals("type1", mealAdviceTypesView.getAll().get(0).getType());
         assertEquals("Type2", mealAdviceTypesView.getAll().get(1).getType());
     }
-
 }

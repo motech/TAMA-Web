@@ -35,7 +35,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 @PrepareForTest(DateUtil.class)
-@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
+@ContextConfiguration(locations = "classpath*:applicationCallFlowContext.xml", inheritLocations = false)
 public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
 
     private static final double DOSES_IN_FOUR_WEEKS = 28.0;

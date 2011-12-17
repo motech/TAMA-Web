@@ -1,9 +1,9 @@
 package org.motechproject.tama.security.profiles;
 
+import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.repository.AllClinicians;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
-import org.motechproject.tamadomain.domain.Clinician;
-import org.motechproject.tamadomain.repository.AllClinicians;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

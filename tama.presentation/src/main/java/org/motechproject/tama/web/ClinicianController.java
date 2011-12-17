@@ -1,11 +1,11 @@
 package org.motechproject.tama.web;
 
 import org.ektorp.UpdateConflictException;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.repository.AllClinicians;
+import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.web.view.CliniciansView;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.domain.Clinician;
-import org.motechproject.tamadomain.repository.AllClinicians;
-import org.motechproject.tamadomain.repository.AllClinics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;

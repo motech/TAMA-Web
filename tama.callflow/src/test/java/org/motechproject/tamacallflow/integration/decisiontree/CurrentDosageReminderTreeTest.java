@@ -27,7 +27,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
+@ContextConfiguration(locations = "classpath*:applicationCallFlowContext.xml", inheritLocations = false)
 public class CurrentDosageReminderTreeTest {
     @Autowired
     private TestTree currentDosageReminderTree;

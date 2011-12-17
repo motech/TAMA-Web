@@ -1,11 +1,11 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.tama.patient.domain.LabResult;
+import org.motechproject.tama.patient.domain.LabResults;
+import org.motechproject.tama.patient.repository.AllLabResults;
+import org.motechproject.tama.refdata.domain.LabTest;
+import org.motechproject.tama.refdata.repository.AllLabTests;
 import org.motechproject.tama.web.model.LabResultsUIModel;
-import org.motechproject.tamadomain.domain.LabResult;
-import org.motechproject.tamadomain.domain.LabResults;
-import org.motechproject.tamadomain.domain.LabTest;
-import org.motechproject.tamadomain.repository.AllLabResults;
-import org.motechproject.tamadomain.repository.AllLabTests;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;

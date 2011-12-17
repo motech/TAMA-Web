@@ -36,12 +36,12 @@ public class CreatePatientMedicalHistorySection {
     }
 
     public void enterDetails(TestPatient patient) {
-        ((ExtendedWebElement)hivTestReason).select(patient.hivMedicalHistory().testReason());
-        ((ExtendedWebElement)modeOfTransmission).select(patient.hivMedicalHistory().modeOfTransmission());
+        ((ExtendedWebElement) hivTestReason).select(patient.hivMedicalHistory().testReason());
+        ((ExtendedWebElement) modeOfTransmission).select(patient.hivMedicalHistory().modeOfTransmission());
         arvAllergy.click();
         arvAllergyDescription.sendKeys("arvAllergyDescription");
         drdRash.click();
-        if(patient.nonHIVMedicalHistory().isBaseLinePreTherapyLowerThanTen())
+        if (patient.nonHIVMedicalHistory().isBaseLinePreTherapyLowerThanTen())
             baselineHb.click();
 
         nextToPatientPreferences.click();

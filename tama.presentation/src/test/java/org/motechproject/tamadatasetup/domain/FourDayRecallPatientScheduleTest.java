@@ -2,7 +2,6 @@ package org.motechproject.tamadatasetup.domain;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.motechproject.model.Time;
 
 import static junit.framework.Assert.assertEquals;

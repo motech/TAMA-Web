@@ -24,7 +24,7 @@ public class HomeControllerTest {
     private AuthenticatedUser authenticatedUser;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         initMocks(this);
         when(httpServletRequest.getSession()).thenReturn(httpSession);
         when(httpSession.getAttribute("loggedInUser")).thenReturn(authenticatedUser);

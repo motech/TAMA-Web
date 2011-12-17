@@ -3,12 +3,17 @@ package org.motechproject.tama.web.mapper;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tamadomain.builder.RegimenBuilder;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllRegimens;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.refdata.builder.RegimenBuilder;
+import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 
 import java.util.ArrayList;
@@ -39,10 +44,10 @@ public class TreatmentAdviceViewMapperTest {
         Patient patient = PatientBuilder.startRecording().withPatientId("patientId").build();
         DrugCompositionGroup group = new ArrayList<DrugCompositionGroup>(regimen.getDrugCompositionGroups()).get(0);
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording()
-                                                                .withRegimenId(regimen.getId())
-                                                                .withDrugCompositionGroupId(group.getId())
-                                                                .withPatientId(patient.getId())
-                                                                  .build();
+                .withRegimenId(regimen.getId())
+                .withDrugCompositionGroupId(group.getId())
+                .withPatientId(patient.getId())
+                .build();
         when(allTreatmentAdvices.get("treatmentAdviceId")).thenReturn(treatmentAdvice);
         when(allPatients.get(patient.getId())).thenReturn(patient);
         when(allRegimens.get(regimen.getId())).thenReturn(regimen);
@@ -58,21 +63,21 @@ public class TreatmentAdviceViewMapperTest {
     }
 
     @Test
-    public void shouldShowChangeRegimenButtonIfPatientIsActive(){
+    public void shouldShowChangeRegimenButtonIfPatientIsActive() {
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
         treatmentAdviceView.setPatientStatus(Status.Active);
         assertTrue(treatmentAdviceView.getShowChangeRegimenButton());
     }
 
     @Test
-    public void shouldNotShowChangeRegimenButtonIfPatientIsInActive(){
+    public void shouldNotShowChangeRegimenButtonIfPatientIsInActive() {
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
         treatmentAdviceView.setPatientStatus(Status.Inactive);
         assertFalse(treatmentAdviceView.getShowChangeRegimenButton());
     }
 
     @Test
-    public void shouldNotShowChangeRegimenButtonIfPatientIsSuspended(){
+    public void shouldNotShowChangeRegimenButtonIfPatientIsSuspended() {
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
         treatmentAdviceView.setPatientStatus(Status.Suspended);
         assertFalse(treatmentAdviceView.getShowChangeRegimenButton());

@@ -53,7 +53,7 @@ public class AlertsController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String update(Model uiModel, String alertId, String symptomsAlertStatus, String notes, String doctorsNotes,  String type, HttpServletRequest request) {
+    public String update(Model uiModel, String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String type, HttpServletRequest request) {
         try {
             patientAlertService.updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes, type);
             uiModel.asMap().clear();

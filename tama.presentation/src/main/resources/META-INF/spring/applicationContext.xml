@@ -7,7 +7,7 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tama"/>
-    <import resource="classpath:applicationContext-TAMACallFlow.xml"/>
+    <import resource="classpath:applicationCallFlowContext.xml"/>
     <import resource="classpath:applicationHealthTipsContext.xml"/>
     <import resource="classpath:/placeholderPluginContext.xml"/>
 </beans>

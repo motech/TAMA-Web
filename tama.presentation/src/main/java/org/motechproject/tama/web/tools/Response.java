@@ -16,10 +16,10 @@ public class Response {
 
     private String dial;
 
-    @XStreamImplicit(itemFieldName="playaudio")
+    @XStreamImplicit(itemFieldName = "playaudio")
     private List<String> playaudios = new ArrayList<String>();
 
-    @XStreamImplicit(itemFieldName="playtext")
+    @XStreamImplicit(itemFieldName = "playtext")
     private List<String> playtexts = new ArrayList<String>();
 
     private CollectDtmf collectdtmf;
@@ -41,21 +41,20 @@ public class Response {
     public List<String> responsePlayed() {
         if (collectDtmf()) {
             List<String> responsesPlayed = collectdtmf.responsePlayed();
-            if(collectdtmf.isPlayAudio()){
+            if (collectdtmf.isPlayAudio()) {
                 return parsePlayedResponsesToFormat(responsesPlayed);
-            }
-            else{
+            } else {
                 return responsesPlayed;
             }
         }
         return getResponsesPlayed();
     }
 
-    private List<String> getResponsesPlayed(){
-        if(playaudios!= null && !playaudios.isEmpty()){
+    private List<String> getResponsesPlayed() {
+        if (playaudios != null && !playaudios.isEmpty()) {
             return parsePlayedResponsesToFormat(playaudios);
         }
-        if(playtexts!= null && !playtexts.isEmpty()){
+        if (playtexts != null && !playtexts.isEmpty()) {
             return playtexts;
         }
         return Collections.emptyList();
@@ -64,8 +63,8 @@ public class Response {
     private List<String> parsePlayedResponsesToFormat(List<String> playAudios) {
         List<String> parsedResponses = new ArrayList<String>();
         String responseToBeDisplayed;
-        for(String responsePlayed : playAudios){
-            responseToBeDisplayed = responsePlayed.substring(responsePlayed.lastIndexOf(LEFT_BOUNDING_SUBSEQUENCE)+ EXCLUDING_FACTOR, responsePlayed.indexOf(RIGHT_BOUNDING_SUBSEQUENCE));
+        for (String responsePlayed : playAudios) {
+            responseToBeDisplayed = responsePlayed.substring(responsePlayed.lastIndexOf(LEFT_BOUNDING_SUBSEQUENCE) + EXCLUDING_FACTOR, responsePlayed.indexOf(RIGHT_BOUNDING_SUBSEQUENCE));
             parsedResponses.add(responseToBeDisplayed);
         }
         return parsedResponses;

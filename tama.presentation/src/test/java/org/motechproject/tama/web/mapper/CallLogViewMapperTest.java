@@ -3,11 +3,11 @@ package org.motechproject.tama.web.mapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.tamacallflow.domain.CallLog;
-import org.motechproject.tamadomain.builder.ClinicBuilder;
-import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class CallLogViewMapperTest {
     }
 
     @Test
-    public void shouldSetClinicName(){
+    public void shouldSetClinicName() {
         List<CallLog> callLogs = createCallLogs();
 
         when(allPatients.get("patientDocumentId")).thenReturn(PatientBuilder.startRecording().withPatientId("patientId").withClinic(ClinicBuilder.startRecording().withName("clinic").build()).build());
@@ -78,12 +78,16 @@ public class CallLogViewMapperTest {
     }
 
     @Test
-    public void shouldMapCallLogs_WhenPatientIsNotAuthenticated(){
-        List<CallLog> callLogs = new ArrayList<CallLog>(){{add(new CallLog() {{
-            setLikelyPatientIds(new ArrayList<String>() {{add("patientDocumentId");}});
-            setStartTime(DateUtil.now());
-            setEndTime(DateUtil.now().plusMinutes(2));
-        }});}};
+    public void shouldMapCallLogs_WhenPatientIsNotAuthenticated() {
+        List<CallLog> callLogs = new ArrayList<CallLog>() {{
+            add(new CallLog() {{
+                setLikelyPatientIds(new ArrayList<String>() {{
+                    add("patientDocumentId");
+                }});
+                setStartTime(DateUtil.now());
+                setEndTime(DateUtil.now().plusMinutes(2));
+            }});
+        }};
 
         when(allPatients.get("patientDocumentId")).thenReturn(PatientBuilder.startRecording().withPatientId("patientId").withClinic(ClinicBuilder.startRecording().withName("clinic").build()).build());
 
@@ -93,11 +97,13 @@ public class CallLogViewMapperTest {
     }
 
     @Test
-    public void shouldMapCallLogs_WhenPatientIsNotRegistered(){
-        List<CallLog> callLogs = new ArrayList<CallLog>(){{add(new CallLog() {{
-            setPatientDocumentId(null);
-            setLikelyPatientIds(new ArrayList<String>());
-        }});}};
+    public void shouldMapCallLogs_WhenPatientIsNotRegistered() {
+        List<CallLog> callLogs = new ArrayList<CallLog>() {{
+            add(new CallLog() {{
+                setPatientDocumentId(null);
+                setLikelyPatientIds(new ArrayList<String>());
+            }});
+        }};
 
         List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(callLogs);
         assertEquals(0, callLogViews.size());

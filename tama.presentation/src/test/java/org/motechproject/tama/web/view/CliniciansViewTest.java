@@ -3,9 +3,9 @@ package org.motechproject.tama.web.view;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.builder.ClinicianBuilder;
-import org.motechproject.tamadomain.domain.Clinician;
-import org.motechproject.tamadomain.repository.AllClinicians;
+import org.motechproject.tama.facility.builder.ClinicianBuilder;
+import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.repository.AllClinicians;
 
 import java.util.ArrayList;
 

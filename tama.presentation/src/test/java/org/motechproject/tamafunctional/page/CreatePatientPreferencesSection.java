@@ -35,7 +35,7 @@ public class CreatePatientPreferencesSection {
         passcode.sendKeys(String.valueOf(patient.patientPreferences().passcode()));
         if (patient.patientPreferences().callPreference().equals(TestPatientPreferences.CallPreference.WEEKLY_CALL)) {
             weeklyReminderCall.click();
-            ((ExtendedWebElement)dayOfWeeklyCall).select(patient.patientPreferences().dayOfWeeklyCall());
+            ((ExtendedWebElement) dayOfWeeklyCall).select(patient.patientPreferences().dayOfWeeklyCall());
             bestCallTime.sendKeys(patient.patientPreferences().bestCallTime());
         }
     }

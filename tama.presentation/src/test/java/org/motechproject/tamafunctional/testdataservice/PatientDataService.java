@@ -78,12 +78,12 @@ public class PatientDataService extends EntityDataService {
     public TestVitalStatistics getInitialVitalStatistics(TestPatient patient, TestClinician clinician) {
         ShowVitalStatisticsPage showVitalStatisticsPage = viewPatient(patient, clinician).goToShowVitalStatisticsPage();
         TestVitalStatistics testVitalStatistics = new TestVitalStatistics()
-                                                        .weightInKg(showVitalStatisticsPage.getWeight())
-                                                        .heightInCm(showVitalStatisticsPage.getHeight())
-                                                        .systolicBp(showVitalStatisticsPage.getSystolicBp())
-                                                        .diastolicBp(showVitalStatisticsPage.getDiastolicBp())
-                                                        .temperatureInFahrenheit(showVitalStatisticsPage.getTemperature())
-                                                        .pulse(showVitalStatisticsPage.getPulse());
+                .weightInKg(showVitalStatisticsPage.getWeight())
+                .heightInCm(showVitalStatisticsPage.getHeight())
+                .systolicBp(showVitalStatisticsPage.getSystolicBp())
+                .diastolicBp(showVitalStatisticsPage.getDiastolicBp())
+                .temperatureInFahrenheit(showVitalStatisticsPage.getTemperature())
+                .pulse(showVitalStatisticsPage.getPulse());
         showVitalStatisticsPage.logout();
         return testVitalStatistics;
     }

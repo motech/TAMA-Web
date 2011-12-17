@@ -41,16 +41,15 @@ public class SetupAdherenceLogs {
         int nthDosageThatWillNotBeTaken = Integer.parseInt(args[3]);
         if (patient.getPatientPreferences().getCallPreference() == CallPreference.DailyPillReminder) {
             createAdherenceForDailyReminderPatient(fromDate, toDate, allDosageAdherenceLogs, patient, context, nthDosageThatWillNotBeTaken);
-        }
-        else if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
+        } else if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
             log.info("Patient is on four-day recall.");
-            if (nthDosageThatWillNotBeTaken>=0 && nthDosageThatWillNotBeTaken<=4){
+            if (nthDosageThatWillNotBeTaken >= 0 && nthDosageThatWillNotBeTaken <= 4) {
                 createAdherenceForFourDayRecallPatient(fromDate, toDate, patient, context, nthDosageThatWillNotBeTaken);
-            }  else {
+            } else {
                 log.warning("Invalid number of days missed, valid range [0-4]");
             }
         }
-        
+
         System.exit(0);
     }
 
@@ -59,11 +58,11 @@ public class SetupAdherenceLogs {
         AllTreatmentAdvices allTreatmentAdvices = context.getBean(AllTreatmentAdvices.class);
         String treatmentAdviceDocId = allTreatmentAdvices.currentTreatmentAdvice(patientId).getId();
 
-        FourDayRecallService fourDayRecallService = (FourDayRecallService)context.getBean("fourDayRecallService");
+        FourDayRecallService fourDayRecallService = (FourDayRecallService) context.getBean("fourDayRecallService");
         AllWeeklyAdherenceLogs allWeeklyAdherenceLogs = context.getBean(AllWeeklyAdherenceLogs.class);
 
         final DateTimeSource originalSource = DateTimeSourceUtil.SourceInstance;
-        for (; fromDate.isBefore(toDate); fromDate = fromDate.plusWeeks(1)){
+        for (; fromDate.isBefore(toDate); fromDate = fromDate.plusWeeks(1)) {
             final DateTime refDate = DateUtil.newDateTime(fromDate.toDate());
             DateTimeSourceUtil.SourceInstance = new DateTimeSource() {
                 @Override
@@ -85,11 +84,11 @@ public class SetupAdherenceLogs {
             allWeeklyAdherenceLogs.add(adherenceLog);
         }
 
-        log.info("Adherence % for previous week "  + fourDayRecallService.getAdherencePercentageForPreviousWeek(patientId));
+        log.info("Adherence % for previous week " + fourDayRecallService.getAdherencePercentageForPreviousWeek(patientId));
     }
 
     private static void createAdherenceForDailyReminderPatient(LocalDate fromDate, LocalDate toDate, AllDosageAdherenceLogs allDosageAdherenceLogs, Patient patient, ApplicationContext context, int nthDosageThatWillNotBeTaken) {
-        PillReminderService pillReminderService = (PillReminderService)context.getBean("pillReminderService");
+        PillReminderService pillReminderService = (PillReminderService) context.getBean("pillReminderService");
         final PillRegimenResponse pillRegimen = pillReminderService.getPillRegimen(patient.getId());
 
 

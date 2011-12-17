@@ -3,9 +3,9 @@ package org.motechproject.tama.web.view;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.builder.ClinicBuilder;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.repository.AllClinics;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
 
 import java.util.ArrayList;
 
@@ -15,8 +15,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 
 public class ClinicsViewTest {
-
-
     private ClinicsView clinicsView;
 
     @Mock

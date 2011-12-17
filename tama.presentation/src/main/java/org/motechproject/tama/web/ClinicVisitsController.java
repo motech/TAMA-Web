@@ -1,7 +1,7 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;

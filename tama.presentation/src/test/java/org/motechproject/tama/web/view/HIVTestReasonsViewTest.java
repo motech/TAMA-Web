@@ -3,9 +3,8 @@ package org.motechproject.tama.web.view;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.HIVTestReason;
-import org.motechproject.tamadomain.repository.AllHIVTestReasons;
-import org.motechproject.tamadomain.repository.AllHIVTestReasons;
+import org.motechproject.tama.refdata.domain.HIVTestReason;
+import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 
 import java.util.ArrayList;
 
@@ -33,8 +32,12 @@ public class HIVTestReasonsViewTest {
 
         when(HIVTestReasons.getAll()).thenReturn(new ArrayList<HIVTestReason>() {
             {
-                add(new HIVTestReason(){{setName("reason2");}});
-                add(new HIVTestReason(){{setName("reason1");}});
+                add(new HIVTestReason() {{
+                    setName("reason2");
+                }});
+                add(new HIVTestReason() {{
+                    setName("reason1");
+                }});
             }
         });
         assertEquals("reason1", HIVTestReasonsView.getAll().get(0).getName());
@@ -45,8 +48,12 @@ public class HIVTestReasonsViewTest {
     public void shouldIgnoreCaseWhenSorting() {
         when(HIVTestReasons.getAll()).thenReturn(new ArrayList<HIVTestReason>() {
             {
-                add(new HIVTestReason(){{setName("Reason2");}});
-                add(new HIVTestReason(){{setName("reason1");}});
+                add(new HIVTestReason() {{
+                    setName("Reason2");
+                }});
+                add(new HIVTestReason() {{
+                    setName("reason1");
+                }});
             }
         });
         assertEquals("reason1", HIVTestReasonsView.getAll().get(0).getName());

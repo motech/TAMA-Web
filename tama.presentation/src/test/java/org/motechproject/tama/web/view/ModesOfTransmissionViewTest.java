@@ -3,8 +3,8 @@ package org.motechproject.tama.web.view;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.ModeOfTransmission;
-import org.motechproject.tamadomain.repository.AllModesOfTransmission;
+import org.motechproject.tama.refdata.domain.ModeOfTransmission;
+import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 
 public class ModesOfTransmissionViewTest {
-
 
     private ModesOfTransmissionView modesOfTransmissionView;
 
@@ -32,8 +31,12 @@ public class ModesOfTransmissionViewTest {
 
         when(modesOfTransmission.getAll()).thenReturn(new ArrayList<ModeOfTransmission>() {
             {
-                add(new ModeOfTransmission(){{setType("type2");}});
-                add(new ModeOfTransmission(){{setType("type1");}});
+                add(new ModeOfTransmission() {{
+                    setType("type2");
+                }});
+                add(new ModeOfTransmission() {{
+                    setType("type1");
+                }});
             }
         });
         assertEquals("type1", modesOfTransmissionView.getAll().get(0).getType());
@@ -45,12 +48,15 @@ public class ModesOfTransmissionViewTest {
 
         when(modesOfTransmission.getAll()).thenReturn(new ArrayList<ModeOfTransmission>() {
             {
-                add(new ModeOfTransmission(){{setType("Type2");}});
-                add(new ModeOfTransmission(){{setType("type1");}});
+                add(new ModeOfTransmission() {{
+                    setType("Type2");
+                }});
+                add(new ModeOfTransmission() {{
+                    setType("type1");
+                }});
             }
         });
         assertEquals("type1", modesOfTransmissionView.getAll().get(0).getType());
         assertEquals("Type2", modesOfTransmissionView.getAll().get(1).getType());
     }
-
 }

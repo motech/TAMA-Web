@@ -7,9 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CollectDtmf {
-    @XStreamImplicit(itemFieldName="playaudio")
+    @XStreamImplicit(itemFieldName = "playaudio")
     private List<String> playaudios = new ArrayList<String>();
-    @XStreamImplicit(itemFieldName="playtext")
+    @XStreamImplicit(itemFieldName = "playtext")
     private List<String> playtexts = new ArrayList<String>();
 
     public boolean hasAudio(String... audioResourceNames) {

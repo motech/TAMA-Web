@@ -2,7 +2,6 @@ package org.motechproject.tamafunctional.test;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
@@ -24,10 +23,10 @@ public class PatientActivationTest extends BaseTest {
                 goToPatientRegistrationPage().
                 registerNewPatient(patient);
 
-        Assert.assertEquals(showPatientPage.getStatus().trim(), Status.Inactive.toString());
+        Assert.assertEquals("Inactive", showPatientPage.getStatus().trim());
 
         ShowPatientPage pageAfterActivation = showPatientPage.activatePatient();
-        Assert.assertEquals(pageAfterActivation.getStatus().trim(), Status.Active.toString());
+        Assert.assertEquals("Active", pageAfterActivation.getStatus().trim());
 
         pageAfterActivation.logout();
     }

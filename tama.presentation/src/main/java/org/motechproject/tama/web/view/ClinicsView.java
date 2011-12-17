@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.view;
 
 
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.repository.AllClinics;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ public class ClinicsView {
 
     private final AllClinics allClinics;
 
-    public ClinicsView(AllClinics allClinics){
+    public ClinicsView(AllClinics allClinics) {
         this.allClinics = allClinics;
     }
 

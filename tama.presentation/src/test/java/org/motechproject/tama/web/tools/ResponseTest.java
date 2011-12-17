@@ -7,7 +7,6 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 public class ResponseTest {
-
     @Test
     public void shouldPlayAudiosInCollectDtmf() {
         Response ivrResponse = KooKooResponseParser.fromXml("<response sid=\"123\"><collectdtmf><playaudio>foo.wav</playaudio><playaudio>bar.wav</playaudio></collectdtmf></response>");

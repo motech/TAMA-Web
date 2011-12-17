@@ -3,8 +3,8 @@ package org.motechproject.tama.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.VitalStatistics;
-import org.motechproject.tamadomain.repository.AllVitalStatistics;
+import org.motechproject.tama.patient.domain.VitalStatistics;
+import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 

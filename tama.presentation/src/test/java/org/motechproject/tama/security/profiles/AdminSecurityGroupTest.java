@@ -3,8 +3,8 @@ package org.motechproject.tama.security.profiles;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.Administrator;
-import org.motechproject.tamadomain.repository.AllAdministrators;
+import org.motechproject.tama.refdata.domain.Administrator;
+import org.motechproject.tama.refdata.repository.AllAdministrators;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.Role;
 

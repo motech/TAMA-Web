@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+    <http auto-config="false" use-expressions="true"
+          entry-point-ref="ajaxAwareAuthenticationProcessingFilterEntryPoint">
+        <form-login login-processing-url="/resources/j_spring_security_check"
+                    login-page="/login"
+                    authentication-failure-url="/login?login_error=t"
+                    authentication-success-handler-ref="loginSuccessHandler"/>
+        <logout logout-url="/resources/j_spring_security_logout" logout-success-url="/login" invalidate-session="true"/>
+
+        <!-- Only admin -->
+        <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/clinicians/**" access="hasRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/upload/**" access="hasRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/setClinicianPassword/**" access="hasAnyRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/security/resetClinicianPassword/**" access="hasAnyRole('ADMIN')"
+                       requires-channel="any"/>
+
+
+        <!-- Only clinicians -->
+        <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+        <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST"
+                       requires-channel="any"/>
+        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+        <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+        <intercept-url pattern="/labresults/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+        <intercept-url pattern="/vital_statistics/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+        <intercept-url pattern="/alerts/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+
+        <!-- Both admin and clinicians -->
+        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+        <intercept-url pattern="/changePassword/**"
+                       access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/passwordReset/**"
+                       access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
+                       requires-channel="any"/>
+
+        <!-- None -->
+        <intercept-url pattern="/patients/**" method="DELETE" access="denyAll" requires-channel="any"/>
+    </http>
+
+    <beans:bean name="authenticationProvider" class="org.motechproject.tama.security.AuthenticationProvider">
+        <beans:constructor-arg>
+            <beans:list>
+                <beans:ref bean="clinicianSecurityGroup"/>
+                <beans:ref bean="adminSecurityGroup"/>
+            </beans:list>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="authenticationProvider"/>
+    </authentication-manager>
+
+    <beans:bean id="ajaxAwareAuthenticationProcessingFilterEntryPoint"
+                class="org.motechproject.tama.security.AjaxAwareAuthenticationEntryPoint">
+        <beans:property name="loginFormUrl" value="/login"/>
+        <beans:property name="forceHttps" value="false"/>
+    </beans:bean>
+
+</beans:beans>

@@ -29,7 +29,7 @@ public class HealthTipParams {
         return new Period(treatmentStartDate, DateUtil.today(), PeriodType.weeks()).getWeeks();
     }
 
-    public void treatmentAdviceStartDate(LocalDate treatmentAdviceStartDate){
+    public void treatmentAdviceStartDate(LocalDate treatmentAdviceStartDate) {
         treatmentStartDate = treatmentAdviceStartDate;
     }
 
@@ -41,7 +41,7 @@ public class HealthTipParams {
         return dosageMissedLastWeek;
     }
 
-    public boolean isAnyDoseTakenLateLastWeek(){
+    public boolean isAnyDoseTakenLateLastWeek() {
         return anyDoseTakenLateLastWeek;
     }
 
@@ -49,7 +49,7 @@ public class HealthTipParams {
         this.lastCD4TestDate = lastCD4TestDate;
     }
 
-    public int numberOfWeeksSinceLastCD4LabTest(){
+    public int numberOfWeeksSinceLastCD4LabTest() {
         return new Period(lastCD4TestDate, DateUtil.today(), PeriodType.weeks()).getWeeks();
     }
 

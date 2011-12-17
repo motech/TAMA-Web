@@ -1,15 +1,14 @@
 package org.motechproject.tamafunctional.page;
 
-import org.motechproject.tamafunctional.page.Page;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class SetPasswordSuccessPage extends Page{
+public class SetPasswordSuccessPage extends Page {
 
     public final String successMessage = "successMessage";
-    
+
     @FindBy(how = How.ID, using = successMessage)
     WebElement successMessageDiv;
 

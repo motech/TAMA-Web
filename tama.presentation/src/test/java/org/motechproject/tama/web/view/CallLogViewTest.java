@@ -28,7 +28,10 @@ public class CallLogViewTest {
         CallLog callLog = setUpCallLogs();
 
         callLog.setCallDirection(CallDirection.Outbound);
-        callLogView = new CallLogView(null, callLog, "clinicName", new ArrayList<String>(){{add("P1");add("P2");}});
+        callLogView = new CallLogView(null, callLog, "clinicName", new ArrayList<String>() {{
+            add("P1");
+            add("P2");
+        }});
 
         assertEquals("Tama called P1 or P2 || Clinic :clinicName", callLogView.getTitle());
     }
@@ -48,13 +51,15 @@ public class CallLogViewTest {
         CallLog callLog = setUpCallLogs();
 
         callLog.setCallDirection(CallDirection.Inbound);
-        callLogView = new CallLogView(null, callLog, "clinicName", new ArrayList<String>(){{add("P1");}});
+        callLogView = new CallLogView(null, callLog, "clinicName", new ArrayList<String>() {{
+            add("P1");
+        }});
 
         assertEquals("P1 called Tama || Clinic :clinicName", callLogView.getTitle());
     }
 
     @Test
-    public void shouldFormatDateToRemove_IST_And_Time(){
+    public void shouldFormatDateToRemove_IST_And_Time() {
         CallLog callLog = setUpCallLogs();
 
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());

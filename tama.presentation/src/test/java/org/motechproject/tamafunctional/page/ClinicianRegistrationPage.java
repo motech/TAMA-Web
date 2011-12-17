@@ -38,7 +38,7 @@ public class ClinicianRegistrationPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForDojoElementToLoad("_name_id","dijitInputInner");
+        waitForDojoElementToLoad("_name_id", "dijitInputInner");
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ClinicianRegistrationPage extends Page {
         alternateContactNumber.sendKeys(clinician.alternateContactNumber());
         password.sendKeys(clinician.password());
         TestClinic clinic = clinician.clinic();
-        ((ExtendedWebElement)clinicElement).select(new StringBuilder().append(clinic.name()).append(", ").append(clinic.city()).toString());
+        ((ExtendedWebElement) clinicElement).select(new StringBuilder().append(clinic.name()).append(", ").append(clinic.city()).toString());
         name.submit();
         return MyPageFactory.initElements(webDriver, ShowClinicianPage.class);
     }

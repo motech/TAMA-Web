@@ -11,7 +11,7 @@ public class DeleteAllWeeklyAdherenceLogs {
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
         AllWeeklyAdherenceLogs allWeeklyAdherenceLogs = applicationContext.getBean(AllWeeklyAdherenceLogs.class);
-        for (WeeklyAdherenceLog log : allWeeklyAdherenceLogs.getAll() ){
+        for (WeeklyAdherenceLog log : allWeeklyAdherenceLogs.getAll()) {
             allWeeklyAdherenceLogs.remove(log);
         }
     }

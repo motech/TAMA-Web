@@ -21,13 +21,13 @@ import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
-public class CallLogsTest extends BaseIVRTest{
+public class CallLogsTest extends BaseIVRTest {
 
     @Autowired
     private ScheduledJobDataService scheduledJobDataService;
 
     @Test
-    public void shouldLogCallLogForPillReminderCall(){
+    public void shouldLogCallLogForPillReminderCall() {
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));

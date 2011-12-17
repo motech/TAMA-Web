@@ -46,7 +46,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     PillReminderService pillReminderService;
     @Autowired
     private StatelessKnowledgeSession healthTipsSession;
-    
+
     private Patient patient;
     private LabResults labResults;
     HealthTipRuleService healthTipRuleService;

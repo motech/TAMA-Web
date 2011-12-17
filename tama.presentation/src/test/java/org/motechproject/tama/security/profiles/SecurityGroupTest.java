@@ -14,8 +14,8 @@ public class SecurityGroupTest {
         for (GrantedAuthority authority : authorities) {
             boolean contained = false;
             for (Role expectedRole : expectedRoles) {
-               if(authority.getAuthority().equals(expectedRole.name()))
-                   contained = true;
+                if (authority.getAuthority().equals(expectedRole.name()))
+                    contained = true;
             }
             assertTrue(contained);
         }

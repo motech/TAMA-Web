@@ -1,7 +1,7 @@
 package org.motechproject.tamafunctional.testdata.ivrreponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.tamacommon.util.StringUtil;
+import org.motechproject.tama.common.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,13 +7,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.internal.verification.Times;
+import org.motechproject.tama.common.TamaException;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.Gender;
+import org.motechproject.tama.refdata.repository.AllGenders;
+import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
+import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tamacallflow.service.PatientService;
-import org.motechproject.tamacommon.TamaException;
-import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -61,7 +69,7 @@ public class PatientControllerTest {
     @Mock
     private PatientService patientService;
     @Mock
-	private TamaSchedulerService schedulerService;
+    private TamaSchedulerService schedulerService;
 
     @Before
     public void setUp() {
@@ -178,9 +186,9 @@ public class PatientControllerTest {
     public void shouldCreateAPatientIfThereAreNoErrors() {
         String clinicId = "456";
         Patient patientFromUI = mock(Patient.class);
-        when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences(){{
-                                                        setCallPreference(CallPreference.DailyPillReminder);
-                                                    }});
+        when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
+            setCallPreference(CallPreference.DailyPillReminder);
+        }});
         BindingResult bindingResult = mock(BindingResult.class);
         Map<String, Object> modelMap = new HashMap<String, Object>();
         modelMap.put("dummyKey", "dummyValue");
@@ -261,8 +269,8 @@ public class PatientControllerTest {
     public void shouldUpdatePatient() {
         Patient patientFromUI = mock(Patient.class);
         when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
-                    setCallPreference(CallPreference.DailyPillReminder);
-                }});
+            setCallPreference(CallPreference.DailyPillReminder);
+        }});
         when(patientFromUI.getId()).thenReturn("123");
         BindingResult bindingResult = mock(BindingResult.class);
         Map<String, Object> modelMap = new HashMap<String, Object>();
@@ -278,12 +286,12 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void shouldReactivatePatient(){
+    public void shouldReactivatePatient() {
         String patientId = "patientId";
         SuspendedAdherenceData suspendedAdherenceData = new SuspendedAdherenceData();
         suspendedAdherenceData.setAdherenceDataWhenPatientWasSuspended(SuspendedAdherenceData.DosageStatusWhenSuspended.DOSE_NOT_TAKEN);
 
-        controller.reactivatePatient(patientId, suspendedAdherenceData,uiModel, request);
+        controller.reactivatePatient(patientId, suspendedAdherenceData, uiModel, request);
         verify(patientService, times(1)).reActivate(patientId, suspendedAdherenceData);
     }
 

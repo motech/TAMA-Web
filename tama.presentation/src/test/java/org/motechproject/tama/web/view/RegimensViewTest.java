@@ -3,9 +3,9 @@ package org.motechproject.tama.web.view;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.builder.RegimenBuilder;
-import org.motechproject.tamadomain.domain.Regimen;
-import org.motechproject.tamadomain.repository.AllRegimens;
+import org.motechproject.tama.refdata.builder.RegimenBuilder;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 
 public class RegimensViewTest {
-
 
     private RegimensView regimensView;
 
@@ -53,5 +52,4 @@ public class RegimensViewTest {
         assertEquals("regimen1", regimensView.getAll().get(0).getDisplayName());
         assertEquals("Regimen2", regimensView.getAll().get(1).getDisplayName());
     }
-
 }

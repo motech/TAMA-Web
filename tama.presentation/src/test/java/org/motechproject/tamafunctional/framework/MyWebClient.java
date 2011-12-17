@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public class MyWebClient extends FunctionalTestObject{
+public class MyWebClient extends FunctionalTestObject {
     private WebClient webClient;
 
     public MyWebClient() {

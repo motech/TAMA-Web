@@ -36,7 +36,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 @PrepareForTest(DateUtil.class)
-@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
+@ContextConfiguration(locations = "classpath*:applicationCallFlowContext.xml", inheritLocations = false)
 public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest {
 
     @Mock

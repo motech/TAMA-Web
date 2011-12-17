@@ -1,7 +1,7 @@
 package org.motechproject.tamafunctional.testdata;
 
 import org.joda.time.LocalDate;
-import org.motechproject.tamacommon.util.UniqueMobileNumber;
+import org.motechproject.tama.common.util.UniqueMobileNumber;
 import org.motechproject.util.DateUtil;
 
 public class TestPatient extends TestEntity {

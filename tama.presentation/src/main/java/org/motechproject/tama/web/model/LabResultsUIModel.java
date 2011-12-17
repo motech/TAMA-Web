@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.model;
 
-import org.motechproject.tamadomain.domain.LabResults;
+import org.motechproject.tama.patient.domain.LabResults;
 
 import javax.validation.Valid;
 

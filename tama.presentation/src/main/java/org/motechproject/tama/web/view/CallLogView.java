@@ -51,7 +51,7 @@ public class CallLogView {
         return callDateFromCallLogDateTime;
     }
 
-    public void setCallDateFromCallLogDateTime(){
+    public void setCallDateFromCallLogDateTime() {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE MMM dd YYYY");
         callDateFromCallLogDateTime = formatter.print(callLog.getStartTime());
     }

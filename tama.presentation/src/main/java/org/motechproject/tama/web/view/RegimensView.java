@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.view;
 
 
-import org.motechproject.tamadomain.domain.Regimen;
-import org.motechproject.tamadomain.repository.AllRegimens;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ public class RegimensView {
 
     private final AllRegimens allRegimens;
 
-    public RegimensView(AllRegimens allRegimens){
+    public RegimensView(AllRegimens allRegimens) {
         this.allRegimens = allRegimens;
     }
 

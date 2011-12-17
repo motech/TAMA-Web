@@ -19,7 +19,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
-@ContextConfiguration(locations = "classpath*:applicationContext-TAMACallFlow.xml", inheritLocations = false)
+@ContextConfiguration(locations = "classpath*:applicationCallFlowContext.xml", inheritLocations = false)
 public class DosageAdherenceLogsTest extends SpringIntegrationTest {
     @Autowired
     private AllDosageAdherenceLogs allDosageAdherenceLogs;

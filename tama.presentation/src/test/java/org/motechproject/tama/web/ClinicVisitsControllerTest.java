@@ -3,9 +3,9 @@ package org.motechproject.tama.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 

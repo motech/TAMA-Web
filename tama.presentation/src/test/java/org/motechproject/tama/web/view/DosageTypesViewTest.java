@@ -3,8 +3,8 @@ package org.motechproject.tama.web.view;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamadomain.domain.DosageType;
-import org.motechproject.tamadomain.repository.AllDosageTypes;
+import org.motechproject.tama.refdata.domain.DosageType;
+import org.motechproject.tama.refdata.repository.AllDosageTypes;
 
 import java.util.ArrayList;
 

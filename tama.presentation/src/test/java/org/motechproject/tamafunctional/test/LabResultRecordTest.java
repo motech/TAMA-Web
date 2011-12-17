@@ -63,7 +63,7 @@ public class LabResultRecordTest extends BaseTest {
 
         CreateLabResultsPage createLabResultsPage = showLabResultsPage.gotoEditPage();
 
-        createLabResultsPage.results(Arrays.asList("1","2"));
+        createLabResultsPage.results(Arrays.asList("1", "2"));
 
         createLabResultsPage.submit();
 

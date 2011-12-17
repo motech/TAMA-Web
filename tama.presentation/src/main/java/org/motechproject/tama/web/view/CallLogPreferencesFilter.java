@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.view;
 
-import org.motechproject.tamacommon.TAMAConstants;
+import org.motechproject.tama.common.TAMAConstants;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;

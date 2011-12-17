@@ -120,13 +120,12 @@ public class CreateARTRegimenPage extends Page {
 
     private void createFirstDosage(TestDrugDosage testDrugDosage1, String dosageType) {
         logDosage(testDrugDosage1);
-        ((ExtendedWebElement)drug1DosageTypeElement).select(dosageType);
-        ((ExtendedWebElement)drug1StartDateElement).select(testDrugDosage1.startDate());
+        ((ExtendedWebElement) drug1DosageTypeElement).select(dosageType);
+        ((ExtendedWebElement) drug1StartDateElement).select(testDrugDosage1.startDate());
         if (testDrugDosage1.isMorningDosage()) {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID);
             drug1MorningDosageTimeElement.sendKeys(testDrugDosage1.dosageSchedule());
-        }
-        else {
+        } else {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID);
             drug1EveningDosageTimeElement.sendKeys(testDrugDosage1.dosageSchedule());
         }
@@ -135,13 +134,12 @@ public class CreateARTRegimenPage extends Page {
 
     private void createSecondDosage(TestDrugDosage testDrugDosage2, String dosageType) {
         logDosage(testDrugDosage2);
-        ((ExtendedWebElement)drug2DosageTypeElement).select(dosageType);
-        ((ExtendedWebElement)drug2StartDateElement).select(testDrugDosage2.startDate());
+        ((ExtendedWebElement) drug2DosageTypeElement).select(dosageType);
+        ((ExtendedWebElement) drug2StartDateElement).select(testDrugDosage2.startDate());
         if (testDrugDosage2.isMorningDosage()) {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID);
             drug2MorningDosageTimeElement.sendKeys(testDrugDosage2.dosageSchedule());
-        }
-        else {
+        } else {
             waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_EVENING_TIME_ID);
             drug2EveningDosageTimeElement.sendKeys(testDrugDosage2.dosageSchedule());
         }

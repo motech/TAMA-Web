@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.view;
 
 
-import org.motechproject.tamadomain.domain.DosageType;
-import org.motechproject.tamadomain.repository.AllDosageTypes;
+import org.motechproject.tama.refdata.domain.DosageType;
+import org.motechproject.tama.refdata.repository.AllDosageTypes;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ public class DosageTypesView {
 
     private final AllDosageTypes allDosageTypes;
 
-    public DosageTypesView(AllDosageTypes allDosageTypes){
+    public DosageTypesView(AllDosageTypes allDosageTypes) {
         this.allDosageTypes = allDosageTypes;
     }
 

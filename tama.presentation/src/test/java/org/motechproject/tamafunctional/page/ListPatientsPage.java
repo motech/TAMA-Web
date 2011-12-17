@@ -41,7 +41,7 @@ public class ListPatientsPage extends Page {
         waitForElementWithXPATHToLoad(PATIENT_REGISTRATION_LINK_XPATH);
     }
 
-    public FilterCallLogsPage goToFilterCallLogsPage(){
+    public FilterCallLogsPage goToFilterCallLogsPage() {
         showCallLogsLink.click();
         return MyPageFactory.initElements(webDriver, FilterCallLogsPage.class);
     }

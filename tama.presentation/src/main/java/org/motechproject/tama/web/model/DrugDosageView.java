@@ -3,9 +3,7 @@ package org.motechproject.tama.web.model;
 import org.joda.time.LocalDate;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class DrugDosageView extends TamaView {
 
@@ -16,7 +14,7 @@ public class DrugDosageView extends TamaView {
     private String dosageType;
 
     private String morningTime;
-    
+
     private String eveningTime;
 
     private Date startDateAsDate;
@@ -24,7 +22,7 @@ public class DrugDosageView extends TamaView {
     private String advice;
 
     private String mealAdviceType;
-    
+
     private Integer offsetDays;
 
     public String getDrugName() {
@@ -83,27 +81,27 @@ public class DrugDosageView extends TamaView {
         this.mealAdviceType = mealAdviceType;
     }
 
-	public Integer getOffsetDays() {
-		return offsetDays;
-	}
+    public Integer getOffsetDays() {
+        return offsetDays;
+    }
 
-	public void setOffsetDays(Integer offsetDays) {
-		this.offsetDays = offsetDays;
-	}
+    public void setOffsetDays(Integer offsetDays) {
+        this.offsetDays = offsetDays;
+    }
 
-	public String getMorningTime() {
-		return morningTime;
-	}
+    public String getMorningTime() {
+        return morningTime;
+    }
 
-	public void setMorningTime(String morningTime) {
-		this.morningTime = morningTime;
-	}
+    public void setMorningTime(String morningTime) {
+        this.morningTime = morningTime;
+    }
 
-	public String getEveningTime() {
-		return eveningTime;
-	}
+    public String getEveningTime() {
+        return eveningTime;
+    }
 
-	public void setEveningTime(String eveningTime) {
-		this.eveningTime = eveningTime;
-	}
+    public void setEveningTime(String eveningTime) {
+        this.eveningTime = eveningTime;
+    }
 }

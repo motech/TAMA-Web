@@ -9,11 +9,11 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
-import org.motechproject.tamadomain.builder.DrugBuilder;
-import org.motechproject.tamadomain.domain.Drug;
-import org.motechproject.tamadomain.domain.DrugDosage;
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
-import org.motechproject.tamadomain.repository.AllDrugs;
+import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.refdata.builder.DrugBuilder;
+import org.motechproject.tama.refdata.domain.Drug;
+import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

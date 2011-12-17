@@ -7,7 +7,7 @@ public class TestPatientPreferences {
     private String timeMeridiem;
     private CallPreference callPreference;
 
-    public enum CallPreference{
+    public enum CallPreference {
         DAILY_CALL, WEEKLY_CALL
     }
 

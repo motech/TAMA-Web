@@ -131,7 +131,7 @@ public class ShowPatientPage extends Page {
     }
 
     public ShowPatientPage deactivatePatient(String reason) {
-        ((ExtendedWebElement)this.deactivationReasonDropdown).select(reason);
+        ((ExtendedWebElement) this.deactivationReasonDropdown).select(reason);
         this.deactivationLink.click();
         waitForElementWithIdToLoad(ACTIVATE_PATIENT_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);

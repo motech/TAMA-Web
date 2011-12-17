@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 public class HomeController {
 
     @RequestMapping("/")
-    public String homePage(HttpServletRequest request){
+    public String homePage(HttpServletRequest request) {
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
-        if(user.isAdministrator()) {
+        if (user.isAdministrator()) {
             return "redirect:/clinics";
         }
         return "redirect:/patients";

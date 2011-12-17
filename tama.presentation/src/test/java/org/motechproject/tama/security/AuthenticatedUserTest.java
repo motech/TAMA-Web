@@ -2,7 +2,8 @@ package org.motechproject.tama.security;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tamadomain.domain.Administrator;
+import org.motechproject.tama.common.domain.TAMAUser;
+import org.motechproject.tama.refdata.domain.Administrator;
 
 import java.util.Collections;
 
@@ -18,7 +19,7 @@ public class AuthenticatedUserTest {
     private String password;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         username = "username";
         password = "password";
     }
@@ -43,7 +44,7 @@ public class AuthenticatedUserTest {
     }
 
     @Test
-    public void shouldCheckIfUserIsAdmin(){
+    public void shouldCheckIfUserIsAdmin() {
         TAMAUser tamaUser = mock(Administrator.class);
         when(tamaUser.getUsername()).thenReturn(username);
         when(tamaUser.getPassword()).thenReturn(password);

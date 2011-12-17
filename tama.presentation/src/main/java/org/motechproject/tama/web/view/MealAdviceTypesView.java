@@ -1,8 +1,8 @@
 package org.motechproject.tama.web.view;
 
 
-import org.motechproject.tamadomain.domain.MealAdviceType;
-import org.motechproject.tamadomain.repository.AllMealAdviceTypes;
+import org.motechproject.tama.refdata.domain.MealAdviceType;
+import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ public class MealAdviceTypesView {
 
     private final AllMealAdviceTypes mealAdviceTypes;
 
-    public MealAdviceTypesView(AllMealAdviceTypes mealAdviceTypes){
+    public MealAdviceTypesView(AllMealAdviceTypes mealAdviceTypes) {
         this.mealAdviceTypes = mealAdviceTypes;
     }
 

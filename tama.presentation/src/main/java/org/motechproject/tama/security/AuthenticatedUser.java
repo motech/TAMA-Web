@@ -1,6 +1,7 @@
 package org.motechproject.tama.security;
 
-import org.motechproject.tamadomain.domain.Administrator;
+import org.motechproject.tama.common.domain.TAMAUser;
+import org.motechproject.tama.refdata.domain.Administrator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -18,7 +19,7 @@ public class AuthenticatedUser extends User {
         return tamaUser.getName();
     }
 
-    public TAMAUser getTAMAUser(){
+    public TAMAUser getTAMAUser() {
         return tamaUser;
     }
 
@@ -30,7 +31,7 @@ public class AuthenticatedUser extends User {
         return tamaUser.getClinicName();
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return tamaUser.getPassword();
     }
 

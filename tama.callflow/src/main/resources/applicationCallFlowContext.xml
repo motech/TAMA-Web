@@ -27,7 +27,6 @@
     <import resource="classpath:applicationPillReminderAPI.xml"/>
     <import resource="classpath:inboundEventChannelAdapter.xml"/>
     <import resource="classpath:applicationDecisionTree.xml"/>
-    <import resource="classpath:applicationCmsLiteApi.xml"/>
     <import resource="classpath:applicationIvrKookoo.xml"/>
     <import resource="classpath:applicationOutboxAPI.xml"/>
     <import resource="classpath:applicationContextAlert.xml"/>

@@ -8,19 +8,19 @@ import org.openqa.selenium.support.How;
 public class ShowClinicPage extends Page {
     public static final String CLINIC_NAME_NAME_ID = "_s_org_motechproject_tama_domain_Clinic_name_name_id";
 
-    @FindBy(how = How.ID,  id = CLINIC_NAME_NAME_ID)
+    @FindBy(how = How.ID, id = CLINIC_NAME_NAME_ID)
     private WebElement name;
 
-    @FindBy(how = How.ID,  id = "_s_org_motechproject_tama_domain_Clinic_address_address_id")
+    @FindBy(how = How.ID, id = "_s_org_motechproject_tama_domain_Clinic_address_address_id")
     private WebElement address;
 
-    @FindBy(how = How.ID,  id = "_s_org_motechproject_tama_domain_Clinic_phone_phone_id")
+    @FindBy(how = How.ID, id = "_s_org_motechproject_tama_domain_Clinic_phone_phone_id")
     private WebElement phone;
 
-    @FindBy(how = How.ID,  id = "_s_org_motechproject_tama_domain_Clinic_city_city_id")
+    @FindBy(how = How.ID, id = "_s_org_motechproject_tama_domain_Clinic_city_city_id")
     private WebElement city;
 
-    @FindBy(how = How.XPATH,  xpath = "//a[@title='Home']")
+    @FindBy(how = How.XPATH, xpath = "//a[@title='Home']")
     private WebElement homePageLink;
 
     public ShowClinicPage(WebDriver webDriver) {
@@ -36,11 +36,12 @@ public class ShowClinicPage extends Page {
         return this.name.getText();
 
     }
+
     public String getAddress() {
         return address.getText();
     }
 
-    public String getPhone(){
-        return  phone.getText();
+    public String getPhone() {
+        return phone.getText();
     }
 }

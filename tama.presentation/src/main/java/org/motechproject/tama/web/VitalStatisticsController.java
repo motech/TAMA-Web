@@ -1,7 +1,7 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tamadomain.domain.VitalStatistics;
-import org.motechproject.tamadomain.repository.AllVitalStatistics;
+import org.motechproject.tama.patient.domain.VitalStatistics;
+import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;

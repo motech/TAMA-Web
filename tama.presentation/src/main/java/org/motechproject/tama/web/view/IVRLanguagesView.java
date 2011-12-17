@@ -1,18 +1,18 @@
 package org.motechproject.tama.web.view;
 
 
-import org.motechproject.tamadomain.domain.IVRLanguage;
-import org.motechproject.tamadomain.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.domain.IVRLanguage;
+import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class IvrLanguagesView {
+public class IVRLanguagesView {
 
     private final AllIVRLanguages allIVRLanguages;
 
-    public IvrLanguagesView(AllIVRLanguages allIVRLanguages){
+    public IVRLanguagesView(AllIVRLanguages allIVRLanguages) {
         this.allIVRLanguages = allIVRLanguages;
     }
 

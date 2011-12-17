@@ -31,8 +31,7 @@ public abstract class BaseTest extends FunctionalTestObject {
     private void createWebDriver() {
         try {
             webDriver = WebDriverFactory.getInstance();
-        }
-        catch (WebDriverException e) {
+        } catch (WebDriverException e) {
             if (e.getMessage().contains("Unable to bind to locking port")) {
                 createWebDriver();
             }

@@ -2,15 +2,22 @@ package org.motechproject.tama.web;
 
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.TamaException;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.repository.AllGenders;
+import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
+import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
-import org.motechproject.tama.web.view.IvrLanguagesView;
+import org.motechproject.tama.web.view.IVRLanguagesView;
 import org.motechproject.tama.web.view.ModesOfTransmissionView;
 import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tamacallflow.service.PatientService;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamacommon.TamaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -40,7 +47,7 @@ public class PatientController extends BaseController {
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/patients/";
     private static final String REVIVE_VIEW = "patients/revive";
 
-    public static String DEACTIVATION_STATUSES =  "deactivation_statuses";
+    public static String DEACTIVATION_STATUSES = "deactivation_statuses";
     public static final String PATIENT = "patient";
     public static final String PATIENTS = "patients";
     public static final String ITEM_ID = "itemId";
@@ -99,7 +106,7 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/revive/{id}")
-    public String revive(@PathVariable String id, Model model, HttpServletRequest request){
+    public String revive(@PathVariable String id, Model model, HttpServletRequest request) {
         List<SuspendedAdherenceData.DosageStatusWhenSuspended> pastDosageStatus = Arrays.asList(SuspendedAdherenceData.DosageStatusWhenSuspended.values());
         model.addAttribute("suspendedAdherenceData", new SuspendedAdherenceData());
         model.addAttribute("patientId", id);
@@ -108,7 +115,7 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/revive")
-    public String reactivatePatient(@RequestParam String id, SuspendedAdherenceData suspendedAdherenceData, Model uiModel, HttpServletRequest request){
+    public String reactivatePatient(@RequestParam String id, SuspendedAdherenceData suspendedAdherenceData, Model uiModel, HttpServletRequest request) {
         suspendedAdherenceData.patientId(id);
         patientService.reActivate(id, suspendedAdherenceData);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
@@ -148,11 +155,10 @@ public class PatientController extends BaseController {
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();
-            if(message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)){
+            if (message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)) {
                 bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
                         new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
-            }
-            else if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)){
+            } else if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
                 bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
                         new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
             }
@@ -187,7 +193,7 @@ public class PatientController extends BaseController {
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();
-            if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)){
+            if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
                 bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
                         new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
             }
@@ -209,9 +215,9 @@ public class PatientController extends BaseController {
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patientsByClinic.get(0).getId(), request);
     }
 
-	private String redirectToListPatientsPage(HttpServletRequest request) {
-		return "redirect:" + getReferrer(request);
-	}
+    private String redirectToListPatientsPage(HttpServletRequest request) {
+        return "redirect:" + getReferrer(request);
+    }
 
     private String getReferrer(HttpServletRequest request) {
         String referrer = request.getHeader("Referer");
@@ -221,7 +227,7 @@ public class PatientController extends BaseController {
 
     private void populateModel(Model uiModel) {
         uiModel.addAttribute("clinics", new ClinicsView(allClinics).getAll());
-        uiModel.addAttribute("ivrlanguages", new IvrLanguagesView(allIVRLanguages).getAll());
+        uiModel.addAttribute("ivrlanguages", new IVRLanguagesView(allIVRLanguages).getAll());
         uiModel.addAttribute("daysInAMonth", TAMAConstants.Time.MAX_DAYS_IN_A_MONTH.list());
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());

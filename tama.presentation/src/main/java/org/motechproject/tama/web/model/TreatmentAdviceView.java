@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.model;
 
-import org.motechproject.tamadomain.domain.Status;
+import org.motechproject.tama.patient.domain.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class TreatmentAdviceView {
     private String drugCompositionName;
 
     private List<DrugDosageView> drugDosages = new ArrayList<DrugDosageView>();
-    
+
     private Status patientStatus;
 
     public String getTreatmentAdviceId() {
@@ -77,7 +77,7 @@ public class TreatmentAdviceView {
         this.patientStatus = patientStatus;
     }
 
-    public boolean getShowChangeRegimenButton(){
+    public boolean getShowChangeRegimenButton() {
         return (Status.Active).equals(patientStatus);
     }
 }

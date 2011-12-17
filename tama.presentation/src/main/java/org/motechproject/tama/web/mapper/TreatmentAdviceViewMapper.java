@@ -1,5 +1,16 @@
 package org.motechproject.tama.web.mapper;
 
+import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllDosageTypes;
+import org.motechproject.tama.refdata.repository.AllDrugs;
+import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 
 public class TreatmentAdviceViewMapper {
