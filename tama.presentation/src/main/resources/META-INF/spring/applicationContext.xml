@@ -6,9 +6,8 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     <context:annotation-config/>
     <context:spring-configured/>
+    <context:component-scan base-package="org.motechproject.tama"/>
     <import resource="classpath:applicationContext-TAMACallFlow.xml"/>
-    <import resource="classpath:applicationContext-TAMAHealthTip.xml"/>
-    <context:component-scan base-package="org.motechproject.tama.*"/>
-    <context:component-scan base-package="org.motechproject.tamahealthtip*"/>
+    <import resource="classpath:applicationHealthTipsContext.xml"/>
     <import resource="classpath:/placeholderPluginContext.xml"/>
 </beans>

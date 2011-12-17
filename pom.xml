@@ -12,7 +12,7 @@
         <module>tama.facility</module>
         <module>tama.patient</module>
         <module>tama.callflow</module>
-        <module>tama.healthtip</module>
+        <module>tama.healthtips</module>
         <module>tama.tools</module>
         <module>tama.presentation</module>
     </modules>
