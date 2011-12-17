@@ -1,13 +1,21 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.Gender;
+import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
+import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SetupPatient {
 
-    public static final String APPLICATION_CONTEXT_XML = "applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
     private AllClinics allClinics;
     private AllPatients allPatients;
     private AllIVRLanguages allIVRLanguages;

@@ -1,4 +1,4 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;

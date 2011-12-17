@@ -1,13 +1,13 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.call.IvrCall;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class TriggerFourDayRecallEvent {
-    public static final String APPLICATION_CONTEXT_XML = "applicationContext.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
 
     public static void main(String[] args) {
         String patientId = args[0];

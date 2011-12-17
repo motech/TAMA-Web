@@ -1,18 +1,18 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tamacallflow.domain.WeeklyAdherenceLog;
 import org.motechproject.tamacallflow.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.domain.TreatmentAdvice;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SetupWeeklyAdherenceLog {
 
-    public static final String APPLICATION_CONTEXT_XML = "applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;

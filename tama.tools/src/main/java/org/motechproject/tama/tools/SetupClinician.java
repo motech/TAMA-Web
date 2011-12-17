@@ -1,15 +1,15 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.domain.Clinician;
-import org.motechproject.tamadomain.repository.AllClinicians;
-import org.motechproject.tamadomain.repository.AllClinics;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.repository.AllClinicians;
+import org.motechproject.tama.facility.repository.AllClinics;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SetupClinician {
 
-    public static final String APPLICATION_CONTEXT_XML = "applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
     private AllClinics allClinics;
     private AllClinicians allClinicians;
 

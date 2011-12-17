@@ -1,12 +1,12 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
 import org.motechproject.outbox.api.dao.OutboundVoiceMessageDao;
 import org.motechproject.outbox.api.model.MessagePriority;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
 import org.motechproject.outbox.api.model.VoiceMessageType;
-import org.motechproject.tamadomain.domain.Patient;
-import org.motechproject.tamadomain.repository.AllPatients;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.controller.OutboxController;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class SetupOutboxMessages {
-    public static final String APPLICATION_CONTEXT_XML = "applicationContext.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
 
     public static void main(String[] args) {
         System.out.println("Args length: " + args.length);

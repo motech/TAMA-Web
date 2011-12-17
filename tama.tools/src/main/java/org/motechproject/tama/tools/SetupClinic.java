@@ -1,9 +1,9 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
-import org.motechproject.tamadomain.domain.City;
-import org.motechproject.tamadomain.domain.Clinic;
-import org.motechproject.tamadomain.repository.AllCities;
-import org.motechproject.tamadomain.repository.AllClinics;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SetupClinic {
 
-    public static final String APPLICATION_CONTEXT_XML = "applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
     private AllClinics allClinics;
     private AllCities allCities;
 

@@ -30,6 +30,11 @@
     </repositories>
     <dependencies>
         <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-cmslite-api</artifactId>
+            <version>0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
             <version>0.3-SNAPSHOT</version>

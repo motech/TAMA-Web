@@ -1,4 +1,4 @@
-package org.motechproject.tamatools.tools.seed;
+package org.motechproject.tama.refdata.seed;
 
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -7,7 +7,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.log4j.Logger;
 import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.tamacommon.util.FileUtil;
+import org.motechproject.tama.common.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -34,9 +34,9 @@ public class AudioSeed extends Seed {
     private int poolSize = 10;
 
     @Autowired
-    public AudioSeed(CMSLiteService cmsLiteService, @Qualifier("ivrProperties") Properties ivrProperties) {
+    public AudioSeed(CMSLiteService cmsLiteService, @Qualifier("seedProperties") Properties seedProperties) {
         this.cmsLiteService = cmsLiteService;
-        this.wavFilesLocation = (String) ivrProperties.get(WAV_FILES_LOCATION);
+        this.wavFilesLocation = (String) seedProperties.get(WAV_FILES_LOCATION);
     }
 
     @Override
@@ -84,7 +84,6 @@ public class AudioSeed extends Seed {
                     logger.error("Exception loading audio seed");
                 }
             }
-
         }
     }
 }

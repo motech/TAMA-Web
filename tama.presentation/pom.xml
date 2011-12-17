@@ -765,7 +765,7 @@
                             <target>
                                 <echo message="Recreating DB: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <java classname="org.motechproject.tamatools.tools.RecreateDB">
+                                <java classname="org.motechproject.tama.tools.RecreateDB">
                                     <classpath>
                                         <pathelement path="${compile_classpath}"/>
                                     </classpath>
@@ -784,7 +784,7 @@
                             <target>
                                 <echo message="Seed data loading: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <java classname="org.motechproject.tama.refdata.SetupSeedData">
+                                <java classname="org.motechproject.tama.tools.seed.SetupSeedData">
                                     <classpath>
                                         <pathelement path="${compile_classpath}"/>
                                     </classpath>

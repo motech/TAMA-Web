@@ -1,6 +1,6 @@
-package org.motechproject.tamatools.tools.seed;
+package org.motechproject.tama.tools.seed;
 
-import org.motechproject.tamatools.tools.RecreateDB;
+import org.motechproject.tama.tools.RecreateDB;
 
 public class RecreateSeedData {
     public static void main(String[] args) throws InterruptedException {

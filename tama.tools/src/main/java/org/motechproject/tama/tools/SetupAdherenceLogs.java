@@ -1,4 +1,4 @@
-package org.motechproject.tamatools.tools;
+package org.motechproject.tama.tools;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -6,14 +6,16 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tamacallflow.domain.DosageAdherenceLog;
 import org.motechproject.tamacallflow.domain.DosageStatus;
 import org.motechproject.tamacallflow.domain.WeeklyAdherenceLog;
+import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
 import org.motechproject.tamacallflow.repository.AllDosageAdherenceLogs;
 import org.motechproject.tamacallflow.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
 import org.motechproject.util.datetime.DateTimeSource;
@@ -24,7 +26,7 @@ import java.util.logging.Logger;
 
 public class SetupAdherenceLogs {
     final static Logger log = Logger.getLogger(SetupAdherenceLogs.class.getName());
-    public static final String APPLICATION_CONTEXT_XML = "applicationContext-tools.xml";
+    public static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
@@ -47,10 +49,7 @@ public class SetupAdherenceLogs {
             }  else {
                 log.warning("Invalid number of days missed, valid range [0-4]");
             }
-
         }
-        
-        
         
         System.exit(0);
     }

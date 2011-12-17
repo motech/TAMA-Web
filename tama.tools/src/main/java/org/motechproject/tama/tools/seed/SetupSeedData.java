@@ -1,4 +1,4 @@
-package org.motechproject.tama.refdata;
+package org.motechproject.tama.tools.seed;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

@@ -1,4 +1,4 @@
-package org.motechproject.tama.refdata;
+package org.motechproject.tama.tools.seed;
 
 import org.apache.log4j.Logger;
 import org.motechproject.tama.refdata.seed.Seed;

@@ -1,4 +1,4 @@
-package org.motechproject.tamatools.tools.seed;
+package org.motechproject.tama.refdata.seed;
 
 import java.io.FileInputStream;
 import java.io.IOException;
