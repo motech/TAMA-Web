@@ -4,7 +4,6 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.MessagePriority;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
-import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.pillreminder.EventKeys;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service

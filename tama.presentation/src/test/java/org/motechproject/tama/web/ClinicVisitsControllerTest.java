@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
 import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 

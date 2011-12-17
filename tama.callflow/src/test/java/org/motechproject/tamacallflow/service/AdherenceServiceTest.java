@@ -5,8 +5,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.mockito.Mock;
 import org.motechproject.tamacallflow.platform.service.FourDayRecallService;
 import org.motechproject.tamadomain.builder.PatientBuilder;

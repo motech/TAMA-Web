@@ -11,7 +11,6 @@ import org.motechproject.tamacallflow.service.PatientService;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamacommon.TamaException;
 import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;

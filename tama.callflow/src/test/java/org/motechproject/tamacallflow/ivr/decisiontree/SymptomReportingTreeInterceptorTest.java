@@ -13,7 +13,6 @@ import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamacallflow.ivr.command.SuspendAdherenceCallsCommand;
 import org.motechproject.tamacallflow.ivr.command.SymptomReportingAlertsCommand;
 import org.motechproject.tamacallflow.ivr.command.callforwarding.DialStateCommand;
-import org.motechproject.tamacallflow.ivr.decisiontree.SymptomReportingTreeInterceptor;
 
 import java.util.List;
 

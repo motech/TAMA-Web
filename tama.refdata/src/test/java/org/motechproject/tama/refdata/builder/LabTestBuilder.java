@@ -1,7 +1,7 @@
 package org.motechproject.tama.refdata.builder;
 
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.refdata.domain.LabTest;
-import org.motechproject.tamacommon.TAMAConstants;
 
 public class LabTestBuilder {
 

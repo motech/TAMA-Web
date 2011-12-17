@@ -11,8 +11,6 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tamadomain.builder.RegimenBuilder;
 import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tama.web.model.ComboBoxView;

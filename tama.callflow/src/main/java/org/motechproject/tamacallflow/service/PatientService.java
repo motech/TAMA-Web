@@ -6,7 +6,6 @@ import org.motechproject.tamacallflow.mapper.MedicalConditionsMapper;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tamacommon.TamaException;
 import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -9,7 +9,6 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;

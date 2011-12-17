@@ -2,7 +2,6 @@ package org.motechproject.tamadomain.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
-import org.motechproject.tamacommon.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 
 @TypeDiscriminator("doc.documentType == 'IVRCallAudit'")

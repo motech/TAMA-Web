@@ -3,8 +3,8 @@ package org.motechproject.tama.refdata.domain;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tamacommon.domain.CouchEntity;
-import org.motechproject.tamacommon.domain.TAMAUser;
+import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.tama.common.domain.TAMAUser;
 
 @TypeDiscriminator("doc.documentType == 'Administrator'")
 public class Administrator extends CouchEntity implements TAMAUser {

@@ -3,7 +3,6 @@ package org.motechproject.tama.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tamacommon.domain.TAMAUser;
 import org.motechproject.tamadomain.builder.ClinicianBuilder;
 import org.motechproject.tamadomain.repository.AllTAMAUsers;
 import org.motechproject.tama.security.AuthenticatedUser;

@@ -1,7 +1,6 @@
 package org.motechproject.tama.web.mapper;
 
 import org.motechproject.tama.web.model.DrugDosageView;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllDosageTypes;
 import org.motechproject.tamadomain.repository.AllDrugs;
 import org.motechproject.tamadomain.repository.AllMealAdviceTypes;

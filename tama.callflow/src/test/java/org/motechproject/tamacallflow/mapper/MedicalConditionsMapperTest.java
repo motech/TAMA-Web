@@ -4,8 +4,6 @@ import junit.framework.Assert;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tamadomain.builder.*;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.util.DateUtil;
 

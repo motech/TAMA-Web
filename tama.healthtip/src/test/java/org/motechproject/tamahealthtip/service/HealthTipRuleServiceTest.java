@@ -12,7 +12,6 @@ import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.builder.LabResultBuilder;
 import org.motechproject.tamadomain.builder.LabTestBuilder;
 import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllLabResults;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.util.DateUtil;

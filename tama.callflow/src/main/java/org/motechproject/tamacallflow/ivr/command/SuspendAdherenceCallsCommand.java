@@ -7,7 +7,6 @@ import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.service.PatientService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

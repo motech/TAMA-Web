@@ -1,8 +1,6 @@
 package org.motechproject.tamatools.tools;
 
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

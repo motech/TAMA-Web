@@ -8,7 +8,6 @@ import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.controller.OutboxController;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

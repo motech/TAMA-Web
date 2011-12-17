@@ -20,5 +20,4 @@ public abstract class Seed {
     }
 
     protected abstract void load() throws InterruptedException;
-
 }

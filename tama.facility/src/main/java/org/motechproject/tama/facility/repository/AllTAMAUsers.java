@@ -1,10 +1,10 @@
 package org.motechproject.tama.facility.repository;
 
 
+import org.motechproject.tama.common.domain.TAMAUser;
 import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.refdata.domain.Administrator;
 import org.motechproject.tama.refdata.repository.AllAdministrators;
-import org.motechproject.tamacommon.domain.TAMAUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

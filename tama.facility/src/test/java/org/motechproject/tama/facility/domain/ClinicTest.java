@@ -2,7 +2,7 @@ package org.motechproject.tama.facility.domain;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tamacommon.util.ValidationUtil;
+import org.motechproject.tama.common.util.ValidationUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

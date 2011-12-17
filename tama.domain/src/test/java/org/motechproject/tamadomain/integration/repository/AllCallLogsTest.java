@@ -1,14 +1,11 @@
 package org.motechproject.tamadomain.integration.repository;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
 import org.motechproject.tamadomain.domain.CallLog;
 import org.motechproject.tamadomain.repository.AllCallLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static junit.framework.Assert.assertEquals;
 

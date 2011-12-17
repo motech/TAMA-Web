@@ -21,5 +21,4 @@ public class IVRLanguageSeed extends Seed {
         languages.add(IVRLanguage.newIVRLanguage("Manipuri", IVRLanguage.MANIPURI_CODE));
         languages.add(IVRLanguage.newIVRLanguage("Marathi", IVRLanguage.MARATHI_CODE));
     }
-
 }

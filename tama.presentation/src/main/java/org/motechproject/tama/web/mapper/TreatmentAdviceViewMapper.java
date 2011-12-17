@@ -1,8 +1,6 @@
 package org.motechproject.tama.web.mapper;
 
 import org.motechproject.tama.web.model.TreatmentAdviceView;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 
 public class TreatmentAdviceViewMapper {
 

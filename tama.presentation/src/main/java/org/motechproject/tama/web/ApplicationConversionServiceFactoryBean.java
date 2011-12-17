@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tamadomain.domain.*;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;

@@ -2,7 +2,7 @@ package org.motechproject.tama.refdata.domain;
 
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tamacommon.domain.CouchEntity;
+import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;

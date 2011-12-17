@@ -9,8 +9,6 @@ import org.motechproject.tama.web.view.MealAdviceTypesView;
 import org.motechproject.tama.web.view.RegimensView;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;

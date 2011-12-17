@@ -3,7 +3,6 @@ package org.motechproject.tamacallflow.ivr.call;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

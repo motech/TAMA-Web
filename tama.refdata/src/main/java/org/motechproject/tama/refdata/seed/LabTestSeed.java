@@ -1,8 +1,8 @@
 package org.motechproject.tama.refdata.seed;
 
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.repository.AllLabTests;
-import org.motechproject.tamacommon.TAMAConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

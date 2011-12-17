@@ -3,7 +3,6 @@ package org.motechproject.tamatools.tools;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.ivr.call.IvrCall;
-import org.motechproject.tamadomain.repository.AllPatients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

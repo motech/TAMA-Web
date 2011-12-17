@@ -1,6 +1,6 @@
 package org.motechproject.tama.refdata.domain;
 
-import org.motechproject.tamacommon.domain.BaseEntity;
+import org.motechproject.tama.common.domain.BaseEntity;
 
 import javax.validation.constraints.NotNull;
 

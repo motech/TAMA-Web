@@ -1,8 +1,8 @@
 package org.motechproject.tama.refdata.domain;
 
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tamacommon.domain.CouchEntity;
-import org.motechproject.tamacommon.util.UUIDUtil;
+import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.tama.common.util.UUIDUtil;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;

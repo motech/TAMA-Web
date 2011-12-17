@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.motechproject.tamadomain.builder.RegimenBuilder;
 import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamadomain.repository.AllRegimens;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;

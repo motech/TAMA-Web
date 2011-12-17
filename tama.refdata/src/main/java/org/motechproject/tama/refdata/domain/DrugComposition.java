@@ -1,7 +1,7 @@
 package org.motechproject.tama.refdata.domain;
 
-import org.motechproject.tamacommon.domain.BaseEntity;
-import org.motechproject.tamacommon.util.UUIDUtil;
+import org.motechproject.tama.common.domain.BaseEntity;
+import org.motechproject.tama.common.util.UUIDUtil;
 
 import java.util.HashSet;
 import java.util.Set;

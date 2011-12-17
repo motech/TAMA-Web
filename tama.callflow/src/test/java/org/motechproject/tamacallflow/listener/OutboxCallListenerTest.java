@@ -15,7 +15,6 @@ import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.Status;
 import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamacallflow.listener.OutboxCallListener;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 
 import java.util.HashMap;

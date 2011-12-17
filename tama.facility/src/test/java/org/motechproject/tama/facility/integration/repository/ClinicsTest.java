@@ -4,12 +4,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tama.refdata.repository.AllCities;
-import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 

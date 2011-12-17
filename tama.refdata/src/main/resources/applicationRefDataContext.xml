@@ -8,7 +8,7 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tama.refdata"/>
-    <import resource="classpath:applicationContext-TAMACommon.xml"/>
+    <import resource="classpath:applicationCommonContext.xml"/>
     <bean id="seedLoader" class="org.motechproject.tama.refdata.SeedLoader">
         <constructor-arg>
             <list>

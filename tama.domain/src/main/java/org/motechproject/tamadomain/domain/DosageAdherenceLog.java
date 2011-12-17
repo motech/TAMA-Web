@@ -2,7 +2,6 @@ package org.motechproject.tamadomain.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
-import org.motechproject.tamacommon.domain.CouchEntity;
 
 @TypeDiscriminator("doc.documentType == 'DosageAdherenceLog'")
 public class DosageAdherenceLog extends CouchEntity {

@@ -1,7 +1,7 @@
 package org.motechproject.tama.facility.domain;
 
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tamacommon.domain.CouchEntity;
+import org.motechproject.tama.common.domain.CouchEntity;
 
 @TypeDiscriminator("doc.documentType == 'ClinicianId'")
 public class ClinicianId extends CouchEntity {

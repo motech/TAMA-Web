@@ -1,9 +1,9 @@
 package org.motechproject.tama.facility.repository;
 
 import org.ektorp.CouchDbConnector;
+import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.domain.ClinicianId;
-import org.motechproject.tamacommon.repository.AbstractCouchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;

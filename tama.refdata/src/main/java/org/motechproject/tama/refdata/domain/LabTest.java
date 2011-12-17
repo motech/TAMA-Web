@@ -1,8 +1,8 @@
 package org.motechproject.tama.refdata.domain;
 
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamacommon.domain.CouchEntity;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.CouchEntity;
 
 @TypeDiscriminator("doc.documentType == 'LabTest'")
 public class LabTest extends CouchEntity {

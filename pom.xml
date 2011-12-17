@@ -10,6 +10,7 @@
         <module>tama.common</module>
         <module>tama.refdata</module>
         <module>tama.facility</module>
+        <module>tama.patient</module>
         <module>tama.domain</module>
         <module>tama.callflow</module>
         <module>tama.healthtip</module>

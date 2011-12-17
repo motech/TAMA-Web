@@ -2,9 +2,9 @@ package org.motechproject.tama.refdata.integration.repository;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
-import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 

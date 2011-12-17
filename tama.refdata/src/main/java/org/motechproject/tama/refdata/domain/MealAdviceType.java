@@ -1,7 +1,7 @@
 package org.motechproject.tama.refdata.domain;
 
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tamacommon.domain.CouchEntity;
+import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.validation.constraints.NotNull;
 

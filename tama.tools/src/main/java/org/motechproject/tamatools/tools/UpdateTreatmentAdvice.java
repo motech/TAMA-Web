@@ -1,7 +1,6 @@
 package org.motechproject.tamatools.tools;
 
 import org.motechproject.tamadomain.domain.DrugDosage;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllPatients;

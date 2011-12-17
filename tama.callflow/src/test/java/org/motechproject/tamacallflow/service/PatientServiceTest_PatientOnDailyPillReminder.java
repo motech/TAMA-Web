@@ -11,7 +11,6 @@ import org.motechproject.tamacallflow.util.FixedDateTimeSource;
 import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.builder.TreatmentAdviceBuilder;
 import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
 

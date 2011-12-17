@@ -2,7 +2,6 @@ package org.motechproject.tamadomain.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
-import org.motechproject.tamacommon.domain.CouchEntity;
 
 @TypeDiscriminator("doc.documentType == 'WeeklyAdherenceLog'")
 public class WeeklyAdherenceLog extends CouchEntity {

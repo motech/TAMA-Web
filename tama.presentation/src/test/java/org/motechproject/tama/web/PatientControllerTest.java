@@ -14,7 +14,6 @@ import org.motechproject.tamacallflow.service.PatientService;
 import org.motechproject.tamacommon.TamaException;
 import org.motechproject.tamadomain.builder.PatientBuilder;
 import org.motechproject.tamadomain.domain.*;
-import org.motechproject.tamadomain.repository.*;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.i18n.LocaleContextHolder;

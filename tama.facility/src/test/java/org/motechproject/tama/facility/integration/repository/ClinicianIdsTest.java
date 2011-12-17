@@ -2,10 +2,10 @@ package org.motechproject.tama.facility.integration.repository;
 
 import org.ektorp.DocumentNotFoundException;
 import org.junit.Test;
+import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.domain.ClinicianId;
 import org.motechproject.tama.facility.repository.AllClinicianIds;
-import org.motechproject.tamacommon.integration.repository.SpringIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 import org.springframework.test.context.ContextConfiguration;

@@ -6,7 +6,6 @@ import org.motechproject.tamadomain.domain.TreatmentAdvice;
 import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
 import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamadomain.repository.AllTreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

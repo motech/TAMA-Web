@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
-import org.motechproject.tamadomain.builder.*;
 import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.*;
 import org.motechproject.util.DateUtil;

@@ -10,8 +10,6 @@ import org.motechproject.ivr.service.CallRequest;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tamadomain.domain.Patient;
 import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamadomain.repository.AllPatients;
-import org.motechproject.tamacallflow.ivr.call.PillReminderCall;
 import org.motechproject.tamacallflow.service.CallLogService;
 
 import java.util.Map;

@@ -17,7 +17,6 @@ import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tamacommon.TAMAConstants;
 import org.motechproject.tamadomain.builder.PatientBuilder;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.tamacallflow.listener.FourDayRecallListener;
 import org.motechproject.util.DateUtil;

@@ -8,7 +8,6 @@ import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tamacommon.TAMAConstants;
-import org.motechproject.tamadomain.domain.*;
 import org.motechproject.tamadomain.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

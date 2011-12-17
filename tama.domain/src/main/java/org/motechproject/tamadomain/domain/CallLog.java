@@ -9,7 +9,6 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.model.CallDirection;
-import org.motechproject.tamacommon.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
