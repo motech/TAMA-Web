@@ -8,18 +8,21 @@
         <version>0.3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tama.tools</artifactId>
-    <name>tama.tools</name>
+    <artifactId>tama.dailypillreminder</artifactId>
+    <name>tama.dailypillreminder</name>
     <dependencies>
         <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-platform-common</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.patient</artifactId>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.callflow</artifactId>
+            <artifactId>tama.common</artifactId>
             <version>0.3-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>
