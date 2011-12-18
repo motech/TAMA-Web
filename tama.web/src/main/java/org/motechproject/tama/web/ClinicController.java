@@ -80,8 +80,8 @@ public class ClinicController extends BaseController {
         return "clinics/clinicForm";
     }
 
-    @ModelAttribute("citys")
-    public Collection<City> populateCitys() {
+    @ModelAttribute("cities")
+    public Collection<City> populateCities() {
         List<City> allCities = this.allCities.getAllCities();
         Collections.sort(allCities);
         return allCities;

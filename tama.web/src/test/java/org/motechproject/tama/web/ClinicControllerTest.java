@@ -49,7 +49,7 @@ public class ClinicControllerTest {
 
         Mockito.when(allCities.getAllCities()).thenReturn(cityList);
 
-        Collection<City> sortedCities = clinicController.populateCitys();
+        Collection<City> sortedCities = clinicController.populateCities();
         Assert.assertEquals(4, sortedCities.size());
         City[] sortedCityArray = sortedCities.toArray(new City[0]);
 

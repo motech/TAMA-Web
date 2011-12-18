@@ -94,15 +94,6 @@ public class ClinicianController extends BaseController {
         return UPDATE_VIEW;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        allClinicians.remove(allClinicians.get(id));
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return REDIRECT_TO_SHOW_VIEW;
-    }
-
     @ModelAttribute("clinicians")
     public Collection<Clinician> populateClinicians() {
         return allClinicians.getAll();

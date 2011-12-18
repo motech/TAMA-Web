@@ -71,7 +71,6 @@ public class LabResultRecordTest extends BaseTest {
         assertEquals("2", showLabResultsPage.getResults().get(1));
 
         showLabResultsPage.logout();
-
     }
 
     private ShowLabResultsPage setUpALabResult_AfterActivatingAPatient() {
@@ -100,7 +99,6 @@ public class LabResultRecordTest extends BaseTest {
         ClinicianDataService clinicianDataService = new ClinicianDataService(webDriver);
         clinicianDataService.createWithClinic(clinician);
     }
-
 
     private void createPatient() {
         patient = TestPatient.withMandatory();

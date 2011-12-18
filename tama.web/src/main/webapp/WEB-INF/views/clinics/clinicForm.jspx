@@ -23,7 +23,7 @@
         <field:input field="address" id="c_org_motechproject_tama_domain_Clinic_address" required="true" />
         <field:input field="phone" id="c_org_motechproject_tama_domain_Clinic_phone" required="true" max="10" validationMessage="Phone Number should be numeric and 10 digits long." validationRegex="^[0-9]{10}$"/>
         <field:input field="revision" id="c_org_motechproject_tama_domain_Clinic_revision" type="hidden" render="false"/>
-        <field:select field="city" id="c_org_motechproject_tama_domain_Clinic_city" itemValue="id" items="${citys}" required="true" path="/citys"/>
+        <field:select field="city" id="c_org_motechproject_tama_domain_Clinic_city" itemValue="id" items="${cities}" required="true" path="/cities"/>
 
         <div class='contacts'>
             <div class='title'>Clinician Contact Details</div>

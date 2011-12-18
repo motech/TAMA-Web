@@ -52,5 +52,4 @@ public class TreatmentAdviceViewMapper {
 
         return treatmentAdviceView;
     }
-
 }

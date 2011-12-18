@@ -27,5 +27,4 @@ public class ClinicianSecurityGroup extends AbstractSecurityGroup {
         if (clinician == null) return null;
         return userFor(clinician);
     }
-
 }

@@ -69,6 +69,5 @@ public class Response {
         }
         return parsedResponses;
     }
-
 }
 

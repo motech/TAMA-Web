@@ -47,7 +47,7 @@ public class SecurityControllerTest {
         when(authenticatedUser.getPassword()).thenReturn("oldPassword");
 
 
-        String viewName = securityController.changePassword("old", "new", "new", uiModel, request);
+        String viewName = securityController.changePassword("old", "new", uiModel, request);
         assertEquals("changePassword", viewName);
     }
 
@@ -64,7 +64,7 @@ public class SecurityControllerTest {
         when(authenticatedUser.getPassword()).thenReturn("oldPassword");
         when(authenticatedUser.getTAMAUser()).thenReturn(tamaUser);
 
-        String viewName = securityController.changePassword("oldPassword", "new", "new", uiModel, request);
+        String viewName = securityController.changePassword("oldPassword", "new", uiModel, request);
         verify(authenticatedUser, times(1)).setPassword("new");
         verify(allTAMAUsers, times(1)).update(tamaUser);
         assertEquals("passwordReset", viewName);

@@ -51,8 +51,6 @@ public class PatientController extends BaseController {
     public static final String PATIENT = "patient";
     public static final String PATIENTS = "patients";
     public static final String ITEM_ID = "itemId";
-    public static final String PAGE = "page";
-    public static final String SIZE = "size";
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
     public static final String CLINIC_AND_PATIENT_ID_ALREADY_IN_USE = "Sorry, the entered patient-id already in use.";

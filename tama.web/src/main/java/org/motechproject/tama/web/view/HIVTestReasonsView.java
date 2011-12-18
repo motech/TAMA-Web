@@ -17,7 +17,6 @@ public class HIVTestReasonsView {
     }
 
     public List<HIVTestReason> getAll() {
-
         List<HIVTestReason> allTestReasons = HIVTestReasons.getAll();
         Collections.sort(allTestReasons, new Comparator<HIVTestReason>() {
             @Override

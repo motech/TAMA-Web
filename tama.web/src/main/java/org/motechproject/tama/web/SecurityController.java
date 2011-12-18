@@ -36,7 +36,6 @@ public class SecurityController extends BaseController {
     @RequestMapping(value = "changePassword", method = RequestMethod.POST)
     public String changePassword(@RequestParam(value = "j_oldPassword", required = true) String oldPassword,
                                  @RequestParam(value = "j_newPassword", required = true) String newPassword,
-                                 @RequestParam(value = "j_newPasswordConfirm", required = true) String newPasswordConfirmation,
                                  Model uiModel,
                                  HttpServletRequest request) {
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);

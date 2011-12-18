@@ -19,7 +19,6 @@ public class ModesOfTransmissionView {
     public List<ModeOfTransmission> getAll() {
         List<ModeOfTransmission> allModesOfTransmission = modesOfTransmission.getAll();
         Collections.sort(allModesOfTransmission, new Comparator<ModeOfTransmission>() {
-
             @Override
             public int compare(ModeOfTransmission modeOfTransmission, ModeOfTransmission otherModeOfTransmission) {
                 return modeOfTransmission.getType().toLowerCase().compareTo(otherModeOfTransmission.getType().toLowerCase());
