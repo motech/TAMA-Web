@@ -3,8 +3,8 @@ package org.motechproject.tama.patient.repository;
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
-import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
+import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,8 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
-@View(name = "all", map = "function(doc) { if (doc.documentType == 'TreatmentAdvice') { emit(null, doc) } }")
-public class AllTreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvice> {
+public class AllTreatmentAdvices extends AbstractCouchRepository<TreatmentAdvice> {
 
     @Autowired
     public AllTreatmentAdvices(@Qualifier("tamaDbConnector") CouchDbConnector db) {
@@ -37,7 +36,7 @@ public class AllTreatmentAdvices extends CouchDbRepositorySupport<TreatmentAdvic
     public TreatmentAdvice earliestTreatmentAdvice(String patientId) {
         List<TreatmentAdvice> treatmentAdvices = find_by_patient_id(patientId);
         Collections.sort(treatmentAdvices);
-        return (treatmentAdvices.isEmpty()) ? null : treatmentAdvices.get(0);
+        return singleResult(treatmentAdvices);
     }
 
     @View(name = "find_by_patient_id", map = "function(doc) {if (doc.documentType =='TreatmentAdvice' && doc.patientId) {emit(doc.patientId, doc._id);}}")

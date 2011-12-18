@@ -1,10 +1,12 @@
 package org.motechproject.tama.healthtips.domain;
 
+import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.validation.constraints.NotNull;
 
+@TypeDiscriminator("doc.documentType == 'HealthTipsHistory'")
 public class HealthTipsHistory extends CouchEntity {
 
     @NotNull

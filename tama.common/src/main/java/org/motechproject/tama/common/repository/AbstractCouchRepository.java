@@ -24,4 +24,8 @@ public abstract class AbstractCouchRepository<T> extends CouchDbRepositorySuppor
         if (viewResult.getRows().size() == 0) return 0;
         return viewResult.getRows().get(0).getValueAsInt();
     }
+
+    protected T singleResult(List<T> resultSet) {
+        return (resultSet == null || resultSet.isEmpty()) ? null : resultSet.get(0);
+    }
 }

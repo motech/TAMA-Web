@@ -2,8 +2,8 @@ package org.motechproject.tama.patient.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
-import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
+import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.refdata.repository.AllLabTests;
@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@View(name = "all", map = "function(doc) { if (doc.documentType == 'LabResult') { emit(null, doc) } }")
-public class AllLabResults extends CouchDbRepositorySupport<LabResult> {
+public class AllLabResults extends AbstractCouchRepository<LabResult> {
 
     private AllLabTests allLabTests;
 

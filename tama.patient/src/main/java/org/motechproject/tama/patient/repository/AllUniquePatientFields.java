@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-@View(name = "all", map = "function(doc) { if (doc.documentType == 'AllUniquePatientFields') { emit(null, doc) } }")
 public class AllUniquePatientFields extends AbstractCouchRepository<UniquePatientField> {
     @Autowired
     public AllUniquePatientFields(@Qualifier("tamaDbConnector") CouchDbConnector db) {

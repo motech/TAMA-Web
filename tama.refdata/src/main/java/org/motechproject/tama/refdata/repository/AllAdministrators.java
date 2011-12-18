@@ -1,10 +1,9 @@
 package org.motechproject.tama.refdata.repository;
 
 import org.ektorp.CouchDbConnector;
-import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.GenerateView;
-import org.ektorp.support.View;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
+import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.refdata.domain.Administrator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,8 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@View(name = "all", map = "function(doc) { if (doc.documentType == 'Administrator') { emit(null, doc) } }")
-public class AllAdministrators extends CouchDbRepositorySupport<Administrator> {
+public class AllAdministrators extends AbstractCouchRepository<Administrator> {
 
     private PBEStringEncryptor encryptor;
 
@@ -45,11 +43,10 @@ public class AllAdministrators extends CouchDbRepositorySupport<Administrator> {
     @GenerateView
     public Administrator findByUsername(String username) {
         List<Administrator> administrators = queryView("by_username", username);
-        if (administrators != null && !administrators.isEmpty()) {
-            Administrator administrator = administrators.get(0);
+        Administrator administrator = singleResult(administrators);
+        if (administrator != null) {
             administrator.setPassword(encryptor.decrypt(administrator.getEncryptedPassword()));
-            return administrator;
         }
-        return null;
+        return administrator;
     }
 }

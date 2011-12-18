@@ -1,9 +1,11 @@
 package org.motechproject.tama.refdata.domain;
 
+import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.validation.constraints.NotNull;
 
+@TypeDiscriminator("doc.documentType == 'HIVTestReason'")
 public class HIVTestReason extends CouchEntity {
     @NotNull
     private String name;

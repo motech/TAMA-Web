@@ -1,8 +1,7 @@
 package org.motechproject.tama.refdata.repository;
 
 import org.ektorp.CouchDbConnector;
-import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.View;
+import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.refdata.domain.Drug;
 import org.motechproject.tama.refdata.domain.DrugComposition;
 import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
@@ -14,8 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-@View(name = "all", map = "function(doc) { if (doc.documentType == 'Regimen') { emit(null, doc) } }")
-public class AllRegimens extends CouchDbRepositorySupport<Regimen> {
+public class AllRegimens extends AbstractCouchRepository<Regimen> {
 
     private AllDrugs allDrugs;
 
@@ -52,6 +50,5 @@ public class AllRegimens extends CouchDbRepositorySupport<Regimen> {
                 drugComposition.setDrugs(drugSet);
             }
         }
-
     }
 }

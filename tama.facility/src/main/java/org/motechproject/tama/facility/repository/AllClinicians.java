@@ -36,13 +36,12 @@ public class AllClinicians extends AbstractCouchRepository<Clinician> {
     @GenerateView
     public Clinician findByUsername(String username) {
         List<Clinician> clinicians = queryView("by_username", username);
-        if (clinicians != null && !clinicians.isEmpty()) {
-            Clinician clinician = clinicians.get(0);
+        Clinician clinician = singleResult(clinicians);
+        if (clinician != null) {
             loadDependencies(clinician);
             clinician.setPassword(encryptor.decrypt(clinician.getEncryptedPassword()));
-            return clinician;
         }
-        return null;
+        return clinician;
     }
 
     @Override

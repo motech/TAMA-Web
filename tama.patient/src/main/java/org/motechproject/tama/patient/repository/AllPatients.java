@@ -6,8 +6,8 @@ import org.apache.commons.lang.StringUtils;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
-import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
+import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.common.util.UUIDUtil;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.patient.domain.HIVMedicalHistory;
@@ -25,8 +25,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@View(name = "all", map = "function(doc) { if (doc.documentType == 'Patient') { emit(null, doc) } }")
-public class AllPatients extends CouchDbRepositorySupport<Patient> {
+public class AllPatients extends AbstractCouchRepository<Patient> {
     private AllClinics allClinics;
     private AllGenders allGenders;
     private AllIVRLanguages allIVRLanguages;
@@ -172,10 +171,6 @@ public class AllPatients extends CouchDbRepositorySupport<Patient> {
             if (!StringUtils.isBlank(hivMedicalHistory.getModeOfTransmissionId()))
                 hivMedicalHistory.setModeOfTransmission(allModesOfTransmission.get(hivMedicalHistory.getModeOfTransmissionId()));
         }
-    }
-
-    private Patient singleResult(List<Patient> patients) {
-        return (patients == null || patients.isEmpty()) ? null : patients.get(0);
     }
 
     public void deactivate(String id) {

@@ -33,7 +33,6 @@ public class AllCities extends AbstractCouchRepository<City> {
     @View(name = "find_by_name", map = "function(doc) {if (doc.documentType =='City' && doc.name) {emit(doc.name, doc._id);}}")
     public City findByName(String name) {
         ViewQuery q = createQuery("find_by_name").key(name).includeDocs(true);
-        List<City> cities = db.queryView(q, City.class);
-        return cities.size() == 0 ? null : cities.get(0);
+        return singleResult(db.queryView(q, City.class));
     }
 }
