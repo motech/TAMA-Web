@@ -18,9 +18,9 @@ import org.motechproject.tama.dailypillreminder.domain.*;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
-import org.powermock.api.mockito.PowerMockito;
 
 import java.util.Collections;
 import java.util.Properties;
@@ -28,15 +28,17 @@ import java.util.Properties;
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        DailyReminderAdherenceServiceTest.RecordAdherence.class,
-        DailyReminderAdherenceServiceTest.RecordAdherenceForSuspendedPeriod.class,
-        DailyReminderAdherenceServiceTest.CalculateAdherence.class
+        DailyPillReminderAdherenceServiceTest.RecordAdherence.class,
+        DailyPillReminderAdherenceServiceTest.RecordAdherenceForSuspendedPeriod.class,
+        DailyPillReminderAdherenceServiceTest.CalculateAdherence.class,
+        DailyPillReminderAdherenceServiceTest.WasAnyDoseMissedLastWeek.class,
+        DailyPillReminderAdherenceServiceTest.WasAnyDoseTakenLateSince.class
 })
-public class DailyReminderAdherenceServiceTest {
+public class DailyPillReminderAdherenceServiceTest {
+
     public static class TestSubject {
         @Mock
         protected AllDosageAdherenceLogs allDosageAdherenceLogs;
@@ -56,9 +58,7 @@ public class DailyReminderAdherenceServiceTest {
 
         public void setUpTime() {
             now = new DateTime(2011, 11, 29, 10, 30, 0);
-            PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
             today = now.toLocalDate();
-            PowerMockito.stub(method(DateUtil.class, "today")).toReturn(today);
         }
 
         private void initializeProperties() {
@@ -165,55 +165,71 @@ public class DailyReminderAdherenceServiceTest {
             when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
             DateTime asOfDate = now;
             when(pillRegimen.getId()).thenReturn("regimenId");
-            when(pillRegimen.getDosesIn(4, asOfDate)).thenReturn(totalDoses);
+            when(pillRegimen.getDosesBetween(asOfDate.minusWeeks(4).toLocalDate(), asOfDate)).thenReturn(totalDoses);
 
             when(allDosageAdherenceLogs.countBy(same("regimenId"), same(DosageStatus.TAKEN), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(dosesTaken);
-            assertEquals(((double) dosesTaken / totalDoses) * 100, dailyReminderAdherenceService.getAdherenceInPercentage(patientId, asOfDate));
-        }
-
-        @Test
-        public void shouldReturnAdherenceForLastWeek() {
-            LocalDate doseDate = new LocalDate(2011, 10, 10);
-            String patientId = "patientId";
-            PillRegimen pillRegimen = mock(PillRegimen.class);
-            when(pillRegimen.getId()).thenReturn("regimenId");
-            when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
-            when(pillRegimen.getDosage("dosageId")).thenReturn(new Dosage(new DosageResponse("dosageId", new Time(10, 0), null, null, doseDate, null)));
-            DateTime doseDateTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
-            when(pillRegimen.getDosesIn(1, doseDateTime)).thenReturn(14);
-            when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDateTime.toLocalDate())).thenReturn(1);
-            assertEquals(1.0 / 14.0 * 100, dailyReminderAdherenceService.getAdherenceForLastWeekInPercentage(patientId, doseDateTime));
+            assertEquals(((double) dosesTaken / totalDoses) * 100, dailyReminderAdherenceService.getAdherencePercentage(patientId, asOfDate));
         }
 
         @Test
         public void shouldReturn100PercentIfDosageNotStartedYet() {
-            LocalDate doseDate = new LocalDate(2011, 10, 10);
             String patientId = "patientId";
             PillRegimen pillRegimen = mock(PillRegimen.class);
             when(pillRegimen.getId()).thenReturn("regimenId");
             when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
-            DateTime doseDateTime = DateUtil.newDateTime(doseDate, 10, 0, 0);
-            when(pillRegimen.getDosesIn(1, doseDateTime)).thenReturn(0);
-            when(allDosageAdherenceLogs.countBy("regimenId", DosageStatus.TAKEN, doseDateTime.minusWeeks(1).toLocalDate(), doseDateTime.toLocalDate())).thenReturn(1);
-            assertEquals(100.0, dailyReminderAdherenceService.getAdherenceForLastWeekInPercentage(patientId, doseDateTime));
+            when(pillRegimen.getDosesBetween(Matchers.<LocalDate>any(), Matchers.<DateTime>any())).thenReturn(0);
+
+            assertEquals(100.0, dailyReminderAdherenceService.getAdherencePercentage(patientId, now));
+            verifyZeroInteractions(allDosageAdherenceLogs);
         }
     }
 
-    public static class AnyDoseTakenLateSince extends TestSubject {
+    public static class WasAnyDoseTakenLateSince extends TestSubject {
+
         @Test
         public void shouldBeTrueWhenAtLeastOneDoseWasTakenSinceGivenDate() {
             LocalDate someDate = DateUtil.newDate(2011, 10, 10);
             when(allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", someDate, true)).thenReturn(1);
+            final Patient patient = PatientBuilder.startRecording().withId("patient_id").build();
 
-            assertTrue(dailyReminderAdherenceService.anyDoseTakenLateSince("patient_id", someDate));
+            assertTrue(dailyReminderAdherenceService.wasAnyDoseTakenLateSince(patient, someDate));
         }
 
         @Test
         public void shouldBeFalseWhenNoDoseWasTakenLateLastWeek() {
             LocalDate someDate = DateUtil.newDate(2011, 10, 10);
             when(allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", someDate, true)).thenReturn(0);
+            final Patient patient = PatientBuilder.startRecording().withId("patient_id").build();
 
-            assertFalse(dailyReminderAdherenceService.anyDoseTakenLateSince("patient_id", someDate));
+            assertFalse(dailyReminderAdherenceService.wasAnyDoseTakenLateSince(patient, someDate));
+        }
+    }
+
+    public static class WasAnyDoseMissedLastWeek extends TestSubject {
+
+        @Test
+        public void shouldReturnAdherenceForLastWeek() {
+            String patientId = "patientId";
+            Patient patient = PatientBuilder.startRecording().withId(patientId).build();
+
+            PillRegimen pillRegimen = mock(PillRegimen.class);
+            when(pillRegimen.getId()).thenReturn("regimenId");
+            when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
+
+            ArgumentCaptor<LocalDate> fromDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
+            ArgumentCaptor<DateTime> toDateCaptor = ArgumentCaptor.forClass(DateTime.class);
+            when(pillRegimen.getDosesBetween(fromDateCaptor.capture(), toDateCaptor.capture())).thenReturn(7);
+
+            ArgumentCaptor<LocalDate> fromDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
+            ArgumentCaptor<LocalDate> toDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
+            when(allDosageAdherenceLogs.countBy(Matchers.eq("regimenId"), Matchers.eq(DosageStatus.TAKEN), fromDateArgumentCaptor.capture(), toDateArgumentCaptor.capture())).thenReturn(1);
+
+            assertTrue(dailyReminderAdherenceService.wasAnyDoseMissedLastWeek(patient));
+
+            assertEquals(DateUtil.now().minusWeeks(1).toString("MMddYYYY"), fromDateCaptor.getValue().toString("MMddYYYY"));
+            assertEquals(DateUtil.now().minusDays(1).toString("MMddYYYY"), toDateCaptor.getValue().toString("MMddYYYY"));
+            assertEquals(DateUtil.today().minusWeeks(1).toString("MMddYYYY"), fromDateArgumentCaptor.getValue().toString("MMddYYYY"));
+            assertEquals(DateUtil.today().minusDays(1).toString("MMddYYYY"), toDateArgumentCaptor.getValue().toString("MMddYYYY"));
         }
     }
 }

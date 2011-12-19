@@ -27,10 +27,10 @@ public class AdherenceServiceTest {
     TreatmentAdvice treatmentAdvice;
 
     @Mock
-    AdherenceServiceStratergy dailyReminderAdherenceService;
+    AdherenceServiceStrategy dailyReminderAdherenceService;
 
     @Mock
-    AdherenceServiceStratergy fourDayRecallService;
+    AdherenceServiceStrategy fourDayRecallService;
 
     private AdherenceService adherenceService;
 
@@ -44,7 +44,7 @@ public class AdherenceServiceTest {
     public void shouldCheckForAnyMissedDosageInThePreviousWeekForDailyReminderPatient() {
         adherenceService.register(CallPreference.DailyPillReminder, dailyReminderAdherenceService);
         patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
-        when(dailyReminderAdherenceService.isDosageMissedLastWeek(patient)).thenReturn(true);
+        when(dailyReminderAdherenceService.wasAnyDoseMissedLastWeek(patient)).thenReturn(true);
         assertTrue(adherenceService.isDosageMissedLastWeek(patient));
     }
 
@@ -52,7 +52,7 @@ public class AdherenceServiceTest {
     public void shouldCheckForAnyMissedDosageInThePreviousWeekForFourDayRecallPatient() {
         adherenceService.register(CallPreference.FourDayRecall, fourDayRecallService);
         patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.FourDayRecall).build();
-        when(fourDayRecallService.isDosageMissedLastWeek(patient)).thenReturn(true);
+        when(fourDayRecallService.wasAnyDoseMissedLastWeek(patient)).thenReturn(true);
         assertTrue(adherenceService.isDosageMissedLastWeek(patient));
     }
 
@@ -61,7 +61,7 @@ public class AdherenceServiceTest {
         adherenceService.register(CallPreference.DailyPillReminder, dailyReminderAdherenceService);
         patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
         LocalDate since = DateUtil.newDate(2011, 10, 1);
-        when(dailyReminderAdherenceService.anyDoseTakenLateSince(patient, since)).thenReturn(true);
+        when(dailyReminderAdherenceService.wasAnyDoseTakenLateSince(patient, since)).thenReturn(true);
         assertTrue(adherenceService.anyDoseTakenLateSince(patient, since));
     }
 

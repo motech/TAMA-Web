@@ -51,7 +51,7 @@ public class AdherenceMessageCommandTest {
 
     @Test
     public void shouldReportAdherenceAsOfLastRecordedDose() {
-        when(dailyReminderAdherenceService.getAdherenceInPercentage("patient_id", callStartTime)).thenReturn(25.0);
+        when(dailyReminderAdherenceService.getAdherencePercentage("patient_id", callStartTime)).thenReturn(25.0);
         assertArrayEquals(new String[]{TamaIVRMessage.YOUR_ADHERENCE_IS_NOW, "Num_025", TamaIVRMessage.PERCENT}, adherenceMessageCommand.executeCommand(tamaIvrContext));
     }
 }

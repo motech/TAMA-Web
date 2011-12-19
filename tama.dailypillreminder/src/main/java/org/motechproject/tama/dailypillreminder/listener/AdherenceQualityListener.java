@@ -38,7 +38,7 @@ public class AdherenceQualityListener {
 
         if (patient != null && patient.allowAdherenceCalls()) {
             double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
-            double adherencePercentage = dailyReminderAdherenceService.getAdherenceInPercentage(patientId, DateUtil.now());
+            double adherencePercentage = dailyReminderAdherenceService.getAdherencePercentage(patientId, DateUtil.now());
             if (adherencePercentage < acceptableAdherencePercentage) {
                 dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
             }

@@ -11,19 +11,19 @@ import java.util.Map;
 @Service
 public class AdherenceService {
 
-    private Map<CallPreference, AdherenceServiceStratergy> adherenceServices = new HashMap<CallPreference, AdherenceServiceStratergy>();
+    private Map<CallPreference, AdherenceServiceStrategy> adherenceServices = new HashMap<CallPreference, AdherenceServiceStrategy>();
 
-    public void register(CallPreference callPreference, AdherenceServiceStratergy adherenceServiceStratergy) {
-        adherenceServices.put(callPreference, adherenceServiceStratergy);
+    public void register(CallPreference callPreference, AdherenceServiceStrategy adherenceServiceStrategy) {
+        adherenceServices.put(callPreference, adherenceServiceStrategy);
     }
 
     public boolean isDosageMissedLastWeek(Patient patient) {
-        AdherenceServiceStratergy adherenceServiceStratergy = adherenceServices.get(patient.getPatientPreferences().getCallPreference());
-        return adherenceServiceStratergy.isDosageMissedLastWeek(patient);
+        AdherenceServiceStrategy adherenceServiceStrategy = adherenceServices.get(patient.getPatientPreferences().getCallPreference());
+        return adherenceServiceStrategy.wasAnyDoseMissedLastWeek(patient);
     }
 
     public boolean anyDoseTakenLateSince(Patient patient, LocalDate since) {
-        AdherenceServiceStratergy adherenceServiceStratergy = adherenceServices.get(patient.getPatientPreferences().getCallPreference());
-        return adherenceServiceStratergy.anyDoseTakenLateSince(patient, since);
+        AdherenceServiceStrategy adherenceServiceStrategy = adherenceServices.get(patient.getPatientPreferences().getCallPreference());
+        return adherenceServiceStrategy.wasAnyDoseTakenLateSince(patient, since);
     }
 }

@@ -6,7 +6,7 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
-import org.motechproject.tama.ivr.service.AdherenceServiceStratergy;
+import org.motechproject.tama.ivr.service.AdherenceServiceStrategy;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Properties;
 
 @Service
-public class FourDayRecallAdherenceService implements AdherenceServiceStratergy {
+public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
 
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
@@ -130,7 +130,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStratergy 
     }
 
     @Override
-    public boolean isDosageMissedLastWeek(Patient patient) {
+    public boolean wasAnyDoseMissedLastWeek(Patient patient) {
         double adherenceForLastWeek = fourDayRecallService.getAdherencePercentageForPreviousWeek(patient.getId());
         if (adherenceForLastWeek == 0.0 && fourDayRecallService.getFirstWeeksFourDayRecallRetryEndDate(patient).isAfter(DateUtil.now()))
             return false;
@@ -138,7 +138,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStratergy 
     }
 
     @Override
-    public boolean anyDoseTakenLateSince(Patient patient, LocalDate since) {
+    public boolean wasAnyDoseTakenLateSince(Patient patient, LocalDate since) {
         return false;
     }
 }

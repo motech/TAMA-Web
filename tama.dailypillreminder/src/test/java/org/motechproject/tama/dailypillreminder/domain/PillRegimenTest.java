@@ -21,7 +21,7 @@ public class PillRegimenTest {
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         DateTime today = dosageStartDate.plusWeeks(4).minusDays(1);
-        assertEquals(28, pillRegimen.getNumberOfDosesBetween(dosageStartDate, today));
+        assertEquals(28, pillRegimen.getDosesBetween(dosageStartDate.toLocalDate(), today));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class PillRegimenTest {
         }});
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
-        assertEquals(51, pillRegimen.getNumberOfDosesBetween(dosage1StartDate, today.minusDays(1)));
+        assertEquals(51, pillRegimen.getDosesBetween(dosage1StartDate.toLocalDate(), today.minusDays(1)));
     }
 
 }

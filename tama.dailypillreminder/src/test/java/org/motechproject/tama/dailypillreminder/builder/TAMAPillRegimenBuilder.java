@@ -46,7 +46,7 @@ public class TAMAPillRegimenBuilder {
         Dose doseResponse2 = new Dose(new DosageResponse("dosageId2", new Time(11, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
         Dose doseResponse3 = new Dose(new DosageResponse("dosageId3", new Time(12, 10), DateUtil.today(), null, null, Collections.EMPTY_LIST), DateUtil.today());
         when(pillRegimen.getDosageResponses()).thenReturn(Arrays.<DosageResponse>asList(doseResponse1, doseResponse2, doseResponse3));
-        when(pillRegimen.getDosageTimeLine()).thenReturn(dosageTimeLine);
+        when(pillRegimen.getDosageTimeLine(DateUtil.now(), DateUtil.now())).thenReturn(dosageTimeLine);
         when(dosageTimeLine.hasNext()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
         when(dosageTimeLine.next()).thenReturn(doseResponse1).thenReturn(doseResponse2).thenReturn(doseResponse3);
         return this;

@@ -88,7 +88,7 @@ public class MissedPillFeedbackCommandTest {
         DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientId("p1").dosageId("d1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(51);
-        when(dailyReminderAdherenceService.getAdherenceInPercentage(same("p1"), Matchers.<DateTime>any())).thenReturn(91.0);
+        when(dailyReminderAdherenceService.getAdherencePercentage(same("p1"), Matchers.<DateTime>any())).thenReturn(91.0);
 
         assertArrayEquals(new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_MORE_THAN_90}, forMissedPillFeedbackCommand.executeCommand(context));
     }
@@ -108,7 +108,7 @@ public class MissedPillFeedbackCommandTest {
         DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientId("p1").dosageId("d1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(51);
-        when(dailyReminderAdherenceService.getAdherenceInPercentage(same("p1"), Matchers.<DateTime>any())).thenReturn(89.0);
+        when(dailyReminderAdherenceService.getAdherencePercentage(same("p1"), Matchers.<DateTime>any())).thenReturn(89.0);
 
         assertArrayEquals(new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_BETWEEN_70_AND_90}, forMissedPillFeedbackCommand.executeCommand(context));
     }

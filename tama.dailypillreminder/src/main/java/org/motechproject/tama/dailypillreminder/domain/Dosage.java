@@ -14,53 +14,38 @@ public class Dosage {
         this.dosageResponse = dosageResponse;
     }
 
-    public int getDosesIn(int numberOfWeeks, DateTime asOfDate) {
-        DateTime dosageStartTime = DateUtil.newDateTime(dosageResponse.getStartDate(), getHour(), getMinute(), 0);
-        int doses = getNumberOfDosesBetween(dosageStartTime, asOfDate);
-        int days = numberOfWeeks * 7;
-        return doses > days ? days : doses;
-    }
-
-    /* Range is inclusive of from and till*/
-    public int getNumberOfDosesBetween(DateTime from, DateTime till) {
-        DateTime dosageStartTime = DateUtil.newDateTime(dosageResponse.getStartDate(), getHour(), getMinute(), 0);
-        LocalDate dosageEndDate = dosageResponse.getEndDate() != null ? dosageResponse.getEndDate() : till.toLocalDate();
-        DateTime dosageEndTime = DateUtil.newDateTime(dosageEndDate, getHour(), getMinute(), 0);
-        if (!from.isAfter(dosageStartTime))
-            from = dosageStartTime;
-        if (!till.isBefore(dosageEndTime))
-            till = dosageEndTime;
-        if (from.isEqual(till)) {
-            return 1;
-        } else if (till.isBefore(from)) {
-            return 0;
-        } else {
-            return numberOfDosesOnFirstDay(from) + numberOfDosesBetweenFirstAndLastDay(from, till) + numberOfDosesOnLastDay(till);
-        }
-    }
-
-    private int numberOfDosesOnFirstDay(DateTime dateTime) {
-        DateTime doseTime = dateTime.withTime(getHour(), getMinute(), 0, 0);
-        return !dateTime.isAfter(doseTime) ? 1 : 0;
-    }
-
-    private int numberOfDosesBetweenFirstAndLastDay(DateTime from, DateTime till) {
-        DateTime dayAfterFrom = from.plusDays(1);
-        if (dayAfterFrom.isAfter(till))
-            return 0;
-        return Days.daysBetween(dayAfterFrom.toLocalDate(), till.toLocalDate()).getDays();
-    }
-
-    private int numberOfDosesOnLastDay(DateTime dateTime) {
-        DateTime doseTime = dateTime.withTime(getHour(), getMinute(), 0, 0);
-        return !dateTime.isBefore(doseTime) ? 1 : 0;
-    }
-
     public int getHour() {
         return dosageResponse.getDosageHour();
     }
 
     public int getMinute() {
         return dosageResponse.getDosageMinute();
+    }
+
+    public int getDosesBetween(LocalDate from, DateTime to) {
+        DateTime fromDateTime = DateUtil.newDateTime(from, 0, 0, 0);
+        DateTime dosageStartTime = DateUtil.newDateTime(dosageResponse.getStartDate(), getHour(), getMinute(), 0);
+        LocalDate dosageEndDate = dosageResponse.getEndDate() != null ? dosageResponse.getEndDate() : to.toLocalDate();
+        DateTime dosageEndTime = DateUtil.newDateTime(dosageEndDate, getHour(), getMinute(), 0);
+
+        if (!fromDateTime.isAfter(dosageStartTime)) {
+            fromDateTime = dosageStartTime;
+        }
+        if (!to.isBefore(dosageEndTime)) {
+            to = dosageEndTime;
+        }
+
+        if (fromDateTime.isEqual(to)) {
+            return 1;
+        } else if (to.isBefore(fromDateTime)) {
+            return 0;
+        } else {
+            return Days.daysBetween(fromDateTime.toLocalDate(), to.toLocalDate()).getDays() + numberOfDosesOnLastDay(to);
+        }
+    }
+
+    private int numberOfDosesOnLastDay(DateTime dateTime) {
+        DateTime doseTime = dateTime.withTime(getHour(), getMinute(), 0, 0);
+        return !dateTime.isBefore(doseTime) ? 1 : 0;
     }
 }

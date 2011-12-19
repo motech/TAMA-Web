@@ -19,7 +19,7 @@ public class DosageTimeLineTest {
         DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
         DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
 
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 06, 00, 00));
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 06, 00, 00), DateUtil.now());
 
         assertDosageResponse(dosageResponse2, fromDate, dosageTimeLine.next());
     }
@@ -30,7 +30,7 @@ public class DosageTimeLineTest {
         DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
         DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
 
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00));
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.now());
         dosageTimeLine.next();
         dosageTimeLine.next();
         dosageTimeLine.next();
@@ -88,7 +88,7 @@ public class DosageTimeLineTest {
         LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
         DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
 
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1), DateUtil.newDateTime(fromDate, 14, 00, 00));
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1), DateUtil.newDateTime(fromDate, 14, 00, 00), DateUtil.now());
         assertDosageResponse(dosageResponse1, fromDate.plusDays(1), dosageTimeLine.next());
         assertDosageResponse(dosageResponse1, fromDate.plusDays(2), dosageTimeLine.next());
     }
@@ -99,7 +99,7 @@ public class DosageTimeLineTest {
         DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
         DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
 
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00));
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.now());
         assertTrue(dosageTimeLine.hasNext());
         assertTrue(dosageTimeLine.hasNext()); //Operation is Idempotent.
     }

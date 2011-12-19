@@ -57,7 +57,7 @@ public class AdherenceQualityListenerTest {
         double adherencePercentage = 69.0;
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        when(dailyReminderAdherenceService.getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
+        when(dailyReminderAdherenceService.getAdherencePercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String, Object> parameters = motechEvent.getParameters();
@@ -65,7 +65,7 @@ public class AdherenceQualityListenerTest {
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
-        verify(dailyReminderAdherenceService).getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any());
+        verify(dailyReminderAdherenceService).getAdherencePercentage(same(PATIENT_ID), Matchers.<DateTime>any());
         verify(dailyReminderAdherenceTrendService, times(1)).raiseAdherenceInRedAlert(eq(PATIENT_ID), eq(adherencePercentage));
     }
 
@@ -74,7 +74,7 @@ public class AdherenceQualityListenerTest {
         double adherencePercentage = 70.0;
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        when(dailyReminderAdherenceService.getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
+        when(dailyReminderAdherenceService.getAdherencePercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenReturn(adherencePercentage);
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
         Map<String, Object> parameters = motechEvent.getParameters();
@@ -82,7 +82,7 @@ public class AdherenceQualityListenerTest {
 
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
 
-        verify(dailyReminderAdherenceService).getAdherenceInPercentage(same(PATIENT_ID), Matchers.<DateTime>any());
+        verify(dailyReminderAdherenceService).getAdherencePercentage(same(PATIENT_ID), Matchers.<DateTime>any());
         verify(dailyReminderAdherenceTrendService, never()).raiseAdherenceInRedAlert(Matchers.<String>any(), Matchers.<Double>any());
     }
 

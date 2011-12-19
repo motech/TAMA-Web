@@ -7,7 +7,7 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.*;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
-import org.motechproject.tama.ivr.service.AdherenceServiceStratergy;
+import org.motechproject.tama.ivr.service.AdherenceServiceStrategy;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Service
-public class DailyPillReminderAdherenceService implements AdherenceServiceStratergy {
+public class DailyPillReminderAdherenceService implements AdherenceServiceStrategy {
 
     private AllPatients allPatients;
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
@@ -39,21 +39,16 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         adherenceService.register(CallPreference.DailyPillReminder, this);
     }
 
-    public double getAdherenceInPercentage(String patientId, DateTime asOfDate) {
-        int numberOfWeeks = 4;
-        return getAdherenceForWeeks(patientId, asOfDate, numberOfWeeks) * 100;
+    public double getAdherencePercentage(String patientId, DateTime asOfDate) {
+        return getAdherencePercentage(patientId, asOfDate.minusWeeks(4).toLocalDate(), asOfDate);
     }
 
-    public double getAdherenceForLastWeekInPercentage(String patientId, DateTime asOfDate) {
-        return getAdherenceForWeeks(patientId, asOfDate, 1) * 100.0;
-    }
-
-    private double getAdherenceForWeeks(String patientId, DateTime asOfDate, int numberOfWeeks) {
+    private double getAdherencePercentage(String patientId, LocalDate fromDate, DateTime toDate) {
         PillRegimen pillRegimen = pillReminderService.getPillRegimen(patientId);
-        int totalDoses = pillRegimen.getDosesIn(numberOfWeeks, asOfDate);
-        if (totalDoses == 0) return 1;
-        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, asOfDate.minusWeeks(numberOfWeeks).toLocalDate(), asOfDate.toLocalDate());
-        return ((double) dosagesTakenForLastFourWeeks) / totalDoses;
+        int totalDoses = pillRegimen.getDosesBetween(fromDate, toDate);
+        if (totalDoses == 0) return 100;
+        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
+        return ((double) dosagesTakenForLastFourWeeks) * 100 / totalDoses;
     }
 
     public void recordAdherence(String patientId, boolean doseTaken) {
@@ -85,7 +80,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         }
     }
 
-    public Dose previous(int currentDosageIndex, DateTime iteratingDate, int previousDosageIndex) {
+    private Dose previous(int currentDosageIndex, DateTime iteratingDate, int previousDosageIndex) {
         DosageResponse dosageResponseToReturn;
         DateTime dateToReturn;
         if (currentDosageIndex == 0) {
@@ -96,10 +91,6 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             dateToReturn = DateUtil.newDateTime(iteratingDate.toLocalDate(), dosageResponseToReturn.getDosageHour(), dosageResponseToReturn.getDosageMinute(), 0);
         }
         return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
-    }
-
-    public boolean anyDoseTakenLateSince(String patientId, LocalDate since) {
-        return allDosageAdherenceLogs.getDoseTakenLateCount(patientId, since, true) > 0;
     }
 
     private boolean doseIsLate(Dose dose, DateTime doseTakenTime) {
@@ -206,12 +197,14 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     }
 
     @Override
-    public boolean isDosageMissedLastWeek(Patient patient) {
-        return getAdherenceForLastWeekInPercentage(patient.getId(), DateUtil.now()) != 100.0;
+    public boolean wasAnyDoseMissedLastWeek(Patient patient) {
+        LocalDate oneWeekAgo = DateUtil.now().minusWeeks(1).toLocalDate();
+        DateTime yesterday = DateUtil.now().minusDays(1);
+        return getAdherencePercentage(patient.getId(), oneWeekAgo, yesterday) != 100;
     }
 
     @Override
-    public boolean anyDoseTakenLateSince(Patient patient, LocalDate since) {
-        return anyDoseTakenLateSince(patient.getId(), since);
+    public boolean wasAnyDoseTakenLateSince(Patient patient, LocalDate since) {
+        return allDosageAdherenceLogs.getDoseTakenLateCount(patient.getId(), since, true) > 0;
     }
 }

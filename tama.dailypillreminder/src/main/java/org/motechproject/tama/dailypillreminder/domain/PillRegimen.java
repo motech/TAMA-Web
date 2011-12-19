@@ -1,9 +1,9 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,6 @@ public class PillRegimen {
         return pillRegimenResponse.getPillRegimenId();
     }
 
-    public DosageTimeLine getDosageTimeLine() {
-        return new DosageTimeLine(pillRegimenResponse.getDosages(), DateUtil.now());
-    }
-
     public DosageTimeLine getDosageTimeLine(DateTime from, DateTime to) {
         return new DosageTimeLine(pillRegimenResponse.getDosages(), from, to);
     }
@@ -32,17 +28,15 @@ public class PillRegimen {
         return pillRegimenResponse.getDosages();
     }
 
-    public int getNumberOfDosesBetween(DateTime from, DateTime till) {
-        int count = 0;
-        for (Dosage dosage : getDosages())
-            count += dosage.getNumberOfDosesBetween(from, till);
-        return count;
+    public int getNumberOfDosesAsOf(DateTime till) {
+        final LocalDate startOfTime = new LocalDate(0);
+        return  getDosesBetween(startOfTime, till);
     }
 
-    public int getDosesIn(int numberOfWeeks, DateTime asOfDate) {
+    public int getDosesBetween(LocalDate fromDate, DateTime toDate) {
         int count = 0;
         for (Dosage dosage : getDosages())
-            count += dosage.getDosesIn(numberOfWeeks, asOfDate);
+            count += dosage.getDosesBetween(fromDate, toDate);
         return count;
     }
 
@@ -51,19 +45,5 @@ public class PillRegimen {
         for (DosageResponse dosageResponse : pillRegimenResponse.getDosages())
             dosages.add(new Dosage(dosageResponse));
         return dosages;
-    }
-
-    public int getNumberOfDosesAsOf(DateTime till) {
-        DateTime startOfTime = new DateTime(0);
-        return getNumberOfDosesBetween(startOfTime, till);
-    }
-
-    public Dosage getDosage(String dosageId) {
-        for (DosageResponse dosageResponse : pillRegimenResponse.getDosages()) {
-            if (dosageResponse.getDosageId().endsWith(dosageId)) {
-                return new Dosage(dosageResponse);
-            }
-        }
-        return null;
     }
 }

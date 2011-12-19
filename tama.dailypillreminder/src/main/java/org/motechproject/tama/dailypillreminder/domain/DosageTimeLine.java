@@ -17,10 +17,6 @@ public class DosageTimeLine implements Iterator<Dose> {
     private int index;
     private DateTime iteratingDate;
 
-    public DosageTimeLine(List<DosageResponse> dosageResponses, DateTime from) {
-        this(dosageResponses, from, null);
-    }
-
     public DosageTimeLine(List<DosageResponse> dosages, DateTime from, DateTime to) {
         this.dosageResponses = sort(dosages);
         this.from = from;
