@@ -24,6 +24,10 @@ public class TAMAConstants {
     public static final String OUT_BOX_CALL_RETRY_INTERVAL = "retry.interval.mins";
     public static final int NO_ALERT_PRIORITY = 0;
     public static final String DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT = BASE_SUBJECT + ".daily.adherenceInRed.alert";
+    public static final String ADHERENCE_IN_RED_ALERT = "Adherence in Red";
+    public static final String FALLING_ADHERENCE = "Falling Adherence";
+    public static final String VOICE_MESSAGE_COMMAND_AUDIO = "AudioCommand";
+    public static final String VOICE_MESSAGE_COMMAND = "command";
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),

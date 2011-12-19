@@ -6,7 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.model.CallDirection;
-import org.motechproject.tamacallflow.domain.CallLog;
+import org.motechproject.tama.ivr.domain.CallLog;
 
 import java.util.ArrayList;
 import java.util.List;

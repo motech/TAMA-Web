@@ -12,6 +12,11 @@
     <name>tama.patient</name>
     <dependencies>
         <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-alerts-api</artifactId>
+            <version>0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
             <version>0.3-SNAPSHOT</version>

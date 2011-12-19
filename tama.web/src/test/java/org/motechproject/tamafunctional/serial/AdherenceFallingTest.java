@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tamacallflow.listener.AdherenceTrendListener;
+import org.motechproject.tama.dailypillreminder.listener.AdherenceTrendListener;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
-import static org.motechproject.tamacallflow.ivr.TamaIVRMessage.*;
+import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
@@ -88,7 +88,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
     }
 
     private void triggerAdherenceFallingJob() {
-        scheduledTaskManager.trigger(AdherenceTrendListener.class, "handleWeeklyAdherence", patient.id());
+        scheduledTaskManager.trigger(AdherenceTrendListener.class, "handleAdherenceTrendEvent", patient.id());
     }
 
     private void verifyCreationOfAdherenceFallingAlertForThePatient() {

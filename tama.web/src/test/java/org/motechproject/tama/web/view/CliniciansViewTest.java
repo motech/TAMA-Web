@@ -15,8 +15,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 
 public class CliniciansViewTest {
-
-
     private CliniciansView cliniciansDropDownList;
 
     @Mock

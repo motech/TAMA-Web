@@ -1,7 +1,7 @@
 package org.motechproject.tama.tools;
 
-import org.motechproject.tamacallflow.domain.WeeklyAdherenceLog;
-import org.motechproject.tamacallflow.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

@@ -15,7 +15,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class HIVTestReasonsViewTest {
 
-
     private HIVTestReasonsView HIVTestReasonsView;
 
     @Mock

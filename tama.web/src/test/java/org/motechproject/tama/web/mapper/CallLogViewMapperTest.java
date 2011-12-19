@@ -4,10 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.web.view.CallLogView;
-import org.motechproject.tamacallflow.domain.CallLog;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

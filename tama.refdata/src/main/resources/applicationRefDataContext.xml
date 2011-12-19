@@ -8,8 +8,8 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:component-scan base-package="org.motechproject.tama.refdata"/>
-    <import resource="classpath:applicationCommonContext.xml"/>
     <import resource="classpath:applicationCmsLiteApi.xml"/>
+    <import resource="classpath:applicationCommonContext.xml"/>
 
     <util:properties id="seedProperties" location="classpath:/seed.properties"/>
     <context:annotation-config/>

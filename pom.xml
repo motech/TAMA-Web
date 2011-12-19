@@ -11,8 +11,11 @@
         <module>tama.refdata</module>
         <module>tama.facility</module>
         <module>tama.patient</module>
+        <module>tama.ivr</module>
         <module>tama.dailypillreminder</module>
-        <module>tama.callflow</module>
+        <module>tama.fourdayrecall</module>
+        <module>tama.outbox</module>
+        <module>tama.symptomreporting</module>
         <module>tama.healthtips</module>
         <module>tama.tools</module>
         <module>tama.web</module>

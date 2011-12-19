@@ -4,10 +4,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <import resource="classpath:applicationDailyPillReminderContext.xml"/>
+    <import resource="classpath:applicationFourDayRecallContext.xml"/>
+    <import resource="classpath:applicationOutboxContext.xml"/>
+    <import resource="classpath:applicationSymptomReportingContext.xml"/>
+    <import resource="classpath:applicationHealthTipsContext.xml"/>
+    <import resource="classpath:/placeholderPluginContext.xml"/>
+
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tama"/>
-    <import resource="classpath:applicationCallFlowContext.xml"/>
-    <import resource="classpath:applicationHealthTipsContext.xml"/>
-    <import resource="classpath:/placeholderPluginContext.xml"/>
 </beans>

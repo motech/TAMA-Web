@@ -1,8 +1,8 @@
 package org.motechproject.tama.tools;
 
+import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tamacallflow.ivr.call.IvrCall;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -17,7 +17,7 @@ public class TriggerFourDayRecallEvent {
         Patient patient = allPatients.findByPatientId(patientId).get(0);
 
         System.out.println("Triggering the FourDayRecall event...");
-        IvrCall ivrCall = applicationContext.getBean(IvrCall.class);
+        IVRCall ivrCall = applicationContext.getBean(IVRCall.class);
         ivrCall.makeCall(patient);
     }
 }

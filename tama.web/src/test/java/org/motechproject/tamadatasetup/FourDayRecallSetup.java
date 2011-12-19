@@ -2,7 +2,7 @@ package org.motechproject.tamadatasetup;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.tamacallflow.listener.FourDayRecallListener;
+import org.motechproject.tama.fourdayrecall.listener.FourDayRecallListener;
 import org.motechproject.tamadatasetup.domain.FourDayRecallPatientEvents;
 import org.motechproject.tamadatasetup.domain.FourDayRecallPatientSchedule;
 import org.motechproject.tamadatasetup.domain.FourDayRecallSetupConfiguration;

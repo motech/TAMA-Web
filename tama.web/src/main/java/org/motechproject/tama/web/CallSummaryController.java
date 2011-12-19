@@ -1,11 +1,11 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.tama.ivr.service.CallLogService;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.view.CallLogPreferencesFilter;
 import org.motechproject.tama.web.view.CallLogView;
-import org.motechproject.tamacallflow.service.CallLogService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;

@@ -1,7 +1,7 @@
 package org.motechproject.tamaperformance;
 
 import org.junit.Test;
-import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestPatient;

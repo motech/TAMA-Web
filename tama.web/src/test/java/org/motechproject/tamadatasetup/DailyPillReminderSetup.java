@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.ReminderEventHandler;
-import org.motechproject.tamacallflow.listener.AdherenceTrendListener;
-import org.motechproject.tamacallflow.listener.OutboxCallListener;
+import org.motechproject.tama.dailypillreminder.listener.AdherenceTrendListener;
+import org.motechproject.tama.outbox.listener.OutboxCallListener;
 import org.motechproject.tamadatasetup.domain.DailyPatientEvents;
 import org.motechproject.tamadatasetup.domain.DailyPatientSchedule;
 import org.motechproject.tamadatasetup.domain.ExpectedDailyPillAdherence;
@@ -74,7 +74,7 @@ public class DailyPillReminderSetup extends FunctionalTestObject {
 
             if (dailyPatientEvents.runAdherenceTrendJob()) {
                 logInfo("RUNNING ADHERENCE TREND JOB");
-                scheduledTaskManager.trigger(AdherenceTrendListener.class, "handleWeeklyAdherence", configuration.patientDocId());
+                scheduledTaskManager.trigger(AdherenceTrendListener.class, "handleAdherenceTrendEvent", configuration.patientDocId());
             }
 
             if (dailyPatientEvents.dosageTaken()) {

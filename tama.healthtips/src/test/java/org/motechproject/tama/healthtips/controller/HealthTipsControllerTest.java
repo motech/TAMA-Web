@@ -8,10 +8,9 @@ import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.healthtips.constants.HealthTipPropertiesForTest;
 import org.motechproject.tama.healthtips.service.HealthTipService;
-import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
-import org.motechproject.tamacallflow.ivr.context.TAMAIVRContext;
-import org.motechproject.tamacallflow.ivr.factory.TAMAIVRContextFactory;
-import org.motechproject.tamacallflow.ivr.factory.VoiceMessageResponseFactory;
+import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -24,8 +23,6 @@ public class HealthTipsControllerTest {
     HealthTipService healthTipService;
     @Mock
     private TamaIVRMessage tamaIvrMessage;
-    @Mock
-    private VoiceMessageResponseFactory messageResponseFactory;
     @Mock
     private KookooCallDetailRecordsService callDetailRecordsService;
     @Mock

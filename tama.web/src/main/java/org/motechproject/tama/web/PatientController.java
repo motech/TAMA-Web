@@ -2,11 +2,19 @@ package org.motechproject.tama.web;
 
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TamaException;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderSchedulerService;
 import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
+import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.repository.AllGenders;
 import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
@@ -15,9 +23,6 @@ import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
 import org.motechproject.tama.web.view.ModesOfTransmissionView;
-import org.motechproject.tamacallflow.domain.SuspendedAdherenceData;
-import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
-import org.motechproject.tamacallflow.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -61,19 +66,31 @@ public class PatientController extends BaseController {
     private AllIVRLanguages allIVRLanguages;
     private AllHIVTestReasons allTestReasons;
     private AllModesOfTransmission allModesOfTransmission;
+    private AllTreatmentAdvices allTreatmentAdvices;
+    private PillReminderService pillReminderService;
     private PatientService patientService;
-    private TamaSchedulerService schedulerService;
+    private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
+    private FourDayRecallSchedulerService fourDayRecallSchedulerService;
+    private OutboxSchedulerService outboxSchedulerService;
+    private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, TamaSchedulerService schedulerService, PatientService patientService) {
+    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices, PillReminderService pillReminderService, PatientService patientService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, FourDayRecallSchedulerService fourDayRecallSchedulerService, OutboxSchedulerService outboxSchedulerService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, FourDayRecallAdherenceService fourDayRecallAdherenceService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
         this.allIVRLanguages = allIVRLanguages;
         this.allTestReasons = allTestReasons;
         this.allModesOfTransmission = allModesOfTransmission;
+        this.allTreatmentAdvices = allTreatmentAdvices;
+        this.pillReminderService = pillReminderService;
         this.patientService = patientService;
-        this.schedulerService = schedulerService;
+        this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
+        this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
+        this.outboxSchedulerService = outboxSchedulerService;
+        this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
+        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -93,6 +110,7 @@ public class PatientController extends BaseController {
         Patient patient = allPatients.get(id);
         patient.setStatus(status);
         patientService.update(patient);
+        postUpdate(patient);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
@@ -104,18 +122,23 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/revive/{id}")
-    public String revive(@PathVariable String id, Model model, HttpServletRequest request) {
-        List<SuspendedAdherenceData.DosageStatusWhenSuspended> pastDosageStatus = Arrays.asList(SuspendedAdherenceData.DosageStatusWhenSuspended.values());
-        model.addAttribute("suspendedAdherenceData", new SuspendedAdherenceData());
+    public String revive(@PathVariable String id, Model model) {
+        List<String> pastDosageStatus = Arrays.asList("Dose Taken", "Dose Not Taken");
+        model.addAttribute("suspendedAdherenceData", pastDosageStatus);
         model.addAttribute("patientId", id);
         model.addAttribute("pastDosageStatus", pastDosageStatus);
         return REVIVE_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/revive")
-    public String reactivatePatient(@RequestParam String id, SuspendedAdherenceData suspendedAdherenceData, Model uiModel, HttpServletRequest request) {
-        suspendedAdherenceData.patientId(id);
-        patientService.reActivate(id, suspendedAdherenceData);
+    public String reactivatePatient(@RequestParam String id, boolean doseTaken, HttpServletRequest request) {
+        allPatients.activate(id);
+        Patient patient = allPatients.get(id);
+        if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
+            fourDayRecallAdherenceService.recordAdherence(id, doseTaken);
+        } else {
+            dailyPillReminderAdherenceService.recordAdherence(id, doseTaken);
+        }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
@@ -148,7 +171,7 @@ public class PatientController extends BaseController {
             //TODO: scheduling rescheduling codes have duplication in it
             if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
                     patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
-                schedulerService.scheduleJobForOutboxCall(patient);
+                outboxSchedulerService.scheduleJobForOutboxCall(patient);
             }
             uiModel.asMap().clear();
         } catch (TamaException e) {
@@ -188,6 +211,7 @@ public class PatientController extends BaseController {
         }
         try {
             patientService.update(patient);
+            postUpdate(patient);
             uiModel.asMap().clear();
         } catch (TamaException e) {
             String message = e.getMessage();
@@ -243,5 +267,72 @@ public class PatientController extends BaseController {
 
     private void addDateTimeFormat(Model uiModel) {
         uiModel.addAttribute(DATE_OF_BIRTH_FORMAT, DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
+    }
+
+    private void postUpdate(Patient patient) {
+        Patient dbPatient = allPatients.get(patient.getId());
+        if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
+            outboxSchedulerService.unscheduleJobForOutboxCall(dbPatient);
+            outboxSchedulerService.unscheduleRepeatingJobForOutboxCall(dbPatient.getId());
+            unscheduleDailyReminderJobs(patient);
+            scheduleFourDayRecallJobs(patient);
+            return;
+        }
+
+        if (bestCallTimeChanged(patient, dbPatient)) {
+            rescheduleOutboxCalls(patient, dbPatient);
+        }
+
+        if (bestCallTimeChanged(patient, dbPatient) || dayOfWeekForWeeklyAdherenceCallChanged(patient, dbPatient)) {
+            rescheduleFourDayRecallJobs(patient);
+        }
+    }
+
+    private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
+        return dbPatient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) && patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall);
+    }
+
+    private void unscheduleDailyReminderJobs(Patient patient) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        if (treatmentAdvice != null) {
+            pillReminderService.remove(patient.getId());
+            dailyPillReminderSchedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+            dailyPillReminderSchedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+        }
+    }
+
+    private void scheduleFourDayRecallJobs(Patient patient) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        if (treatmentAdvice != null && patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall)
+            fourDayRecallSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+    }
+
+    private boolean bestCallTimeChanged(Patient patient, Patient dbPatient) {
+        return !(patient.getPatientPreferences().getBestCallTime().equals(dbPatient.getPatientPreferences().getBestCallTime()));
+    }
+
+    private void rescheduleOutboxCalls(Patient updatedPatient, Patient patient) {
+        boolean shouldUnScheduleOldOutboxJobs = shouldScheduleOutboxCallsFor(patient);
+        if (shouldUnScheduleOldOutboxJobs) {
+            outboxSchedulerService.unscheduleJobForOutboxCall(patient);
+            outboxSchedulerService.unscheduleRepeatingJobForOutboxCall(patient.getId());
+        }
+        //TODO: scheduling rescheduling codes have duplication in it
+        if (shouldScheduleOutboxCallsFor(updatedPatient)) {
+            outboxSchedulerService.scheduleJobForOutboxCall(updatedPatient);
+        }
+    }
+
+    private boolean dayOfWeekForWeeklyAdherenceCallChanged(Patient patient, Patient dbPatient) {
+        return patient.getPatientPreferences().getDayOfWeeklyCall() != dbPatient.getPatientPreferences().getDayOfWeeklyCall();
+    }
+
+    boolean shouldScheduleOutboxCallsFor(Patient patient) {
+        return patient.getPatientPreferences().getCallPreference() == CallPreference.DailyPillReminder && patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime();
+    }
+
+    private void rescheduleFourDayRecallJobs(Patient patient) {
+        fourDayRecallSchedulerService.unScheduleFourDayRecallJobs(patient);
+        scheduleFourDayRecallJobs(patient);
     }
 }

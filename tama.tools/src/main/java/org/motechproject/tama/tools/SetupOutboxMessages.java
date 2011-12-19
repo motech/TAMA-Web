@@ -5,9 +5,9 @@ import org.motechproject.outbox.api.model.MessagePriority;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.OutboundVoiceMessageStatus;
 import org.motechproject.outbox.api.model.VoiceMessageType;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tamacallflow.ivr.controller.OutboxController;
 import org.motechproject.util.DateUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -39,14 +39,14 @@ public class SetupOutboxMessages {
             OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
             VoiceMessageType voiceMessageType = new VoiceMessageType();
             voiceMessageType.setPriority(MessagePriority.MEDIUM);
-            voiceMessageType.setVoiceMessageTypeName(OutboxController.VOICE_MESSAGE_COMMAND_AUDIO);
+            voiceMessageType.setVoiceMessageTypeName(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
             outboundVoiceMessage.setVoiceMessageType(voiceMessageType);
             outboundVoiceMessage.setPartyId(patient.getId());
             outboundVoiceMessage.setCreationTime(DateUtil.now().toDate());
             outboundVoiceMessage.setExpirationDate(DateUtil.tomorrow().toDate());
             outboundVoiceMessage.setStatus(OutboundVoiceMessageStatus.PENDING);
             HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put(OutboxController.VOICE_MESSAGE_COMMAND, Arrays.asList(args[i]));
+            map.put(TAMAConstants.VOICE_MESSAGE_COMMAND, Arrays.asList(args[i]));
             outboundVoiceMessage.setParameters(map);
 
             outboxRepository.add(outboundVoiceMessage);

@@ -87,7 +87,7 @@ public class Patient extends CouchEntity {
 
     @JsonIgnore
     public boolean isOnDailyPillReminder() {
-        return CallPreference.DailyPillReminder.equals(this.patientPreferences.getCallPreference());
+        return this.patientPreferences.getCallPreference().isDaily();
     }
 
     public String getPatientId() {
@@ -262,5 +262,11 @@ public class Patient extends CouchEntity {
     public int getAge() {
         Period period = new Period(getDateOfBirth(), DateUtil.today(), PeriodType.years());
         return period.getYears();
+    }
+
+    @JsonIgnore
+    public void suspend() {
+        setStatus(Status.Suspended);
+        setLastSuspendedDate(DateUtil.now());
     }
 }

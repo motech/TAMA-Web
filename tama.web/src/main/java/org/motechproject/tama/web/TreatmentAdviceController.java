@@ -2,6 +2,8 @@ package org.motechproject.tama.web;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderSchedulerService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
@@ -21,7 +23,6 @@ import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.tama.web.view.DosageTypesView;
 import org.motechproject.tama.web.view.MealAdviceTypesView;
 import org.motechproject.tama.web.view.RegimensView;
-import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -55,12 +56,14 @@ public class TreatmentAdviceController extends BaseController {
     @Autowired
     private PillRegimenRequestMapper pillRegimenRequestMapper;
     @Autowired
-    private TamaSchedulerService schedulerService;
+    private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
+    @Autowired
+    private FourDayRecallSchedulerService fourDayRecallSchedulerService;
 
     protected TreatmentAdviceController() {
     }
 
-    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, PillRegimenRequestMapper requestMapper, TamaSchedulerService schedulerService) {
+    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, FourDayRecallSchedulerService fourDayRecallSchedulerService, PillRegimenRequestMapper requestMapper) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
@@ -68,8 +71,9 @@ public class TreatmentAdviceController extends BaseController {
         this.allDosageTypes = allDosageTypes;
         this.allMealAdviceTypes = allMealAdviceTypes;
         this.pillReminderService = pillReminderService;
+        this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
+        this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         this.pillRegimenRequestMapper = requestMapper;
-        this.schedulerService = schedulerService;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
@@ -99,13 +103,13 @@ public class TreatmentAdviceController extends BaseController {
             pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
             //TODO falling adherence alerts are triggered as a part of adherence trend jobs.
             //TODO Instead of the four calls below we should put all of these in single service
-            schedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(oldTreatmentAdvice);
-            schedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
-            schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-            schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+            dailyPillReminderSchedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(oldTreatmentAdvice);
+            dailyPillReminderSchedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+            dailyPillReminderSchedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+            dailyPillReminderSchedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
         } else if (CallPreference.FourDayRecall.equals(callPreference)) {
-            schedulerService.unScheduleFourDayRecallJobs(patient);
-            schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+            fourDayRecallSchedulerService.unScheduleFourDayRecallJobs(patient);
+            fourDayRecallSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
         }
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
@@ -130,11 +134,11 @@ public class TreatmentAdviceController extends BaseController {
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         if (patientPreferences.getCallPreference().equals(CallPreference.FourDayRecall)) {
-            schedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+            fourDayRecallSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
         } else {
             pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
-            schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-            schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+            dailyPillReminderSchedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+            dailyPillReminderSchedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
         }
     }
 

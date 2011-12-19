@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderSchedulerService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
@@ -22,7 +24,6 @@ import org.motechproject.tama.refdata.repository.AllDosageTypes;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.ComboBoxView;
-import org.motechproject.tamacallflow.platform.service.TamaSchedulerService;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -64,7 +65,9 @@ public class TreatmentAdviceControllerTest {
     @Mock
     private PillRegimenRequestMapper requestMapper;
     @Mock
-    private TamaSchedulerService schedulerService;
+    private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
+    @Mock
+    private FourDayRecallSchedulerService fourDayRecallSchedulerService;
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
@@ -81,15 +84,15 @@ public class TreatmentAdviceControllerTest {
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, pillReminderService, requestMapper, schedulerService);
+        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, pillReminderService, dailyPillReminderSchedulerService, fourDayRecallSchedulerService, requestMapper);
     }
 
     @Test
     public void shouldScheduleCallsForPatientsOnDailyPillReminder() {
         controller.create(treatmentAdvice, uiModel);
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
-        verify(schedulerService).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-        verify(schedulerService).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+        verify(dailyPillReminderSchedulerService).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+        verify(dailyPillReminderSchedulerService).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
     }
 
     @Test
@@ -102,7 +105,7 @@ public class TreatmentAdviceControllerTest {
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
 
         controller.create(treatmentAdvice, uiModel);
-        verify(schedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+        verify(fourDayRecallSchedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
     }
 
     @Test
@@ -212,10 +215,10 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService).renew(any(DailyPillRegimenRequest.class));
-        verify(schedulerService).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(existingTreatmentAdvice);
-        verify(schedulerService).unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
-        verify(schedulerService).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-        verify(schedulerService).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+        verify(dailyPillReminderSchedulerService).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(existingTreatmentAdvice);
+        verify(dailyPillReminderSchedulerService).unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+        verify(dailyPillReminderSchedulerService).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+        verify(dailyPillReminderSchedulerService).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
     }
 
     @Test
@@ -234,11 +237,11 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService, never()).renew(any(DailyPillRegimenRequest.class));
-        verify(schedulerService).unScheduleFourDayRecallJobs(patient);
-        verify(schedulerService, never()).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(existingTreatmentAdvice);
-        verify(schedulerService, never()).unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
-        verify(schedulerService, never()).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-        verify(schedulerService, never()).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+        verify(fourDayRecallSchedulerService).unScheduleFourDayRecallJobs(patient);
+        verify(dailyPillReminderSchedulerService, never()).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(existingTreatmentAdvice);
+        verify(dailyPillReminderSchedulerService, never()).unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+        verify(dailyPillReminderSchedulerService, never()).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+        verify(dailyPillReminderSchedulerService, never()).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
     }
 
     private TreatmentAdvice getTreatmentAdvice() {

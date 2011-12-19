@@ -7,10 +7,10 @@ import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
 import org.motechproject.tama.common.util.TimeUtil;
+import org.motechproject.tama.dailypillreminder.util.DosageUtil;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.refdata.repository.AllDrugs;
-import org.motechproject.tamacallflow.util.DosageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,13 +26,13 @@ public class PillRegimenRequestMapper {
     @Autowired
     private AllDrugs allDrugs;
 
-    @Value("#{ivrProperties['pill.window.hrs']}")
+    @Value("#{dailyPillReminderProperties['pill.window.hrs']}")
     private Integer pillWindow;
 
     @Value("#{ivrProperties['retry.interval.mins']}")
     private Integer retryInterval;
 
-    @Value("#{ivrProperties['reminder.lag.mins']}")
+    @Value("#{dailyPillReminderProperties['reminder.lag.mins']}")
     private Integer reminderLag;
 
     public PillRegimenRequestMapper(AllDrugs allDrugs, Integer pillWindow, Integer retryInterval, Integer reminderLag) {

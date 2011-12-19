@@ -4,12 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
-import org.motechproject.tamacallflow.domain.PatientAlert;
-import org.motechproject.tamacallflow.domain.PatientAlertType;
-import org.motechproject.tamacallflow.domain.PatientAlerts;
-import org.motechproject.tamacallflow.service.PatientAlertService;
+import org.motechproject.tama.patient.domain.PatientAlert;
+import org.motechproject.tama.patient.domain.PatientAlertType;
+import org.motechproject.tama.patient.domain.PatientAlerts;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;

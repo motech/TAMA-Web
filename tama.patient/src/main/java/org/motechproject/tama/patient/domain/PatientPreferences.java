@@ -7,6 +7,7 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.common.domain.BaseEntity;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
+import org.motechproject.util.DateUtil;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -45,6 +46,9 @@ public class PatientPreferences extends BaseEntity {
     }
 
     public void setCallPreference(CallPreference callPreference) {
+        if (this.callPreference.isDaily() && callPreference.isWeekly()){
+            setCallPreferenceTransitionDate(DateUtil.now());
+        }
         this.callPreference = callPreference;
     }
 

@@ -2,7 +2,7 @@ package org.motechproject.tamafunctional.testdata;
 
 import org.motechproject.deliverytools.kookoo.QueryParams;
 import org.motechproject.ivr.kookoo.KookooCallServiceImpl;
-import org.motechproject.tamacallflow.ivr.call.PillReminderCall;
+import org.motechproject.tama.dailypillreminder.call.PillReminderCall;
 import org.motechproject.tamafunctional.testdata.ivrrequest.CallInfo;
 import org.motechproject.tamafunctional.testdata.ivrrequest.OutgoingCallInfo;
 

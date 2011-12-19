@@ -2,7 +2,7 @@ package org.motechproject.tamafunctional.test;
 
 import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
-import org.motechproject.tamacallflow.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.*;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;

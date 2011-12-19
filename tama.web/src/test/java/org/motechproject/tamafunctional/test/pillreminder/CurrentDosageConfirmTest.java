@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
-import static org.motechproject.tamacallflow.ivr.TamaIVRMessage.*;
+import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
