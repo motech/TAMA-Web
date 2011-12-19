@@ -47,7 +47,6 @@ public class OutboxControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        when(tamaivrContext.cookies()).thenReturn(cookies);
         outboxContextForTest = new OutboxContextForTest().partyId(patientId).preferredLanguage(preferredLanguage).callId("4543");
         outboxController = new OutboxController(outboxService, tamaIvrMessage, messageResponseFactory, callDetailRecordsService, standardResponseController);
         outboxController = Mockito.spy(outboxController);

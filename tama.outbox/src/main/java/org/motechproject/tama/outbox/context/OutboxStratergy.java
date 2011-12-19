@@ -21,7 +21,7 @@ public class OutboxStratergy extends OutboxModuleStratergy {
 
     @Override
     public boolean hasOutboxCompleted(TAMAIVRContext tamaivrContext) {
-        OutboxContext outboxContext = new OutboxContext(tamaivrContext);
+        OutboxContext outboxContext = new OutboxContext(tamaivrContext.getKooKooIVRContext());
         return outboxContext.hasOutboxCompleted();
     }
 

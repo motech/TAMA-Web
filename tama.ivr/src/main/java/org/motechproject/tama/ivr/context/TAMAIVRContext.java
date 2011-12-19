@@ -12,7 +12,7 @@ import org.motechproject.util.DateUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public class TAMAIVRContext extends KooKooIVRContext {
+public class TAMAIVRContext {
     static final String CALLER_ID = "caller_id";
     static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
     private static final String CALL_STATE = "call_state";
@@ -48,6 +48,10 @@ public class TAMAIVRContext extends KooKooIVRContext {
         this.kookooRequest = kookooRequest;
         this.httpRequest = httpRequest;
         this.cookies = cookies;
+    }
+
+    public KooKooIVRContext getKooKooIVRContext() {
+        return kooKooIVRContext;
     }
 
     public void initialize() {
