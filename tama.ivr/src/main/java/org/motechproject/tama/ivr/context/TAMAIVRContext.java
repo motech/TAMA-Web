@@ -39,6 +39,11 @@ public class TAMAIVRContext extends KooKooIVRContext {
         this.kooKooIVRContext = kooKooIVRContext;
     }
 
+    public TAMAIVRContext(TAMAIVRContext tamaivrContext) {
+        this(tamaivrContext.kookooRequest, tamaivrContext.httpRequest, tamaivrContext.cookies);
+        this.kooKooIVRContext = tamaivrContext.kooKooIVRContext;
+    }
+
     TAMAIVRContext(KookooRequest kookooRequest, HttpServletRequest httpRequest, Cookies cookies) {
         this.kookooRequest = kookooRequest;
         this.httpRequest = httpRequest;

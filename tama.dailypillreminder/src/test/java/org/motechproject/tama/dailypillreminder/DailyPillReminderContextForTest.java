@@ -8,6 +8,8 @@ import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext
 import org.motechproject.tama.dailypillreminder.domain.PillRegimenSnapshot;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 
+import java.util.List;
+
 public class DailyPillReminderContextForTest extends DailyPillReminderContext {
     private PillRegimenResponse pillRegimenResponse;
     private PillRegimenSnapshot pillRegimenSnapshot;
@@ -130,5 +132,10 @@ public class DailyPillReminderContextForTest extends DailyPillReminderContext {
 
     public void addLastCompletedTreeToListOfCompletedTrees(String treeName) {
         tamaivrContext.addLastCompletedTreeToListOfCompletedTrees(treeName);
+    }
+
+    @Override
+    public List<String> getListOfCompletedTrees() {
+        return tamaivrContext.getListOfCompletedTrees();
     }
 }
