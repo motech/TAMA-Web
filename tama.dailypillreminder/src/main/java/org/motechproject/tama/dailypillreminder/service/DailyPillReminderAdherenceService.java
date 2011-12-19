@@ -61,8 +61,10 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             Dose dose = dosageTimeLine.next();
             DosageStatus dosageStatus = doseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
             DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, pillRegimen.getId(), dose.getDosageId(), dosageStatus, dose.getDate());
-            allDosageAdherenceLogs.add(dosageAdherenceLog);
-            pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDate());
+            if(allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate()) == null){
+                allDosageAdherenceLogs.add(dosageAdherenceLog);
+                pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDate());
+            }
         }
     }
 
