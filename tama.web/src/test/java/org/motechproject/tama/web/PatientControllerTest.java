@@ -27,6 +27,7 @@ import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
+import org.motechproject.tama.web.model.DoseStatus;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -310,16 +311,12 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void shouldReactivatePatient() {
-        String patientId = "patientId";
-        Patient patientFromUI = mock(Patient.class);
-        when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
-            setCallPreference(CallPreference.DailyPillReminder);
-        }});
+    public void shouldReactivatePatient_AndDoseNotTaken() {
+        String patientId = "id";
+        Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
 
         when(allPatients.get(patientId)).thenReturn(patientFromUI);
-
-        controller.reactivatePatient(patientId, false, request);
+        controller.reactivatePatient(patientId, DoseStatus.NOT_TAKEN, request);
         verify(dailyPillReminderAdherenceService, times(1)).recordAdherence(patientId, false);
     }
 }

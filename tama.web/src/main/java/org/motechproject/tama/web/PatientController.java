@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -19,6 +20,7 @@ import org.motechproject.tama.refdata.repository.AllGenders;
 import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
+import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
@@ -123,21 +125,20 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/revive/{id}")
     public String revive(@PathVariable String id, Model model) {
-        List<String> pastDosageStatus = Arrays.asList("Dose Taken", "Dose Not Taken");
-        model.addAttribute("suspendedAdherenceData", pastDosageStatus);
+        List<DoseStatus> doseStatuses = Arrays.asList(DoseStatus.values());
         model.addAttribute("patientId", id);
-        model.addAttribute("pastDosageStatus", pastDosageStatus);
+        model.addAttribute("pastDosageStatus", doseStatuses);
         return REVIVE_VIEW;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/revive")
-    public String reactivatePatient(@RequestParam String id, boolean doseTaken, HttpServletRequest request) {
+    @RequestMapping(method = RequestMethod.POST, value = "/reactivatePatient")
+    public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, HttpServletRequest request) {
         allPatients.activate(id);
         Patient patient = allPatients.get(id);
         if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
-            fourDayRecallAdherenceService.recordAdherence(id, doseTaken);
+            fourDayRecallAdherenceService.recordAdherence(id, doseStatus.isTaken());
         } else {
-            dailyPillReminderAdherenceService.recordAdherence(id, doseTaken);
+            dailyPillReminderAdherenceService.recordAdherence(id, doseStatus.isTaken());
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }

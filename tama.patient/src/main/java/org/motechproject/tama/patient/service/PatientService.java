@@ -42,7 +42,7 @@ public class PatientService {
 
     public void suspend(String patientId) {
         Patient patient = allPatients.get(patientId);
-        patient.suspend();;
+        patient.suspend();
         update(patient);
     }
 }

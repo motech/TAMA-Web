@@ -7,12 +7,16 @@
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/patients/revive" var="form_url"/>
+    <spring:url value="/patients/reactivatePatient" var="form_url"/>
     <util:panel id="fc_org_motechproject_tama_ivr_logging_domain_PatientAdherenceDataPage" title="Adherence Data For Interim Period" openPane="true">
-        <form:form action="${form_url}" method="POST" modelAttribute="suspendedAdherenceData" enctype="application/x-www-form-urlencoded" onsubmit="encodePk()">
-            <field:select disableDefaultSelection="true" id="c_org_motechproject_tama_domain_patient_adherencedata" field="adherenceDataWhenPatientWasSuspended" items="${pastDosageStatus}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true" />
-            <input type="hidden" name="id" value="${patientId}" />
+
+        <form action="${form_url}" method="POST">
+            <input type="hidden" name="id" value="${patientId}"/>
+            Dose status when patient was suspended : <form:select id="pastDosageStatus" field="doseStatus" name="doseStatus" items="${pastDosageStatus}" path="pastDosageStatus" itemLabel="displayName" itemValue="value" required="true"/>
+            <br/>
+            <br/>
             <span class="submit" id="ReactivatePatient">
+                <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'pastDosageStatus', widgetType: 'dijit.form.FilteringSelect', widgetAttrs : {hasDownArrow : true}})); </script>
                 <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'ReactivatePatient_', event:'onclick'}));</script>
                 <input id="reactivatePatient" type="submit" value="Reactivate Patient"/>
             </span>
@@ -20,6 +24,6 @@
             <br/>
             <br/>
             <I>The patient will be maintained on the same regimen. To change the patient's regimen, please visit the Clinic Visits/ Appointment Details page after reactivating the patient.</I>
-        </form:form>
+        </form>
     </util:panel>
 </div>
