@@ -220,16 +220,17 @@ public class DailyPillReminderAdherenceServiceTest {
             ArgumentCaptor<DateTime> toDateCaptor = ArgumentCaptor.forClass(DateTime.class);
             when(pillRegimen.getDosesBetween(fromDateCaptor.capture(), toDateCaptor.capture())).thenReturn(7);
 
-            ArgumentCaptor<LocalDate> fromDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
-            ArgumentCaptor<LocalDate> toDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
-            when(allDosageAdherenceLogs.countBy(Matchers.eq("regimenId"), Matchers.eq(DosageStatus.TAKEN), fromDateArgumentCaptor.capture(), toDateArgumentCaptor.capture())).thenReturn(1);
+            ArgumentCaptor<LocalDate> adherenceLogFromDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
+            ArgumentCaptor<LocalDate> adherenceLogToDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
+            when(allDosageAdherenceLogs.countBy(Matchers.eq("regimenId"), Matchers.eq(DosageStatus.TAKEN), adherenceLogFromDateArgumentCaptor.capture(), adherenceLogToDateArgumentCaptor.capture())).thenReturn(1);
 
             assertTrue(dailyReminderAdherenceService.wasAnyDoseMissedLastWeek(patient));
 
-            assertEquals(DateUtil.now().minusWeeks(1).toString("MMddYYYY"), fromDateCaptor.getValue().toString("MMddYYYY"));
-            assertEquals(DateUtil.now().minusDays(1).toString("MMddYYYY"), toDateCaptor.getValue().toString("MMddYYYY"));
-            assertEquals(DateUtil.today().minusWeeks(1).toString("MMddYYYY"), fromDateArgumentCaptor.getValue().toString("MMddYYYY"));
-            assertEquals(DateUtil.today().minusDays(1).toString("MMddYYYY"), toDateArgumentCaptor.getValue().toString("MMddYYYY"));
+            assertEquals(DateUtil.now().minusWeeks(1).toString("MM/dd/YYYY"), fromDateCaptor.getValue().toString("MM/dd/YYYY"));
+            assertEquals(DateUtil.newDateTime(DateUtil.today().minusDays(1), 23, 59, 59).toString("MM/dd/YYYY HH:mm:ss"), toDateCaptor.getValue().toString("MM/dd/YYYY HH:mm:ss"));
+
+            assertEquals(DateUtil.today().minusWeeks(1).toString("MM/dd/YYYY"), adherenceLogFromDateArgumentCaptor.getValue().toString("MM/dd/YYYY"));
+            assertEquals(DateUtil.today().minusDays(1).toString("MM/dd/YYYY"), adherenceLogToDateArgumentCaptor.getValue().toString("MM/dd/YYYY"));
         }
     }
 }

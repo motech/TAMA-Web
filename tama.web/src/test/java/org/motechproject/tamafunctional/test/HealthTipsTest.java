@@ -179,7 +179,7 @@ public class HealthTipsTest extends BaseIVRTest {
 
     private void assertHealthTipsPlayed(List<String> expectedHealthTips, List<String> actualHealthTipsPlayed) {
         for (String expectedHealthTip : expectedHealthTips) {
-            assertTrue(actualHealthTipsPlayed.contains(expectedHealthTip));
+            assertTrue("expected : " + expectedHealthTip + " but was not found ", actualHealthTipsPlayed.contains(expectedHealthTip));
         }
     }
 }

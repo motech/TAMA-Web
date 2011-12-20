@@ -201,7 +201,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     @Override
     public boolean wasAnyDoseMissedLastWeek(Patient patient) {
         LocalDate oneWeekAgo = DateUtil.now().minusWeeks(1).toLocalDate();
-        DateTime yesterday = DateUtil.now().minusDays(1);
+        DateTime yesterday = DateUtil.newDateTime(DateUtil.today().minusDays(1), 23, 59, 59);
         return getAdherencePercentage(patient.getId(), oneWeekAgo, yesterday) != 100;
     }
 
