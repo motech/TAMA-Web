@@ -1,10 +1,12 @@
 package org.motechproject.tama.patient.service;
 
 import org.motechproject.tama.common.TamaException;
+import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.UniquePatientField;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +39,14 @@ public class PatientService {
             }
             throw e;
         }
+        if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
+            patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now());
+        }
         allPatients.update(patient);
+    }
+
+    private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
+        return dbPatient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) && patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall);
     }
 
     public void suspend(String patientId) {

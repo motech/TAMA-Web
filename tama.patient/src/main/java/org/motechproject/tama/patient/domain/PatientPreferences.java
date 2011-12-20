@@ -46,9 +46,6 @@ public class PatientPreferences extends BaseEntity {
     }
 
     public void setCallPreference(CallPreference callPreference) {
-        if (this.callPreference.isDaily() && callPreference.isWeekly()){
-            setCallPreferenceTransitionDate(DateUtil.now());
-        }
         this.callPreference = callPreference;
     }
 
