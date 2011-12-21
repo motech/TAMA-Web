@@ -42,6 +42,7 @@
         <div class="best_call_time section">
             <field:input field="patientPreferences.bestCallTime.timeOfDayAsString" id="bestCallTime" required="true" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$" label="Best Call Time (hh:mm)"/>
             <springform:select id="ampm" items="${timeMeridiems}" path="patientPreferences.bestCallTime.timeMeridiem" />
+            <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'ampm', widgetType: 'dijit.form.FilteringSelect', widgetAttrs : {hasDownArrow : true}})); </script>
         </div>
 
         <div class='OTC_advice_via_SMS section'>

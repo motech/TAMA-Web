@@ -58,6 +58,8 @@
                 hideElement([fillAllButton]);
             }
             if (formHasErrors()) {
+                hideElement([nextToMedicalHistoryButton]);
+                hideElement([fillAllButton]);
                 hideElement([nextToPatientPreferencesButton]);
                 openAllPanels();
             }
