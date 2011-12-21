@@ -73,5 +73,14 @@
             </div>
         </div>
 
+        <div class='section'>
+            <label class='left_pane'>
+                Notes :
+            </label>
+            <div class='right_pane'>
+                <springform:textarea name="notes" label="Notes" id="notes" required="false" path="notes" rows="5" columns="20"/>
+            </div>
+        </div>
+
     </util:panel>
 </div>

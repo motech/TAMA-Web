@@ -21,7 +21,6 @@
         <jsp:include page="showBasicInformation.jspx" />
         <jsp:include page="showMedicalHistory.jspx" />
         <jsp:include page="showPatientPreferences.jspx" />
-        <jsp:include page="showTAMAStatus.jspx" />
     </page:show>
 
 </div>

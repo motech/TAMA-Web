@@ -59,6 +59,7 @@ public class Patient extends CouchEntity {
     private String genderId;
     private String clinic_id;
     private DateTime lastSuspendedDate;
+    private String notes;
 
     @JsonIgnore
     public boolean allowAdherenceCalls() {
@@ -153,6 +154,14 @@ public class Patient extends CouchEntity {
 
     public void setTravelTimeToClinicInMinutes(int travelTimeToClinicInMinutes) {
         this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public MedicalHistory getMedicalHistory() {
