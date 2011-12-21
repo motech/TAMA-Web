@@ -38,7 +38,7 @@ public class HealthTipsTest extends BaseIVRTest {
         TestClinician clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFromYesterday();
+        TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFrom2WeeksAgo();
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
         patientDataService.setupLabResult(patient, clinician, labResult);
@@ -47,7 +47,7 @@ public class HealthTipsTest extends BaseIVRTest {
         tamaDateTimeService.adjustDateTime(DateUtil.now());
     }
 
-    private TestTreatmentAdvice setUpTreatmentAdviceToStartFromYesterday() {
+    private TestTreatmentAdvice setUpTreatmentAdviceToStartFrom2WeeksAgo() {
         TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
         LocalDate twoWeeksAgo = DateUtil.today().minusWeeks(2);
         drugDosages[0].startDate(twoWeeksAgo);
@@ -91,8 +91,8 @@ public class HealthTipsTest extends BaseIVRTest {
         caller.hangup();
 
         assertEquals(priority2HealthTips.size() + priority3HealthTips.size(), audiosPlayed.size());
-        assertHealthTipsPlayed(priority2HealthTips, audiosPlayed);
-        assertHealthTipsPlayed(priority3HealthTips, audiosPlayed);
+        assertHealthTipsPlayed(priority2HealthTips, audiosPlayed.subList(0, priority2HealthTips.size()));
+        assertHealthTipsPlayed(priority3HealthTips, audiosPlayed.subList(priority2HealthTips.size(), audiosPlayed.size()));
     }
 
     public Map<String, List<String>> getExpectedHealthTips() {
