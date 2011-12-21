@@ -39,9 +39,6 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID)
     private WebElement drug1EveningDosageTimeElement;
 
-    @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].advice_id")
-    private WebElement drug1AdviceTypeElement;
-
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[0].mealAdviceId_id")
     private WebElement drug1MealAdviceTypeElement;
 
@@ -78,7 +75,6 @@ public class CreateARTRegimenPage extends Page {
         drug1StartDateElement = WebDriverFactory.createWebElement(drug1StartDateElement);
         drug1MorningDosageTimeElement = WebDriverFactory.createWebElement(drug1MorningDosageTimeElement);
         drug1EveningDosageTimeElement = WebDriverFactory.createWebElement(drug1EveningDosageTimeElement);
-        drug1AdviceTypeElement = WebDriverFactory.createWebElement(drug1AdviceTypeElement);
         drug1MealAdviceTypeElement = WebDriverFactory.createWebElement(drug1MealAdviceTypeElement);
         drug2DosageTypeElement = WebDriverFactory.createWebElement(drug2DosageTypeElement);
         drug2StartDateElement = WebDriverFactory.createWebElement(drug2StartDateElement);
@@ -115,7 +111,7 @@ public class CreateARTRegimenPage extends Page {
         String dosageType = testDrugDosage1.dosageType();
         createFirstDosage(testDrugDosage1, dosageType);
         createSecondDosage(testDrugDosage2, dosageType);
-        drug1AdviceTypeElement.submit();
+        drug1StartDateElement.submit();
     }
 
     private void createFirstDosage(TestDrugDosage testDrugDosage1, String dosageType) {

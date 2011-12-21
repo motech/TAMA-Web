@@ -4,6 +4,7 @@
   <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />
   <jsp:directive.attribute name="object" type="java.lang.Object" required="true" rtexprvalue="true" description="The form backing object" />
   <jsp:directive.attribute name="field" type="java.lang.String" required="true" rtexprvalue="true" description="The field name" />
+  <jsp:directive.attribute name="className" type="java.lang.String" required="false" rtexprvalue="true" description="The box class name" />
   <jsp:directive.attribute name="label" type="java.lang.String" required="false" rtexprvalue="true" description="The label used for this field, will default to a message bundle if not supplied" />
   <jsp:directive.attribute name="date" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate that this field is of type java.util.Date" />
   <jsp:directive.attribute name="isBoolean" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate that this field is of type java.lang.Boolean" />
@@ -20,7 +21,11 @@
     <c:if test="${empty dateTimePattern}">
       <c:set value="MM/dd/yyyy" var="dateTimePattern" />
     </c:if>
-    
+
+    <c:if test="${empty className}">
+      <c:set value="box" var="className" />
+    </c:if>
+
     <c:set var="sec_object" value="${fn:escapeXml(object)}" />
     <c:set var="sec_field" value="${fn:escapeXml(field)}" />
 
@@ -29,7 +34,7 @@
         <c:out value="${label}" />
         :
       </label>
-      <div class="box" id="_${fn:escapeXml(id)}_${fn:escapeXml(field)}_id">
+      <div class="${fn:escapeXml(className)}" id="_${fn:escapeXml(id)}_${fn:escapeXml(field)}_id">
         <c:choose>
           <c:when test="${date}">
             <spring:escapeBody>

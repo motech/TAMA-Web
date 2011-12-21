@@ -157,6 +157,12 @@ div .box {
     width: 250px;
 }
 
+div .notesbox {
+	display:block;
+	margin-left:255px;
+    word-wrap: break-word;
+}
+
 /* menu elements*/
 
 a.menu, a.menu:link, a.menu:visited {display:block; width:150px; height:25px;} 

@@ -13,7 +13,6 @@
         </c:if>
         <field:display field="receiveOTCAdvice" isBoolean="true" id="receiveOTCAdvice" object="${patient.patientPreferences}" label="Wish to receive OTC advice via SMS"/>
         <field:display field="activateAppointmentReminders" isBoolean="true" id="activateAppointmentReminders" object="${patient.patientPreferences}" label="Activate Appointment Reminder"/>
-        <field:display field="notes" label="Notes" id="c_org_motechproject_tama_domain_Patient_notes" object="${patient}" />
-        <jsp:include page="showTAMAStatus.jspx" />
+        <field:display className="notesbox" field="notes" label="Notes" id="c_org_motechproject_tama_domain_Patient_notes" object="${patient}" />
     </util:panel>
 </div>
