@@ -6,6 +6,7 @@ import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.*;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
+import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
@@ -102,27 +103,27 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
     private void assertSymptomReportingCallFlow(TestClinician clinician, TestPatient patient) throws IOException {
         caller = caller(patient);
         IVRResponse ivrResponse = caller.call();
-        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
         logInfo("****************************************************************************************************");
         logInfo(xStream.toXML(ivrResponse));
         logInfo("****************************************************************************************************");
-        asksForCollectDtmfWith(ivrResponse, "greeting2generic", TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
 
         // Regimen4_2
         caller.enter("2");
         ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
 
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, "cy_nauseaorvomiting", "q_shortnessofbreathorgiddiness");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "cy_nauseaorvomiting", "q_shortnessofbreathorgiddiness");
 
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, "ppc_nvshortbreathgiddi", "adv_continuemedicineseeclinicasap");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "ppc_nvshortbreathgiddi", "adv_continuemedicineseeclinicasap");
 
         ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, TamaIVRMessage.HANGUP_OR_MAIN_MENU);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.HANGUP_OR_MAIN_MENU);
 
         caller.hangup();
     }

@@ -13,6 +13,7 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowAlertPage;
 import org.motechproject.tamafunctional.page.UpdateAlertPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
+import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -83,9 +84,9 @@ public class AdherenceFallingTest extends BaseIVRTest {
     }
 
     private void patientConfirmsTakingLastWeeksDose(IVRResponse ivrResponse) {
-        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, DOSE_RECORDED);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_RECORDED);
     }
 
     private void triggerAdherenceFallingJob() {

@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
+import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -56,26 +57,26 @@ public class PreviousDosageReminderTest extends BaseIVRTest {
         ivrResponse = patientConfirmsTakingHisPreviousDose(ivrResponse);
         patientListensToHisAdherencePercentage(ivrResponse);
         ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
         caller.hangup();
     }
 
     private void patientConfirmsNotTakingCurrentDose(IVRResponse ivrResponse) {
-        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
         ivrResponse = caller.enter("3");
-        assertAudioFilesPresent(ivrResponse, MISSED_PILL_FEEDBACK_FIRST_TIME, DOSE_CANNOT_BE_TAKEN_MENU);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, MISSED_PILL_FEEDBACK_FIRST_TIME, DOSE_CANNOT_BE_TAKEN_MENU);
         ivrResponse = caller.enter("2");
-        assertAudioFilesPresent(ivrResponse, PLEASE_CARRY_SMALL_BOX);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, PLEASE_CARRY_SMALL_BOX);
     }
 
     private IVRResponse patientConfirmsTakingHisPreviousDose(IVRResponse ivrResponse) {
-        assertAudioFilesPresent(ivrResponse, YOUR, YESTERDAYS, DOSE_NOT_RECORDED, YESTERDAY, YOU_WERE_SUPPOSED_TO_TAKE, FROM_THE_BOTTLE, PREVIOUS_DOSE_MENU);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR, YESTERDAYS, DOSE_NOT_RECORDED, YESTERDAY, YOU_WERE_SUPPOSED_TO_TAKE, FROM_THE_BOTTLE, PREVIOUS_DOSE_MENU);
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, YOU_SAID_YOU_TOOK, YESTERDAYS_CONFIRMATION, DOSE_TAKEN, DOSE_RECORDED);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOU_SAID_YOU_TOOK, YESTERDAYS_CONFIRMATION, DOSE_TAKEN, DOSE_RECORDED);
         return ivrResponse;
     }
 
     private void patientListensToHisAdherencePercentage(IVRResponse ivrResponse) {
-        assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW, "Num_050", PERCENT);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW, "Num_050", PERCENT);
     }
 }

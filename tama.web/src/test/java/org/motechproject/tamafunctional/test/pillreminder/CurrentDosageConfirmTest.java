@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
+import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
@@ -37,10 +38,10 @@ public class CurrentDosageConfirmTest extends BaseIVRTest {
     public void outboxFlow_WhenPatient_CallsTAMA() throws IOException {
         caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
         ivrResponse = caller.enter("3");
-        assertAudioFilesPresent(ivrResponse, NO_MESSAGES);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, NO_MESSAGES);
         ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
     }
 }

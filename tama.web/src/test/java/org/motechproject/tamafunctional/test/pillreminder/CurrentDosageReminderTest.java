@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
+import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -46,8 +47,8 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
 
         caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
         IVRResponse ivrResponse = caller.enter("1234");
-        asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, DOSE_RECORDED, YOUR_ADHERENCE_IS_NOW, "Num_100", PERCENT);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_RECORDED, YOUR_ADHERENCE_IS_NOW, "Num_100", PERCENT);
     }
 }

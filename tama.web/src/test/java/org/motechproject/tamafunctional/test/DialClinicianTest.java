@@ -9,6 +9,7 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowAlertPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
+import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
@@ -61,48 +62,48 @@ public class DialClinicianTest extends BaseIVRTest {
 
     private void patientCallsTAMA_AndListensToPillMenu() {
         IVRResponse ivrResponse = caller.call();
-        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
         logInfo("****************************************************************************************************");
         logInfo(xStream.toXML(ivrResponse));
         logInfo("****************************************************************************************************");
-        asksForCollectDtmfWith(ivrResponse, "greeting2generic", TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE, TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
     }
 
     private void patientCallsTAMA_AndVerifyPillMenuNotPlayed() {
         IVRResponse ivrResponse = caller.call();
-        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("5678#");
-        asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
     }
 
     private void patientReportsSymptoms() {
         // Regimen4_2
         caller.enter("2");
         IVRResponse ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
 
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, "cy_nauseaorvomiting", "q_shortnessofbreathorgiddiness");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "cy_nauseaorvomiting", "q_shortnessofbreathorgiddiness");
 
         ivrResponse = caller.enter("3");
-        assertAudioFilesPresent(ivrResponse, "cn_shortnessofbreathorgiddiness", "q_palpitationorfatigue");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "cn_shortnessofbreathorgiddiness", "q_palpitationorfatigue");
 
         ivrResponse = caller.enter("3");
-        assertAudioFilesPresent(ivrResponse, "cn_palpitationorfatigue", "q_fever");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "cn_palpitationorfatigue", "q_fever");
 
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, "cy_fever", "q_headache");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "cy_fever", "q_headache");
 
         ivrResponse = caller.enter("1");
-        assertAudioFilesPresent(ivrResponse, "ppc_nvfevhead", "adv_crocin01");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "ppc_nvfevhead", "adv_crocin01");
     }
 
     private void clinician0AnswersTheCall() {
         IVRResponse ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, "connectingdr");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber0());
 
         caller.answered();
@@ -110,19 +111,19 @@ public class DialClinicianTest extends BaseIVRTest {
 
     private void noClinicianAnswersTheCall() {
         IVRResponse ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, "connectingdr");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber0());
 
         ivrResponse = caller.notAnswered();
-        assertAudioFilesPresent(ivrResponse, "connectingdr");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber1());
 
         ivrResponse = caller.notAnswered();
-        assertAudioFilesPresent(ivrResponse, "connectingdr");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "connectingdr");
         assertClinicianPhoneNumberPresent(ivrResponse, clinician.clinicContactNumber2());
 
         ivrResponse = caller.listenMore();
-        assertAudioFilesPresent(ivrResponse, "cannotcontact01");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "cannotcontact01");
     }
 
     private void verifyAlertRaised(String clinicianName) {
