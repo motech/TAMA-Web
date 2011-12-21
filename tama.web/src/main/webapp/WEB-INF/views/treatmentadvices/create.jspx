@@ -71,10 +71,7 @@
                                         field="treatmentAdvice.drugDosages[${item.index}].startDateAsDate"
                                         id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}"
                                         label="Start Date" required="true"/>
-
-                        <field:input field="treatmentAdvice.drugDosages[${item.index}].advice"
-                                     id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}"
-                                     label="Advice"/>
+                        <field:textarea field="treatmentAdvice.drugDosages[${item.index}].advice" label= "Advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" required="false"  />
                         <field:select field="treatmentAdvice.drugDosages[${item.index}].mealAdviceId"
                                       id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}"
                                       label="Meal Advice *" itemLabel="type" itemValue="id" items="${mealAdviceTypes}"

@@ -152,7 +152,9 @@ div.text_right_align {
 
 div .box {
 	display:block;
-	margin-left:105px;
+	margin-left:155px;
+    word-wrap: break-word;
+    width: 250px;
 }
 
 /* menu elements*/
@@ -267,6 +269,7 @@ table table {
 table td,table th {
 	padding: 2px;
 	border: 1px solid #CCCCCC;
+	vertical-align: top;
 }
 
 table td form {
@@ -396,6 +399,7 @@ fieldset th {
 	min-height:5.5em !important;
 	max-height:22em !important;
 	overflow-y: auto !important;
+    margin-bottom: 10px !important;
 	max-width: 175px;
 }
 
