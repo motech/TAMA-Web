@@ -70,7 +70,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
     private ShowAlertPage updateNotesAndCloseAlert(TestPatient patient, String status, String notes, UnreadAlertsPage unreadAlertsPage) {
         UpdateAlertPage updateAlertPage = unreadAlertsPage.openUpdateAlertPage(patient.patientId());
-        updateAlertPage.changeAlertStatus(status);
+        updateAlertPage.changeSymptomReportingAlertStatus(status);
         updateAlertPage.changeNotes(notes);
         return updateAlertPage.save();
     }

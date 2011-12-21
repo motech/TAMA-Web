@@ -13,7 +13,7 @@ public class UpdateAlertPage extends Page {
     public static final String NOTES_ID = "_notes_id";
 
     @FindBy(how = How.ID, using = SYMPTOMS_ALERT_STATUS_ID)
-    private WebElement alertStatus;
+    private WebElement symptomReportingAlertStatus;
 
     @FindBy(how = How.ID, using = "proceed")
     private WebElement proceed;
@@ -27,20 +27,18 @@ public class UpdateAlertPage extends Page {
 
     @Override
     public void postInitialize() {
-        this.alertStatus = WebDriverFactory.createWebElement(this.alertStatus);
+        this.symptomReportingAlertStatus = WebDriverFactory.createWebElement(this.symptomReportingAlertStatus);
         this.proceed = WebDriverFactory.createWebElement(this.proceed);
         this.notes = WebDriverFactory.createWebElement(this.notes);
     }
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad(SYMPTOMS_ALERT_STATUS_ID);
         waitForElementWithIdToLoad(NOTES_ID);
     }
 
-
-    public void changeAlertStatus(String status) {
-        ((ExtendedWebElement) alertStatus).select(status);
+    public void changeSymptomReportingAlertStatus(String status) {
+        ((ExtendedWebElement) symptomReportingAlertStatus).select(status);
     }
 
     public ShowAlertPage save() {

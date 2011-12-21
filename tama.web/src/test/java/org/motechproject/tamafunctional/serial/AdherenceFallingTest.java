@@ -11,6 +11,7 @@ import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
 import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowAlertPage;
+import org.motechproject.tamafunctional.page.UpdateAlertPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
@@ -94,11 +95,14 @@ public class AdherenceFallingTest extends BaseIVRTest {
     private void verifyCreationOfAdherenceFallingAlertForThePatient() {
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
-        ShowAlertPage showAlertsPage = listPatientsPage.goToUnreadAlertsPage().openShowAlertPage(patient.patientId());
+        UpdateAlertPage updateAlertPage = listPatientsPage.goToUnreadAlertsPage().openUpdateAlertPage(patient.patientId());
+        updateAlertPage.changeNotes("testnotes");
+        ShowAlertPage showAlertsPage = updateAlertPage.save();
         assertEquals(patient.patientId(), showAlertsPage.patientId());
         assertEquals("FallingAdherence", showAlertsPage.alertType());
         assertEquals("Adherence fell by 50.00%, from 14.29% to 7.14%", showAlertsPage.description());
         assertEquals("Daily", showAlertsPage.callPreference());
+        assertEquals("testnotes", showAlertsPage.notes());
         showAlertsPage.logout();
     }
 }
