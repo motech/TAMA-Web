@@ -6,6 +6,7 @@ import org.motechproject.tama.dailypillreminder.domain.PillRegimenSnapshot;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -18,12 +19,14 @@ import java.util.ArrayList;
 public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTreeCommand {
     private AllPatients allPatients;
     private AllClinics allClinics;
+    private ClinicNameMessageBuilder clinicNameMessageBuilder;
 
     @Autowired
-    public MessageForMedicinesDuringIncomingCall(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
+    public MessageForMedicinesDuringIncomingCall(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService, ClinicNameMessageBuilder clinicNameMessageBuilder) {
         super(pillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
+        this.clinicNameMessageBuilder = clinicNameMessageBuilder;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTree
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         if (!context.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM)) {
-            messages.add(String.format("welcome_to_%s", clinic.getName()));
+            messages.add(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
         }
         PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(context);
         if (pillRegimenSnapshot.isTimeToTakeCurrentPill()) {

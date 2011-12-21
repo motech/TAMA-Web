@@ -16,6 +16,8 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String NUMBER_WAV_FORMAT = "Num_%03d";
     public static final String MINUTES = "timeOfDayMinutes";
     public static final String SIGNATURE_MUSIC = "signature_music";
+    public static final String DEFAULT_OUTBOUND_CLINIC_MESSAGE = "001_02_01_TAMAGreeting1Generic";
+    public static final String DEFAULT_INBOUND_CLINIC_MESSAGE = "Greeting2Generic";
     public static final String END_OF_CALL = "end_of_call";
 
     public static final String CONTENT_LOCATION_URL = "content.location.url";
@@ -154,7 +156,6 @@ public class TamaIVRMessage implements IVRMessage {
 
     /* ---------- Four Day Recall ----------*/
     private Properties properties;
-
 
     @Autowired
     public TamaIVRMessage(@Qualifier("ivrProperties") Properties properties) {

@@ -127,11 +127,10 @@ public class PatientBuilder {
         return this;
     }
 
-    public PatientBuilder withPatientPreferences(DayOfWeek dayOfWeeklyCall, TimeOfDay patientBestCallTime) {
-        PatientPreferences patientPreferences = new PatientPreferences();
-        patientPreferences.setDayOfWeeklyCall(dayOfWeeklyCall);
-        patientPreferences.setBestCallTime(patientBestCallTime);
-        patient.setPatientPreferences(patientPreferences);
+    public PatientBuilder withWeeklyCallPreference(DayOfWeek dayOfWeeklyCall, TimeOfDay patientBestCallTime) {
+        PatientPreferences preferences = patient.getPatientPreferences();
+        preferences.setDayOfWeeklyCall(dayOfWeeklyCall);
+        preferences.setBestCallTime(patientBestCallTime);
         return this;
     }
 }

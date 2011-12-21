@@ -17,9 +17,12 @@ import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.IVRLanguage;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -28,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -39,51 +43,59 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class MessageForMedicinesDuringIncomingCallTest {
     @Mock
     private AllPatients allPatients;
+
     @Mock
     private AllClinics allClinics;
+
+    @Mock
+    private ClinicNameMessageBuilder clinicNameMessageBuilder;
+
     private MessageForMedicinesDuringIncomingCall messageForMedicinesDuringIncomingCall;
 
     private LocalDate today;
 
     private DateTime now;
+
     private DailyPillReminderContextForTest context;
+
+    private Patient patient;
+
+    private Clinic clinic;
+
+    private void setUpTime() {
+        today = DateUtil.today();
+        now = DateUtil.now();
+        mockStatic(DateUtil.class);
+        when(DateUtil.today()).thenReturn(today);
+        when(DateUtil.now()).thenReturn(now);
+    }
+
+    private void setUpContexts() {
+        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientId("patientId");
+        context = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+    }
 
     @Before
     public void setup() {
         initMocks(this);
-        Patient patient = new Patient();
-        patient.setClinic_id("clinicId");
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
-
-        messageForMedicinesDuringIncomingCall = new MessageForMedicinesDuringIncomingCall(allPatients, allClinics, null);
-        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientId("patientId");
-        context = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").withId("clinicId").build();
+        patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).build();
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
+        when(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("welcome_to_someClinicName");
 
-        today = DateUtil.today();
-        now = DateUtil.now();
-
-        mockStatic(DateUtil.class);
-        when(DateUtil.today()).thenReturn(today);
-        when(DateUtil.now()).thenReturn(now);
+        messageForMedicinesDuringIncomingCall = new MessageForMedicinesDuringIncomingCall(allPatients, allClinics, null, clinicNameMessageBuilder);
+        setUpContexts();
+        setUpTime();
     }
 
     @Test
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeWithinDosagePillWindow() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
-
         context.dosageId("currentDosageId").callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
-
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-
-        assertEquals(5, messages.length);
-        assertEquals("welcome_to_clinicName", messages[0]);
-        assertEquals("001_02_02_itsTimeForPill1", messages[1]);
-        assertEquals("pillmedicine1", messages[2]);
-        assertEquals("pillmedicine2", messages[3]);
-        assertEquals("001_07_07_fromTheBottle1", messages[4]);
+        assertArrayEquals(new String[]{"welcome_to_someClinicName", "001_02_02_itsTimeForPill1", "pillmedicine1", "pillmedicine2", "001_07_07_fromTheBottle1"}, messages);
     }
 
     @Test
@@ -102,12 +114,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         context.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-
-        assertEquals(4, messages.length);
-        assertEquals("welcome_to_clinicName", messages[0]);
-        assertEquals("010_02_04_notReportedIfTaken", messages[1]);
-        assertEquals("pillmedicine3", messages[2]);
-        assertEquals("001_07_07_fromTheBottle1", messages[3]);
+        assertArrayEquals(new String[]{"welcome_to_someClinicName", "010_02_04_notReportedIfTaken", "pillmedicine3", "001_07_07_fromTheBottle1"}, messages);
     }
 
     @Test
@@ -119,11 +126,8 @@ public class MessageForMedicinesDuringIncomingCallTest {
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
 
-        assertEquals(4, messages.length);
+        assertArrayEquals(new String[]{"001_02_02_itsTimeForPill1", "pillmedicine1", "pillmedicine2", "001_07_07_fromTheBottle1"}, messages);
+        assertFalse(Arrays.asList(messages).contains("welcome_to_someClinicName"));
         assertFalse(Arrays.asList(messages).contains("welcome_to_clinicName"));
-        assertEquals("001_02_02_itsTimeForPill1", messages[0]);
-        assertEquals("pillmedicine1", messages[1]);
-        assertEquals("pillmedicine2", messages[2]);
-        assertEquals("001_07_07_fromTheBottle1", messages[3]);
     }
 }

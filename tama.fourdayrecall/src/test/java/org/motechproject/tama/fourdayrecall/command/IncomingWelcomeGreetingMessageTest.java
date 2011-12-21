@@ -7,10 +7,12 @@ import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.IVRLanguage;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -25,6 +27,9 @@ public class IncomingWelcomeGreetingMessageTest {
     @Mock
     private AllClinics allClinics;
 
+    @Mock
+    private ClinicNameMessageBuilder clinicNameMessageBuilder;
+
     private IncomingWelcomeGreetingMessage incomingWelcomeGreetingMessage;
 
     private Patient patient;
@@ -36,23 +41,22 @@ public class IncomingWelcomeGreetingMessageTest {
     @Before
     public void setUp() {
         initMocks(this);
-        final String patientId = "testPatientId";
-        final String clinicId = "testClinicId";
-        String clinicName = "testClinicName";
+        String patientId = "testPatientId";
 
-        incomingWelcomeGreetingMessage = new IncomingWelcomeGreetingMessage(allPatients, allClinics);
-        clinic = ClinicBuilder.startRecording().withId(clinicId).withName(clinicName).build();
-        patient = PatientBuilder.startRecording().withId(patientId).withClinic(clinic).build();
-        ivrContext = new TAMAIVRContextForTest();
-        ivrContext.patientId(patientId);
+        incomingWelcomeGreetingMessage = new IncomingWelcomeGreetingMessage(allPatients, allClinics, clinicNameMessageBuilder);
+        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
+        patient = PatientBuilder.startRecording().withId(patientId).withClinic(clinic).withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).build();
+        ivrContext = new TAMAIVRContextForTest().patientId(patientId);
+
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(allClinics.get(clinicId)).thenReturn(clinic);
+        when(allClinics.get("testClinicId")).thenReturn(clinic);
     }
 
     @Test
     public void shouldPlayWelcomeGreetingMessageDependingOnClinic() {
-        final String[] messagesToBePlayed = incomingWelcomeGreetingMessage.executeCommand(ivrContext);
+        when(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("welcome_to_" + clinic.getName());
 
+        final String[] messagesToBePlayed = incomingWelcomeGreetingMessage.executeCommand(ivrContext);
         assertNotNull(messagesToBePlayed);
         assertEquals(1, messagesToBePlayed.length);
         assertEquals(String.format("welcome_to_%s", clinic.getName()), messagesToBePlayed[0]);
@@ -63,5 +67,14 @@ public class IncomingWelcomeGreetingMessageTest {
         ivrContext.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL);
         final String[] messagesToBePlayed = incomingWelcomeGreetingMessage.executeCommand(ivrContext);
         assertEquals(0, messagesToBePlayed.length);
+    }
+
+    @Test
+    public void shouldPlayDefaultMessage_WhenClinicSpecificMessageNotAvailable(){
+        when(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("genericClinicMessage");
+
+        String[] messages = incomingWelcomeGreetingMessage.executeCommand(ivrContext);
+        assertEquals(1, messages.length);
+        assertEquals("genericClinicMessage", messages[0]);
     }
 }

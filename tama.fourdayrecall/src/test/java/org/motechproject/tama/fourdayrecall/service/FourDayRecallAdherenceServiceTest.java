@@ -67,7 +67,7 @@ public class FourDayRecallAdherenceServiceTest {
         TimeOfDay patientBestCallTime = new TimeOfDay(10, 30, TimeMeridiem.PM);
         String patientId = "patientId";
         Patient testPatient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId)
-                .withPatientPreferences(DayOfWeek.Saturday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
+                .withWeeklyCallPreference(DayOfWeek.Saturday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
         TreatmentAdvice testTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(treatmentAdviceStartDate).build();
 
         setupExpectations(patientId, testPatient, testTreatmentAdvice);
@@ -91,7 +91,7 @@ public class FourDayRecallAdherenceServiceTest {
         TimeOfDay patientBestCallTime = new TimeOfDay(10, 30, TimeMeridiem.PM);
         String patientId = "patientId";
         Patient testPatient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId)
-                .withPatientPreferences(DayOfWeek.Saturday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
+                .withWeeklyCallPreference(DayOfWeek.Saturday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
         TreatmentAdvice testTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(treatmentAdviceStartDate).build();
 
         setupExpectations(patientId, testPatient, testTreatmentAdvice);
@@ -115,7 +115,7 @@ public class FourDayRecallAdherenceServiceTest {
         TimeOfDay patientBestCallTime = new TimeOfDay(10, 30, TimeMeridiem.PM);
         String patientId = "patientId";
         Patient testPatient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId)
-                .withPatientPreferences(DayOfWeek.Thursday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
+                .withWeeklyCallPreference(DayOfWeek.Thursday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
         TreatmentAdvice testTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(treatmentAdviceStartDate).build();
 
         setupExpectations(patientId, testPatient, testTreatmentAdvice);
@@ -140,7 +140,7 @@ public class FourDayRecallAdherenceServiceTest {
         TimeOfDay patientBestCallTime = new TimeOfDay(10, 30, TimeMeridiem.PM);
         String patientId = "patientId";
         Patient testPatient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId)
-                .withPatientPreferences(DayOfWeek.Thursday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
+                .withWeeklyCallPreference(DayOfWeek.Thursday, patientBestCallTime).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(16)).build();
         TreatmentAdvice testTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(treatmentAdviceStartDate).build();
 
         setupExpectations(patientId, testPatient, testTreatmentAdvice);
