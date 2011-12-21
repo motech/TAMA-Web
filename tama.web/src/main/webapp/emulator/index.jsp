@@ -1,9 +1,88 @@
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<html>
+<%
+    java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
+          m.setAccessible(true);
+          m.invoke(null, java.lang.System.class, "jvmfaketime", false);
+    System.registerFakeCurrentTimeMillis();
+   java.util.Date curdate = new java.util.Date();
+%>
+<%
+	if (request.getMethod() == "POST") {
+	try{
+		String date = request.getParameter("date");
+		String time = request.getParameter("time");
+		Date dateValue = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+		Date timeValue = new SimpleDateFormat("HH:mm:ss").parse(time.substring(1, time.length()));
+		dateValue.setHours(timeValue.getHours());
+        dateValue.setMinutes(timeValue.getMinutes());
+        dateValue.setSeconds(timeValue.getSeconds());
+        System.out.println("Posted date " + time.substring(1, time.length()-1));
+        System.deregisterFakeCurrentTimeMillis();
+		long diffValue = (dateValue.getTime() - System.currentTimeMillis());
+		System.registerFakeCurrentTimeMillis();
+		System.out.println("offset calculated " + diffValue);
+		System.setTimeOffset(diffValue);
+		System.out.println("Date :" + new Date());
+		System.out.println("offset :" +System.getTimeOffset());
+	  } catch(java.lang.Exception e) {
+	      out.println("Error: " + e.getMessage());
+	      return;
+	  }
+	  out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+	  return;
+	}
+%><html>
   <head>
     <script type="text/javascript">
         var djConfig = {parseOnLoad: false, isDebug: false, locale: 'en_in'};
+    </script>
+    <script src="/tama/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+    <script type="text/javascript">
+          dojo.require("dijit.dijit"); // loads the optimized dijit layer
+          dojo.require("dijit.form.DateTextBox");
+          dojo.require("dijit.form.TimeTextBox");
+
+          dojo.addOnLoad(function() {
+                  new dijit.form.TimeTextBox({
+                      name: "time",
+                      value: new Date(0,0,0,<%=curdate.getHours()%>,<%=curdate.getMinutes()%>, <%=curdate.getSeconds()%>),
+                      constraints: {
+                          timePattern: 'HH:mm:ss',
+                          clickableIncrement: 'T00:15:00',
+                          visibleIncrement: 'T00:15:00',
+                          visibleRange: 'T01:00:00'
+                      }
+                  },
+                  "time");
+             });
+    </script>
+    <link rel="stylesheet" type="text/css" href="/tama/resources/dijit/themes/tundra/tundra.css" />
+    <style>
+    .dijitPopup {
+        background-color: lightgray;
+        border: 0 none;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+    }
+    </style>
+    <script>
+    function submitTime() {
+        dojo.xhrPost({
+            form:"timeForm",
+            load: function(data, ioArgs){
+                dojo.byId('timeMessage').style.display="";
+                dojo.byId('timeMessage').innerHTML = "Updated: " + data;
+                setTimeout(function() {
+                    dojo.byId('timeMessage').style.display="none";
+                }, 3000);
+            },
+            error: function(err, ioArgs){
+                alert(err);
+            }
+         });
+     }
     </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
@@ -247,6 +326,8 @@ function play(i){
 <form id="timeForm" action="" method="POST">
 <table>
   <tr><td align="center" colspan="2" id="timeMessage" style="background-color:lightBlue;display:none;"></td></tr>
+    <tr><td>Date</td><td><input dojoType="dijit.form.DateTextBox" id="date" name="date"  value="<%=new java.text.SimpleDateFormat("yyyy-MM-dd").format(curdate)%>" style="width:12em;"/></td></tr>
+    <tr><td>Time</td><td><input   id="time" name="time" timePattern='HH:mm:ss' value="T<%=new java.text.SimpleDateFormat("HH:mm:ss").format(curdate)%>" style="width:12em;"/></td></tr>
     <tr><td colspan="2" align="right" ></td></tr>
 </table>
 
