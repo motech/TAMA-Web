@@ -56,14 +56,16 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         PillRegimen pillRegimen = pillReminderService.getPillRegimen(patientId);
         dosageResponses = pillRegimen.getDosageResponses();
         resetSuspensionDateBasedOnPreviousDosageStatus(sort(dosageResponses), patient.getLastSuspendedDate());
-        DosageTimeLine dosageTimeLine = pillRegimen.getDosageTimeLine(patient.getLastSuspendedDate(), DateUtil.now());
-        while (dosageTimeLine.hasNext()) {
-            Dose dose = dosageTimeLine.next();
-            DosageStatus dosageStatus = doseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
-            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, pillRegimen.getId(), dose.getDosageId(), dosageStatus, dose.getDate());
-            if(allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate()) == null){
-                allDosageAdherenceLogs.add(dosageAdherenceLog);
-                pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDate());
+        for (DosageResponse dosageResponse : dosageResponses) {
+            SingleDosageTimeLine dosageTimeLine = new SingleDosageTimeLine(dosageResponse, patient.getLastSuspendedDate(), DateUtil.now());
+            while (dosageTimeLine.hasNext()) {
+                Dose dose = dosageTimeLine.next();
+                DosageStatus dosageStatus = doseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
+                DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, pillRegimen.getId(), dose.getDosageId(), dosageStatus, dose.getDate());
+                if (allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate()) == null) {
+                    allDosageAdherenceLogs.add(dosageAdherenceLog);
+                    pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDate());
+                }
             }
         }
     }
@@ -104,7 +106,6 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     private void resetSuspensionDateBasedOnPreviousDosageStatus(List<DosageResponse> dosageResponses, DateTime from) {
         DateTime iteratingDate = from;
         int currentDosageIndex = 0;
-        currentDosageIndex = 0;
         int previousDosageIndex = 0;
         boolean found = false;
         DateTime actualSuspensionDateAndTime = from;

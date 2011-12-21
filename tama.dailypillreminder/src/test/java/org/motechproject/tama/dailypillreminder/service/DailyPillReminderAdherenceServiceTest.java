@@ -147,7 +147,7 @@ public class DailyPillReminderAdherenceServiceTest {
         @Test
         public void createsAdherenceLogsForEveryDosage() {
             when(allPatients.get("patientId")).thenReturn(PatientBuilder.startRecording().withLastSuspendedDate(DateUtil.now()).build());
-            PillRegimen pillRegimen = TAMAPillRegimenBuilder.startRecording().withThreeDosagesInTotal().withTwoDosagesFrom(DateUtil.now()).build();
+            PillRegimen pillRegimen = TAMAPillRegimenBuilder.startRecording().withTwoDosages().build();
             when(pillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
             dailyReminderAdherenceService.recordAdherence("patientId", false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());

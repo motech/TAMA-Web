@@ -20,10 +20,6 @@ public class PillRegimen {
         return pillRegimenResponse.getPillRegimenId();
     }
 
-    public DosageTimeLine getDosageTimeLine(DateTime from, DateTime to) {
-        return new DosageTimeLine(pillRegimenResponse.getDosages(), from, to);
-    }
-
     public List<DosageResponse> getDosageResponses() {
         return pillRegimenResponse.getDosages();
     }

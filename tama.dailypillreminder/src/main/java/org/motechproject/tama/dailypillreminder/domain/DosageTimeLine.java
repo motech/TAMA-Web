@@ -50,7 +50,7 @@ public class DosageTimeLine implements Iterator<Dose> {
 
     @Override
     public Dose next() {
-        if (!isDosageApplicableForDate(dosageResponses.get(index), iteratingDate))
+        if (!hasNext())
             throw new ArrayIndexOutOfBoundsException("There are no more dosages to return");
 
         DosageResponse dosageResponseToReturn = dosageResponses.get(index);
@@ -66,20 +66,20 @@ public class DosageTimeLine implements Iterator<Dose> {
         return new Dose(dosageResponseToReturn, dateToReturn.toLocalDate());
     }
 
-    private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime iteratingDateTime) {
+    private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime dateTime) {
         int dosageTimeInMinutes = (dosageResponse.getDosageHour() * 60) + dosageResponse.getDosageMinute();
         DateTime dosageStartTime = DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
         if (to.isBefore(dosageStartTime))
             return false;
-        if ((iteratingDateTime.isEqual(from))) {
+        if ((dateTime.isEqual(from))) {
             int timeInMinutes = (from.getHourOfDay() * 60) + from.getMinuteOfHour();
             return timeInMinutes <= dosageTimeInMinutes;
-        } else if (isLastDay(iteratingDateTime)) {
+        } else if (isLastDay(dateTime)) {
             int timeInMinutes = (to.getHourOfDay() * 60) + to.getMinuteOfHour();
             return timeInMinutes >= dosageTimeInMinutes;
-        } else if (iteratingDateTime.isAfter(from) && iteratingDateTime.isBefore(to)) {
+        } else if (dateTime.isAfter(from) && dateTime.isBefore(to)) {
             return true;
-        } else if (iteratingDateTime.isEqual(from) && isLastDay(iteratingDateTime)) {
+        } else if (dateTime.isEqual(from) && isLastDay(dateTime)) {
             int startTime = (from.getHourOfDay() * 60) + from.getMinuteOfHour();
             int endTime = (to.getHourOfDay() * 60) + to.getMinuteOfHour();
             return dosageTimeInMinutes >= startTime ? dosageTimeInMinutes <= endTime : false;
@@ -90,7 +90,6 @@ public class DosageTimeLine implements Iterator<Dose> {
     private boolean isLastDay(DateTime day) {
         return (day.toLocalDate().compareTo(to.toLocalDate())) == 0;
     }
-
 
     @Override
     public void remove() {
