@@ -124,7 +124,7 @@ public class HealthTipRuleServiceTest {
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsMoreThan1MonthIntoART_AndOnDailyPillReminder() {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
         when(allLabResults.findByPatientId("patientDocId")).thenReturn(labResults);
-        Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(40), patient);
+        Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(31), patient);
         assertEquals("3", healthTips.get("HT021a"));
         assertEquals("3", healthTips.get("HT014a"));
         assertEquals("3", healthTips.get("HT019a"));

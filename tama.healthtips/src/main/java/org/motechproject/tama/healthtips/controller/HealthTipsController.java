@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HealthTipsController extends SafeIVRController {
 
     private HealthTipService healthTipService;
+    
     private TAMAIVRContextFactory tamaivrContextFactory;
 
     private HealthTipsProperties healthTipsProperties;

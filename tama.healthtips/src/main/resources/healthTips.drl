@@ -78,8 +78,8 @@ end
 
 rule "Less than 2 months, but more than 1 month into ART and patient on daily pill reminder"
     when
-        HealthTipParams(numberOfWeeksSinceTreatmentStarted < 8)
-        HealthTipParams(numberOfWeeksSinceTreatmentStarted > 4)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 1)
+        HealthTipParams(numberOfMonthsSinceTreatmentStarted < 2)
         HealthTipParams(patientOnDailyPillReminder == "true")
     then
         for (String file : Arrays.asList("HT006a" , "HT007a" , "HT008a" , "HT009a")) {
