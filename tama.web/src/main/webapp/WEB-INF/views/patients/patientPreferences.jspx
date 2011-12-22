@@ -78,7 +78,7 @@
                 Notes :
             </label>
             <div class='right_pane'>
-                <springform:textarea name="notes" label="Notes" id="notes" required="false" path="notes" rows="8" cols="40"/>
+                <springform:textarea name="notes" label="Notes" id="notes" path="notes" rows="8" cols="40"/>
             </div>
         </div>
 
