@@ -10,8 +10,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
-import org.motechproject.tama.patient.strategy.DailyPillReminder;
-import org.motechproject.tama.patient.strategy.FourDayRecall;
+import org.motechproject.tama.patient.strategy.CallPlan;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,9 +23,9 @@ public class TreatmentAdviceServiceTest {
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
-    private DailyPillReminder dailyPillReminder;
+    private CallPlan dailyCallPlan;
     @Mock
-    private FourDayRecall fourDayRecall;
+    private CallPlan weeklyCallPlan;
     private TreatmentAdviceService treatmentAdviceService;
 
     @Before
@@ -37,7 +36,7 @@ public class TreatmentAdviceServiceTest {
 
     @Test
     public void dailyPillReminderPatient_createsANewRegimen() {
-        treatmentAdviceService.registerDailyPillReminder(dailyPillReminder);
+        treatmentAdviceService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
@@ -45,12 +44,12 @@ public class TreatmentAdviceServiceTest {
 
         treatmentAdviceService.createRegimen(treatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
-        verify(dailyPillReminder).enroll(patient, treatmentAdvice);
+        verify(dailyCallPlan).enroll(patient, treatmentAdvice);
     }
 
     @Test
     public void fourDayRecallPatient_createsANewRegimen() {
-        treatmentAdviceService.registerFourDayRecall(fourDayRecall);
+        treatmentAdviceService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
@@ -58,12 +57,12 @@ public class TreatmentAdviceServiceTest {
 
         treatmentAdviceService.createRegimen(treatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
-        verify(fourDayRecall).enroll(patient, treatmentAdvice);
+        verify(weeklyCallPlan).enroll(patient, treatmentAdvice);
     }
 
     @Test
     public void dailyPillReminderPatient_changesCurrentRegimen() {
-        treatmentAdviceService.registerDailyPillReminder(dailyPillReminder);
+        treatmentAdviceService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
@@ -74,12 +73,12 @@ public class TreatmentAdviceServiceTest {
         treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
-        verify(dailyPillReminder).reEnroll(patient, treatmentAdvice);
+        verify(dailyCallPlan).reEnroll(patient, treatmentAdvice);
     }
 
     @Test
     public void fourDayRecallPatient_changesCurrentRegimen() {
-        treatmentAdviceService.registerFourDayRecall(fourDayRecall);
+        treatmentAdviceService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
@@ -90,6 +89,6 @@ public class TreatmentAdviceServiceTest {
         treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
-        verify(fourDayRecall).reEnroll(patient, treatmentAdvice);
+        verify(weeklyCallPlan).reEnroll(patient, treatmentAdvice);
     }
 }

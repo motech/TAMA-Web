@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
@@ -31,7 +32,7 @@ public class FourDayRecallServiceTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         fourDayRecallService.enroll(patient, treatmentAdvice);
 
-        verify(treatmentAdviceService).registerFourDayRecall(fourDayRecallService);
+        verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
     }
 
@@ -41,8 +42,7 @@ public class FourDayRecallServiceTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         fourDayRecallService.reEnroll(patient, treatmentAdvice);
 
-        verify(treatmentAdviceService).registerFourDayRecall(fourDayRecallService);
+        verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).rescheduleFourDayRecallJobs(patient, treatmentAdvice);
     }
-
 }

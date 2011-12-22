@@ -8,6 +8,7 @@ import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
@@ -40,7 +41,7 @@ public class DailyPillReminderServiceTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.enroll(patient, treatmentAdvice);
 
-        verify(treatmentAdviceService).registerDailyPillReminder(dailyPillReminderService);
+        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillRegimenRequestMapper).map(treatmentAdvice);
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
@@ -52,7 +53,7 @@ public class DailyPillReminderServiceTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.reEnroll(patient, treatmentAdvice);
 
-        verify(treatmentAdviceService).registerDailyPillReminder(dailyPillReminderService);
+        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillRegimenRequestMapper).map(treatmentAdvice);
         verify(pillReminderService).renew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService).rescheduleDailyPillReminderJobs(patient, treatmentAdvice);

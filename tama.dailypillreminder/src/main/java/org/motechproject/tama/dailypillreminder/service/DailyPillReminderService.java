@@ -2,15 +2,16 @@ package org.motechproject.tama.dailypillreminder.service;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
+import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
-import org.motechproject.tama.patient.strategy.DailyPillReminder;
+import org.motechproject.tama.patient.strategy.CallPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DailyPillReminderService implements DailyPillReminder {
+public class DailyPillReminderService implements CallPlan {
 
     private PillReminderService pillReminderService;
     private PillRegimenRequestMapper pillRegimenRequestMapper;
@@ -21,7 +22,7 @@ public class DailyPillReminderService implements DailyPillReminder {
         this.pillReminderService = pillReminderService;
         this.pillRegimenRequestMapper = pillRegimenRequestMapper;
         this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
-        treatmentAdviceService.registerDailyPillReminder(this);
+        treatmentAdviceService.registerCallPlan(CallPreference.DailyPillReminder, this);
     }
 
     public void enroll(Patient patient, TreatmentAdvice treatmentAdvice) {
