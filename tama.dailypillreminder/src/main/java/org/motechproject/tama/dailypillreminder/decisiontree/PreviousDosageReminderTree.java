@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PreviousDosageReminderTree extends TamaDecisionTree {
     @Autowired
-    private StopPreviousPillReminderCommand stopPreviousPillReminderCommand;
-    @Autowired
     private MessageOnPreviousPillTaken messageOnPreviousPillTaken;
     @Autowired
     private MessageOnPreviousPillNotTaken messageOnPreviousPillNotTaken;
@@ -23,7 +21,7 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private AdherenceMessageCommand adherenceMessageCommand;
     @Autowired
-    private UpdatePreviousPillAdherenceCommand updatePreviousPillAdherenceCommand;
+    private UpdateAdherenceAsCapturedForPreviousDosageCommand updateAdherenceAsCapturedForPreviousDosageCommand;
     @Autowired
     private MessageFromPreviousDosage messageFromPreviousDosage;
 
@@ -40,7 +38,7 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
                         {"1", new Transition()
                                 .setDestinationNode(
                                         new Node()
-                                                .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
+                                                .setTreeCommands(updateAdherenceAsCapturedForPreviousDosageCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPreviousPillTaken),
                                                         new AudioPrompt().setCommand(adherenceMessageCommand)
@@ -51,7 +49,7 @@ public class PreviousDosageReminderTree extends TamaDecisionTree {
                         {"3", new Transition()
                                 .setDestinationNode(
                                         new Node()
-                                                .setTreeCommands(stopPreviousPillReminderCommand, updatePreviousPillAdherenceCommand)
+                                                .setTreeCommands(updateAdherenceAsCapturedForPreviousDosageCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPreviousPillNotTaken),
                                                         new AudioPrompt().setCommand(adherenceMessageCommand)

@@ -75,7 +75,7 @@ public class FourDayRecallAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(true);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 5));
 
-        fourDayRecallAdherenceService.recordAdherence(patientId, false);
+        fourDayRecallAdherenceService.backfillAdherenceForPeriodOfSuspension(patientId, false);
         verify(allWeeklyAdherenceLogs, times(3)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
@@ -99,7 +99,7 @@ public class FourDayRecallAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(true);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 5));
 
-        fourDayRecallAdherenceService.recordAdherence(patientId, false);
+        fourDayRecallAdherenceService.backfillAdherenceForPeriodOfSuspension(patientId, false);
         verify(allWeeklyAdherenceLogs, times(2)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
@@ -123,7 +123,7 @@ public class FourDayRecallAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(true);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 10));
 
-        fourDayRecallAdherenceService.recordAdherence(patientId, false);
+        fourDayRecallAdherenceService.backfillAdherenceForPeriodOfSuspension(patientId, false);
         verify(allWeeklyAdherenceLogs, times(2)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
@@ -148,7 +148,7 @@ public class FourDayRecallAdherenceServiceTest {
         when(fourDayRecallService.isAdherenceCapturedForAnyWeek(any(String.class), any(String.class), any(LocalDate.class))).thenReturn(false);
         when(fourDayRecallService.findFourDayRecallDateForAnyWeek(any(String.class), any(LocalDate.class))).thenReturn(new LocalDate(2011, 11, 10));
 
-        fourDayRecallAdherenceService.recordAdherence(patientId, false);
+        fourDayRecallAdherenceService.backfillAdherenceForPeriodOfSuspension(patientId, false);
         verify(allWeeklyAdherenceLogs, times(3)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 

@@ -4,7 +4,10 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tama.dailypillreminder.command.*;
+import org.motechproject.tama.dailypillreminder.command.AdherenceMessageWhenPreviousDosageCapturedCommand;
+import org.motechproject.tama.dailypillreminder.command.MessageForMedicinesDuringIncomingCall;
+import org.motechproject.tama.dailypillreminder.command.MessageOnPillTakenDuringIncomingCall;
+import org.motechproject.tama.dailypillreminder.command.UpdateAdherenceAsCapturedForCurrentDosageCommand;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
@@ -12,7 +15,6 @@ import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,10 +24,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     @Autowired
     private MessageForMedicinesDuringIncomingCall messageForMedicinesDuringIncomingCall;
     @Autowired
-    private StopTodaysRemindersCommand stopTodaysRemindersCommand;
-    @Qualifier("updateAdherenceCommand")
-    @Autowired
-    private UpdateAdherenceCommand updateAdherenceCommand;
+    private UpdateAdherenceAsCapturedForCurrentDosageCommand updateAdherenceAsCapturedCommand;
     @Autowired
     private AdherenceMessageWhenPreviousDosageCapturedCommand adherenceWhenPreviousDosageCapturedCommand;
     @Autowired
@@ -47,7 +46,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                         {"1", new Transition()
                                 .setDestinationNode(
                                         new Node()
-                                                .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
+                                                .setTreeCommands(updateAdherenceAsCapturedCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPillTakenDuringIncomingCall),
                                                         new AudioPrompt().setCommand(adherenceWhenPreviousDosageCapturedCommand)

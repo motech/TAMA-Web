@@ -1,5 +1,5 @@
-package org.motechproject.tama.dailypillreminder.command;
 
+package org.motechproject.tama.dailypillreminder.command;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -22,28 +22,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class UpdatePreviousPillAdherenceCommandTest {
+public class UpdateAdherenceAsNotCapturedForCurrentDosageCommandTest {
+
     @Mock
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
     private DailyPillReminderContextForTest context;
-    private UpdateAdherenceCommand command;
+    private UpdateAdherenceAsNotCapturedForCurrentDosageCommand command;
 
     @Before
     public void setup() {
         initMocks(this);
-        command = new UpdatePreviousPillAdherenceCommand(null, dailyReminderAdherenceService);
-        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).dtmfInput("1");
+        command = new UpdateAdherenceAsNotCapturedForCurrentDosageCommand(null, dailyReminderAdherenceService);
+        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).dtmfInput("2");
     }
 
     @Test
-    public void recordsAdherenceToPreviousDosage() {
+    public void recordsAdherenceToCurrentDosage() {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, Arrays.asList(
                 new DosageResponse("currentDosageId", new Time(19, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()),
-                new DosageResponse("previousDosageId", new Time(9, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()
+                new DosageResponse("nextDosageId", new Time(9, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()
                 )));
         DateTime doseTakenTime = DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11), 18, 59, 0);
         context.pillRegimen(pillRegimen).patientId("patientId").callDirection(CallDirection.Inbound).callStartTime(doseTakenTime);
@@ -51,7 +52,8 @@ public class UpdatePreviousPillAdherenceCommandTest {
         command.executeCommand(context);
 
         ArgumentCaptor<Dose> doseCaptor = ArgumentCaptor.forClass(Dose.class);
-        verify(dailyReminderAdherenceService).recordAdherence(eq("patientId"), eq("regimenId"), doseCaptor.capture(), eq(DosageStatus.TAKEN), eq(doseTakenTime));
-        assertEquals("previousDosageId", doseCaptor.getValue().getDosageId());
+        verify(dailyReminderAdherenceService).recordDosageAdherenceAsNotCaptured(eq("patientId"), eq("regimenId"), doseCaptor.capture(), eq(DosageStatus.WILL_TAKE_LATER), eq(doseTakenTime));
+        assertEquals("currentDosageId", doseCaptor.getValue().getDosageId());
     }
+
 }

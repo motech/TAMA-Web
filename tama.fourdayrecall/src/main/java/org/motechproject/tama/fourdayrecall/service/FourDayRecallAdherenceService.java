@@ -37,7 +37,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         adherenceService.register(CallPreference.FourDayRecall, this);
     }
 
-    public void recordAdherence(String patientId, boolean doseTaken) {
+    public void backfillAdherenceForPeriodOfSuspension(String patientId, boolean doseTaken) {
         Patient suspendedPatient = allPatients.get(patientId);
         DateTime fromDate = suspendedPatient.getLastSuspendedDate();
         DateTime toDate = DateUtil.now();

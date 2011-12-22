@@ -20,9 +20,8 @@ public class PreviousDosageReminderTreeTest {
     @Test
     public void shouldGetCommandsToExecuteOnTakingPreviousPill() {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "1");
-        assertEquals(2, nextNode.getTreeCommands().size());
-        assertEquals(StopPreviousPillReminderCommand.class, nextNode.getTreeCommands().get(0).getClass());
-        assertEquals(UpdatePreviousPillAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
+        assertEquals(1, nextNode.getTreeCommands().size());
+        assertEquals(UpdateAdherenceAsCapturedForPreviousDosageCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(2, nextNode.getPrompts().size());
         assertEquals(MessageOnPreviousPillTaken.class, nextNode.getPrompts().get(0).getCommand().getClass());
         assertEquals(AdherenceMessageCommand.class, nextNode.getPrompts().get(1).getCommand().getClass());
@@ -31,9 +30,8 @@ public class PreviousDosageReminderTreeTest {
     @Test
     public void shouldGetCommandsToExecuteOnNotTakingPreviousPill() {
         Node nextNode = previousDosageReminderTree.getTree().nextNode("/", "3");
-        assertEquals(2, nextNode.getTreeCommands().size());
-        assertEquals(StopPreviousPillReminderCommand.class, nextNode.getTreeCommands().get(0).getClass());
-        assertEquals(UpdatePreviousPillAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
+        assertEquals(1, nextNode.getTreeCommands().size());
+        assertEquals(UpdateAdherenceAsCapturedForPreviousDosageCommand.class, nextNode.getTreeCommands().get(0).getClass());
         assertEquals(2, nextNode.getPrompts().size());
         assertEquals(MessageOnPreviousPillNotTaken.class, nextNode.getPrompts().get(0).getCommand().getClass());
         assertEquals(AdherenceMessageCommand.class, nextNode.getPrompts().get(1).getCommand().getClass());

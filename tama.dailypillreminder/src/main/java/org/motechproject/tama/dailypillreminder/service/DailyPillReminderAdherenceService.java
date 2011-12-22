@@ -51,36 +51,22 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         return ((double) dosagesTakenForLastFourWeeks) * 100 / totalDoses;
     }
 
-    public void recordAdherence(String patientId, boolean doseTaken) {
+    public void backFillAdherenceForPeriodOfSuspension(String patientId, boolean wasDoseTaken) {
         Patient patient = allPatients.get(patientId);
         PillRegimen pillRegimen = pillReminderService.getPillRegimen(patientId);
         dosageResponses = pillRegimen.getDosageResponses();
         resetSuspensionDateBasedOnPreviousDosageStatus(sort(dosageResponses), patient.getLastSuspendedDate());
+        DosageStatus dosageStatus = wasDoseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
         for (DosageResponse dosageResponse : dosageResponses) {
             SingleDosageTimeLine dosageTimeLine = new SingleDosageTimeLine(dosageResponse, patient.getLastSuspendedDate(), DateUtil.now());
             while (dosageTimeLine.hasNext()) {
                 Dose dose = dosageTimeLine.next();
-                DosageStatus dosageStatus = doseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
                 DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(patientId, pillRegimen.getId(), dose.getDosageId(), dosageStatus, dose.getDate());
                 if (allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate()) == null) {
                     allDosageAdherenceLogs.add(dosageAdherenceLog);
                     pillReminderService.setLastCapturedDate(pillRegimen.getId(), dose.getDosageId(), dose.getDate());
                 }
             }
-        }
-    }
-
-    public void recordAdherence(String patientId, String regimenId, Dose dose, DosageStatus status, DateTime doseTakenTime) {
-        DosageAdherenceLog existingLog = allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate());
-
-        if (existingLog == null) {
-            DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), status, dose.getDate());
-            if (doseIsLate(dose, doseTakenTime)) adherenceLog.dosageIsTakenLate();
-            allDosageAdherenceLogs.add(adherenceLog);
-        } else {
-            existingLog.setDosageStatus(status);
-            if (doseIsLate(dose, doseTakenTime)) existingLog.dosageIsTakenLate();
-            allDosageAdherenceLogs.update(existingLog);
         }
     }
 
@@ -144,10 +130,9 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         }
     }
 
-
     private boolean isPreviousDosageNotCaptured(Dose previousDose) {
         DosageAdherenceLog previousDosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(previousDose.getDosageId(), previousDose.getDate());
-        return previousDosageAdherenceLog == null ? true : false;
+        return previousDosageAdherenceLog == null;
     }
 
     private boolean isDosageApplicableForDate(DosageResponse dosageResponse, DateTime day, DateTime from) {
@@ -209,5 +194,28 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     @Override
     public boolean wasAnyDoseTakenLateSince(Patient patient, LocalDate since) {
         return allDosageAdherenceLogs.getDoseTakenLateCount(patient.getId(), since, true) > 0;
+    }
+
+    public void recordDosageAdherenceAsCaptured(String patientId, String regimenId, Dose dose, DosageStatus dosageStatus, DateTime doseTakenTime) {
+        recordAdherence(patientId, regimenId, dose, dosageStatus, doseTakenTime);
+        pillReminderService.setLastCapturedDate(regimenId, dose.getDosageId(), dose.getDate());
+    }
+
+    public void recordDosageAdherenceAsNotCaptured(String patientId, String regimenId, Dose dose, DosageStatus dosageStatus, DateTime doseTakenTime) {
+        recordAdherence(patientId, regimenId, dose, dosageStatus, doseTakenTime);
+    }
+
+    private void recordAdherence(String patientId, String regimenId, Dose dose, DosageStatus status, DateTime doseTakenTime) {
+        DosageAdherenceLog existingLog = allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate());
+
+        if (existingLog == null) {
+            DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), status, dose.getDate());
+            if (doseIsLate(dose, doseTakenTime)) adherenceLog.dosageIsTakenLate();
+            allDosageAdherenceLogs.add(adherenceLog);
+        } else {
+            existingLog.setDosageStatus(status);
+            if (doseIsLate(dose, doseTakenTime)) existingLog.dosageIsTakenLate();
+            allDosageAdherenceLogs.update(existingLog);
+        }
     }
 }

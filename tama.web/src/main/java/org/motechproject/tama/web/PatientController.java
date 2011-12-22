@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.pillreminder.service.PillReminderService;
@@ -136,9 +135,9 @@ public class PatientController extends BaseController {
         allPatients.activate(id);
         Patient patient = allPatients.get(id);
         if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
-            fourDayRecallAdherenceService.recordAdherence(id, doseStatus.isTaken());
+            fourDayRecallAdherenceService.backfillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
         } else {
-            dailyPillReminderAdherenceService.recordAdherence(id, doseStatus.isTaken());
+            dailyPillReminderAdherenceService.backFillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }

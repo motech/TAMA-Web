@@ -11,7 +11,6 @@ import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,10 +24,9 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
     @Autowired
     private RecordDeclinedDosageReasonCommand recordDeclinedDosageReasonCommand;
     @Autowired
-    private StopTodaysRemindersCommand stopTodaysRemindersCommand;
-    @Qualifier("updateAdherenceCommand")
+    private UpdateAdherenceAsNotCapturedForCurrentDosageCommand updateAdherenceAsNotCapturedCommand;
     @Autowired
-    private UpdateAdherenceCommand updateAdherenceCommand;
+    private UpdateAdherenceAsCapturedForCurrentDosageCommand updateAdherenceAsCapturedCommand;
     @Autowired
     private AdherenceMessageWhenPreviousDosageCapturedCommand adherenceWhenPreviousDosageCapturedCommand;
     @Autowired
@@ -48,8 +46,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                         {"1", new Transition()
                                 .setDestinationNode(
                                         new Node()
-                                                //TODO: stopTodaysRemindersCommand, updateAdherenceCommand should be combined to form a DosageTakenCommand
-                                                .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
+                                                .setTreeCommands(updateAdherenceAsCapturedCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(messageOnPillTaken),
                                                         new AudioPrompt().setCommand(adherenceWhenPreviousDosageCapturedCommand)
@@ -58,7 +55,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                         {"2", new Transition()
                                 .setDestinationNode(
                                         new Node()
-                                                .setTreeCommands(updateAdherenceCommand)
+                                                .setTreeCommands(updateAdherenceAsNotCapturedCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(pillsDelayWarning)
                                                 ))
@@ -66,7 +63,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                         {"3", new Transition()
                                 .setDestinationNode(
                                         new Node()
-                                                .setTreeCommands(stopTodaysRemindersCommand, updateAdherenceCommand)
+                                                .setTreeCommands(updateAdherenceAsCapturedCommand)
                                                 .setPrompts(
                                                         new AudioPrompt().setCommand(forMissedPillFeedbackCommand),
                                                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU))

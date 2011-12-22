@@ -317,6 +317,6 @@ public class PatientControllerTest {
 
         when(allPatients.get(patientId)).thenReturn(patientFromUI);
         controller.reactivatePatient(patientId, DoseStatus.NOT_TAKEN, request);
-        verify(dailyPillReminderAdherenceService, times(1)).recordAdherence(patientId, false);
+        verify(dailyPillReminderAdherenceService, times(1)).backFillAdherenceForPeriodOfSuspension(patientId, false);
     }
 }

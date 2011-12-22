@@ -9,12 +9,12 @@ import org.junit.runners.Suite;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.builder.TAMAPillRegimenBuilder;
-import org.motechproject.tama.dailypillreminder.domain.*;
+import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
+import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
+import org.motechproject.tama.dailypillreminder.domain.Dose;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -22,7 +22,6 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
-import java.util.Collections;
 import java.util.Properties;
 
 import static junit.framework.Assert.*;
@@ -31,8 +30,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        DailyPillReminderAdherenceServiceTest.RecordAdherence.class,
-        DailyPillReminderAdherenceServiceTest.RecordAdherenceForSuspendedPeriod.class,
+        DailyPillReminderAdherenceServiceTest.RecordDosageAdherenceAsCaptured.class,
+        DailyPillReminderAdherenceServiceTest.RecordDosageAdherenceAsNotCaptured.class,
+        DailyPillReminderAdherenceServiceTest.BackFillAdherenceForPeriodOfSuspension.class,
         DailyPillReminderAdherenceServiceTest.CalculateAdherence.class,
         DailyPillReminderAdherenceServiceTest.WasAnyDoseMissedLastWeek.class,
         DailyPillReminderAdherenceServiceTest.WasAnyDoseTakenLateSince.class
@@ -76,81 +76,90 @@ public class DailyPillReminderAdherenceServiceTest {
         }
     }
 
-    public static class RecordAdherence extends TestSubject {
-        @Test
-        public void createsNewAdherenceLog_WhenNoLogExists() {
-            Dose dose = mock(Dose.class);
-            DateTime doseTakenTime = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
-            when(dose.getDosageId()).thenReturn("dosageId");
-            when(dose.getDoseTime()).thenReturn(doseTakenTime);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", doseTakenTime.toLocalDate())).thenReturn(null);
-
-            dailyReminderAdherenceService.recordAdherence("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
-
-            verify(allDosageAdherenceLogs).add(any(DosageAdherenceLog.class));
-        }
-
-        @Test
-        public void updatesExistingAdherenceLog() {
-            LocalDate doseDate = now.toLocalDate();
-            DosageAdherenceLog existingLog = new DosageAdherenceLog("patientId", "regimenId", "dosageId", DosageStatus.NOT_TAKEN, doseDate.minusDays(1));
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", doseDate)).thenReturn(existingLog);
-
-            Dose dose = mock(Dose.class);
-            when(dose.getDosageId()).thenReturn("dosageId");
-            when(dose.getDate()).thenReturn(doseDate);
-            when(dose.getDoseTime()).thenReturn(now);
-            DateTime doseTakenTime = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
-
-            dailyReminderAdherenceService.recordAdherence("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
-
-            verify(allDosageAdherenceLogs).update(existingLog);
-            assertEquals(DosageStatus.TAKEN, existingLog.getDosageStatus());
-        }
-
-        @Test
-        public void recordsWhenDoseIsTakenLate() {
-            Time scheduledDoseTime = new Time(10, 0);
-            DosageResponse morningDosage = new DosageResponse("currentDosageId", scheduledDoseTime, today, null, null, Collections.<MedicineResponse>emptyList());
-            Dose dose = new Dose(morningDosage, today);
-            DateTime doseTime = scheduledDoseTime.getDateTime(now);
-
-            Integer dosageWindow = Integer.parseInt(ivrProperties.getProperty(TAMAConstants.DOSAGE_INTERVAL));
-            DateTime doseTakenTime = doseTime.plusMinutes(dosageWindow + 1);
-
-            dailyReminderAdherenceService.recordAdherence("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
-
-            ArgumentCaptor<DosageAdherenceLog> adherenceLogArgumentCaptor = ArgumentCaptor.forClass(DosageAdherenceLog.class);
-            verify(allDosageAdherenceLogs).add(adherenceLogArgumentCaptor.capture());
-            assertTrue(adherenceLogArgumentCaptor.getValue().isDosageTakenLate());
-        }
-
-        @Test
-        public void recordsDoseIsTakenOnTime() {
-            Time scheduledDoseTime = new Time(10, 0);
-            DosageResponse morningDosage = new DosageResponse("currentDosageId", scheduledDoseTime, today, null, null, Collections.<MedicineResponse>emptyList());
-            Dose dose = new Dose(morningDosage, today);
-            DateTime doseTime = scheduledDoseTime.getDateTime(now);
-
-            Integer dosageWindow = Integer.parseInt(ivrProperties.getProperty(TAMAConstants.DOSAGE_INTERVAL));
-            DateTime doseTakenTime = doseTime.plusMinutes(dosageWindow - 1);
-
-            dailyReminderAdherenceService.recordAdherence("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
-
-            ArgumentCaptor<DosageAdherenceLog> adherenceLogArgumentCaptor = ArgumentCaptor.forClass(DosageAdherenceLog.class);
-            verify(allDosageAdherenceLogs).add(adherenceLogArgumentCaptor.capture());
-            assertFalse(adherenceLogArgumentCaptor.getValue().isDosageTakenLate());
-        }
-    }
-
-    public static class RecordAdherenceForSuspendedPeriod extends TestSubject {
+    public static class BackFillAdherenceForPeriodOfSuspension extends TestSubject {
         @Test
         public void createsAdherenceLogsForEveryDosage() {
             when(allPatients.get("patientId")).thenReturn(PatientBuilder.startRecording().withLastSuspendedDate(DateUtil.now()).build());
             PillRegimen pillRegimen = TAMAPillRegimenBuilder.startRecording().withTwoDosages().build();
             when(pillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
-            dailyReminderAdherenceService.recordAdherence("patientId", false);
+            dailyReminderAdherenceService.backFillAdherenceForPeriodOfSuspension("patientId", false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
+        }
+    }
+
+    public static class RecordDosageAdherenceAsCaptured extends TestSubject {
+
+        @Test
+        public void whenDoseIsTaken(){
+            Dose dose = mock(Dose.class);
+            DateTime doseTakenTime = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
+            when(dose.getDosageId()).thenReturn("dosageId");
+            when(dose.getDoseTime()).thenReturn(doseTakenTime);
+            when(dose.getDate()).thenReturn(doseTakenTime.toLocalDate());
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", doseTakenTime.toLocalDate())).thenReturn(null);
+
+            dailyReminderAdherenceService.recordDosageAdherenceAsCaptured("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
+
+            ArgumentCaptor<DosageAdherenceLog> adherenceLogArgumentCaptor = ArgumentCaptor.forClass(DosageAdherenceLog.class);
+            verify(allDosageAdherenceLogs).add(adherenceLogArgumentCaptor.capture());
+            assertFalse(adherenceLogArgumentCaptor.getValue().isDosageTakenLate());
+            verify(pillReminderService).setLastCapturedDate("regimenId", "dosageId", doseTakenTime.toLocalDate());
+        }
+
+        @Test
+        public void whenDoseIsTaken_AfterFirstCall_ButWithinDosageInterval() {
+            DateTime doseDate = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
+            DosageAdherenceLog existingLog = new DosageAdherenceLog("patientId", "regimenId", "dosageId", DosageStatus.NOT_TAKEN, doseDate.toLocalDate());
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", doseDate.toLocalDate())).thenReturn(existingLog);
+
+            Dose dose = mock(Dose.class);
+            when(dose.getDosageId()).thenReturn("dosageId");
+            when(dose.getDate()).thenReturn(doseDate.toLocalDate());
+            when(dose.getDoseTime()).thenReturn(doseDate);
+            DateTime doseTakenTime = now;
+
+            dailyReminderAdherenceService.recordDosageAdherenceAsCaptured("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
+
+            verify(allDosageAdherenceLogs).update(existingLog);
+            assertEquals(DosageStatus.TAKEN, existingLog.getDosageStatus());
+            verify(pillReminderService).setLastCapturedDate("regimenId", "dosageId", doseDate.toLocalDate());
+        }
+
+        @Test
+        public void whenDoseIsTakenLate() {
+            DateTime doseDate = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
+
+            Dose dose = mock(Dose.class);
+            when(dose.getDosageId()).thenReturn("dosageId");
+            when(dose.getDate()).thenReturn(doseDate.toLocalDate());
+            when(dose.getDoseTime()).thenReturn(doseDate);
+            DateTime doseTakenTime = doseDate.plusHours(1);
+
+            dailyReminderAdherenceService.recordDosageAdherenceAsCaptured("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
+
+            ArgumentCaptor<DosageAdherenceLog> adherenceLogArgumentCaptor = ArgumentCaptor.forClass(DosageAdherenceLog.class);
+            verify(allDosageAdherenceLogs).add(adherenceLogArgumentCaptor.capture());
+            assertTrue(adherenceLogArgumentCaptor.getValue().isDosageTakenLate());
+            verify(pillReminderService).setLastCapturedDate("regimenId", "dosageId", doseDate.toLocalDate());
+        }
+    }
+
+    public static class RecordDosageAdherenceAsNotCaptured extends TestSubject {
+        @Test
+        public void whenDoseIsReportedAsWillTakeLater(){
+            Dose dose = mock(Dose.class);
+            DateTime doseTakenTime = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
+            when(dose.getDosageId()).thenReturn("dosageId");
+            when(dose.getDoseTime()).thenReturn(doseTakenTime);
+            when(dose.getDate()).thenReturn(doseTakenTime.toLocalDate());
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", doseTakenTime.toLocalDate())).thenReturn(null);
+
+            dailyReminderAdherenceService.recordDosageAdherenceAsNotCaptured("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
+
+            ArgumentCaptor<DosageAdherenceLog> adherenceLogArgumentCaptor = ArgumentCaptor.forClass(DosageAdherenceLog.class);
+            verify(allDosageAdherenceLogs).add(adherenceLogArgumentCaptor.capture());
+            assertFalse(adherenceLogArgumentCaptor.getValue().isDosageTakenLate());
+            verify(pillReminderService, never()).setLastCapturedDate("regimenId", "dosageId", doseTakenTime.toLocalDate());
         }
     }
 

@@ -67,7 +67,18 @@ public class CurrentDosageReminderTreeTest {
         assertEquals(2, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof MessageOnPillTaken);
         assertTrue(prompts.get(1).getCommand() instanceof AdherenceMessageWhenPreviousDosageCapturedCommand);
-        assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
+        assertEquals(UpdateAdherenceAsCapturedForCurrentDosageCommand.class, nextNode.getTreeCommands().get(0).getClass());
+    }
+
+    @Test
+    public void shouldGetPillDelayWarningCommand() {
+        setUpDataForPreviousDosage(true);
+
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/", "2");
+        List<Prompt> prompts = nextNode.getPrompts();
+        assertEquals(1, prompts.size());
+        assertTrue(prompts.get(0).getCommand() instanceof PillsDelayWarning);
+        assertEquals(UpdateAdherenceAsNotCapturedForCurrentDosageCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 
     @Test
@@ -90,8 +101,7 @@ public class CurrentDosageReminderTreeTest {
         assertTrue(prompts.get(0).getCommand() instanceof MissedPillFeedbackCommand);
         assertEquals(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(1).getName());
         assertEquals(MenuAudioPrompt.class, prompts.get(1).getClass());
-        assertEquals(StopTodaysRemindersCommand.class, nextNode.getTreeCommands().get(0).getClass());
-        assertEquals(UpdateAdherenceCommand.class, nextNode.getTreeCommands().get(1).getClass());
+        assertEquals(UpdateAdherenceAsCapturedForCurrentDosageCommand.class, nextNode.getTreeCommands().get(0).getClass());
     }
 
     @Test
