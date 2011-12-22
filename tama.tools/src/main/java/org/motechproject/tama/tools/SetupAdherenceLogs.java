@@ -11,7 +11,7 @@ import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -58,7 +58,7 @@ public class SetupAdherenceLogs {
         AllTreatmentAdvices allTreatmentAdvices = context.getBean(AllTreatmentAdvices.class);
         String treatmentAdviceDocId = allTreatmentAdvices.currentTreatmentAdvice(patientId).getId();
 
-        FourDayRecallService fourDayRecallService = (FourDayRecallService) context.getBean("fourDayRecallService");
+        FourDayRecallAdherenceService fourDayRecallAdherenceService = (FourDayRecallAdherenceService) context.getBean("fourDayRecallAdherenceService");
         AllWeeklyAdherenceLogs allWeeklyAdherenceLogs = context.getBean(AllWeeklyAdherenceLogs.class);
 
         final DateTimeSource originalSource = DateTimeSourceUtil.SourceInstance;
@@ -80,11 +80,11 @@ public class SetupAdherenceLogs {
                     return refDate.toLocalDate();
                 }
             };
-            WeeklyAdherenceLog adherenceLog = new WeeklyAdherenceLog(patientId, treatmentAdviceDocId, fourDayRecallService.getStartDateForCurrentWeek(patientId), fromDate, numberOfDosagesMissed);
+            WeeklyAdherenceLog adherenceLog = new WeeklyAdherenceLog(patientId, treatmentAdviceDocId, fourDayRecallAdherenceService.getStartDateForCurrentWeek(patientId), fromDate, numberOfDosagesMissed);
             allWeeklyAdherenceLogs.add(adherenceLog);
         }
 
-        log.info("Adherence % for previous week " + fourDayRecallService.getAdherencePercentageForPreviousWeek(patientId));
+        log.info("Adherence % for previous week " + fourDayRecallAdherenceService.getAdherencePercentageForPreviousWeek(patientId));
     }
 
     private static void createAdherenceForDailyReminderPatient(LocalDate fromDate, LocalDate toDate, AllDosageAdherenceLogs allDosageAdherenceLogs, Patient patient, ApplicationContext context, int nthDosageThatWillNotBeTaken) {

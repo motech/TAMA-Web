@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.service.PatientSchedulerService;
 
 import java.util.Properties;
 
@@ -24,8 +23,6 @@ public class OutboxSchedulerServiceTest {
     @Mock
     MotechSchedulerService motechSchedulerService;
     @Mock
-    PatientSchedulerService patientSchedulerService;
-    @Mock
     private Properties properties;
 
     @Before
@@ -36,7 +33,7 @@ public class OutboxSchedulerServiceTest {
             setId(PATIENT_ID);
             getPatientPreferences().setBestCallTime(bestCallTime);
         }};
-        schedulerService = new OutboxSchedulerService(motechSchedulerService, patientSchedulerService, properties);
+        schedulerService = new OutboxSchedulerService(motechSchedulerService, properties);
     }
 
     @Test

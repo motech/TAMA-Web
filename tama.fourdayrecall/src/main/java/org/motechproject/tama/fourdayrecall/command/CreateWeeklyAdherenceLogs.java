@@ -4,7 +4,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 public class CreateWeeklyAdherenceLogs implements ITreeCommand {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     private AllTreatmentAdvices allTreatmentAdvices;
-    private FourDayRecallService fourDayRecallService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     @Autowired
-    public CreateWeeklyAdherenceLogs(AllTreatmentAdvices allTreatmentAdvices, FourDayRecallService fourDayRecallService, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
-        this.fourDayRecallService = fourDayRecallService;
+    public CreateWeeklyAdherenceLogs(AllTreatmentAdvices allTreatmentAdvices, FourDayRecallAdherenceService fourDayRecallAdherenceService, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
+        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allTreatmentAdvices = allTreatmentAdvices;
     }
@@ -37,7 +37,7 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
         String treatmentAdviceDocId = allTreatmentAdvices.currentTreatmentAdvice(patientId).getId();
         int numberOfDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
 
-        WeeklyAdherenceLog adherenceLog = new WeeklyAdherenceLog(patientId, treatmentAdviceDocId, fourDayRecallService.getStartDateForCurrentWeek(patientId), DateUtil.today(), numberOfDaysMissed);
+        WeeklyAdherenceLog adherenceLog = new WeeklyAdherenceLog(patientId, treatmentAdviceDocId, fourDayRecallAdherenceService.getStartDateForCurrentWeek(patientId), DateUtil.today(), numberOfDaysMissed);
         allWeeklyAdherenceLogs.add(adherenceLog);
 
         return new String[0];

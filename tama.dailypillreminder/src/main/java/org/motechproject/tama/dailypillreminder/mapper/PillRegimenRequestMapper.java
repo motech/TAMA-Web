@@ -1,4 +1,4 @@
-package org.motechproject.tama.mapper;
+package org.motechproject.tama.dailypillreminder.mapper;
 
 import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;

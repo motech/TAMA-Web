@@ -93,7 +93,8 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
         return advice;
     }
 
-    public void endTheRegimen() {
+    public void endTheRegimen(String discontinuationReason) {
+        setReasonForDiscontinuing(discontinuationReason);
         for (DrugDosage dosage : getDrugDosages()) {
             dosage.setEndDate(DateUtil.today());
         }

@@ -11,8 +11,6 @@ import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.scheduler.DailyPillReminderScheduler;
-import org.motechproject.tama.patient.service.PatientSchedulerService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,13 +19,17 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
-public class DailyPillReminderSchedulerService extends DailyPillReminderScheduler {
+public class DailyPillReminderSchedulerService {
     private MotechSchedulerService motechSchedulerService;
 
     @Autowired
-    public DailyPillReminderSchedulerService(MotechSchedulerService motechSchedulerService, PatientSchedulerService patientSchedulerService) {
+    public DailyPillReminderSchedulerService(MotechSchedulerService motechSchedulerService) {
         this.motechSchedulerService = motechSchedulerService;
-        patientSchedulerService.registerDailyPillReminderScheduler(this);
+    }
+
+    public void rescheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
+        unscheduleDailyPillReminderJobs(patient);
+        scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 
     public void scheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {

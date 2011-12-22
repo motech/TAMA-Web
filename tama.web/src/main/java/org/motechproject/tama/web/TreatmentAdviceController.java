@@ -1,16 +1,10 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.dailypillreminder.service.DailyPillReminderSchedulerService;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
-import org.motechproject.tama.mapper.PillRegimenRequestMapper;
-import org.motechproject.tama.patient.domain.CallPreference;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.domain.Regimen;
@@ -52,28 +46,16 @@ public class TreatmentAdviceController extends BaseController {
     @Autowired
     private AllPatients allPatients;
     @Autowired
-    private PillReminderService pillReminderService;
-    @Autowired
-    private PillRegimenRequestMapper pillRegimenRequestMapper;
-    @Autowired
-    private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
-    @Autowired
-    private FourDayRecallSchedulerService fourDayRecallSchedulerService;
+    private TreatmentAdviceService treatmentAdviceService;
 
-    protected TreatmentAdviceController() {
-    }
-
-    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, PillReminderService pillReminderService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, FourDayRecallSchedulerService fourDayRecallSchedulerService, PillRegimenRequestMapper requestMapper) {
+    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
         this.allDrugs = allDrugs;
         this.allDosageTypes = allDosageTypes;
         this.allMealAdviceTypes = allMealAdviceTypes;
-        this.pillReminderService = pillReminderService;
-        this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
-        this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
-        this.pillRegimenRequestMapper = requestMapper;
+        this.treatmentAdviceService = treatmentAdviceService;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
@@ -93,30 +75,9 @@ public class TreatmentAdviceController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, Model uiModel, HttpServletRequest httpServletRequest) {
-        endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
         uiModel.asMap().clear();
-        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
-        allTreatmentAdvices.add(treatmentAdvice);
-        final CallPreference callPreference = patient.getPatientPreferences().getCallPreference();
-        if (callPreference.equals(CallPreference.DailyPillReminder)) {
-            TreatmentAdvice oldTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
-            pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
-            //TODO falling adherence alerts are triggered as a part of adherence trend jobs.
-            //TODO Instead of the four calls below we should put all of these in single service
-            dailyPillReminderSchedulerService.unscheduleDailyPillReminderJobs(patient);
-            dailyPillReminderSchedulerService.scheduleDailyPillReminderJobs(patient, treatmentAdvice);
-        } else if (CallPreference.FourDayRecall.equals(callPreference)) {
-            fourDayRecallSchedulerService.unscheduleFourDayRecallJobs(patient);
-            fourDayRecallSchedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
-        }
+        treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
-    }
-
-    private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {
-        TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
-        existingTreatmentAdvice.setReasonForDiscontinuing(discontinuationReason);
-        existingTreatmentAdvice.endTheRegimen();
-        allTreatmentAdvices.update(existingTreatmentAdvice);
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -128,15 +89,7 @@ public class TreatmentAdviceController extends BaseController {
 
     public void create(TreatmentAdvice treatmentAdvice, Model uiModel) {
         uiModel.asMap().clear();
-        allTreatmentAdvices.add(treatmentAdvice);
-        Patient patient = allPatients.get(treatmentAdvice.getPatientId());
-        PatientPreferences patientPreferences = patient.getPatientPreferences();
-        if (patientPreferences.getCallPreference().equals(CallPreference.FourDayRecall)) {
-            fourDayRecallSchedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
-        } else {
-            pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
-            dailyPillReminderSchedulerService.scheduleDailyPillReminderJobs(patient, treatmentAdvice);
-        }
+        treatmentAdviceService.createRegimen(treatmentAdvice);
     }
 
     public void show(String id, Model uiModel) {

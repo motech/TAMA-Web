@@ -2,7 +2,7 @@ package org.motechproject.tama.fourdayrecall.command;
 
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import java.util.List;
 public class WeeklyAdherencePercentage implements ITreeCommand {
 
     private TamaIVRMessage ivrMessage;
-    private FourDayRecallService fourDayRecallService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     @Autowired
-    public WeeklyAdherencePercentage(TamaIVRMessage ivrMessage, FourDayRecallService fourDayRecallService) {
+    public WeeklyAdherencePercentage(TamaIVRMessage ivrMessage, FourDayRecallAdherenceService fourDayRecallAdherenceService) {
         this.ivrMessage = ivrMessage;
-        this.fourDayRecallService = fourDayRecallService;
+        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
     }
 
     @Override
@@ -35,14 +35,14 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
         String patientId = ivrContext.patientId();
 
         final int numDaysMissed = Integer.parseInt(ivrContext.dtmfInput());
-        int currentWeekAdherencePercentage = fourDayRecallService.adherencePercentageFor(numDaysMissed);
-        boolean falling = fourDayRecallService.isAdherenceFalling(numDaysMissed, patientId);
+        int currentWeekAdherencePercentage = fourDayRecallAdherenceService.adherencePercentageFor(numDaysMissed);
+        boolean falling = fourDayRecallAdherenceService.isAdherenceFalling(numDaysMissed, patientId);
 
         messages.add(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS);
         messages.add(ivrMessage.getNumberFilename(currentWeekAdherencePercentage));
         messages.add(TamaIVRMessage.FDR_PERCENT);
 
-        if (!fourDayRecallService.isAdherenceBeingCapturedForFirstWeek(patientId))
+        if (!fourDayRecallAdherenceService.isAdherenceBeingCapturedForFirstWeek(patientId))
             addTrendMessages(messages, currentWeekAdherencePercentage, falling);
 
         return messages.toArray(new String[messages.size()]);

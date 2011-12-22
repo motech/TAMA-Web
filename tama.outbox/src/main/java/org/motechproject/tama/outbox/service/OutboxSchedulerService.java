@@ -9,8 +9,6 @@ import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.scheduler.OutboxScheduler;
-import org.motechproject.tama.patient.service.PatientSchedulerService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,17 +19,16 @@ import java.util.Map;
 import java.util.Properties;
 
 @Component
-public class OutboxSchedulerService extends OutboxScheduler {
+public class OutboxSchedulerService {
     public static final String IS_RETRY = "isRetry";
     public static final String EXTERNAL_ID_KEY = "ExternalID";
     private MotechSchedulerService motechSchedulerService;
     private Properties properties;
 
     @Autowired
-    public OutboxSchedulerService(MotechSchedulerService motechSchedulerService, PatientSchedulerService patientSchedulerService, @Qualifier("ivrProperties") Properties properties) {
+    public OutboxSchedulerService(MotechSchedulerService motechSchedulerService, @Qualifier("ivrProperties") Properties properties) {
         this.motechSchedulerService = motechSchedulerService;
         this.properties = properties;
-        patientSchedulerService.registerOutboxScheduler(this);
     }
 
     public void scheduleOutboxJobs(Patient patient) {
@@ -42,6 +39,11 @@ public class OutboxSchedulerService extends OutboxScheduler {
         MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
         CronSchedulableJob outboxCallJob = new CronSchedulableJob(outboxCallEvent, outboxCallJobCronExpression, DateUtil.now().toDate(), null);
         motechSchedulerService.scheduleJob(outboxCallJob);
+    }
+
+    public void rescheduleOutboxJobs(Patient patient) {
+        unscheduleOutboxJobs(patient);
+        scheduleOutboxJobs(patient);
     }
 
     public void scheduleRepeatingJobForOutBoxCall(Patient patient) {

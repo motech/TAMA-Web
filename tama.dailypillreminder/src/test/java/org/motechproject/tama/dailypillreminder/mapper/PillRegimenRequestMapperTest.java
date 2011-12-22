@@ -1,4 +1,4 @@
-package org.motechproject.tama.mapper;
+package org.motechproject.tama.dailypillreminder.mapper;
 
 import junit.framework.Assert;
 import org.joda.time.LocalDate;
@@ -54,7 +54,6 @@ public class PillRegimenRequestMapperTest {
         DosageRequest dosageRequest = getByStartHour(9, request.getDosageRequests());
         Assert.assertEquals(5, dosageRequest.getStartMinute());
     }
-
 
     @Test
     public void shouldMapTreatmentAdvicesToPillRegimenRequest() {

@@ -8,7 +8,7 @@ import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderSchedulerService;
 import org.motechproject.tama.facility.repository.AllClinics;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.domain.*;
@@ -74,10 +74,10 @@ public class PatientController extends BaseController {
     private FourDayRecallSchedulerService fourDayRecallSchedulerService;
     private OutboxSchedulerService outboxSchedulerService;
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
-    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
+    private ResumeFourDayRecallService resumeFourDayRecallService;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices, PillReminderService pillReminderService, PatientService patientService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, FourDayRecallSchedulerService fourDayRecallSchedulerService, OutboxSchedulerService outboxSchedulerService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, FourDayRecallAdherenceService fourDayRecallAdherenceService) {
+    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices, PillReminderService pillReminderService, PatientService patientService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, FourDayRecallSchedulerService fourDayRecallSchedulerService, OutboxSchedulerService outboxSchedulerService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -91,7 +91,7 @@ public class PatientController extends BaseController {
         this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         this.outboxSchedulerService = outboxSchedulerService;
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
-        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
+        this.resumeFourDayRecallService = resumeFourDayRecallService;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -135,7 +135,7 @@ public class PatientController extends BaseController {
         allPatients.activate(id);
         Patient patient = allPatients.get(id);
         if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
-            fourDayRecallAdherenceService.backfillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
+            resumeFourDayRecallService.backfillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
         } else {
             dailyPillReminderAdherenceService.backFillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
         }

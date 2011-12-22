@@ -8,7 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -30,7 +30,7 @@ public class CreateWeeklyAdherenceLogsTest {
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
-    private FourDayRecallService fourDayRecallService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     private TAMAIVRContextForTest context;
     private String treatmentAdviceId = "treatmentAdviceId";
@@ -55,9 +55,9 @@ public class CreateWeeklyAdherenceLogsTest {
         when(DateUtil.today()).thenReturn(today);
         context.patientId(patientId).dtmfInput("1");
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        when(fourDayRecallService.getStartDateForCurrentWeek(patientId)).thenReturn(startDateOfTreatmentAdvice);
+        when(fourDayRecallAdherenceService.getStartDateForCurrentWeek(patientId)).thenReturn(startDateOfTreatmentAdvice);
 
-        CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs = new CreateWeeklyAdherenceLogs(allTreatmentAdvices, fourDayRecallService, allWeeklyAdherenceLogs);
+        CreateWeeklyAdherenceLogs createWeeklyAdherenceLogs = new CreateWeeklyAdherenceLogs(allTreatmentAdvices, fourDayRecallAdherenceService, allWeeklyAdherenceLogs);
         createWeeklyAdherenceLogs.executeCommand(context);
 
         ArgumentCaptor<WeeklyAdherenceLog> weeklyAdherenceLogArgumentCaptor = ArgumentCaptor.forClass(WeeklyAdherenceLog.class);

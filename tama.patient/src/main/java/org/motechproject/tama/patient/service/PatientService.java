@@ -6,6 +6,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.UniquePatientField;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
+import org.motechproject.tama.patient.strategy.Outbox;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,11 +18,16 @@ public class PatientService {
 
     private AllPatients allPatients;
     private AllUniquePatientFields allUniquePatientFields;
+    private Outbox outbox;
 
     @Autowired
     public PatientService(AllPatients allPatients, AllUniquePatientFields allUniquePatientFields) {
         this.allPatients = allPatients;
         this.allUniquePatientFields = allUniquePatientFields;
+    }
+
+    public void registerOutbox(Outbox outbox) {
+        this.outbox = outbox;
     }
 
     public void update(Patient patient) {

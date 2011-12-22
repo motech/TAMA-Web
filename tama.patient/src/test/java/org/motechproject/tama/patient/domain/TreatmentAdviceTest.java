@@ -28,8 +28,9 @@ public class TreatmentAdviceTest {
         assertNull(firstDrug.getEndDate());
         assertNull(secondDrug.getEndDate());
 
-        treatmentAdvice.endTheRegimen();
+        treatmentAdvice.endTheRegimen("end it !");
 
+        assertEquals("end it !", treatmentAdvice.getReasonForDiscontinuing());
         assertEquals(DateUtil.today(), firstDrug.getEndDate());
         assertEquals(DateUtil.today(), secondDrug.getEndDate());
     }

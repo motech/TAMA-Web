@@ -4,7 +4,7 @@ package org.motechproject.tama.fourdayrecall.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 
@@ -20,7 +20,7 @@ public class WeeklyAdherencePercentageTest {
 
     public static final String PATIENT_ID = "patientId";
     @Mock
-    private FourDayRecallService fourDayRecallService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
     @Mock
     private TamaIVRMessage ivrMessage;
 
@@ -31,13 +31,13 @@ public class WeeklyAdherencePercentageTest {
     public void setUp() {
         initMocks(this);
         ivrContext = new TAMAIVRContextForTest().patientId(PATIENT_ID);
-        weeklyAdherencePercentage = new WeeklyAdherencePercentage(ivrMessage, fourDayRecallService);
+        weeklyAdherencePercentage = new WeeklyAdherencePercentage(ivrMessage, fourDayRecallAdherenceService);
     }
 
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan90() {
-        when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(100);
-        when(fourDayRecallService.getAdherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(50);
+        when(fourDayRecallAdherenceService.adherencePercentageFor(anyInt())).thenReturn(100);
+        when(fourDayRecallAdherenceService.getAdherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(50);
         ivrContext.dtmfInput("0");
         when(ivrMessage.getNumberFilename(100)).thenReturn("Num_100");
 
@@ -51,8 +51,8 @@ public class WeeklyAdherencePercentageTest {
 
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan70_AndFalling() {
-        when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(80);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(true);
+        when(fourDayRecallAdherenceService.adherencePercentageFor(anyInt())).thenReturn(80);
+        when(fourDayRecallAdherenceService.isAdherenceFalling(anyInt(), anyString())).thenReturn(true);
         ivrContext.dtmfInput("1");
         when(ivrMessage.getNumberFilename(80)).thenReturn("Num_80");
 
@@ -66,8 +66,8 @@ public class WeeklyAdherencePercentageTest {
 
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan70_AndRising() {
-        when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(80);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(false);
+        when(fourDayRecallAdherenceService.adherencePercentageFor(anyInt())).thenReturn(80);
+        when(fourDayRecallAdherenceService.isAdherenceFalling(anyInt(), anyString())).thenReturn(false);
         ivrContext.dtmfInput("1");
         when(ivrMessage.getNumberFilename(80)).thenReturn("Num_80");
 
@@ -82,8 +82,8 @@ public class WeeklyAdherencePercentageTest {
 
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndFalling() {
-        when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(60);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(true);
+        when(fourDayRecallAdherenceService.adherencePercentageFor(anyInt())).thenReturn(60);
+        when(fourDayRecallAdherenceService.isAdherenceFalling(anyInt(), anyString())).thenReturn(true);
         ivrContext.dtmfInput("2");
         when(ivrMessage.getNumberFilename(60)).thenReturn("Num_60");
 
@@ -98,8 +98,8 @@ public class WeeklyAdherencePercentageTest {
 
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndRising() {
-        when(fourDayRecallService.adherencePercentageFor(anyInt())).thenReturn(60);
-        when(fourDayRecallService.isAdherenceFalling(anyInt(), anyString())).thenReturn(false);
+        when(fourDayRecallAdherenceService.adherencePercentageFor(anyInt())).thenReturn(60);
+        when(fourDayRecallAdherenceService.isAdherenceFalling(anyInt(), anyString())).thenReturn(false);
         ivrContext.dtmfInput("2");
         when(ivrMessage.getNumberFilename(60)).thenReturn("Num_60");
 

@@ -12,7 +12,7 @@ import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderSchedulerService;
 import org.motechproject.tama.facility.repository.AllClinics;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -87,12 +87,12 @@ public class PatientControllerTest {
     @Mock
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
     @Mock
-    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
+    private ResumeFourDayRecallService resumeFourDayRecallService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, pillReminderService, patientService, dailyPillReminderSchedulerService, fourDayRecallSchedulerService, outboxSchedulerService, dailyPillReminderAdherenceService, fourDayRecallAdherenceService);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, pillReminderService, patientService, dailyPillReminderSchedulerService, fourDayRecallSchedulerService, outboxSchedulerService, dailyPillReminderAdherenceService, resumeFourDayRecallService);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 

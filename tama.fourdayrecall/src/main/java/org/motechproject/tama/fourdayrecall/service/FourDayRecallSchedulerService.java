@@ -11,8 +11,6 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TimeMeridiem;
 import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.tama.patient.scheduler.FourDayRecallScheduler;
-import org.motechproject.tama.patient.service.PatientSchedulerService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,25 +22,29 @@ import java.util.Map;
 import java.util.Properties;
 
 @Component
-public class FourDayRecallSchedulerService extends FourDayRecallScheduler {
+public class FourDayRecallSchedulerService {
     private MotechSchedulerService motechSchedulerService;
     private Properties ivrProperties;
     private Properties fourDayRecallProperties;
-    private FourDayRecallService fourDayRecallService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     @Autowired
-    public FourDayRecallSchedulerService(MotechSchedulerService motechSchedulerService, PatientSchedulerService patientSchedulerService, FourDayRecallService fourDayRecallService,
+    public FourDayRecallSchedulerService(MotechSchedulerService motechSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService,
                                          @Qualifier("ivrProperties") Properties ivrProperties, @Qualifier("fourDayRecallProperties") Properties fourDayRecallProperties) {
         this.motechSchedulerService = motechSchedulerService;
         this.ivrProperties = ivrProperties;
         this.fourDayRecallProperties = fourDayRecallProperties;
-        this.fourDayRecallService = fourDayRecallService;
-        patientSchedulerService.registerFourDayRecallScheduler(this);
+        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
     }
 
     public void scheduleFourDayRecallJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
         scheduleFourDayRecallCalls(patient, treatmentAdvice);
         scheduleFallingAdherenceAlertJobsForFourDayRecall(patient, treatmentAdvice);
+    }
+
+    public void rescheduleFourDayRecallJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
+        unscheduleFourDayRecallJobs(patient);
+        scheduleFourDayRecallCalls(patient, treatmentAdvice);
     }
 
     public void scheduleRepeatingJobsForFourDayRecall(Patient patient) {
@@ -70,7 +72,7 @@ public class FourDayRecallSchedulerService extends FourDayRecallScheduler {
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
         Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        LocalDate startDate = fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(patientDocId, fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).minusDays(1);
+        LocalDate startDate = fourDayRecallAdherenceService.findFirstFourDayRecallDateForTreatmentAdvice(patientDocId, fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).minusDays(1);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1); // +1 is so that it is scheduled at midnight. 12:00 AM of NEXT day
@@ -100,8 +102,8 @@ public class FourDayRecallSchedulerService extends FourDayRecallScheduler {
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
         Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        LocalDate weeklyAdherenceTrackingStartDate = fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
-        LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(FourDayRecallService.DAYS_TO_RECALL);
+        LocalDate weeklyAdherenceTrackingStartDate = fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(FourDayRecallAdherenceService.DAYS_TO_RECALL);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek day = dayOfWeek(dayOfWeeklyCall, count);

@@ -15,7 +15,6 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.listener.FourDayRecallListener;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.service.PatientSchedulerService;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -44,9 +43,7 @@ public class FourDayRecallSchedulerServiceTest {
     @Mock
     MotechSchedulerService motechSchedulerService;
     @Mock
-    PatientSchedulerService patientSchedulerService;
-    @Mock
-    FourDayRecallService fourDayRecallService;
+    FourDayRecallAdherenceService fourDayRecallAdherenceService;
     @Mock
     private Properties ivrProperties;
     @Mock
@@ -62,7 +59,7 @@ public class FourDayRecallSchedulerServiceTest {
             setId(PATIENT_ID);
             getPatientPreferences().setBestCallTime(bestCallTime);
         }};
-        schedulerService = new FourDayRecallSchedulerService(motechSchedulerService, patientSchedulerService, fourDayRecallService, ivrProperties, fourDayRecallProperties);
+        schedulerService = new FourDayRecallSchedulerService(motechSchedulerService, fourDayRecallAdherenceService, ivrProperties, fourDayRecallProperties);
     }
 
     @Test
@@ -73,8 +70,8 @@ public class FourDayRecallSchedulerServiceTest {
         when(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
         LocalDate dayWhenFirstCallIsMade = DateUtil.today().plusDays(10);
         LocalDate expectedFallingAdherenceAlertJobStartDate = dayWhenFirstCallIsMade.minusDays(1);
-        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()))).thenReturn(dayWhenFirstCallIsMade);
-        Mockito.when(fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(new LocalDate(treatmentAdvice.getStartDate()));
+        Mockito.when(fourDayRecallAdherenceService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()))).thenReturn(dayWhenFirstCallIsMade);
+        Mockito.when(fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(new LocalDate(treatmentAdvice.getStartDate()));
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
 
@@ -102,8 +99,8 @@ public class FourDayRecallSchedulerServiceTest {
         LocalDate dayWhenFirstCallIsMade = DateUtil.today().plusDays(10);
         LocalDate expectedFallingAdherenceAlertJobStartDate = dayWhenFirstCallIsMade.minusDays(1);
 
-        Mockito.when(fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(new LocalDate(treatmentAdvice.getStartDate()).plusDays(DAYS_AFTER_CALL_PREFERENCE_CHANGES));
-        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(DAYS_AFTER_CALL_PREFERENCE_CHANGES))).thenReturn(dayWhenFirstCallIsMade);
+        Mockito.when(fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(new LocalDate(treatmentAdvice.getStartDate()).plusDays(DAYS_AFTER_CALL_PREFERENCE_CHANGES));
+        Mockito.when(fourDayRecallAdherenceService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()).plusDays(DAYS_AFTER_CALL_PREFERENCE_CHANGES))).thenReturn(dayWhenFirstCallIsMade);
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
 
@@ -134,8 +131,8 @@ public class FourDayRecallSchedulerServiceTest {
 
         LocalDate dayWhenFirstCallIsMade = DateUtil.today();
 
-        Mockito.when(fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(treatmentAdviceStartDate);
-        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, treatmentAdviceStartDate)).thenReturn(dayWhenFirstCallIsMade);
+        Mockito.when(fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(treatmentAdviceStartDate);
+        Mockito.when(fourDayRecallAdherenceService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, treatmentAdviceStartDate)).thenReturn(dayWhenFirstCallIsMade);
 
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
@@ -160,8 +157,8 @@ public class FourDayRecallSchedulerServiceTest {
         when(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn(String.valueOf(numDaysToRetry));
         LocalDate dayWhenFirstCallIsMade = DateUtil.today().plusDays(10);
         LocalDate expectedFallingAdherenceAlertJobStartDate = dayWhenFirstCallIsMade.minusDays(1);
-        Mockito.when(fourDayRecallService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(DateUtil.newDate(treatmentAdvice.getStartDate()));
-        Mockito.when(fourDayRecallService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()))).thenReturn(dayWhenFirstCallIsMade);
+        Mockito.when(fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(DateUtil.newDate(treatmentAdvice.getStartDate()));
+        Mockito.when(fourDayRecallAdherenceService.findFirstFourDayRecallDateForTreatmentAdvice(PATIENT_ID, DateUtil.newDate(treatmentAdvice.getStartDate()))).thenReturn(dayWhenFirstCallIsMade);
 
 
         schedulerService.scheduleFallingAdherenceAlertJobsForFourDayRecall(patient, treatmentAdvice);
