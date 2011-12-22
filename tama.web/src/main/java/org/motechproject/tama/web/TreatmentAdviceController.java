@@ -33,21 +33,15 @@ import java.util.List;
 @Controller
 public class TreatmentAdviceController extends BaseController {
 
-    @Autowired
     private AllMealAdviceTypes allMealAdviceTypes;
-    @Autowired
     private AllDosageTypes allDosageTypes;
-    @Autowired
     private AllDrugs allDrugs;
-    @Autowired
     private AllRegimens allRegimens;
-    @Autowired
     private AllTreatmentAdvices allTreatmentAdvices;
-    @Autowired
     private AllPatients allPatients;
-    @Autowired
     private TreatmentAdviceService treatmentAdviceService;
 
+    @Autowired
     public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
