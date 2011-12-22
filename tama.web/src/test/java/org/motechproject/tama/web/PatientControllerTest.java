@@ -263,7 +263,7 @@ public class PatientControllerTest {
         when(allPatients.get("patientId")).thenReturn(patient);
         controller.create(patient, bindingResult, uiModel, request);
         controller.update(patient, bindingResult, uiModel, request);
-        verify(outboxSchedulerService, never()).scheduleJobForOutboxCall(patient);
+        verify(outboxSchedulerService, never()).scheduleOutboxJobs(patient);
     }
 
     @Test
@@ -285,7 +285,7 @@ public class PatientControllerTest {
         controller.create(patient, bindingResult, uiModel, request);
         controller.update(patient, bindingResult, uiModel, request);
 
-        verify(outboxSchedulerService, new Times(1)).scheduleJobForOutboxCall(patient);
+        verify(outboxSchedulerService, new Times(1)).scheduleOutboxJobs(patient);
     }
 
     @Test

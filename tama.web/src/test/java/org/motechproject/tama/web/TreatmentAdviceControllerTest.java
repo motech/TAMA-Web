@@ -91,8 +91,7 @@ public class TreatmentAdviceControllerTest {
     public void shouldScheduleCallsForPatientsOnDailyPillReminder() {
         controller.create(treatmentAdvice, uiModel);
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
-        verify(dailyPillReminderSchedulerService).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-        verify(dailyPillReminderSchedulerService).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+        verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 
     @Test
@@ -105,7 +104,7 @@ public class TreatmentAdviceControllerTest {
         patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
 
         controller.create(treatmentAdvice, uiModel);
-        verify(fourDayRecallSchedulerService).scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+        verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
     }
 
     @Test
@@ -215,10 +214,8 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService).renew(any(DailyPillRegimenRequest.class));
-        verify(dailyPillReminderSchedulerService).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(existingTreatmentAdvice);
-        verify(dailyPillReminderSchedulerService).unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
-        verify(dailyPillReminderSchedulerService).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-        verify(dailyPillReminderSchedulerService).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+        verify(dailyPillReminderSchedulerService).unscheduleDailyPillReminderJobs(patient);
+        verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 
     @Test
@@ -237,11 +234,9 @@ public class TreatmentAdviceControllerTest {
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(pillReminderService, never()).renew(any(DailyPillRegimenRequest.class));
-        verify(fourDayRecallSchedulerService).unScheduleFourDayRecallJobs(patient);
-        verify(dailyPillReminderSchedulerService, never()).unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(existingTreatmentAdvice);
-        verify(dailyPillReminderSchedulerService, never()).unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
-        verify(dailyPillReminderSchedulerService, never()).scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-        verify(dailyPillReminderSchedulerService, never()).scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+        verify(fourDayRecallSchedulerService).unscheduleFourDayRecallJobs(patient);
+        verify(dailyPillReminderSchedulerService, never()).unscheduleDailyPillReminderJobs(patient);
+        verify(dailyPillReminderSchedulerService, never()).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 
     private TreatmentAdvice getTreatmentAdvice() {

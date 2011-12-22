@@ -171,7 +171,7 @@ public class PatientController extends BaseController {
             //TODO: scheduling rescheduling codes have duplication in it
             if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) &&
                     patient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
-                outboxSchedulerService.scheduleJobForOutboxCall(patient);
+                outboxSchedulerService.scheduleOutboxJobs(patient);
             }
             uiModel.asMap().clear();
         } catch (TamaException e) {
@@ -272,8 +272,7 @@ public class PatientController extends BaseController {
     private void postUpdate(Patient patient) {
         Patient dbPatient = allPatients.get(patient.getId());
         if (callPreferenceChangedFromDailyToFourDayRecall(patient, dbPatient)) {
-            outboxSchedulerService.unscheduleJobForOutboxCall(dbPatient);
-            outboxSchedulerService.unscheduleRepeatingJobForOutboxCall(dbPatient.getId());
+            outboxSchedulerService.unscheduleOutboxJobs(dbPatient);
             unscheduleDailyReminderJobs(patient);
             scheduleFourDayRecallJobs(patient);
             return;
@@ -296,15 +295,14 @@ public class PatientController extends BaseController {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (treatmentAdvice != null) {
             pillReminderService.remove(patient.getId());
-            dailyPillReminderSchedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-            dailyPillReminderSchedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+            dailyPillReminderSchedulerService.unscheduleDailyPillReminderJobs(patient);
         }
     }
 
     private void scheduleFourDayRecallJobs(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (treatmentAdvice != null && patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall)
-            fourDayRecallSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+            fourDayRecallSchedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
     }
 
     private boolean bestCallTimeChanged(Patient patient, Patient dbPatient) {
@@ -314,12 +312,11 @@ public class PatientController extends BaseController {
     private void rescheduleOutboxCalls(Patient updatedPatient, Patient patient) {
         boolean shouldUnScheduleOldOutboxJobs = shouldScheduleOutboxCallsFor(patient);
         if (shouldUnScheduleOldOutboxJobs) {
-            outboxSchedulerService.unscheduleJobForOutboxCall(patient);
-            outboxSchedulerService.unscheduleRepeatingJobForOutboxCall(patient.getId());
+            outboxSchedulerService.unscheduleOutboxJobs(patient);
         }
         //TODO: scheduling rescheduling codes have duplication in it
         if (shouldScheduleOutboxCallsFor(updatedPatient)) {
-            outboxSchedulerService.scheduleJobForOutboxCall(updatedPatient);
+            outboxSchedulerService.scheduleOutboxJobs(updatedPatient);
         }
     }
 
@@ -332,7 +329,7 @@ public class PatientController extends BaseController {
     }
 
     private void rescheduleFourDayRecallJobs(Patient patient) {
-        fourDayRecallSchedulerService.unScheduleFourDayRecallJobs(patient);
+        fourDayRecallSchedulerService.unscheduleFourDayRecallJobs(patient);
         scheduleFourDayRecallJobs(patient);
     }
 }

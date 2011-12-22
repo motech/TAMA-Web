@@ -11,7 +11,8 @@ import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.scheduler.DailyPillReminderScheduler;
+import org.motechproject.tama.patient.service.PatientSchedulerService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,21 +21,26 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
-public class DailyPillReminderSchedulerService {
-    @Autowired
+public class DailyPillReminderSchedulerService extends DailyPillReminderScheduler {
     private MotechSchedulerService motechSchedulerService;
+
     @Autowired
-    private AllPatients allPatients;
-
-    public DailyPillReminderSchedulerService() {
-    }
-
-    public DailyPillReminderSchedulerService(MotechSchedulerService motechSchedulerService, AllPatients allPatients) {
+    public DailyPillReminderSchedulerService(MotechSchedulerService motechSchedulerService, PatientSchedulerService patientSchedulerService) {
         this.motechSchedulerService = motechSchedulerService;
-        this.allPatients = allPatients;
+        patientSchedulerService.registerDailyPillReminderScheduler(this);
     }
 
-    public void scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {
+    public void scheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
+        scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+        scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+    }
+
+    public void unscheduleDailyPillReminderJobs(Patient patient) {
+        unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient);
+        unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+    }
+
+    void scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getPatientId())
                 .withExternalId(treatmentAdvice.getPatientId())
                 .payload();
@@ -46,11 +52,7 @@ public class DailyPillReminderSchedulerService {
         motechSchedulerService.scheduleJob(adherenceJob);
     }
 
-    private Date getJobStartDate(LocalDate startDate) {
-        return DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
-    }
-
-    public void scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient, TreatmentAdvice treatmentAdvice) {
+    void scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient, TreatmentAdvice treatmentAdvice) {
         if (!patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) return;
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patient.getId())
                 .withExternalId(patient.getId())
@@ -68,11 +70,15 @@ public class DailyPillReminderSchedulerService {
         motechSchedulerService.scheduleJob(jobToDetermineAdherenceQuality);
     }
 
-    public void unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {
-        motechSchedulerService.unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, treatmentAdvice.getPatientId());
+    void unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(Patient patient) {
+        motechSchedulerService.unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, patient.getId());
     }
 
-    public void unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient) {
+    void unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient) {
         motechSchedulerService.unscheduleJob(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patient.getId());
+    }
+
+    private Date getJobStartDate(LocalDate startDate) {
+        return DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
     }
 }

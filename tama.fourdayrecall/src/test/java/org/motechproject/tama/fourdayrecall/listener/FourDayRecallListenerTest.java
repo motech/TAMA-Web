@@ -72,7 +72,7 @@ public class FourDayRecallListenerTest {
 
         fourDayRecallListener.handle(motechEvent);
 
-        verify(fourDayRecallSchedulerService).scheduleRepeatingJobsForFourDayRecall(PATIENT_ID);
+        verify(fourDayRecallSchedulerService).scheduleRepeatingJobsForFourDayRecall(patient);
         verify(ivrCall).makeCall(patient);
     }
 

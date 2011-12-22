@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.service.PatientSchedulerService;
 
 import java.util.Properties;
 
@@ -24,9 +24,9 @@ public class OutboxSchedulerServiceTest {
     @Mock
     MotechSchedulerService motechSchedulerService;
     @Mock
-    private Properties properties;
+    PatientSchedulerService patientSchedulerService;
     @Mock
-    private AllPatients allPatients;
+    private Properties properties;
 
     @Before
     public void setUp() {
@@ -36,7 +36,7 @@ public class OutboxSchedulerServiceTest {
             setId(PATIENT_ID);
             getPatientPreferences().setBestCallTime(bestCallTime);
         }};
-        schedulerService = new OutboxSchedulerService(motechSchedulerService, properties);
+        schedulerService = new OutboxSchedulerService(motechSchedulerService, patientSchedulerService, properties);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class OutboxSchedulerServiceTest {
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         CallPreference callPreference = CallPreference.DailyPillReminder;
         patientPreferences.setCallPreference(callPreference);
-        schedulerService.scheduleJobForOutboxCall(patient);
+        schedulerService.scheduleOutboxJobs(patient);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
         Assert.assertEquals("0 30 10 * * ?", jobCaptor.getValue().getCronExpression());

@@ -103,13 +103,11 @@ public class TreatmentAdviceController extends BaseController {
             pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
             //TODO falling adherence alerts are triggered as a part of adherence trend jobs.
             //TODO Instead of the four calls below we should put all of these in single service
-            dailyPillReminderSchedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(oldTreatmentAdvice);
-            dailyPillReminderSchedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
-            dailyPillReminderSchedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-            dailyPillReminderSchedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+            dailyPillReminderSchedulerService.unscheduleDailyPillReminderJobs(patient);
+            dailyPillReminderSchedulerService.scheduleDailyPillReminderJobs(patient, treatmentAdvice);
         } else if (CallPreference.FourDayRecall.equals(callPreference)) {
-            fourDayRecallSchedulerService.unScheduleFourDayRecallJobs(patient);
-            fourDayRecallSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+            fourDayRecallSchedulerService.unscheduleFourDayRecallJobs(patient);
+            fourDayRecallSchedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         }
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }
@@ -134,11 +132,10 @@ public class TreatmentAdviceController extends BaseController {
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         if (patientPreferences.getCallPreference().equals(CallPreference.FourDayRecall)) {
-            fourDayRecallSchedulerService.scheduleJobsForFourDayRecall(patient, treatmentAdvice);
+            fourDayRecallSchedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         } else {
             pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
-            dailyPillReminderSchedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
-            dailyPillReminderSchedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
+            dailyPillReminderSchedulerService.scheduleDailyPillReminderJobs(patient, treatmentAdvice);
         }
     }
 

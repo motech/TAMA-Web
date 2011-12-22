@@ -14,8 +14,11 @@ import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.service.PatientSchedulerService;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -39,13 +42,13 @@ public class DailyPillReminderSchedulerServiceTest {
     @Mock
     MotechSchedulerService motechSchedulerService;
     @Mock
-    private AllPatients allPatients;
+    PatientSchedulerService patientSchedulerService;
 
     @Before
     public void setUp() {
         initMocks(this);
         treatmentAdvice = getTreatmentAdvice();
-        schedulerService = new DailyPillReminderSchedulerService(motechSchedulerService, allPatients);
+        schedulerService = new DailyPillReminderSchedulerService(motechSchedulerService, patientSchedulerService);
     }
 
     @Test

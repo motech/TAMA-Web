@@ -9,6 +9,8 @@ import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.scheduler.OutboxScheduler;
+import org.motechproject.tama.patient.service.PatientSchedulerService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,19 +21,20 @@ import java.util.Map;
 import java.util.Properties;
 
 @Component
-public class OutboxSchedulerService {
+public class OutboxSchedulerService extends OutboxScheduler {
     public static final String IS_RETRY = "isRetry";
     public static final String EXTERNAL_ID_KEY = "ExternalID";
     private MotechSchedulerService motechSchedulerService;
     private Properties properties;
 
     @Autowired
-    public OutboxSchedulerService(MotechSchedulerService motechSchedulerService,  @Qualifier("ivrProperties") Properties properties) {
+    public OutboxSchedulerService(MotechSchedulerService motechSchedulerService, PatientSchedulerService patientSchedulerService, @Qualifier("ivrProperties") Properties properties) {
         this.motechSchedulerService = motechSchedulerService;
         this.properties = properties;
+        patientSchedulerService.registerOutboxScheduler(this);
     }
 
-    public void scheduleJobForOutboxCall(Patient patient) {
+    public void scheduleOutboxJobs(Patient patient) {
         String outboxCallJobCronExpression = new CronJobSimpleExpressionBuilder(patient.getPatientPreferences().getBestCallTime().toTime()).build();
         Map<String, Object> eventParams = new HashMap<String, Object>();
         eventParams.put(EventKeys.SCHEDULE_JOB_ID_KEY, patient.getId());
@@ -55,11 +58,16 @@ public class OutboxSchedulerService {
         }
     }
 
-    public void unscheduleJobForOutboxCall(Patient patient) {
-        motechSchedulerService.unscheduleJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
+    public void unscheduleOutboxJobs(Patient patient) {
+        unscheduleJobForOutboxCall(patient);
+        unscheduleRepeatingJobForOutboxCall(patient.getId());
     }
 
     public void unscheduleRepeatingJobForOutboxCall(String externalId) {
         motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, externalId);
+    }
+
+    private void unscheduleJobForOutboxCall(Patient patient) {
+        motechSchedulerService.unscheduleJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
     }
 }

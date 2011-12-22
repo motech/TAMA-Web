@@ -50,7 +50,7 @@ public class FourDayRecallListener {
                 if (fourDayRecallService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()))
                     return;
                 if (!isRetryEvent)
-                    fourDayRecallSchedulerService.scheduleRepeatingJobsForFourDayRecall(patientDocId);
+                    fourDayRecallSchedulerService.scheduleRepeatingJobsForFourDayRecall(patient);
 
                 ivrCall.makeCall(patient);
             } catch (Exception e) {
