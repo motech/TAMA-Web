@@ -8,23 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FourDayRecallService extends FourDayRecall {
+public class FourDayRecallService implements FourDayRecall {
 
     private FourDayRecallSchedulerService fourDayRecallSchedulerService;
 
     @Autowired
-    public FourDayRecallService(TreatmentAdviceService treatmentAdviceService) {
+    public FourDayRecallService(FourDayRecallSchedulerService fourDayRecallSchedulerService, TreatmentAdviceService treatmentAdviceService) {
+        this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         treatmentAdviceService.registerFourDayRecall(this);
     }
 
-    @Override
     public void enroll(Patient patient, TreatmentAdvice treatmentAdvice) {
         fourDayRecallSchedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
     }
 
-    @Override
     public void reEnroll(Patient patient, TreatmentAdvice treatmentAdvice) {
         fourDayRecallSchedulerService.rescheduleFourDayRecallJobs(patient, treatmentAdvice);
     }
-
 }

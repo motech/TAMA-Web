@@ -7,30 +7,28 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.patient.strategy.DailyPillReminder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class DailyPillReminderService extends DailyPillReminder {
+@Service
+public class DailyPillReminderService implements DailyPillReminder {
 
     private PillReminderService pillReminderService;
-    private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
     private PillRegimenRequestMapper pillRegimenRequestMapper;
+    private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
 
     @Autowired
-    public DailyPillReminderService(TreatmentAdviceService treatmentAdviceService, PillReminderService pillReminderService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, PillRegimenRequestMapper pillRegimenRequestMapper) {
+    public DailyPillReminderService(PillReminderService pillReminderService, PillRegimenRequestMapper pillRegimenRequestMapper, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, TreatmentAdviceService treatmentAdviceService) {
         this.pillReminderService = pillReminderService;
-        this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
         this.pillRegimenRequestMapper = pillRegimenRequestMapper;
+        this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
         treatmentAdviceService.registerDailyPillReminder(this);
     }
 
-    @Override
     public void enroll(Patient patient, TreatmentAdvice treatmentAdvice) {
         pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
         dailyPillReminderSchedulerService.scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 
-    @Override
     public void reEnroll(Patient patient, TreatmentAdvice treatmentAdvice) {
         pillReminderService.renew(pillRegimenRequestMapper.map(treatmentAdvice));
         dailyPillReminderSchedulerService.rescheduleDailyPillReminderJobs(patient, treatmentAdvice);

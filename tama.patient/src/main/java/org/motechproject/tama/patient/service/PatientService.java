@@ -51,14 +51,14 @@ public class PatientService {
         allPatients.update(patient);
     }
 
-    private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
-        return dbPatient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) && patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall);
-    }
-
     public void suspend(String patientId) {
         Patient patient = allPatients.get(patientId);
         patient.suspend();
         update(patient);
+    }
+
+    private boolean callPreferenceChangedFromDailyToFourDayRecall(Patient patient, Patient dbPatient) {
+        return dbPatient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder) && patient.getPatientPreferences().getCallPreference().equals(CallPreference.FourDayRecall);
     }
 }
 

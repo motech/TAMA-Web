@@ -27,11 +27,6 @@ public class DailyPillReminderSchedulerService {
         this.motechSchedulerService = motechSchedulerService;
     }
 
-    public void rescheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
-        unscheduleDailyPillReminderJobs(patient);
-        scheduleDailyPillReminderJobs(patient, treatmentAdvice);
-    }
-
     public void scheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
         scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
         scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
@@ -40,6 +35,11 @@ public class DailyPillReminderSchedulerService {
     public void unscheduleDailyPillReminderJobs(Patient patient) {
         unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient);
         unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
+    }
+
+    public void rescheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
+        unscheduleDailyPillReminderJobs(patient);
+        scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 
     void scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {

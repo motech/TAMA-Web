@@ -42,6 +42,16 @@ public class FourDayRecallSchedulerService {
         scheduleFallingAdherenceAlertJobsForFourDayRecall(patient, treatmentAdvice);
     }
 
+    public void unscheduleFourDayRecallJobs(Patient patient) {
+        Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
+        for (int count = 0; count <= daysToRetry; count++) {
+            motechSchedulerService.unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, count + patient.getId());
+        }
+
+        motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, patient.getId());
+        motechSchedulerService.unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, patient.getId());
+    }
+
     public void rescheduleFourDayRecallJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
         unscheduleFourDayRecallJobs(patient);
         scheduleFourDayRecallCalls(patient, treatmentAdvice);
@@ -84,16 +94,6 @@ public class FourDayRecallSchedulerService {
 
             scheduleWeeklyEvent(getJobStartDate(startDate), getJobEndDate(treatmentAdvice), eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT);
         }
-    }
-
-    public void unscheduleFourDayRecallJobs(Patient patient) {
-        Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
-        for (int count = 0; count <= daysToRetry; count++) {
-            motechSchedulerService.unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, count + patient.getId());
-        }
-
-        motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, patient.getId());
-        motechSchedulerService.unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, patient.getId());
     }
 
     private void scheduleFourDayRecallCalls(Patient patient, TreatmentAdvice treatmentAdvice) {

@@ -41,6 +41,11 @@ public class OutboxSchedulerService {
         motechSchedulerService.scheduleJob(outboxCallJob);
     }
 
+    public void unscheduleOutboxJobs(Patient patient) {
+        unscheduleJobForOutboxCall(patient);
+        unscheduleRepeatingJobForOutboxCall(patient.getId());
+    }
+
     public void rescheduleOutboxJobs(Patient patient) {
         unscheduleOutboxJobs(patient);
         scheduleOutboxJobs(patient);
@@ -58,11 +63,6 @@ public class OutboxSchedulerService {
             RepeatingSchedulableJob outboxCallJob = new RepeatingSchedulableJob(outboxCallEvent, DateUtil.now().plusMinutes(repeatIntervalInMinutes).toDate(), DateUtil.today().plusDays(1).toDate(), maxOutboundRetries, repeatIntervalInMinutes * 60 * 1000);
             motechSchedulerService.scheduleRepeatingJob(outboxCallJob);
         }
-    }
-
-    public void unscheduleOutboxJobs(Patient patient) {
-        unscheduleJobForOutboxCall(patient);
-        unscheduleRepeatingJobForOutboxCall(patient.getId());
     }
 
     public void unscheduleRepeatingJobForOutboxCall(String externalId) {
