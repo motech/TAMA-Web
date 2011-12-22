@@ -47,12 +47,11 @@ public class ResumeFourDayRecallServiceTest {
     private ResumeFourDayRecallService resumeFourDayRecallService;
     private static String DAYS_TO_RETRY = "2";
 
-
     @Before
     public void setUp() {
         initMocks(this);
         mockStatic(DateUtil.class);
-        resumeFourDayRecallService = new ResumeFourDayRecallService(allWeeklyAdherenceLogs, allPatients, allTreatmentAdvices, properties, fourDayRecallAdherenceService, new AdherenceService());
+        resumeFourDayRecallService = new ResumeFourDayRecallService(allWeeklyAdherenceLogs, allPatients, allTreatmentAdvices, properties, fourDayRecallAdherenceService);
     }
 
     @Test

@@ -5,9 +5,6 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.ivr.service.AdherenceService;
-import org.motechproject.tama.ivr.service.AdherenceServiceStrategy;
-import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -19,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Properties;
 
 @Service
-public class ResumeFourDayRecallService implements AdherenceServiceStrategy {
+public class ResumeFourDayRecallService {
 
     public static final int DAYS_TO_RECALL = 4;
 
@@ -30,13 +27,12 @@ public class ResumeFourDayRecallService implements AdherenceServiceStrategy {
     private Properties properties;
 
     @Autowired
-    public ResumeFourDayRecallService(AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, @Qualifier("fourDayRecallProperties") Properties properties, FourDayRecallAdherenceService fourDayRecallAdherenceService,  AdherenceService adherenceService) {
+    public ResumeFourDayRecallService(AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, @Qualifier("fourDayRecallProperties") Properties properties, FourDayRecallAdherenceService fourDayRecallAdherenceService) {
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.properties = properties;
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
-        adherenceService.register(CallPreference.FourDayRecall, this);
     }
 
     public void backfillAdherenceForPeriodOfSuspension(String patientId, boolean doseTaken) {
@@ -129,18 +125,5 @@ public class ResumeFourDayRecallService implements AdherenceServiceStrategy {
                 startDateForAnyWeek,
                 DateUtil.today(), numberOfDaysMissed);
         allWeeklyAdherenceLogs.add(weeklyAdherenceLog);
-    }
-
-    @Override
-    public boolean wasAnyDoseMissedLastWeek(Patient patient) {
-        double adherenceForLastWeek = fourDayRecallAdherenceService.getAdherencePercentageForPreviousWeek(patient.getId());
-        if (adherenceForLastWeek == 0.0 && fourDayRecallAdherenceService.getFirstWeeksFourDayRecallRetryEndDate(patient).isAfter(DateUtil.now()))
-            return false;
-        return (adherenceForLastWeek != 100.0);
-    }
-
-    @Override
-    public boolean wasAnyDoseTakenLateSince(Patient patient, LocalDate since) {
-        return false;
     }
 }

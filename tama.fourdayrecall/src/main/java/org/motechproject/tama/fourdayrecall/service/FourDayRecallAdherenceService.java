@@ -6,6 +6,8 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.ivr.service.AdherenceService;
+import org.motechproject.tama.ivr.service.AdherenceServiceStrategy;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -22,7 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
-public class FourDayRecallAdherenceService {
+public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     public static final int DAYS_TO_RECALL = 4;
 
     private AllTreatmentAdvices allTreatmentAdvices;
@@ -33,12 +35,13 @@ public class FourDayRecallAdherenceService {
 
     @Autowired
     public FourDayRecallAdherenceService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs,
-                                PatientAlertService patientAlertService, @Qualifier("fourDayRecallProperties") Properties properties) {
+                                PatientAlertService patientAlertService, @Qualifier("fourDayRecallProperties") Properties properties, AdherenceService adherenceService) {
         this.allPatients = allPatients;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.patientAlertService = patientAlertService;
         this.properties = properties;
+        adherenceService.register(CallPreference.FourDayRecall, this);
     }
 
     public boolean isAdherenceCapturedForCurrentWeek(String patientDocId, String treatmentAdviceId) {
@@ -251,5 +254,19 @@ public class FourDayRecallAdherenceService {
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
         TimeOfDay bestCallTime = patient.getPatientPreferences().getBestCallTime();
         return firstRecallDate.plusDays(daysToRetry).toDateTime(new LocalTime(bestCallTime.getHour(), bestCallTime.getMinute()));
+    }
+
+
+    @Override
+    public boolean wasAnyDoseMissedLastWeek(Patient patient) {
+        double adherenceForLastWeek = getAdherencePercentageForPreviousWeek(patient.getId());
+        if (adherenceForLastWeek == 0.0 && getFirstWeeksFourDayRecallRetryEndDate(patient).isAfter(DateUtil.now()))
+            return false;
+        return (adherenceForLastWeek != 100.0);
+    }
+
+    @Override
+    public boolean wasAnyDoseTakenLateSince(Patient patient, LocalDate since) {
+        return false;
     }
 }
