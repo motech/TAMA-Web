@@ -89,7 +89,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
         initMocks(this);
         setUpTime();
         properties.setProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE, ADHERENCE_THRESHOLD);
-        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allPatients, allDosageAdherenceLogs, pillReminderService, properties, new AdherenceService());
+        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, properties, new AdherenceService());
         adherenceQualityListener = new AdherenceQualityListener(dailyReminderAdherenceTrendService, properties, dailyReminderAdherenceService, allPatients);
         Patient patient = new PatientBuilder().withDefaults().withStatus(Status.Active).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
