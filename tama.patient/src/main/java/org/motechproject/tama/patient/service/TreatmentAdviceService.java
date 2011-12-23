@@ -33,16 +33,14 @@ public class TreatmentAdviceService {
     public void createRegimen(TreatmentAdvice treatmentAdvice) {
         allTreatmentAdvices.add(treatmentAdvice);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
-        CallPreference callPreference = patient.getPatientPreferences().getCallPreference();
-        callPlans.get(callPreference).enroll(patient, treatmentAdvice);
+        callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
     }
 
     public void changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice) {
         endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
         allTreatmentAdvices.add(treatmentAdvice);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
-        CallPreference callPreference = patient.getPatientPreferences().getCallPreference();
-        callPlans.get(callPreference).reEnroll(patient, treatmentAdvice);
+        callPlans.get(patient.callPreference()).reEnroll(patient, treatmentAdvice);
     }
 
     private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {

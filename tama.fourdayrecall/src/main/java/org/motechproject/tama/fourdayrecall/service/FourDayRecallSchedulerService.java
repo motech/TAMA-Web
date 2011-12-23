@@ -52,11 +52,6 @@ public class FourDayRecallSchedulerService {
         motechSchedulerService.unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, patient.getId());
     }
 
-    public void rescheduleFourDayRecallJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
-        unscheduleFourDayRecallJobs(patient);
-        scheduleFourDayRecallCalls(patient, treatmentAdvice);
-    }
-
     public void scheduleRepeatingJobsForFourDayRecall(Patient patient) {
         Integer maxOutboundRetries = Integer.valueOf(ivrProperties.getProperty(TAMAConstants.RETRIES_PER_DAY));
         int repeatIntervalInMinutes = Integer.valueOf(ivrProperties.getProperty(TAMAConstants.RETRY_INTERVAL));

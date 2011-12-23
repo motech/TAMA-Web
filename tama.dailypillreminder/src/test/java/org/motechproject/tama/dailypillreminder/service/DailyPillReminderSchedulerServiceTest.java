@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.MotechEvent;
@@ -26,7 +25,8 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DailyPillReminderSchedulerServiceTest {
@@ -66,15 +66,6 @@ public class DailyPillReminderSchedulerServiceTest {
         schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
-
-        //assertTrue(now.minusMinutes(1).isBefore(new DateTime(jobCaptor.getValue().getStartTime())));
-    }
-
-    @Test
-    public void shouldNotScheduleDailyAdherenceQualityJobsForAPatientOnWeeklyReminder() {
-        Patient patient = PatientBuilder.startRecording().withCallPreference(CallPreference.FourDayRecall).build();
-        schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, null);
-        verify(motechSchedulerService, never()).scheduleJob(Matchers.<CronSchedulableJob>any());
     }
 
     @Test

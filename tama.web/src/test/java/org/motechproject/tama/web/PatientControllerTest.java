@@ -6,15 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.internal.verification.Times;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
-import org.motechproject.tama.dailypillreminder.service.DailyPillReminderSchedulerService;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
-import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
@@ -83,14 +78,6 @@ public class PatientControllerTest {
     @Mock
     private PatientService patientService;
     @Mock
-    private PillReminderService pillReminderService;
-    @Mock
-    private OutboxSchedulerService outboxSchedulerService;
-    @Mock
-    private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
-    @Mock
-    private FourDayRecallSchedulerService fourDayRecallSchedulerService;
-    @Mock
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
     @Mock
     private ResumeFourDayRecallService resumeFourDayRecallService;
@@ -98,7 +85,7 @@ public class PatientControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, pillReminderService, patientService, dailyPillReminderSchedulerService, fourDayRecallSchedulerService, outboxSchedulerService, dailyPillReminderAdherenceService, resumeFourDayRecallService);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 
@@ -233,7 +220,6 @@ public class PatientControllerTest {
 
         String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-        verify(allPatients).addToClinic(patientFromUI, clinicId);
         assertTrue(modelMap.isEmpty());
         assertEquals("redirect:/patients/123", createPage);
     }
@@ -257,45 +243,6 @@ public class PatientControllerTest {
         verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
                 new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
         assertEquals("patients/create", createPage);
-    }
-
-    @Test
-    public void shouldNeverScheduleJobForOutbox_whenPatientHasNotAgreedToBeCalledAtBestCallTime() {
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(request.getSession()).thenReturn(session);
-        Patient patient = new Patient();
-        patient.setId("patientId");
-        patient.setPatientPreferences(new PatientPreferences() {{
-            setCallPreference(CallPreference.DailyPillReminder);
-            setBestCallTime(new TimeOfDay());
-        }});
-        when(allPatients.get("patientId")).thenReturn(patient);
-        controller.create(patient, bindingResult, uiModel, request);
-        controller.update(patient, bindingResult, uiModel, request);
-        verify(outboxSchedulerService, never()).scheduleOutboxJobs(patient);
-    }
-
-    @Test
-    public void shouldScheduleJobForOutbox_whenPatientHasAgreedToBeCalledAtBestCallTime() {
-        final TimeOfDay bestCallTime = new TimeOfDay(10, 30, TimeMeridiem.AM);
-
-        BindingResult bindingResult = mock(BindingResult.class);
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(request.getSession()).thenReturn(session);
-
-        Patient patient = new Patient();
-        patient.setId("patientId");
-        patient.setPatientPreferences(new PatientPreferences() {{
-            setBestCallTime(bestCallTime);
-            setCallPreference(CallPreference.DailyPillReminder);
-        }});
-        when(allPatients.get("patientId")).thenReturn(patient);
-        controller.create(patient, bindingResult, uiModel, request);
-        controller.update(patient, bindingResult, uiModel, request);
-
-        verify(outboxSchedulerService, new Times(1)).scheduleOutboxJobs(patient);
     }
 
     @Test

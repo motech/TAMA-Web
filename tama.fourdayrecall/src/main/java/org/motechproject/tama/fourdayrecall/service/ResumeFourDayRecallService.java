@@ -55,7 +55,7 @@ public class ResumeFourDayRecallService {
                 isFirstDayOfSuspensionPeriod = isFirstDayOfSuspensionPeriod(fromDate, iteratingDate);
                 isLastDayOfSuspensionPeriod = isLastDayOfSuspensionPeriod(toDate, iteratingDate);
                 if ((isFirstDayOfSuspensionPeriod || isLastDayOfSuspensionPeriod)
-                        && suspendedPatient.getPatientPreferences().hasAgreedToBeCalledAtBestCallTime()) {
+                        && suspendedPatient.hasAgreedToBeCalledAtBestCallTime()) {
                     if (patientsBestCallTimeFallsWithinSuspensionPeriod(fromDate, toDate, suspendedPatient, isFirstDayOfSuspensionPeriod, isLastDayOfSuspensionPeriod)) {
                         createWeeklyAdherenceLogForTheWeek(patientId, doseTaken, startDateForAnyWeek, treatmentAdviceDocId);
                     }

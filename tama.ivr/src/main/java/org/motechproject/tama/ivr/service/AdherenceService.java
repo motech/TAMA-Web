@@ -18,12 +18,12 @@ public class AdherenceService {
     }
 
     public boolean isDosageMissedLastWeek(Patient patient) {
-        AdherenceServiceStrategy adherenceServiceStrategy = adherenceServices.get(patient.getPatientPreferences().getCallPreference());
+        AdherenceServiceStrategy adherenceServiceStrategy = adherenceServices.get(patient.callPreference());
         return adherenceServiceStrategy.wasAnyDoseMissedLastWeek(patient);
     }
 
     public boolean anyDoseTakenLateSince(Patient patient, LocalDate since) {
-        AdherenceServiceStrategy adherenceServiceStrategy = adherenceServices.get(patient.getPatientPreferences().getCallPreference());
+        AdherenceServiceStrategy adherenceServiceStrategy = adherenceServices.get(patient.callPreference());
         return adherenceServiceStrategy.wasAnyDoseTakenLateSince(patient, since);
     }
 }

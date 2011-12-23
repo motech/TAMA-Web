@@ -18,10 +18,23 @@ public class OutboxService implements Outbox {
     }
 
     public void enroll(Patient patient) {
-        outboxSchedulerService.scheduleOutboxJobs(patient);
+        if (patient.hasAgreedToBeCalledAtBestCallTime()) {
+            outboxSchedulerService.scheduleOutboxJobs(patient);
+        }
     }
 
-    public void reEnroll(Patient patient) {
-        outboxSchedulerService.rescheduleOutboxJobs(patient);
+    void disEnroll(Patient dbPatient) {
+        if (dbPatient.hasAgreedToBeCalledAtBestCallTime()) {
+            outboxSchedulerService.unscheduleOutboxJobs(dbPatient);
+        }
+    }
+
+    public void reEnroll(Patient dbPatient, Patient patient) {
+        boolean bestCallTimeChanged = dbPatient.getPatientPreferences().getBestCallTime() != patient.getPatientPreferences().getBestCallTime();
+        boolean dayOfWeeklyCallChanged = dbPatient.getPatientPreferences().getDayOfWeeklyCall() != patient.getPatientPreferences().getDayOfWeeklyCall();
+        if (bestCallTimeChanged || dayOfWeeklyCallChanged) {
+            disEnroll(dbPatient);
+            enroll(patient);
+        }
     }
 }

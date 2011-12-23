@@ -14,7 +14,6 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
-import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,9 +92,8 @@ public class TAMACallFlowController implements CallFlowController {
 
     private String getStartingTree(TAMAIVRContext tamaivrContext) {
         Patient patient = allPatients.get(tamaivrContext.patientId());
-        boolean isPatientOnDailyPillReminder = CallPreference.DailyPillReminder.equals(patient.getPatientPreferences().getCallPreference());
         if (tamaivrContext.isIncomingCall()) {
-            if (!isPatientOnDailyPillReminder)
+            if (!patient.isOnDailyPillReminder())
                 return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
             else {
                 if (patient.getStatus().isSuspended())
@@ -118,7 +116,7 @@ public class TAMACallFlowController implements CallFlowController {
             return TAMATreeRegistry.OUTBOX_CALL;
         }
 
-        if (isPatientOnDailyPillReminder && !tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER)) {
+        if (patient.isOnDailyPillReminder() && !tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER)) {
             return TAMATreeRegistry.CURRENT_DOSAGE_REMINDER;
         } else {
             return TAMATreeRegistry.FOUR_DAY_RECALL;

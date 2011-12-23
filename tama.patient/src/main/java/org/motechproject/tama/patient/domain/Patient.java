@@ -88,7 +88,17 @@ public class Patient extends CouchEntity {
 
     @JsonIgnore
     public boolean isOnDailyPillReminder() {
-        return this.patientPreferences.getCallPreference().isDaily();
+        return callPreference().isDaily();
+    }
+
+    @JsonIgnore
+    public boolean hasAgreedToBeCalledAtBestCallTime() {
+        return this.patientPreferences.hasAgreedToBeCalledAtBestCallTime();
+    }
+
+    @JsonIgnore
+    public CallPreference callPreference() {
+        return this.patientPreferences.getCallPreference();
     }
 
     public String getPatientId() {

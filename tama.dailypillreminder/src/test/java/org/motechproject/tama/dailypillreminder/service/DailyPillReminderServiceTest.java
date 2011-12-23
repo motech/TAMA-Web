@@ -11,9 +11,11 @@ import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -26,36 +28,54 @@ public class DailyPillReminderServiceTest {
     @Mock
     protected DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
     @Mock
+    protected PatientService patientService;
+    @Mock
     protected TreatmentAdviceService treatmentAdviceService;
     private DailyPillReminderService dailyPillReminderService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        dailyPillReminderService = new DailyPillReminderService(pillReminderService, pillRegimenRequestMapper, dailyPillReminderSchedulerService, treatmentAdviceService);
+        dailyPillReminderService = new DailyPillReminderService(pillReminderService, pillRegimenRequestMapper, dailyPillReminderSchedulerService, patientService, treatmentAdviceService);
     }
 
     @Test
-    public void patientEnrolls_ToDailyPillReminder() {
+    public void newPatient_WithoutATreatmentAdviceEnrolls() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        dailyPillReminderService.enroll(patient, null);
+
+        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(pillRegimenRequestMapper, never()).map(null);
+        verify(pillReminderService, never()).createNew(any(DailyPillRegimenRequest.class));
+        verify(dailyPillReminderSchedulerService, never()).scheduleDailyPillReminderJobs(patient, null);
+    }
+
+    @Test
+    public void existingPatient_WithHisFirstTreatmentAdvice_Enrolls() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.enroll(patient, treatmentAdvice);
 
         verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillRegimenRequestMapper).map(treatmentAdvice);
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 
     @Test
-    public void patientReEnrolls_ToDailyPillReminder() {
+    public void patientReEnrolls() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.reEnroll(patient, treatmentAdvice);
 
         verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillRegimenRequestMapper).map(treatmentAdvice);
-        verify(pillReminderService).renew(any(DailyPillRegimenRequest.class));
-        verify(dailyPillReminderSchedulerService).rescheduleDailyPillReminderJobs(patient, treatmentAdvice);
+        verify(pillReminderService).remove(patient.getId());
+        verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
+        verify(dailyPillReminderSchedulerService).unscheduleDailyPillReminderJobs(patient);
+        verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
 }

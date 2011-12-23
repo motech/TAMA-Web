@@ -37,11 +37,6 @@ public class DailyPillReminderSchedulerService {
         unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
     }
 
-    public void rescheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
-        unscheduleDailyPillReminderJobs(patient);
-        scheduleDailyPillReminderJobs(patient, treatmentAdvice);
-    }
-
     void scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getPatientId())
                 .withExternalId(treatmentAdvice.getPatientId())
@@ -55,7 +50,6 @@ public class DailyPillReminderSchedulerService {
     }
 
     void scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient, TreatmentAdvice treatmentAdvice) {
-        if (!patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) return;
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patient.getId())
                 .withExternalId(patient.getId())
                 .payload();

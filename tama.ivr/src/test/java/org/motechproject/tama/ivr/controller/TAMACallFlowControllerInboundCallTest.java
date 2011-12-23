@@ -15,7 +15,6 @@ import org.motechproject.tama.ivr.context.SymptomModuleStratergy;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
-import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.tama.patient.domain.Status;
@@ -63,7 +62,7 @@ public class TAMACallFlowControllerInboundCallTest {
 
         when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
-        when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
+        when(patient.isOnDailyPillReminder()).thenReturn(true);
         when(pillModuleStratergy.isCurrentDoseTaken(tamaIVRContextForTest)).thenReturn(true);
 
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
@@ -77,7 +76,7 @@ public class TAMACallFlowControllerInboundCallTest {
 
         when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
-        when(patientPreferences.getCallPreference()).thenReturn(CallPreference.DailyPillReminder);
+        when(patient.isOnDailyPillReminder()).thenReturn(true);
         when(pillModuleStratergy.isCurrentDoseTaken(tamaIVRContextForTest)).thenReturn(false);
 
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, tamaCallFlowController.decisionTreeName(kooKooIVRContext));

@@ -7,7 +7,6 @@ import org.motechproject.outbox.api.EventKeys;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,23 +45,16 @@ public class OutboxSchedulerService {
         unscheduleRepeatingJobForOutboxCall(patient.getId());
     }
 
-    public void rescheduleOutboxJobs(Patient patient) {
-        unscheduleOutboxJobs(patient);
-        scheduleOutboxJobs(patient);
-    }
-
     public void scheduleRepeatingJobForOutBoxCall(Patient patient) {
-        if (patient.getPatientPreferences().getCallPreference().equals(CallPreference.DailyPillReminder)) {
-            Map<String, Object> eventParams = new HashMap<String, Object>();
-            eventParams.put(EventKeys.SCHEDULE_JOB_ID_KEY, patient.getId());
-            eventParams.put(EXTERNAL_ID_KEY, patient.getId());
-            eventParams.put(IS_RETRY, "true");
-            MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
-            Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.RETRIES_PER_DAY)) - 1;
-            int repeatIntervalInMinutes = Integer.valueOf(properties.getProperty(TAMAConstants.OUT_BOX_CALL_RETRY_INTERVAL));
-            RepeatingSchedulableJob outboxCallJob = new RepeatingSchedulableJob(outboxCallEvent, DateUtil.now().plusMinutes(repeatIntervalInMinutes).toDate(), DateUtil.today().plusDays(1).toDate(), maxOutboundRetries, repeatIntervalInMinutes * 60 * 1000);
-            motechSchedulerService.scheduleRepeatingJob(outboxCallJob);
-        }
+        Map<String, Object> eventParams = new HashMap<String, Object>();
+        eventParams.put(EventKeys.SCHEDULE_JOB_ID_KEY, patient.getId());
+        eventParams.put(EXTERNAL_ID_KEY, patient.getId());
+        eventParams.put(IS_RETRY, "true");
+        MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
+        Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.RETRIES_PER_DAY)) - 1;
+        int repeatIntervalInMinutes = Integer.valueOf(properties.getProperty(TAMAConstants.OUT_BOX_CALL_RETRY_INTERVAL));
+        RepeatingSchedulableJob outboxCallJob = new RepeatingSchedulableJob(outboxCallEvent, DateUtil.now().plusMinutes(repeatIntervalInMinutes).toDate(), DateUtil.today().plusDays(1).toDate(), maxOutboundRetries, repeatIntervalInMinutes * 60 * 1000);
+        motechSchedulerService.scheduleRepeatingJob(outboxCallJob);
     }
 
     public void unscheduleRepeatingJobForOutboxCall(String externalId) {

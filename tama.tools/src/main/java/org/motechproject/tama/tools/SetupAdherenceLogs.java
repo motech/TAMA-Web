@@ -39,9 +39,9 @@ public class SetupAdherenceLogs {
         LocalDate toDate = LocalDate.parse(args[2]);
 
         int nthDosageThatWillNotBeTaken = Integer.parseInt(args[3]);
-        if (patient.getPatientPreferences().getCallPreference() == CallPreference.DailyPillReminder) {
+        if (patient.isOnDailyPillReminder()) {
             createAdherenceForDailyReminderPatient(fromDate, toDate, allDosageAdherenceLogs, patient, context, nthDosageThatWillNotBeTaken);
-        } else if (patient.getPatientPreferences().getCallPreference() == CallPreference.FourDayRecall) {
+        } else if (patient.callPreference() == CallPreference.FourDayRecall) {
             log.info("Patient is on four-day recall.");
             if (nthDosageThatWillNotBeTaken >= 0 && nthDosageThatWillNotBeTaken <= 4) {
                 createAdherenceForFourDayRecallPatient(fromDate, toDate, patient, context, nthDosageThatWillNotBeTaken);

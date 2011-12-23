@@ -6,5 +6,5 @@ public interface Outbox {
 
     public void enroll(Patient patient);
 
-    public void reEnroll(Patient patient);
+    public void reEnroll(Patient dbPatient, Patient patient);
 }
