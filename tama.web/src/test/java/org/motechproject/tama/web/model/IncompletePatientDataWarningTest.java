@@ -49,7 +49,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
         when(allLabResults.findByPatientId("patientId")).thenReturn(mock(LabResults.class));
-        assertEquals("Please fill in the Vital Statistics for the patient", incompletePatientDataWarning.toString());
+        assertEquals("The Vital Statistics needs to be filled for the patient", incompletePatientDataWarning.toString());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
         when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
-        assertEquals("Please fill in the Lab Results for the patient", incompletePatientDataWarning.toString());
+        assertEquals("The Lab Results needs to be filled for the patient", incompletePatientDataWarning.toString());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
-        assertEquals("Please fill in the Regimen details, Lab Results for the patient", incompletePatientDataWarning.toString());
+        assertEquals("The Regimen details, Lab Results needs to be filled for the patient", incompletePatientDataWarning.toString());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
-        assertEquals("Please fill in the Vital Statistics, Regimen details, Lab Results for the patient", incompletePatientDataWarning.toString());
+        assertEquals("The Vital Statistics, Regimen details, Lab Results needs to be filled for the patient", incompletePatientDataWarning.toString());
     }
 
     @Test

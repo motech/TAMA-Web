@@ -119,7 +119,7 @@ public class PatientControllerTest {
         verify(uiModel).addAttribute(PatientController.PATIENT, patient);
         verify(uiModel).addAttribute(PatientController.ITEM_ID, "patient_id");
         verify(uiModel).addAttribute(PatientController.DEACTIVATION_STATUSES, Status.deactivationStatuses());
-        verify(uiModel).addAttribute(PatientController.WARNING, "Please fill in the Vital Statistics, Regimen details, Lab Results for the patient");
+        verify(uiModel).addAttribute(PatientController.WARNING, "The Vital Statistics, Regimen details, Lab Results needs to be filled for the patient");
     }
 
     @Test

@@ -59,6 +59,6 @@ public class IncompletePatientDataWarning {
 
         if (pendingPatientDetailsArray.isEmpty())
             return null;
-        return "Please fill in the " + StringUtils.join(pendingPatientDetailsArray, ", ") + " for the patient";
+        return "The " + StringUtils.join(pendingPatientDetailsArray, ", ") + " needs to be filled for the patient";
     }
 }
