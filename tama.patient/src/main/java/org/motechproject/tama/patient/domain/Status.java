@@ -39,6 +39,10 @@ public enum Status {
         return this.equals(Status.Suspended);
     }
 
+    public boolean isInactive() {
+        return this.equals(Status.Inactive);
+    }
+
     @Override
     public String toString() {
         return getDisplayName();

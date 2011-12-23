@@ -12,14 +12,17 @@ import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.repository.AllGenders;
 import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.motechproject.tama.web.model.DoseStatus;
+import org.motechproject.tama.web.model.IncompletePatientDataWarning;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
@@ -56,6 +59,7 @@ public class PatientController extends BaseController {
     public static String DEACTIVATION_STATUSES = "deactivation_statuses";
     public static final String PATIENT = "patient";
     public static final String PATIENTS = "patients";
+    public static final String WARNING = "warning";
     public static final String ITEM_ID = "itemId";
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
@@ -68,6 +72,8 @@ public class PatientController extends BaseController {
     private AllHIVTestReasons allTestReasons;
     private AllModesOfTransmission allModesOfTransmission;
     private AllTreatmentAdvices allTreatmentAdvices;
+    private AllVitalStatistics allVitalStatistics;
+    private AllLabResults allLabResults;
     private PillReminderService pillReminderService;
     private PatientService patientService;
     private DailyPillReminderSchedulerService dailyPillReminderSchedulerService;
@@ -77,7 +83,11 @@ public class PatientController extends BaseController {
     private ResumeFourDayRecallService resumeFourDayRecallService;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices, PillReminderService pillReminderService, PatientService patientService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService, FourDayRecallSchedulerService fourDayRecallSchedulerService, OutboxSchedulerService outboxSchedulerService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService) {
+
+    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
+                             AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PillReminderService pillReminderService, PatientService patientService, DailyPillReminderSchedulerService dailyPillReminderSchedulerService,
+                             FourDayRecallSchedulerService fourDayRecallSchedulerService, OutboxSchedulerService outboxSchedulerService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService,
+                             ResumeFourDayRecallService resumeFourDayRecallService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -85,6 +95,8 @@ public class PatientController extends BaseController {
         this.allTestReasons = allTestReasons;
         this.allModesOfTransmission = allModesOfTransmission;
         this.allTreatmentAdvices = allTreatmentAdvices;
+        this.allVitalStatistics = allVitalStatistics;
+        this.allLabResults = allLabResults;
         this.pillReminderService = pillReminderService;
         this.patientService = patientService;
         this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
@@ -145,9 +157,12 @@ public class PatientController extends BaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         addDateTimeFormat(uiModel);
-        uiModel.addAttribute(PATIENT, allPatients.findByIdAndClinicId(id, loggedInClinic(request)));
+        Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
+        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        uiModel.addAttribute(PATIENT, patient);
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
         uiModel.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
+        uiModel.addAttribute(WARNING, warning);
         return SHOW_VIEW;
     }
 

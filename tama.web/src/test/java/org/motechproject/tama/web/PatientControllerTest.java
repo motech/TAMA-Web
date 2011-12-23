@@ -17,8 +17,10 @@ import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerServic
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.repository.AllGenders;
@@ -73,7 +75,11 @@ public class PatientControllerTest {
     @Mock
     private AllModesOfTransmission allModesOfTransmission;
     @Mock
+    private AllVitalStatistics allVitalStatistics;
+    @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllLabResults allLabResults;
     @Mock
     private PatientService patientService;
     @Mock
@@ -92,15 +98,18 @@ public class PatientControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, pillReminderService, patientService, dailyPillReminderSchedulerService, fourDayRecallSchedulerService, outboxSchedulerService, dailyPillReminderAdherenceService, resumeFourDayRecallService);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, pillReminderService, patientService, dailyPillReminderSchedulerService, fourDayRecallSchedulerService, outboxSchedulerService, dailyPillReminderAdherenceService, resumeFourDayRecallService);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 
     @Test
     public void shouldRenderShowPage() {
         when(request.getSession()).thenReturn(session);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withStatus(Status.Active).build();
         when(allPatients.findByIdAndClinicId("patient_id", patient.getClinic_id())).thenReturn(patient);
+        when(allVitalStatistics.findByPatientId("patient_id")).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice("patient_id")).thenReturn(null);
+        when(allLabResults.findByPatientId("patient_id")).thenReturn(new LabResults());
 
         String returnPage = controller.show("patient_id", uiModel, request);
 
@@ -110,6 +119,7 @@ public class PatientControllerTest {
         verify(uiModel).addAttribute(PatientController.PATIENT, patient);
         verify(uiModel).addAttribute(PatientController.ITEM_ID, "patient_id");
         verify(uiModel).addAttribute(PatientController.DEACTIVATION_STATUSES, Status.deactivationStatuses());
+        verify(uiModel).addAttribute(PatientController.WARNING, "Please fill in the Vital Statistics, current Treatment Advice, Lab Results for the patient");
     }
 
     @Test

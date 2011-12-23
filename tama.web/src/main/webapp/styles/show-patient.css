@@ -5,3 +5,13 @@
 #_title_fc_org_motechproject_tama_domain_patient_non_HIV_Medical_History_id_pane {
     padding-bottom : 140px;
 }
+
+.warning {
+    height: 15px;
+    background-color: RED;
+    color: WHITE;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
