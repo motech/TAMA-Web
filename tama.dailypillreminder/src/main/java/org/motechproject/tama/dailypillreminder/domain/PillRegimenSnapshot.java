@@ -9,7 +9,6 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
-import org.motechproject.tama.dailypillreminder.util.DosageUtil;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

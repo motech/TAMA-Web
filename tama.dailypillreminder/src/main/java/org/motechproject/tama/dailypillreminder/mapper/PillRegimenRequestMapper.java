@@ -7,7 +7,6 @@ import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
 import org.motechproject.tama.common.util.TimeUtil;
-import org.motechproject.tama.dailypillreminder.util.DosageUtil;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.refdata.repository.AllDrugs;
@@ -92,11 +91,12 @@ public class PillRegimenRequestMapper {
             TimeUtil timeUtil = new TimeUtil(dosageTime).withReminderLagTime(reminderLag);
             List<DrugDosage> dosages = treatmentAdvice.groupDosagesByTime().get(dosageTime);
             Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequestConverter =
-                    DosageUtil.isEveningDosage(dosageTime) ? drugEveningDosageToMedicineRequest : drugDosageToMedicineRequest;
-            return new DosageRequest(timeUtil.getHours(),
-                    timeUtil.getMinutes(),
-                    Lambda.convert(dosages,
-                            drugDosageToMedicineRequestConverter));
+                    isEveningDosage(dosageTime) ? drugEveningDosageToMedicineRequest : drugDosageToMedicineRequest;
+            return new DosageRequest(timeUtil.getHours(), timeUtil.getMinutes(), Lambda.convert(dosages, drugDosageToMedicineRequestConverter));
+        }
+
+        public boolean isEveningDosage(String schedule) {
+            return schedule != null && schedule.toLowerCase().contains("pm");
         }
     }
 }
