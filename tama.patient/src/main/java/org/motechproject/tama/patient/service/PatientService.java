@@ -53,9 +53,9 @@ public class PatientService {
         patient.setRevision(dbPatient.getRevision());
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
         updateUniquePatientField(patient);
+        allPatients.update(patient);
         updateOnCallPlanChanged(dbPatient, patient);
         outbox.reEnroll(dbPatient, patient);
-        allPatients.update(patient);
     }
 
     public void suspend(String patientId) {
@@ -81,7 +81,7 @@ public class PatientService {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         boolean callPlanChanged = !dbPatient.callPreference().equals(patient.callPreference());
         if (callPlanChanged) {
-            callPlans.get(dbPatient.callPreference()).disEnroll(patient);
+            callPlans.get(dbPatient.callPreference()).disEnroll(dbPatient);
             callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
             patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now());
         }
