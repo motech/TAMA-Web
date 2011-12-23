@@ -76,19 +76,6 @@ public class PillRegimenSnapshot {
             return new Time(nextDose.getDosageHour(), nextDose.getDosageMinute()).getDateTime(dailyPillReminderContext.callStartTime().plusDays(1));
     }
 
-    public int getScheduledDosagesTotalCountForLastFourWeeks() {
-        return getScheduledDosagesTotalCountForLastFourWeeks(dailyPillReminderContext.callStartTime());
-    }
-
-    protected int getScheduledDosagesTotalCountForLastFourWeeks(DateTime endDate) {
-        DateTime startTime = endDate.minusWeeks(4);
-        return DosageUtil.getScheduledDosagesTotalCountForLastFourWeeks(startTime, endDate, pillRegimen);
-    }
-
-    public int getScheduledDosagesTotalCount() {
-        return DosageUtil.getScheduledDosagesTotalCount(dailyPillReminderContext.callStartTime(), pillRegimen);
-    }
-
     public boolean isTodaysDose(Dose dose) {
         return dailyPillReminderContext.callStartTime().toLocalDate().equals(dose.getDate());
     }
