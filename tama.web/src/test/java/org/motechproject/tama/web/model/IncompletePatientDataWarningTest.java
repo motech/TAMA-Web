@@ -65,7 +65,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
-        assertEquals("Please fill in the current Treatment Advice, Lab Results for the patient", incompletePatientDataWarning.toString());
+        assertEquals("Please fill in the Regimen details, Lab Results for the patient", incompletePatientDataWarning.toString());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
-        assertEquals("Please fill in the Vital Statistics, current Treatment Advice, Lab Results for the patient", incompletePatientDataWarning.toString());
+        assertEquals("Please fill in the Vital Statistics, Regimen details, Lab Results for the patient", incompletePatientDataWarning.toString());
     }
 
     @Test

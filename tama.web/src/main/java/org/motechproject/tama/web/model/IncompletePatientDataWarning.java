@@ -41,7 +41,7 @@ public class IncompletePatientDataWarning {
 
         requiredPatientDetails = new ArrayList<RequiredPatientDetail>();
         requiredPatientDetails.add(new RequiredPatientDetail(vitalStatistics, "Vital Statistics"));
-        requiredPatientDetails.add(new RequiredPatientDetail(treatmentAdvice, "current Treatment Advice"));
+        requiredPatientDetails.add(new RequiredPatientDetail(treatmentAdvice, "Regimen details"));
         requiredPatientDetails.add(new RequiredPatientDetail(labResults, "Lab Results"));
     }
 
