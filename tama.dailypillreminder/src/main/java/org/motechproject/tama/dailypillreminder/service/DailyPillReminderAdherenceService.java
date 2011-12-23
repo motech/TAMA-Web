@@ -69,7 +69,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         dosageResponses = pillRegimen.getDosageResponses();
         DosageStatus dosageStatus = wasDoseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
         for (DosageResponse dosageResponse : dosageResponses) {
-            SingleDosageTimeLine dosageTimeLine = new SingleDosageTimeLine(dosageResponse, startDate, endDate);
+            DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, startDate, endDate);
             while (dosageTimeLine.hasNext()) {
                 Dose dose = dosageTimeLine.next();
                 if (allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate()) == null) {

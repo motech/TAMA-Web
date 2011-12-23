@@ -1,126 +1,105 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
+import java.util.NoSuchElementException;
 
-import static junit.framework.Assert.*;
-import static org.junit.Assert.assertFalse;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 public class DosageTimeLineTest {
 
     @Test
-    public void shouldFetchTheUpcomingDosage() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
+    public void shouldReturnNextDose_WhenDosageTimeIsAfterFromTime() {
+        DateTime dosageStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 0, 0, 0);
+        DateTime fromDate = dosageStartTime.plusDays(1);
+        DateTime toDate = dosageStartTime.plusDays(3);
+        final Time dosageTime = new Time(13, 10);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", dosageTime, dosageStartTime.toLocalDate(), null, null, null);
 
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 06, 00, 00), DateUtil.now());
-
-        assertDosageResponse(dosageResponse2, fromDate, dosageTimeLine.next());
-    }
-
-    @Test
-    public void shouldFetchTheFourthUpcomingDosage() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
-
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.now());
-        dosageTimeLine.next();
-        dosageTimeLine.next();
-        dosageTimeLine.next();
-        Dose actualDoseResponse = dosageTimeLine.next();
-
-        assertDosageResponse(dosageResponse2, fromDate.plusDays(2), actualDoseResponse);
-    }
-
-    @Test
-    public void shouldNotFetchDosageBeyondStartDate() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse), DateUtil.newDateTime(fromDate.minusDays(1), 6, 0, 0), DateUtil.newDateTime(fromDate.minusDays(1), 17, 0, 0));
-
-        try {
-            dosageTimeLine.next();
-            fail("No dosage is valid yet");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
-    }
-
-    @Test
-    public void shouldNotFetchDosageBeyondStartDate1() {
-        LocalDate fromDate = DateUtil.newDate(2011, 10, 22);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(5, 0), fromDate, fromDate.plusWeeks(4), null, null);
-
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1), DateUtil.newDateTime(fromDate.minusDays(5), 6, 0, 0), DateUtil.newDateTime(fromDate.minusDays(4), 17, 0, 0));
-
-        try {
-            dosageTimeLine.next();
-            fail("No dosage is valid yet");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
-    }
-
-    @Test
-    public void shouldReturnOnlyTheDosageThatFallsInInterimPeriod() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
-        LocalDate toDate = fromDate;
-
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 10, 00, 00), DateUtil.newDateTime(toDate, 17, 0, 0));
-        assertDosageResponse(dosageResponse1, fromDate, dosageTimeLine.next());
-        try {
-            dosageTimeLine.next();
-            fail();
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
-    }
-
-    @Test
-    public void shouldReturnTheUpcomingDosagesWithOnlyOneDosePerDay() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1), DateUtil.newDateTime(fromDate, 14, 00, 00), DateUtil.now());
-        assertDosageResponse(dosageResponse1, fromDate.plusDays(1), dosageTimeLine.next());
-        assertDosageResponse(dosageResponse1, fromDate.plusDays(2), dosageTimeLine.next());
-    }
-
-    @Test
-    public void shouldReturnTrueIfThereIsAtLeastOneUpcomingDosage() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
-
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.now());
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, fromDate, toDate);
         assertTrue(dosageTimeLine.hasNext());
-        assertTrue(dosageTimeLine.hasNext()); //Operation is Idempotent.
+        assertEquals(DateUtil.newDateTime(fromDate.toLocalDate(), dosageTime.getHour(), dosageTime.getMinute(), 0), dosageTimeLine.next().getDoseTime());
     }
 
     @Test
-    public void shouldReturnFalseIfThereAreNoMoreUpcomingDosages() {
-        LocalDate fromDate = DateUtil.newDate(2011, 11, 11);
-        DosageResponse dosageResponse1 = new DosageResponse("dosageId", new Time(13, 10), fromDate, null, null, null);
-        DosageResponse dosageResponse2 = new DosageResponse("dosageId1", new Time(07, 00), fromDate, null, null, null);
+    public void shouldReturnNextDose_WhenDosageTimeIsBeforeFromTime() {
+        DateTime dosageStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 12, 0, 0);
+        DateTime fromDate = dosageStartTime.plusDays(1);
+        DateTime toDate = dosageStartTime.plusDays(3);
+        Time dosageTime = new Time(9, 30);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", dosageTime, dosageStartTime.toLocalDate(), null, null, null);
 
-        LocalDate toDate = DateUtil.newDate(2011, 11, 12);
-        DosageTimeLine dosageTimeLine = new DosageTimeLine(Arrays.asList(dosageResponse1, dosageResponse2), DateUtil.newDateTime(fromDate, 8, 00, 00), DateUtil.newDateTime(toDate, 10, 00, 00));
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, fromDate, toDate);
         assertTrue(dosageTimeLine.hasNext());
+        assertEquals(DateUtil.newDateTime(fromDate.toLocalDate().plusDays(1), dosageTime.getHour(), dosageTime.getMinute(), 0), dosageTimeLine.next().getDoseTime());
+    }
+
+    @Test
+    public void shouldNotReturnNextDose_WhenToDateIsBeforeFromDate() {
+        DateTime dosageStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 12, 0, 0);
+        DateTime fromDate = dosageStartTime.plusDays(2);
+        DateTime toDate = dosageStartTime.plusDays(1);
+        Time dosageTime = new Time(9, 30);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", dosageTime, dosageStartTime.toLocalDate(), null, null, null);
+
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, fromDate, toDate);
+        assertFalse(dosageTimeLine.hasNext());
+    }
+
+    @Test
+    public void shouldReturnNextDose_WhenDosageDateAndToDateAndFromDateAreTheSame() {
+        DateTime dosageStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 12, 0, 0);
+        DateTime fromDate = dosageStartTime.plusDays(1);
+        DateTime toDate = dosageStartTime.plusDays(1);
+        Time dosageTime = new Time(12, 0);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", dosageTime, dosageStartTime.toLocalDate(), null, null, null);
+
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, fromDate, toDate);
+        assertTrue(dosageTimeLine.hasNext());
+        assertEquals(DateUtil.newDateTime(fromDate.toLocalDate(), dosageTime.getHour(), dosageTime.getMinute(), 0), dosageTimeLine.next().getDoseTime());
+    }
+
+    @Test
+    public void shouldReturnNextDose_WhenFromDateIsBeforeDosageStartDate() {
+        DateTime fromDate = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 12, 0, 0).plusDays(1);
+        DateTime dosageStartTime = fromDate.plusWeeks(1);
+        DateTime toDate = dosageStartTime.plusWeeks(2);
+        Time dosageTime = new Time(12, 0);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", dosageTime, dosageStartTime.toLocalDate(), null, null, null);
+
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, fromDate, toDate);
+        assertTrue(dosageTimeLine.hasNext());
+        assertEquals(DateUtil.newDateTime(dosageStartTime.toLocalDate(), dosageTime.getHour(), dosageTime.getMinute(), 0), dosageTimeLine.next().getDoseTime());
+    }
+
+    @Test
+    public void shouldReturnFalse_WhenNextDosageIsOutsideTheTimeLine() {
+        DateTime dosageStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 10, 0, 0);
+        DateTime fromDate = dosageStartTime.plusDays(1).minusHours(1);
+        DateTime toDate = dosageStartTime.plusDays(3).minusHours(1);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", new Time(13, 10), dosageStartTime.toLocalDate(), null, null, null);
+
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, fromDate, toDate);
         dosageTimeLine.next();
-        assertTrue(dosageTimeLine.hasNext());
         dosageTimeLine.next();
         assertFalse(dosageTimeLine.hasNext());
     }
 
-    public void assertDosageResponse(DosageResponse expectedDosageResponse, LocalDate expectedDosageDate, Dose actualResponse) {
-        assertEquals("Expected " + expectedDosageResponse.getDosageId() + " but was " + actualResponse.getDosageId(), expectedDosageResponse, actualResponse.getDosage());
-        assertEquals(expectedDosageDate, actualResponse.getDate());
+    @Test(expected = NoSuchElementException.class)
+    public void shouldThrowException_WhenNextDoseIsNotAvailable() {
+        DateTime dosageStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 10, 0, 0);
+        DateTime fromDate = dosageStartTime.plusDays(1).minusHours(1);
+        DateTime toDate = dosageStartTime.plusDays(1).minusHours(1);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", new Time(13, 10), dosageStartTime.toLocalDate(), null, null, null);
+
+        DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, fromDate, toDate);
+        dosageTimeLine.next();
+        dosageTimeLine.next();
     }
 }
