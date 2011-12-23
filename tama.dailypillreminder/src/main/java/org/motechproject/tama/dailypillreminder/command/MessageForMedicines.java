@@ -5,6 +5,7 @@ import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,14 @@ import java.util.List;
 public class MessageForMedicines extends DailyPillReminderTreeCommand {
     private AllPatients allPatients;
     private AllClinics allClinics;
+    private ClinicNameMessageBuilder clinicNameMessageBuilder;
 
     @Autowired
-    public MessageForMedicines(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService) {
+    public MessageForMedicines(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService, ClinicNameMessageBuilder clinicNameMessageBuilder) {
         super(pillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
+        this.clinicNameMessageBuilder = clinicNameMessageBuilder;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class MessageForMedicines extends DailyPillReminderTreeCommand {
         Patient patient = allPatients.get(context.patientId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
-        messages.add(clinic.getName());
+        messages.add(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
         messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
 
         for (String medicine : getMedicines(context)) {

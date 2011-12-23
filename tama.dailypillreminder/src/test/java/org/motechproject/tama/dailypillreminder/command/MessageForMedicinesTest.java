@@ -13,6 +13,7 @@ import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
@@ -32,6 +33,8 @@ public class MessageForMedicinesTest {
     private AllPatients allPatients;
     @Mock
     private AllClinics allClinics;
+    @Mock
+    private ClinicNameMessageBuilder clinicNameMessageBuilder;
     private MessageForMedicines messageForMedicines;
 
     private DateTime now;
@@ -44,10 +47,11 @@ public class MessageForMedicinesTest {
         patient.setClinic_id("clinicId");
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
 
-        messageForMedicines = new MessageForMedicines(allPatients, allClinics, null);
-        context = (DailyPillReminderContextForTest) new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).patientId("patientId").callDirection(CallDirection.Outbound);
+        messageForMedicines = new MessageForMedicines(allPatients, allClinics, null, clinicNameMessageBuilder);
+        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).patientId("patientId").callDirection(CallDirection.Outbound);
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
+        when(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("test_clinic");
 
         LocalDate today = DateUtil.today();
         now = DateUtil.newDateTime(today, 10, 0, 0);
@@ -65,7 +69,7 @@ public class MessageForMedicinesTest {
         String[] messages = messageForMedicines.executeCommand(context);
 
         assertEquals(5, messages.length);
-        assertEquals("clinicName", messages[0]);
+        assertEquals("test_clinic", messages[0]);
         assertEquals("001_02_02_itsTimeForPill1", messages[1]);
         assertEquals("pillmedicine1", messages[2]);
         assertEquals("pillmedicine2", messages[3]);
