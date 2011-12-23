@@ -66,6 +66,19 @@ public class SingleDosageTimeLineTest {
     }
 
     @Test
+    public void shouldReturnNextDose_WhenFromDateIsBeforeDosageStartDate() {
+        DateTime fromDate = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 12, 0, 0).plusDays(1);
+        DateTime dosageStartTime = fromDate.plusWeeks(1);
+        DateTime toDate = dosageStartTime.plusWeeks(2);
+        Time dosageTime = new Time(12, 0);
+        DosageResponse dosageResponse = new DosageResponse("dosageId", dosageTime, dosageStartTime.toLocalDate(), null, null, null);
+
+        SingleDosageTimeLine dosageTimeLine = new SingleDosageTimeLine(dosageResponse, fromDate, toDate);
+        assertTrue(dosageTimeLine.hasNext());
+        assertEquals(DateUtil.newDateTime(dosageStartTime.toLocalDate(), dosageTime.getHour(), dosageTime.getMinute(), 0), dosageTimeLine.next().getDoseTime());
+    }
+
+    @Test
     public void shouldReturnFalse_WhenNextDosageIsOutsideTheTimeLine() {
         DateTime dosageStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 11, 11), 10, 0, 0);
         DateTime fromDate = dosageStartTime.plusDays(1).minusHours(1);

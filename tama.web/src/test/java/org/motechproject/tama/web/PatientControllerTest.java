@@ -1,10 +1,12 @@
 package org.motechproject.tama.web;
 
 import org.ektorp.UpdateConflictException;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
@@ -25,6 +27,7 @@ import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.DoseStatus;
+import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -270,10 +273,17 @@ public class PatientControllerTest {
     @Test
     public void shouldReactivatePatient_AndDoseNotTaken() {
         String patientId = "id";
-        Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
+        Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
 
         when(allPatients.get(patientId)).thenReturn(patientFromUI);
         controller.reactivatePatient(patientId, DoseStatus.NOT_TAKEN, request);
-        verify(dailyPillReminderAdherenceService, times(1)).backFillAdherenceForPeriodOfSuspension(patientId, false);
+        ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
+        verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(patientId), eq(false), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture());
+        assertTimeIsNow(dateTimeArgumentCaptor.getValue());
+    }
+
+    private void assertTimeIsNow(DateTime endTime) {
+        assertTrue(DateUtil.now().isAfter(endTime));
+        assertTrue(DateUtil.now().minusSeconds(1).isBefore(endTime));
     }
 }

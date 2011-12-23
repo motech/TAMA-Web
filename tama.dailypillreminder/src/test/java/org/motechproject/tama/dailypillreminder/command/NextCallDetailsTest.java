@@ -2,41 +2,35 @@ package org.motechproject.tama.dailypillreminder.command;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.util.FixedDateTimeSource;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
+import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.motechproject.util.datetime.DefaultDateTimeSource;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
 public class NextCallDetailsTest {
     private NextCallDetails nextCallDetails;
     private DailyPillReminderContextForTest context;
 
     @Before
     public void setup() {
-        initMocks(this);
         nextCallDetails = new NextCallDetails(null);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0));
         context.preferredLanguage("en");
-        mockStatic(DateUtil.class);
-        when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
+        DateTimeSourceUtil.SourceInstance = new FixedDateTimeSource(DateUtil.newDateTime(new LocalDate(2010, 10, 10), 0, 0, 0));
     }
 
     @Test
@@ -61,5 +55,10 @@ public class NextCallDetailsTest {
         completedTrees.add(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN);
         String[] messages = nextCallDetails.executeCommand(context);
         assertEquals(0, messages.length);
+    }
+
+    @After
+    public void tearDown() {
+        DateTimeSourceUtil.SourceInstance = new DefaultDateTimeSource();
     }
 }

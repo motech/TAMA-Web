@@ -299,9 +299,10 @@ public class PillRegimenSnapshotTest {
     @Test
     public void getCurrentDosageShouldReturnLastDosageIfCallIsMadeBeforeTimeForFirstDosage() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        LocalDate currentDosageLastTakenDate = DateUtil.today().minusDays(1);
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today(), null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        LocalDate dosageStartDate = DateUtil.today().minusDays(3);
+        LocalDate currentDosageLastTakenDate = dosageStartDate.minusDays(1);
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), dosageStartDate, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), dosageStartDate, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
         DateTime testCallTime = DateUtil.now().withHourOfDay(10).minusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
         ivrContext.callStartTime(testCallTime);
@@ -407,7 +408,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void isEarlyToTakeDosageShouldReturnFalseIfNowBeforeDosageHour_OutSideDosageInterval_OutsidePillWindow() {
+    public void isEarlyToTakeDosageShouldReturnTrueWhenDosagesStartToday_AndCallTimeIsBeforePillWindowForEitherDosages() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today(), null, null, new ArrayList<MedicineResponse>()));
@@ -419,7 +420,7 @@ public class PillRegimenSnapshotTest {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
 
-        assertFalse(pillRegimenSnapshot.isEarlyToTakeDose(15));
+        assertTrue(pillRegimenSnapshot.isEarlyToTakeDose(15));
     }
 
     @Test
@@ -439,7 +440,7 @@ public class PillRegimenSnapshotTest {
     }
 
     @Test
-    public void isEarlyToTakeDosageShouldReturnTrue_DosageDateIsTomorrow_NowBeforeDosageHour_WithinDosageInterval() {
+    public void isEarlyToTakeDosageShouldReturnTrue_NextDoseTimeIsTomorrow_AndCallTimeWithinDosageInterval() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
 
         dosages.add(new DosageResponse("currentDosageId", new Time(1, 0), new LocalDate(2010, 1, 1), null, null, new ArrayList<MedicineResponse>()));

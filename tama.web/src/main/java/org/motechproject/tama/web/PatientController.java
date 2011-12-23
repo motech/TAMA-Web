@@ -23,6 +23,7 @@ import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
 import org.motechproject.tama.web.view.ModesOfTransmissionView;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
@@ -132,7 +133,7 @@ public class PatientController extends BaseController {
         allPatients.activate(id);
         Patient patient = allPatients.get(id);
         if (patient.isOnDailyPillReminder()) {
-            dailyPillReminderAdherenceService.backFillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
+            dailyPillReminderAdherenceService.backFillAdherence(id, doseStatus.isTaken(), patient.getLastSuspendedDate(), DateUtil.now());
         } else {
             resumeFourDayRecallService.backfillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
         }

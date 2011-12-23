@@ -11,7 +11,6 @@ import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.util.DosageUtil;
 import org.motechproject.util.DateUtil;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,6 +59,14 @@ public class PillRegimenSnapshot {
                 new Dose(allDosages.get(currentDosageIndex + 1), currentDose.getDate());
     }
 
+    public Dose getCurrentDose() {
+        if (dailyPillReminderContext.isIncomingCall()) {
+            return new PillRegimen(pillRegimen).getDoseAt(dailyPillReminderContext.callStartTime());
+        } else {
+            return getDose(dailyPillReminderContext.dosageId());
+        }
+    }
+
     public DateTime getNextDoseTime() {
         Dose nextDose = getNextDose();
         if (nextDose == null) return null;
@@ -67,35 +74,6 @@ public class PillRegimenSnapshot {
             return new Time(nextDose.getDosageHour(), nextDose.getDosageMinute()).getDateTime(dailyPillReminderContext.callStartTime());
         else
             return new Time(nextDose.getDosageHour(), nextDose.getDosageMinute()).getDateTime(dailyPillReminderContext.callStartTime().plusDays(1));
-    }
-
-    public Dose getCurrentDose() {
-        if (dailyPillReminderContext.isIncomingCall()) {
-            List<DosageResponse> dosageResponses = getSortedDosages();
-            DosageResponse currentDosage = null;
-            for (DosageResponse dosageResponse : dosageResponses) {
-                if (isCandidate(dosageResponse))
-                    currentDosage = dosageResponse;
-            }
-            return createCurrentDose(dosageResponses, currentDosage);
-        } else {
-            return getDose(dailyPillReminderContext.dosageId());
-        }
-    }
-
-    private Dose createCurrentDose(List<DosageResponse> dosageResponses, DosageResponse currentDosage) {
-        LocalDate today = dailyPillReminderContext.callStartTime().toLocalDate();
-        if (currentDosage == null) {
-            return getLastDose(dosageResponses, today);
-        }
-
-        int pillWindowStartHour = dailyPillReminderContext.callStartTime().withHourOfDay(currentDosage.getDosageHour()).minusHours(pillRegimen.getReminderRepeatWindowInHours()).getHourOfDay();
-        boolean isTomorrowsDosage = pillWindowStartHour > currentDosage.getDosageHour();
-        if (isTomorrowsDosage) {
-            return new Dose(currentDosage, today.plusDays(1));
-        }
-
-        return new Dose(currentDosage, today);
     }
 
     public int getScheduledDosagesTotalCountForLastFourWeeks() {
@@ -111,12 +89,6 @@ public class PillRegimenSnapshot {
         return DosageUtil.getScheduledDosagesTotalCount(dailyPillReminderContext.callStartTime(), pillRegimen);
     }
 
-    public boolean isCurrentDoseTaken() {
-        Dose currentDose = getCurrentDose();
-        boolean currentDoseIsUndefined = currentDose.getDate().isBefore(currentDose.getStartDate());
-        return currentDoseIsUndefined || (currentDose.getResponseLastCapturedDate() != null && currentDose.getResponseLastCapturedDate().equals(currentDose.getDate()));
-    }
-
     public boolean isTodaysDose(Dose dose) {
         return dailyPillReminderContext.callStartTime().toLocalDate().equals(dose.getDate());
     }
@@ -127,8 +99,14 @@ public class PillRegimenSnapshot {
         return nowIsWithin(pillWindowInMinutes);
     }
 
+    public boolean isCurrentDoseTaken() {
+        Dose currentDose = getCurrentDose();
+        return currentDose == null || (currentDose.getResponseLastCapturedDate() != null && currentDose.getResponseLastCapturedDate().equals(currentDose.getDate()));
+    }
+
     public boolean isEarlyToTakeDose(int dosageIntervalInMinutes) {
         Dose currentDose = getCurrentDose();
+        if (currentDose == null) return true;
         DateTime dosageTime = DateUtil.newDateTime(currentDose.getDate(), currentDose.getDosageHour(), currentDose.getDosageMinute(), 0);
         DateTime dosageWindowStart = dosageTime.minusMinutes(dosageIntervalInMinutes);
         DateTime pillWindowStart = dosageTime.minusHours(pillRegimen.getReminderRepeatWindowInHours());
@@ -148,6 +126,8 @@ public class PillRegimenSnapshot {
 
     private boolean nowIsWithin(int dosageIntervalInMinutes) {
         Dose dose = getCurrentDose();
+        if (dose == null) return false;
+
         int dosageHour = dose.getDosageHour();
         int dosageMinute = dose.getDosageMinute();
 
@@ -180,8 +160,7 @@ public class PillRegimenSnapshot {
         return previousDose.getResponseLastCapturedDate() != null && !previousDose.getResponseLastCapturedDate().isBefore(previousDose.getDate());
     }
 
-    protected List<DosageResponse> getSortedDosages() {
-        if (CollectionUtils.isEmpty(pillRegimen.getDosages())) return null;
+    private List<DosageResponse> getSortedDosages() {
         List<DosageResponse> sortedDosages = pillRegimen.getDosages();
         Collections.sort(sortedDosages, new Comparator<DosageResponse>() {
             @Override
@@ -204,6 +183,7 @@ public class PillRegimenSnapshot {
         }, sortedDosages);
     }
 
+
     private List<String> medicinesFor(Dose dose) {
         if (dose == null) return new ArrayList<String>();
         List<String> medicines = new ArrayList<String>();
@@ -214,14 +194,6 @@ public class PillRegimenSnapshot {
                 medicines.add(String.format("pill%s", medicine.getName()));
         }
         return medicines;
-    }
-
-    private boolean isCandidate(DosageResponse dosageResponse) {
-        DateTime callStartTime = dailyPillReminderContext.callStartTime();
-        int hourToCaptureDosage = callStartTime.withHourOfDay(dosageResponse.getDosageHour()).minusHours(pillRegimen.getReminderRepeatWindowInHours()).getHourOfDay();
-        int minuteToCaptureDosage = dosageResponse.getDosageMinute();
-
-        return callStartTime.isAfter(callStartTime.withHourOfDay(hourToCaptureDosage).withMinuteOfHour(minuteToCaptureDosage));
     }
 
     private Dose getLastDose(List<DosageResponse> dosageResponses, LocalDate currentDoseDate) {
