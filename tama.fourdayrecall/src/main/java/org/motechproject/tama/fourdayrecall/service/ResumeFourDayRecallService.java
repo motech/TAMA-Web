@@ -47,7 +47,7 @@ public class ResumeFourDayRecallService {
 
         LocalDate startDateForAnyWeek = fourDayRecallAdherenceService.getStartDateForAnyWeek(patientId, iteratingDate.toLocalDate());
         if (suspensionStartDateFallsInRetryIntervalAndAdherenceHasNotBeenRecordedForTheWeek(patientId, iteratingDate, startDateForAnyWeek, treatmentAdviceDocId, patientLastRecallDate)) {
-            createWeeklyAdherenceLogForTheWeek(patientId, doseTaken, startDateForAnyWeek, treatmentAdviceDocId);
+            allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForAnyWeek, doseTaken ? 0 : WeeklyAdherenceLog.DAYS_TO_RECALL));
         }
         while (iteratingDateIsOnOrBeforeReactivationDate(toDate, iteratingDate)) {
             startDateForAnyWeek = fourDayRecallAdherenceService.getStartDateForAnyWeek(patientId, iteratingDate.toLocalDate());
@@ -57,12 +57,12 @@ public class ResumeFourDayRecallService {
                 if ((isFirstDayOfSuspensionPeriod || isLastDayOfSuspensionPeriod)
                         && suspendedPatient.hasAgreedToBeCalledAtBestCallTime()) {
                     if (patientsBestCallTimeFallsWithinSuspensionPeriod(fromDate, toDate, suspendedPatient, isFirstDayOfSuspensionPeriod, isLastDayOfSuspensionPeriod)) {
-                        createWeeklyAdherenceLogForTheWeek(patientId, doseTaken, startDateForAnyWeek, treatmentAdviceDocId);
+                        allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForAnyWeek, doseTaken ? 0 : WeeklyAdherenceLog.DAYS_TO_RECALL));
                     }
                     iteratingDate = iteratingDate.plusDays(1);
                     continue;
                 }
-                createWeeklyAdherenceLogForTheWeek(patientId, doseTaken, startDateForAnyWeek, treatmentAdviceDocId);
+                allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForAnyWeek, doseTaken ? 0 : WeeklyAdherenceLog.DAYS_TO_RECALL));
             }
             iteratingDate = iteratingDate.plusDays(1);
         }
@@ -116,14 +116,5 @@ public class ResumeFourDayRecallService {
 
     private boolean isFirstDayOfSuspensionPeriod(DateTime fromDate, DateTime iteratingDate) {
         return (iteratingDate.toLocalDate().compareTo(fromDate.toLocalDate()) == 0);
-    }
-
-    private void createWeeklyAdherenceLogForTheWeek(String patientId, boolean doseTaken, LocalDate startDateForAnyWeek, String treatmentAdviceDocId) {
-        int numberOfDaysMissed = doseTaken ? 0 : DAYS_TO_RECALL;
-        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patientId,
-                treatmentAdviceDocId,
-                startDateForAnyWeek,
-                DateUtil.today(), numberOfDaysMissed);
-        allWeeklyAdherenceLogs.add(weeklyAdherenceLog);
     }
 }

@@ -7,7 +7,6 @@ import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,10 +35,7 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
         String patientId = tamaivrContext.patientId();
         String treatmentAdviceDocId = allTreatmentAdvices.currentTreatmentAdvice(patientId).getId();
         int numberOfDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
-
-        WeeklyAdherenceLog adherenceLog = new WeeklyAdherenceLog(patientId, treatmentAdviceDocId, fourDayRecallAdherenceService.getStartDateForCurrentWeek(patientId), DateUtil.today(), numberOfDaysMissed);
-        allWeeklyAdherenceLogs.add(adherenceLog);
-
+        allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, fourDayRecallAdherenceService.getStartDateForCurrentWeek(patientId), numberOfDaysMissed));
         return new String[0];
     }
 }
