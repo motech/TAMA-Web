@@ -16,6 +16,13 @@
             openPanel([basicInformationPanelWidget, medicalHistoryPanelWidget, preferencesPanelWidget]);
         }
 
+        // Disabled weekly to daily transition. Done as part of #962. To be enabled in Study trial release
+        function disableWeeklyToDailyTransition() {
+            if (dojo.byId('weeklyReminderCall').checked == true) {
+                dojo.byId('dailyReminderCall').disabled = true
+            }
+        }
+
         dojo.addOnLoad(function() {
             dojo.parser.parse();
 
@@ -26,6 +33,8 @@
             if (formHasErrors()) {
                 openAllPanels();
             }
+
+            disableWeeklyToDailyTransition();
         });
     </script>
 </div>
