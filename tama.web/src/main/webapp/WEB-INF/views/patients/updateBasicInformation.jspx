@@ -5,7 +5,7 @@
         <field:input field="patientId" id="c_org_motechproject_tama_domain_patient_patientId" disabled="true" z="kMJ5jM6TE9+R1L1501HmsX9jABo="/>
         <input type="hidden" name="patientId" value="${patient.patientId}" />
         <input type="hidden" name="clinic_id" value="${patient.clinic_id}" />
-        <input type="hidden" name="status" value="${patient.status}" />
+        <input type="hidden" id="patientStatus" name="status" value="${patient.status}" />
         <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" max="10"/>
         <field:input field="status" id="c_org_motechproject_tama_domain_Patient_status" disabled="true"/>
         <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirthAsDate" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8="/>

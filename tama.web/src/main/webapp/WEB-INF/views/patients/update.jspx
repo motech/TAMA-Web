@@ -19,7 +19,16 @@
         // Disabled weekly to daily transition. Done as part of #962. To be enabled in Study trial release
         function disableWeeklyToDailyTransition() {
             if (dojo.byId('weeklyReminderCall').checked == true) {
-                dojo.byId('dailyReminderCall').disabled = true
+                dojo.byId('dailyReminderCall').disabled = true;
+            }
+        }
+
+        function disableTransitionsForASuspendedPatient() {
+            if (dojo.byId('patientStatus').value == 'Suspended' &amp;&amp; dojo.byId('weeklyReminderCall').checked == true) {
+                dojo.byId('dailyReminderCall').disabled = true;
+            }
+            if (dojo.byId('patientStatus').value == 'Suspended' &amp;&amp; dojo.byId('dailyReminderCall').checked == true) {
+                dojo.byId('weeklyReminderCall').disabled = true;
             }
         }
 
@@ -35,6 +44,7 @@
             }
 
             disableWeeklyToDailyTransition();
+            disableTransitionsForASuspendedPatient();
         });
     </script>
 </div>
