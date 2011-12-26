@@ -1,15 +1,16 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.tama.patient.service.PatientAlertService;
-import org.motechproject.tama.security.AuthenticatedUser;
-import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.tama.patient.domain.PatientAlerts;
+import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,14 +58,28 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldSetUnreadAlertsForDisplay() {
-        when(patientAlertService.getUnreadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
+        DateTime startDate = DateTime.now().minusDays(10);
+        when(request.getParameter("patientId")).thenReturn("patientId");
+        when(request.getParameter("patientAlertType")).thenReturn("");
+        when(request.getParameter("startDate")).thenReturn(startDate.toString());
+        when(request.getParameter("endDate")).thenReturn("");
+
+        when(patientAlertService.getUnreadAlertsFor(clinicId, "patientId", null, startDate, null)).thenReturn(patientAlerts);
         assertEquals("alerts/unread", alertsController.unread(uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
     }
 
     @Test
     public void shouldSetReadAlertsForDisplay() {
-        when(patientAlertService.getReadAlertsForClinic(clinicId)).thenReturn(patientAlerts);
+        DateTime endDate = DateTime.now().minusDays(5);
+        PatientAlertType patientAlertType = PatientAlertType.AdherenceInRed;
+        when(request.getParameter("patientId")).thenReturn("patientId");
+        when(request.getParameter("patientAlertType")).thenReturn(patientAlertType.name());
+        when(request.getParameter("startDate")).thenReturn("");
+        when(request.getParameter("endDate")).thenReturn(endDate.toString());
+
+        when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, null, endDate)).thenReturn(patientAlerts);
+
         assertEquals("alerts/read", alertsController.read(uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
     }

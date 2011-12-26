@@ -1,6 +1,8 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
 import org.motechproject.tama.patient.domain.PatientAlert;
+import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.tama.patient.domain.SymptomsAlertStatus;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +29,22 @@ public class AlertsController extends BaseController {
     @RequestMapping(value = "/unread", method = RequestMethod.GET)
     public String unread(Model uiModel, HttpServletRequest request) {
         final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", patientAlertService.getUnreadAlertsForClinic(clinicId));
+        String patientId = getPatientId(request);
+        PatientAlertType patientAlertType = getPatientAlertType(request);
+        DateTime startDate = parseDateTime(request.getParameter("startDate"));
+        DateTime endDate = parseDateTime(request.getParameter("endDate"));
+        uiModel.addAttribute("alerts", patientAlertService.getUnreadAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate));
         return "alerts/unread";
     }
 
     @RequestMapping(value = "/read", method = RequestMethod.GET)
     public String read(Model uiModel, HttpServletRequest request) {
         final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", patientAlertService.getReadAlertsForClinic(clinicId));
+        String patientId = getPatientId(request);
+        PatientAlertType patientAlertType = getPatientAlertType(request);
+        DateTime startDate = parseDateTime(request.getParameter("startDate"));
+        DateTime endDate = parseDateTime(request.getParameter("endDate"));
+        uiModel.addAttribute("alerts", patientAlertService.getReadAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate));
         return "alerts/read";
     }
 
@@ -68,5 +78,19 @@ public class AlertsController extends BaseController {
     private void initUIModel(String id, Model uiModel, PatientAlert patientAlert) {
         uiModel.addAttribute("alertInfo", patientAlert);
         uiModel.addAttribute("symptomsStatuses", Arrays.asList(SymptomsAlertStatus.values()));
+    }
+
+    private String getPatientId(HttpServletRequest request){
+        String patientId = request.getParameter("patientId");
+        return (patientId == null || patientId == "") ? null : patientId;
+    }
+
+    private PatientAlertType getPatientAlertType(HttpServletRequest request){
+        String patientAlertType = request.getParameter("patientAlertType");
+        return (patientAlertType == null || patientAlertType == "") ? null : PatientAlertType.valueOf(patientAlertType);
+    }
+
+    private DateTime parseDateTime(String dateTime){
+        return (dateTime == null || dateTime == "") ? null : DateTime.parse(dateTime);
     }
 }

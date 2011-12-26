@@ -49,12 +49,12 @@ public class PatientAlertService {
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }
 
-    public PatientAlerts getReadAlertsForClinic(String clinicId) {
-        return new PatientAlerts(getAlerts(allPatients.findByClinic(clinicId), AlertStatus.READ));
+    public PatientAlerts getReadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
+        return getAlertsOfSpecificTypeAndStatusAndDateRange(clinicId, patientId, AlertStatus.READ, patientAlertType, startDate, endDate);
     }
 
-    public PatientAlerts getUnreadAlertsForClinic(String clinicId) {
-        return new PatientAlerts(getAlerts(allPatients.findByClinic(clinicId), AlertStatus.NEW));
+    public PatientAlerts getUnreadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
+        return getAlertsOfSpecificTypeAndStatusAndDateRange(clinicId, patientId, AlertStatus.NEW, patientAlertType, startDate, endDate);
     }
 
     public PatientAlerts getAllAlertsBy(final String patientId) {
@@ -127,11 +127,41 @@ public class PatientAlertService {
         return getAlertsOfSpecificTypeAndForDateRange(patientID, PatientAlertType.AdherenceInRed, startDate, endDate);
     }
 
+    public PatientAlerts getAlertsOfSpecificTypeAndStatusAndDateRange(String clinicId, String patientId, AlertStatus alertStatus, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
+        ArrayList<Patient> patients = new ArrayList<Patient>();
+        if (patientId != null)
+            patients.add(allPatients.findByIdAndClinicId(patientId, clinicId));
+        else
+            patients = (ArrayList<Patient>) allPatients.findByClinic(clinicId);
+        PatientAlerts allAlerts =  new PatientAlerts(getAlerts(patients, alertStatus));
+        Predicate selectorForAlertTypeAndDateRange = getSelectorForAlertTypeAndDateRangeIfPresent(patientAlertType, startDate, endDate);
+        return filterAlertsByPredicate(allAlerts, selectorForAlertTypeAndDateRange);
+    }
+
     private PatientAlerts getAlertsOfSpecificTypeAndForDateRange(String patientID, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
         PatientAlerts allAlerts = getAllAlertsBy(patientID);
+        Predicate selectorForAlertTypeAndDateRange = getSelectorForAlertTypeAndDateRange(patientAlertType, startDate, endDate);
+        return filterAlertsByPredicate(allAlerts, selectorForAlertTypeAndDateRange);
+    }
+
+    private PatientAlerts filterAlertsByPredicate(PatientAlerts allAlerts, Predicate predicate){
         ArrayList<PatientAlert> filteredAlerts = new ArrayList<PatientAlert>();
-        CollectionUtils.select(allAlerts, getSelectorForAlertTypeAndDateRange(patientAlertType, startDate, endDate), filteredAlerts);
+        CollectionUtils.select(allAlerts, predicate, filteredAlerts);
         return new PatientAlerts(filteredAlerts);
+    }
+
+    private Predicate getSelectorForAlertTypeAndDateRangeIfPresent(final PatientAlertType patientAlertType, final DateTime startDate, final DateTime endDate) {
+        return new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                PatientAlert patientAlert = (PatientAlert) o;
+                DateTime alertTime = patientAlert.getAlert().getDateTime();
+                boolean isOfRequiredAlertType = patientAlert.getAlert().getData() == null || patientAlertType.name().equals(patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE));
+                boolean isAfterStartDate = startDate == null || alertTime.isAfter(startDate);
+                boolean isBeforeEndDate = endDate == null || alertTime.isBefore(endDate);
+                return isOfRequiredAlertType && isAfterStartDate && isBeforeEndDate;
+            }
+        };
     }
 
     private Predicate getSelectorForAlertTypeAndDateRange(final PatientAlertType patientAlertType, final DateTime startDate, final DateTime endDate) {

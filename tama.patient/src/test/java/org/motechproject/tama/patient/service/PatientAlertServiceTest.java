@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
@@ -25,8 +26,6 @@ import static junit.framework.Assert.assertFalse;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.doThrow;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 public class PatientAlertServiceTest {
     @Mock
@@ -90,32 +89,13 @@ public class PatientAlertServiceTest {
 
     @Test
     public void shouldReturnUnreadAlerts() {
-        final String testPatientId = "testPatientId";
-        final String testClinicId = "testClinicId";
+        PatientAlerts patientAlerts = mock(PatientAlerts.class);
+        patientAlertService = Mockito.spy(patientAlertService);
+        Mockito.doReturn(patientAlerts).when(patientAlertService).getAlertsOfSpecificTypeAndStatusAndDateRange("clinicId", "patientId", AlertStatus.NEW, PatientAlertType.AdherenceInRed, null, null);
 
-        final Clinic clinic = new Clinic() {{
-            setId(testClinicId);
-        }};
-        List<Patient> clinicPatients = new ArrayList<Patient>() {{
-            add(new Patient() {{
-                setClinic(clinic);
-                setPatientId(testPatientId);
-                setId(testPatientId);
-            }});
-        }};
-        List<Alert> alerts = new ArrayList<Alert>() {{
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 3, null));
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 3, null));
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 3, null));
-        }};
+        PatientAlerts unReadAlerts = patientAlertService.getUnreadAlertsFor("clinicId", "patientId", PatientAlertType.AdherenceInRed, null, null);
 
-        when(allPatients.findByClinic(testClinicId)).thenReturn(clinicPatients);
-        when(alertService.getBy(testPatientId, null, AlertStatus.NEW, null, 100)).thenReturn(alerts);
-
-        PatientAlerts unReadAlertsForClinic = patientAlertService.getUnreadAlertsForClinic(testClinicId);
-
-        assertEquals(alerts.size(), unReadAlertsForClinic.size());
+        assertEquals(patientAlerts, unReadAlerts);
     }
 
     @Test
@@ -140,32 +120,13 @@ public class PatientAlertServiceTest {
 
     @Test
     public void shouldReturnReadAlerts() {
-        final String testPatientId = "testPatientId";
-        final String testClinicId = "testClinicId";
+        PatientAlerts patientAlerts = mock(PatientAlerts.class);
+        patientAlertService = Mockito.spy(patientAlertService);
+        Mockito.doReturn(patientAlerts).when(patientAlertService).getAlertsOfSpecificTypeAndStatusAndDateRange("clinicId", "patientId", AlertStatus.READ, PatientAlertType.AdherenceInRed, null, null);
 
-        final Clinic clinic = new Clinic() {{
-            setId(testClinicId);
-        }};
-        List<Patient> clinicPatients = new ArrayList<Patient>() {{
-            add(new Patient() {{
-                setClinic(clinic);
-                setPatientId(testPatientId);
-                setId(testPatientId);
-            }});
-        }};
-        List<Alert> alerts = new ArrayList<Alert>() {{
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.READ, 2, null));
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.READ, 3, null));
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.READ, 3, null));
-            add(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.READ, 3, null));
-        }};
+        PatientAlerts readAlerts = patientAlertService.getReadAlertsFor("clinicId", "patientId", PatientAlertType.AdherenceInRed, null, null);
 
-        when(allPatients.findByClinic(testClinicId)).thenReturn(clinicPatients);
-        when(alertService.getBy(testPatientId, null, AlertStatus.READ, null, 100)).thenReturn(alerts);
-
-        PatientAlerts readAlertsForClinic = patientAlertService.getReadAlertsForClinic(testClinicId);
-
-        assertEquals(alerts.size(), readAlertsForClinic.size());
+        assertEquals(patientAlerts, readAlerts);
     }
 
     @Test
@@ -330,5 +291,129 @@ public class PatientAlertServiceTest {
     public void shouldReturnFalseWhenUpdateUnSuccessful() {
         doThrow(new RuntimeException("update exception")).when(alertService).setData(anyString(), anyString(), anyString());
         assertFalse(patientAlertService.updateAlert(anyString(), anyString(), anyString(), anyString(), anyString()));
+    }
+
+    @Test
+    public void shouldReturnReadAlerts_filteredByPatientId() {
+        final Clinic clinic = new Clinic() {{
+            setId("testClinicId");
+        }};
+        final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withId("patientId_1").build();
+
+        List<Alert> readAlerts = new ArrayList<Alert>() {{
+            add(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null));
+            add(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null));
+        }};
+
+        when(allPatients.findByIdAndClinicId(patient.getId(), "testClinicId")).thenReturn(patient);
+        when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
+
+        PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", patient.getId(), AlertStatus.READ, null, null, null);
+
+        assertEquals(2, readAlertsForClinic.size());
+    }
+
+    @Test
+    public void shouldReturnReadAlerts_filteredByPatientAlertType() {
+        final Clinic clinic = new Clinic() {{
+            setId("testClinicId");
+        }};
+        final Patient patient_1 = PatientBuilder.startRecording().withClinic(clinic).withId("patientId_1").build();
+        final Patient patient_2 = PatientBuilder.startRecording().withClinic(clinic).withId("patientId_2").build();
+        final List<Patient> registeredPatients = new ArrayList<Patient>();
+        registeredPatients.add(patient_1);
+        registeredPatients.add(patient_2);
+
+        final HashMap<String, String> adherenceInRedAlertdata = new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.name());
+        }};
+        final HashMap<String, String> fallingAdherenceAlertdata = new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
+        }};
+        List<Alert> readAlertsForPatient_1 = new ArrayList<Alert>() {{
+            add(new Alert(patient_1.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, adherenceInRedAlertdata));
+            add(new Alert(patient_1.getId(), AlertType.HIGH, AlertStatus.READ, 2, adherenceInRedAlertdata));
+            add(new Alert(patient_1.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, fallingAdherenceAlertdata));
+        }};
+        List<Alert> readAlertsForPatient_2 = new ArrayList<Alert>() {{
+            add(new Alert(patient_2.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, adherenceInRedAlertdata));
+            add(new Alert(patient_2.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, fallingAdherenceAlertdata));
+        }};
+
+        when(allPatients.get(patient_1.getId())).thenReturn(patient_1);
+        when(allPatients.get(patient_2.getId())).thenReturn(patient_2);
+        when(allPatients.findByClinic("testClinicId")).thenReturn(registeredPatients);
+        when(alertService.getBy(patient_1.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlertsForPatient_1);
+        when(alertService.getBy(patient_2.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlertsForPatient_2);
+
+        PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", null, AlertStatus.READ, PatientAlertType.AdherenceInRed, null, null);
+
+        assertEquals(3, readAlertsForClinic.size());
+    }
+
+    @Test
+    public void shouldReturnReadAlerts_filteredByStartDate() {
+        final Clinic clinic = new Clinic() {{
+            setId("testClinicId");
+        }};
+        final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withId("patientId_1").build();
+        final List<Patient> registeredPatients = new ArrayList<Patient>();
+        registeredPatients.add(patient);
+
+        final Alert alert_10_days_ago = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null);
+        alert_10_days_ago.setDateTime(DateTime.now().minusDays(10));
+        final Alert alert_5_days_ago = new Alert(patient.getId(), AlertType.HIGH, AlertStatus.READ, 2, null);
+        alert_5_days_ago.setDateTime(DateTime.now().minusDays(5));
+        final Alert alert_today = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null);
+        alert_today.setDateTime(DateTime.now());
+
+        List<Alert> readAlerts = new ArrayList<Alert>() {{
+            add(alert_10_days_ago);
+            add(alert_5_days_ago);
+            add(alert_today);
+        }};
+
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+        when(allPatients.findByClinic("testClinicId")).thenReturn(registeredPatients);
+        when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
+
+        DateTime startDate = DateTime.now().minusDays(8);
+        PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", null, AlertStatus.READ, null, startDate, null);
+
+        System.out.println(readAlertsForClinic);
+        assertEquals(2, readAlertsForClinic.size());
+    }
+
+    @Test
+    public void shouldReturnReadAlerts_filteredByEndDate() {
+        final Clinic clinic = new Clinic() {{
+            setId("testClinicId");
+        }};
+        final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withId("patientId_1").build();
+        final List<Patient> registeredPatients = new ArrayList<Patient>();
+        registeredPatients.add(patient);
+
+        final Alert alert_10_days_ago = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null);
+        alert_10_days_ago.setDateTime(DateTime.now().minusDays(10));
+        final Alert alert_5_days_ago = new Alert(patient.getId(), AlertType.HIGH, AlertStatus.READ, 2, null);
+        alert_5_days_ago.setDateTime(DateTime.now().minusDays(5));
+        final Alert alert_today = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null);
+        alert_today.setDateTime(DateTime.now());
+
+        List<Alert> readAlerts = new ArrayList<Alert>() {{
+            add(alert_10_days_ago);
+            add(alert_5_days_ago);
+            add(alert_today);
+        }};
+
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+        when(allPatients.findByClinic("testClinicId")).thenReturn(registeredPatients);
+        when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
+
+        DateTime endDate = DateTime.now().minusDays(3);
+        PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", null, AlertStatus.READ, null, null, endDate);
+
+        System.out.println(readAlertsForClinic);
+        assertEquals(2, readAlertsForClinic.size());
     }
 }
