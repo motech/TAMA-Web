@@ -16,6 +16,7 @@
   <jsp:directive.attribute name="customActionPath" type="java.lang.String" required="false" rtexprvalue="true" description="" />
   <jsp:directive.attribute name="customActionLabel" type="java.lang.String" required="false" rtexprvalue="true" description="" />
   <jsp:directive.attribute name="customActionCondition" type="java.lang.String" required="false" rtexprvalue="true" description="" />
+  <jsp:directive.attribute name="customActionPath2" type="java.lang.String" required="false" rtexprvalue="true" description="" />
   <jsp:directive.attribute name="customActionLabel2" type="java.lang.String" required="false" rtexprvalue="true" description="" />
   <jsp:directive.attribute name="customActionCondition2" type="java.lang.String" required="false" rtexprvalue="true" description="" />
 
@@ -41,7 +42,7 @@
       <c:set var="delete" value="true" />
     </c:if>
 
-     <c:if test="${empty customAction}">
+    <c:if test="${empty customAction}">
       <c:set var="customAction" value="false" />
     </c:if>
 
@@ -115,14 +116,18 @@
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
 
           <c:if test="${customAction}">
-              <c:set var="doCustomAction">
-                  <spring:eval expression="${customActionCondition}"/>
-              </c:set>
-              <c:set var="doCustomAction2">
-                  <spring:eval expression="${customActionCondition2}"/>
-              </c:set>
+              <c:if test="${not empty customActionCondition}">
+                <c:set var="doCustomAction">
+                    <spring:eval expression="${customActionCondition}"/>
+                </c:set>
+              </c:if>
+              <c:if test="${not empty customActionCondition2}">
+                <c:set var="doCustomAction2">
+                    <spring:eval expression="${customActionCondition2}"/>
+                </c:set>
+              </c:if>
               <c:choose>
-                     <c:when test="${not doCustomAction}">
+                     <c:when test="${doCustomAction}">
                          <td class="utilbox">
                          <spring:url value="${customActionPath}/${itemId}" var="custom_action_form_url"/>
                              <form:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
@@ -130,9 +135,9 @@
                              </form:form>
                          </td>
                      </c:when>
-                     <c:when test="${not doCustomAction2}">
+                     <c:when test="${doCustomAction2}">
                          <td class="utilbox">
-                         <spring:url value="${customActionPath}/${itemId}" var="custom_action_form_url"/>
+                         <spring:url value="${customActionPath2}/${itemId}" var="custom_action_form_url"/>
                              <form:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
                                 <a class="post_anchor" href="#">${customActionLabel2}</a>
                              </form:form>
