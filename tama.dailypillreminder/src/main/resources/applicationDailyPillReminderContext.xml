@@ -9,7 +9,6 @@
 
     <import resource="classpath:applicationIVRContext.xml"/>
     <context:component-scan base-package="org.motechproject.tama.dailypillreminder"/>
-    <import resource="classpath:applicationPillReminderAPI.xml"/>
     <import resource="classpath:applicationOutboxAPI.xml"/>
 
     <util:properties id="dailyPillReminderProperties" location="classpath:/dailypillreminder.properties"/>
