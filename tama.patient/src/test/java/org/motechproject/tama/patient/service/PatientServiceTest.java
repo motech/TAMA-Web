@@ -83,7 +83,7 @@ public class PatientServiceTest {
 
         assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
-        verify(dailyCallPlan, never()).disEnroll(dbPatient);
+        verify(dailyCallPlan, never()).disEnroll(dbPatient, currentTreatmentAdvice);
         verify(weeklyCallPlan, never()).enroll(patient, currentTreatmentAdvice);
         verify(allPatients).update(patient);
     }
@@ -104,7 +104,7 @@ public class PatientServiceTest {
 
         assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
-        verify(dailyCallPlan).disEnroll(dbPatient);
+        verify(dailyCallPlan).disEnroll(dbPatient, currentTreatmentAdvice);
         verify(weeklyCallPlan).enroll(patient, currentTreatmentAdvice);
         verify(allPatients).update(patient);
     }
@@ -125,7 +125,7 @@ public class PatientServiceTest {
 
         assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
-        verify(weeklyCallPlan).disEnroll(dbPatient);
+        verify(weeklyCallPlan).disEnroll(dbPatient, currentTreatmentAdvice);
         verify(dailyCallPlan).enroll(patient, currentTreatmentAdvice);
         verify(allPatients).update(patient);
     }

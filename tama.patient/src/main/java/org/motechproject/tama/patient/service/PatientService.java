@@ -81,9 +81,9 @@ public class PatientService {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         boolean callPlanChanged = !dbPatient.callPreference().equals(patient.callPreference());
         if (callPlanChanged) {
-            callPlans.get(dbPatient.callPreference()).disEnroll(dbPatient);
-            callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
             patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now());
+            callPlans.get(dbPatient.callPreference()).disEnroll(dbPatient, treatmentAdvice);
+            callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
         }
     }
 }

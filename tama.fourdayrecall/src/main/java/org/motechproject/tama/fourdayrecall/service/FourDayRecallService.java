@@ -27,12 +27,14 @@ public class FourDayRecallService implements CallPlan {
         }
     }
 
-    public void disEnroll(Patient patient) {
-        fourDayRecallSchedulerService.unscheduleFourDayRecallJobs(patient);
+    public void disEnroll(Patient patient, TreatmentAdvice treatmentAdvice) {
+        if (treatmentAdvice != null) {
+            fourDayRecallSchedulerService.unscheduleFourDayRecallJobs(patient);
+        }
     }
 
     public void reEnroll(Patient patient, TreatmentAdvice treatmentAdvice) {
-        disEnroll(patient);
+        disEnroll(patient, treatmentAdvice);
         enroll(patient, treatmentAdvice);
     }
 }

@@ -7,7 +7,7 @@ public interface CallPlan {
 
     public void enroll(Patient patient, TreatmentAdvice treatmentAdvice);
 
-    public void disEnroll(Patient patient);
+    public void disEnroll(Patient patient, TreatmentAdvice treatmentAdvice);
 
     public void reEnroll(Patient patient, TreatmentAdvice treatmentAdvice);
 }

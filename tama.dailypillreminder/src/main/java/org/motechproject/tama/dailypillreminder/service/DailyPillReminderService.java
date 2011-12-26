@@ -34,13 +34,15 @@ public class DailyPillReminderService implements CallPlan {
         }
     }
 
-    public void disEnroll(Patient patient) {
-        pillReminderService.remove(patient.getId());
-        dailyPillReminderSchedulerService.unscheduleDailyPillReminderJobs(patient);
+    public void disEnroll(Patient patient, TreatmentAdvice treatmentAdvice) {
+        if (treatmentAdvice != null) {
+            pillReminderService.remove(patient.getId());
+            dailyPillReminderSchedulerService.unscheduleDailyPillReminderJobs(patient);
+        }
     }
 
     public void reEnroll(Patient patient, TreatmentAdvice treatmentAdvice) {
-        disEnroll(patient);
+        disEnroll(patient, treatmentAdvice);
         enroll(patient, treatmentAdvice);
     }
 }

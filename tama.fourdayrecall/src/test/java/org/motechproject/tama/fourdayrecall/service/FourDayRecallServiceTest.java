@@ -52,6 +52,16 @@ public class FourDayRecallServiceTest {
     }
 
     @Test
+    public void existingPatient_WithoutATreatmentAdviceDisEnrolls() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        fourDayRecallService.disEnroll(patient, null);
+
+        verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
+        verify(patientService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
+        verify(fourDayRecallSchedulerService, never()).unscheduleFourDayRecallJobs(patient);
+    }
+
+    @Test
     public void patientReEnrolls() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();

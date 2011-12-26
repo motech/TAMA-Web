@@ -65,6 +65,17 @@ public class DailyPillReminderServiceTest {
     }
 
     @Test
+    public void existingPatient_WithoutATreatmentAdviceDisEnrolls() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        dailyPillReminderService.disEnroll(patient, null);
+
+        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(pillReminderService, never()).remove(patient.getId());
+        verify(dailyPillReminderSchedulerService, never()).unscheduleDailyPillReminderJobs(patient);
+    }
+
+    @Test
     public void patientReEnrolls() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
