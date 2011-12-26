@@ -6,8 +6,8 @@ import org.mockito.Matchers;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.context.OutboxModuleStratergy;
-import org.motechproject.tama.ivr.context.PillModuleStratergy;
+import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
+import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.patient.domain.CallPreference;
@@ -26,14 +26,14 @@ public class TAMACallFlowControllerOutboundCallTest {
     @Before
     public void setUp() {
         TAMATreeRegistry tamaTreeRegistry = mock(TAMATreeRegistry.class);
-        PillModuleStratergy pillModuleStratergy = mock(PillModuleStratergy.class);
-        OutboxModuleStratergy outboxModuleStratergy = mock(OutboxModuleStratergy.class);
+        PillModuleStrategy pillModuleStrategy = mock(PillModuleStrategy.class);
+        OutboxModuleStrategy outboxModuleStrategy = mock(OutboxModuleStrategy.class);
         TAMAIVRContextFactory contextFactory = mock(TAMAIVRContextFactory.class);
         AllPatients allPatients = mock(AllPatients.class);
 
         tamaCallFlowController = new TAMACallFlowController(tamaTreeRegistry, allPatients, contextFactory);
-        tamaCallFlowController.registerPillModule(pillModuleStratergy);
-        tamaCallFlowController.registerOutboxModule(outboxModuleStratergy);
+        tamaCallFlowController.registerPillModule(pillModuleStrategy);
+        tamaCallFlowController.registerOutboxModule(outboxModuleStrategy);
         TAMAIVRContextForTest tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Outbound);
 
         Patient patient = new Patient();

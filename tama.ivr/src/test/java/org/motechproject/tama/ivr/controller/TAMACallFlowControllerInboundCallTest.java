@@ -9,9 +9,9 @@ import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.context.OutboxModuleStratergy;
-import org.motechproject.tama.ivr.context.PillModuleStratergy;
-import org.motechproject.tama.ivr.context.SymptomModuleStratergy;
+import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
+import org.motechproject.tama.ivr.context.PillModuleStrategy;
+import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -32,11 +32,11 @@ public class TAMACallFlowControllerInboundCallTest {
     @Mock
     private KooKooIVRContext kooKooIVRContext;
     @Mock
-    private PillModuleStratergy pillModuleStratergy;
+    private PillModuleStrategy pillModuleStrategy;
     @Mock
-    private OutboxModuleStratergy outboxModuleStratergy;
+    private OutboxModuleStrategy outboxModuleStrategy;
     @Mock
-    private SymptomModuleStratergy symptomModuleStratergy;
+    private SymptomModuleStrategy symptomModuleStrategy;
     private AllPatients allPatients;
 
     @Before
@@ -47,9 +47,9 @@ public class TAMACallFlowControllerInboundCallTest {
         allPatients = mock(AllPatients.class);
 
         tamaCallFlowController = new TAMACallFlowController(TAMATreeChooser, allPatients, contextFactory);
-        tamaCallFlowController.registerPillModule(pillModuleStratergy);
-        tamaCallFlowController.registerOutboxModule(outboxModuleStratergy);
-        tamaCallFlowController.registerSymptomModule(symptomModuleStratergy);
+        tamaCallFlowController.registerPillModule(pillModuleStrategy);
+        tamaCallFlowController.registerOutboxModule(outboxModuleStrategy);
+        tamaCallFlowController.registerSymptomModule(symptomModuleStrategy);
         tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Inbound);
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContextForTest);
     }
@@ -63,7 +63,7 @@ public class TAMACallFlowControllerInboundCallTest {
         when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
         when(patient.isOnDailyPillReminder()).thenReturn(true);
-        when(pillModuleStratergy.isCurrentDoseTaken(tamaIVRContextForTest)).thenReturn(true);
+        when(pillModuleStrategy.isCurrentDoseTaken(tamaIVRContextForTest)).thenReturn(true);
 
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
@@ -77,7 +77,7 @@ public class TAMACallFlowControllerInboundCallTest {
         when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.getPatientPreferences()).thenReturn(patientPreferences);
         when(patient.isOnDailyPillReminder()).thenReturn(true);
-        when(pillModuleStratergy.isCurrentDoseTaken(tamaIVRContextForTest)).thenReturn(false);
+        when(pillModuleStrategy.isCurrentDoseTaken(tamaIVRContextForTest)).thenReturn(false);
 
         assertEquals(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
@@ -105,7 +105,7 @@ public class TAMACallFlowControllerInboundCallTest {
 
     @Test
     public void whenSymptomReportingTreeIsComplete() {
-        when(outboxModuleStratergy.getNumberPendingMessages(any(String.class))).thenReturn(1);
+        when(outboxModuleStrategy.getNumberPendingMessages(any(String.class))).thenReturn(1);
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.REGIMEN_1_TO_6);
         tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
         assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));

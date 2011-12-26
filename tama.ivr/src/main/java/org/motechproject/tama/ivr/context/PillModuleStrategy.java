@@ -2,9 +2,9 @@ package org.motechproject.tama.ivr.context;
 
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 
-public abstract class PillModuleStratergy {
+public abstract class PillModuleStrategy {
 
-    public PillModuleStratergy(TAMACallFlowController tamaCallFlowController) {
+    public PillModuleStrategy(TAMACallFlowController tamaCallFlowController) {
         tamaCallFlowController.registerPillModule(this);
     }
 

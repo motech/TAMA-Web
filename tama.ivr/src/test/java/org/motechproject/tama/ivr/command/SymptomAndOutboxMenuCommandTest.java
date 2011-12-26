@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.context.OutboxModuleStratergy;
+import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 
 import static junit.framework.Assert.assertEquals;
@@ -14,7 +14,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class SymptomAndOutboxMenuCommandTest {
     @Mock
-    private OutboxModuleStratergy outboxModuleStratergy;
+    private OutboxModuleStrategy outboxModuleStrategy;
     @Mock
     private TAMAIVRContext tamaivrContext;
 
@@ -25,9 +25,9 @@ public class SymptomAndOutboxMenuCommandTest {
 
     @Test
     public void shouldReturnOutboxAndSymptomsReportingMenuOptions() {
-        when(outboxModuleStratergy.getNumberPendingMessages(Matchers.<String>any())).thenReturn(4);
+        when(outboxModuleStrategy.getNumberPendingMessages(Matchers.<String>any())).thenReturn(4);
         SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand = new SymptomAndOutboxMenuCommand();
-        symptomAndOutboxMenuCommand.registerOutboxModule(outboxModuleStratergy);
+        symptomAndOutboxMenuCommand.registerOutboxModule(outboxModuleStrategy);
         String[] messages = symptomAndOutboxMenuCommand.executeCommand(tamaivrContext);
         assertEquals(2, messages.length);
         assertEquals(TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION, messages[0]);
@@ -36,9 +36,9 @@ public class SymptomAndOutboxMenuCommandTest {
 
     @Test
     public void shouldReturnOutboxMenuOptionOnlyIfThereArePendingOutboxMessages() {
-        when(outboxModuleStratergy.getNumberPendingMessages(Matchers.<String>any())).thenReturn(0);
+        when(outboxModuleStrategy.getNumberPendingMessages(Matchers.<String>any())).thenReturn(0);
         SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand = new SymptomAndOutboxMenuCommand();
-        symptomAndOutboxMenuCommand.registerOutboxModule(outboxModuleStratergy);
+        symptomAndOutboxMenuCommand.registerOutboxModule(outboxModuleStrategy);
         String[] messages = symptomAndOutboxMenuCommand.executeCommand(tamaivrContext);
         assertEquals(1, messages.length);
         assertEquals(TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION, messages[0]);

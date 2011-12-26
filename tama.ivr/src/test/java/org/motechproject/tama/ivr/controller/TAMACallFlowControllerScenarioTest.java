@@ -8,8 +8,8 @@ import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.context.OutboxModuleStratergy;
-import org.motechproject.tama.ivr.context.PillModuleStratergy;
+import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
+import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -25,9 +25,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TAMACallFlowControllerScenarioTest {
     @Mock
-    private PillModuleStratergy pillModuleStratergy;
+    private PillModuleStrategy pillModuleStrategy;
     @Mock
-    private OutboxModuleStratergy outboxModuleStratergy;
+    private OutboxModuleStrategy outboxModuleStrategy;
     @Mock
     private TAMAIVRContextFactory contextFactory;
     @Mock
@@ -44,8 +44,8 @@ public class TAMACallFlowControllerScenarioTest {
         initMocks(this);
         TAMATreeRegistry treeRegistry = new TAMATreeRegistry();
         callFlowController = new TAMACallFlowController(treeRegistry, allPatients, contextFactory);
-        callFlowController.registerPillModule(pillModuleStratergy);
-        callFlowController.registerOutboxModule(outboxModuleStratergy);
+        callFlowController.registerPillModule(pillModuleStrategy);
+        callFlowController.registerOutboxModule(outboxModuleStrategy);
         ivrContext = new TAMAIVRContextForTest();
         Patient patient = new Patient();
         patientPreferences = new PatientPreferences();
@@ -65,11 +65,11 @@ public class TAMACallFlowControllerScenarioTest {
     }
 
     private void currentDosageTaken(boolean taken) {
-        when(pillModuleStratergy.isCurrentDoseTaken(ivrContext)).thenReturn(taken);
+        when(pillModuleStrategy.isCurrentDoseTaken(ivrContext)).thenReturn(taken);
     }
 
     private void previousDosageCaptured(boolean captured) {
-        when(pillModuleStratergy.previousDosageCaptured(ivrContext)).thenReturn(captured);
+        when(pillModuleStrategy.previousDosageCaptured(ivrContext)).thenReturn(captured);
     }
 
     private void callState(CallState callState) {
@@ -89,7 +89,7 @@ public class TAMACallFlowControllerScenarioTest {
     }
 
     private void messagesInOutbox(int number) {
-        when(outboxModuleStratergy.getNumberPendingMessages(any(String.class))).thenReturn(number);
+        when(outboxModuleStrategy.getNumberPendingMessages(any(String.class))).thenReturn(number);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class TAMACallFlowControllerScenarioTest {
         callState(CallState.OUTBOX);
         assertURL(ControllerURLs.OUTBOX_URL);
 
-        when(outboxModuleStratergy.hasOutboxCompleted(ivrContext)).thenReturn(true);
+        when(outboxModuleStrategy.hasOutboxCompleted(ivrContext)).thenReturn(true);
         assertURL(ControllerURLs.MENU_REPEAT);
     }
 }

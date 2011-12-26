@@ -7,9 +7,9 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.context.OutboxModuleStratergy;
-import org.motechproject.tama.ivr.context.PillModuleStratergy;
-import org.motechproject.tama.ivr.context.SymptomModuleStratergy;
+import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
+import org.motechproject.tama.ivr.context.PillModuleStrategy;
+import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -28,15 +28,15 @@ public class TAMACallFlowControllerTest {
     @Mock
     private TAMATreeRegistry treeRegistry;
     @Mock
-    private PillModuleStratergy pillModuleStratergy;
+    private PillModuleStrategy pillModuleStrategy;
     @Mock
-    private OutboxModuleStratergy outboxModuleStratergy;
+    private OutboxModuleStrategy outboxModuleStrategy;
     @Mock
     private TAMAIVRContextFactory contextFactory;
     @Mock
     private AllPatients allPatients;
     @Mock
-    private SymptomModuleStratergy symptomModuleStratergy;
+    private SymptomModuleStrategy symptomModuleStrategy;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
     private TAMACallFlowController tamaCallFlowController;
@@ -46,9 +46,9 @@ public class TAMACallFlowControllerTest {
     public void setUp() {
         initMocks(this);
         tamaCallFlowController = new TAMACallFlowController(treeRegistry, allPatients, contextFactory);
-        tamaCallFlowController.registerPillModule(pillModuleStratergy);
-        tamaCallFlowController.registerOutboxModule(outboxModuleStratergy);
-        tamaCallFlowController.registerSymptomModule(symptomModuleStratergy);
+        tamaCallFlowController.registerPillModule(pillModuleStrategy);
+        tamaCallFlowController.registerOutboxModule(outboxModuleStrategy);
+        tamaCallFlowController.registerSymptomModule(symptomModuleStrategy);
         tamaIVRContext = new TAMAIVRContextForTest();
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContext);
     }
@@ -65,7 +65,7 @@ public class TAMACallFlowControllerTest {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
         tamaIVRContext.patientId(patientId);
-        when(outboxModuleStratergy.getNumberPendingMessages(patientId)).thenReturn(3);
+        when(outboxModuleStrategy.getNumberPendingMessages(patientId)).thenReturn(3);
         assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -74,7 +74,7 @@ public class TAMACallFlowControllerTest {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
         tamaIVRContext.patientId(patientId);
-        when(outboxModuleStratergy.getNumberPendingMessages(patientId)).thenReturn(0);
+        when(outboxModuleStrategy.getNumberPendingMessages(patientId)).thenReturn(0);
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -86,7 +86,7 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void shouldReturnHealthTipURLWhenCallState_AndOutboxHasNotCompleted() {
-        when(outboxModuleStratergy.hasOutboxCompleted(tamaIVRContext)).thenReturn(true);
+        when(outboxModuleStrategy.hasOutboxCompleted(tamaIVRContext)).thenReturn(true);
         tamaIVRContext.callState(CallState.HEALTH_TIPS);
         assertEquals(ControllerURLs.HEALTH_TIPS_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
@@ -107,7 +107,7 @@ public class TAMACallFlowControllerTest {
     @Test
     public void whenCurrentDosageIsConfirmedAndWhenPreviousDosageHasBeenCaptured_AllTreesAreCompleted() {
         tamaIVRContext.callState(CallState.AUTHENTICATED);
-        when(pillModuleStratergy.previousDosageCaptured(tamaIVRContext)).thenReturn(true);
+        when(pillModuleStrategy.previousDosageCaptured(tamaIVRContext)).thenReturn(true);
         tamaCallFlowController.treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, kooKooIVRContext);
         assertEquals(CallState.ALL_TREES_COMPLETED, tamaIVRContext.callState());
     }
@@ -115,7 +115,7 @@ public class TAMACallFlowControllerTest {
     @Test
     public void completionOfOutboxShouldLeadToMenuRepeat() {
         tamaIVRContext.callState(CallState.OUTBOX);
-        when(outboxModuleStratergy.hasOutboxCompleted(tamaIVRContext)).thenReturn(true);
+        when(outboxModuleStrategy.hasOutboxCompleted(tamaIVRContext)).thenReturn(true);
         String patientId = "1234";
         tamaIVRContext.patientId(patientId);
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
@@ -129,7 +129,7 @@ public class TAMACallFlowControllerTest {
 
         tamaCallFlowController.getTree(TAMATreeRegistry.REGIMEN_1_TO_6, kooKooIVRContext);
 
-        verify(symptomModuleStratergy).getTree("Regimen_1_To_6", tamaIVRContext);
+        verify(symptomModuleStrategy).getTree("Regimen_1_To_6", tamaIVRContext);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class TAMACallFlowControllerTest {
     @Test
     public void shouldTransitionToMenuRepetitionOnceAllTreesAreCompletedAndThereAreNoOutboxMessages() {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
-        when(outboxModuleStratergy.getNumberPendingMessages(any(String.class))).thenReturn(0);
+        when(outboxModuleStrategy.getNumberPendingMessages(any(String.class))).thenReturn(0);
 
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }

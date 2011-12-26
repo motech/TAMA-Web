@@ -7,9 +7,9 @@ import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.kookoo.extensions.CallFlowController;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.common.TamaException;
-import org.motechproject.tama.ivr.context.OutboxModuleStratergy;
-import org.motechproject.tama.ivr.context.PillModuleStratergy;
-import org.motechproject.tama.ivr.context.SymptomModuleStratergy;
+import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
+import org.motechproject.tama.ivr.context.PillModuleStrategy;
+import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
@@ -24,9 +24,9 @@ public class TAMACallFlowController implements CallFlowController {
     private TAMATreeRegistry treeRegistry;
     private TAMAIVRContextFactory factory;
     private AllPatients allPatients;
-    private PillModuleStratergy pillModuleStratergy;
-    private SymptomModuleStratergy symptomModuleStratergy;
-    private OutboxModuleStratergy outboxModuleStratergy;
+    private PillModuleStrategy pillModuleStrategy;
+    private SymptomModuleStrategy symptomModuleStrategy;
+    private OutboxModuleStrategy outboxModuleStrategy;
 
     @Autowired
     public TAMACallFlowController(TAMATreeRegistry treeRegistry, AllPatients allPatients) {
@@ -39,16 +39,16 @@ public class TAMACallFlowController implements CallFlowController {
         this.allPatients = allPatients;
     }
 
-    public void registerPillModule(PillModuleStratergy pillModuleStratergy) {
-        this.pillModuleStratergy = pillModuleStratergy;
+    public void registerPillModule(PillModuleStrategy pillModuleStrategy) {
+        this.pillModuleStrategy = pillModuleStrategy;
     }
 
-    public void registerSymptomModule(SymptomModuleStratergy symptomModuleStratergy) {
-        this.symptomModuleStratergy = symptomModuleStratergy;
+    public void registerSymptomModule(SymptomModuleStrategy symptomModuleStrategy) {
+        this.symptomModuleStrategy = symptomModuleStrategy;
     }
 
-    public void registerOutboxModule(OutboxModuleStratergy outboxModuleStratergy) {
-        this.outboxModuleStratergy = outboxModuleStratergy;
+    public void registerOutboxModule(OutboxModuleStrategy outboxModuleStrategy) {
+        this.outboxModuleStrategy = outboxModuleStrategy;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TAMACallFlowController implements CallFlowController {
         if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE)) {
             return AllIVRURLs.DECISION_TREE_URL;
         }
-        if (outboxModuleStratergy.hasOutboxCompleted(tamaivrContext)) return ControllerURLs.MENU_REPEAT;
+        if (outboxModuleStrategy.hasOutboxCompleted(tamaivrContext)) return ControllerURLs.MENU_REPEAT;
         if (callState.equals(CallState.OUTBOX)) return ControllerURLs.OUTBOX_URL;
         if (callState.equals(CallState.END_OF_FLOW)) return ControllerURLs.MENU_REPEAT;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
@@ -71,7 +71,7 @@ public class TAMACallFlowController implements CallFlowController {
     }
 
     private boolean hasPendingOutboxMessages(TAMAIVRContext tamaivrContext) {
-        return outboxModuleStratergy.getNumberPendingMessages(tamaivrContext.patientId()) != 0;
+        return outboxModuleStrategy.getNumberPendingMessages(tamaivrContext.patientId()) != 0;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class TAMACallFlowController implements CallFlowController {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         if (StringUtils.isEmpty(tamaivrContext.lastCompletedTree())) return getStartingTree(tamaivrContext);
         if (tamaivrContext.callState().equals(CallState.SYMPTOM_REPORTING_TREE)) return TAMATreeRegistry.REGIMEN_1_TO_6;
-        if (onCurrentDosage(tamaivrContext.lastCompletedTree()) && !pillModuleStratergy.previousDosageCaptured(tamaivrContext)) {
+        if (onCurrentDosage(tamaivrContext.lastCompletedTree()) && !pillModuleStrategy.previousDosageCaptured(tamaivrContext)) {
             return TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER;
         }
         throw new TamaException("No trees to serve.");
@@ -98,7 +98,7 @@ public class TAMACallFlowController implements CallFlowController {
             else {
                 if (patient.getStatus().isSuspended())
                     return TAMATreeRegistry.MENU_TREE;
-                if (pillModuleStratergy.isCurrentDoseTaken(tamaivrContext)) {
+                if (pillModuleStrategy.isCurrentDoseTaken(tamaivrContext)) {
                     return TAMATreeRegistry.CURRENT_DOSAGE_TAKEN;
                 } else {
                     return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM;
@@ -127,7 +127,7 @@ public class TAMACallFlowController implements CallFlowController {
     public Tree getTree(String treeName, KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         if (tamaivrContext.callState().equals(CallState.SYMPTOM_REPORTING_TREE)) {
-            return symptomModuleStratergy.getTree(treeName, tamaivrContext);
+            return symptomModuleStrategy.getTree(treeName, tamaivrContext);
         }
         return treeRegistry.getTree(treeName);
     }
@@ -136,7 +136,7 @@ public class TAMACallFlowController implements CallFlowController {
     public void treeComplete(String treeName, KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext ivrContext = factory.create(kooKooIVRContext);
         ivrContext.lastCompletedTree(treeName);
-        if ((onCurrentDosage(treeName) && pillModuleStratergy.previousDosageCaptured(ivrContext) && CallState.AUTHENTICATED.equals(ivrContext.callState())) ||
+        if ((onCurrentDosage(treeName) && pillModuleStrategy.previousDosageCaptured(ivrContext) && CallState.AUTHENTICATED.equals(ivrContext.callState())) ||
                 treeRegistry.isLeafTree(treeName))
             ivrContext.callState(CallState.ALL_TREES_COMPLETED);
     }

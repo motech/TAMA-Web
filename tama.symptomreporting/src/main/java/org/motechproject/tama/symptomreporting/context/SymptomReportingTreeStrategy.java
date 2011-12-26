@@ -1,7 +1,7 @@
 package org.motechproject.tama.symptomreporting.context;
 
 import org.motechproject.decisiontree.model.Tree;
-import org.motechproject.tama.ivr.context.SymptomModuleStratergy;
+import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SymptomReportingTreeStratergy extends SymptomModuleStratergy {
+public class SymptomReportingTreeStrategy extends SymptomModuleStrategy {
 
     private TAMATreeRegistry tamaTreeRegistry;
 
     @Autowired
-    public SymptomReportingTreeStratergy(TAMACallFlowController tamaCallFlowController, TAMATreeRegistry tamaTreeRegistry) {
+    public SymptomReportingTreeStrategy(TAMACallFlowController tamaCallFlowController, TAMATreeRegistry tamaTreeRegistry) {
         super(tamaCallFlowController);
         this.tamaTreeRegistry = tamaTreeRegistry;
     }

@@ -3,9 +3,9 @@ package org.motechproject.tama.ivr.context;
 import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 
-public abstract class SymptomModuleStratergy {
+public abstract class SymptomModuleStrategy {
 
-    public SymptomModuleStratergy(TAMACallFlowController tamaCallFlowController) {
+    public SymptomModuleStrategy(TAMACallFlowController tamaCallFlowController) {
         tamaCallFlowController.registerSymptomModule(this);
     }
 

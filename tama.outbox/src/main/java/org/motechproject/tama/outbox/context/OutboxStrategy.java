@@ -2,19 +2,19 @@ package org.motechproject.tama.outbox.context;
 
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
-import org.motechproject.tama.ivr.context.OutboxModuleStratergy;
+import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OutboxStratergy extends OutboxModuleStratergy {
+public class OutboxStrategy extends OutboxModuleStrategy {
 
     private VoiceOutboxService voiceOutboxService;
 
     @Autowired
-    public OutboxStratergy(TAMACallFlowController tamaCallFlowController, SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand, VoiceOutboxService voiceOutboxService) {
+    public OutboxStrategy(TAMACallFlowController tamaCallFlowController, SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand, VoiceOutboxService voiceOutboxService) {
         super(tamaCallFlowController, symptomAndOutboxMenuCommand);
         this.voiceOutboxService = voiceOutboxService;
     }

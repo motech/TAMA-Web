@@ -3,9 +3,9 @@ package org.motechproject.tama.ivr.context;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 
-public abstract class OutboxModuleStratergy {
+public abstract class OutboxModuleStrategy {
 
-    public OutboxModuleStratergy(TAMACallFlowController tamaCallFlowController, SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand) {
+    public OutboxModuleStrategy(TAMACallFlowController tamaCallFlowController, SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand) {
         tamaCallFlowController.registerOutboxModule(this);
         symptomAndOutboxMenuCommand.registerOutboxModule(this);
     }
