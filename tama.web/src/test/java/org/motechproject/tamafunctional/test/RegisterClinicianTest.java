@@ -22,6 +22,7 @@ public class RegisterClinicianTest extends BaseTest {
                 .goToClinicianRegistrationPage()
                 .registerClinician(clinician);
 
+        logInfo("{Created}{Clinician}{UserName=%s}", clinician.userName());
         assertEquals(clinician.name(), showClinicianPage.getName());
         assertEquals(clinician.contactNumber(), showClinicianPage.getContactNumber());
         assertEquals(clinician.alternateContactNumber(), showClinicianPage.getAlternateContactNumber());

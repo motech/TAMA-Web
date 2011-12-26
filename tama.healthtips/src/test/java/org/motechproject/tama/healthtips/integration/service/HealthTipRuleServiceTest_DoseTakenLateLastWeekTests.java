@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.healthtips.service.HealthTipRuleService;
 import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
@@ -47,10 +46,6 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
 
     @Autowired
     private AllPatients allPatients;
-
-    @Qualifier("pillReminderServiceImpl")
-    @Autowired
-    private PillReminderService pillReminderService;
 
     @Autowired
     private StatelessKnowledgeSession healthTipsSession;
