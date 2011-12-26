@@ -1,10 +1,9 @@
-package org.motechproject.tama.outbox.command;
+package org.motechproject.tama.dailypillreminder.command;
 
 import org.joda.time.DateTime;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-/* applicable only when patient is on daily call */
 public class PlayAdherenceTrendFeedbackCommand {
 
     private DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
@@ -25,9 +23,8 @@ public class PlayAdherenceTrendFeedbackCommand {
         this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }
 
-    public String[] execute(OutboxContext outboxContext) {
+    public String[] execute(String patientId) {
         ArrayList<String> result = new ArrayList<String>();
-        String patientId = outboxContext.partyId();
         DateTime now = DateUtil.now();
 
         double adherencePercentageAsOfNow = dailyReminderAdherenceService.getAdherencePercentage(patientId, now);

@@ -2,8 +2,11 @@ package org.motechproject.tama.outbox.service;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.outbox.api.VoiceOutboxService;
+import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TimeMeridiem;
@@ -17,6 +20,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class OutboxServiceTest {
 
     @Mock
+    protected VoiceOutboxService voiceOutboxService;
+    @Mock
     protected PatientService patientService;
     @Mock
     protected OutboxSchedulerService outboxSchedulerService;
@@ -25,7 +30,7 @@ public class OutboxServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        outboxService = new OutboxService(outboxSchedulerService, patientService);
+        outboxService = new OutboxService(voiceOutboxService, outboxSchedulerService, patientService);
     }
 
     @Test
@@ -88,5 +93,12 @@ public class OutboxServiceTest {
         verify(patientService).registerOutbox(outboxService);
         verify(outboxSchedulerService).unscheduleOutboxJobs(dbPatient);
         verify(outboxSchedulerService, never()).scheduleOutboxJobs(patient);
+    }
+
+    @Test
+    public void shouldCreateVoiceMessage() {
+        final String patientId = "patientId";
+        outboxService.addMessage(patientId);
+        verify(voiceOutboxService).addMessage(Matchers.<OutboundVoiceMessage>any());
     }
 }

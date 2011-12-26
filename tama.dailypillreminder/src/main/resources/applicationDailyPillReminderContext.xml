@@ -8,8 +8,8 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <import resource="classpath:applicationIVRContext.xml"/>
+    <import resource="classpath:applicationOutboxContext.xml"/>
     <context:component-scan base-package="org.motechproject.tama.dailypillreminder"/>
-    <import resource="classpath:applicationOutboxAPI.xml"/>
 
     <util:properties id="dailyPillReminderProperties" location="classpath:/dailypillreminder.properties"/>
     <context:property-placeholder location="classpath*:/*.properties"/>

@@ -7,7 +7,8 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="classpath:applicationDailyPillReminderContext.xml"/>
+    <import resource="classpath:applicationIVRContext.xml"/>
+    <import resource="classpath:applicationOutboxAPI.xml"/>
     <context:component-scan base-package="org.motechproject.tama.outbox"/>
 
     <context:annotation-config/>

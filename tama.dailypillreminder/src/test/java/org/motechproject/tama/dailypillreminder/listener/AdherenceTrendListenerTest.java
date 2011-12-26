@@ -6,11 +6,10 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.outbox.api.VoiceOutboxService;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
+import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
@@ -28,7 +27,7 @@ public class AdherenceTrendListenerTest {
     AdherenceTrendListener adherenceTrendListener;
 
     @Mock
-    private VoiceOutboxService outboxService;
+    private OutboxService outboxService;
     @Mock
     DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
     @Mock
@@ -49,7 +48,7 @@ public class AdherenceTrendListenerTest {
                 .payload();
         final MotechEvent motechEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
         adherenceTrendListener.handleAdherenceTrendEvent(motechEvent);
-        verify(outboxService).addMessage(Matchers.<OutboundVoiceMessage>any());
+        verify(outboxService).addMessage(patientId);
         verify(dailyReminderAdherenceTrendService).raiseAlertIfAdherenceTrendIsFalling(eq(patientId), Matchers.<DateTime>any());
     }
 

@@ -23,6 +23,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.outbox</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
             <version>0.3-SNAPSHOT</version>
             <classifier>tests</classifier>

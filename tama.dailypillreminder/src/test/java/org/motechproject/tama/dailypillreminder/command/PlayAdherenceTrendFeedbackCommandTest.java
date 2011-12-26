@@ -1,4 +1,4 @@
-package org.motechproject.tama.outbox.command;
+package org.motechproject.tama.dailypillreminder.command;
 
 import junit.framework.Assert;
 import org.joda.time.DateTime;
@@ -10,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.outbox.OutboxContextForTest;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -30,8 +29,6 @@ public class PlayAdherenceTrendFeedbackCommandTest {
     @Mock
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
-    private OutboxContextForTest context;
-
     private DateTime dateTime = DateTime.now();
 
     @Before
@@ -41,8 +38,6 @@ public class PlayAdherenceTrendFeedbackCommandTest {
         dateTime = new DateTime();
         setUpDate();
         playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
-        context = new OutboxContextForTest();
-
     }
 
     private void setUpDate() {
@@ -54,11 +49,10 @@ public class PlayAdherenceTrendFeedbackCommandTest {
         String externalId = "someExternalId";
         String[] result;
 
-        context.partyId(externalId);
         when(dailyReminderAdherenceService.getAdherencePercentage(externalId, dateTime)).thenReturn(80.0);
         when(dailyReminderAdherenceTrendService.isAdherenceFallingAsOf(externalId, DateUtil.now())).thenReturn(true);
 
-        result = playAdherenceTrendFeedbackCommand.execute(context);
+        result = playAdherenceTrendFeedbackCommand.execute(externalId);
 
         Assert.assertEquals(TamaIVRMessage.M02_05_ADHERENCE_COMMENT_70TO90_FALLING, result[0]);
     }

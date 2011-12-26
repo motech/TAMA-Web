@@ -3,52 +3,49 @@ package org.motechproject.tama.outbox.factory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
-import org.motechproject.outbox.api.model.VoiceMessageType;
-import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.dailypillreminder.command.AdherenceMessageCommand;
-import org.motechproject.tama.outbox.command.PlayAdherenceTrendFeedbackCommand;
-import org.motechproject.util.DateUtil;
+import org.motechproject.tama.outbox.OutboxContextForTest;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.repository.AllPatients;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
-import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VoiceMessageResponseFactoryTest {
 
     @Mock
-    private PlayAdherenceTrendFeedbackCommand playAdherenceTrendFeedbackCommand;
+    private AllPatients allPatients;
     @Mock
-    private AdherenceMessageCommand adherenceMessageCommand;
+    private OutboxMessageFactory dailyOutboxMessageFactory;
+    @Mock
+    private OutboxMessageFactory weeklyOutboxMessageFactory;
+
+    private OutboxContextForTest outboxContext;
+    private VoiceMessageResponseFactory voiceMessageResponseFactory;
 
     @Before
     public void setup() {
         initMocks(this);
+        outboxContext = new OutboxContextForTest().partyId("externalId");
+        voiceMessageResponseFactory = new VoiceMessageResponseFactory(allPatients);
+        voiceMessageResponseFactory.registerOutboxFactory(CallPreference.DailyPillReminder, dailyOutboxMessageFactory);
+        voiceMessageResponseFactory.registerOutboxFactory(CallPreference.FourDayRecall, weeklyOutboxMessageFactory);
     }
 
     @Test
-    public void voiceMessageResponse() {
-        KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        VoiceMessageResponseFactory voiceMessageResponseFactory = new VoiceMessageResponseFactory(playAdherenceTrendFeedbackCommand, adherenceMessageCommand);
+    public void voiceMessageResponse_ForDailyPillReminder() {
+        when(allPatients.get("externalId")).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
 
-        OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
-        VoiceMessageType voiceMessageType = new VoiceMessageType();
-        voiceMessageType.setVoiceMessageTypeName(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
-        outboundVoiceMessage.setVoiceMessageType(voiceMessageType);
-        outboundVoiceMessage.setCreationTime(DateUtil.now().toDate());
-        outboundVoiceMessage.setParameters(new HashMap<String, Object>() {
-            {
-                put(TAMAConstants.VOICE_MESSAGE_COMMAND, Arrays.asList("whatever"));
-            }
-        });
+        voiceMessageResponseFactory.voiceMessageResponse(null, outboxContext, null, null);
+        verify(dailyOutboxMessageFactory).buildVoiceMessageResponse(null, outboxContext, null, null);
+    }
 
-        when(playAdherenceTrendFeedbackCommand.execute(null)).thenReturn(new String[]{"trend"});
-        when(adherenceMessageCommand.execute(null)).thenReturn(new String[]{"percentage"});
-        voiceMessageResponseFactory.voiceMessageResponse(null, null, outboundVoiceMessage, ivrResponseBuilder);
-        assertEquals(2, ivrResponseBuilder.getPlayAudios().size());
+    @Test
+    public void voiceMessageResponse_ForFourDayRecall() {
+        when(allPatients.get("externalId")).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build());
+
+        voiceMessageResponseFactory.voiceMessageResponse(null, outboxContext, null, null);
+        verify(weeklyOutboxMessageFactory).buildVoiceMessageResponse(null, outboxContext, null, null);
     }
 }
