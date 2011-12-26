@@ -4,7 +4,11 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.util.DateUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Dose extends DosageResponse {
 
@@ -28,6 +32,11 @@ public class Dose extends DosageResponse {
         return DateUtil.newDateTime(date, dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
     }
 
+    public boolean isLate(DateTime doseTakenTime, int dosageInterval) {
+        DateTime scheduledDoseInterval = getDoseTime().plusMinutes(dosageInterval);
+        return doseTakenTime.isAfter(scheduledDoseInterval);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,5 +57,17 @@ public class Dose extends DosageResponse {
 
     public DosageResponse getDosage() {
         return dosageResponse;
+    }
+
+    public List<String> medicineNames() {
+        List<String> medicineNames = new ArrayList<String>();
+
+        for (MedicineResponse medicine : getMedicines()) {
+            if (!date.isBefore(medicine.getStartDate()) &&
+                    (medicine.getEndDate() == null || !date.isAfter(medicine.getEndDate())))
+                medicineNames.add(String.format("pill%s", medicine.getName()));
+        }
+        return medicineNames;
+
     }
 }

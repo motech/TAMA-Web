@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.healthtips.service.HealthTipRuleService;
+import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -22,6 +23,7 @@ import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -38,6 +40,7 @@ public class HealthTipRuleServiceTest {
 
     @Autowired
     private AllPatients allPatients;
+    @Qualifier("pillReminderServiceImpl")
     @Autowired
     private PillReminderService pillReminderService;
     @Autowired
@@ -59,7 +62,7 @@ public class HealthTipRuleServiceTest {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
         patient = PatientBuilder.startRecording().withId("patientDocId").withCallPreference(CallPreference.DailyPillReminder).build();
 
-        when(adherenceService.isDosageMissedLastWeek(patient)).thenReturn(false);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, false));
         healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
     }
 

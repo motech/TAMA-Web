@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.healthtips.service.HealthTipRuleService;
+import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -70,7 +71,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     @Test
     public void shouldReturnHealthTipWithPriorityWhenPatientOnDailyReminder() {
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
-        when(adherenceService.isDosageMissedLastWeek(patient)).thenReturn(true);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, true));
         healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
 
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
@@ -85,7 +86,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     @Test
     public void shouldReturnHealthTipWithPriorityWhenPatientOnFourDayRecall() {
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.FourDayRecall).build();
-        when(adherenceService.isDosageMissedLastWeek(patient)).thenReturn(true);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, true));
         healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
 
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
@@ -100,7 +101,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     @Test
     public void shouldReturnHealthTipWithPriorityWhenPatientOnFourDayRecallAndPatientOnRegimenLessThanAMonth() {
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.FourDayRecall).build();
-        when(adherenceService.isDosageMissedLastWeek(patient)).thenReturn(true);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, true));
         healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
 
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);

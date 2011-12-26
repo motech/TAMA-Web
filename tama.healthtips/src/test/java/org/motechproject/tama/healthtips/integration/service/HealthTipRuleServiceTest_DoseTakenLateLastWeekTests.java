@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.healthtips.service.HealthTipRuleService;
+import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -21,6 +22,7 @@ import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -46,6 +48,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
     @Autowired
     private AllPatients allPatients;
 
+    @Qualifier("pillReminderServiceImpl")
     @Autowired
     private PillReminderService pillReminderService;
 
@@ -58,7 +61,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
 
     private HealthTipRuleService healthTipRuleService;
 
-    public void patientHasLabResults(Patient patient) {
+    public void patientHasLabResults() {
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withType(TAMAConstants.LabTestType.CD4).build();
         List<LabResult> labResultsForPatient = Arrays.asList(
                 LabResultBuilder.startRecording().withDefaults().withTestDate(DateUtil.today().minusMonths(3)).withResult("300").withLabTest(labTest).build(),
@@ -70,7 +73,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
     @Before
     public void setup() {
         initMocks(this);
-        patientHasLabResults(patient);
+        patientHasLabResults();
         healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
     }
 
@@ -79,7 +82,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
         /*When Patient Is On Daily PillReminder*/
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         /*When Patient took a dose late last week*/
-        when(adherenceService.anyDoseTakenLateSince(patient, DateUtil.today().minusDays(6))).thenReturn(true);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(true, false));
 
         Map<String, String> relevantHealthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertNotNull(relevantHealthTips.get("HT013a"));
@@ -90,7 +93,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
         /*When Patient Is On Daily PillReminder*/
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         /*When Patient took a dose late last week*/
-        when(adherenceService.anyDoseTakenLateSince(patient, DateUtil.today().minusDays(6))).thenReturn(true);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(true, false));
 
         Map<String, String> relevantHealthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("1", relevantHealthTips.get("HT013a"));
@@ -101,7 +104,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
         /*When Patient Is On Daily PillReminder*/
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         /*When Patient took a dose late last week*/
-        when(adherenceService.anyDoseTakenLateSince(patient, DateUtil.today().minusDays(6))).thenReturn(true);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(true, false));
 
         Map<String, String> relevantHealthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertNotNull(relevantHealthTips.get("HT018a"));
@@ -112,10 +115,9 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
         /*When Patient Is On Daily PillReminder*/
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         /*When Patient took a dose late last week*/
-        when(adherenceService.anyDoseTakenLateSince(patient, DateUtil.today().minusDays(6))).thenReturn(true);
+        when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(true, false));
 
         Map<String, String> relevantHealthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("1", relevantHealthTips.get("HT018a"));
     }
 }
-

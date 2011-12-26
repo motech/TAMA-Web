@@ -3,22 +3,23 @@ package org.motechproject.tama.healthtips.domain;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
+import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
 
 public class HealthTipParams {
 
     private Patient patient;
-    private boolean dosageMissedLastWeek;
-    private boolean anyDoseTakenLateLastWeek;
+    private AdherenceComplianceReport adherenceComplianceReport;
+    private LabResults labResults;
     private LocalDate treatmentStartDate;
-    private LocalDate lastCD4TestDate;
-    private int lastCD4Count;
 
-    public HealthTipParams(Patient patient, boolean dosageMissedLastWeek, boolean anyDoseTakenLateLastWeek) {
+    public HealthTipParams(Patient patient, AdherenceComplianceReport adherenceComplianceReport, LabResults labResults, LocalDate treatmentStartDate) {
         this.patient = patient;
-        this.dosageMissedLastWeek = dosageMissedLastWeek;
-        this.anyDoseTakenLateLastWeek = anyDoseTakenLateLastWeek;
+        this.adherenceComplianceReport = adherenceComplianceReport;
+        this.labResults = labResults;
+        this.treatmentStartDate = treatmentStartDate;
     }
 
     public int numberOfMonthsSinceTreatmentStarted() {
@@ -29,35 +30,23 @@ public class HealthTipParams {
         return new Period(treatmentStartDate, DateUtil.today(), PeriodType.weeks()).getWeeks();
     }
 
-    public void treatmentAdviceStartDate(LocalDate treatmentAdviceStartDate) {
-        treatmentStartDate = treatmentAdviceStartDate;
-    }
-
     public boolean isPatientOnDailyPillReminder() {
         return patient.isOnDailyPillReminder();
     }
 
     public boolean isDosageMissedLastWeek() {
-        return dosageMissedLastWeek;
+        return adherenceComplianceReport.missed();
     }
 
     public boolean isAnyDoseTakenLateLastWeek() {
-        return anyDoseTakenLateLastWeek;
-    }
-
-    public void lastCD4TestDate(LocalDate lastCD4TestDate) {
-        this.lastCD4TestDate = lastCD4TestDate;
+        return adherenceComplianceReport.late();
     }
 
     public int numberOfWeeksSinceLastCD4LabTest() {
-        return new Period(lastCD4TestDate, DateUtil.today(), PeriodType.weeks()).getWeeks();
-    }
-
-    public void lastCD4Count(int lastCD4Count) {
-        this.lastCD4Count = lastCD4Count;
+        return new Period(labResults.latestLabTestDate(), DateUtil.today(), PeriodType.weeks()).getWeeks();
     }
 
     public int lastCD4Count() {
-        return lastCD4Count;
+        return labResults.latestCD4Count();
     }
 }

@@ -256,12 +256,13 @@ public class DailyPillReminderAdherenceServiceTest {
         @Test
         public void whenDoseIsTakenLate() {
             DateTime doseDate = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
+            DateTime doseTakenTime = doseDate.plusHours(1);
 
             Dose dose = mock(Dose.class);
             when(dose.getDosageId()).thenReturn("dosageId");
             when(dose.getDate()).thenReturn(doseDate.toLocalDate());
             when(dose.getDoseTime()).thenReturn(doseDate);
-            DateTime doseTakenTime = doseDate.plusHours(1);
+            when(dose.isLate(doseTakenTime, 15)).thenReturn(true);
 
             dailyReminderAdherenceService.recordDosageAdherenceAsCaptured("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
 

@@ -1,6 +1,7 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.CouchEntity;
 
@@ -120,5 +121,16 @@ public class DosageAdherenceLog extends CouchEntity {
         result = 31 * result + (dosageStatus != null ? dosageStatus.hashCode() : 0);
         result = 31 * result + (reason != null ? reason.hashCode() : 0);
         return result;
+    }
+
+    public static DosageAdherenceLog create(String patientId, String regimenId, DosageStatus dosageStatus, Dose dose, DateTime doseTakenTime, int dosageInterval) {
+        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), dosageStatus, dose.getDate());
+        if (dose.isLate(doseTakenTime, dosageInterval)) adherenceLog.dosageIsTakenLate();
+        return adherenceLog;
+    }
+
+    public void updateStatus(DosageStatus status, DateTime doseTakenTime, int dosageInterval, Dose dose) {
+        setDosageStatus(status);
+        if (dose.isLate(doseTakenTime, dosageInterval)) dosageIsTakenLate();
     }
 }

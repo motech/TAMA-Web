@@ -20,11 +20,9 @@ import java.util.Properties;
 
 @Service
 public class DailyPillReminderAdherenceService implements AdherenceServiceStrategy {
-
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
     private TAMAPillReminderService pillReminderService;
     private Properties properties;
-    private List<DosageResponse> dosageResponses;
 
     @Autowired
     public DailyPillReminderAdherenceService(AllDosageAdherenceLogs allDosageAdherenceLogs, TAMAPillReminderService pillReminderService, @Qualifier("dailyPillReminderProperties") Properties properties, AdherenceService adherenceService) {
@@ -66,7 +64,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             startDate = firstProbableDose.getDoseTime();
         }
 
-        dosageResponses = pillRegimen.getDosageResponses();
+        List<DosageResponse> dosageResponses = pillRegimen.getDosageResponses();
         DosageStatus dosageStatus = wasDoseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
         for (DosageResponse dosageResponse : dosageResponses) {
             DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, startDate, endDate);
@@ -89,22 +87,15 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     }
 
     private void recordAdherence(String patientId, String regimenId, Dose dose, DosageStatus status, DateTime doseTakenTime) {
-        DosageAdherenceLog existingLog = allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate());
+        final int dosageInterval = Integer.parseInt(properties.getProperty(TAMAConstants.DOSAGE_INTERVAL));
 
+        DosageAdherenceLog existingLog = allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate());
         if (existingLog == null) {
-            DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), status, dose.getDate());
-            if (doseIsLate(dose, doseTakenTime)) adherenceLog.dosageIsTakenLate();
-            allDosageAdherenceLogs.add(adherenceLog);
+            allDosageAdherenceLogs.add(DosageAdherenceLog.create(patientId, regimenId, status, dose, doseTakenTime, dosageInterval));
         } else {
-            existingLog.setDosageStatus(status);
-            if (doseIsLate(dose, doseTakenTime)) existingLog.dosageIsTakenLate();
+            existingLog.updateStatus(status, doseTakenTime, dosageInterval, dose);
             allDosageAdherenceLogs.update(existingLog);
         }
     }
 
-    private boolean doseIsLate(Dose dose, DateTime doseTakenTime) {
-        Integer dosageInterval = Integer.parseInt(properties.getProperty(TAMAConstants.DOSAGE_INTERVAL));
-        DateTime scheduledDoseInterval = dose.getDoseTime().plusMinutes(dosageInterval);
-        return doseTakenTime.isAfter(scheduledDoseInterval);
-    }
 }

@@ -3,11 +3,11 @@ package org.motechproject.tama.healthtips.service;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.healthtips.domain.HealthTipParams;
+import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllLabResults;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,21 +49,8 @@ public class HealthTipRuleService {
         HealthTipList healthTipList = new HealthTipList();
         healthTipsSession.setGlobal("healthTips", healthTipList);
         LabResults labResults = allLabResults.findByPatientId(patient.getId());
-        LocalDate latestCD4LabTestDate = labResults.latestLabTestDate();
-        int latestCD4Count = labResults.latestCD4Count();
-        HealthTipParams params = setupParams(treatmentStartDate, patient, latestCD4LabTestDate, latestCD4Count);
-        healthTipsSession.execute(params);
+        final AdherenceComplianceReport report = adherenceService.lastWeekAdherence(patient);
+        healthTipsSession.execute(new HealthTipParams(patient, report, labResults, treatmentStartDate));
         return healthTipList.getHealthTips();
-    }
-
-    private HealthTipParams setupParams(LocalDate treatmentStartDate, Patient patient, LocalDate latestCD4LabTestDate, int latestCD4Count) {
-        LocalDate lastSevenDays = DateUtil.today().minusDays(6);
-        boolean anyDoseTakenLateLastWeek = adherenceService.anyDoseTakenLateSince(patient, lastSevenDays);
-        boolean dosageMissedLastWeek = adherenceService.isDosageMissedLastWeek(patient);
-        HealthTipParams healthTipParams = new HealthTipParams(patient, dosageMissedLastWeek, anyDoseTakenLateLastWeek);
-        healthTipParams.treatmentAdviceStartDate(treatmentStartDate);
-        healthTipParams.lastCD4TestDate(latestCD4LabTestDate);
-        healthTipParams.lastCD4Count(latestCD4Count);
-        return healthTipParams;
     }
 }
