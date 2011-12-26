@@ -42,13 +42,14 @@ public class AlertsControllerTest {
     private String doctorsNotes = "doctorNotes";
     private String type = "type";
 
-    private PatientAlerts patientAlerts = new PatientAlerts();
+    private PatientAlerts patientAlerts;
     private Alert alert;
 
     @Before
     public void setUp() {
         initMocks(this);
         clinicId = "loggedInClinicId";
+        patientAlerts = new PatientAlerts();
         alert = new Alert("externalId", null, null, 0, null);
         when(authenticatedUser.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
@@ -58,27 +59,27 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldSetUnreadAlertsForDisplay() {
-        DateTime startDate = DateTime.now().minusDays(10);
+        String startDate = "2011-10-10";
         when(request.getParameter("patientId")).thenReturn("patientId");
         when(request.getParameter("patientAlertType")).thenReturn("");
-        when(request.getParameter("startDate")).thenReturn(startDate.toString());
+        when(request.getParameter("startDate")).thenReturn(startDate);
         when(request.getParameter("endDate")).thenReturn("");
 
-        when(patientAlertService.getUnreadAlertsFor(clinicId, "patientId", null, startDate, null)).thenReturn(patientAlerts);
+        when(patientAlertService.getUnreadAlertsFor(clinicId, "patientId", null, DateTime.parse(startDate), null)).thenReturn(patientAlerts);
         assertEquals("alerts/unread", alertsController.unread(uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
     }
 
     @Test
     public void shouldSetReadAlertsForDisplay() {
-        DateTime endDate = DateTime.now().minusDays(5);
+        String endDate = "2011-10-10";
         PatientAlertType patientAlertType = PatientAlertType.AdherenceInRed;
         when(request.getParameter("patientId")).thenReturn("patientId");
         when(request.getParameter("patientAlertType")).thenReturn(patientAlertType.name());
         when(request.getParameter("startDate")).thenReturn("");
-        when(request.getParameter("endDate")).thenReturn(endDate.toString());
+        when(request.getParameter("endDate")).thenReturn(endDate);
 
-        when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, null, endDate)).thenReturn(patientAlerts);
+        when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, null, DateTime.parse(endDate))).thenReturn(patientAlerts);
 
         assertEquals("alerts/read", alertsController.read(uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
