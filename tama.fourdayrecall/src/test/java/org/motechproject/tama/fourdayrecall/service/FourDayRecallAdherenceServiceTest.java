@@ -199,7 +199,7 @@ public class FourDayRecallAdherenceServiceTest {
 
         setupExpectations(patient, startDateOfTreatmentAdvice, today);
 
-        LocalDate startDateForCurrentWeek = fourDayRecallAdherenceService.getStartDateForAnyWeek(patientId, today);
+        LocalDate startDateForCurrentWeek = fourDayRecallAdherenceService.getStartDateForWeek(patientId, today);
 
         assertEquals(new LocalDate(2011, 11, 20), startDateForCurrentWeek);
     }

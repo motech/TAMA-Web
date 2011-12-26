@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
@@ -154,7 +153,7 @@ public class ResumeFourDayRecallServiceTest {
     private void setupExpectations(String patientId, Patient testPatient, TreatmentAdvice testTreatmentAdvice) {
         when(allPatients.get(patientId)).thenReturn(testPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(testTreatmentAdvice);
-        when(fourDayRecallAdherenceService.getStartDateForAnyWeek(any(String.class), any(LocalDate.class)))
+        when(fourDayRecallAdherenceService.getStartDateForWeek(any(String.class), any(LocalDate.class)))
                 .thenReturn(new LocalDate(2011, 11, 6))
                 .thenReturn(new LocalDate(2011, 11, 6))
                 .thenReturn(new LocalDate(2011, 11, 13))

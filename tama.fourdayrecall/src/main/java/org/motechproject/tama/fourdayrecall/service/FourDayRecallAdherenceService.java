@@ -53,10 +53,10 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     }
 
     public LocalDate getStartDateForCurrentWeek(String patientDocId) {
-        return getStartDateForAnyWeek(patientDocId, DateUtil.today());
+        return getStartDateForWeek(patientDocId, DateUtil.today());
     }
 
-    public LocalDate getStartDateForAnyWeek(String patientDocId, LocalDate week) {
+    public LocalDate getStartDateForWeek(String patientDocId, LocalDate week) {
         Patient patient = allPatients.get(patientDocId);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
 
@@ -110,7 +110,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
 
     public LocalDate findFourDayRecallDateForAnyWeek(String patientDocId, LocalDate week) {
         Patient patient = allPatients.get(patientDocId);
-        LocalDate startDayOfWeek = getStartDateForAnyWeek(patientDocId, week);
+        LocalDate startDayOfWeek = getStartDateForWeek(patientDocId, week);
         LocalDate iteratingDayOfWeek = startDayOfWeek;
         DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
         while (true) {
