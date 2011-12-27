@@ -17,23 +17,6 @@ import java.util.Map;
 @Component
 public class HealthTipRuleService {
 
-    public static class HealthTipList {
-        Map<String, String> healthTips = new HashMap<String, String>();
-
-        public void addHealthTip(String filename, String priority) {
-            String oldPriority = healthTips.get(filename);
-            if (oldPriority != null) {
-                int oldPriorityValue = Integer.valueOf(oldPriority);
-                if (Integer.valueOf(priority) >= oldPriorityValue) return;
-            }
-            healthTips.put(filename, priority);
-        }
-
-        public Map<String, String> getHealthTips() {
-            return healthTips;
-        }
-    }
-
     private StatelessKnowledgeSession healthTipsSession;
     private AdherenceService adherenceService;
     private AllLabResults allLabResults;
@@ -52,5 +35,22 @@ public class HealthTipRuleService {
         final AdherenceComplianceReport report = adherenceService.lastWeekAdherence(patient);
         healthTipsSession.execute(new HealthTipParams(patient, report, labResults, treatmentStartDate));
         return healthTipList.getHealthTips();
+    }
+
+    public static class HealthTipList {
+        Map<String, String> healthTips = new HashMap<String, String>();
+
+        public void addHealthTip(String filename, String priority) {
+            String oldPriority = healthTips.get(filename);
+            if (oldPriority != null) {
+                int oldPriorityValue = Integer.valueOf(oldPriority);
+                if (Integer.valueOf(priority) >= oldPriorityValue) return;
+            }
+            healthTips.put(filename, priority);
+        }
+
+        public Map<String, String> getHealthTips() {
+            return healthTips;
+        }
     }
 }

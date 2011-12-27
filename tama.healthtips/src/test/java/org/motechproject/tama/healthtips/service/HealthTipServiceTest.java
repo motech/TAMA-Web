@@ -38,7 +38,7 @@ public class HealthTipServiceTest {
     @Mock
     private AllPatients allPatients;
     @Mock
-    private TreatmentAdvice treatmentAdvice;
+    private TreatmentAdvice earliestTeatmentAdvice;
 
     private HealthTipPropertiesForTest healthTipPropertiesForTest;
 
@@ -58,8 +58,8 @@ public class HealthTipServiceTest {
         healthTipPropertiesForTest = new HealthTipPropertiesForTest();
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
-        when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
+        when(allTreatmentAdvices.earliestTreatmentAdvice(patient.getId())).thenReturn(earliestTeatmentAdvice);
+        when(earliestTeatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
 
         healthTipService = new HealthTipService(allHealthTipsHistory, healthTipRuleService, allTreatmentAdvices, allPatients, healthTipPropertiesForTest);
         healthTipService = Mockito.spy(healthTipService);

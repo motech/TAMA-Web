@@ -97,8 +97,8 @@ public class HealthTipService {
 
     List<PrioritizedHealthTip> getApplicableHealthTips(String patientDocId) {
         final Patient patient = allPatients.get(patientDocId);
-        final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-        Map<String, String> healthTipFiles = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.newDate(treatmentAdvice.getStartDate()), patient);
+        final TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
+        Map<String, String> healthTipFiles = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.newDate(earliestTreatmentAdvice.getStartDate()), patient);
 
         List<HealthTipsHistory> healthTipsHistories = allHealthTipsHistory.findByPatientId(patientDocId);
 
