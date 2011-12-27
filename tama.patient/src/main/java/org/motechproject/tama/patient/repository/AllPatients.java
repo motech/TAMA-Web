@@ -89,9 +89,9 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         return patient;
     }
 
-    public List<Patient> findByPatientIdAndClinicId(final String patientId, final String clinicId) {
+    public Patient findByPatientIdAndClinicId(final String patientId, final String clinicId) {
         List<Patient> patients = findByClinic(clinicId);
-        if (patients == null) return patients;
+        if (patients == null) return null;
         CollectionUtils.filter(patients, new Predicate() {
             @Override
             public boolean evaluate(Object o) {
@@ -99,7 +99,7 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
                 return patientId.equalsIgnoreCase(patient.getPatientId());
             }
         });
-        return patients;
+        return singleResult(patients);
     }
 
     public Patient findByIdAndClinicId(final String id, String clinicId) {

@@ -1,9 +1,11 @@
 package org.motechproject.tama.patient.service;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.server.alerts.domain.Alert;
@@ -17,30 +19,39 @@ import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.*;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientAlertServiceTest {
+
     @Mock
     private AlertService alertService;
     @Mock
     private AllPatients allPatients;
 
-    PatientAlertService patientAlertService;
-    HashMap<String, String> symptomReportingData = new HashMap<String, String>();
+    private PatientAlertService patientAlertService;
+
+    private HashMap<String, String> symptomReportingData = new HashMap<String, String>();
 
     @Before
     public void setUp() {
         initMocks(this);
         patientAlertService = new PatientAlertService(allPatients, alertService);
         symptomReportingData.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+    }
+
+    @Test
+    public void shouldReturnEmptyWhenNoAlertsFound(){
+        String patientId = "patientId";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
+
+        when(alertService.getBy(same(patientId), Matchers.<AlertType>any(), Matchers.<AlertStatus>any(), Matchers.<Integer>any(), anyInt())).thenReturn(null);
+        when(allPatients.get(patientId)).thenReturn(patient);
+        assertTrue(CollectionUtils.isEmpty(patientAlertService.getAllAlertsBy(patientId)));
     }
 
     @Test
@@ -298,17 +309,17 @@ public class PatientAlertServiceTest {
         final Clinic clinic = new Clinic() {{
             setId("testClinicId");
         }};
-        final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withId("patientId_1").build();
+        final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withPatientId("patientId_1").build();
 
         List<Alert> readAlerts = new ArrayList<Alert>() {{
             add(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null));
             add(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null));
         }};
 
-        when(allPatients.findByIdAndClinicId(patient.getId(), "testClinicId")).thenReturn(patient);
+        when(allPatients.findByPatientIdAndClinicId(patient.getPatientId(), "testClinicId")).thenReturn(patient);
         when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
 
-        PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", patient.getId(), AlertStatus.READ, null, null, null);
+        PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", patient.getPatientId(), AlertStatus.READ, null, null, null);
 
         assertEquals(2, readAlertsForClinic.size());
     }

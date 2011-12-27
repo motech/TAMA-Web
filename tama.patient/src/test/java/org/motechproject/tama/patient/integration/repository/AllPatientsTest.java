@@ -33,6 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -264,6 +265,33 @@ public class AllPatientsTest extends SpringIntegrationTest {
         assertEquals(2, loadedPatients.size());
         assertEquals(mobilePhoneNumber, loadedPatients.get(0).getMobilePhoneNumber());
         assertEquals(mobilePhoneNumber, loadedPatients.get(1).getMobilePhoneNumber());
+    }
+
+    @Test
+    public void shouldFindbyPatientIdAndClinicId(){
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        allClinics.add(clinicForPatient);
+        markForDeletion(clinicForPatient);
+
+        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withName("anotherClinic").build();
+        allClinics.add(anotherClinic);
+        markForDeletion(anotherClinic);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withPatientId("patientId").withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Patient anotherPatient_1 = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withPatientId("anotherPatient_1").withGender(gender).withIVRLanguage(ivrLanguage).build();
+        Patient anotherPatient_2 = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).withPatientId("another_patient_2").withGender(gender).withIVRLanguage(ivrLanguage).build();
+        allPatients.add(patient);
+        allPatients.add(anotherPatient_1);
+        allPatients.add(anotherPatient_2);
+
+        Patient dbPatient1 = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), clinicForPatient.getId());
+        assertEquals(patient.getId(), dbPatient1.getId());
+
+        Patient dbPatient2 = allPatients.findByPatientIdAndClinicId(anotherPatient_2.getPatientId(), anotherClinic.getId());
+        assertEquals(anotherPatient_2.getId(), dbPatient2.getId());
+
+        Patient dbPatient3 = allPatients.findByPatientIdAndClinicId(anotherPatient_1.getPatientId(), anotherClinic.getId());
+        assertNull(dbPatient3);
     }
 
     @Test

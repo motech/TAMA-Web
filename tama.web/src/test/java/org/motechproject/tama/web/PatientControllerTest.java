@@ -37,9 +37,7 @@ import org.springframework.validation.FieldError;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -152,10 +150,8 @@ public class PatientControllerTest {
         String patientId = "123";
         String clinicId = "456";
         Patient patientFromDb = mock(Patient.class);
-        List<Patient> patientsFromDb = new ArrayList<Patient>();
-        patientsFromDb.add(patientFromDb);
 
-        when(allPatients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(patientsFromDb);
+        when(allPatients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(patientFromDb);
         when(patientFromDb.getId()).thenReturn("couchDbId");
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
@@ -173,7 +169,7 @@ public class PatientControllerTest {
         String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
         String previousPage = expectedPreviousPageUrl + "?patientIdNotFound=1_abcd";
 
-        when(allPatients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(new ArrayList<Patient>());
+        when(allPatients.findByPatientIdAndClinicId(patientId, clinicId)).thenReturn(null);
         when(request.getHeader("Referer")).thenReturn(previousPage);
         when(user.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);

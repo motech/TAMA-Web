@@ -224,13 +224,13 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
     public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest request) {
-        List<Patient> patientsByClinic = allPatients.findByPatientIdAndClinicId(patientId, loggedInClinic(request));
+        Patient patient = allPatients.findByPatientIdAndClinicId(patientId, loggedInClinic(request));
 
-        if (patientsByClinic == null || patientsByClinic.isEmpty()) {
+        if (patient == null) {
             uiModel.addAttribute(PATIENT_ID, patientId);
             return redirectToListPatientsPage(request);
         }
-        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patientsByClinic.get(0).getId(), request);
+        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
     private String redirectToListPatientsPage(HttpServletRequest request) {

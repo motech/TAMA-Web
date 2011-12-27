@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,10 +10,12 @@ import org.motechproject.tama.patient.domain.PatientAlerts;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
+import org.motechproject.tama.web.view.AlertFilter;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AlertsControllerTest {
+
     @Mock
     private Model uiModel;
     @Mock
@@ -34,8 +36,8 @@ public class AlertsControllerTest {
     private PatientAlertService patientAlertService;
 
     private AlertsController alertsController;
-    private String clinicId;
 
+    private String clinicId;
     private String alertId = "alertId";
     private String symptomsAlertStatus = "symptomsAlertStatus";
     private String notes = "notes";
@@ -51,6 +53,7 @@ public class AlertsControllerTest {
         clinicId = "loggedInClinicId";
         patientAlerts = new PatientAlerts();
         alert = new Alert("externalId", null, null, 0, null);
+
         when(authenticatedUser.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
@@ -58,31 +61,39 @@ public class AlertsControllerTest {
     }
 
     @Test
-    public void shouldSetUnreadAlertsForDisplay() {
-        String startDate = "2011-10-10";
-        when(request.getParameter("patientId")).thenReturn("patientId");
-        when(request.getParameter("patientAlertType")).thenReturn("");
-        when(request.getParameter("startDate")).thenReturn(startDate);
-        when(request.getParameter("endDate")).thenReturn("");
-
-        when(patientAlertService.getUnreadAlertsFor(clinicId, "patientId", null, DateTime.parse(startDate), null)).thenReturn(patientAlerts);
+    public void shouldReturnAllUnreadAlerts() {
+        when(patientAlertService.getUnreadAlertsFor(clinicId, null, null, null, null)).thenReturn(patientAlerts);
         assertEquals("alerts/unread", alertsController.unread(uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
     }
 
     @Test
-    public void shouldSetReadAlertsForDisplay() {
-        String endDate = "2011-10-10";
-        PatientAlertType patientAlertType = PatientAlertType.AdherenceInRed;
-        when(request.getParameter("patientId")).thenReturn("patientId");
-        when(request.getParameter("patientAlertType")).thenReturn(patientAlertType.name());
-        when(request.getParameter("startDate")).thenReturn("");
-        when(request.getParameter("endDate")).thenReturn(endDate);
+    public void shouldSetUnreadAlertsForDisplay() {
+        AlertFilter filter = new AlertFilter().setPatientId("patientId").setPatientAlertType(PatientAlertType.AdherenceInRed).setStartDate(new Date());
 
-        when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, null, DateTime.parse(endDate))).thenReturn(patientAlerts);
-
-        assertEquals("alerts/read", alertsController.read(uiModel, request));
+        when(patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), PatientAlertType.AdherenceInRed, filter.getStartDateTime(), null)).thenReturn(patientAlerts);
+        assertEquals("alerts/unread", alertsController.unread(filter, uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
+    }
+
+    @Test
+    public void shouldSetAllReadAlertsForDisplay() {
+        PatientAlerts allReadAlerts = patientAlerts;
+
+        when(patientAlertService.getReadAlertsFor(clinicId, null, null, null, null)).thenReturn(allReadAlerts);
+        assertEquals("alerts/read", alertsController.read(uiModel, request));
+        verify(uiModel, times(1)).addAttribute("alerts", allReadAlerts);
+    }
+
+    @Test
+    public void shouldSetFilteredReadAlertsForDisplay() {
+        PatientAlertType patientAlertType = PatientAlertType.AdherenceInRed;
+        AlertFilter filter = new AlertFilter().setPatientId("patientId").setPatientAlertType(patientAlertType).setEndDate(new Date());
+        PatientAlerts filteredReadAlerts = patientAlerts;
+
+        when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, null, filter.getEndDateTime())).thenReturn(filteredReadAlerts);
+        assertEquals("alerts/read", alertsController.read(filter, uiModel, request));
+        verify(uiModel, times(1)).addAttribute("alerts", filteredReadAlerts);
     }
 
     @Test
@@ -92,6 +103,7 @@ public class AlertsControllerTest {
         }});
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
+
         when(patientAlertService.getPatientAlert(alertId)).thenReturn(patientAlert);
         assertEquals("alerts/show" + PatientAlertType.SymptomReporting.name(), alertsController.show(alertId, uiModel, request));
         verify(uiModel, times(1)).addAttribute("alertInfo", patientAlert);

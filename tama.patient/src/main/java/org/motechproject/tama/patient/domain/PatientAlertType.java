@@ -4,5 +4,10 @@ public enum PatientAlertType {
     SymptomReporting,
     AppointmentReminder,
     FallingAdherence,
-    AdherenceInRed
+    AdherenceInRed;
+
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

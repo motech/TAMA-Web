@@ -17,9 +17,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static java.util.Collections.reverseOrder;
@@ -128,12 +126,16 @@ public class PatientAlertService {
     }
 
     public PatientAlerts getAlertsOfSpecificTypeAndStatusAndDateRange(String clinicId, String patientId, AlertStatus alertStatus, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-        ArrayList<Patient> patients = new ArrayList<Patient>();
-        if (patientId != null)
-            patients.add(allPatients.findByIdAndClinicId(patientId, clinicId));
-        else
-            patients = (ArrayList<Patient>) allPatients.findByClinic(clinicId);
-        PatientAlerts allAlerts =  new PatientAlerts(getAlerts(patients, alertStatus));
+        List<Patient> patients = Collections.emptyList();
+        if (patientId != null) {
+            Patient patient = allPatients.findByPatientIdAndClinicId(patientId, clinicId);
+            if (patient != null) {
+                patients = Arrays.asList(patient);
+            }
+        } else {
+            patients = allPatients.findByClinic(clinicId);
+        }
+        PatientAlerts allAlerts = new PatientAlerts(getAlerts(patients, alertStatus));
         Predicate selectorForAlertTypeAndDateRange = getSelectorForAlertTypeAndDateRangeIfPresent(patientAlertType, startDate, endDate);
         return filterAlertsByPredicate(allAlerts, selectorForAlertTypeAndDateRange);
     }
@@ -144,7 +146,7 @@ public class PatientAlertService {
         return filterAlertsByPredicate(allAlerts, selectorForAlertTypeAndDateRange);
     }
 
-    private PatientAlerts filterAlertsByPredicate(PatientAlerts allAlerts, Predicate predicate){
+    private PatientAlerts filterAlertsByPredicate(PatientAlerts allAlerts, Predicate predicate) {
         ArrayList<PatientAlert> filteredAlerts = new ArrayList<PatientAlert>();
         CollectionUtils.select(allAlerts, predicate, filteredAlerts);
         return new PatientAlerts(filteredAlerts);

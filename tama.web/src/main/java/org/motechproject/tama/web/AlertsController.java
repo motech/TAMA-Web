@@ -1,10 +1,9 @@
 package org.motechproject.tama.web;
 
-import org.joda.time.DateTime;
 import org.motechproject.tama.patient.domain.PatientAlert;
-import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.tama.patient.domain.SymptomsAlertStatus;
 import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.tama.web.view.AlertFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,22 +28,34 @@ public class AlertsController extends BaseController {
     @RequestMapping(value = "/unread", method = RequestMethod.GET)
     public String unread(Model uiModel, HttpServletRequest request) {
         final String clinicId = loggedInClinic(request);
-        String patientId = getPatientId(request);
-        PatientAlertType patientAlertType = getPatientAlertType(request);
-        DateTime startDate = parseDateTime(request.getParameter("startDate"));
-        DateTime endDate = parseDateTime(request.getParameter("endDate"));
-        uiModel.addAttribute("alerts", patientAlertService.getUnreadAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate));
+        uiModel.addAttribute("alerts", patientAlertService.getUnreadAlertsFor(clinicId, null, null, null, null));
+        uiModel.addAttribute("alertFilter", new AlertFilter());
+        return "alerts/unread";
+    }
+
+    @RequestMapping(value = "/unread/filter", method = RequestMethod.GET)
+    public String unread(AlertFilter alertFilter, Model uiModel, HttpServletRequest request) {
+        final String clinicId = loggedInClinic(request);
+        uiModel.addAttribute("alerts", patientAlertService.getUnreadAlertsFor(clinicId, alertFilter.getPatientId(),
+                alertFilter.getPatientAlertType(), alertFilter.getStartDateTime(), alertFilter.getEndDateTime()));
+        uiModel.addAttribute("alertFilter", alertFilter);
         return "alerts/unread";
     }
 
     @RequestMapping(value = "/read", method = RequestMethod.GET)
     public String read(Model uiModel, HttpServletRequest request) {
         final String clinicId = loggedInClinic(request);
-        String patientId = getPatientId(request);
-        PatientAlertType patientAlertType = getPatientAlertType(request);
-        DateTime startDate = parseDateTime(request.getParameter("startDate"));
-        DateTime endDate = parseDateTime(request.getParameter("endDate"));
-        uiModel.addAttribute("alerts", patientAlertService.getReadAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate));
+        uiModel.addAttribute("alerts", patientAlertService.getReadAlertsFor(clinicId, null, null, null, null));
+        uiModel.addAttribute("alertFilter", new AlertFilter());
+        return "alerts/read";
+    }
+
+    @RequestMapping(value = "/read/filter", method = RequestMethod.GET)
+    public String read(AlertFilter filter, Model uiModel, HttpServletRequest request) {
+        final String clinicId = loggedInClinic(request);
+        uiModel.addAttribute("alerts", patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(),
+                filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime()));
+        uiModel.addAttribute("alertFilter", filter);
         return "alerts/read";
     }
 
@@ -78,19 +89,5 @@ public class AlertsController extends BaseController {
     private void initUIModel(String id, Model uiModel, PatientAlert patientAlert) {
         uiModel.addAttribute("alertInfo", patientAlert);
         uiModel.addAttribute("symptomsStatuses", Arrays.asList(SymptomsAlertStatus.values()));
-    }
-
-    private String getPatientId(HttpServletRequest request){
-        String patientId = request.getParameter("patientId");
-        return (patientId == null || patientId == "") ? null : patientId;
-    }
-
-    private PatientAlertType getPatientAlertType(HttpServletRequest request){
-        String patientAlertType = request.getParameter("patientAlertType");
-        return (patientAlertType == null || patientAlertType == "") ? null : PatientAlertType.valueOf(patientAlertType);
-    }
-
-    private DateTime parseDateTime(String dateTime){
-        return (dateTime == null || dateTime == "") ? null : DateTime.parse(dateTime);
     }
 }
