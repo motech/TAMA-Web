@@ -32,7 +32,7 @@ public class ClinicNameMessageBuilderTest {
         clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
-        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName")).thenReturn(false);
+        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName.wav")).thenReturn(false);
         assertEquals("001_02_01_TAMAGreeting1Generic", clinicNameMessageBuilder.getOutboundMessage(clinic, ivrLanguage));
     }
 
@@ -41,7 +41,7 @@ public class ClinicNameMessageBuilderTest {
         clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
-        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName")).thenReturn(true);
+        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName.wav")).thenReturn(true);
         assertEquals(clinic.getName(), clinicNameMessageBuilder.getOutboundMessage(clinic, ivrLanguage));
     }
 
@@ -50,7 +50,7 @@ public class ClinicNameMessageBuilderTest {
         clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
-        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName")).thenReturn(false);
+        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName.wav")).thenReturn(false);
         assertEquals("Greeting2Generic", clinicNameMessageBuilder.getInboundMessage(clinic, ivrLanguage));
     }
 
@@ -59,7 +59,7 @@ public class ClinicNameMessageBuilderTest {
         clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
-        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName")).thenReturn(true);
+        when(cmsLiteService.isStreamContentAvailable("en", "testClinicName.wav")).thenReturn(true);
         assertEquals("welcome_to_testClinicName", clinicNameMessageBuilder.getInboundMessage(clinic, ivrLanguage));
     }
 }
