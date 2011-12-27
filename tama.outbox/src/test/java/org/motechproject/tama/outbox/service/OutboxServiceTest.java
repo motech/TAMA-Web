@@ -14,6 +14,7 @@ import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.service.PatientService;
 
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -63,14 +64,21 @@ public class OutboxServiceTest {
     }
 
     @Test
-    public void patientReEnrolls_ToOutbox_WhenHeHasAlwaysAgreedToBeCalledAtBestCallTime_AndHisDayOfWeeklyCallChanges() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
+    public void patientOnWeeklyPillReminderDisEnrolls_ToOutbox() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Monday, new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
-        outboxService.reEnroll(dbPatient, patient);
+        outboxService.disEnroll(patient);
 
         verify(patientService).registerOutbox(outboxService);
-        verify(outboxSchedulerService).unscheduleOutboxJobs(dbPatient);
-        verify(outboxSchedulerService).scheduleOutboxJobs(patient);
+        verify(outboxSchedulerService, times(0)).unscheduleOutboxJobs(patient);
+    }
+
+    @Test
+    public void patientOnWeeklyPillReminderReEnrolls_ToOutbox() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Monday, new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
+        outboxService.disEnroll(patient);
+
+        verify(patientService).registerOutbox(outboxService);
+        verify(outboxSchedulerService, times(0)).unscheduleOutboxJobs(patient);
     }
 
     @Test

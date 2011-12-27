@@ -129,6 +129,7 @@ public class PatientBuilder {
 
     public PatientBuilder withWeeklyCallPreference(DayOfWeek dayOfWeeklyCall, TimeOfDay patientBestCallTime) {
         PatientPreferences preferences = patient.getPatientPreferences();
+        preferences.setCallPreference(CallPreference.FourDayRecall);
         preferences.setDayOfWeeklyCall(dayOfWeeklyCall);
         preferences.setBestCallTime(patientBestCallTime);
         return this;

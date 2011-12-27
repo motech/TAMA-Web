@@ -26,13 +26,13 @@ public class OutboxService implements Outbox {
     }
 
     public void enroll(Patient patient) {
-        if (patient.hasAgreedToBeCalledAtBestCallTime()) {
+        if (patient.isOnDailyPillReminder() && patient.hasAgreedToBeCalledAtBestCallTime()) {
             outboxSchedulerService.scheduleOutboxJobs(patient);
         }
     }
 
     void disEnroll(Patient dbPatient) {
-        if (dbPatient.hasAgreedToBeCalledAtBestCallTime()) {
+        if (dbPatient.isOnDailyPillReminder() && dbPatient.hasAgreedToBeCalledAtBestCallTime()) {
             outboxSchedulerService.unscheduleOutboxJobs(dbPatient);
         }
     }
