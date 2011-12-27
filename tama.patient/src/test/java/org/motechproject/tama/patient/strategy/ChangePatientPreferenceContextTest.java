@@ -76,14 +76,26 @@ public class ChangePatientPreferenceContextTest {
     }
 
     @Test
-    public void shouldExecute_BestCallTimeChangedStrategy_WhenPatientChangesHisBestCallTime() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
+    public void shouldExecute_BestCallTimeChangedStrategy_WhenDailyReminderPatient_ChangesHisBestCallTime() {
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
 
         ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
         changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
 
         verify(outbox).reEnroll(dbPatient, patient);
+    }
+
+    @Test
+    public void shouldExecute_BestCallTimeChangedStrategy_WhenWeeklyReminderPatient_ChangesHisBestCallTime() {
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
+
+        ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
+        changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
+
+        verify(outbox).reEnroll(dbPatient, patient);
+        verify(weeklyCallPlan).reEnroll(patient, null);
     }
 
     @Test

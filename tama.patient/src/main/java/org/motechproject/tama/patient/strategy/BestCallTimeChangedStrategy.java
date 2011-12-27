@@ -13,6 +13,9 @@ public class BestCallTimeChangedStrategy extends ChangePatientPreferenceStrategy
 
     @Override
     public void execute(Patient dbPatient, Patient patient, TreatmentAdvice treatmentAdvice) {
+        if (dbPatient.isOnWeeklyPillReminder() && patient.isOnWeeklyPillReminder()) {
+            callPlans.get(dbPatient.callPreference()).reEnroll(patient, treatmentAdvice);
+        }
         outbox.reEnroll(dbPatient, patient);
     }
 }

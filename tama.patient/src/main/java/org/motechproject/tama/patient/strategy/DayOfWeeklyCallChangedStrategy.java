@@ -13,6 +13,8 @@ public class DayOfWeeklyCallChangedStrategy extends ChangePatientPreferenceStrat
 
     @Override
     public void execute(Patient dbPatient, Patient patient, TreatmentAdvice treatmentAdvice) {
-        callPlans.get(dbPatient.callPreference()).reEnroll(patient, treatmentAdvice);
+        if (dbPatient.isOnWeeklyPillReminder() && patient.isOnWeeklyPillReminder()) {
+            callPlans.get(dbPatient.callPreference()).reEnroll(patient, treatmentAdvice);
+        }
     }
 }

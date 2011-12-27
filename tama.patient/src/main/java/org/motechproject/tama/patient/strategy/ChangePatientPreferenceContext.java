@@ -16,9 +16,9 @@ public class ChangePatientPreferenceContext {
     }
 
     public void executeStrategy(Patient dbPatient, Patient patient, TreatmentAdvice treatmentAdvice) {
-        boolean bestCallTimeChanged = dbPatient.getBestCallTime() != null && !dbPatient.getBestCallTime().equals(patient.getBestCallTime());
-        boolean dayOfWeeklyCallChanged = dbPatient.isOnWeeklyPillReminder() && patient.isOnWeeklyPillReminder() && !dbPatient.getDayOfWeeklyCall().equals(patient.getDayOfWeeklyCall());
         boolean callPlanChanged = !dbPatient.callPreference().equals(patient.callPreference());
+        boolean bestCallTimeChanged = dbPatient.getBestCallTime() != null && !dbPatient.getBestCallTime().equals(patient.getBestCallTime());
+        boolean dayOfWeeklyCallChanged = dbPatient.getDayOfWeeklyCall() != null && !dbPatient.getDayOfWeeklyCall().equals(patient.getDayOfWeeklyCall());
 
         if (callPlanChanged) {
             new CallPlanChangedStrategy(callPlans, outbox).execute(dbPatient, patient, treatmentAdvice);

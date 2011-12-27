@@ -152,7 +152,26 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void patientChangesHisBestCallTime() {
+    public void dailyReminderPatientChangesHisBestCallTime() {
+        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
+        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
+
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(05, 0, TimeMeridiem.AM)).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+
+        when(allPatients.get(patient.getId())).thenReturn(dbPatient);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+
+        patientService.update(patient);
+
+        assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
+        verify(outbox).reEnroll(dbPatient, patient);
+        verify(allPatients).update(patient);
+    }
+
+    @Test
+    public void weeklyReminderPatientChangesHisBestCallTime() {
         patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
         patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
 
@@ -167,7 +186,7 @@ public class PatientServiceTest {
 
         assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
-        verify(weeklyCallPlan, never()).reEnroll(dbPatient, currentTreatmentAdvice);
+        verify(weeklyCallPlan).reEnroll(dbPatient, currentTreatmentAdvice);
         verify(allPatients).update(patient);
     }
 }

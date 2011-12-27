@@ -50,11 +50,12 @@ public class PatientService {
 
     public void update(Patient patient) {
         Patient dbPatient = allPatients.get(patient.getId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         patient.setRevision(dbPatient.getRevision());
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
         updateUniquePatientField(patient);
         allPatients.update(patient);
-        updateOnCallPreferenceChanged(dbPatient, patient);
+        new ChangePatientPreferenceContext(callPlans, outbox).executeStrategy(dbPatient, patient, treatmentAdvice);
     }
 
     public void suspend(String patientId) {
@@ -74,11 +75,6 @@ public class PatientService {
             }
             throw e;
         }
-    }
-
-    private void updateOnCallPreferenceChanged(Patient dbPatient, Patient patient) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        new ChangePatientPreferenceContext(callPlans, outbox).executeStrategy(dbPatient, patient, treatmentAdvice);
     }
 }
 
