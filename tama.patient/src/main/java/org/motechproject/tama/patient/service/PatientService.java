@@ -9,8 +9,8 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.patient.strategy.CallPlan;
+import org.motechproject.tama.patient.strategy.ChangePatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.Outbox;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,8 +54,7 @@ public class PatientService {
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
         updateUniquePatientField(patient);
         allPatients.update(patient);
-        updateOnCallPlanChanged(dbPatient, patient);
-        outbox.reEnroll(dbPatient, patient);
+        updateOnCallPreferenceChanged(dbPatient, patient);
     }
 
     public void suspend(String patientId) {
@@ -77,14 +76,9 @@ public class PatientService {
         }
     }
 
-    private void updateOnCallPlanChanged(Patient dbPatient, Patient patient) {
+    private void updateOnCallPreferenceChanged(Patient dbPatient, Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        boolean callPlanChanged = !dbPatient.callPreference().equals(patient.callPreference());
-        if (callPlanChanged) {
-            patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now());
-            callPlans.get(dbPatient.callPreference()).disEnroll(dbPatient, treatmentAdvice);
-            callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
-        }
+        new ChangePatientPreferenceContext(callPlans, outbox).executeStrategy(dbPatient, patient, treatmentAdvice);
     }
 }
 

@@ -14,7 +14,6 @@ import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.service.PatientService;
 
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -53,14 +52,23 @@ public class OutboxServiceTest {
     }
 
     @Test
-    public void patientReEnrolls_ToOutbox_WhenHeHasAlwaysAgreedToBeCalledAtBestCallTime_AndHisBestCallTimeChanges() {
+    public void patientReEnrolls_ToOutbox_WhenHeHasAlwaysAgreedToBeCalledAtBestCallTime() {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(10, 30, TimeMeridiem.AM)).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
         outboxService.reEnroll(dbPatient, patient);
 
         verify(patientService).registerOutbox(outboxService);
         verify(outboxSchedulerService).unscheduleOutboxJobs(dbPatient);
         verify(outboxSchedulerService).scheduleOutboxJobs(patient);
+    }
+
+    @Test
+    public void patientOnWeeklyPillReminderEnrolls_ToOutbox() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Monday, new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
+        outboxService.enroll(patient);
+
+        verify(patientService).registerOutbox(outboxService);
+        verify(outboxSchedulerService, never()).scheduleOutboxJobs(patient);
     }
 
     @Test
@@ -69,38 +77,7 @@ public class OutboxServiceTest {
         outboxService.disEnroll(patient);
 
         verify(patientService).registerOutbox(outboxService);
-        verify(outboxSchedulerService, times(0)).unscheduleOutboxJobs(patient);
-    }
-
-    @Test
-    public void patientOnWeeklyPillReminderReEnrolls_ToOutbox() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Monday, new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
-        outboxService.disEnroll(patient);
-
-        verify(patientService).registerOutbox(outboxService);
-        verify(outboxSchedulerService, times(0)).unscheduleOutboxJobs(patient);
-    }
-
-    @Test
-    public void patientReEnrolls_ToOutbox_WhenHeFirstAgreesToBeCalledAtBestCallTime() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(10, 30, TimeMeridiem.AM)).build();
-        outboxService.reEnroll(dbPatient, patient);
-
-        verify(patientService).registerOutbox(outboxService);
-        verify(outboxSchedulerService, never()).unscheduleOutboxJobs(dbPatient);
-        verify(outboxSchedulerService).scheduleOutboxJobs(patient);
-    }
-
-    @Test
-    public void patientDisEnrolls_FromOutbox_WhenNoLongerAgreesToBeCalledAtBestCallTime() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        outboxService.reEnroll(dbPatient, patient);
-
-        verify(patientService).registerOutbox(outboxService);
-        verify(outboxSchedulerService).unscheduleOutboxJobs(dbPatient);
-        verify(outboxSchedulerService, never()).scheduleOutboxJobs(patient);
+        verify(outboxSchedulerService, never()).unscheduleOutboxJobs(patient);
     }
 
     @Test

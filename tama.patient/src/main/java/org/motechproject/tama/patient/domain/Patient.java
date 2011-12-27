@@ -7,6 +7,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.DateTimeFormatter;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.common.domain.CouchEntity;
@@ -92,6 +93,11 @@ public class Patient extends CouchEntity {
     }
 
     @JsonIgnore
+    public boolean isOnWeeklyPillReminder() {
+        return !isOnDailyPillReminder();
+    }
+
+    @JsonIgnore
     public boolean hasAgreedToBeCalledAtBestCallTime() {
         return this.patientPreferences.hasAgreedToBeCalledAtBestCallTime();
     }
@@ -99,6 +105,16 @@ public class Patient extends CouchEntity {
     @JsonIgnore
     public CallPreference callPreference() {
         return this.patientPreferences.getCallPreference();
+    }
+
+    @JsonIgnore
+    public TimeOfDay getBestCallTime() {
+        return this.patientPreferences.getBestCallTime();
+    }
+
+    @JsonIgnore
+    public DayOfWeek getDayOfWeeklyCall() {
+        return this.patientPreferences.getDayOfWeeklyCall();
     }
 
     public String getPatientId() {

@@ -102,6 +102,11 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withDayOfWeeklyCall(DayOfWeek dayOfWeek) {
+        patient.getPatientPreferences().setDayOfWeeklyCall(dayOfWeek);
+        return this;
+    }
+
     public PatientBuilder withDefaults() {
         return this.withPatientId("1234_" + DateUtil.now().getMillis()).
                 withDateOfBirth(DateUtil.newDate(1990, 5, 21)).

@@ -38,12 +38,8 @@ public class OutboxService implements Outbox {
     }
 
     public void reEnroll(Patient dbPatient, Patient patient) {
-        boolean bestCallTimeChanged = dbPatient.getPatientPreferences().getBestCallTime() != patient.getPatientPreferences().getBestCallTime();
-        boolean dayOfWeeklyCallChanged = dbPatient.getPatientPreferences().getDayOfWeeklyCall() != patient.getPatientPreferences().getDayOfWeeklyCall();
-        if (bestCallTimeChanged || dayOfWeeklyCallChanged) {
-            disEnroll(dbPatient);
-            enroll(patient);
-        }
+        disEnroll(dbPatient);
+        enroll(patient);
     }
 
     public void addMessage(String patientId) {
