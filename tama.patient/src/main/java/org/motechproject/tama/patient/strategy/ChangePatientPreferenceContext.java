@@ -2,7 +2,6 @@ package org.motechproject.tama.patient.strategy;
 
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
 
 import java.util.Map;
 
@@ -15,19 +14,20 @@ public class ChangePatientPreferenceContext {
         this.outbox = outbox;
     }
 
-    public void executeStrategy(Patient dbPatient, Patient patient, TreatmentAdvice treatmentAdvice) {
+    public ChangePatientPreferenceStrategy getStrategy(Patient dbPatient, Patient patient) {
         boolean callPlanChanged = !dbPatient.callPreference().equals(patient.callPreference());
         boolean bestCallTimeChanged = dbPatient.getBestCallTime() != null && !dbPatient.getBestCallTime().equals(patient.getBestCallTime());
         boolean dayOfWeeklyCallChanged = dbPatient.getDayOfWeeklyCall() != null && !dbPatient.getDayOfWeeklyCall().equals(patient.getDayOfWeeklyCall());
 
         if (callPlanChanged) {
-            new CallPlanChangedStrategy(callPlans, outbox).execute(dbPatient, patient, treatmentAdvice);
+            return new CallPlanChangedStrategy(callPlans, outbox);
         }
-        if (bestCallTimeChanged) {
-            new BestCallTimeChangedStrategy(callPlans, outbox).execute(dbPatient, patient, treatmentAdvice);
+        else if (bestCallTimeChanged) {
+            return new BestCallTimeChangedStrategy(callPlans, outbox);
         }
-        if (dayOfWeeklyCallChanged) {
-            new DayOfWeeklyCallChangedStrategy(callPlans, outbox).execute(dbPatient, patient, treatmentAdvice);
+        else if (dayOfWeeklyCallChanged) {
+            return new DayOfWeeklyCallChangedStrategy(callPlans, outbox);
         }
+        return null;
     }
 }

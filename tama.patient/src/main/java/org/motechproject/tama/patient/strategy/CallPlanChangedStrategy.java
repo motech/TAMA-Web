@@ -17,5 +17,6 @@ public class CallPlanChangedStrategy extends ChangePatientPreferenceStrategy {
         patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now());
         callPlans.get(dbPatient.callPreference()).disEnroll(dbPatient, treatmentAdvice);
         callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
+        outbox.reEnroll(dbPatient, patient);
     }
 }

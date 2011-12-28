@@ -10,6 +10,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.patient.strategy.CallPlan;
 import org.motechproject.tama.patient.strategy.ChangePatientPreferenceContext;
+import org.motechproject.tama.patient.strategy.ChangePatientPreferenceStrategy;
 import org.motechproject.tama.patient.strategy.Outbox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,12 +51,11 @@ public class PatientService {
 
     public void update(Patient patient) {
         Patient dbPatient = allPatients.get(patient.getId());
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         patient.setRevision(dbPatient.getRevision());
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
         updateUniquePatientField(patient);
         allPatients.update(patient);
-        new ChangePatientPreferenceContext(callPlans, outbox).executeStrategy(dbPatient, patient, treatmentAdvice);
+        updateOnPatientPreferencesChanged(dbPatient, patient);
     }
 
     public void suspend(String patientId) {
@@ -74,6 +74,14 @@ public class PatientService {
                 allUniquePatientFields.add(new UniquePatientField(uniquePatientField.getId(), uniquePatientField.getPrimaryDocId()));
             }
             throw e;
+        }
+    }
+
+    private void updateOnPatientPreferencesChanged(Patient dbPatient, Patient patient) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        ChangePatientPreferenceStrategy changePatientPreferenceStrategy = new ChangePatientPreferenceContext(callPlans, outbox).getStrategy(dbPatient, patient);
+        if (changePatientPreferenceStrategy != null) {
+            changePatientPreferenceStrategy.execute(dbPatient, patient, treatmentAdvice);
         }
     }
 }

@@ -13,8 +13,8 @@ import org.motechproject.tama.patient.domain.TimeOfDay;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ChangePatientPreferenceContextTest {
@@ -41,11 +41,9 @@ public class ChangePatientPreferenceContextTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
 
         ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
-        changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, patient);
 
-        assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(dailyCallPlan).disEnroll(dbPatient, null);
-        verify(weeklyCallPlan).enroll(patient, null);
+        assertEquals(CallPlanChangedStrategy.class, strategy.getClass());
     }
 
     @Test
@@ -54,11 +52,9 @@ public class ChangePatientPreferenceContextTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
 
         ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
-        changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, patient);
 
-        assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(weeklyCallPlan).disEnroll(dbPatient, null);
-        verify(dailyCallPlan).enroll(patient, null);
+        assertEquals(CallPlanChangedStrategy.class, strategy.getClass());
     }
 
     @Test
@@ -67,12 +63,9 @@ public class ChangePatientPreferenceContextTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
 
         ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
-        changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, patient);
 
-        assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(outbox).reEnroll(dbPatient, patient);
-        verify(weeklyCallPlan).disEnroll(dbPatient, null);
-        verify(dailyCallPlan).enroll(patient, null);
+        assertEquals(CallPlanChangedStrategy.class, strategy.getClass());
     }
 
     @Test
@@ -81,9 +74,9 @@ public class ChangePatientPreferenceContextTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
 
         ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
-        changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, patient);
 
-        verify(outbox).reEnroll(dbPatient, patient);
+        assertEquals(BestCallTimeChangedStrategy.class, strategy.getClass());
     }
 
     @Test
@@ -92,10 +85,20 @@ public class ChangePatientPreferenceContextTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
 
         ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
-        changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, patient);
 
-        verify(outbox).reEnroll(dbPatient, patient);
-        verify(weeklyCallPlan).reEnroll(patient, null);
+        assertEquals(BestCallTimeChangedStrategy.class, strategy.getClass());
+    }
+
+    @Test
+    public void shouldExecute_BestCallTimeChangedStrategy_WhenWeeklyReminderPatient_ChangesHisBestCallTime_AndDayOfWeeklyCall() {
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(11, 0, TimeMeridiem.AM)).build();
+
+        ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, patient);
+
+        assertEquals(BestCallTimeChangedStrategy.class, strategy.getClass());
     }
 
     @Test
@@ -104,8 +107,18 @@ public class ChangePatientPreferenceContextTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withDayOfWeeklyCall(DayOfWeek.Sunday).build();
 
         ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
-        changePatientPreferenceContext.executeStrategy(dbPatient, patient, null);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, patient);
 
-        verify(weeklyCallPlan).reEnroll(patient, null);
+        assertEquals(DayOfWeeklyCallChangedStrategy.class, strategy.getClass());
+    }
+
+    @Test
+    public void shouldReturn_NoStrategy_When_PatientPreferencesAreNotChanged() {
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withDayOfWeeklyCall(DayOfWeek.Saturday).build();
+
+        ChangePatientPreferenceContext changePatientPreferenceContext = new ChangePatientPreferenceContext(callPlans, outbox);
+        ChangePatientPreferenceStrategy strategy = changePatientPreferenceContext.getStrategy(dbPatient, dbPatient);
+
+        assertNull(strategy);
     }
 }
