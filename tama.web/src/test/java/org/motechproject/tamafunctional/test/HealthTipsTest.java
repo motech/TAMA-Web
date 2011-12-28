@@ -39,14 +39,11 @@ public class HealthTipsTest extends BaseIVRTest {
         patient.patientPreferences().passcode("5678");
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
-
         TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFromYesterday();
-
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
 
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
         patientDataService.setupLabResult(patient, clinician, labResult);
-
     }
 
     private TestTreatmentAdvice setUpTreatmentAdviceToStartFromYesterday() {

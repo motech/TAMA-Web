@@ -101,7 +101,7 @@ end
 rule "Less than 2 months, but more than 1 month into ART and patient not on daily pill reminder"
     when
         HealthTipParams(numberOfWeeksSinceTreatmentStarted < 8)
-        HealthTipParams(numberOfWeeksSinceTreatmentStarted > 4)
+        HealthTipParams(numberOfWeeksSinceTreatmentStarted >= 4)
         HealthTipParams(patientOnDailyPillReminder == "false")
     then
         for (String file : Arrays.asList("HT006a" , "HT007a" , "HT008a" , "HT009a")) {
@@ -155,7 +155,7 @@ rule "Less than 12 months but more than 2 months into ART and date of last CD4 t
     when
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 2)
         HealthTipParams(numberOfMonthsSinceTreatmentStarted < 12)
-        HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 10)
+        HealthTipParams(numberOfWeeksSinceLastCD4LabTest >= 10)
     then
         for (String file : Arrays.asList("HT008a", "HT009a")) {
             healthTips.addHealthTip(file, "1");
@@ -178,7 +178,7 @@ rule "Greater than 12 months into ART, last CD4 count < 350 and date of last CD4
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
         HealthTipParams(lastCD4Count < 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 22)
-        HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 10)
+        HealthTipParams(numberOfWeeksSinceLastCD4LabTest >= 10)
     then
         for (String file : Arrays.asList("HT010a")) {
             healthTips.addHealthTip(file, "1");
@@ -200,7 +200,7 @@ rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4
     when
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
         HealthTipParams(lastCD4Count > 350)
-        HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 22)
+        HealthTipParams(numberOfWeeksSinceLastCD4LabTest >= 22)
     then
         for (String file : Arrays.asList("HT010a")) {
             healthTips.addHealthTip(file, "1");
@@ -212,7 +212,7 @@ rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
         HealthTipParams(lastCD4Count > 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 22)
-        HealthTipParams(numberOfWeeksSinceLastCD4LabTest > 10)
+        HealthTipParams(numberOfWeeksSinceLastCD4LabTest >= 10)
     then
         for (String file : Arrays.asList("HT010a")) {
             healthTips.addHealthTip(file, "3");

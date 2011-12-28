@@ -32,7 +32,6 @@ public class HealthTipsTest extends BaseIVRTest {
     private TestPatient patient;
     private TAMADateTimeService tamaDateTimeService;
 
-
     @Before
     public void setUp() {
         super.setUp();
