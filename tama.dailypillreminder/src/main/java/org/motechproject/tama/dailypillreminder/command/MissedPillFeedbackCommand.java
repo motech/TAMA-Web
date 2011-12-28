@@ -1,5 +1,6 @@
 package org.motechproject.tama.dailypillreminder.command;
 
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Component;
 public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
 
     @Autowired
-    public MissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService) {
-        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
+    public MissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, PillReminderService pillReminderService) {
+        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, pillReminderService);
     }
 
     @Override

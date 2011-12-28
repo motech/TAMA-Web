@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AdherenceMessageWhenPreviousDosageCapturedCommand extends AdherenceMessageCommand {
+
     @Autowired
     public AdherenceMessageWhenPreviousDosageCapturedCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, PillReminderService pillReminderService, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService) {
-        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
+        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, pillReminderService);
     }
 
     @Override

@@ -25,33 +25,42 @@ public class AdherenceMessageCommandTest {
 
     @Rule
     public PowerMockRule rule = new PowerMockRule();
-
     @Mock
     private DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
-
     @Mock
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
-
-    private AdherenceMessageCommand adherenceMessageCommand;
     private DailyPillReminderContextForTest tamaIvrContext;
     private PillRegimenResponse pillRegimenResponse;
     private DateTime callStartTime;
+    private AdherenceMessageCommand adherenceMessageCommand;
 
     @Before
     public void setup() {
         initMocks(this);
+        DosageResponse currentDosage = setupCurrentDosage();
+        setupTimeToDosageTime(currentDosage);
+        setupIvrContext(currentDosage);
         TamaIVRMessage tamaIvrMessage = new TamaIVRMessage(null);
-        adherenceMessageCommand = new AdherenceMessageCommand(null, tamaIvrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
-        pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        DosageResponse currentDosage = pillRegimenResponse.getDosages().get(1);
-        callStartTime = DateUtil.newDateTime(currentDosage.getStartDate(), currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
-        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Outbound).callStartTime(callStartTime).patientId("patient_id");
-        tamaIvrContext = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(pillRegimenResponse).dosageId(currentDosage.getDosageId());
+        adherenceMessageCommand = new AdherenceMessageCommand(null, tamaIvrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, null);
     }
 
     @Test
     public void shouldReportAdherenceAsOfLastRecordedDose() {
         when(dailyReminderAdherenceService.getAdherencePercentage("patient_id", callStartTime)).thenReturn(25.0);
         assertArrayEquals(new String[]{TamaIVRMessage.YOUR_ADHERENCE_IS_NOW, "Num_025", TamaIVRMessage.PERCENT}, adherenceMessageCommand.executeCommand(tamaIvrContext));
+    }
+
+    private DosageResponse setupCurrentDosage() {
+        pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
+        return pillRegimenResponse.getDosages().get(1);
+    }
+
+    private void setupTimeToDosageTime(DosageResponse currentDosage) {
+        callStartTime = DateUtil.newDateTime(currentDosage.getStartDate(), currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
+    }
+
+    private void setupIvrContext(DosageResponse currentDosage) {
+        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Outbound).callStartTime(callStartTime).patientId("patient_id");
+        tamaIvrContext = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(pillRegimenResponse).dosageId(currentDosage.getDosageId());
     }
 }

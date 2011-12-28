@@ -43,7 +43,6 @@ public class OutboxController extends SafeIVRController {
             outboxContext.outboxCompleted();
             return ivrResponseBuilder.withPlayAudios(TamaIVRMessage.THESE_WERE_YOUR_MESSAGES_FOR_NOW);
         }
-
         outboxContext.lastPlayedMessageId(nextMessage.getId());
         messageResponseFactory.voiceMessageResponse(kooKooIVRContext, outboxContext, nextMessage, ivrResponseBuilder);
         return ivrResponseBuilder;

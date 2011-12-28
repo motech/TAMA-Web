@@ -42,7 +42,7 @@ public class MissedPillFeedbackCommandTest {
     @Before
     public void setup() {
         initMocks(this);
-        forMissedPillFeedbackCommand = new MissedPillFeedbackCommand(allDosageAdherenceLogs, null, dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
+        forMissedPillFeedbackCommand = new MissedPillFeedbackCommand(allDosageAdherenceLogs, null, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, null);
     }
 
     @Test

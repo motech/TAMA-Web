@@ -24,12 +24,14 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AdherenceTrendListenerTest {
 
-    AdherenceTrendListener adherenceTrendListener;
+    private AdherenceTrendListener adherenceTrendListener;
 
     @Mock
     private OutboxService outboxService;
+
     @Mock
-    DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
+    private DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
+
     @Mock
     private AllPatients allPatients;
 

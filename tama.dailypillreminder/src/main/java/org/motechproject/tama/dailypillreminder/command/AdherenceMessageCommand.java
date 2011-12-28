@@ -1,5 +1,6 @@
 package org.motechproject.tama.dailypillreminder.command;
 
+import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.Dose;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
@@ -18,8 +19,8 @@ public class AdherenceMessageCommand extends DailyPillReminderTreeCommand {
     protected DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
     @Autowired
-    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage tamaIVRMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService) {
-        super(null);
+    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage tamaIVRMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, PillReminderService pillReminderService) {
+        super(pillReminderService);
         this.ivrMessage = tamaIVRMessage;
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
