@@ -14,6 +14,7 @@ import org.motechproject.tamafunctional.page.ShowAlertPage;
 import org.motechproject.tamafunctional.page.UpdateAlertPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.test.ivr.IVRAssert;
+import org.motechproject.tamafunctional.testdata.OutboxCallInfo;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -58,6 +59,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
         tamaDateTimeService.adjustDateTime(DateUtil.now());
         triggerAdherenceFallingJob();
         verifyCreationOfAdherenceFallingAlertForThePatient();
+        verifyOutboxMessageCreated();
     }
 
     private void setupData() {
@@ -105,5 +107,17 @@ public class AdherenceFallingTest extends BaseIVRTest {
         assertEquals("Daily", showAlertsPage.callPreference());
         assertEquals("testnotes", showAlertsPage.notes());
         showAlertsPage.logout();
+    }
+
+    private void verifyOutboxMessageCreated() {
+        caller = caller(patient);
+        caller.replyToCall(new OutboxCallInfo());
+        IVRResponse ivrResponse = caller.enter("1234");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, DEFAULT_OUTBOUND_CLINIC_MESSAGE, FILE_050_03_01_ITS_TIME_FOR_BEST_CALL_TIME);
+        ivrResponse = caller.listenMore();
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW, "Num_006", PERCENT, M02_07_ADHERENCE_COMMENT_LT70_FALLING);
+        ivrResponse = caller.listenMore();
+        IVRAssert.assertAudioFilesPresent(ivrResponse, THESE_WERE_YOUR_MESSAGES_FOR_NOW);
+        caller.hangup();
     }
 }
