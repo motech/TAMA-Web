@@ -65,7 +65,7 @@ public class TAMACallFlowControllerTest {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
         tamaIVRContext.patientId(patientId);
-        when(outboxModuleStrategy.getNumberPendingMessages(patientId)).thenReturn(3);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(patientId)).thenReturn(true);
         assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -74,7 +74,7 @@ public class TAMACallFlowControllerTest {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
         tamaIVRContext.patientId(patientId);
-        when(outboxModuleStrategy.getNumberPendingMessages(patientId)).thenReturn(0);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(patientId)).thenReturn(false);
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -161,7 +161,7 @@ public class TAMACallFlowControllerTest {
     @Test
     public void shouldTransitionToMenuRepetitionOnceAllTreesAreCompletedAndThereAreNoOutboxMessages() {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
-        when(outboxModuleStrategy.getNumberPendingMessages(any(String.class))).thenReturn(0);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(false);
 
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }

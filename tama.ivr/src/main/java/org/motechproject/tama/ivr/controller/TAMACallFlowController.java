@@ -71,7 +71,7 @@ public class TAMACallFlowController implements CallFlowController {
     }
 
     private boolean hasPendingOutboxMessages(TAMAIVRContext tamaivrContext) {
-        return outboxModuleStrategy.getNumberPendingMessages(tamaivrContext.patientId()) != 0;
+        return outboxModuleStrategy.hasPendingOutboxMessages(tamaivrContext.patientId());
     }
 
     @Override

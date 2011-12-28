@@ -25,7 +25,7 @@ public class SymptomAndOutboxMenuCommandTest {
 
     @Test
     public void shouldReturnOutboxAndSymptomsReportingMenuOptions() {
-        when(outboxModuleStrategy.getNumberPendingMessages(Matchers.<String>any())).thenReturn(4);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(Matchers.<String>any())).thenReturn(true);
         SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand = new SymptomAndOutboxMenuCommand();
         symptomAndOutboxMenuCommand.registerOutboxModule(outboxModuleStrategy);
         String[] messages = symptomAndOutboxMenuCommand.executeCommand(tamaivrContext);
@@ -36,7 +36,7 @@ public class SymptomAndOutboxMenuCommandTest {
 
     @Test
     public void shouldReturnOutboxMenuOptionOnlyIfThereArePendingOutboxMessages() {
-        when(outboxModuleStrategy.getNumberPendingMessages(Matchers.<String>any())).thenReturn(0);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(Matchers.<String>any())).thenReturn(false);
         SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand = new SymptomAndOutboxMenuCommand();
         symptomAndOutboxMenuCommand.registerOutboxModule(outboxModuleStrategy);
         String[] messages = symptomAndOutboxMenuCommand.executeCommand(tamaivrContext);

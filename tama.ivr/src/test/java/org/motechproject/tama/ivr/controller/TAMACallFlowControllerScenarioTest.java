@@ -88,10 +88,6 @@ public class TAMACallFlowControllerScenarioTest {
         callFlowController.treeComplete(tree, kooKooIVRContext);
     }
 
-    private void messagesInOutbox(int number) {
-        when(outboxModuleStrategy.getNumberPendingMessages(any(String.class))).thenReturn(number);
-    }
-
     @Test
     public void OnPillReminder_OutgoingCall_CurrentDosageNotTaken__NotFeelingWell() {
         callPreference(CallPreference.DailyPillReminder);
@@ -113,7 +109,7 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.REGIMEN_1_TO_6);
 
         treeComplete(TAMATreeRegistry.REGIMEN_1_TO_6);
-        messagesInOutbox(1);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PRE_OUTBOX_URL);
     }
 
@@ -130,7 +126,7 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
 
         treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
-        messagesInOutbox(1);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PRE_OUTBOX_URL);
     }
 
@@ -151,7 +147,7 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER);
 
         treeComplete(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER);
-        messagesInOutbox(1);
+        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PRE_OUTBOX_URL);
     }
 

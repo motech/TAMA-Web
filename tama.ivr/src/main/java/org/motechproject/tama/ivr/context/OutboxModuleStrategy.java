@@ -12,5 +12,5 @@ public abstract class OutboxModuleStrategy {
 
     public abstract boolean hasOutboxCompleted(TAMAIVRContext tamaivrContext);
 
-    public abstract int getNumberPendingMessages(String patientId);
+    public abstract boolean hasPendingOutboxMessages(String patientId);
 }
