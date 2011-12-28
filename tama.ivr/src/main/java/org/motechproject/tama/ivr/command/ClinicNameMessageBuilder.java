@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.command;
 
 
 import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.tama.common.util.FileUtil;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
@@ -19,16 +20,20 @@ public  class ClinicNameMessageBuilder {
     }
 
     public String getOutboundMessage(Clinic clinic, IVRLanguage preferredLanguage){
-        if (!cmsLiteService.isStreamContentAvailable(preferredLanguage.getCode(), String.format("%s%s", clinic.getName(), TamaIVRMessage.WAV))) {
+        if (!cmsLiteService.isStreamContentAvailable(preferredLanguage.getCode(), getClinicWavFileName(clinic))) {
             return TamaIVRMessage.DEFAULT_OUTBOUND_CLINIC_MESSAGE;
         }
         return clinic.getName();
     }
 
     public String getInboundMessage(Clinic clinic, IVRLanguage preferredLanguage) {
-        if (!cmsLiteService.isStreamContentAvailable(preferredLanguage.getCode(), String.format("%s%s", clinic.getName(), TamaIVRMessage.WAV))) {
+        if (!cmsLiteService.isStreamContentAvailable(preferredLanguage.getCode(), getClinicWavFileName(clinic))) {
             return TamaIVRMessage.DEFAULT_INBOUND_CLINIC_MESSAGE;
         }
         return String.format("welcome_to_%s", clinic.getName());
+    }
+
+    private String getClinicWavFileName(Clinic clinic) {
+        return FileUtil.sanitizeFilename(String.format("%s%s", clinic.getName(), TamaIVRMessage.WAV));
     }
 }
