@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ public class AlertFilter {
 
     private String patientId;
 
-    private PatientAlertType patientAlertType;
+    private String alertType;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -62,16 +63,25 @@ public class AlertFilter {
         return patientId;
     }
 
-    public AlertFilter setPatientAlertType(PatientAlertType patientAlertType) {
-        this.patientAlertType = patientAlertType;
+    public AlertFilter setAlertType(String alertType) {
+        this.alertType = alertType;
         return this;
     }
 
-    public PatientAlertType getPatientAlertType() {
-        return patientAlertType;
+    public String getAlertType() {
+        return alertType;
     }
 
-    public List<PatientAlertType> getAllPatientAlertTypes() {
-        return Arrays.asList(PatientAlertType.values());
+    public PatientAlertType getPatientAlertType() {
+        return StringUtils.isBlank(alertType) || alertType.equals("Any") ? null : PatientAlertType.valueOf(alertType);
+    }
+
+    public List<String> getAllPatientAlertTypes() {
+        ArrayList<String> alertTypes = new ArrayList<String>();
+        alertTypes.add("Any");
+        for(PatientAlertType alertType : Arrays.asList(PatientAlertType.values())){
+            alertTypes.add(alertType.toString());
+        }
+        return alertTypes;
     }
 }

@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -403,13 +404,14 @@ public class PatientAlertServiceTest {
         final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withId("patientId_1").build();
         final List<Patient> registeredPatients = new ArrayList<Patient>();
         registeredPatients.add(patient);
+        DateTime now = DateUtil.newDateTime(new LocalDate(2011, 12, 12), 0, 0, 0);
 
         final Alert alert_10_days_ago = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null);
-        alert_10_days_ago.setDateTime(DateTime.now().minusDays(10));
+        alert_10_days_ago.setDateTime(now.minusDays(10));
         final Alert alert_5_days_ago = new Alert(patient.getId(), AlertType.HIGH, AlertStatus.READ, 2, null);
-        alert_5_days_ago.setDateTime(DateTime.now().minusDays(5));
+        alert_5_days_ago.setDateTime(now.minusDays(5).plusMinutes(30));
         final Alert alert_today = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null);
-        alert_today.setDateTime(DateTime.now());
+        alert_today.setDateTime(now);
 
         List<Alert> readAlerts = new ArrayList<Alert>() {{
             add(alert_10_days_ago);
@@ -421,7 +423,7 @@ public class PatientAlertServiceTest {
         when(allPatients.findByClinic("testClinicId")).thenReturn(registeredPatients);
         when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
 
-        DateTime endDate = DateTime.now().minusDays(3);
+        DateTime endDate = now.minusDays(5);
         PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", null, AlertStatus.READ, null, null, endDate);
 
         System.out.println(readAlertsForClinic);

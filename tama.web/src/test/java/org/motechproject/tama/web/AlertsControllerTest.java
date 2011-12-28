@@ -69,7 +69,7 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldSetUnreadAlertsForDisplay() {
-        AlertFilter filter = new AlertFilter().setPatientId("patientId").setPatientAlertType(PatientAlertType.AdherenceInRed).setStartDate(new Date());
+        AlertFilter filter = new AlertFilter().setPatientId("patientId").setAlertType(PatientAlertType.AdherenceInRed.toString()).setStartDate(new Date());
 
         when(patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), PatientAlertType.AdherenceInRed, filter.getStartDateTime(), null)).thenReturn(patientAlerts);
         assertEquals("alerts/unread", alertsController.unread(filter, uiModel, request));
@@ -88,7 +88,7 @@ public class AlertsControllerTest {
     @Test
     public void shouldSetFilteredReadAlertsForDisplay() {
         PatientAlertType patientAlertType = PatientAlertType.AdherenceInRed;
-        AlertFilter filter = new AlertFilter().setPatientId("patientId").setPatientAlertType(patientAlertType).setEndDate(new Date());
+        AlertFilter filter = new AlertFilter().setPatientId("patientId").setAlertType(patientAlertType.toString()).setEndDate(new Date());
         PatientAlerts filteredReadAlerts = patientAlerts;
 
         when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, null, filter.getEndDateTime())).thenReturn(filteredReadAlerts);

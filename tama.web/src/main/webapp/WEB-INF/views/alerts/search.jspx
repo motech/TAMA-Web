@@ -4,12 +4,10 @@
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:spring="http://www.springframework.org/tags">
 
-    <util:panel id="something" title="Filter Alerts" openPane="false">
+    <util:panel id="something" title="Filter Alerts" openPane="true">
             <field:input field="patientId" label="Patient ID" id = "searchByPatientId" required="false" />
             <form:label path="patientAlertType">Alert Type</form:label>
-            <form:select title="Alert Type" field="patientAlertType" id="searchByAlertType" path="patientAlertType"
-                          required="true" disableDefaultSelection="true">
-                <form:option value="">Any</form:option>
+            <form:select title="Alert Type" field="alertType" id="searchByAlertType" path="alertType" required="false">
                 <form:options items="${alertFilter.allPatientAlertTypes}" />
             </form:select>
             <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'searchByAlertType', widgetType: 'dijit.form.FilteringSelect', widgetAttrs : {hasDownArrow : true}})); </script>

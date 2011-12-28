@@ -160,7 +160,7 @@ public class PatientAlertService {
                 DateTime alertTime = patientAlert.getAlert().getDateTime();
                 boolean isOfRequiredAlertType = patientAlertType == null || (patientAlert.getAlert().getData() != null && patientAlertType.name().equals(patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE)));
                 boolean isAfterStartDate = startDate == null || alertTime.isAfter(startDate);
-                boolean isBeforeEndDate = endDate == null || alertTime.isBefore(endDate);
+                boolean isBeforeEndDate = endDate == null || !alertTime.toLocalDate().isAfter(endDate.toLocalDate());
                 return isOfRequiredAlertType && isAfterStartDate && isBeforeEndDate;
             }
         };
