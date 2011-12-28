@@ -36,7 +36,6 @@ public class PillRegimenSnapshotTest {
     public void setUp() {
         initMocks(this);
         ivrContext = new DailyPillReminderContextForTest(new TAMAIVRContextForTest());
-        ivrContext.dosageId("currentDosageId");
     }
 
     @Test

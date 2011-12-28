@@ -1,5 +1,6 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
+import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.joda.time.DateTime;
@@ -58,10 +59,10 @@ public class PillRegimenSnapshot {
     }
 
     public Dose getCurrentDose() {
-        if (dailyPillReminderContext.isIncomingCall()) {
-            return new PillRegimen(pillRegimenResponse).getDoseAt(dailyPillReminderContext.callStartTime());
-        } else {
+        if (StringUtils.isNotEmpty(dailyPillReminderContext.dosageId())) {
             return getDose(dailyPillReminderContext.dosageId());
+        } else {
+            return new PillRegimen(pillRegimenResponse).getDoseAt(dailyPillReminderContext.callStartTime());
         }
     }
 
