@@ -43,13 +43,6 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         adherenceService.register(CallPreference.FourDayRecall, this);
     }
 
-    public boolean isAdherenceCapturedForCurrentWeek(String patientDocId, String treatmentAdviceId) {
-        Patient patient = allPatients.get(patientDocId);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient.getPatientPreferences().getDayOfWeeklyCall());
-        return WeeklyAdherenceLog.logExists(allWeeklyAdherenceLogs, patientDocId, treatmentAdviceId, startDateForWeek);
-    }
-
     public LocalDate getMostRecentBestCallDay(String patientDocId) {
         LocalDate today = DateUtil.today();
         Patient patient = allPatients.get(patientDocId);

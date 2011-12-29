@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -20,7 +19,6 @@ import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.Properties;
 
 import static junit.framework.Assert.*;
@@ -53,31 +51,6 @@ public class NewFourDayRecallAdherenceServiceTest extends BaseUnitTest {
     public void setUp() {
         initMocks(this);
         fourDayRecallAdherenceService = new FourDayRecallAdherenceService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, patientAlertService, properties, adherenceService);
-    }
-
-    @Test
-    public void shouldReturnTrueIfAdherenceIsCapturedForWeek() {
-        mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 10, 19), 10, 10, 0));
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").withStartDate(new LocalDate(2011, 10, 5)).build();
-        Patient patient = PatientBuilder.startRecording().withId(patientId).withWeeklyCallPreference(DayOfWeek.Wednesday, null).build();
-        when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        ArrayList<WeeklyAdherenceLog> adherenceLogs = new ArrayList<WeeklyAdherenceLog>() {{
-            this.add(new WeeklyAdherenceLog());
-        }};
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdvice.getId(), new LocalDate(2011, 10, 12))).thenReturn(adherenceLogs);
-        assertTrue(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patientId, treatmentAdvice.getId()));
-    }
-
-    @Test
-    public void shouldReturnFalseIfAdherenceIsNotCapturedForCurrentWeek() {
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").withStartDate(new LocalDate(2011, 10, 5)).build();
-        Patient patient = PatientBuilder.startRecording().withId(patientId).withWeeklyCallPreference(DayOfWeek.Wednesday, null).build();
-        when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        ArrayList<WeeklyAdherenceLog> adherenceLogs = new ArrayList<WeeklyAdherenceLog>();
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdvice.getId(), new LocalDate(2011, 10, 12))).thenReturn(adherenceLogs);
-        assertFalse(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patientId, treatmentAdvice.getId()));
     }
 
     @Test

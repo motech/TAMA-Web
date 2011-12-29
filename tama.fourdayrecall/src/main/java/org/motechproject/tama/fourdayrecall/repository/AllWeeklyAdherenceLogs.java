@@ -7,6 +7,8 @@ import org.ektorp.support.View;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -26,5 +28,9 @@ public class AllWeeklyAdherenceLogs extends AbstractCouchRepository<WeeklyAdhere
         ComplexKey key = ComplexKey.of(patientDocId, treatmentAdviceId, weekStartDate);
         ViewQuery q = createQuery("find_log_count_by_patient_id_and_treatment_advice_id_and_start_date").key(key).includeDocs(true);
         return db.queryView(q, WeeklyAdherenceLog.class);
+    }
+
+    public List<WeeklyAdherenceLog> findLogsByWeekStartDate(Patient patient, TreatmentAdvice treatmentAdvice, LocalDate weekStartDate) {
+        return findLogsByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate);
     }
 }

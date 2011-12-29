@@ -1,8 +1,10 @@
 package org.motechproject.tama.fourdayrecall.listener;
 
+import org.joda.time.LocalDate;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.ivr.call.IVRCall;
@@ -10,6 +12,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +31,17 @@ public class FourDayRecallListener {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
+    private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
 
     @Autowired
-    public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices) {
+    public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
+                                 AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
         this.ivrCall = ivrCall;
         this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
+        this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
     }
 
     @MotechListener(subjects = TAMAConstants.FOUR_DAY_RECALL_SUBJECT)
@@ -47,7 +53,7 @@ public class FourDayRecallListener {
                 TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
                 Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
 
-                if (fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()))
+                if (isAdherenceCapturedForCurrentWeek(patient, treatmentAdvice))
                     return;
                 if (!isRetryEvent)
                     fourDayRecallSchedulerService.scheduleRepeatingJobsForFourDayRecall(patient);
@@ -59,6 +65,11 @@ public class FourDayRecallListener {
         }
     }
 
+    private boolean isAdherenceCapturedForCurrentWeek(Patient patient, TreatmentAdvice treatmentAdvice) {
+        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient.getPatientPreferences().getDayOfWeeklyCall());
+        return allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, startDateForWeek).size() > 0;
+    }
+
     @MotechListener(subjects = TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT)
     public void handleWeeklyFallingAdherenceAndRedAlert(MotechEvent motechEvent) {
         String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
@@ -66,8 +77,7 @@ public class FourDayRecallListener {
         if (patient != null && patient.allowAdherenceCalls()) {
             TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
 
-            if (fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patientDocId, treatmentAdvice.getId()) || isLastRetryDay(motechEvent)) {
-
+            if (isAdherenceCapturedForCurrentWeek(patient, treatmentAdvice) || isLastRetryDay(motechEvent)) {
                 if (!fourDayRecallAdherenceService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId))
                     fourDayRecallAdherenceService.raiseAdherenceFallingAlert(patientDocId);
 
