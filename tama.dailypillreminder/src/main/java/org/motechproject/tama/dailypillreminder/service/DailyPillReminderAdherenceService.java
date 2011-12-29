@@ -97,5 +97,4 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             allDosageAdherenceLogs.update(existingLog);
         }
     }
-
 }

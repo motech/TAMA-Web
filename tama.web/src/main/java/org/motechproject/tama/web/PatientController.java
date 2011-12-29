@@ -135,7 +135,7 @@ public class PatientController extends BaseController {
         if (patient.isOnDailyPillReminder()) {
             dailyPillReminderAdherenceService.backFillAdherence(id, doseStatus.isTaken(), patient.getLastSuspendedDate(), DateUtil.now());
         } else {
-            resumeFourDayRecallService.backfillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
+            resumeFourDayRecallService.backFillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }

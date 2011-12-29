@@ -4,6 +4,9 @@ import ch.lambdaj.Lambda;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 
@@ -144,5 +147,32 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
     @Override
     public int compareTo(TreatmentAdvice treatmentAdvice) {
         return getStartDate().compareTo(treatmentAdvice.getStartDate());
+    }
+
+     public LocalDate getStartDateForWeek(LocalDate date, DayOfWeek preferredCallDay) {
+         int retryDayCount = 0;
+        boolean isRetry = date.getDayOfWeek() != preferredCallDay.getValue();
+        if (isRetry) retryDayCount = DateUtil.daysPast(date, preferredCallDay);
+
+        DayOfWeek treatmentAdviceStartDay = DayOfWeek.getDayOfWeek(DateUtil.newDate(getStartDate()));
+        return dateWith(treatmentAdviceStartDay, PatientPreferences.DAYS_TO_RECALL, date.minusDays(retryDayCount));
+    }
+
+    private LocalDate dateWith(DayOfWeek dayOfWeek, int minNumberOfDaysAgo, LocalDate maxDate) {
+        LocalDate date = dateWith(dayOfWeek, maxDate);
+
+        Period period = new Period(date, maxDate, PeriodType.days());
+        if (period.getDays() >= minNumberOfDaysAgo) return date;
+
+        return dateWith(dayOfWeek, date);
+    }
+
+    private LocalDate dateWith(DayOfWeek dayOfWeek, LocalDate maxDate) {
+        LocalDate returnDate = maxDate.withDayOfWeek(dayOfWeek.getValue());
+        boolean dateAfterMaxDate = returnDate.compareTo(maxDate) >= 0;
+        if (dateAfterMaxDate) {
+            returnDate = returnDate.minusWeeks(1);
+        }
+        return returnDate;
     }
 }

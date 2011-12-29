@@ -3,6 +3,7 @@ package org.motechproject.tama.fourdayrecall.domain;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.util.DateUtil;
 
 @TypeDiscriminator("doc.documentType == 'WeeklyAdherenceLog'")
@@ -13,8 +14,6 @@ public class WeeklyAdherenceLog extends CouchEntity {
     private LocalDate weekStartDate;
     private LocalDate logDate;
     private int numberOfDaysMissed;
-
-    public static final int DAYS_TO_RECALL = 4;
 
     public WeeklyAdherenceLog() {
     }
@@ -65,6 +64,10 @@ public class WeeklyAdherenceLog extends CouchEntity {
 
     public void setWeekStartDate(LocalDate weekStartDate) {
         this.weekStartDate = weekStartDate;
+    }
+
+    public static boolean logExists(AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, String patientId, String treatmentAdviceId, LocalDate weekStartDate) {
+        return allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceId, weekStartDate).size() > 0;
     }
 
     public static WeeklyAdherenceLog create(String patientId, String treatmentAdviceDocId, LocalDate startDateForAnyWeek, int numberOfDaysMissed) {

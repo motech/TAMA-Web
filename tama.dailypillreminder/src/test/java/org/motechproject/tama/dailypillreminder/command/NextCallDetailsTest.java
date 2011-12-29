@@ -16,8 +16,6 @@ import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
 import org.motechproject.util.datetime.DefaultDateTimeSource;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
 
 public class NextCallDetailsTest {
@@ -50,9 +48,7 @@ public class NextCallDetailsTest {
 
     @Test
     public void shouldNotReturnNextCallDetailMessagesForRepeatMenu() {
-        ArrayList<String> completedTrees = new ArrayList<String>();
         context.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN);
-        completedTrees.add(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN);
         String[] messages = nextCallDetails.executeCommand(context);
         assertEquals(0, messages.length);
     }
