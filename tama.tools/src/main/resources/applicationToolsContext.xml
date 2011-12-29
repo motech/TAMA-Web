@@ -8,13 +8,7 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tama.tools"/>
-    <import resource="classpath:applicationDailyPillReminderContext.xml"/>
-    <import resource="classpath:applicationFourDayRecallContext.xml"/>
-    <import resource="classpath:applicationSymptomReportingContext.xml"/>
-
-    <context:component-scan base-package="org.motechproject.tama.ivr.decisiontree.service">
-        <context:exclude-filter type="regex" expression=".*SymptomReportingTreeService"/>
-    </context:component-scan>
+    <import resource="classpath:applicationRefDataContext.xml"/>
 
     <bean id="seedLoader" class="org.motechproject.tama.tools.seed.SeedLoader">
         <constructor-arg>

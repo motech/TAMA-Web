@@ -18,17 +18,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.symptomreporting</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.dailypillreminder</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.fourdayrecall</artifactId>
+            <artifactId>tama.refdata</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
