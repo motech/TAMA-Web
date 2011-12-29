@@ -40,6 +40,7 @@ public class PillRegimenSnapshotTest {
 
     @Test
     public void shouldGetListOfMedicinesForCurrentDosage() {
+        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
@@ -51,6 +52,7 @@ public class PillRegimenSnapshotTest {
 
     @Test
     public void shouldGetListOfMedicinesForPreviousDosage() {
+        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
@@ -61,6 +63,7 @@ public class PillRegimenSnapshotTest {
 
     @Test
     public void shouldGetPreviousDosage() {
+        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
@@ -70,6 +73,7 @@ public class PillRegimenSnapshotTest {
 
     @Test
     public void shouldGetNextDosage() {
+        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
