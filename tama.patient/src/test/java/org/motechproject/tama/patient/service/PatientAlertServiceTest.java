@@ -23,6 +23,7 @@ import org.motechproject.util.DateUtil;
 import java.util.*;
 
 import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -46,7 +47,7 @@ public class PatientAlertServiceTest {
     }
 
     @Test
-    public void shouldReturnEmptyWhenNoAlertsFound(){
+    public void shouldReturnEmptyWhenNoAlertsFound() {
         String patientId = "patientId";
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
 
@@ -56,47 +57,20 @@ public class PatientAlertServiceTest {
     }
 
     @Test
-    public void shouldReturnCorrectAlert() {
-        final String patientId = "patientId";
-        final Alert correctAlert = new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null);
-        final String testId = "testId";
-        correctAlert.setId(testId);
-        correctAlert.setExternalId(testId);
+    public void shouldMarkTheAlertAsRead() {
+        Patient patient = PatientBuilder.startRecording().withId("patientExternalId").withPatientId("patientId").build();
 
-        Patient patient = new Patient() {{
-            setId(testId);
-            setPatientId(testId);
-        }};
-        List<Alert> alerts = new ArrayList<Alert>() {{
-            add(new Alert("externalId1", AlertType.MEDIUM, AlertStatus.NEW, 2, null));
-            add(new Alert("externalId2", AlertType.MEDIUM, AlertStatus.NEW, 3, null));
-            add(correctAlert);
-        }};
-        when(alertService.getBy(null, null, null, null, 100)).thenReturn(alerts);
-        when(allPatients.get(testId)).thenReturn(patient);
+        final String alertId = "alertId";
+        final Alert alertForPatient = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.NEW, 2, null);
+        alertForPatient.setId(alertId);
+        alertForPatient.setExternalId(patient.getId());
 
-        PatientAlert symptomReportingAlert = patientAlertService.getPatientAlert(testId);
+        when(alertService.get(alertId)).thenReturn(alertForPatient);
+        when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        assertEquals(testId, symptomReportingAlert.getPatientId());
-    }
-
-    @Test
-    public void shouldChangeStatusOfAlert() {
-        final String patientId = "patientId";
-        final Alert correctAlert = new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null);
-        String testId = "testId";
-        correctAlert.setId(testId);
-
-        List<Alert> alerts = new ArrayList<Alert>() {{
-            add(new Alert("externalId1", AlertType.MEDIUM, AlertStatus.NEW, 2, null));
-            add(new Alert("externalId2", AlertType.MEDIUM, AlertStatus.NEW, 3, null));
-            add(correctAlert);
-        }};
-        when(alertService.getBy(null, null, null, null, 100)).thenReturn(alerts);
-
-        patientAlertService.getPatientAlert(testId);
-
-        verify(alertService, times(1)).changeStatus(testId, AlertStatus.READ);
+        PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId);
+        assertEquals(patient.getPatientId(), symptomReportingAlert.getPatientId());
+        verify(alertService, times(1)).changeStatus(alertId, AlertStatus.READ);
     }
 
     @Test

@@ -38,11 +38,8 @@ public class PatientAlertService {
         this.alertService = alertService;
     }
 
-    public PatientAlert getPatientAlert(String alertId) {
-        final Alert alert = selectUnique(alertService.getBy(null, null, null, null, 100),
-                having(on(Alert.class).getId(),
-                        equalTo(alertId)));
-
+    public PatientAlert readAlert(String alertId) {
+        final Alert alert = alertService.get(alertId);
         alertService.changeStatus(alert.getId(), AlertStatus.READ);
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }
