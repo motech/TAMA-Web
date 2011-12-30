@@ -43,39 +43,38 @@ public class PillRegimen {
         return count;
     }
 
-    public Dose getDoseAt(DateTime givenDateTime) {
+    public Dose getDoseAt(DateTime specifiedDateTime) {
         List<DosageResponse> dosageResponses = getDosageResponses();
         List<Dose> allProbableDoses = new ArrayList<Dose>();
         for (DosageResponse dosageResponse : dosageResponses) {
-            LocalDate givenDate = givenDateTime.toLocalDate();
+            LocalDate givenDate = specifiedDateTime.toLocalDate();
             allProbableDoses.add(getDoseOn(givenDate, dosageResponse));
             allProbableDoses.add(getDoseOn(givenDate.minusDays(1), dosageResponse));
             allProbableDoses.add(getDoseOn(givenDate.plusDays(1), dosageResponse));
         }
 
-        allProbableDoses = removeDosesWhichStartAfter(givenDateTime, allProbableDoses);
+        allProbableDoses = filterOnDosageStartDate(specifiedDateTime, allProbableDoses);
         allProbableDoses = sortDoses(allProbableDoses);
 
         Dose matchingDose = null;
         for (Dose dose : allProbableDoses) {
-            if (givenDateTime.isAfter(applicableStartTime(dose))) {
+            if (specifiedDateTime.isAfter(pillWindowStartTime(dose))) {
                 matchingDose = dose;
             }
         }
         return matchingDose;
     }
 
-    private DateTime applicableStartTime(Dose dose) {
+    private DateTime pillWindowStartTime(Dose dose) {
         return dose.getDoseTime().minusHours(pillRegimenResponse.getReminderRepeatWindowInHours());
     }
 
-    private List<Dose> removeDosesWhichStartAfter(final DateTime givenDateTime, List<Dose> doses) {
+    private List<Dose> filterOnDosageStartDate(final DateTime givenDateTime, List<Dose> doses) {
         return filter(new TypeSafeMatcher<Dose>() {
             @Override
             public boolean matchesSafely(Dose dose) {
-                final Dose doseOnDoseStartDate = new Dose(dose.getDosage(), dose.getDosage().getStartDate());
-                DateTime doseStartDateTime = applicableStartTime(doseOnDoseStartDate);
-                return !doseStartDateTime.isAfter(givenDateTime);
+                Dose firstDose = new Dose(dose.getDosage(), dose.getDosage().getStartDate());
+                return !pillWindowStartTime(firstDose).isAfter(givenDateTime);
             }
 
             @Override
@@ -96,5 +95,20 @@ public class PillRegimen {
 
     private Dose getDoseOn(LocalDate givenDate, DosageResponse candidateDosageResponse) {
         return new Dose(candidateDosageResponse, givenDate);
+    }
+
+    public Dose firstDose() {
+        int marker = 0;
+        List<DosageResponse> dosageResponses = getDosageResponses();
+        DateTime earliestDoseTime = new Dosage(dosageResponses.get(0)).firstDose();
+        for (DosageResponse dosageResponse : dosageResponses) {
+            DateTime firstDoseDateTime = new Dosage(dosageResponse).firstDose();
+            if (firstDoseDateTime.isBefore(earliestDoseTime)) {
+                earliestDoseTime = firstDoseDateTime;
+                marker = dosageResponses.indexOf(dosageResponse);
+            }
+        }
+        DosageResponse firstDosageResponse = dosageResponses.get(marker);
+        return new Dose(firstDosageResponse, firstDosageResponse.getStartDate());
     }
 }

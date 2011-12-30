@@ -7,6 +7,7 @@ import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PillRegimenResponseBuilder {
@@ -56,4 +57,10 @@ public class PillRegimenResponseBuilder {
         return this;
     }
 
+    public PillRegimenResponseBuilder withTwoDosages(Time dosage1Time, LocalDate dosage1StartDate, String dosage1Id, Time dosage2Time, LocalDate dosage2StartDate, String dosage2Id) {
+        dosages = new ArrayList<DosageResponse>();
+        dosages.add(new DosageResponse(dosage1Id, dosage1Time, dosage1StartDate, null, null, Collections.<MedicineResponse>emptyList()));
+        dosages.add(new DosageResponse(dosage2Id, dosage2Time, dosage2StartDate, null, null, Collections.<MedicineResponse>emptyList()));
+        return this;
+    }
 }

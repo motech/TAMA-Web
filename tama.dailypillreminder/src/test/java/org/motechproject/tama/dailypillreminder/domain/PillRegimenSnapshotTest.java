@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
@@ -14,8 +13,6 @@ import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +24,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
 public class PillRegimenSnapshotTest {
     private DailyPillReminderContextForTest ivrContext;
 
@@ -77,8 +72,27 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        DosageResponse previousDosage = pillRegimenSnapshot.getNextDose();
-        assertEquals("nextDosageId", previousDosage.getDosageId());
+        DosageResponse nextDose = pillRegimenSnapshot.getNextDose();
+        assertEquals("nextDosageId", nextDose.getDosageId());
+    }
+
+    @Test
+    public void shouldReturnNextDoseAsTheFirstDoseWhenNeitherOfTheDosagesHaveStarted() {
+        Time dosage1Time = new Time(18, 0);
+        Time dosage2Time = new Time(20, 30);
+        LocalDate dosage1StartDate = DateUtil.newDate(2011, 10, 10);
+        LocalDate dosage2StartDate = DateUtil.newDate(2011, 10, 10);
+        PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withTwoDosages(dosage1Time, dosage1StartDate, "dosage1Id", dosage2Time, dosage2StartDate, "dosage2Id").build();
+        DateTime callStartTime = DateUtil.newDateTime(DateUtil.newDate(2011, 10, 10), 14, 0, 0);
+        ivrContext.callStartTime(callStartTime);
+
+        PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimenResponse);
+        Dose nextDose = pillRegimenSnapshot.getNextDose();
+        
+        assertEquals("dosage1Id", nextDose.getDosageId());
+        assertEquals(18, nextDose.getDosageHour());
+        assertEquals(0, nextDose.getDosageMinute());
+        assertEquals(dosage1StartDate, nextDose.getDate());
     }
 
     @Test
@@ -473,14 +487,5 @@ public class PillRegimenSnapshotTest {
         ivrContext.pillRegimen(pillRegimen).callDirection(CallDirection.Inbound).callStartTime(DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11), 15, 40, 0));
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
         assertFalse(pillRegimenSnapshot.isPreviousDosageCaptured());
-    }
-
-    private PillRegimenResponse getPillRegimenResponse() {
-        ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
-        ArrayList<MedicineResponse> medicineResponses = new ArrayList<MedicineResponse>();
-        medicineResponses.add(new MedicineResponse("med1", null, null));
-        dosageResponses.add(new DosageResponse("currentDosageId", new Time(9, 5), new LocalDate(2011, 7, 1), new LocalDate(2012, 7, 1), new LocalDate(2011, 8, 4), medicineResponses));
-        dosageResponses.add(new DosageResponse("previousDosageId", new Time(15, 5), new LocalDate(2011, 7, 10), new LocalDate(2012, 7, 10), new LocalDate(2011, 8, 4), medicineResponses));
-        return new PillRegimenResponse("r1", "p1", 2, 15, dosageResponses);
     }
 }

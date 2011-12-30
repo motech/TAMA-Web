@@ -48,4 +48,8 @@ public class Dosage {
         DateTime doseTime = dateTime.withTime(getHour(), getMinute(), 0, 0);
         return !dateTime.isBefore(doseTime) ? 1 : 0;
     }
+
+    public DateTime firstDose() {
+        return DateUtil.newDateTime(dosageResponse.getStartDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
+    }
 }

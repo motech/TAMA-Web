@@ -6,13 +6,16 @@ import org.junit.Test;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
-public class PillRegimenTest {
+public class PillRegimenTest extends BaseUnitTest {
 
     @Test
     public void dosagesForLastFourWeeksShouldBe28ForSingleDoseRegimen() {
@@ -194,5 +197,21 @@ public class PillRegimenTest {
         assertEquals(expectedDosageHour, actualDose.getDosage().getDosageHour());
         assertEquals(expectedDosageMinute, actualDose.getDosage().getDosageMinute());
         assertEquals(expectedDoseDate, actualDose.getDate());
+    }
+
+    @Test
+    public void shouldReturnFirstDoseWhenPillRegimenHasTwoDosages() {
+        mockCurrentDate(DateUtil.newDateTime(DateUtil.today(), 14, 0, 0));
+        Time dosage1Time = new Time(10, 0);
+        Time dosage2Time = new Time(20, 30);
+        LocalDate dosage1StartDate = DateUtil.newDate(2011, 10, 11);
+        LocalDate dosage2StartDate = DateUtil.newDate(2011, 10, 10);
+        PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withTwoDosages(dosage1Time, dosage1StartDate, "dosage1Id", dosage2Time, dosage2StartDate, "dosage2Id").build();
+
+        Dose dose = new PillRegimen(pillRegimenResponse).firstDose();
+
+        assertEquals(20, dose.getDoseTime().getHourOfDay());
+        assertEquals(30, dose.getDoseTime().getMinuteOfHour());
+        assertEquals(dosage2StartDate, dose.getDate());
     }
 }

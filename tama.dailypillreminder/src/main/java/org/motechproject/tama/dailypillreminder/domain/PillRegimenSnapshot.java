@@ -53,6 +53,7 @@ public class PillRegimenSnapshot {
         List<DosageResponse> allDosages = getSortedDosages();
         if (allDosages == null) return null;
         Dose currentDose = getCurrentDose();
+        if (currentDose == null) return new PillRegimen(pillRegimenResponse).firstDose();
         int currentDosageIndex = allDosages.indexOf(currentDose.getDosage());
         return currentDosageIndex == allDosages.size() - 1 ? new Dose(allDosages.get(0), currentDose.getDate().plusDays(1)) :
                 new Dose(allDosages.get(currentDosageIndex + 1), currentDose.getDate());

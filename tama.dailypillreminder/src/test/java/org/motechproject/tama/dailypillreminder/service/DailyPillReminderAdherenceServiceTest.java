@@ -148,6 +148,19 @@ public class DailyPillReminderAdherenceServiceTest {
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
         }
 
+        @Test
+        public void _whenFirstApplicableDoseIsOnTheNextDay_AndIsNotRecorded() {
+            final DateTime startDate = new DateTime(2011, 10, 10, 23, 30);
+            final DateTime endDate = new DateTime(2011, 10, 11, 6, 0);
+            final Time dosageTime = new Time(1, 0);
+            PillRegimen pillRegimen = pillRegimenWithSingleDosage(dosageTime, startDate.minusDays(5).toLocalDate(), "dosageId");
+
+            when(pillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
+
+            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            verify(allDosageAdherenceLogs, times(1)).add(Matchers.<DosageAdherenceLog>any());
+        }
+
         private PillRegimen pillRegimenWithSingleDosage(Time dosageTime, LocalDate dosageStartDate, String dosageId) {
             DosageResponse doseResponse = new DosageResponse(dosageId, dosageTime, dosageStartDate, null, null, Collections.<MedicineResponse>emptyList());
             final List<DosageResponse> dosages = Arrays.asList(doseResponse);
