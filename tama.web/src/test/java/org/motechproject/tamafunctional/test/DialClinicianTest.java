@@ -129,7 +129,7 @@ public class DialClinicianTest extends BaseIVRTest {
     private void verifyAlertRaised(String clinicianName) {
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
-        ShowAlertPage showAlertsPage = listPatientsPage.goToUnreadAlertsPage().openShowAlertPage(patient.patientId());
+        ShowAlertPage showAlertsPage = listPatientsPage.goToUnreadAlertsPage().filter().openShowAlertPage(patient.patientId());
         assertEquals(clinicianName, showAlertsPage.connectedToDoctor());
         showAlertsPage.logout();
     }

@@ -26,9 +26,7 @@ public class AlertsController extends BaseController {
     }
 
     @RequestMapping(value = "/unread", method = RequestMethod.GET)
-    public String unread(Model uiModel, HttpServletRequest request) {
-        final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", patientAlertService.getUnreadAlertsFor(clinicId, null, null, null, null));
+    public String unread(Model uiModel) {
         uiModel.addAttribute("alertFilter", new AlertFilter());
         return "alerts/unread";
     }
@@ -43,9 +41,7 @@ public class AlertsController extends BaseController {
     }
 
     @RequestMapping(value = "/read", method = RequestMethod.GET)
-    public String read(Model uiModel, HttpServletRequest request) {
-        final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", patientAlertService.getReadAlertsFor(clinicId, null, null, null, null));
+    public String read(Model uiModel) {
         uiModel.addAttribute("alertFilter", new AlertFilter());
         return "alerts/read";
     }

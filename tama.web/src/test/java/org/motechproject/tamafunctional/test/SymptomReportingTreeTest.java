@@ -34,7 +34,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
-        UnreadAlertsPage unreadAlertsPage = listPatientsPage.goToUnreadAlertsPage();
+        UnreadAlertsPage unreadAlertsPage = listPatientsPage.goToUnreadAlertsPage().filter();
 
         assertAlertIsCreated(patient, unreadAlertsPage);
 
@@ -60,7 +60,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
     }
 
     private void assertAlertIsUpdated(TestPatient patient, ListPatientsPage listPatientsPage, String status, String notes) {
-        ReadAlertsPage readAlertsPage = listPatientsPage.goToReadAlertsPage();
+        ReadAlertsPage readAlertsPage = listPatientsPage.goToReadAlertsPage().filter();
         assertTableContainsAlert(readAlertsPage.alertsTable(), patient.patientId(), patient.mobileNumber(), status, notes);
     }
 

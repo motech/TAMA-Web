@@ -13,7 +13,9 @@
     <form:form action="${filter_url}" method="GET" modelAttribute="alertFilter">
         <jsp:include page="search.jspx" />
     </form:form>
-    <page:list id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Unread Alerts" label="Unread Alert">
-       <jsp:include page="list.jspx" />
-    </page:list>
+    <c:if test="${alerts != null}" >
+        <page:list id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Unread Alerts" label="Unread Alert">
+           <jsp:include page="list.jspx" />
+        </page:list>
+    </c:if>
 </div>

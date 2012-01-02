@@ -62,27 +62,21 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldReturnAllUnreadAlerts() {
-        when(patientAlertService.getUnreadAlertsFor(clinicId, null, null, null, null)).thenReturn(patientAlerts);
-        assertEquals("alerts/unread", alertsController.unread(uiModel, request));
-        verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
+        assertEquals("alerts/unread", alertsController.unread(uiModel));
     }
 
     @Test
     public void shouldSetUnreadAlertsForDisplay() {
         AlertFilter filter = new AlertFilter().setPatientId("patientId").setAlertType(PatientAlertType.AdherenceInRed.toString()).setStartDate(new Date());
 
-        when(patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), PatientAlertType.AdherenceInRed, filter.getStartDateTime(), null)).thenReturn(patientAlerts);
+        when(patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), PatientAlertType.AdherenceInRed, filter.getStartDateTime(), filter.getEndDateTime())).thenReturn(patientAlerts);
         assertEquals("alerts/unread", alertsController.unread(filter, uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
     }
 
     @Test
     public void shouldSetAllReadAlertsForDisplay() {
-        PatientAlerts allReadAlerts = patientAlerts;
-
-        when(patientAlertService.getReadAlertsFor(clinicId, null, null, null, null)).thenReturn(allReadAlerts);
-        assertEquals("alerts/read", alertsController.read(uiModel, request));
-        verify(uiModel, times(1)).addAttribute("alerts", allReadAlerts);
+        assertEquals("alerts/read", alertsController.read(uiModel));
     }
 
     @Test
@@ -91,7 +85,7 @@ public class AlertsControllerTest {
         AlertFilter filter = new AlertFilter().setPatientId("patientId").setAlertType(patientAlertType.toString()).setEndDate(new Date());
         PatientAlerts filteredReadAlerts = patientAlerts;
 
-        when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, null, filter.getEndDateTime())).thenReturn(filteredReadAlerts);
+        when(patientAlertService.getReadAlertsFor(clinicId, "patientId", patientAlertType, filter.getStartDateTime(), filter.getEndDateTime())).thenReturn(filteredReadAlerts);
         assertEquals("alerts/read", alertsController.read(filter, uiModel, request));
         verify(uiModel, times(1)).addAttribute("alerts", filteredReadAlerts);
     }

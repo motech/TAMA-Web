@@ -22,11 +22,11 @@ public class AlertFilter {
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    private Date startDate;
+    private Date startDate = DateUtil.today().toDate();
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    private Date endDate;
+    private Date endDate = DateUtil.today().toDate();
 
     public Date getStartDate() {
         return startDate;

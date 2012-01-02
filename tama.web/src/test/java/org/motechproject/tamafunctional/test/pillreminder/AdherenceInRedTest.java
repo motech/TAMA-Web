@@ -61,7 +61,7 @@ public class AdherenceInRedTest extends BaseIVRTest {
     private void verifyCreationOfRedAlertForThePatient() {
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
-        UpdateAlertPage updateAlertPage = listPatientsPage.goToUnreadAlertsPage().openUpdateAlertPage(patient.patientId());
+        UpdateAlertPage updateAlertPage = listPatientsPage.goToUnreadAlertsPage().filter().openUpdateAlertPage(patient.patientId());
         updateAlertPage.changeNotes("testnotes");
         ShowAlertPage showAlertsPage = updateAlertPage.save();
         assertEquals(patient.patientId(), showAlertsPage.patientId());

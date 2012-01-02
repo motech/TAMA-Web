@@ -41,10 +41,6 @@ public class ClinicRegistrationPage extends Page {
     @FindBy(how = How.ID, using = "_clinicianContacts[2].phoneNumber_id")
     private WebElement clinicianContact2Number;
 
-
-    @FindBy(how = How.ID, using = "proceed")
-    private WebElement registerClinicLink;
-
     public ClinicRegistrationPage(WebDriver webDriver) {
         super(webDriver);
     }
