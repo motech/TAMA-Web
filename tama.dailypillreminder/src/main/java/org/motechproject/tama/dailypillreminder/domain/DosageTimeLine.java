@@ -31,6 +31,9 @@ public class DosageTimeLine implements Iterator<Dose> {
         if (tentativeFirstDoseDateTime.isBefore(from)) {
             tentativeFirstDoseDateTime = tentativeFirstDoseDateTime.plusDays(1);
         }
+        if (tentativeFirstDoseDateTime.isAfter(to)) {
+            return null;
+        }
         return new Dose(dosageResponse, tentativeFirstDoseDateTime.toLocalDate());
     }
 
