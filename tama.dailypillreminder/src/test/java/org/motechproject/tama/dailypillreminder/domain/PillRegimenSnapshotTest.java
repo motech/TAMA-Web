@@ -135,6 +135,7 @@ public class PillRegimenSnapshotTest {
 
     @Test
     public void previousDosageIsNotTakenWhenYesterdaysDoseWasNotTaken() {
+        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate currentDosageLastTakenDate = DateUtil.today();
