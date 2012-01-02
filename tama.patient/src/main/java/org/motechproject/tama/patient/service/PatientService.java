@@ -53,6 +53,7 @@ public class PatientService {
         Patient dbPatient = allPatients.get(patient.getId());
         patient.setRevision(dbPatient.getRevision());
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
+        patient.setLastSuspendedDate(dbPatient.getLastSuspendedDate());
         updateUniquePatientField(patient);
         allPatients.update(patient);
         updateOnPatientPreferencesChanged(dbPatient, patient);
