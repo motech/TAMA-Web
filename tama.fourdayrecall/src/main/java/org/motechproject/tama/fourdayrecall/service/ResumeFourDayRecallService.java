@@ -43,8 +43,10 @@ public class ResumeFourDayRecallService {
 
         FourDayRecallTimeLine fourDayRecallTimeLine = new FourDayRecallTimeLine(patient, resumeDate, treatmentAdvice, daysToRetry);
         List<LocalDate> weekStartDates = fourDayRecallTimeLine.weekStartDates();
-        if (weekStartDates.size() > 0 && allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceDocId, weekStartDates.get(0)).size() == 0) {
-            allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, weekStartDates.get(0), doseTaken ? 0 : PatientPreferences.DAYS_TO_RECALL));
+        if (weekStartDates.size() > 0){
+            if(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceDocId, weekStartDates.get(0)).size() == 0) {
+                allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, weekStartDates.get(0), doseTaken ? 0 : PatientPreferences.DAYS_TO_RECALL));
+            }
             weekStartDates.remove(0);
         }
 
