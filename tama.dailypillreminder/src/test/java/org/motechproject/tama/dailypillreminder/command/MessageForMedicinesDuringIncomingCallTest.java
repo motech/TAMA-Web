@@ -30,7 +30,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
@@ -114,7 +113,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         context.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{"welcome_to_someClinicName", "010_02_04_notReportedIfTaken", "pillmedicine3", "001_07_07_fromTheBottle1"}, messages);
+        assertArrayEquals(new String[]{"welcome_to_someClinicName", "010_02_04_notReportedIfTaken", "pillmedicine3", "010_02_06_fromTheBottle2"}, messages);
     }
 
     @Test

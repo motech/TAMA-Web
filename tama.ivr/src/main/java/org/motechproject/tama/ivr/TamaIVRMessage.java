@@ -31,6 +31,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String PILL_CONFIRM_CALL_MENU = "010_03_02_MainMenu2";
     public static final String ITS_TIME_FOR_THE_PILL = "001_02_02_itsTimeForPill1";
     public static final String PILL_FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
+    public static final String PILL_FROM_THE_BOTTLE_AFTER_PILL_WINDOW = "010_02_06_fromTheBottle2";
     public static final String PLEASE_TAKE_DOSE = "003_03_01_TAMAPillDelayWarning1";
     public static final String CALL_AFTER_SOME_TIME = "003_03_03_TAMAPillDelayWarning2";
     public static final String DOSE_RECORDED = "001_05_01_doseRecorded";

@@ -41,13 +41,20 @@ public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTree
         PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(context);
         if (pillRegimenSnapshot.isTimeToTakeCurrentPill()) {
             messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
+            addMedicines(messages, pillRegimenSnapshot);
+            messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);
         } else {
             messages.add(TamaIVRMessage.NOT_REPORTED_IF_TAKEN);
+            addMedicines(messages, pillRegimenSnapshot);
+            messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE_AFTER_PILL_WINDOW);
         }
+
+        return messages.toArray(new String[messages.size()]);
+    }
+
+    private void addMedicines(ArrayList<String> messages, PillRegimenSnapshot pillRegimenSnapshot) {
         for (String medicine : pillRegimenSnapshot.medicinesForCurrentDose()) {
             messages.add(medicine);
         }
-        messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);
-        return messages.toArray(new String[messages.size()]);
     }
 }
