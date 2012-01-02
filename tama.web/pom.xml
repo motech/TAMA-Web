@@ -10,23 +10,6 @@
         <groupId>org.motechproject.tama</groupId>
         <version>0.3-SNAPSHOT</version>
     </parent>
-    <profiles>
-        <profile>
-            <id>buildNode</id>
-            <repositories>
-                <repository>
-                    <id>motech.nexus</id>
-                    <name>Motech Snapshots Repository</name>
-                    <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <checksumPolicy>warn</checksumPolicy>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
