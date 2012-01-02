@@ -196,22 +196,22 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject.deliverytools</groupId>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-kookoo-automation</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject.deliverytools</groupId>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-deliverytools-common</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject.deliverytools</groupId>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-datetime-simulator</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject.deliverytools</groupId>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-job-handler-invoker</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
