@@ -214,11 +214,10 @@ dojo.addOnLoad(function() {
                 }
             ];
 
-//        Disabled in lieu of #494, for usability testing.
-//            for (var i = 0; i < conditions.length; i++){
-//                if (conditions[i].execute())
-//                    return conditions[i].message;
-//            }
+            for (var i = 0; i < conditions.length; i++){
+                if (conditions[i].execute())
+                    return conditions[i].message;
+            }
             return null;
         };
 
