@@ -1,5 +1,6 @@
 package org.motechproject.tama.patient.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -12,15 +13,16 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.patient.strategy.CallPlan;
 import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PatientServiceTest {
+public class PatientServiceTest extends BaseUnitTest {
 
     @Mock
     private AllPatients allPatients;
@@ -58,6 +60,20 @@ public class PatientServiceTest {
     }
 
     @Test
+    public void shouldActivatePatient() {
+        DateTime now = DateUtil.newDateTime(DateUtil.today(), 10, 0, 0);
+        mockCurrentDate(now);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("Id").build();
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+
+        patientService.activate(patient.getId());
+
+        verify(allPatients).update(patient);
+        assertEquals(now, patient.getActivationDate());
+    }
+
+    @Test
     public void shouldSuspendPatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
@@ -67,7 +83,7 @@ public class PatientServiceTest {
         verify(allPatients).update(patient);
         assertThat(patient.getStatus(), is(Status.Suspended));
     }
-    
+
     @Test
     public void patientUpdates_ButNotChangeHisCallPlan() {
         patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
@@ -170,6 +186,7 @@ public class PatientServiceTest {
         verify(allPatients).update(patient);
     }
 
+
     @Test
     public void weeklyReminderPatientChangesHisBestCallTime() {
         patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
@@ -189,4 +206,5 @@ public class PatientServiceTest {
         verify(weeklyCallPlan).reEnroll(dbPatient, currentTreatmentAdvice);
         verify(allPatients).update(patient);
     }
+
 }

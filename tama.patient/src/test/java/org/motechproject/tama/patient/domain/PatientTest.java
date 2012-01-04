@@ -1,33 +1,27 @@
 package org.motechproject.tama.patient.domain;
 
 import junit.framework.Assert;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tama.common.util.ValidationUtil;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
-public class PatientTest {
+public class PatientTest extends BaseUnitTest {
 
     private Validator validator;
 
@@ -114,10 +108,22 @@ public class PatientTest {
     }
 
     @Test
-    public void shouldTestActivationOfPatient() {
+    public void shouldActivatePatient() {
+        DateTime now = DateUtil.newDateTime(new LocalDate(2011, 10, 19), 9, 0, 0);
+        mockCurrentDate(now);
         Patient patient = PatientBuilder.startRecording().withStatus(Status.Inactive).build();
         patient.activate();
         assertTrue(patient.getStatus().equals(Status.Active));
+        assertTrue(patient.getActivationDate().equals(now));
+    }
+
+    @Test
+    public void shouldNotResetActivationDateForSubsequentActivation() {
+        DateTime activationDate = DateUtil.newDateTime(new LocalDate(2011, 10, 19), 9, 0, 0);
+        Patient patient = PatientBuilder.startRecording().withStatus(Status.Inactive).withActivationDate(activationDate).build();
+        patient.activate();
+        assertTrue(patient.getStatus().equals(Status.Active));
+        assertTrue(patient.getActivationDate().equals(activationDate));
     }
 
     @Test
@@ -139,20 +145,16 @@ public class PatientTest {
 
     @Test
     public void shouldReturnCorrectAgeOfPatient() {
-        PowerMockito.mockStatic(DateUtil.class);
         LocalDate dateOfBirth = new LocalDate(2000, 10, 1);
         Patient patient = PatientBuilder.startRecording().withDateOfBirth(dateOfBirth).build();
 
-        PowerMockito.when(DateUtil.today()).thenReturn(new LocalDate(2011, 10, 19));
-        PowerMockito.when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
+        mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 10, 19), 9, 0, 0));
         assertEquals(11, patient.getAge());
 
-        PowerMockito.when(DateUtil.today()).thenReturn(new LocalDate(2011, 10, 1));
-        PowerMockito.when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
+        mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 10, 1), 9, 0, 0));
         assertEquals(11, patient.getAge());
 
-        PowerMockito.when(DateUtil.today()).thenReturn(new LocalDate(2011, 9, 30));
-        PowerMockito.when(DateUtil.newDate(any(Date.class))).thenReturn(dateOfBirth);
+        mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 9, 30), 9, 0, 0));
         assertEquals(10, patient.getAge());
     }
 }

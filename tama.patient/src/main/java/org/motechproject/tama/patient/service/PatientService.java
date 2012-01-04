@@ -65,6 +65,12 @@ public class PatientService {
         allPatients.update(patient);
     }
 
+    public void activate(String id) {
+        Patient patient = allPatients.get(id);
+        patient.activate();
+        update(patient);
+    }
+
     private void updateUniquePatientField(Patient patient) {
         List<UniquePatientField> oldUniquePatientFields = allUniquePatientFields.get(patient);
         allUniquePatientFields.remove(patient);

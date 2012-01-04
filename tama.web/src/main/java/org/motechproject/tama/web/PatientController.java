@@ -95,13 +95,13 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
     public String activate(@RequestParam String id, HttpServletRequest request) {
-        allPatients.activate(id);
+        patientService.activate(id);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
     public String activate(@PathVariable String id) {
-        allPatients.activate(id);
+        patientService.activate(id);
         return REDIRECT_TO_LIST_VIEW;
     }
 
@@ -130,7 +130,7 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/reactivatePatient")
     public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, HttpServletRequest request) {
-        allPatients.activate(id);
+        patientService.activate(id);
         Patient patient = allPatients.get(id);
         if (patient.isOnDailyPillReminder()) {
             dailyPillReminderAdherenceService.backFillAdherence(id, doseStatus.isTaken(), patient.getLastSuspendedDate(), DateUtil.now());

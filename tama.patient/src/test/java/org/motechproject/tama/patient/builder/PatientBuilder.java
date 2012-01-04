@@ -132,6 +132,11 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withActivationDate(DateTime actionDate) {
+        patient.setActivationDate(actionDate);
+        return this;
+    }
+
     public PatientBuilder withWeeklyCallPreference(DayOfWeek dayOfWeeklyCall, TimeOfDay patientBestCallTime) {
         PatientPreferences preferences = patient.getPatientPreferences();
         preferences.setCallPreference(CallPreference.FourDayRecall);

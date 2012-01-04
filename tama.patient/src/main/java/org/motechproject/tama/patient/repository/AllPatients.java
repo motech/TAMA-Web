@@ -131,12 +131,6 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         super.add(entity);
     }
 
-    public void activate(String id) {
-        Patient patient = get(id);
-        patient.activate();
-        update(patient);
-    }
-
     public void remove(String id) {
         remove(get(id));
     }

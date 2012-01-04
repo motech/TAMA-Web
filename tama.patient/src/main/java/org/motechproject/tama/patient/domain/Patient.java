@@ -60,6 +60,7 @@ public class Patient extends CouchEntity {
     private String genderId;
     private String clinic_id;
     private DateTime lastSuspendedDate;
+    private DateTime activationDate;
     private String notes;
 
     @JsonIgnore
@@ -84,6 +85,8 @@ public class Patient extends CouchEntity {
 
     public Patient activate() {
         this.status = Status.Active;
+        if (activationDate == null)
+            this.activationDate = DateUtil.now();
         return this;
     }
 
@@ -284,6 +287,14 @@ public class Patient extends CouchEntity {
 
     public void setLastSuspendedDate(DateTime lastSuspendedDate) {
         this.lastSuspendedDate = lastSuspendedDate;
+    }
+
+    public DateTime getActivationDate() {
+        return activationDate == null ? null : DateUtil.setTimeZone(activationDate);
+    }
+
+    public void setActivationDate(DateTime activationDate) {
+        this.activationDate = activationDate;
     }
 
     @JsonIgnore

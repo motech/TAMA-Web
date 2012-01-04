@@ -115,7 +115,7 @@ public class PatientControllerTest {
         String id = "1234";
         String nextPage = controller.activate(id, request);
 
-        verify(allPatients).activate(id);
+        verify(patientService).activate(id);
         assertTrue(nextPage.contains("redirect:/patients/"));
         assertTrue(nextPage.contains("1234"));
     }
@@ -125,7 +125,7 @@ public class PatientControllerTest {
         String id = "1234";
         String nextPage = controller.activate(id);
 
-        verify(allPatients).activate(id);
+        verify(patientService).activate(id);
         assertEquals("redirect:/patients", nextPage);
     }
 

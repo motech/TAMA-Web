@@ -203,17 +203,6 @@ public class AllPatientsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldActivatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("6666").withGender(gender).withIVRLanguage(ivrLanguage).build();
-        allPatients.add(patient);
-
-        allPatients.activate(patient.getId());
-
-        List<Patient> dbPatients = allPatients.findByPatientId("6666");
-        assertEquals(Status.Active, dbPatients.get(0).getStatus());
-    }
-
-    @Test
     public void shouldDeactivatePatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withPatientId("7890").withGender(gender).withIVRLanguage(ivrLanguage).build();
         allPatients.add(patient);
