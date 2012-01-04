@@ -65,6 +65,9 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_reminderCall_displayCallPreference_id")
     private WebElement callPreference;
 
+    @FindBy(how = How.ID, using = "_title_fc_org_motechproject_tama_domain_patient_Preferences_update")
+    private WebElement editTAMAPreferencesLink;
+
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")
     private WebElement listPatientsLink;
 
@@ -188,5 +191,10 @@ public class ShowPatientPage extends Page {
         this.showOrCreateVitalStatisticsLink.click();
         waitForElementWithIdToLoad(ShowVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
+    }
+
+    public UpdatePatientPage clickOnEditTAMAPreferences() {
+        this.editTAMAPreferencesLink.click();
+        return MyPageFactory.initElements(webDriver, UpdatePatientPage.class);
     }
 }

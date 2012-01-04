@@ -75,6 +75,14 @@ public class PatientDataService extends EntityDataService {
         viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasOne().goToEditVitalStatisticsPage().enterVitalStatistics(testVitalStatistics).logout();
     }
 
+    public void changePatientToWeeklyPillReminderWithBestCallDay_AndBestCallTime(TestPatient patient, TestClinician clinician, String bestCallDay, String bestCallTime){
+        viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToWeeklyCallPlanWithBestCallDayAndTime(bestCallDay, bestCallTime).logout();
+    }
+
+    public void changePatientToDailyPillReminder(TestPatient patient, TestClinician clinician){
+        viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToDailyCallPlan().logout();
+    }
+
     public TestVitalStatistics getInitialVitalStatistics(TestPatient patient, TestClinician clinician) {
         ShowVitalStatisticsPage showVitalStatisticsPage = viewPatient(patient, clinician).goToShowVitalStatisticsPage();
         TestVitalStatistics testVitalStatistics = new TestVitalStatistics()

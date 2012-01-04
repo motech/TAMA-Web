@@ -21,7 +21,11 @@ import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -41,7 +45,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
         DailyPillReminderAdherenceServiceTest.BackFillAdherenceForMultipleDosages.class,
         DailyPillReminderAdherenceServiceTest.CalculateAdherence.class,
         DailyPillReminderAdherenceServiceTest.WasAnyDoseMissedLastWeek.class,
-        DailyPillReminderAdherenceServiceTest.WasAnyDoseTakenLateSince.class
+        DailyPillReminderAdherenceServiceTest.WasAnyDoseTakenLateSince.class,
+        DailyPillReminderAdherenceServiceTest.TransitionDatesLogic.class
 })
 public class DailyPillReminderAdherenceServiceTest {
 
@@ -50,6 +55,8 @@ public class DailyPillReminderAdherenceServiceTest {
         protected AllDosageAdherenceLogs allDosageAdherenceLogs;
         @Mock
         protected TAMAPillReminderService pillReminderService;
+        @Mock
+        protected AllPatients allPatients;
 
         protected Properties ivrProperties;
 
@@ -58,6 +65,7 @@ public class DailyPillReminderAdherenceServiceTest {
         protected DateTime now;
 
         protected LocalDate today;
+        protected Patient patient;
 
         public void setUpTime() {
             now = new DateTime(2011, 11, 29, 10, 30, 0);
@@ -75,7 +83,8 @@ public class DailyPillReminderAdherenceServiceTest {
             initMocks(this);
             setUpTime();
             initializeProperties();
-            dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties, new AdherenceService());
+            dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties, new AdherenceService(), allPatients);
+            patient = PatientBuilder.startRecording().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
         }
     }
 
@@ -313,12 +322,14 @@ public class DailyPillReminderAdherenceServiceTest {
             int totalDoses = 28;
 
             PillRegimen pillRegimen = mock(PillRegimen.class);
-            when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
             DateTime asOfDate = now;
+
+            when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
             when(pillRegimen.getId()).thenReturn("regimenId");
             when(pillRegimen.getDosesBetween(asOfDate.minusWeeks(4).toLocalDate(), asOfDate)).thenReturn(totalDoses);
-
+            when(allPatients.get(anyString())).thenReturn(patient);
             when(allDosageAdherenceLogs.countBy(same("regimenId"), same(DosageStatus.TAKEN), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(dosesTaken);
+
             assertEquals(((double) dosesTaken / totalDoses) * 100, dailyReminderAdherenceService.getAdherencePercentage(patientId, asOfDate));
         }
 
@@ -326,9 +337,11 @@ public class DailyPillReminderAdherenceServiceTest {
         public void shouldReturn100PercentIfDosageNotStartedYet() {
             String patientId = "patientId";
             PillRegimen pillRegimen = mock(PillRegimen.class);
+
             when(pillRegimen.getId()).thenReturn("regimenId");
             when(pillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
             when(pillRegimen.getDosesBetween(Matchers.<LocalDate>any(), Matchers.<DateTime>any())).thenReturn(0);
+            when(allPatients.get(anyString())).thenReturn(patient);
 
             assertEquals(100.0, dailyReminderAdherenceService.getAdherencePercentage(patientId, now));
             verifyZeroInteractions(allDosageAdherenceLogs);
@@ -382,6 +395,33 @@ public class DailyPillReminderAdherenceServiceTest {
 
             assertEquals(DateUtil.today().minusWeeks(1).toString("MM/dd/YYYY"), adherenceLogFromDateArgumentCaptor.getValue().toString("MM/dd/YYYY"));
             assertEquals(DateUtil.today().minusDays(1).toString("MM/dd/YYYY"), adherenceLogToDateArgumentCaptor.getValue().toString("MM/dd/YYYY"));
+        }
+    }
+
+    public static class TransitionDatesLogic extends TestSubject {
+
+        @Test
+        public void shouldReturnWeeklyToDailyTransitionDateForPatientAsJobStartDate_IfTreatmentAdviceHasNotChanged_AndPatientCallPreferenceHasChanged() {
+            Patient patient = PatientBuilder.startRecording().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
+            patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.newDateTime(DateUtil.today(), 0, 0, 0));
+
+            TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withPatientId("patientId").withStartDate(DateUtil.today().minusDays(20)).build();
+
+            LocalDate dailyPillReminderAdherenceTrackingStartDate = dailyReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice);
+
+            assertEquals(DateUtil.today(), dailyPillReminderAdherenceTrackingStartDate);
+        }
+
+        @Test
+        public void shouldReturnTreatmentAdviceStartDateItselfForPatientAsTreatmentAdviceStartDate_IfTreatmentAdviceHasNotYetBegun_AndPatientCallPreferenceHasChanged() {
+            Patient patient = PatientBuilder.startRecording().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
+            patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.newDateTime(DateUtil.today(), 0, 0, 0));
+
+            TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withPatientId("patientId").withStartDate(DateUtil.today().plusDays(2)).build();
+
+            LocalDate dailyPillReminderAdherenceTrackingStartDate = dailyReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice);
+
+            assertEquals(DateUtil.today().plusDays(2), dailyPillReminderAdherenceTrackingStartDate);
         }
     }
 }

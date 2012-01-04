@@ -27,6 +27,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DailyPillReminderSchedulerServiceTest {
@@ -40,17 +41,23 @@ public class DailyPillReminderSchedulerServiceTest {
 
     @Mock
     MotechSchedulerService motechSchedulerService;
+    @Mock
+    DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
 
     @Before
     public void setUp() {
         initMocks(this);
         treatmentAdvice = getTreatmentAdvice();
-        schedulerService = new DailyPillReminderSchedulerService(motechSchedulerService);
+        schedulerService = new DailyPillReminderSchedulerService(motechSchedulerService, dailyPillReminderAdherenceService);
     }
 
     @Test
     public void shouldScheduleWeeklyAdherenceTrendJob() {
-        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
+
+        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(TREATMENT_ADVICE_START_DATE);
+
+        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
@@ -61,9 +68,12 @@ public class DailyPillReminderSchedulerServiceTest {
     public void shouldScheduleWeeklyAdherenceTrendJob_StartDateIsBeforeToday() {
         DateTime now = DateUtil.now();
         LocalDate today = now.toLocalDate();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
         treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusMonths(2));
 
-        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(TREATMENT_ADVICE_START_DATE);
+
+        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient , treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
     }
@@ -77,6 +87,8 @@ public class DailyPillReminderSchedulerServiceTest {
         final LocalDate endDate = startDate.plusDays(1);
 
         TreatmentAdvice advice = getTreatmentAdvice(startDate, endDate);
+        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, advice)).thenReturn(startDate);
+
         schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
 
         final ArgumentCaptor<CronSchedulableJob> cronArgCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
@@ -102,6 +114,8 @@ public class DailyPillReminderSchedulerServiceTest {
         final DateTime timeFewMillisBack = DateUtil.now().minusMillis(1000);
 
         TreatmentAdvice advice = getTreatmentAdvice(startDate, endDate);
+        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, advice)).thenReturn(startDate);
+
         schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
 
         final ArgumentCaptor<CronSchedulableJob> cronArgCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);

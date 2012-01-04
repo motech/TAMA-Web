@@ -17,7 +17,11 @@ import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLog
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.TAMAPillReminderService;
 import org.motechproject.tama.ivr.service.AdherenceService;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
@@ -51,6 +55,9 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     @Autowired
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
+    @Autowired
+    private AllUniquePatientFields allUniquePatientFields;
+
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
     @Qualifier("ivrProperties")
@@ -59,11 +66,14 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 
+    private Patient patient;
+
     @Before
     public void setUp() {
         initMocks(this);
-        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, properties, new AdherenceService());
+        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, properties, new AdherenceService(), allPatients);
         setUpDate();
+        patient = PatientBuilder.startRecording().withCallPreference(CallPreference.DailyPillReminder).build();
     }
 
     public void setUpDate() {
@@ -75,29 +85,59 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
 
     @Test
     public void adherenceWhenLessThan4WeeksIntoRegimen_ForSingleDosage() {
-        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(1), null, null, null));
         }});
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(regimenStartingToday));
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today());
         addAdherenceLog("dosage1Id", DosageStatus.NOT_TAKEN, DateUtil.today().minusDays(1));
         addAdherenceLog("dosage1Id", DosageStatus.WILL_TAKE_LATER, DateUtil.today().minusDays(2));
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusDays(3));
+        patient.setPatientId("patientId1");
+        patient.getPatientPreferences().setPasscode("1234");
 
+        allPatients.add(patient);
+        markForDeletion(allPatients.getAll().toArray());
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
+        markForDeletion(allUniquePatientFields.getAll().toArray());
+
+        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
 
         final DateTime afterDoseTime = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
-        assertEquals(25.00, dailyReminderAdherenceService.getAdherencePercentage("patientId", afterDoseTime));
+        assertEquals(25.00, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), afterDoseTime));
     }
 
     @Test
+    public void adherenceWhenLessThan4WeeksIntoRegimen_ForSingleDosage_WhenPatientTransitionedFromDailyPillReminderToWeeklyPillReminder_AndBackToDailyPillReminder() {
+        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
+            add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(2), null, null, null));
+        }});
+        addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today());
+        addAdherenceLog("dosage1Id", DosageStatus.NOT_TAKEN, DateUtil.today().minusDays(1));
+        addAdherenceLog("dosage1Id", DosageStatus.WILL_TAKE_LATER, DateUtil.today().minusDays(2));
+        addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusDays(3));
+        addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusDays(4));
+        patient.setPatientId("patientId9");
+        patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now().minusDays(5));
+        patient.getPatientPreferences().setPasscode("4444");
+
+        allPatients.add(patient);
+        markForDeletion(allPatients.getAll().toArray());
+        markForDeletion(allDosageAdherenceLogs.getAll().toArray());
+        markForDeletion(allUniquePatientFields.getAll().toArray());
+
+        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
+
+        final DateTime afterDoseTime = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
+        assertEquals(50.00, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), afterDoseTime));
+    }
+
+
+    @Test
     public void adherenceWhenLessThan4WeeksIntoRegimen_ForMultipleDosages() {
-        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(1), null, null, null));
             add(new DosageResponse("dosage2Id", new Time(11, 30), DateUtil.today().minusWeeks(1), null, null, null));
         }});
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(regimenStartingToday));
-
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today());
         addAdherenceLog("dosage1Id", DosageStatus.NOT_TAKEN, DateUtil.today().minusDays(1));
         addAdherenceLog("dosage1Id", DosageStatus.WILL_TAKE_LATER, DateUtil.today().minusDays(2));
@@ -107,62 +147,73 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         addAdherenceLog("dosage2Id", DosageStatus.NOT_TAKEN, DateUtil.today().minusDays(1));
         addAdherenceLog("dosage2Id", DosageStatus.WILL_TAKE_LATER, DateUtil.today().minusDays(2));
         addAdherenceLog("dosage2Id", DosageStatus.TAKEN, DateUtil.today().minusDays(3));
+        patient.setPatientId("patientId2");
+        patient.getPatientPreferences().setPasscode("5678");
 
+        allPatients.add(patient);
+        markForDeletion(allPatients.getAll().toArray());
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
+        markForDeletion(allUniquePatientFields.getAll().toArray());
+
+        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
 
         DateTime timeOfSecondDosage = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
-        assertEquals(25.0, dailyReminderAdherenceService.getAdherencePercentage("patientId", timeOfSecondDosage));
+        assertEquals(25.0, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), timeOfSecondDosage));
     }
 
     @Test
     public void adherenceAfterFourWeeksIntoRegimen_ForSingleDosage_AfterTodaysDoseTime() {
-        PillRegimenResponse regimenStartingFiveWeeksAgo = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse regimenStartingFiveWeeksAgo = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(5), null, null, null));
         }});
-
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).minusDays(1));
-
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4));
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).plusDays(1));
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).plusDays(2));
-
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today());
+        patient.setPatientId("patientId3");
+        patient.getPatientPreferences().setPasscode("9012");
 
+        allPatients.add(patient);
+        markForDeletion(allPatients.getAll().toArray());
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
+        markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
+        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
 
         double totalNumberOfDoses = 29.0;
-        assertEquals(4 * 100 / totalNumberOfDoses, dailyReminderAdherenceService.getAdherencePercentage("patientId", DateUtil.now()));
+        assertEquals(4 * 100 / totalNumberOfDoses, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), DateUtil.now()));
     }
 
     @Test
     public void adherenceAfterFourWeeksIntoRegimen_ForSingleDosage_BeforeTodaysDoseTime() {
-        PillRegimenResponse regimenStartingFiveWeeksAgo = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse regimenStartingFiveWeeksAgo = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(11, 30), DateUtil.today().minusWeeks(5), null, null, null));
         }});
-
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).minusDays(1));
-
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4));
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).plusDays(1));
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).plusDays(2));
+        patient.setPatientId("patientId4");
+        patient.getPatientPreferences().setPasscode("1111");
 
+        allPatients.add(patient);
+        markForDeletion(allPatients.getAll().toArray());
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
+        markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
+        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
 
         double totalNumberOfDoses = 28.0;
-        assertEquals(3 * 100 / totalNumberOfDoses, dailyReminderAdherenceService.getAdherencePercentage("patientId", DateUtil.now()));
+        assertEquals(3 * 100 / totalNumberOfDoses, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), DateUtil.now()));
     }
 
     @Test
     public void adherenceAfterFourWeeksIntoRegimen_ForMultipleDosages_AfterTodaysFirstDoseTime() {
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(5), null, null, null));
             add(new DosageResponse("dosage2Id", new Time(16, 30), DateUtil.today().minusWeeks(5), null, null, null));
         }});
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
         // setting up adherence logs for first dosage
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).minusDays(1));
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4));
@@ -174,17 +225,24 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         addAdherenceLog("dosage2Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4));
         addAdherenceLog("dosage2Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).plusDays(1));
         addAdherenceLog("dosage2Id", DosageStatus.TAKEN, DateUtil.today().minusWeeks(4).plusDays(2));
+        patient.setPatientId("patientId5");
+        patient.getPatientPreferences().setPasscode("2222");
 
+        allPatients.add(patient);
+        markForDeletion(allPatients.getAll().toArray());
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
+        markForDeletion(allUniquePatientFields.getAll().toArray());
+
+        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(pillRegimen));
 
         int dosesTakenTheLastFourWeeks = 7;
         double totalDosesInFourWeeks = 29 + 28;
         DateTime timeOfFirstDosage = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
-        assertEquals(dosesTakenTheLastFourWeeks * 100 / totalDosesInFourWeeks, dailyReminderAdherenceService.getAdherencePercentage("patientId", timeOfFirstDosage));
+        assertEquals(dosesTakenTheLastFourWeeks * 100 / totalDosesInFourWeeks, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), timeOfFirstDosage));
     }
 
     private void addAdherenceLog(String dosageId, DosageStatus dosageStatus, LocalDate dosageDate) {
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", dosageId, dosageStatus, dosageDate));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog(patient.getId(), "pillRegimenId", dosageId, dosageStatus, dosageDate));
     }
 
 }

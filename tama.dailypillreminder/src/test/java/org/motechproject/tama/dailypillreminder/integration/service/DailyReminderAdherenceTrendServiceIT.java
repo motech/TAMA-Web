@@ -18,6 +18,9 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdheren
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.dailypillreminder.service.TAMAPillReminderService;
 import org.motechproject.tama.ivr.service.AdherenceService;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.util.DateUtil;
@@ -41,6 +44,8 @@ import static org.powermock.api.support.membermodification.MemberMatcher.method;
 @ContextConfiguration(locations = "classpath*:applicationDailyPillReminderContext.xml", inheritLocations = false)
 public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest {
 
+    private static final String PATIENT_ID = "patientId";
+
     @Mock
     private TAMAPillReminderService pillReminderService;
 
@@ -50,7 +55,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     @Autowired
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
-    @Autowired
+    @Mock
     private AllPatients allPatients;
 
     @Autowired
@@ -67,10 +72,11 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     @Before
     public void setUp() {
         initMocks(this);
-        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties, new AdherenceService());
+        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties, new AdherenceService(), allPatients);
         dailyReminderAdherenceTrendService = new DailyPillReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
+        Patient patient = new PatientBuilder().withDefaults().withStatus(Status.Active).build();
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
     }
-
 
     @Test
     public void adherenceTrendIsFallingWhenAdherenceTodayIsLessThanAdherenceOnLastWeek_SingleDoseRegimen() {

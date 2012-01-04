@@ -21,14 +21,16 @@ import java.util.Map;
 @Component
 public class DailyPillReminderSchedulerService {
     private MotechSchedulerService motechSchedulerService;
+    public DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
 
     @Autowired
-    public DailyPillReminderSchedulerService(MotechSchedulerService motechSchedulerService) {
+    public DailyPillReminderSchedulerService(MotechSchedulerService motechSchedulerService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService) {
         this.motechSchedulerService = motechSchedulerService;
+        this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
     }
 
     public void scheduleDailyPillReminderJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
-        scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(treatmentAdvice);
+        scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient, treatmentAdvice);
         scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, treatmentAdvice);
     }
 
@@ -37,12 +39,13 @@ public class DailyPillReminderSchedulerService {
         unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
     }
 
-    void scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(TreatmentAdvice treatmentAdvice) {
+    void scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(Patient patient, TreatmentAdvice treatmentAdvice) {
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(treatmentAdvice.getPatientId())
                 .withExternalId(treatmentAdvice.getPatientId())
                 .payload();
         MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
-        LocalDate startDate = DateUtil.newDate(treatmentAdvice.getStartDate()).plusWeeks(5);
+        LocalDate startDate = dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice).plusWeeks(5);
+
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
         Date jobStartDate = startDate.toDate();
         CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, jobStartDate, treatmentAdvice.getEndDate());
@@ -55,7 +58,7 @@ public class DailyPillReminderSchedulerService {
                 .payload();
         MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, eventParams);
 
-        Date jobStartDate = getJobStartDate(DateUtil.newDate(treatmentAdvice.getStartDate()));
+        Date jobStartDate = getJobStartDate(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice));
         Date jobEndDate = treatmentAdvice.getEndDate() == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).plusDays(1).toDate();
 
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
