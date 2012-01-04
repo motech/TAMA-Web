@@ -59,29 +59,28 @@ public class AdherenceMessageWhenPreviousDoseCapturedCommandTest {
     public void shouldPlayAdherenceMessageWhenPreviousDosageIsRecorded() {
         DateTime now = new DateTime(2011, 8, 4, 12, 0);
         LocalDate today = now.toLocalDate();
+        LocalDate yesterday = today.minusDays(1);
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         List<DosageResponse> dosageResponses = Arrays.asList(
-                new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 1), null, today, null),
-                new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), null, today, null));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 0, 0, dosageResponses);
+                new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 1), null, yesterday, null),
+                new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), null, yesterday, null));
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 2, 0, dosageResponses);
         DosageResponse currentDosage = dosageResponses.get(1);
-        DateTime callStartTime = DateUtil.newDateTime(currentDosage.getStartDate(), currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
+        DateTime callStartTime = DateUtil.newDateTime(today, currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
         TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientId("p1").callStartTime(callStartTime).callDirection(CallDirection.Outbound);
         ivrContext = new DailyPillReminderContextForTest(tamaivrContextForTest).dosageId("currentDosageId").pillRegimen(pillRegimenResponse);
 
         when(dailyReminderAdherenceService.getAdherencePercentage("p1", callStartTime)).thenReturn(100.0);
         assertArrayEquals(new String[]{TamaIVRMessage.YOUR_ADHERENCE_IS_NOW, "Num_100", TamaIVRMessage.PERCENT}, command.executeCommand(ivrContext));
-
     }
 
     @Test
     public void shouldNotReturnAnyMessagesWhenPreviousDosageInformationIsNotCaptured() {
         DateTime now = new DateTime(2011, 8, 16, 5, 0);
-        LocalDate yesterday = now.toLocalDate().minusDays(1);
         List<DosageResponse> dosageResponses = Arrays.asList(
-                new DosageResponse("previousDosageId", new Time(8, 0), DateUtil.newDate(2011, 7, 1), null, yesterday, null),
-                new DosageResponse("currentDosageId", new Time(16, 0), DateUtil.newDate(2011, 7, 1), null, yesterday, null));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 0, 0, dosageResponses);
+                new DosageResponse("previousDosageId", new Time(8, 0), DateUtil.newDate(2011, 7, 1), null, null, null),
+                new DosageResponse("currentDosageId", new Time(16, 0), DateUtil.newDate(2011, 7, 1), null, null, null));
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 2, 0, dosageResponses);
         TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientId("p1").callStartTime(now).callDirection(CallDirection.Outbound);
         ivrContext = new DailyPillReminderContextForTest(tamaivrContextForTest).dosageId("currentDosageId").pillRegimen(pillRegimenResponse);
         assertEquals(0, command.executeCommand(ivrContext).length);

@@ -1,6 +1,5 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
-import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.joda.time.DateTime;
@@ -60,11 +59,7 @@ public class PillRegimenSnapshot {
     }
 
     public Dose getCurrentDose() {
-        if (StringUtils.isNotEmpty(dailyPillReminderContext.dosageId())) {
-            return getDose(dailyPillReminderContext.dosageId());
-        } else {
-            return new PillRegimen(pillRegimenResponse).getDoseAt(dailyPillReminderContext.callStartTime());
-        }
+        return new PillRegimen(pillRegimenResponse).getDoseAt(dailyPillReminderContext.callStartTime());
     }
 
     public DateTime getNextDoseTime() {
@@ -81,7 +76,7 @@ public class PillRegimenSnapshot {
     }
 
     public boolean isTimeToTakeCurrentPill() {
-        int pillWindowInMinutes = pillRegimenResponse.getReminderRepeatWindowInHours() * 60;
+        int pillWindowInMinutes = new PillRegimen(pillRegimenResponse).getReminderRepeatWindowInHours() * 60;
 
         return nowIsWithin(pillWindowInMinutes);
     }
@@ -96,14 +91,14 @@ public class PillRegimenSnapshot {
         if (currentDose == null) return true;
         DateTime dosageTime = DateUtil.newDateTime(currentDose.getDate(), currentDose.getDosageHour(), currentDose.getDosageMinute(), 0);
         DateTime dosageWindowStart = dosageTime.minusMinutes(dosageIntervalInMinutes);
-        DateTime pillWindowStart = dosageTime.minusHours(pillRegimenResponse.getReminderRepeatWindowInHours());
+        DateTime pillWindowStart = dosageTime.minusHours(new PillRegimen(pillRegimenResponse).getReminderRepeatWindowInHours());
         return dailyPillReminderContext.callStartTime().isAfter(pillWindowStart) && dailyPillReminderContext.callStartTime().isBefore(dosageWindowStart);
     }
 
     public boolean isLateToTakeDose() {
         Dose currentDose = getCurrentDose();
         DateTime dosageTime = DateUtil.newDateTime(currentDose.getDate(), currentDose.getDosageHour(), currentDose.getDosageMinute(), 0);
-        DateTime pillWindowEnd = dosageTime.plusHours(pillRegimenResponse.getReminderRepeatWindowInHours());
+        DateTime pillWindowEnd = dosageTime.plusHours(new PillRegimen(pillRegimenResponse).getReminderRepeatWindowInHours());
         return dailyPillReminderContext.callStartTime().isAfter(pillWindowEnd);
     }
 
@@ -177,15 +172,5 @@ public class PillRegimenSnapshot {
 
     private Dose getLastDose(List<DosageResponse> dosageResponses, LocalDate currentDoseDate) {
         return new Dose(dosageResponses.get(dosageResponses.size() - 1), currentDoseDate.minusDays(1));
-    }
-
-    private Dose getDose(String dosageId) {
-        if (pillRegimenResponse == null) return null;
-        for (DosageResponse dosageResponse : pillRegimenResponse.getDosages()) {
-            if (dosageResponse.getDosageId().equals(dosageId)) {
-                return new Dose(dosageResponse, dailyPillReminderContext.callStartTime().toLocalDate());
-            }
-        }
-        return null;
     }
 }

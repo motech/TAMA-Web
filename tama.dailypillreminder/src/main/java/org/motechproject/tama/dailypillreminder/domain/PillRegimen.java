@@ -26,6 +26,10 @@ public class PillRegimen {
         return pillRegimenResponse.getPillRegimenId();
     }
 
+    public int getReminderRepeatWindowInHours() {
+        return pillRegimenResponse.getReminderRepeatWindowInHours();
+    }
+
     public List<DosageResponse> getDosageResponses() {
         return pillRegimenResponse.getDosages();
     }
@@ -48,9 +52,9 @@ public class PillRegimen {
         List<Dose> allProbableDoses = new ArrayList<Dose>();
         for (DosageResponse dosageResponse : dosageResponses) {
             LocalDate givenDate = specifiedDateTime.toLocalDate();
-            allProbableDoses.add(getDoseOn(givenDate, dosageResponse));
-            allProbableDoses.add(getDoseOn(givenDate.minusDays(1), dosageResponse));
-            allProbableDoses.add(getDoseOn(givenDate.plusDays(1), dosageResponse));
+            allProbableDoses.add(getDoseOn(dosageResponse, givenDate));
+            allProbableDoses.add(getDoseOn(dosageResponse, givenDate.minusDays(1)));
+            allProbableDoses.add(getDoseOn(dosageResponse, givenDate.plusDays(1)));
         }
 
         allProbableDoses = filterOnDosageStartDate(specifiedDateTime, allProbableDoses);
@@ -65,38 +69,6 @@ public class PillRegimen {
         return matchingDose;
     }
 
-    private DateTime pillWindowStartTime(Dose dose) {
-        return dose.getDoseTime().minusHours(pillRegimenResponse.getReminderRepeatWindowInHours());
-    }
-
-    private List<Dose> filterOnDosageStartDate(final DateTime givenDateTime, List<Dose> doses) {
-        return filter(new TypeSafeMatcher<Dose>() {
-            @Override
-            public boolean matchesSafely(Dose dose) {
-                Dose firstDose = new Dose(dose.getDosage(), dose.getDosage().getStartDate());
-                return !pillWindowStartTime(firstDose).isAfter(givenDateTime);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-            }
-        }, doses);
-    }
-
-    private List<Dose> sortDoses(List<Dose> doses) {
-        Collections.sort(doses, new Comparator<Dose>() {
-            @Override
-            public int compare(Dose d1, Dose d2) {
-                return d1.getDoseTime().compareTo(d2.getDoseTime());
-            }
-        });
-        return doses;
-    }
-
-    private Dose getDoseOn(LocalDate givenDate, DosageResponse candidateDosageResponse) {
-        return new Dose(candidateDosageResponse, givenDate);
-    }
-
     public Dose firstDose() {
         int marker = 0;
         List<DosageResponse> dosageResponses = getDosageResponses();
@@ -109,6 +81,38 @@ public class PillRegimen {
             }
         }
         DosageResponse firstDosageResponse = dosageResponses.get(marker);
-        return new Dose(firstDosageResponse, firstDosageResponse.getStartDate());
+        return getDoseOn(firstDosageResponse, firstDosageResponse.getStartDate());
+    }
+
+    private List<Dose> filterOnDosageStartDate(final DateTime givenDateTime, List<Dose> doses) {
+        return filter(new TypeSafeMatcher<Dose>() {
+            @Override
+            public boolean matchesSafely(Dose dose) {
+                Dose firstDose = getDoseOn(dose.getDosage(), dose.getStartDate());
+                return !pillWindowStartTime(firstDose).isAfter(givenDateTime);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+            }
+        }, doses);
+    }
+
+    private DateTime pillWindowStartTime(Dose dose) {
+        return dose.getDoseTime().minusHours(getReminderRepeatWindowInHours());
+    }
+
+    private List<Dose> sortDoses(List<Dose> doses) {
+        Collections.sort(doses, new Comparator<Dose>() {
+            @Override
+            public int compare(Dose d1, Dose d2) {
+                return d1.getDoseTime().compareTo(d2.getDoseTime());
+            }
+        });
+        return doses;
+    }
+
+    private Dose getDoseOn(DosageResponse candidateDosageResponse, LocalDate givenDate) {
+        return new Dose(candidateDosageResponse, givenDate);
     }
 }

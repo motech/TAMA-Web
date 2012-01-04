@@ -62,7 +62,7 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        DosageResponse previousDosage = pillRegimenSnapshot.getPreviousDose();
+        Dose previousDosage = pillRegimenSnapshot.getPreviousDose();
         assertEquals("previousDosageId", previousDosage.getDosageId());
     }
 
@@ -72,7 +72,7 @@ public class PillRegimenSnapshotTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         PillRegimenResponse pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimenSnapshot pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        DosageResponse nextDose = pillRegimenSnapshot.getNextDose();
+        Dose nextDose = pillRegimenSnapshot.getNextDose();
         assertEquals("nextDosageId", nextDose.getDosageId());
     }
 

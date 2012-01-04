@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
@@ -17,16 +16,11 @@ import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
 public class MessageForMedicinesTest {
 
     @Mock
@@ -55,10 +49,6 @@ public class MessageForMedicinesTest {
 
         LocalDate today = DateUtil.today();
         now = DateUtil.newDateTime(today, 10, 0, 0);
-        mockStatic(DateUtil.class);
-
-        when(DateUtil.today()).thenReturn(today);
-        when(DateUtil.now()).thenReturn(now);
     }
 
     @Test

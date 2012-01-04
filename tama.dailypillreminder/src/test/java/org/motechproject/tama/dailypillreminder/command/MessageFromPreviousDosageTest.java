@@ -1,10 +1,8 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
@@ -14,8 +12,6 @@ import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,33 +19,28 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
 public class MessageFromPreviousDosageTest {
     private MessageFromPreviousDosage messageFromPreviousDosage;
     private DailyPillReminderContextForTest context;
+    public LocalDate today;
 
     @Before
     public void setup() {
         initMocks(this);
         messageFromPreviousDosage = new MessageFromPreviousDosage(null);
-        mockStatic(DateUtil.class);
-        when(DateUtil.now()).thenReturn(new DateTime(2010, 10, 10, 16, 0, 0));
-        when(DateUtil.today()).thenReturn(new LocalDate(2010, 10, 10));
-        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).dosageId("currentDosageId").callStartTime(new DateTime(2010, 10, 10, 16, 0, 0)).callDirection(CallDirection.Outbound);
+        today = DateUtil.today();
+        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).dosageId("currentDosageId").callStartTime(DateUtil.newDateTime(today, 16, 0, 0)).callDirection(CallDirection.Outbound);
     }
 
     @Test
     public void shouldReturnMessagesWhenPreviousDosageHasNotBeenTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        LocalDate dosageLastTakenDate = DateUtil.today().minusDays(2);
+        LocalDate dosageLastTakenDate = today.minusDays(2);
         ArrayList<MedicineResponse> medicines = new ArrayList<MedicineResponse>();
-        medicines.add(new MedicineResponse("medicine1", DateUtil.today().minusDays(1), null));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, dosageLastTakenDate, medicines));
+        medicines.add(new MedicineResponse("medicine1", today.minusDays(1), null));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), today, null, dosageLastTakenDate, medicines));
 
         context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
@@ -68,12 +59,11 @@ public class MessageFromPreviousDosageTest {
     public void shouldReturnNoMessagesWhenPreviousDosageHasBeenTaken() {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate lastTakenDate = null;
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, lastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), today, null, lastTakenDate, new ArrayList<MedicineResponse>()));
 
         context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 
         String[] messages = messageFromPreviousDosage.executeCommand(context);
-
         assertEquals(0, messages.length);
     }
 }
