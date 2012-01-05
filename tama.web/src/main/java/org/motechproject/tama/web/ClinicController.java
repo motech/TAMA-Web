@@ -6,7 +6,6 @@ import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tama.refdata.repository.AllCities;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-@RooWebScaffold(path = "clinics", formBackingObject = Clinic.class)
 @RequestMapping("/clinics")
 @Controller
 public class ClinicController extends BaseController {

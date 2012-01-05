@@ -8,7 +8,6 @@ import org.motechproject.tama.web.view.CallLogPreferencesFilter;
 import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
-@RooWebScaffold(path = "callsummary", formBackingObject = CallLogPreferencesFilter.class)
 @RequestMapping("/callsummary")
 @Controller
 public class CallSummaryController {

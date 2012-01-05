@@ -19,7 +19,6 @@ import org.motechproject.tama.web.view.MealAdviceTypesView;
 import org.motechproject.tama.web.view.RegimensView;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-@RooWebScaffold(path = "treatmentadvices", formBackingObject = TreatmentAdvice.class)
 @RequestMapping("/treatmentadvices")
 @Controller
 public class TreatmentAdviceController extends BaseController {

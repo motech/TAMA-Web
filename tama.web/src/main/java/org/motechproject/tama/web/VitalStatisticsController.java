@@ -3,7 +3,6 @@ package org.motechproject.tama.web;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-@RooWebScaffold(path = "vital_statistics", formBackingObject = VitalStatistics.class)
 @RequestMapping("/vital_statistics")
 @Controller
 public class VitalStatisticsController extends BaseController {

@@ -7,7 +7,6 @@ import org.motechproject.tama.facility.repository.AllClinicians;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.web.view.CliniciansView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-@RooWebScaffold(path = "clinicians", formBackingObject = Clinician.class)
 @RequestMapping("/clinicians")
 @Controller
 public class ClinicianController extends BaseController {

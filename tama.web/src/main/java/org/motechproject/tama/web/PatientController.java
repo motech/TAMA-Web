@@ -26,7 +26,6 @@ import org.motechproject.tama.web.view.ModesOfTransmissionView;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,7 +40,6 @@ import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
-@RooWebScaffold(path = "patients", formBackingObject = Patient.class)
 @RequestMapping("/patients")
 @Controller
 public class PatientController extends BaseController {

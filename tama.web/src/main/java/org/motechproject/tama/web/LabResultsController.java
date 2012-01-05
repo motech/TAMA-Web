@@ -8,7 +8,6 @@ import org.motechproject.tama.refdata.repository.AllLabTests;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
-@RooWebScaffold(path = "labresults", formBackingObject = LabResultsUIModel.class)
 @RequestMapping("/labresults")
 @Controller
 public class LabResultsController extends BaseController {
