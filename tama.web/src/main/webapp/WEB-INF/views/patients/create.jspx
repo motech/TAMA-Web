@@ -12,9 +12,36 @@
         <jsp:include page="nextToPatientPreferences.jspx" />
         <jsp:include page="patientPreferences.jspx" />
     </form:create>
+
+    <script type="text/javascript">
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.Dialog");
+    </script>
+
+    <div id="patientPreferences.fourWeekWarningDialog" title="Warning" data-dojo-type="dijit.Dialog">
+        Starting the patient on weekly adherence is not recommended. <br/>
+        Are you sure you want to continue? <br/>
+		<button dojoType="dijit.form.Button" type="submit" id="id_dialog_button_1">Yes</button>
+		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="id_dialog_button_2">Cancel</button>
+	</div>
+
     <script type="text/javascript">
         function openAllPanels() {
             openPanel([basicInformationPanelWidget, medicalHistoryPanelWidget, preferencesPanelWidget]);
+        }
+
+        function warningWhenStartingOnFourDayRecall(event) {
+            // The handler for the yes button in the dialog
+            dialog.execute = function () {
+                dojo.byId("patient").submit();
+            };
+            var isCallPreferenceDailyPillReminder = dojo.byId('dailyReminderCall').checked;
+            if (!isCallPreferenceDailyPillReminder) {
+                if(Spring.validateAll()){
+                    event.preventDefault();
+                    dialog.show();
+                }
+            }
         }
 
         function showMedicalHistory() {
@@ -52,6 +79,8 @@
             fillAllButton = dojo.byId('fillAllSpan');
             nextToPatientPreferencesButton = dojo.byId('nextToPatientPreferencesSpan');
             submitButtonDiv = dojo.byId('fc_org_motechproject_tama_domain_patient_submit');
+            Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientPreferences.fourWeekWarningDialog', widgetType : 'dijit.Dialog', widgetAttrs : {}}));
+            dialog = dijit.byId('patientPreferences.fourWeekWarningDialog');
 
             dojo.parser.parse();
             if (window.location.host.indexOf('localhost') &lt; 0) {
@@ -66,7 +95,9 @@
             else {
                 hideElement([preferencesPanel, medicalHistoryPanel, nextToPatientPreferencesButton, submitButtonDiv]);
             }
+
             dojo.connect(dojo.byId('proceed'), 'onclick', openAllPanels);
+            dojo.connect(dojo.byId('proceed'), 'onclick', warningWhenStartingOnFourDayRecall);
         });
         <![CDATA[
             function encodePk(){
@@ -74,5 +105,6 @@
             }
         ]]>
     </script>
+
     <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_patient" render="${not empty dependencies}" z="T7kM5bLklANd4sGT5ihnrXA5ODk="/>
 </div>
