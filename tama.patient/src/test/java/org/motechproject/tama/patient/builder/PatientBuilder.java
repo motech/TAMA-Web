@@ -144,4 +144,10 @@ public class PatientBuilder {
         preferences.setBestCallTime(patientBestCallTime);
         return this;
     }
+
+    public PatientBuilder withRegistrationDate(LocalDate registrationDate) {
+        patient.setRegistrationDate(registrationDate);
+        return this;
+    }
+
 }

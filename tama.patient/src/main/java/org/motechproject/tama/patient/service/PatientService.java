@@ -53,6 +53,7 @@ public class PatientService {
         Patient dbPatient = allPatients.get(patient.getId());
         patient.setRevision(dbPatient.getRevision());
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
+        patient.setActivationDate(dbPatient.getActivationDate());
         patient.setLastSuspendedDate(dbPatient.getLastSuspendedDate());
         updateUniquePatientField(patient);
         allPatients.update(patient);
@@ -62,7 +63,7 @@ public class PatientService {
     public void suspend(String patientId) {
         Patient patient = allPatients.get(patientId);
         patient.suspend();
-        allPatients.update(patient);
+        update(patient);
     }
 
     public void activate(String id) {

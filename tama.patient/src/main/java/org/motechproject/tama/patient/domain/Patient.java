@@ -85,8 +85,7 @@ public class Patient extends CouchEntity {
 
     public Patient activate() {
         this.status = Status.Active;
-        if (activationDate == null)
-            this.activationDate = DateUtil.now();
+        setActivationDate(DateUtil.now());
         return this;
     }
 
@@ -294,7 +293,9 @@ public class Patient extends CouchEntity {
     }
 
     public void setActivationDate(DateTime activationDate) {
-        this.activationDate = activationDate;
+        if (this.activationDate == null) {
+            this.activationDate = activationDate;
+        }
     }
 
     @JsonIgnore

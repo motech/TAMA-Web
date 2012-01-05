@@ -1,6 +1,7 @@
 package org.motechproject.tama.patient.service;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -47,6 +48,12 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
         patientService = new PatientService(allPatients, allTreatmentAdvices, allUniquePatientFields);
         patientService.registerOutbox(outbox);
+        registerKnownCallPlans();
+    }
+
+    private void registerKnownCallPlans() {
+        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
+        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
     }
 
     @Test
@@ -86,9 +93,6 @@ public class PatientServiceTest extends BaseUnitTest {
 
     @Test
     public void patientUpdates_ButNotChangeHisCallPlan() {
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
-        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
-
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withPasscode("9999").build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
@@ -106,10 +110,26 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void patientChangesHisCallPlanDailyToWeekly() {
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
-        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
+    public void shouldNotModifyActivationDateOnUpdate() {
+        DateTime now = DateUtil.now();
+        LocalDate today = now.toLocalDate();
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withActivationDate(now).withLastSuspendedDate(now.plusDays(1)).withRegistrationDate(today).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withPasscode("9999").build();
+        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
+        when(allPatients.get(patient.getId())).thenReturn(dbPatient);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+
+        patientService.update(patient);
+
+        assertEquals(dbPatient.getActivationDate(), patient.getActivationDate());
+        assertEquals(dbPatient.getLastSuspendedDate(), patient.getLastSuspendedDate());
+        assertEquals(dbPatient.getRegistrationDate(), patient.getRegistrationDate());
+    }
+
+
+    @Test
+    public void patientChangesHisCallPlanDailyToWeekly() {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
@@ -128,9 +148,6 @@ public class PatientServiceTest extends BaseUnitTest {
 
     @Test
     public void patientChangesHisCallPlanWeeklyToDaily() {
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
-        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
-
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
@@ -149,9 +166,6 @@ public class PatientServiceTest extends BaseUnitTest {
 
     @Test
     public void patientChangesHisDayOfWeeklyCall() {
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
-        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
-
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
@@ -169,9 +183,6 @@ public class PatientServiceTest extends BaseUnitTest {
 
     @Test
     public void dailyReminderPatientChangesHisBestCallTime() {
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
-        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
-
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(05, 0, TimeMeridiem.AM)).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
@@ -189,9 +200,6 @@ public class PatientServiceTest extends BaseUnitTest {
 
     @Test
     public void weeklyReminderPatientChangesHisBestCallTime() {
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
-        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
-
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(05, 0, TimeMeridiem.AM)).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
