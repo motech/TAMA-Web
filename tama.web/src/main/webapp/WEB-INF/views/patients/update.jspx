@@ -11,6 +11,19 @@
         <jsp:include page="medicalHistoryForm.jspx" />
         <jsp:include page="patientPreferences.jspx" />
     </form:update>
+
+    <script type="text/javascript">
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.Dialog");
+    </script>
+
+    <div id="patientPreferences.fourWeekWarningDialog" title="Warning" data-dojo-type="dijit.Dialog">
+        Starting the patient on weekly adherence is not recommended. <br/>
+        Are you sure you want to continue? <br/>
+		<button dojoType="dijit.form.Button" type="submit" id="id_dialog_button_1">Yes</button>
+		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="id_dialog_button_2">Cancel</button>
+	</div>
+
     <script type="text/javascript">
         function openAllPanels() {
             openPanel([basicInformationPanelWidget, medicalHistoryPanelWidget, preferencesPanelWidget]);
@@ -25,21 +38,37 @@
             }
         }
 
+        function warningWhenStartingOnFourDayRecall(event) {
+            // The handler for the yes button in the dialog
+            dialog.execute = function () {
+                dojo.byId("patient").submit();
+            };
+            var isCallPreferenceDailyPillReminder = dojo.byId('dailyReminderCall').checked;
+            var canTransitionToWeekly = dojo.byId('can_transition_to_weekly').value;
+            if (!isCallPreferenceDailyPillReminder &amp;&amp; canTransitionToWeekly==='false') {
+                if(Spring.validateAll()) {
+                    event.preventDefault();
+                    dialog.show();
+                }
+            }
+        }
+
         dojo.addOnLoad(function() {
             dojo.parser.parse();
 
             basicInformationPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Basic_Information_id');
             medicalHistoryPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
             preferencesPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
-
-
+            Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientPreferences.fourWeekWarningDialog', widgetType : 'dijit.Dialog', widgetAttrs : {}}));
+            dialog = dijit.byId('patientPreferences.fourWeekWarningDialog')
 
             if (formHasErrors()) {
                 openAllPanels();
             }
 
-            disableWeeklyToDailyTransition();
             disableTransitionsForASuspendedPatient();
+            dojo.connect(dojo.byId('proceed'), 'onclick', warningWhenStartingOnFourDayRecall);
+
         });
     </script>
 </div>
