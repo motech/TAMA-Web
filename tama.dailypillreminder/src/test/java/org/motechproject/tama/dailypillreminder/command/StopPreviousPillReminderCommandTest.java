@@ -57,7 +57,7 @@ public class StopPreviousPillReminderCommandTest {
 
     @Test
     public void shouldUpdateDosageDateOnPillTaken_PatientCallsTAMA() {
-        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(22, 5), DateUtil.today(), null, null, null);
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(22, 5), DateUtil.today().minusDays(1), null, null, null);
         List<DosageResponse> dosages = Arrays.asList(dosageResponse);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
         ivrContext.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Inbound).callStartTime(DateUtil.now().withHourOfDay(dosageResponse.getDosageHour()));

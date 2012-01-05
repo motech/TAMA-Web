@@ -1,20 +1,19 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.filter;
-
 public class PillRegimen {
+
+    private enum DosageType {Previous, Current, Next}
 
     private PillRegimenResponse pillRegimenResponse;
 
@@ -46,70 +45,121 @@ public class PillRegimen {
         }
         return count;
     }
-
-    public Dose getDoseAt(DateTime specifiedDateTime) {
-        List<DosageResponse> dosageResponses = getDosageResponses();
-        List<Dose> allProbableDoses = new ArrayList<Dose>();
-        for (DosageResponse dosageResponse : dosageResponses) {
-            LocalDate givenDate = specifiedDateTime.toLocalDate();
-            allProbableDoses.add(getDoseOn(dosageResponse, givenDate));
-            allProbableDoses.add(getDoseOn(dosageResponse, givenDate.minusDays(1)));
-            allProbableDoses.add(getDoseOn(dosageResponse, givenDate.plusDays(1)));
-        }
-
-        allProbableDoses = filterOnDosageStartDate(specifiedDateTime, allProbableDoses);
-        allProbableDoses = sortDoses(allProbableDoses);
-
-        Dose matchingDose = null;
-        for (Dose dose : allProbableDoses) {
-            if (specifiedDateTime.isAfter(pillWindowStartTime(dose))) {
-                matchingDose = dose;
-            }
-        }
-        return matchingDose;
+/* ---------------------- Previous Dose Operations Start ----------------------------- */
+    public Dose getPreviousDoseAt(DateTime specifiedDateTime) {
+        HashMap<DosageType, Dose> proximateDosesAt = getProximateDosesAt(specifiedDateTime);
+        return proximateDosesAt.isEmpty() ? null : proximateDosesAt.get(DosageType.Previous);
     }
 
-    public Dose firstDose() {
-        int marker = 0;
+    public DateTime getPreviousDoseTime(DateTime specifiedDateTime) {
+        Dose previousDose = getPreviousDoseAt(specifiedDateTime);
+        return previousDose == null ? null : previousDose.getDoseTime();
+    }
+
+    public boolean isPreviousDosageTaken(DateTime specifiedDateTime) {
+        Dose currentDose = getDoseAt(specifiedDateTime);
+        Dose previousDose = getPreviousDoseAt(specifiedDateTime);
+        boolean isVeryFirstDosageCall = currentDose.isVeryFirstDosageCall(veryFirstDose());
+        boolean wasPreviousDosageCapturedYesterday = previousDose == null || previousDose.wasDosageResponseCapturedYesterday();
+        return isVeryFirstDosageCall || wasPreviousDosageCapturedYesterday;
+    }
+/* ---------------------- Previous Dose Operations End ----------------------------- */
+
+/* ---------------------- Current Dose Operations Start ----------------------------- */
+    public Dose getDoseAt(DateTime specifiedDateTime) {
+        HashMap<DosageType, Dose> proximateDosesAt = getProximateDosesAt(specifiedDateTime);
+        return proximateDosesAt.isEmpty() ? null : proximateDosesAt.get(DosageType.Current);
+    }
+
+    public boolean isNowWithinCurrentDosePillWindow(DateTime specifiedDateTime) {
+        return isNowWithinCurrentDosageInterval(specifiedDateTime, getReminderRepeatWindowInHours() * 60);
+    }
+
+    public boolean isNowWithinCurrentDosageInterval(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
+        Dose currentDose = getDoseAt(specifiedDateTime);
+        if (currentDose == null) return false;
+        return currentDose.isWithinSpecifiedInterval(specifiedDateTime, dosageIntervalInMinutes);
+    }
+
+    public boolean isCurrentDoseTaken(DateTime specifiedDateTime) {
+        Dose currentDose = getDoseAt(specifiedDateTime);
+        return currentDose == null || currentDose.wasDosageResponseCaptured();
+    }
+
+    public boolean isEarlyToTakeDose(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
+        Dose currentDose = getDoseAt(specifiedDateTime);
+        if (currentDose == null) return true;
+        return currentDose.isEarlyToTake(specifiedDateTime, getReminderRepeatWindowInHours(), dosageIntervalInMinutes);
+    }
+
+    public boolean isLateToTakeDose(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
+        Dose currentDose = getDoseAt(specifiedDateTime);
+        return currentDose.isLateToTake(specifiedDateTime, dosageIntervalInMinutes);
+    }
+/* ---------------------- Current Dose Operations End ----------------------------- */
+
+/* ---------------------- Next Dose Operations Start ----------------------------- */
+    public Dose getNextDoseAt(DateTime specifiedDateTime) {
+        HashMap<DosageType, Dose> proximateDosesAt = getProximateDosesAt(specifiedDateTime);
+        return proximateDosesAt.isEmpty() ? veryFirstDose() : proximateDosesAt.get(DosageType.Next);
+    }
+
+    public DateTime getNextDoseTime(DateTime specifiedDateTime) {
+        Dose nextDose = getNextDoseAt(specifiedDateTime);
+        return nextDose == null ? null : nextDose.getDoseTime();
+    }
+/* ---------------------- Next Dose Operations End ----------------------------- */
+
+    public Dose veryFirstDose() {
         List<DosageResponse> dosageResponses = getDosageResponses();
-        DateTime earliestDoseTime = new Dosage(dosageResponses.get(0)).firstDose();
+        DosageResponse earliestDose = dosageResponses.get(0);
         for (DosageResponse dosageResponse : dosageResponses) {
             DateTime firstDoseDateTime = new Dosage(dosageResponse).firstDose();
-            if (firstDoseDateTime.isBefore(earliestDoseTime)) {
-                earliestDoseTime = firstDoseDateTime;
-                marker = dosageResponses.indexOf(dosageResponse);
+            if (firstDoseDateTime.isBefore(new Dosage(earliestDose).firstDose())) {
+                earliestDose = dosageResponse;
             }
         }
-        DosageResponse firstDosageResponse = dosageResponses.get(marker);
-        return getDoseOn(firstDosageResponse, firstDosageResponse.getStartDate());
+        return getDoseOn(earliestDose, earliestDose.getStartDate());
     }
 
-    private List<Dose> filterOnDosageStartDate(final DateTime givenDateTime, List<Dose> doses) {
-        return filter(new TypeSafeMatcher<Dose>() {
-            @Override
-            public boolean matchesSafely(Dose dose) {
-                Dose firstDose = getDoseOn(dose.getDosage(), dose.getStartDate());
-                return !pillWindowStartTime(firstDose).isAfter(givenDateTime);
+    private HashMap<DosageType, Dose> getProximateDosesAt(DateTime specifiedDateTime) {
+        List<Dose> allProbableDoses = getAllProbableDoses(specifiedDateTime);
+        HashMap<DosageType, Dose> proximateDosages = new HashMap<DosageType, Dose>();
+        for (int i = 0; i < allProbableDoses.size(); i++) {
+            if (specifiedDateTime.isAfter(pillWindowStartTime(allProbableDoses.get(i)))) {
+                if (i - 1 >= 0) {
+                    proximateDosages.put(DosageType.Previous, allProbableDoses.get(i - 1));
+                }
+                proximateDosages.put(DosageType.Current, allProbableDoses.get(i));
+                if (i + 1 < allProbableDoses.size()) {
+                    proximateDosages.put(DosageType.Next, allProbableDoses.get(i + 1));
+                }
             }
+        }
+        return proximateDosages;
+    }
 
-            @Override
-            public void describeTo(Description description) {
-            }
-        }, doses);
+    private List<Dose> getAllProbableDoses(DateTime specifiedDateTime) {
+        List<Dose> allProbableDoses = new ArrayList<Dose>();
+        LocalDate givenDate = specifiedDateTime.toLocalDate();
+        for (DosageResponse dosageResponse : getDosageResponses()) {
+            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.minusDays(2)))
+                allProbableDoses.add(getDoseOn(dosageResponse, givenDate.minusDays(2)));
+            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.minusDays(1)))
+                allProbableDoses.add(getDoseOn(dosageResponse, givenDate.minusDays(1)));
+            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate))
+                allProbableDoses.add(getDoseOn(dosageResponse, givenDate));
+            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.plusDays(1)))
+                allProbableDoses.add(getDoseOn(dosageResponse, givenDate.plusDays(1)));
+            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.plusDays(2)))
+                allProbableDoses.add(getDoseOn(dosageResponse, givenDate.plusDays(2)));
+        }
+        Collections.sort(allProbableDoses);
+        return allProbableDoses;
     }
 
     private DateTime pillWindowStartTime(Dose dose) {
         return dose.getDoseTime().minusHours(getReminderRepeatWindowInHours());
-    }
-
-    private List<Dose> sortDoses(List<Dose> doses) {
-        Collections.sort(doses, new Comparator<Dose>() {
-            @Override
-            public int compare(Dose d1, Dose d2) {
-                return d1.getDoseTime().compareTo(d2.getDoseTime());
-            }
-        });
-        return doses;
     }
 
     private Dose getDoseOn(DosageResponse candidateDosageResponse, LocalDate givenDate) {

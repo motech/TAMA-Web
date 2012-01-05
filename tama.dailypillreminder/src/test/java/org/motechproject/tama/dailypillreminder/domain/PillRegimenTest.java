@@ -208,7 +208,7 @@ public class PillRegimenTest extends BaseUnitTest {
         LocalDate dosage2StartDate = DateUtil.newDate(2011, 10, 10);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withTwoDosages(dosage1Time, dosage1StartDate, "dosage1Id", dosage2Time, dosage2StartDate, "dosage2Id").build();
 
-        Dose dose = new PillRegimen(pillRegimenResponse).firstDose();
+        Dose dose = new PillRegimen(pillRegimenResponse).veryFirstDose();
 
         assertEquals(20, dose.getDoseTime().getHourOfDay());
         assertEquals(30, dose.getDoseTime().getMinuteOfHour());

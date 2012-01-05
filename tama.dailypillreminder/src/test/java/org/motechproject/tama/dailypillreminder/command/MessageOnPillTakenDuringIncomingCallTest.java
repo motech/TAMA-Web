@@ -60,7 +60,7 @@ public class MessageOnPillTakenDuringIncomingCallTest {
 
         when(ivrMessage.get(TAMAConstants.DOSAGE_INTERVAL)).thenReturn(dosageInterval.toString());
         context.callStartTime(DateUtil.now().withHourOfDay(dosage.getDosageHour()).withMinuteOfHour(dosage.getDosageMinute()).plusMinutes((dosageInterval + 2)));
-        assertArrayEquals(new String[]{TamaIVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.executeCommand(context));
+        assertArrayEquals(new String[]{TamaIVRMessage.TOOK_DOSE_LATE, TamaIVRMessage.DOSE_RECORDED}, messageOnPillTakenDuringIncomingCall.executeCommand(context));
     }
 
     @Test

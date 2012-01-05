@@ -19,7 +19,6 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MessageFromPreviousDosageTest {
     private MessageFromPreviousDosage messageFromPreviousDosage;
@@ -28,7 +27,6 @@ public class MessageFromPreviousDosageTest {
 
     @Before
     public void setup() {
-        initMocks(this);
         messageFromPreviousDosage = new MessageFromPreviousDosage(null);
         today = DateUtil.today();
         context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).dosageId("currentDosageId").callStartTime(DateUtil.newDateTime(today, 16, 0, 0)).callDirection(CallDirection.Outbound);
@@ -40,7 +38,7 @@ public class MessageFromPreviousDosageTest {
         LocalDate dosageLastTakenDate = today.minusDays(2);
         ArrayList<MedicineResponse> medicines = new ArrayList<MedicineResponse>();
         medicines.add(new MedicineResponse("medicine1", today.minusDays(1), null));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), today, null, dosageLastTakenDate, medicines));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), today.minusDays(2), null, dosageLastTakenDate, medicines));
 
         context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
 

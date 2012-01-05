@@ -284,7 +284,7 @@ public class DailyPillReminderAdherenceServiceTest {
             when(dose.getDosageId()).thenReturn("dosageId");
             when(dose.getDate()).thenReturn(doseDate.toLocalDate());
             when(dose.getDoseTime()).thenReturn(doseDate);
-            when(dose.isLate(doseTakenTime, 15)).thenReturn(true);
+            when(dose.isLateToTake(doseTakenTime, 15)).thenReturn(true);
 
             dailyReminderAdherenceService.recordDosageAdherenceAsCaptured("patientId", "regimenId", dose, DosageStatus.TAKEN, doseTakenTime);
 

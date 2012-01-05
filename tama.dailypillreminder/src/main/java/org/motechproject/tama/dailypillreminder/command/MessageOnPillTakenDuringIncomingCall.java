@@ -27,7 +27,7 @@ public class MessageOnPillTakenDuringIncomingCall extends DailyPillReminderTreeC
         PillRegimenSnapshot pillRegimenResponse = pillRegimenSnapshot(context);
         if (pillRegimenResponse.isEarlyToTakeDose(dosageInterval))
             messages.add(TamaIVRMessage.TOOK_DOSE_BEFORE_TIME);
-        else if (pillRegimenResponse.isLateToTakeDose())
+        else if (pillRegimenResponse.isLateToTakeDose(dosageInterval))
             messages.add(TamaIVRMessage.TOOK_DOSE_LATE);
         else if (pillRegimenResponse.hasTakenDosageOnTime(dosageInterval))
             messages.add(TamaIVRMessage.DOSE_TAKEN_ON_TIME);
