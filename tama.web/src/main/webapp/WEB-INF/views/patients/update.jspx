@@ -20,8 +20,8 @@
     <div id="patientPreferences.fourWeekWarningDialog" title="Warning" data-dojo-type="dijit.Dialog">
         Starting the patient on weekly adherence is not recommended. <br/>
         Are you sure you want to continue? <br/>
-		<button dojoType="dijit.form.Button" type="submit" id="id_dialog_button_1">Yes</button>
-		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="id_dialog_button_2">Cancel</button>
+		<button dojoType="dijit.form.Button" type="submit" id="four_week_warning_confirm">Yes</button>
+		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
 	</div>
 
     <script type="text/javascript">

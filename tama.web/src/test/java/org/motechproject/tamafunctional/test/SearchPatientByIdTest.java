@@ -35,7 +35,7 @@ public class SearchPatientByIdTest extends BaseTest {
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 goToPatientRegistrationPage().
-                registerNewPatient(patient).
+                registerNewPatientOnDailyPillReminder(patient).
                 goToListPatientsPage().
                 searchPatientBy(patient.patientId());
 

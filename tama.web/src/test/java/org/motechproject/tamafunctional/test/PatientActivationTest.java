@@ -21,7 +21,7 @@ public class PatientActivationTest extends BaseTest {
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 goToPatientRegistrationPage().
-                registerNewPatient(patient);
+                registerNewPatientOnDailyPillReminder(patient);
 
         Assert.assertEquals("Inactive", showPatientPage.getStatus().trim());
 
@@ -40,7 +40,7 @@ public class PatientActivationTest extends BaseTest {
         ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 goToPatientRegistrationPage().
-                registerNewPatient(patient);
+                registerNewPatientOnDailyPillReminder(patient);
 
         showPatientPage.activatePatient();
 

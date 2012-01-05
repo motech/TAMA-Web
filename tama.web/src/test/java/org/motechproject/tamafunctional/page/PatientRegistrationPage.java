@@ -11,12 +11,14 @@ public class PatientRegistrationPage extends Page {
     private CreateBasicPatientInformationSection createBasicPatientInformationSection;
     private CreatePatientMedicalHistorySection createPatientMedicalHistorySection;
     private CreatePatientPreferencesSection createPatientPreferencesSection;
+    private ConfirmCreationDialog confirmCreationDialog;
 
     public PatientRegistrationPage(WebDriver webDriver) {
         super(webDriver);
         createBasicPatientInformationSection = PageFactory.initElements(webDriver, CreateBasicPatientInformationSection.class);
         createPatientMedicalHistorySection = PageFactory.initElements(webDriver, CreatePatientMedicalHistorySection.class);
         createPatientPreferencesSection = PageFactory.initElements(webDriver, CreatePatientPreferencesSection.class);
+        confirmCreationDialog = PageFactory.initElements(webDriver, ConfirmCreationDialog.class);
     }
 
     @Override
@@ -31,11 +33,20 @@ public class PatientRegistrationPage extends Page {
         waitForDojoElementToLoad("_patientId_id", "dijitInputInner");
     }
 
-    public ShowPatientPage registerNewPatient(TestPatient patient) {
+    public ShowPatientPage registerNewPatientOnDailyPillReminder(TestPatient patient) {
         createBasicPatientInformationSection.enterDetails(patient);
         createPatientMedicalHistorySection.enterDetails(patient);
         createPatientPreferencesSection.enterDetails(patient);
         createPatientPreferencesSection.getPasscode().submit();
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public ShowPatientPage registerNewPatientOnWeekly(TestPatient patient) {
+        createBasicPatientInformationSection.enterDetails(patient);
+        createPatientMedicalHistorySection.enterDetails(patient);
+        createPatientPreferencesSection.enterDetails(patient);
+        createPatientPreferencesSection.getPasscode().submit();
+        confirmCreationDialog.confirm(wait);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 }
