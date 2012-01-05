@@ -2,10 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
+import org.joda.time.*;
 import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.TAMAConstants;
@@ -315,5 +312,13 @@ public class Patient extends CouchEntity {
     public void suspend() {
         setStatus(Status.Suspended);
         setLastSuspendedDate(DateUtil.now());
+    }
+
+    @JsonIgnore
+    public boolean canTransitionToWeekly() {
+        if (getActivationDate() == null)
+            return false;
+        boolean moreThan4WeeksAfterActivation = Days.daysBetween(getActivationDate(), DateUtil.now()).getDays() >= 28;
+        return moreThan4WeeksAfterActivation && patientPreferences.getCallPreference().isDaily();
     }
 }

@@ -193,9 +193,10 @@ public class PatientController extends BaseController {
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-        final Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
+        Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         initUIModel(uiModel, patient);
         uiModel.addAttribute("systemCategories", patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories());
+        uiModel.addAttribute("canTransitionToWeekly", patient.canTransitionToWeekly());
         return UPDATE_VIEW;
     }
 

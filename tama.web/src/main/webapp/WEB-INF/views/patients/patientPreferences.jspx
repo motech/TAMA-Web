@@ -82,5 +82,6 @@
             </div>
         </div>
 
+        <input type="hidden" id="can_transition_to_weekly" value="${canTransitionToWeekly}"/>
     </util:panel>
 </div>

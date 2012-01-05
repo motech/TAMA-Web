@@ -32,6 +32,8 @@
             medicalHistoryPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Medical_History_id');
             preferencesPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
 
+
+
             if (formHasErrors()) {
                 openAllPanels();
             }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PatientTest extends BaseUnitTest {
@@ -141,6 +142,28 @@ public class PatientTest extends BaseUnitTest {
 
         assertEquals(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "C1/P1", uniqueFields.get(0));
         assertEquals(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + "1234567890/1234", uniqueFields.get(1));
+    }
+
+    @Test
+    public void canTransitionToWeeklyAfterFourWeeksAfterActivation() {
+        final DateTime now = DateTime.now();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(1)).withCallPreference(CallPreference.DailyPillReminder).build();
+        assertFalse(patient.canTransitionToWeekly());
+
+        patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(1)).withCallPreference(CallPreference.FourDayRecall).build();
+        assertFalse(patient.canTransitionToWeekly());
+
+        patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(28)).withCallPreference(CallPreference.FourDayRecall).build();
+        assertFalse(patient.canTransitionToWeekly());
+
+        patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(28)).withCallPreference(CallPreference.DailyPillReminder).build();
+        assertTrue(patient.canTransitionToWeekly());
+    }
+
+    @Test
+    public void cannotTransitionToWeeklyIfPatientIsNotActivated() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withActivationDate(null).withCallPreference(CallPreference.DailyPillReminder).build();
+        assertFalse(patient.canTransitionToWeekly());
     }
 
     @Test
