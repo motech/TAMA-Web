@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.motechproject.eventtracking.service.EventService;
 import org.motechproject.ivr.service.CallRequest;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.patient.domain.Patient;
@@ -23,6 +24,8 @@ public class PillReminderCallTest {
     private AllPatients allPatients;
     @Mock
     private IVRService callService;
+    @Mock
+    private EventService eventService;
 
     private String PATIENT_DOC_ID = "P_1";
     private String DOSAGE_ID = "D_1";
