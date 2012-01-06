@@ -64,7 +64,8 @@
                                      required="true"/>
                         <field:input
                                 id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules_${item.index}_offsetDays"
-                                field="treatmentAdvice.drugDosages[${item.index}].offsetDays"
+                                field="treatmentAdvice.drugDosages[${item.index}].offsetDays" 
+                                validationRegex="^[0-9]*$"
                                 label="Start evening dose after (days)"/>
 
                         <field:datetime dateTimePattern="dd/MM/yyyy"
