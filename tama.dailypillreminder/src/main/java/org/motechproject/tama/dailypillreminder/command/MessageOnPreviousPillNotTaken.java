@@ -24,7 +24,7 @@ public class MessageOnPreviousPillNotTaken extends DailyPillReminderTreeCommand 
     public String[] executeCommand(DailyPillReminderContext context) {
         ArrayList<String> messages = new ArrayList<String>();
         messages.add(TamaIVRMessage.YOU_SAID_YOU_DID_NOT_TAKE);
-        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageConfirmation_YESTERDAYS_MORNING(pillRegimenSnapshot(context).getPreviousDoseTime()));
+        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageConfirmation_YESTERDAYS_MORNING(pillRegimen(context).getPreviousDoseTime(context.callStartTime())));
         messages.add(TamaIVRMessage.DOSE_NOT_TAKEN);
         messages.add(TamaIVRMessage.DOSE_RECORDED);
         messages.add(TamaIVRMessage.TRY_NOT_TO_MISS);

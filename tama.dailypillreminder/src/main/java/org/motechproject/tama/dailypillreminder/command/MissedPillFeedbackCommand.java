@@ -20,7 +20,7 @@ public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
 
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
-        PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse(context));
+        PillRegimen pillRegimen = pillRegimen(context);
         int dosagesTaken = allDosageAdherenceLogs.getDosageTakenCount(pillRegimen.getId());
         int dosagesNotTaken = pillRegimen.getNumberOfDosesAsOf(context.callStartTime()) - dosagesTaken;
         switch (dosagesNotTaken) {

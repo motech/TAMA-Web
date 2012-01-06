@@ -28,7 +28,7 @@ public class NextCallDetails extends DailyPillReminderTreeCommand {
             return new String[0];
         }
 
-        DateTime nextDosageTime = pillRegimenSnapshot(context).getNextDoseTime();
+        DateTime nextDosageTime = pillRegimen(context).getNextDoseTime(context.callStartTime());
         List<String> messageForNextDosage = new ArrayList<String>();
         messageForNextDosage.add(TamaIVRMessage.YOUR_NEXT_DOSE_IS);
         messageForNextDosage.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime, context.preferredLanguage()));

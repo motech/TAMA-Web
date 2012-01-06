@@ -14,6 +14,7 @@ import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.command.*;
 import org.motechproject.tama.dailypillreminder.decisiontree.CurrentDosageReminderTree;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
@@ -144,7 +145,7 @@ public class CurrentDosageReminderTreeTest {
         List<DosageResponse> dosageResponses = Arrays.asList(currentDosage, previousDosage);
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
 
-        context.pillRegimen(pillRegimenResponse).callStartTime(DateUtil.newDateTime(DateUtil.today(), 14, 0, 0));
+        context.pillRegimen(new PillRegimen(pillRegimenResponse)).callStartTime(DateUtil.newDateTime(DateUtil.today(), 14, 0, 0));
     }
 }
 

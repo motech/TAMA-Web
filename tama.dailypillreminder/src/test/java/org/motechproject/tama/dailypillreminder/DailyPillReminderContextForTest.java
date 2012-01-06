@@ -5,14 +5,13 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
-import org.motechproject.tama.dailypillreminder.domain.PillRegimenSnapshot;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 
 import java.util.List;
 
 public class DailyPillReminderContextForTest extends DailyPillReminderContext {
-    private PillRegimenResponse pillRegimenResponse;
-    private PillRegimenSnapshot pillRegimenSnapshot;
+    private PillRegimen pillRegimen;
     private TAMAIVRContextForTest tamaivrContext;
     private String dosageId;
 
@@ -22,22 +21,16 @@ public class DailyPillReminderContextForTest extends DailyPillReminderContext {
     }
 
     @Override
-    public PillRegimenResponse pillRegimen(PillReminderService pillReminderService) {
-        return pillRegimenResponse;
+    public PillRegimen pillRegimen(PillReminderService pillReminderService) {
+        return pillRegimen;
     }
 
     public DailyPillReminderContextForTest pillRegimen(PillRegimenResponse pillRegimenResponse) {
-        this.pillRegimenResponse = pillRegimenResponse;
-        return this;
+        return pillRegimen(new PillRegimen(pillRegimenResponse));
     }
 
-    @Override
-    public PillRegimenSnapshot pillRegimenSnapshot(PillReminderService pillReminderService) {
-        return pillRegimenSnapshot;
-    }
-
-    public DailyPillReminderContextForTest pillRegimenSnapshot(PillRegimenSnapshot pillRegimenSnapshot) {
-        this.pillRegimenSnapshot = pillRegimenSnapshot;
+    public DailyPillReminderContextForTest pillRegimen(PillRegimen pillRegimen) {
+        this.pillRegimen = pillRegimen;
         return this;
     }
 
