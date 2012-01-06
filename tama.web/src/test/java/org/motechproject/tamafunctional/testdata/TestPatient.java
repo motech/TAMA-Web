@@ -116,4 +116,11 @@ public class TestPatient extends TestEntity {
         this.nonHIVMedicalHistory = nonHIVMedicalHistory;
         return this;
     }
+
+    public TestPatient callPreference(TestPatientPreferences.CallPreference callPreference) {
+        if (this.patientPreferences == null)
+            this.patientPreferences(TestPatientPreferences.withMandatory());
+        this.patientPreferences().callPreference(callPreference);
+        return this;
+    }
 }

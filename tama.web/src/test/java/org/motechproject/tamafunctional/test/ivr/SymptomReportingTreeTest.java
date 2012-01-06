@@ -1,4 +1,4 @@
-package org.motechproject.tamafunctional.test;
+package org.motechproject.tamafunctional.test.ivr;
 
 import com.thoughtworks.xstream.XStream;
 import org.junit.Test;

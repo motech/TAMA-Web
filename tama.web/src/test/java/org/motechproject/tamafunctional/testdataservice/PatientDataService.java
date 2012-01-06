@@ -12,6 +12,10 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.Arrays;
 
+/*
+ *TODO : Update operations should be removed from this class.
+ *        Patient Update flows are specific to data, so the client is in a better position to do them.
+ */
 public class PatientDataService extends EntityDataService {
     public PatientDataService(WebDriver webDriver) {
         super(webDriver);
@@ -76,14 +80,6 @@ public class PatientDataService extends EntityDataService {
 
     public void updateVitalStatistics(TestVitalStatistics testVitalStatistics, TestPatient patient, TestClinician clinician) {
         viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasOne().goToEditVitalStatisticsPage().enterVitalStatistics(testVitalStatistics).logout();
-    }
-
-    public void changePatientToWeeklyPillReminderWithBestCallDay_AndBestCallTime(TestPatient patient, TestClinician clinician, String bestCallDay, String bestCallTime){
-        viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToWeeklyCallPlanWithBestCallDayAndTime(bestCallDay, bestCallTime).logout();
-    }
-
-    public void changePatientToDailyPillReminder(TestPatient patient, TestClinician clinician){
-        viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToDailyCallPlan().logout();
     }
 
     public TestVitalStatistics getInitialVitalStatistics(TestPatient patient, TestClinician clinician) {

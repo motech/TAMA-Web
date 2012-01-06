@@ -1,5 +1,6 @@
-package org.motechproject.tamafunctional.test;
+package org.motechproject.tamafunctional.test.patient;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.testdata.TestClinician;
@@ -13,11 +14,18 @@ import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import static junit.framework.Assert.assertEquals;
 
 public class PatientARTRegimenTest extends BaseTest {
+
+    private TestClinician clinician;
+
+    @Before
+    public void setUp() {
+        super.setUp();
+        clinician = TestClinician.withMandatory();
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
+    }
+
     @Test
     public void testCreateARTRegimenForPatientOnDailyCall() {
-        TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinic(clinician);
-
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);
@@ -32,9 +40,6 @@ public class PatientARTRegimenTest extends BaseTest {
 
     @Test
     public void testCreateARTRegimenForPatientOnWeeklyCall() {
-        TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinic(clinician);
-
         TestPatient patient = TestPatient.withMandatory();
         patient.patientPreferences().callPreference(TestPatientPreferences.CallPreference.WEEKLY_CALL);
         patient.patientPreferences().dayOfWeeklyCall("Monday");
@@ -52,9 +57,6 @@ public class PatientARTRegimenTest extends BaseTest {
 
     @Test
     public void shouldChangeRegimenForPatientOnDailyCall() {
-        TestClinician clinician = TestClinician.withMandatory();
-        new ClinicianDataService(webDriver).createWithClinic(clinician);
-
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.registerAndActivate(patient, clinician);

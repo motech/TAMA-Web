@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public abstract class BaseTest extends FunctionalTestObject {
+
     @Rule
     public TestName testName = new TestName();
 

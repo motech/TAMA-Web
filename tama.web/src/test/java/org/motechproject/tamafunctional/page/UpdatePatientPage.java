@@ -6,8 +6,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 
-public class UpdatePatientPage extends Page{
+public class UpdatePatientPage extends Page {
 
     @FindBy(how = How.ID, using = "weeklyReminderCall")
     private WebElement weeklyReminderCallRadioButton;
@@ -21,8 +22,19 @@ public class UpdatePatientPage extends Page{
     @FindBy(how = How.ID, using = "dailyReminderCall")
     private WebElement dailyReminderCallRadioButton;
 
+    private ConfirmCreationDialog confirmCreationDialog;
+    private CreatePatientPreferencesSection createPatientPreferencesSection;
+
+
     public UpdatePatientPage(WebDriver webDriver) {
         super(webDriver);
+        confirmCreationDialog = PageFactory.initElements(webDriver, ConfirmCreationDialog.class);
+        createPatientPreferencesSection = PageFactory.initElements(webDriver, CreatePatientPreferencesSection.class);
+    }
+
+    @Override
+    public void postInitialize() {
+        createPatientPreferencesSection.postInitialize();
     }
 
     @Override
@@ -33,17 +45,15 @@ public class UpdatePatientPage extends Page{
         bestCallTimeBox = WebDriverFactory.createWebElement(bestCallTimeBox);
     }
 
-    public ShowPatientPage changePatientToWeeklyCallPlanWithBestCallDayAndTime(String bestCallDay, String bestCallTime) {
+    public ShowPatientPage changePatientToWeeklyCallPlanWithBestCallDayAndTime(String bestCallDay, String bestCallTime, boolean expectWarningDialog) {
         weeklyReminderCallRadioButton.click();
         dayOfWeeklyCallBox.sendKeys(bestCallDay);
         bestCallTimeBox.sendKeys(bestCallTime);
-        bestCallTimeBox.submit();
+        createPatientPreferencesSection.getPasscode().submit();
+        if (expectWarningDialog) {
+            confirmCreationDialog.confirm(wait);
+        }
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
-    public ShowPatientPage changePatientToDailyCallPlan() {
-        dailyReminderCallRadioButton.click();
-        bestCallTimeBox.submit();
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
 }

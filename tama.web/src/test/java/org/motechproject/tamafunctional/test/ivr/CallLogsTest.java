@@ -1,4 +1,4 @@
-package org.motechproject.tamafunctional.test;
+package org.motechproject.tamafunctional.test.ivr;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

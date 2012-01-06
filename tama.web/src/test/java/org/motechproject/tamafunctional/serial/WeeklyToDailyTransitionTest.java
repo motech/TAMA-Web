@@ -47,6 +47,7 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         setupData();
     }
 
+    //TODO: Remove the usage of PatientDataService For Update Operations.
     @Test
     @Ignore
     public void shouldRecordAdherenceAfreshWhenPatientChangesFromWeeklyToDailyPillReminder() {
@@ -57,10 +58,10 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
 
         tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0).minusDays(6));
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.changePatientToWeeklyPillReminderWithBestCallDay_AndBestCallTime(patient, clinician, "Monday", "09:05");
+        //patientDataService.viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToWeeklyCallPlanWithBestCallDayAndTime("Monday", "09:05", true).logout();
 
         tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0));
-        patientDataService.changePatientToDailyPillReminder(patient, clinician);
+        //patientDataService.viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToDailyCallPlan().logout();
         String currentDosageId = scheduledJobDataService.currentDosageId(patient.id());
         caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());

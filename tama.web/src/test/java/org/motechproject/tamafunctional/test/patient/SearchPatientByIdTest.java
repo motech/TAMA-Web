@@ -1,4 +1,4 @@
-package org.motechproject.tamafunctional.test;
+package org.motechproject.tamafunctional.test.patient;
 
 
 import org.junit.Before;
@@ -17,6 +17,7 @@ import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.assertEquals;
+import static org.motechproject.tamafunctional.test.patient.PatientAssertionUtils.assertBasicInformation;
 
 public class SearchPatientByIdTest extends BaseTest {
 
@@ -39,9 +40,7 @@ public class SearchPatientByIdTest extends BaseTest {
                 goToListPatientsPage().
                 searchPatientBy(patient.patientId());
 
-        assertEquals(showPatientPage.getPatientId(), patient.patientId());
-        assertEquals(showPatientPage.getMobileNumber(), patient.mobileNumber());
-        assertEquals(showPatientPage.getDateOfBirth(), new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()));
+        assertBasicInformation(patient, showPatientPage);
         showPatientPage.logout();
     }
 
