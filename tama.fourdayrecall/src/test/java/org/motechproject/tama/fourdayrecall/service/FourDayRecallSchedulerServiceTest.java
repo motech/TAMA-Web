@@ -79,9 +79,10 @@ public class FourDayRecallSchedulerServiceTest {
         verify(motechSchedulerService, times(2 * (1 + numDaysToRetry))).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
-        assertFourDayRecallCallJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6");
-        assertFourDayRecallCallJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7");
-        assertFourDayRecallCallJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1");
+        LocalDate startDate = TREATMENT_ADVICE_START_DATE.plusDays(WAIT_TIME_TO_START_FOURDAY_RECALL);
+		assertFourDayRecallCallJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6",startDate.toDate()  );
+        assertFourDayRecallCallJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7", startDate.plusDays(1).toDate());
+        assertFourDayRecallCallJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1", startDate.plusDays(2).toDate());
 
         assertFallingAdherenceAlertJob(cronSchedulableJobList.get(3), "0 0 0 ? * 7", false, expectedFallingAdherenceAlertJobStartDate);
         assertFallingAdherenceAlertJob(cronSchedulableJobList.get(4), "0 0 0 ? * 1", false, expectedFallingAdherenceAlertJobStartDate);
@@ -108,9 +109,10 @@ public class FourDayRecallSchedulerServiceTest {
         verify(motechSchedulerService, times(2 * (1 + numDaysToRetry))).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
-        assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(0), "0 30 10 ? * 6");
-        assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(1), "0 30 10 ? * 7");
-        assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(2), "0 30 10 ? * 1");
+        LocalDate startDate = TREATMENT_ADVICE_START_DATE.plusDays(WAIT_TIME_TO_START_FOURDAY_RECALL + DAYS_AFTER_CALL_PREFERENCE_CHANGES);
+        assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(0), "0 30 10 ? * 6", startDate.toDate());
+        assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(1), "0 30 10 ? * 7", startDate.plusDays(1).toDate());
+        assertFourDayRecallCallJobWhenCallPreferenceChanged(cronSchedulableJobList.get(2), "0 30 10 ? * 1", startDate.plusDays(2).toDate());
 
         assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(3), "0 0 0 ? * 7", false, expectedFallingAdherenceAlertJobStartDate);
         assertFallingAdherenceAlertJobWhenCallPreferenceChanged(cronSchedulableJobList.get(4), "0 0 0 ? * 1", false, expectedFallingAdherenceAlertJobStartDate);
@@ -235,15 +237,15 @@ public class FourDayRecallSchedulerServiceTest {
         verify(motechSchedulerService).unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, patient_id);
     }
 
-    private void assertFourDayRecallCallJob(CronSchedulableJob cronSchedulableJob, String cronExpression) {
-        assertCronSchedulableJob(cronSchedulableJob, cronExpression, TREATMENT_ADVICE_START_DATE.plusDays(WAIT_TIME_TO_START_FOURDAY_RECALL).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
+    private void assertFourDayRecallCallJob(CronSchedulableJob cronSchedulableJob, String cronExpression, Date jobStartDate ) {
+        assertCronSchedulableJob(cronSchedulableJob, cronExpression, jobStartDate, TREATMENT_ADVICE_END_DATE.toDate());
         assertEquals(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, cronSchedulableJob.getMotechEvent().getSubject());
         assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
         assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
     }
 
-    private void assertFourDayRecallCallJobWhenCallPreferenceChanged(CronSchedulableJob cronSchedulableJob, String cronExpression) {
-        assertCronSchedulableJob(cronSchedulableJob, cronExpression, TREATMENT_ADVICE_START_DATE.plusDays(WAIT_TIME_TO_START_FOURDAY_RECALL + 3).toDate(), TREATMENT_ADVICE_END_DATE.toDate());
+    private void assertFourDayRecallCallJobWhenCallPreferenceChanged(CronSchedulableJob cronSchedulableJob, String cronExpression, Date jobStartDate) {
+        assertCronSchedulableJob(cronSchedulableJob, cronExpression, jobStartDate, TREATMENT_ADVICE_END_DATE.toDate());
         assertEquals(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, cronSchedulableJob.getMotechEvent().getSubject());
         assertEquals(PATIENT_ID, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.PATIENT_DOC_ID_KEY));
         assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));

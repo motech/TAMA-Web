@@ -104,7 +104,7 @@ public class FourDayRecallSchedulerService {
                     .withPatientDocId(patientDocId)
                     .payload();
 
-            scheduleWeeklyEvent(getJobStartDate(startDate), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
+            scheduleWeeklyEvent(getJobStartDate(startDate.plusDays(count)), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
         }
     }
 
