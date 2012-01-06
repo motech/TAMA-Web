@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.serial;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
@@ -49,6 +50,7 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
     }
 
     @Test
+    @Ignore
     public void shouldRecordAdherenceAfreshWhenPatientChangesFromWeeklyToDailyPillReminder() {
         for (int i = 3; i >= 0; i--) {
             tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0).minusDays(6).minusDays(i));
