@@ -7,7 +7,12 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <util:properties id="couchdbProperties" location="classpath:/couchdb.properties"/>
+    <util:properties id="passwordProperties" location="classpath:password.properties"/>
+    <util:properties id="couchdbProperty" location="classpath:couchdb.properties"/>
+    <bean id="couchdbProperties" class="org.motechproject.extension.CouchDbProperties">
+        <property name="properties" ref="couchdbProperty"/>
+    </bean>
+
 
     <context:property-placeholder location="classpath*:*.properties"/>
     <context:annotation-config/>

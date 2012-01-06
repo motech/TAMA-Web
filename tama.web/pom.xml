@@ -231,6 +231,7 @@
                         <configuration>
                             <files>
                                 <file>${project.basedir}/../build/maven.properties</file>
+                                <file>${project.basedir}/../tama.common/src/main/resources/password.properties</file>
                             </files>
                         </configuration>
                     </execution>
@@ -251,56 +252,56 @@
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/tama-web"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/tama-web"/>
                                 </exec>
                                 <exec executable="curl">
                                     <arg value="-s"/>
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/motech-pillreminder"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/motech-pillreminder"/>
                                 </exec>
                                 <exec executable="curl">
                                     <arg value="-s"/>
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/trees"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/trees"/>
                                 </exec>
                                 <exec executable="curl">
                                     <arg value="-s"/>
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/rules"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/rules"/>
                                 </exec>
                                 <exec executable="curl">
                                     <arg value="-s"/>
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/motech-alert"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/motech-alert"/>
                                 </exec>
                                 <exec executable="curl">
                                     <arg value="-s"/>
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/motech-ivr-kookoo"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/motech-ivr-kookoo"/>
                                 </exec>
                                 <exec executable="curl">
                                     <arg value="-s"/>
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/motech-outbox"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/motech-outbox"/>
                                 </exec>
                                 <exec executable="curl">
                                     <arg value="-s"/>
                                     <arg value="-S"/>
                                     <arg value="-X"/>
                                     <arg value="DELETE"/>
-                                    <arg value="http://${couchdb.server}:${couchdb.port}/motech-scheduletracking"/>
+                                    <arg value="http://${couchdb.username}:${couchdb.password}@${couchdb.server}:${couchdb.port}/motech-scheduletracking"/>
                                 </exec>
                             </target>
                         </configuration>
