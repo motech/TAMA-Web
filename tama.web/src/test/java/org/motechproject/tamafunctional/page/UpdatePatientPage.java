@@ -56,4 +56,9 @@ public class UpdatePatientPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
+    public ShowPatientPage changePatientToDailyCallPlan() {
+        dailyReminderCallRadioButton.click();
+        bestCallTimeBox.submit();
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
 }

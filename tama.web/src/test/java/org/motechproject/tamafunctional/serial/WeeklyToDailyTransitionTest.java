@@ -3,11 +3,12 @@ package org.motechproject.tamafunctional.serial;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
+import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
+import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
@@ -43,11 +44,10 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         super.setUp();
         scheduledTaskManager = new ScheduledTaskManager(webClient);
         tamaDateTimeService = new TAMADateTimeService(webClient);
-        tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0));
+        tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2011, 12, 25), now.getHourOfDay(), now.getMinuteOfHour(), 0));
         setupData();
     }
 
-    //TODO: Remove the usage of PatientDataService For Update Operations.
     @Test
     public void shouldRecordAdherenceAfreshWhenPatientChangesFromWeeklyToDailyPillReminder() {
         for (int i = 3; i >= 0; i--) {
@@ -56,11 +56,20 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         }
 
         tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0).minusDays(6));
-        PatientDataService patientDataService = new PatientDataService(webDriver);
-        //patientDataService.viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToWeeklyCallPlanWithBestCallDayAndTime("Monday", "09:05", true).logout();
+        MyPageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithClinicianUserNamePassword(clinician.userName(), clinician.password())
+                .gotoShowPatientPage(patient)
+                .clickOnEditTAMAPreferences().
+                changePatientToWeeklyCallPlanWithBestCallDayAndTime("Monday", "09:05", true).logout();
 
         tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0));
-        //patientDataService.viewPatient(patient, clinician).clickOnEditTAMAPreferences().changePatientToDailyCallPlan().logout();
+
+        MyPageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithClinicianUserNamePassword(clinician.userName(), clinician.password())
+                .gotoShowPatientPage(patient)
+                .clickOnEditTAMAPreferences()
+                .changePatientToDailyCallPlan().logout();
+
         String currentDosageId = scheduledJobDataService.currentDosageId(patient.id());
         caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
@@ -100,7 +109,6 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
         ivrResponse = caller.enter("3");
         ivrResponse = caller.enter("2");
-        ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW);
         IVRAssert.assertAudioFilesPresent(ivrResponse, "Num_000");
         IVRAssert.assertAudioFilesPresent(ivrResponse, PERCENT);
