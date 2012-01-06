@@ -23,9 +23,12 @@ public class PatientDataService extends EntityDataService {
     }
 
     private ShowPatientPage registerWithoutLogout(TestPatient patient, TestClinician clinician) {
-        ShowPatientPage showPatientPage = login(clinician).
-                goToPatientRegistrationPage().
-                registerNewPatientOnDailyPillReminder(patient);
+        PatientRegistrationPage patientRegistrationPage = login(clinician).goToPatientRegistrationPage();
+        ShowPatientPage showPatientPage;
+        if (patient.patientPreferences().isOnDailyCall())
+            showPatientPage = patientRegistrationPage.registerNewPatientOnDailyPillReminder(patient);
+        else
+            showPatientPage = patientRegistrationPage.registerNewPatientOnWeekly(patient);
         patient.id(showPatientPage.patientDocId());
         logInfo("{Created}{Patient}{DocId=%s}", patient.id());
         return showPatientPage;

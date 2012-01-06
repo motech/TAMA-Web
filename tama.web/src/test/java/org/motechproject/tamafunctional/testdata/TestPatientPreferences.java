@@ -55,6 +55,10 @@ public class TestPatientPreferences {
         return this;
     }
 
+    public boolean isOnDailyCall() {
+        return callPreference.equals(CallPreference.DAILY_CALL);
+    }
+
     public CallPreference callPreference() {
         return callPreference;
     }
