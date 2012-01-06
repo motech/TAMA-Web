@@ -33,11 +33,6 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>motech-event-tracking-api</artifactId>
-            <version>0.6-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder</artifactId>
             <version>0.6-SNAPSHOT</version>
         </dependency>
