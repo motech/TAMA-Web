@@ -63,13 +63,13 @@ public class PatientService {
     public void suspend(String patientId) {
         Patient patient = allPatients.get(patientId);
         patient.suspend();
-        update(patient);
+        allPatients.update(patient);
     }
 
     public void activate(String id) {
         Patient patient = allPatients.get(id);
         patient.activate();
-        update(patient);
+        allPatients.update(patient);
     }
 
     private void updateUniquePatientField(Patient patient) {

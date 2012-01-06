@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -17,9 +18,9 @@ import org.motechproject.tama.patient.strategy.Outbox;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -87,8 +88,10 @@ public class PatientServiceTest extends BaseUnitTest {
 
         patientService.suspend(patient.getId());
 
-        verify(allPatients).update(patient);
-        assertThat(patient.getStatus(), is(Status.Suspended));
+        ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
+        verify(allPatients).update(patientArgumentCaptor.capture());
+        assertEquals(Status.Suspended, patientArgumentCaptor.getValue().getStatus());
+        assertEquals(DateUtil.today(), patientArgumentCaptor.getValue().getLastSuspendedDate().toLocalDate());
     }
 
     @Test
