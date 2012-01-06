@@ -10,6 +10,7 @@ import org.motechproject.tama.common.util.TimeUtil;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.refdata.repository.AllDrugs;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -67,9 +68,11 @@ public class PillRegimenRequestMapper {
         @Override
         public MedicineRequest convert(DrugDosage drugDosage) {
             LocalDate startDate = addOffsetDays ? drugDosage.getStartDate().plusDays(drugDosage.getOffsetDays()) : drugDosage.getStartDate();
-            return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()),
-                    startDate,
-                    drugDosage.getEndDate());
+            LocalDate today = DateUtil.today();
+            if (startDate.isBefore(today)) {
+                startDate = today;
+            }
+            return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), startDate, drugDosage.getEndDate());
         }
     }
 

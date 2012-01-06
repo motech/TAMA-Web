@@ -49,7 +49,6 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
 
     //TODO: Remove the usage of PatientDataService For Update Operations.
     @Test
-    @Ignore
     public void shouldRecordAdherenceAfreshWhenPatientChangesFromWeeklyToDailyPillReminder() {
         for (int i = 3; i >= 0; i--) {
             tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0).minusDays(6).minusDays(i));

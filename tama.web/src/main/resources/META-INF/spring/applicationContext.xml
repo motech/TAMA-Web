@@ -7,7 +7,6 @@
 
     <import resource="classpath:applicationDailyPillReminderContext.xml"/>
     <import resource="classpath:applicationFourDayRecallContext.xml"/>
-    <import resource="classpath:applicationOutboxContext.xml"/>
     <import resource="classpath:applicationSymptomReportingContext.xml"/>
     <import resource="classpath:applicationHealthTipsContext.xml"/>
     <import resource="classpath:/placeholderPluginContext.xml"/>

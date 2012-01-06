@@ -120,7 +120,7 @@ public class PillRegimen {
     }
 /* ---------------------- Next Dose Operations End ----------------------------- */
 
-    public Dose veryFirstDose() {
+    Dose veryFirstDose() {
         List<DosageResponse> dosageResponses = getDosageResponses();
         DosageResponse earliestDose = dosageResponses.get(0);
         for (DosageResponse dosageResponse : dosageResponses) {
