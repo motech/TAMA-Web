@@ -1,7 +1,7 @@
 package org.motechproject.tama.dailypillreminder.context;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
-import org.motechproject.tama.dailypillreminder.domain.PillRegimenSnapshot;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
@@ -22,18 +22,14 @@ public class DailyPillReminderStrategy extends PillModuleStrategy {
     @Override
     public boolean previousDosageCaptured(TAMAIVRContext tamaivrContext) {
         DailyPillReminderContext dailyPillReminderContext = new DailyPillReminderContext(tamaivrContext);
-        PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(dailyPillReminderContext);
-        return pillRegimenSnapshot.isPreviousDosageCaptured();
+        PillRegimen pillRegimen = dailyPillReminderContext.pillRegimen(pillReminderService);
+        return pillRegimen.isPreviousDosageTaken(dailyPillReminderContext.callStartTime());
     }
 
     @Override
     public boolean isCurrentDoseTaken(TAMAIVRContext tamaivrContext) {
         DailyPillReminderContext dailyPillReminderContext = new DailyPillReminderContext(tamaivrContext);
-        PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(dailyPillReminderContext);
-        return pillRegimenSnapshot.isCurrentDoseTaken();
-    }
-
-    private PillRegimenSnapshot pillRegimenSnapshot(DailyPillReminderContext dailyPillReminderContext) {
-        return dailyPillReminderContext.pillRegimenSnapshot(pillReminderService);
+        PillRegimen pillRegimen = dailyPillReminderContext.pillRegimen(pillReminderService);
+        return pillRegimen.isCurrentDoseTaken(dailyPillReminderContext.callStartTime());
     }
 }

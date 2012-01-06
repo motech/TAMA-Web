@@ -46,6 +46,6 @@ public class MessageForMedicines extends DailyPillReminderTreeCommand {
     }
 
     private List<String> getMedicines(DailyPillReminderContext context) {
-        return pillRegimenSnapshot(context).medicinesForCurrentDose();
+        return pillRegimen(context).medicinesForCurrentDose(context.callStartTime());
     }
 }

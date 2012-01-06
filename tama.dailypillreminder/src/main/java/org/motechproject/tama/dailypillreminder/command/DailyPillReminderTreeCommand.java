@@ -1,10 +1,9 @@
 package org.motechproject.tama.dailypillreminder.command;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
-import org.motechproject.tama.dailypillreminder.domain.PillRegimenSnapshot;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.ivr.command.BaseTreeCommand;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 
@@ -17,16 +16,7 @@ public abstract class DailyPillReminderTreeCommand extends BaseTreeCommand {
         this.pillReminderService = pillReminderService;
     }
 
-    protected PillRegimenSnapshot pillRegimenSnapshot(DailyPillReminderContext context) {
-        PillRegimenResponse pillRegimenResponse = pillRegimenResponse(context);
-        return new PillRegimenSnapshot(context, pillRegimenResponse);
-    }
-
-    protected PillRegimenResponse pillRegimen(DailyPillReminderContext context) {
-        return pillRegimenResponse(context);
-    }
-
-    protected PillRegimenResponse pillRegimenResponse(DailyPillReminderContext context) {
+    protected PillRegimen pillRegimen(DailyPillReminderContext context) {
         return context.pillRegimen(pillReminderService);
     }
 

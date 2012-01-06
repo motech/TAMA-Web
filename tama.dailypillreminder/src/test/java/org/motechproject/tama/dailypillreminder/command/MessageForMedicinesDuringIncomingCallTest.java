@@ -12,6 +12,7 @@ import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
@@ -62,7 +63,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
 
     private void setUpContexts() {
         TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientId("patientId");
-        context = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build());
+        context = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(new PillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()));
     }
 
     @Before
@@ -98,7 +99,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
                 Arrays.asList(new MedicineResponse("medicine3", today, today))));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
 
-        context.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound);
+        context.pillRegimen(new PillRegimen(pillRegimenResponse)).callDirection(CallDirection.Outbound);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
         assertArrayEquals(new String[]{"welcome_to_someClinicName", "010_02_04_notReportedIfTaken", "pillmedicine3", "010_02_06_fromTheBottle2"}, messages);

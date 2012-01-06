@@ -18,16 +18,15 @@ import java.util.ArrayList;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PillRegimenSnapshotNextDosageTest {
+public class PillRegimen_NextDosageTest {
     private DailyPillReminderContextForTest ivrContext;
-    private PillRegimenResponse pillRegimen;
-    private PillRegimenSnapshot pillRegimenSnapshot;
+    private PillRegimenResponse pillRegimenResponse;
+    private PillRegimen pillRegimen;
     private String currentDosageId = "currentDosageId";
 
     @Before
     public void setUp() {
-        initMocks(this);
-        pillRegimen = PillRegimenResponseBuilder.startRecording().withDefaults().build();
+        pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         ivrContext = new DailyPillReminderContextForTest(new TAMAIVRContextForTest());
         ivrContext.dosageId(currentDosageId);
     }
@@ -41,9 +40,9 @@ public class PillRegimenSnapshotNextDosageTest {
         dosages.add(new DosageResponse("nextDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 19, 0, 0));
-        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
-        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
-        DateTime nextDosageTime = pillRegimenSnapshot.getNextDoseTime();
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimen = new PillRegimen(pillRegimenResponse);
+        DateTime nextDosageTime = pillRegimen.getNextDoseTime(ivrContext.callStartTime());
 
         assertEquals(10, nextDosageTime.getHourOfDay());
         assertEquals(5, nextDosageTime.getMinuteOfHour());
@@ -59,10 +58,10 @@ public class PillRegimenSnapshotNextDosageTest {
         dosages.add(new DosageResponse("nextDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 12, 0, 0));
-        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
-        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimen = new PillRegimen(pillRegimenResponse);
 
-        DateTime nextDosageTime = pillRegimenSnapshot.getNextDoseTime();
+        DateTime nextDosageTime = pillRegimen.getNextDoseTime(ivrContext.callStartTime());
 
         assertEquals(20, nextDosageTime.getHourOfDay());
         assertEquals(5, nextDosageTime.getMinuteOfHour());
@@ -77,10 +76,10 @@ public class PillRegimenSnapshotNextDosageTest {
         dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 9, 0, 0));
-        pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
-        pillRegimenSnapshot = new PillRegimenSnapshot(ivrContext, pillRegimen);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimen = new PillRegimen(pillRegimenResponse);
 
-        DateTime nextDosageTime = pillRegimenSnapshot.getNextDoseTime();
+        DateTime nextDosageTime = pillRegimen.getNextDoseTime(ivrContext.callStartTime());
 
         assertEquals(10, nextDosageTime.getHourOfDay());
         assertEquals(5, nextDosageTime.getMinuteOfHour());

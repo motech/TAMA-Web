@@ -63,6 +63,11 @@ public class PillRegimen {
         boolean wasPreviousDosageCapturedYesterday = previousDose == null || previousDose.wasDosageResponseCapturedYesterday();
         return isVeryFirstDosageCall || wasPreviousDosageCapturedYesterday;
     }
+
+    public List<String> medicinesForPreviousDose(DateTime specifiedDateTime) {
+        Dose previousDose = getPreviousDoseAt(specifiedDateTime);
+        return previousDose == null ? new ArrayList<String>() : previousDose.medicineNames();
+    }
 /* ---------------------- Previous Dose Operations End ----------------------------- */
 
 /* ---------------------- Current Dose Operations Start ----------------------------- */
@@ -95,6 +100,11 @@ public class PillRegimen {
     public boolean isLateToTakeDose(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
         Dose currentDose = getDoseAt(specifiedDateTime);
         return currentDose.isLateToTake(specifiedDateTime, dosageIntervalInMinutes);
+    }
+
+    public List<String> medicinesForCurrentDose(DateTime specifiedDateTime) {
+        Dose currentDose = getDoseAt(specifiedDateTime);
+        return currentDose == null ? new ArrayList<String>() : currentDose.medicineNames();
     }
 /* ---------------------- Current Dose Operations End ----------------------------- */
 

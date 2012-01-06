@@ -2,7 +2,7 @@ package org.motechproject.tama.dailypillreminder.command;
 
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
-import org.motechproject.tama.dailypillreminder.domain.PillRegimenSnapshot;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
@@ -20,8 +20,8 @@ public class AdherenceMessageWhenPreviousDosageCapturedCommand extends Adherence
 
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
-        PillRegimenSnapshot pillRegimenSnapshot = pillRegimenSnapshot(context);
-        if (pillRegimenSnapshot.isPreviousDosageCaptured()) {
+        PillRegimen pillRegimen = pillRegimen(context);
+        if (pillRegimen.isPreviousDosageTaken(context.callStartTime())) {
             return getAdherenceMessage(context);
         }
         return new String[0];

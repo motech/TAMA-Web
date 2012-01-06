@@ -11,6 +11,7 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
@@ -52,7 +53,7 @@ public class MissedPillFeedbackCommandTest {
         dosageResponses.add(new DosageResponse("d2", new Time(15, 5), new LocalDate(2011, 7, 5), new LocalDate(2012, 7, 5), DateUtil.today(), null));
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 
-        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientId("p1").dosageId("d1");
+        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(new PillRegimen(pillRegimenResponse)).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientId("p1").dosageId("d1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(64);
 

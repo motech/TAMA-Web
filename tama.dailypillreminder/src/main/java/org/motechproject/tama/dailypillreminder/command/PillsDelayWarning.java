@@ -27,7 +27,7 @@ public class PillsDelayWarning extends DailyPillReminderTreeCommand {
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
         if (isLastReminder(context)) {
-            DateTime nextDosageTime = pillRegimenSnapshot(context).getNextDoseTime();
+            DateTime nextDosageTime = pillRegimen(context).getNextDoseTime(context.callStartTime());
             List<String> messages = new ArrayList<String>();
             messages.add(TamaIVRMessage.LAST_REMINDER_WARNING);
             messages.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime, context.preferredLanguage()));

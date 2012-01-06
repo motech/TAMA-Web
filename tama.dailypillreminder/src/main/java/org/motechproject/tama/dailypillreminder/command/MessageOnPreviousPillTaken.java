@@ -24,7 +24,7 @@ public class MessageOnPreviousPillTaken extends DailyPillReminderTreeCommand {
     public String[] executeCommand(DailyPillReminderContext context) {
         ArrayList<String> messages = new ArrayList<String>();
         messages.add(TamaIVRMessage.YOU_SAID_YOU_TOOK);
-        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageConfirmation_YESTERDAYS_MORNING(pillRegimenSnapshot(context).getPreviousDoseTime()));
+        messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageConfirmation_YESTERDAYS_MORNING(pillRegimen(context).getPreviousDoseTime(context.callStartTime())));
         messages.add(TamaIVRMessage.DOSE_TAKEN);
         messages.add(TamaIVRMessage.DOSE_RECORDED);
         return messages.toArray(new String[messages.size()]);
