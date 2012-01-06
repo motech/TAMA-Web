@@ -48,7 +48,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
         super.setUp();
         scheduledTaskManager = new ScheduledTaskManager(webClient);
         tamaDateTimeService = new TAMADateTimeService(webClient);
-        tamaDateTimeService.adjustDateTime(DateUtil.now());
+        tamaDateTimeService.adjustDateTime(DateUtil.now().minusWeeks(2));
         setupData();
     }
 

@@ -38,12 +38,15 @@ public class HealthTipsTest extends BaseIVRTest {
         TestClinician clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
+
+        tamaDateTimeService = new TAMADateTimeService(webClient);
+        tamaDateTimeService.adjustDateTime(DateUtil.now().minusWeeks(2));
+
         TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFrom2WeeksAgo();
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
         patientDataService.setupLabResult(patient, clinician, labResult);
 
-        tamaDateTimeService = new TAMADateTimeService(webClient);
         tamaDateTimeService.adjustDateTime(DateUtil.now());
     }
 
