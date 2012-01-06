@@ -18,8 +18,6 @@ import java.io.IOException;
 
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class CurrentDosageConfirmTest extends BaseIVRTest {
 
     @Before

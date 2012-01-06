@@ -20,7 +20,6 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private String callId;
     private CallDirection callDirection;
     private DateTime callStartTime;
-    private String dosageId;
     private String patientId;
     private Patient patient;
     private String lastCompletedTree;

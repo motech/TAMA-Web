@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.test.ivr.IVRAssert;
@@ -19,23 +18,16 @@ import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
-import org.motechproject.tamafunctional.testdataservice.ScheduledJobDataService;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class WeeklyToDailyTransitionTest extends BaseIVRTest {
 
-    @Autowired
-    private ScheduledJobDataService scheduledJobDataService;
     private TestPatient patient;
     private TestClinician clinician;
-    private ScheduledTaskManager scheduledTaskManager;
     private TAMADateTimeService tamaDateTimeService;
 
     private DateTime now = DateUtil.now();
@@ -43,7 +35,6 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
     @Before
     public void setUp() {
         super.setUp();
-        scheduledTaskManager = new ScheduledTaskManager(webClient);
         tamaDateTimeService = new TAMADateTimeService(webClient);
         tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2011, 12, 25), now.getHourOfDay(), now.getMinuteOfHour(), 0));
         setupData();
@@ -72,8 +63,7 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
                 .clickOnEditTAMAPreferences()
                 .changePatientToDailyCallPlan().logout();
 
-        String currentDosageId = scheduledJobDataService.currentDosageId(patient.id());
-        caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
+        caller.replyToCall(new PillReminderCallInfo(1));
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
         patientSaysHeDidNotTakeTheDose(ivrResponse);
         caller.hangup();

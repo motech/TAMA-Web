@@ -55,7 +55,7 @@ public class MessageForMedicinesTest {
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
-        context.dosageId("currentDosageId").callStartTime(timeWithinPillWindow);
+        context.callStartTime(timeWithinPillWindow);
         String[] messages = messageForMedicines.executeCommand(context);
 
         assertEquals(5, messages.length);

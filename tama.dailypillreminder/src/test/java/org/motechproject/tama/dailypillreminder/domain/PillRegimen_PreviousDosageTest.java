@@ -39,7 +39,7 @@ public class PillRegimen_PreviousDosageTest {
         dosages.add(new DosageResponse("previousDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         int dayOfTheMonth = 10;
-        ivrContext.callStartTime(new DateTime(2010, 1, dayOfTheMonth, 9, 0, 0)).dosageId(currentDosageId);
+        ivrContext.callStartTime(new DateTime(2010, 1, dayOfTheMonth, 9, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
         DateTime previousDosageTime = pillRegimen.getPreviousDoseTime(ivrContext.callStartTime());
 
@@ -58,7 +58,7 @@ public class PillRegimen_PreviousDosageTest {
 
         pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         int dayOfTheMonth = 10;
-        ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 21, 0, 0)).dosageId(currentDosageId);
+        ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 21, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
         DateTime previousDosageTime = pillRegimen.getPreviousDoseTime(ivrContext.callStartTime());
 
@@ -76,7 +76,7 @@ public class PillRegimen_PreviousDosageTest {
 
         pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         int dayOfTheMonth = 10;
-        ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 9, 0, 0)).dosageId(currentDosageId);
+        ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 9, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
         DateTime previousDosageTime = pillRegimen.getPreviousDoseTime(ivrContext.callStartTime());
 

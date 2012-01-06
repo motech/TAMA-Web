@@ -13,9 +13,7 @@ import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
-import org.motechproject.tamafunctional.testdataservice.ScheduledJobDataService;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -23,11 +21,7 @@ import java.io.IOException;
 
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class PreviousDosageReminderTest extends BaseIVRTest {
-    @Autowired
-    private ScheduledJobDataService scheduledJobDataService;
     private TestPatient patient;
 
     @Before
@@ -48,8 +42,7 @@ public class PreviousDosageReminderTest extends BaseIVRTest {
 
     @Test
     public void previousDosageTakenFlow_WhenTAMA_CallsPatient() throws IOException {
-        String currentDosageId = scheduledJobDataService.currentDosageId(patient.id());
-        caller.replyToCall(new PillReminderCallInfo(currentDosageId, 1));
+        caller.replyToCall(new PillReminderCallInfo(1));
 
         IVRResponse ivrResponse = caller.enter("1234");
         patientConfirmsNotTakingCurrentDose(ivrResponse);

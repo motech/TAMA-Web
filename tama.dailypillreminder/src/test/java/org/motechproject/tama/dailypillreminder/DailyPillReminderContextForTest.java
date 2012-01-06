@@ -13,7 +13,6 @@ import java.util.List;
 public class DailyPillReminderContextForTest extends DailyPillReminderContext {
     private PillRegimen pillRegimen;
     private TAMAIVRContextForTest tamaivrContext;
-    private String dosageId;
 
     public DailyPillReminderContextForTest(TAMAIVRContextForTest tamaivrContext) {
         super(tamaivrContext);
@@ -31,16 +30,6 @@ public class DailyPillReminderContextForTest extends DailyPillReminderContext {
 
     public DailyPillReminderContextForTest pillRegimen(PillRegimen pillRegimen) {
         this.pillRegimen = pillRegimen;
-        return this;
-    }
-
-    @Override
-    public String dosageId() {
-        return dosageId;
-    }
-
-    public DailyPillReminderContextForTest dosageId(String dosageId) {
-        this.dosageId = dosageId;
         return this;
     }
 

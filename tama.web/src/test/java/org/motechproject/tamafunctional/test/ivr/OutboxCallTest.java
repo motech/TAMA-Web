@@ -22,8 +22,6 @@ import java.io.IOException;
 import static junit.framework.Assert.assertEquals;
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class OutboxCallTest extends BaseIVRTest {
     private TestPatient patient;
     private TestClinician clinician;

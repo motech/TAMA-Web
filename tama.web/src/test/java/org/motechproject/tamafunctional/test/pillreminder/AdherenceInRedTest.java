@@ -25,8 +25,6 @@ import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class AdherenceInRedTest extends BaseIVRTest {
     private TestPatient patient;
     private TestClinician clinician;

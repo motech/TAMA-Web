@@ -31,7 +31,7 @@ public class MessageOnPreviousPillNotTakenTest {
     @Test
     public void shouldReturnPillNotTakenMessage() {
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).dosageId("currentDosageId").callStartTime(new DateTime(2010, 10, 10, 16, 0, 0));
+        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0));
         context.callDirection(CallDirection.Outbound);
         String[] messages = messageOnPreviousPillNotTaken.executeCommand(context);
         assertEquals(5, messages.length);

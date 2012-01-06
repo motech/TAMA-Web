@@ -35,7 +35,6 @@ public class PillRegimenTest extends BaseUnitTest {
 
     @Test
     public void shouldGetListOfMedicinesForCurrentDosage() {
-        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -47,7 +46,6 @@ public class PillRegimenTest extends BaseUnitTest {
 
     @Test
     public void shouldGetListOfMedicinesForPreviousDosage() {
-        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -58,7 +56,6 @@ public class PillRegimenTest extends BaseUnitTest {
 
     @Test
     public void shouldGetPreviousDosage() {
-        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -68,7 +65,6 @@ public class PillRegimenTest extends BaseUnitTest {
 
     @Test
     public void shouldGetNextDosage() {
-        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -135,14 +131,11 @@ public class PillRegimenTest extends BaseUnitTest {
 
     @Test
     public void previousDosageIsNotTakenWhenYesterdaysDoseWasNotTaken() {
-        ivrContext.dosageId("currentDosageId");
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
-        LocalDate currentDosageLastTakenDate = DateUtil.today();
-        LocalDate previousDosageLastTakenDate = currentDosageLastTakenDate.minusDays(2);
 
-        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today().minusDays(3), null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
-        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today().minusDays(3), null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today().minusDays(3), null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today().minusDays(3), null, null, new ArrayList<MedicineResponse>()));
 
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);

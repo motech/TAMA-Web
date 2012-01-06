@@ -16,19 +16,16 @@ import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PillRegimen_NextDosageTest {
     private DailyPillReminderContextForTest ivrContext;
     private PillRegimenResponse pillRegimenResponse;
     private PillRegimen pillRegimen;
-    private String currentDosageId = "currentDosageId";
 
     @Before
     public void setUp() {
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         ivrContext = new DailyPillReminderContextForTest(new TAMAIVRContextForTest());
-        ivrContext.dosageId(currentDosageId);
     }
 
     @Test
@@ -36,7 +33,7 @@ public class PillRegimen_NextDosageTest {
         ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate startDate = new LocalDate(2010, 10, 9);
-        dosages.add(new DosageResponse(currentDosageId, new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("nextDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 19, 0, 0));
@@ -54,7 +51,7 @@ public class PillRegimen_NextDosageTest {
         ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate startDate = new LocalDate(2010, 10, 9);
-        dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("nextDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 12, 0, 0));
@@ -73,7 +70,7 @@ public class PillRegimen_NextDosageTest {
         ivrContext.callDirection(CallDirection.Outbound);
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate startDate = new LocalDate(2010, 10, 9);
-        dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
+        dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 9, 0, 0));
         pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);

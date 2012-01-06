@@ -84,7 +84,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeWithinDosagePillWindow() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
-        context.dosageId("currentDosageId").callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
+        context.callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
         assertArrayEquals(new String[]{"welcome_to_someClinicName", "001_02_02_itsTimeForPill1", "pillmedicine1", "pillmedicine2", "001_07_07_fromTheBottle1"}, messages);
     }
@@ -93,7 +93,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
     public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeAfterDosagePillWindow() {
         int dosageHour = 10;
         DateTime timeAfterPillWindow = now.withHourOfDay(dosageHour + 3).withMinuteOfHour(5);
-        context.dosageId("currentDosageId").callStartTime(timeAfterPillWindow);
+        context.callStartTime(timeAfterPillWindow);
         List<DosageResponse> dosages = Arrays.asList(new DosageResponse("currentDosageId", new Time(dosageHour, 5), today.minusDays(2),
                 today.plusDays(1), today.minusDays(1),
                 Arrays.asList(new MedicineResponse("medicine3", today, today))));
@@ -109,7 +109,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
     public void shouldNotPlayWelcomeMessageDuringMenuRepeat() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
-        context.dosageId("currentDosageId").callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
+        context.callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
         context.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);

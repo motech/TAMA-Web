@@ -9,7 +9,6 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import javax.servlet.http.HttpSession;
 
 public class DailyPillReminderContext extends TAMAIVRContext {
-    private static final String DOSAGE_ID = PillReminderCall.DOSAGE_ID;
     public static final String NUMBER_OF_TIMES_REMINDER_SENT = PillReminderCall.TIMES_SENT;
     private static final String TOTAL_NUMBER_OF_TIMES_TO_SEND_REMINDER = PillReminderCall.TOTAL_TIMES_TO_SEND;
     private static final String RETRY_INTERVAL = PillReminderCall.RETRY_INTERVAL;
@@ -19,10 +18,6 @@ public class DailyPillReminderContext extends TAMAIVRContext {
 
     public DailyPillReminderContext(TAMAIVRContext tamaivrContext) {
         super(tamaivrContext);
-    }
-
-    public String dosageId() {
-        return kookooRequest.getParameter(DOSAGE_ID);
     }
 
     public PillRegimen pillRegimen(PillReminderService pillReminderService) {

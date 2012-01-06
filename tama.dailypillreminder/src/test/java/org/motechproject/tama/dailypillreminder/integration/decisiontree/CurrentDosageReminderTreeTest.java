@@ -39,7 +39,6 @@ public class CurrentDosageReminderTreeTest {
     @Before
     public void setUp() {
         context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest());
-        context.dosageId("currentDosageId");
     }
 
     @After

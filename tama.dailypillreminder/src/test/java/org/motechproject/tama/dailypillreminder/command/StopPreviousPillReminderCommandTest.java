@@ -33,14 +33,14 @@ public class StopPreviousPillReminderCommandTest {
         initMocks(this);
         previousPillTakenCommand = new StopPreviousPillReminderCommand(pillReminderService);
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        ivrContext = (DailyPillReminderContextForTest) new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound);
+        ivrContext = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound);
     }
 
     @Test
     public void shouldUpdateDosageDateAsTodayOnPillTaken_TAMACallsPatient() {
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(Arrays.asList(pillRegimenResponse.getDosages().get(1))).build();
         DosageResponse currentDosage = pillRegimenResponse.getDosages().get(0);
-        ivrContext.pillRegimen(pillRegimenResponse).dosageId(currentDosage.getDosageId()).callStartTime(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
+        ivrContext.pillRegimen(pillRegimenResponse).callStartTime(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
 
         previousPillTakenCommand.executeCommand(ivrContext);
         verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), currentDosage.getDosageId(), DateUtil.today().minusDays(1));
@@ -50,7 +50,7 @@ public class StopPreviousPillReminderCommandTest {
     public void shouldUpdateDosageDateAsYesterdayOnPillTaken_TAMACallsPatient() {
         DosageResponse previousDosage = pillRegimenResponse.getDosages().get(2);
         DosageResponse currentDosage = pillRegimenResponse.getDosages().get(0);
-        ivrContext.dosageId(currentDosage.getDosageId()).callStartTime(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
+        ivrContext.callStartTime(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
         previousPillTakenCommand.executeCommand(ivrContext);
         verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), previousDosage.getDosageId(), DateUtil.today().minusDays(1));
     }

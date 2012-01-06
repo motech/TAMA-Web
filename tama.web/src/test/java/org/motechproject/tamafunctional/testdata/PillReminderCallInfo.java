@@ -11,10 +11,9 @@ import java.util.HashMap;
 public class PillReminderCallInfo implements CallInfo {
     private OutgoingCallInfo outgoingCallInfo;
 
-    public PillReminderCallInfo(String dosageId, int callNumber) {
+    public PillReminderCallInfo(int callNumber) {
         HashMap<String, String> dictionary = new HashMap<String, String>();
         dictionary.put(KookooCallServiceImpl.IS_OUTBOUND_CALL, "true");
-        dictionary.put(PillReminderCall.DOSAGE_ID, dosageId);
         dictionary.put(PillReminderCall.TIMES_SENT, Integer.valueOf(callNumber).toString());
         dictionary.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "5");
         outgoingCallInfo = new OutgoingCallInfo(dictionary);

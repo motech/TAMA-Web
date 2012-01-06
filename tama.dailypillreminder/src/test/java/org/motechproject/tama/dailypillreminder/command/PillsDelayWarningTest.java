@@ -13,7 +13,6 @@ import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PillsDelayWarningTest {
     private PillsDelayWarning pillsDelayWarning;
@@ -42,7 +41,7 @@ public class PillsDelayWarningTest {
 
     @Test
     public void shouldReturnLastReminderWarningMessageNonLastReminder() {
-        context.dosageId("currentDosageId").numberOfTimesReminderSent(1).totalNumberOfTimesToSendReminder(1).callDirection(CallDirection.Outbound);
+        context.numberOfTimesReminderSent(1).totalNumberOfTimesToSendReminder(1).callDirection(CallDirection.Outbound);
 
         String[] messages = pillsDelayWarning.executeCommand(context);
         assertEquals(7, messages.length);

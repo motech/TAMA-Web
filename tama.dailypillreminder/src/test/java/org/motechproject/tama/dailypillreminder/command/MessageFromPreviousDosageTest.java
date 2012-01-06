@@ -29,7 +29,7 @@ public class MessageFromPreviousDosageTest {
     public void setup() {
         messageFromPreviousDosage = new MessageFromPreviousDosage(null);
         today = DateUtil.today();
-        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).dosageId("currentDosageId").callStartTime(DateUtil.newDateTime(today, 16, 0, 0)).callDirection(CallDirection.Outbound);
+        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).callStartTime(DateUtil.newDateTime(today, 16, 0, 0)).callDirection(CallDirection.Outbound);
     }
 
     @Test

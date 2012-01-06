@@ -25,8 +25,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationFunctionalTestContext.xml")
 public class HealthTipsTest extends BaseIVRTest {
 
     private TestPatient patient;

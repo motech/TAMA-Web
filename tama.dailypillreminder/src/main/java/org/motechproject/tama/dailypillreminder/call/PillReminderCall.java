@@ -14,7 +14,6 @@ import java.util.Properties;
 
 @Component
 public class PillReminderCall extends IVRCall {
-    public static final String DOSAGE_ID = "dosage_id";
     public static final String TIMES_SENT = "times_sent";
     public static final String TOTAL_TIMES_TO_SEND = "total_times_to_send";
     public static final String RETRY_INTERVAL = "retry_interval";
@@ -30,7 +29,6 @@ public class PillReminderCall extends IVRCall {
         final Patient patient = allPatients.get(patientDocId);
         if (patient != null && patient.allowAdherenceCalls()) {
             Map<String, String> params = new HashMap<String, String>() {{
-                put(DOSAGE_ID, dosageId);
                 put(TIMES_SENT, String.valueOf(timesSent));
                 put(TOTAL_TIMES_TO_SEND, String.valueOf(totalTimesToSend));
                 put(RETRY_INTERVAL, String.valueOf(retryInterval));
