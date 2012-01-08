@@ -34,7 +34,7 @@ public class FourDayRecallTimeLine {
     }
 
     private LocalDate computeFirstWeekStartDate(DateTime fromDate) {
-        LocalDate startDateForFirstWeek = treatmentAdvice.getStartDateForWeek(fromDate.toLocalDate(), patient.getPatientPreferences().getDayOfWeeklyCall());
+        LocalDate startDateForFirstWeek = treatmentAdvice.getStartDateForWeek(fromDate.toLocalDate(), patient);
         PatientPreferences patientPreference = patient.getPatientPreferences();
 
         DateTime recallDateTimeForFirstWeek = patientPreference.nextRecallOn(startDateForFirstWeek);
@@ -54,6 +54,6 @@ public class FourDayRecallTimeLine {
         DateTime currentWeekRecallDateTime = patient.getPatientPreferences().nextRecallOn(currentWeekStartDate);
         DateTime nextWeekRecallDateTime = currentWeekRecallDateTime.plusWeeks(1);
         if (nextWeekRecallDateTime.isAfter(toDate)) return null;
-        return treatmentAdvice.getStartDateForWeek(nextWeekRecallDateTime.toLocalDate(), patient.getPatientPreferences().getDayOfWeeklyCall());
+        return treatmentAdvice.getStartDateForWeek(nextWeekRecallDateTime.toLocalDate(), patient);
     }
 }

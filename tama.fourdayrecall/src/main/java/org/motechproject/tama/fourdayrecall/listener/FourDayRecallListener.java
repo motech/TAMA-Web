@@ -66,7 +66,7 @@ public class FourDayRecallListener {
     }
 
     private boolean isAdherenceCapturedForCurrentWeek(Patient patient, TreatmentAdvice treatmentAdvice) {
-        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient.getPatientPreferences().getDayOfWeeklyCall());
+        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
         return allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, startDateForWeek).size() > 0;
     }
 

@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -213,49 +214,53 @@ public class TreatmentAdviceTest extends BaseUnitTest {
     @Test
     public void shouldGetTheStartDateForAnySpecifiedDay() {
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 11, 6)).build();
-        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 11, 25), DayOfWeek.Friday);
+        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 11, 25), patient(DayOfWeek.Friday));
         assertEquals(new LocalDate(2011, 11, 20), startDateForWeek);
+    }
+
+    private Patient patient(DayOfWeek dayOfWeek) {
+        return PatientBuilder.startRecording().withWeeklyCallPreference(dayOfWeek, null).build();
     }
 
     @Test
     public void shouldGetTheStartDateForWeek_WhenPreferredDayIsSameAsTreatmentStartDay() {
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 10, 2)).build();
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 16), DayOfWeek.Sunday);
+        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 16), patient(DayOfWeek.Sunday));
         assertEquals(new LocalDate(2011, 10, 9), startDateForCurrentWeek);
     }
 
     @Test
     public void shouldGetTheStartDateFor_WeekWhenFiveDaysIntoCurrentWeek() {
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 10, 2)).build();
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 13), DayOfWeek.Thursday);
+        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 13), patient(DayOfWeek.Thursday));
         assertEquals(new LocalDate(2011, 10, 9), startDateForCurrentWeek);
     }
 
     @Test
     public void shouldGetTheStartDateForWeek_WhenLessThanFiveDaysIntoCurrentWeek() {
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 10, 2)).build();
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 11), DayOfWeek.Thursday);
+        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 11), patient(DayOfWeek.Thursday));
         assertEquals(new LocalDate(2011, 10, 2), startDateForCurrentWeek);
     }
 
     @Test
     public void shouldGetTheStartDateForWeek_WhenMoreThanFiveDaysIntoCurrentWeek() {
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 10, 2)).build();
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 14), DayOfWeek.Thursday);
+        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 14), patient(DayOfWeek.Thursday));
         assertEquals(new LocalDate(2011, 10, 9), startDateForCurrentWeek);
     }
 
     @Test
     public void shouldGetTheStartDateForWeek_OnFirstRetryDay_AndFiveDaysIntoTheNextWeek() {
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 10, 2)).build();
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 13), DayOfWeek.Wednesday);
+        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 13), patient(DayOfWeek.Wednesday));
         assertEquals(new LocalDate(2011, 10, 2), startDateForCurrentWeek);
     }
 
     @Test
     public void shouldGetTheStartDateForCurrentWeek_OnSecondRetryDay_AndFiveDaysIntoTheNextWeek() {
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 10, 2)).build();
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 14), DayOfWeek.Wednesday);
+        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(new LocalDate(2011, 10, 14), patient(DayOfWeek.Wednesday));
         assertEquals(new LocalDate(2011, 10, 2), startDateForCurrentWeek);
     }
 }

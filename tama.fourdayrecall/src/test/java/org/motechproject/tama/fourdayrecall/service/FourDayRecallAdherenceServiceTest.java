@@ -12,7 +12,6 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
-import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -22,7 +21,10 @@ import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.eq;
@@ -134,18 +136,6 @@ public class FourDayRecallAdherenceServiceTest {
         };
         fourDayRecallService.raiseAdherenceFallingAlert(testPatientId);
         verify(patientAlertService, never()).createAlert(Matchers.<String>any(), Matchers.<Integer>any(), Matchers.<String>any(), Matchers.<String>any(), Matchers.<PatientAlertType>any(), Matchers.<Map<String, String>>any());
-    }
-
-    @Test
-    public void shouldReturnToday_WhenTodaysDayIsBestCallDay() {
-        Patient patient = new PatientBuilder().build();
-        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
-        patient.getPatientPreferences().setDayOfWeeklyCall(DayOfWeek.Friday);
-        LocalDate startDate = new LocalDate(2011, 11, 7);
-        LocalDate today = new LocalDate(2011, 11, 25);
-        setupExpectations(patient, startDate.toDate(), today);
-
-        assertEquals(today, fourDayRecallAdherenceService.getMostRecentBestCallDay(patientId));
     }
 
     @Test

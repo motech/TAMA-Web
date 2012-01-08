@@ -42,7 +42,7 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
         String treatmentAdviceDocId = treatmentAdvice.getId();
 
         int numberOfDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient.getPatientPreferences().getDayOfWeeklyCall());
+        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
         allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForCurrentWeek, numberOfDaysMissed));
         return new String[0];
     }

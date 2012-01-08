@@ -109,26 +109,6 @@ public class NewFourDayRecallAdherenceServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnLastBestCallDay_WhenTodayIsOneDayAfterBestCallDay() {
-        mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 11, 26), 10, 10, 0));
-        Patient patient = PatientBuilder.startRecording().withId(patientId).withWeeklyCallPreference(DayOfWeek.Friday, null).build();
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").withStartDate(new LocalDate(2011, 11, 7)).build();
-        when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        assertEquals(new LocalDate(2011, 11, 25), fourDayRecallAdherenceService.getMostRecentBestCallDay(patientId));
-    }
-
-    @Test
-    public void shouldReturnLastBestCallDay_WhenTodayIsOneDayBeforeBestCallDay() {
-        mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 11, 24), 10, 10, 0));
-        Patient patient = PatientBuilder.startRecording().withId(patientId).withWeeklyCallPreference(DayOfWeek.Friday, null).build();
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").withStartDate(new LocalDate(2011, 11, 7)).build();
-        when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        assertEquals(new LocalDate(2011, 11, 18), fourDayRecallAdherenceService.getMostRecentBestCallDay(patientId));
-    }
-
-    @Test
     public void hasAdherenceFallingAlertBeenRaisedForCurrentWeek_shouldUsePreviousBestCallDay() {
         mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 11, 24), 0, 0, 0));
         Patient patient = PatientBuilder.startRecording().withId(patientId).withWeeklyCallPreference(DayOfWeek.Friday, null).build();
