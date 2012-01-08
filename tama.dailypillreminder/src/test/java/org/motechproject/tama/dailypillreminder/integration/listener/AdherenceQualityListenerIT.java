@@ -22,7 +22,7 @@ import org.motechproject.tama.dailypillreminder.listener.AdherenceQualityListene
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
-import org.motechproject.tama.dailypillreminder.service.TAMAPillReminderService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -64,7 +64,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
     @Mock
-    private TAMAPillReminderService pillReminderService;
+    private DailyPillReminderService dailyPillReminderService;
 
     @Autowired
     @Qualifier("ivrProperties")
@@ -89,7 +89,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
         initMocks(this);
         setUpTime();
         properties.setProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE, ADHERENCE_THRESHOLD);
-        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, properties, new AdherenceService(), allPatients);
+        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, properties, new AdherenceService(), allPatients);
         adherenceQualityListener = new AdherenceQualityListener(dailyReminderAdherenceTrendService, properties, dailyReminderAdherenceService, allPatients);
         Patient patient = new PatientBuilder().withDefaults().withStatus(Status.Active).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
@@ -97,7 +97,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
 
     public void setUpAdherenceBelowThreshold() {
         PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
-        when(pillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimen));
+        when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimen));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
         int threshold = Integer.parseInt(ADHERENCE_THRESHOLD);
         double dosesToBeTaken = (((double) threshold / 100) * totalDoses) + 1;
         PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
-        when(pillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimen));
+        when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimen));
         for (int dosesTaken = 0; dosesTaken < dosesToBeTaken; dosesTaken++) {
             DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusDays(dosesTaken));
             allDosageAdherenceLogs.add(dosageAdherenceLog);

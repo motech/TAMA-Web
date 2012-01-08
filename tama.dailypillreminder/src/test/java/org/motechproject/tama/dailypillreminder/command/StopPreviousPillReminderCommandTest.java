@@ -7,9 +7,9 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.util.DateUtil;
 
@@ -21,7 +21,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class StopPreviousPillReminderCommandTest {
     @Mock
-    private PillReminderService pillReminderService;
+    private DailyPillReminderService dailyPillReminderService;
 
     private StopPreviousPillReminderCommand previousPillTakenCommand;
 
@@ -31,7 +31,7 @@ public class StopPreviousPillReminderCommandTest {
     @Before
     public void setup() {
         initMocks(this);
-        previousPillTakenCommand = new StopPreviousPillReminderCommand(pillReminderService);
+        previousPillTakenCommand = new StopPreviousPillReminderCommand(dailyPillReminderService);
         pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         ivrContext = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callDirection(CallDirection.Outbound);
     }
@@ -43,7 +43,7 @@ public class StopPreviousPillReminderCommandTest {
         ivrContext.pillRegimen(pillRegimenResponse).callStartTime(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
 
         previousPillTakenCommand.executeCommand(ivrContext);
-        verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), currentDosage.getDosageId(), DateUtil.today().minusDays(1));
+        verify(dailyPillReminderService).setLastCapturedDate(pillRegimenResponse.getPillRegimenId(), currentDosage.getDosageId(), DateUtil.today().minusDays(1));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class StopPreviousPillReminderCommandTest {
         DosageResponse currentDosage = pillRegimenResponse.getDosages().get(0);
         ivrContext.callStartTime(DateUtil.now().withHourOfDay(currentDosage.getDosageHour()));
         previousPillTakenCommand.executeCommand(ivrContext);
-        verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), previousDosage.getDosageId(), DateUtil.today().minusDays(1));
+        verify(dailyPillReminderService).setLastCapturedDate(pillRegimenResponse.getPillRegimenId(), previousDosage.getDosageId(), DateUtil.today().minusDays(1));
     }
 
     @Test
@@ -62,6 +62,6 @@ public class StopPreviousPillReminderCommandTest {
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
         ivrContext.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Inbound).callStartTime(DateUtil.now().withHourOfDay(dosageResponse.getDosageHour()));
         previousPillTakenCommand.executeCommand(ivrContext);
-        verify(pillReminderService).dosageStatusKnown(pillRegimenResponse.getPillRegimenId(), "currentDosageId", DateUtil.today().minusDays(1));
+        verify(dailyPillReminderService).setLastCapturedDate(pillRegimenResponse.getPillRegimenId(), "currentDosageId", DateUtil.today().minusDays(1));
     }
 }

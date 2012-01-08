@@ -1,10 +1,10 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,18 +14,18 @@ public class UpdateAdherenceAsNotCapturedForCurrentDosageCommand extends DailyPi
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
     @Autowired
-    public UpdateAdherenceAsNotCapturedForCurrentDosageCommand(PillReminderService pillReminderService, DailyPillReminderAdherenceService dailyReminderAdherenceService) {
-        super(pillReminderService);
+    public UpdateAdherenceAsNotCapturedForCurrentDosageCommand(DailyPillReminderService dailyPillReminderService, DailyPillReminderAdherenceService dailyReminderAdherenceService) {
+        super(dailyPillReminderService);
         this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }
 
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
         DosageStatus newStatus = DosageStatus.from(context.dtmfInput());
-        PillRegimen pillRegimen = pillRegimen(context);
+        PillRegimen pillRegimen = context.pillRegimen();
         dailyReminderAdherenceService.recordDosageAdherenceAsNotCaptured(context.patientId(),
                 pillRegimen.getId(),
-                pillRegimen.getDoseAt(context.callStartTime()),
+                context.currentDose(),
                 newStatus,
                 context.callStartTime());
 

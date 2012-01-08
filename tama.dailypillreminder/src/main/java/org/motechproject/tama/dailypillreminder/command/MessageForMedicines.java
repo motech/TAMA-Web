@@ -1,7 +1,7 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -21,8 +21,8 @@ public class MessageForMedicines extends DailyPillReminderTreeCommand {
     private ClinicNameMessageBuilder clinicNameMessageBuilder;
 
     @Autowired
-    public MessageForMedicines(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService, ClinicNameMessageBuilder clinicNameMessageBuilder) {
-        super(pillReminderService);
+    public MessageForMedicines(AllPatients allPatients, AllClinics allClinics, DailyPillReminderService dailyPillReminderService, ClinicNameMessageBuilder clinicNameMessageBuilder) {
+        super(dailyPillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.clinicNameMessageBuilder = clinicNameMessageBuilder;
@@ -37,15 +37,8 @@ public class MessageForMedicines extends DailyPillReminderTreeCommand {
 
         messages.add(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
         messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
-
-        for (String medicine : getMedicines(context)) {
-            messages.add(medicine);
-        }
+        messages.addAll(context.currentDose().medicineNames());
         messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);
         return messages.toArray(new String[messages.size()]);
-    }
-
-    private List<String> getMedicines(DailyPillReminderContext context) {
-        return pillRegimen(context).medicinesForCurrentDose(context.callStartTime());
     }
 }

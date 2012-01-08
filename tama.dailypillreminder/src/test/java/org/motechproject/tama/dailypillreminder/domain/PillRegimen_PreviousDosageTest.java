@@ -41,7 +41,7 @@ public class PillRegimen_PreviousDosageTest {
         int dayOfTheMonth = 10;
         ivrContext.callStartTime(new DateTime(2010, 1, dayOfTheMonth, 9, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
-        DateTime previousDosageTime = pillRegimen.getPreviousDoseTime(ivrContext.callStartTime());
+        DateTime previousDosageTime = pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).getDoseTime();
 
         assertEquals(20, previousDosageTime.getHourOfDay());
         assertEquals(5, previousDosageTime.getMinuteOfHour());
@@ -60,7 +60,7 @@ public class PillRegimen_PreviousDosageTest {
         int dayOfTheMonth = 10;
         ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 21, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
-        DateTime previousDosageTime = pillRegimen.getPreviousDoseTime(ivrContext.callStartTime());
+        DateTime previousDosageTime = pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).getDoseTime();
 
         assertEquals(10, previousDosageTime.getHourOfDay());
         assertEquals(5, previousDosageTime.getMinuteOfHour());
@@ -78,7 +78,7 @@ public class PillRegimen_PreviousDosageTest {
         int dayOfTheMonth = 10;
         ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 9, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
-        DateTime previousDosageTime = pillRegimen.getPreviousDoseTime(ivrContext.callStartTime());
+        DateTime previousDosageTime = pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).getDoseTime();
 
         assertEquals(10, previousDosageTime.getHourOfDay());
         assertEquals(5, previousDosageTime.getMinuteOfHour());

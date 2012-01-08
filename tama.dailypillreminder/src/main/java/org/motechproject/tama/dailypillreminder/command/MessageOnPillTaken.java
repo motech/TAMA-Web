@@ -1,7 +1,7 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 @Component
 public class MessageOnPillTaken extends DailyPillReminderTreeCommand {
     @Autowired
-    public MessageOnPillTaken(PillReminderService pillReminderService) {
-        super(pillReminderService);
+    public MessageOnPillTaken(DailyPillReminderService dailyPillReminderService) {
+        super(dailyPillReminderService);
     }
 
     @Override

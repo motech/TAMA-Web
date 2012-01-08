@@ -1,9 +1,8 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.joda.time.DateTime;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.builder.IVRDayMessageBuilder;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,8 @@ public class PillsDelayWarning extends DailyPillReminderTreeCommand {
     private TamaIVRMessage ivrMessage;
 
     @Autowired
-    public PillsDelayWarning(TamaIVRMessage ivrMessage, PillReminderService pillReminderService) {
-        super(pillReminderService);
+    public PillsDelayWarning(TamaIVRMessage ivrMessage, DailyPillReminderService dailyPillReminderService) {
+        super(dailyPillReminderService);
         this.ivrDayMessageBuilder = new IVRDayMessageBuilder();
         this.ivrMessage = ivrMessage;
     }
@@ -27,10 +26,9 @@ public class PillsDelayWarning extends DailyPillReminderTreeCommand {
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
         if (isLastReminder(context)) {
-            DateTime nextDosageTime = pillRegimen(context).getNextDoseTime(context.callStartTime());
             List<String> messages = new ArrayList<String>();
             messages.add(TamaIVRMessage.LAST_REMINDER_WARNING);
-            messages.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextDosageTime, context.preferredLanguage()));
+            messages.addAll(ivrDayMessageBuilder.getMessageForNextDosage(context.nextDose().getDoseTime(), context.preferredLanguage()));
             messages.add(TamaIVRMessage.LAST_REMINDER_WARNING_PADDING);
             return messages.toArray(new String[messages.size()]);
         }

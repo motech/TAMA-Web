@@ -1,8 +1,8 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -22,8 +22,8 @@ public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTree
     private ClinicNameMessageBuilder clinicNameMessageBuilder;
 
     @Autowired
-    public MessageForMedicinesDuringIncomingCall(AllPatients allPatients, AllClinics allClinics, PillReminderService pillReminderService, ClinicNameMessageBuilder clinicNameMessageBuilder) {
-        super(pillReminderService);
+    public MessageForMedicinesDuringIncomingCall(AllPatients allPatients, AllClinics allClinics, DailyPillReminderService dailyPillReminderService, ClinicNameMessageBuilder clinicNameMessageBuilder) {
+        super(dailyPillReminderService);
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.clinicNameMessageBuilder = clinicNameMessageBuilder;
@@ -38,23 +38,18 @@ public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTree
         if (!context.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM)) {
             messages.add(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
         }
-        PillRegimen pillRegimen = pillRegimen(context);
+        PillRegimen pillRegimen = context.pillRegimen();
         if (pillRegimen.isNowWithinCurrentDosePillWindow(context.callStartTime())) {
             messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
-            addMedicines(messages, pillRegimen, context);
+            messages.addAll(context.currentDose().medicineNames());
             messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);
         } else {
             messages.add(TamaIVRMessage.NOT_REPORTED_IF_TAKEN);
-            addMedicines(messages, pillRegimen, context);
+            messages.addAll(context.currentDose().medicineNames());
             messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE_AFTER_PILL_WINDOW);
         }
 
         return messages.toArray(new String[messages.size()]);
     }
 
-    private void addMedicines(ArrayList<String> messages, PillRegimen pillRegimen, DailyPillReminderContext context) {
-        for (String medicine : pillRegimen.medicinesForCurrentDose(context.callStartTime())) {
-            messages.add(medicine);
-        }
-    }
 }

@@ -16,7 +16,7 @@ import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
-import org.motechproject.tama.dailypillreminder.service.TAMAPillReminderService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -47,7 +47,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     private static final String PATIENT_ID = "patientId";
 
     @Mock
-    private TAMAPillReminderService pillReminderService;
+    private DailyPillReminderService dailyPillReminderService;
 
     @Mock
     private PatientAlertService patientAlertService;
@@ -72,7 +72,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
     @Before
     public void setUp() {
         initMocks(this);
-        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, ivrProperties, new AdherenceService(), allPatients);
+        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, ivrProperties, new AdherenceService(), allPatients);
         dailyReminderAdherenceTrendService = new DailyPillReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
         Patient patient = new PatientBuilder().withDefaults().withStatus(Status.Active).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
@@ -87,7 +87,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
         }});
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
+        when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5).plusDays(1)));
@@ -114,7 +114,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
             add(new DosageResponse("dosage2Id", new Time(16, 30), today.minusWeeks(5), null, null, null));
         }});
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
+        when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.NOT_TAKEN, today.minusWeeks(5)));
@@ -143,7 +143,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
         }});
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
+        when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4)));
@@ -166,7 +166,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
             add(new DosageResponse("dosage2Id", new Time(16, 30), today.minusWeeks(5), null, null, null));
         }});
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
+        when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
         allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.NOT_TAKEN, today.minusWeeks(5)));

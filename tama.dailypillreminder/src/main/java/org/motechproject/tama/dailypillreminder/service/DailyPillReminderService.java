@@ -1,6 +1,8 @@
 package org.motechproject.tama.dailypillreminder.service;
 
+import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
@@ -44,5 +46,13 @@ public class DailyPillReminderService implements CallPlan {
     public void reEnroll(Patient patient, TreatmentAdvice treatmentAdvice) {
         disEnroll(patient, treatmentAdvice);
         enroll(patient, treatmentAdvice);
+    }
+
+    public PillRegimen getPillRegimen(String patientId) {
+        return new PillRegimen(pillReminderService.getPillRegimen(patientId));
+    }
+
+    public void setLastCapturedDate(String pillRegimenId, String dosageId, LocalDate lastCapturedDate) {
+        pillReminderService.dosageStatusKnown(pillRegimenId, dosageId, lastCapturedDate);
     }
 }

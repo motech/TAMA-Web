@@ -3,7 +3,6 @@ package org.motechproject.tama.dailypillreminder;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
@@ -12,15 +11,15 @@ import java.util.List;
 
 public class DailyPillReminderContextForTest extends DailyPillReminderContext {
     private PillRegimen pillRegimen;
-    private TAMAIVRContextForTest tamaivrContext;
+    private TAMAIVRContextForTest tamaIVRContext;
 
-    public DailyPillReminderContextForTest(TAMAIVRContextForTest tamaivrContext) {
-        super(tamaivrContext);
-        this.tamaivrContext = tamaivrContext;
+    public DailyPillReminderContextForTest(TAMAIVRContextForTest tamaIVRContext) {
+        super(tamaIVRContext, null);
+        this.tamaIVRContext = tamaIVRContext;
     }
 
     @Override
-    public PillRegimen pillRegimen(PillReminderService pillReminderService) {
+    public PillRegimen pillRegimen() {
         return pillRegimen;
     }
 
@@ -35,89 +34,89 @@ public class DailyPillReminderContextForTest extends DailyPillReminderContext {
 
     @Override
     public DateTime callStartTime() {
-        return tamaivrContext.callStartTime();
+        return tamaIVRContext.callStartTime();
     }
 
     public DailyPillReminderContextForTest callStartTime(DateTime callStartTime) {
-        tamaivrContext.callStartTime(callStartTime);
+        tamaIVRContext.callStartTime(callStartTime);
         return this;
     }
 
     @Override
     public CallDirection callDirection() {
-        return tamaivrContext.callDirection();
+        return tamaIVRContext.callDirection();
     }
 
     public DailyPillReminderContextForTest callDirection(CallDirection callDirection) {
-        tamaivrContext.callDirection(callDirection);
+        tamaIVRContext.callDirection(callDirection);
         return this;
     }
 
     @Override
     public String patientId() {
-        return tamaivrContext.patientId();
+        return tamaIVRContext.patientId();
     }
 
     public DailyPillReminderContextForTest patientId(String patientId) {
-        tamaivrContext.patientId(patientId);
+        tamaIVRContext.patientId(patientId);
         return this;
     }
 
     @Override
     public int retryInterval() {
-        return tamaivrContext.retryInterval();
+        return tamaIVRContext.retryInterval();
     }
 
     public DailyPillReminderContextForTest retryInterval(int retryInterval) {
-        tamaivrContext.retryInterval(retryInterval);
+        tamaIVRContext.retryInterval(retryInterval);
         return this;
     }
 
     @Override
     public int numberOfTimesReminderSent() {
-        return tamaivrContext.numberOfTimesReminderSent();
+        return tamaIVRContext.numberOfTimesReminderSent();
     }
 
     public DailyPillReminderContextForTest numberOfTimesReminderSent(int numberOfTimesReminderSent) {
-        tamaivrContext.numberOfTimesReminderSent(numberOfTimesReminderSent);
+        tamaIVRContext.numberOfTimesReminderSent(numberOfTimesReminderSent);
         return this;
     }
 
     @Override
     public int totalNumberOfTimesToSendReminder() {
-        return tamaivrContext.totalNumberOfTimesToSendReminder();
+        return tamaIVRContext.totalNumberOfTimesToSendReminder();
     }
 
     public DailyPillReminderContextForTest totalNumberOfTimesToSendReminder(int totalNumberOfTimesToSendReminder) {
-        tamaivrContext.totalNumberOfTimesToSendReminder(totalNumberOfTimesToSendReminder);
+        tamaIVRContext.totalNumberOfTimesToSendReminder(totalNumberOfTimesToSendReminder);
         return this;
     }
 
     @Override
     public String dtmfInput() {
-        return tamaivrContext.dtmfInput();
+        return tamaIVRContext.dtmfInput();
     }
 
     public DailyPillReminderContextForTest dtmfInput(String dtmfInput) {
-        tamaivrContext.dtmfInput(dtmfInput);
+        tamaIVRContext.dtmfInput(dtmfInput);
         return this;
     }
 
     @Override
     public String preferredLanguage() {
-        return tamaivrContext.preferredLanguage();
+        return tamaIVRContext.preferredLanguage();
     }
 
     public void preferredLanguage(String preferredLanguage) {
-        tamaivrContext.preferredLanguage(preferredLanguage);
+        tamaIVRContext.preferredLanguage(preferredLanguage);
     }
 
     public void addLastCompletedTreeToListOfCompletedTrees(String treeName) {
-        tamaivrContext.addLastCompletedTreeToListOfCompletedTrees(treeName);
+        tamaIVRContext.addLastCompletedTreeToListOfCompletedTrees(treeName);
     }
 
     @Override
     public List<String> getListOfCompletedTrees() {
-        return tamaivrContext.getListOfCompletedTrees();
+        return tamaIVRContext.getListOfCompletedTrees();
     }
 }

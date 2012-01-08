@@ -15,7 +15,7 @@ import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
-import org.motechproject.tama.dailypillreminder.service.TAMAPillReminderService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
@@ -44,7 +44,7 @@ import static org.powermock.api.support.membermodification.MemberMatcher.method;
 public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
 
     @Mock
-    private TAMAPillReminderService pillReminderService;
+    private DailyPillReminderService dailyPillReminderService;
 
     @Mock
     private PatientAlertService patientAlertService;
@@ -71,7 +71,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     @Before
     public void setUp() {
         initMocks(this);
-        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, pillReminderService, properties, new AdherenceService(), allPatients);
+        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, properties, new AdherenceService(), allPatients);
         setUpDate();
         patient = PatientBuilder.startRecording().withCallPreference(CallPreference.DailyPillReminder).build();
     }
@@ -100,7 +100,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
+        when(dailyPillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
 
         final DateTime afterDoseTime = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
         assertEquals(25.00, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), afterDoseTime));
@@ -125,7 +125,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
+        when(dailyPillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
 
         final DateTime afterDoseTime = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
         assertEquals(50.00, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), afterDoseTime));
@@ -155,7 +155,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
+        when(dailyPillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingToday));
 
         DateTime timeOfSecondDosage = DateUtil.now().withHourOfDay(11).withMinuteOfHour(30);
         assertEquals(25.0, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), timeOfSecondDosage));
@@ -179,7 +179,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
+        when(dailyPillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
 
         double totalNumberOfDoses = 29.0;
         assertEquals(4 * 100 / totalNumberOfDoses, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), DateUtil.now()));
@@ -202,7 +202,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
+        when(dailyPillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(regimenStartingFiveWeeksAgo));
 
         double totalNumberOfDoses = 28.0;
         assertEquals(3 * 100 / totalNumberOfDoses, dailyReminderAdherenceService.getAdherencePercentage(patient.getId(), DateUtil.now()));
@@ -233,7 +233,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());
 
-        when(pillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(pillRegimen));
+        when(dailyPillReminderService.getPillRegimen(patient.getId())).thenReturn(new PillRegimen(pillRegimen));
 
         int dosesTakenTheLastFourWeeks = 7;
         double totalDosesInFourWeeks = 29 + 28;

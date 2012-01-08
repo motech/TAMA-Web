@@ -61,18 +61,8 @@ public class Dose implements Comparable<Dose> {
         return medicineNames;
     }
 
-    public boolean isVeryFirstDosageCall(Dose veryFirstDose) {
-        boolean noResponseCapturedForCurrentDosage = getResponseLastCapturedDate() == null;
-        boolean isCurrentDosageTheVeryFirstDosage = this.equals(veryFirstDose);
-        return isCurrentDosageTheVeryFirstDosage && noResponseCapturedForCurrentDosage;
-    }
-
-    public boolean wasDosageResponseCaptured() {
+    public boolean isTaken() {
         return getResponseLastCapturedDate() != null && getResponseLastCapturedDate().equals(getDate());
-    }
-
-    public boolean wasDosageResponseCapturedYesterday() {
-        return getResponseLastCapturedDate() != null && !getResponseLastCapturedDate().isBefore(getDate());
     }
 
     public boolean isWithinSpecifiedInterval(DateTime specifiedDateTime, int intervalInMinutes) {

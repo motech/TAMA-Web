@@ -1,11 +1,11 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
 
     @Autowired
-    public MissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, PillReminderService pillReminderService) {
-        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, pillReminderService);
+    public MissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, DailyPillReminderService dailyPillReminderService) {
+        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, dailyPillReminderService);
     }
 
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
-        PillRegimen pillRegimen = pillRegimen(context);
+        PillRegimen pillRegimen = context.pillRegimen();
         int dosagesTaken = allDosageAdherenceLogs.getDosageTakenCount(pillRegimen.getId());
         int dosagesNotTaken = pillRegimen.getNumberOfDosesAsOf(context.callStartTime()) - dosagesTaken;
         switch (dosagesNotTaken) {

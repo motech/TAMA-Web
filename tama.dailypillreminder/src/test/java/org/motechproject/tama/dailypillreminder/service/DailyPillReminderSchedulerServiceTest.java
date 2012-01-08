@@ -13,6 +13,7 @@ import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.server.pillreminder.EventKeys;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
@@ -27,7 +28,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DailyPillReminderSchedulerServiceTest {
@@ -41,21 +41,17 @@ public class DailyPillReminderSchedulerServiceTest {
 
     @Mock
     MotechSchedulerService motechSchedulerService;
-    @Mock
-    DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
 
     @Before
     public void setUp() {
         initMocks(this);
         treatmentAdvice = getTreatmentAdvice();
-        schedulerService = new DailyPillReminderSchedulerService(motechSchedulerService, dailyPillReminderAdherenceService);
+        schedulerService = new DailyPillReminderSchedulerService(motechSchedulerService);
     }
 
     @Test
     public void shouldScheduleWeeklyAdherenceTrendJob() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
-
-        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(TREATMENT_ADVICE_START_DATE);
 
         schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient, treatmentAdvice);
 
@@ -71,8 +67,6 @@ public class DailyPillReminderSchedulerServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
         treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusMonths(2));
 
-        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice)).thenReturn(TREATMENT_ADVICE_START_DATE);
-
         schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient , treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
@@ -87,7 +81,6 @@ public class DailyPillReminderSchedulerServiceTest {
         final LocalDate endDate = startDate.plusDays(1);
 
         TreatmentAdvice advice = getTreatmentAdvice(startDate, endDate);
-        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, advice)).thenReturn(startDate);
 
         schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
 
@@ -114,7 +107,6 @@ public class DailyPillReminderSchedulerServiceTest {
         final DateTime timeFewMillisBack = DateUtil.now().minusMillis(1000);
 
         TreatmentAdvice advice = getTreatmentAdvice(startDate, endDate);
-        when(dailyPillReminderAdherenceService.getDailyPillReminderAdherenceTrackingStartDate(patient, advice)).thenReturn(startDate);
 
         schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
 
@@ -144,6 +136,30 @@ public class DailyPillReminderSchedulerServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
         schedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
         verify(motechSchedulerService).unscheduleJob(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patientId);
+    }
+
+    @Test
+    public void shouldReturnWeeklyToDailyTransitionDateForPatientAsJobStartDate_IfTreatmentAdviceHasNotChanged_AndPatientCallPreferenceHasChanged() {
+        Patient patient = PatientBuilder.startRecording().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
+        patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.newDateTime(DateUtil.today(), 0, 0, 0));
+
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withPatientId("patientId").withStartDate(DateUtil.today().minusDays(20)).build();
+
+        LocalDate dailyPillReminderAdherenceTrackingStartDate = schedulerService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice);
+
+        assertEquals(DateUtil.today(), dailyPillReminderAdherenceTrackingStartDate);
+    }
+
+    @Test
+    public void shouldReturnTreatmentAdviceStartDateItselfForPatientAsTreatmentAdviceStartDate_IfTreatmentAdviceHasNotYetBegun_AndPatientCallPreferenceHasChanged() {
+        Patient patient = PatientBuilder.startRecording().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
+        patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.newDateTime(DateUtil.today(), 0, 0, 0));
+
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withPatientId("patientId").withStartDate(DateUtil.today().plusDays(2)).build();
+
+        LocalDate dailyPillReminderAdherenceTrackingStartDate = schedulerService.getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice);
+
+        assertEquals(DateUtil.today().plusDays(2), dailyPillReminderAdherenceTrackingStartDate);
     }
 
     private void assertCronSchedulableJob(CronSchedulableJob cronSchedulableJob, String cronExpression, Date startTime, Date endTime) {
