@@ -180,4 +180,50 @@ public class PatientTest extends BaseUnitTest {
         mockCurrentDate(DateUtil.newDateTime(new LocalDate(2011, 9, 30), 9, 0, 0));
         assertEquals(10, patient.getAge());
     }
+    
+    @Test
+    public void shouldGetDosageStartDate_GivenThat_ThePatient_HasNeverChangedHerCallPlan(){
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        final LocalDate tenDaysBack = DateUtil.today().minusDays(10);
+        DrugDosage drugDosage = new DrugDosage() {{
+            this.setStartDate(tenDaysBack);
+        }};
+        LocalDate startDate = patient.getDosageStartDate(drugDosage);
+        assertEquals(tenDaysBack, startDate);
+    }
+
+    @Test
+    public void shouldGetDosageStartDate_GivenThat_ThePatientIsOnVariableDosage(){
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        final LocalDate today = DateUtil.today();
+        DrugDosage drugDosage = new DrugDosage() {{
+            this.setStartDate(today);
+            this.setOffsetDays(10);
+        }};
+        LocalDate startDate = patient.getDosageStartDate(drugDosage);
+        assertEquals(today.plusDays(10), startDate);
+    }
+
+    @Test
+    public void shouldGetDosageStartDate_GivenThat_ThePatient_HasChangedHerCallPlan(){
+        Patient patient = PatientBuilder.startRecording().withDefaults().withTransitionDate(DateUtil.today()).build();
+        final LocalDate tenDaysBack = DateUtil.today().minusDays(10);
+        DrugDosage drugDosage = new DrugDosage() {{
+            this.setStartDate(tenDaysBack);
+        }};
+        LocalDate startDate = patient.getDosageStartDate(drugDosage);
+        assertEquals(DateUtil.today(), startDate);
+    }
+
+    @Test
+    public void shouldGetDosageStartDate_GivenThat_ThePatientIsOnVariableDosage_AndHasChangedHerCallPlan(){
+        Patient patient = PatientBuilder.startRecording().withDefaults().withTransitionDate(DateUtil.today()).build();
+        final LocalDate today = DateUtil.today();
+        DrugDosage drugDosage = new DrugDosage() {{
+            this.setStartDate(today);
+            this.setOffsetDays(10);
+        }};
+        LocalDate startDate = patient.getDosageStartDate(drugDosage);
+        assertEquals(today.plusDays(10), startDate);
+    }
 }

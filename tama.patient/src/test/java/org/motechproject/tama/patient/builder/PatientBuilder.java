@@ -150,4 +150,8 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withTransitionDate(LocalDate transitionDate) {
+        patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.newDateTime(transitionDate, 0, 0, 0));
+        return this;
+    }
 }

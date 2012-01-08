@@ -29,7 +29,7 @@ public class DailyPillReminderService implements CallPlan {
 
     public void enroll(Patient patient, TreatmentAdvice treatmentAdvice) {
         if (treatmentAdvice != null) {
-            pillReminderService.createNew(pillRegimenRequestMapper.map(treatmentAdvice));
+            pillReminderService.createNew(pillRegimenRequestMapper.map(patient, treatmentAdvice));
             dailyPillReminderSchedulerService.scheduleDailyPillReminderJobs(patient, treatmentAdvice);
         }
     }

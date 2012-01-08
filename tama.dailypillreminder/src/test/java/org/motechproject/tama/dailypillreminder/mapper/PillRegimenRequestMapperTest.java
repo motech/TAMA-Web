@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.refdata.builder.DrugBuilder;
 import org.motechproject.tama.refdata.domain.Drug;
@@ -43,6 +45,7 @@ public class PillRegimenRequestMapperTest {
         PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, 5);
         Drug drug = mock(Drug.class);
         when(allDrugs.get(Matchers.<String>any())).thenReturn(drug);
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
             setPatientId("123");
             setDrugDosages(new ArrayList<DrugDosage>() {{
@@ -50,7 +53,7 @@ public class PillRegimenRequestMapperTest {
                 add(drugDosage("Drug2Id", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10), "09:00am", "05:45pm"));
             }});
         }};
-        DailyPillRegimenRequest request = pillRegimenRequestMapper.map(treatmentAdvice);
+        DailyPillRegimenRequest request = pillRegimenRequestMapper.map(patient, treatmentAdvice);
         DosageRequest dosageRequest = getByStartHour(9, request.getDosageRequests());
         Assert.assertEquals(5, dosageRequest.getStartMinute());
     }
@@ -60,6 +63,7 @@ public class PillRegimenRequestMapperTest {
         PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, 5);
         when(allDrugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
         when(allDrugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
             setPatientId("123");
             setDrugDosages(new ArrayList<DrugDosage>() {{
@@ -68,7 +72,7 @@ public class PillRegimenRequestMapperTest {
             }});
         }};
 
-        DailyPillRegimenRequest pillRegimenRequest = pillRegimenRequestMapper.map(treatmentAdvice);
+        DailyPillRegimenRequest pillRegimenRequest = pillRegimenRequestMapper.map(patient, treatmentAdvice);
 
         Assert.assertEquals(treatmentAdvice.getPatientId(), pillRegimenRequest.getExternalId());
         Assert.assertNotNull(pillRegimenRequest.getReminderRepeatIntervalInMinutes());
@@ -106,7 +110,8 @@ public class PillRegimenRequestMapperTest {
             }
         });
 
-        final PillRegimenRequestMapper.DrugDosageMedicineRequestConverter drugDosageMedicineRequestConverter = new PillRegimenRequestMapper(allDrugs, 1, 1, 1).new DrugDosageMedicineRequestConverter(true);
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        final PillRegimenRequestMapper.DrugDosageMedicineRequestConverter drugDosageMedicineRequestConverter = new PillRegimenRequestMapper(allDrugs, 1, 1, 1).new DrugDosageMedicineRequestConverter(patient);
         DrugDosage drugDosage = new DrugDosage() {{
             setMorningTime("10:00am");
             setEveningTime("10:00pm");

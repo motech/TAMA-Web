@@ -8,6 +8,7 @@ import org.motechproject.server.pillreminder.contract.DosageRequest;
 import org.motechproject.server.pillreminder.contract.MedicineRequest;
 import org.motechproject.tama.common.util.TimeUtil;
 import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,56 +46,41 @@ public class PillRegimenRequestMapper {
         super();
     }
 
-    public DailyPillRegimenRequest map(final TreatmentAdvice treatmentAdvice) {
-        final Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest = new DrugDosageMedicineRequestConverter(false);
-        final Converter<DrugDosage, MedicineRequest> drugEveningDosageToMedicineRequest = new DrugDosageMedicineRequestConverter(true);
-        final Converter<String, DosageRequest> dosageRequestFromSchedule = new DosageTimeDosageRequestConverter(treatmentAdvice, drugDosageToMedicineRequest, drugEveningDosageToMedicineRequest);
+    public DailyPillRegimenRequest map(Patient patient, TreatmentAdvice treatmentAdvice) {
+        final Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest = new DrugDosageMedicineRequestConverter(patient);
+        final Converter<String, DosageRequest> dosageRequestFromSchedule = new DosageTimeDosageRequestConverter(treatmentAdvice, drugDosageToMedicineRequest);
         final Set<String> dosageSchedule = treatmentAdvice.groupDosagesByTime().keySet();
-        return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(),
-                pillWindow,
-                retryInterval,
-                convert(dosageSchedule, dosageRequestFromSchedule));
+        return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(), pillWindow, retryInterval, convert(dosageSchedule, dosageRequestFromSchedule));
     }
 
     protected class DrugDosageMedicineRequestConverter implements Converter<DrugDosage, MedicineRequest> {
+        private Patient patient;
 
-        boolean addOffsetDays;
-
-        public DrugDosageMedicineRequestConverter(boolean addOffsetDays) {
-            this.addOffsetDays = addOffsetDays;
+        public DrugDosageMedicineRequestConverter(Patient patient) {
+            this.patient = patient;
         }
 
         @Override
         public MedicineRequest convert(DrugDosage drugDosage) {
-            LocalDate startDate = addOffsetDays ? drugDosage.getStartDate().plusDays(drugDosage.getOffsetDays()) : drugDosage.getStartDate();
-            return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), startDate, drugDosage.getEndDate());
+            LocalDate dosageStartDate = patient.getDosageStartDate(drugDosage);
+            return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), dosageStartDate, drugDosage.getEndDate());
         }
     }
 
     private class DosageTimeDosageRequestConverter implements Converter<String, DosageRequest> {
         private final TreatmentAdvice treatmentAdvice;
         private final Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest;
-        private final Converter<DrugDosage, MedicineRequest> drugEveningDosageToMedicineRequest;
 
-        public DosageTimeDosageRequestConverter(TreatmentAdvice treatmentAdvice,
-                                                Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest,
-                                                Converter<DrugDosage, MedicineRequest> drugEveningDosageToMedicineRequest) {
+        public DosageTimeDosageRequestConverter(TreatmentAdvice treatmentAdvice, Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequest) {
             this.treatmentAdvice = treatmentAdvice;
             this.drugDosageToMedicineRequest = drugDosageToMedicineRequest;
-            this.drugEveningDosageToMedicineRequest = drugEveningDosageToMedicineRequest;
         }
 
         @Override
         public DosageRequest convert(String dosageTime) {
             TimeUtil timeUtil = new TimeUtil(dosageTime).withReminderLagTime(reminderLag);
             List<DrugDosage> dosages = treatmentAdvice.groupDosagesByTime().get(dosageTime);
-            Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequestConverter =
-                    isEveningDosage(dosageTime) ? drugEveningDosageToMedicineRequest : drugDosageToMedicineRequest;
-            return new DosageRequest(timeUtil.getHours(), timeUtil.getMinutes(), Lambda.convert(dosages, drugDosageToMedicineRequestConverter));
-        }
-
-        public boolean isEveningDosage(String schedule) {
-            return schedule != null && schedule.toLowerCase().contains("pm");
+            return new DosageRequest(timeUtil.getHours(), timeUtil.getMinutes(), Lambda.convert(dosages, drugDosageToMedicineRequest));
         }
     }
 }

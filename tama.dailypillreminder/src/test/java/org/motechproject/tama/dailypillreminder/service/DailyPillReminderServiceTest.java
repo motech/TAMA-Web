@@ -46,7 +46,7 @@ public class DailyPillReminderServiceTest {
 
         verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
-        verify(pillRegimenRequestMapper, never()).map(null);
+        verify(pillRegimenRequestMapper, never()).map(null, null);
         verify(pillReminderService, never()).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService, never()).scheduleDailyPillReminderJobs(patient, null);
     }
@@ -59,7 +59,7 @@ public class DailyPillReminderServiceTest {
 
         verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
-        verify(pillRegimenRequestMapper).map(treatmentAdvice);
+        verify(pillRegimenRequestMapper).map(patient, treatmentAdvice);
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
     }
@@ -83,7 +83,7 @@ public class DailyPillReminderServiceTest {
 
         verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
-        verify(pillRegimenRequestMapper).map(treatmentAdvice);
+        verify(pillRegimenRequestMapper).map(patient, treatmentAdvice);
         verify(pillReminderService).remove(patient.getId());
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService).unscheduleDailyPillReminderJobs(patient);
