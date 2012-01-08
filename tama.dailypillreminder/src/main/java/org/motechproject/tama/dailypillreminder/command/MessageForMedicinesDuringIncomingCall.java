@@ -39,7 +39,7 @@ public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTree
             messages.add(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
         }
         PillRegimen pillRegimen = context.pillRegimen();
-        if (pillRegimen.isNowWithinCurrentDosePillWindow(context.callStartTime())) {
+        if (pillRegimen.isWithinPillWindow(context.callStartTime())) {
             messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
             messages.addAll(context.currentDose().medicineNames());
             messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);

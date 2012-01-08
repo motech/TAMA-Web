@@ -65,21 +65,18 @@ public class Dose implements Comparable<Dose> {
         return getResponseLastCapturedDate() != null && getResponseLastCapturedDate().equals(getDate());
     }
 
-    public boolean isWithinSpecifiedInterval(DateTime specifiedDateTime, int intervalInMinutes) {
-        boolean nowAfterPillWindowStart = specifiedDateTime.isAfter(getDoseTime().minusMinutes(intervalInMinutes));
-        boolean nowBeforePillWindowEnd = specifiedDateTime.isBefore(getDoseTime().plusMinutes(intervalInMinutes));
-        return nowAfterPillWindowStart && nowBeforePillWindowEnd;
+    public boolean isOnTime(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
+        return !isEarlyToTake(specifiedDateTime, dosageIntervalInMinutes) && !isLateToTake(specifiedDateTime, dosageIntervalInMinutes);
     }
 
-    public boolean isEarlyToTake(DateTime specifiedDateTime, int reminderRepeatWindowInHours, int dosageIntervalInMinutes) {
+    public boolean isEarlyToTake(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
         DateTime dosageWindowStart = getDoseTime().minusMinutes(dosageIntervalInMinutes);
-        DateTime pillWindowStart = getDoseTime().minusHours(reminderRepeatWindowInHours);
-        return specifiedDateTime.isAfter(pillWindowStart) && specifiedDateTime.isBefore(dosageWindowStart);
+        return specifiedDateTime.isBefore(dosageWindowStart);
     }
 
     public boolean isLateToTake(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
-        DateTime scheduledDoseInterval = getDoseTime().plusMinutes(dosageIntervalInMinutes);
-        return specifiedDateTime.isAfter(scheduledDoseInterval);
+        DateTime dosageWindowEnd = getDoseTime().plusMinutes(dosageIntervalInMinutes);
+        return specifiedDateTime.isAfter(dosageWindowEnd);
     }
 
     @Override

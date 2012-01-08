@@ -45,47 +45,26 @@ public class PillRegimen {
         }
         return count;
     }
-/* ---------------------- Previous Dose Operations Start ----------------------------- */
+
     public Dose getPreviousDoseAt(DateTime specifiedDateTime) {
         HashMap<DosageType, Dose> proximateDosesAt = getProximateDosesAt(specifiedDateTime);
         return proximateDosesAt.isEmpty() ? null : proximateDosesAt.get(DosageType.Previous);
     }
-/* ---------------------- Previous Dose Operations End ----------------------------- */
 
-/* ---------------------- Current Dose Operations Start ----------------------------- */
     public Dose getDoseAt(DateTime specifiedDateTime) {
         HashMap<DosageType, Dose> proximateDosesAt = getProximateDosesAt(specifiedDateTime);
         return proximateDosesAt.isEmpty() ? null : proximateDosesAt.get(DosageType.Current);
     }
 
-    public boolean isNowWithinCurrentDosePillWindow(DateTime specifiedDateTime) {
-        return isNowWithinCurrentDosageInterval(specifiedDateTime, getReminderRepeatWindowInHours() * 60);
-    }
-
-    public boolean isNowWithinCurrentDosageInterval(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
+    public boolean isWithinPillWindow(DateTime specifiedDateTime) {
         Dose currentDose = getDoseAt(specifiedDateTime);
-        if (currentDose == null) return false;
-        return currentDose.isWithinSpecifiedInterval(specifiedDateTime, dosageIntervalInMinutes);
+        return currentDose.isOnTime(specifiedDateTime, getReminderRepeatWindowInHours() * 60);
     }
 
-    public boolean isEarlyToTakeDose(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
-        Dose currentDose = getDoseAt(specifiedDateTime);
-        if (currentDose == null) return true;
-        return currentDose.isEarlyToTake(specifiedDateTime, getReminderRepeatWindowInHours(), dosageIntervalInMinutes);
-    }
-
-    public boolean isLateToTakeDose(DateTime specifiedDateTime, int dosageIntervalInMinutes) {
-        Dose currentDose = getDoseAt(specifiedDateTime);
-        return currentDose.isLateToTake(specifiedDateTime, dosageIntervalInMinutes);
-    }
-/* ---------------------- Current Dose Operations End ----------------------------- */
-
-/* ---------------------- Next Dose Operations Start ----------------------------- */
     public Dose getNextDoseAt(DateTime specifiedDateTime) {
         HashMap<DosageType, Dose> proximateDosesAt = getProximateDosesAt(specifiedDateTime);
         return proximateDosesAt.isEmpty() ? veryFirstDose() : proximateDosesAt.get(DosageType.Next);
     }
-/* ---------------------- Next Dose Operations End ----------------------------- */
 
     Dose veryFirstDose() {
         List<DosageResponse> dosageResponses = getDosageResponses();

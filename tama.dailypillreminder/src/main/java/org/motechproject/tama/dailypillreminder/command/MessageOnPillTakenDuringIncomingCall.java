@@ -2,7 +2,6 @@ package org.motechproject.tama.dailypillreminder.command;
 
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
-import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,11 @@ public class MessageOnPillTakenDuringIncomingCall extends DailyPillReminderTreeC
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
         ArrayList<String> messages = new ArrayList<String>();
-        PillRegimen pillRegimen = context.pillRegimen();
-        if (pillRegimen.isEarlyToTakeDose(context.callStartTime(), dosageInterval))
+        if (context.currentDose().isEarlyToTake(context.callStartTime(), dosageInterval))
             messages.add(TamaIVRMessage.TOOK_DOSE_BEFORE_TIME);
-        else if (pillRegimen.isLateToTakeDose(context.callStartTime(), dosageInterval))
+        else if (context.currentDose().isLateToTake(context.callStartTime(), dosageInterval))
             messages.add(TamaIVRMessage.TOOK_DOSE_LATE);
-        else if (pillRegimen.isNowWithinCurrentDosageInterval(context.callStartTime(), dosageInterval))
+        else if (context.currentDose().isOnTime(context.callStartTime(), dosageInterval))
             messages.add(TamaIVRMessage.DOSE_TAKEN_ON_TIME);
 
         messages.add(TamaIVRMessage.DOSE_RECORDED);

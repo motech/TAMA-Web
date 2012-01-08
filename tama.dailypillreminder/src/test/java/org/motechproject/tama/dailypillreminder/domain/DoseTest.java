@@ -1,5 +1,6 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.model.Time;
@@ -35,5 +36,59 @@ public class DoseTest {
         Dose dose = new Dose(dosageResponse, new LocalDate(2010, 10, 10));
 
         assertTrue(dose.isTaken());
+    }
+
+    @Test
+    public void isLateToTakeDosageShouldReturnTrueIfNowAfterDosageInterval() {
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1, 1), null, null, new ArrayList<MedicineResponse>());
+        Dose currentDose = new Dose(dosageResponse, new LocalDate(2010, 10, 10));
+
+        DateTime testCallTime = DateUtil.newDateTime(new LocalDate(2010, 10, 10), 12, 6, 0);
+        assertTrue(currentDose.isLateToTake(testCallTime, 15));
+    }
+
+    @Test
+    public void isLateToTakeDosageShouldReturnFalseIfNowWithinDosageInterval() {
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1, 1), null, null, new ArrayList<MedicineResponse>());
+        Dose currentDose = new Dose(dosageResponse, new LocalDate(2010, 10, 10));
+
+        DateTime testCallTime = DateUtil.newDateTime(new LocalDate(2010, 10, 10), 10, 19, 0);
+        assertFalse(currentDose.isLateToTake(testCallTime, 15));
+    }
+
+    @Test
+    public void isEarlyToTakeDosageShouldReturnTrueIfNowBeforeDosageInterval() {
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1, 1), null, null, new ArrayList<MedicineResponse>());
+        Dose currentDose = new Dose(dosageResponse, new LocalDate(2010, 10, 10));
+
+        DateTime testCallTime = DateUtil.newDateTime(new LocalDate(2010, 10, 10), 9, 45, 0);
+        assertTrue(currentDose.isEarlyToTake(testCallTime, 15));
+    }
+
+    @Test
+    public void isEarlyToTakeDosageShouldReturnFalseIfWithinDosageInterval() {
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(10, 5), new LocalDate(2010, 1, 1), null, null, new ArrayList<MedicineResponse>());
+        Dose currentDose = new Dose(dosageResponse, new LocalDate(2010, 10, 10));
+
+        DateTime testCallTime = DateUtil.newDateTime(new LocalDate(2010, 10, 10), 10, 10, 0);
+        assertFalse(currentDose.isEarlyToTake(testCallTime, 15));
+    }
+
+    @Test
+    public void shouldReturnTrueIfCallTimeIsWithinDosageInterval() {
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(21, 0), new LocalDate(2010, 1, 1), null, null, new ArrayList<MedicineResponse>());
+        Dose currentDose = new Dose(dosageResponse, new LocalDate(2010, 10, 10));
+
+        DateTime testCallTime = DateUtil.newDateTime(new LocalDate(2010, 10, 10), 20, 50, 0);
+        assertTrue(currentDose.isOnTime(testCallTime, 15));
+    }
+
+    @Test
+    public void shouldReturnFalseIfCallTimeIsNotWithinDosageInterval() {
+        DosageResponse dosageResponse = new DosageResponse("currentDosageId", new Time(21, 0), new LocalDate(2010, 1, 1), null, null, new ArrayList<MedicineResponse>());
+        Dose currentDose = new Dose(dosageResponse, new LocalDate(2010, 10, 10));
+
+        DateTime testCallTime = DateUtil.newDateTime(new LocalDate(2010, 10, 10), 20, 40, 0);
+        assertFalse(currentDose.isOnTime(testCallTime, 15));
     }
 }
