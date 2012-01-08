@@ -123,6 +123,7 @@ public class PatientPreferences extends BaseEntity {
         this.activateAppointmentReminders = activateAppointmentReminders;
     }
 
+    @JsonIgnore
     public DateTime nextRecallOn(LocalDate weekStartDate) {
         Time bestCallTime = getBestCallTime().toTime();
         LocalDate recallDate = weekStartDate.plusDays(DAYS_TO_RECALL);

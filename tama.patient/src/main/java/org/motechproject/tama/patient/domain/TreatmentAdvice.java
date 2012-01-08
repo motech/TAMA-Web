@@ -149,6 +149,7 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
         return getStartDate().compareTo(treatmentAdvice.getStartDate());
     }
 
+    @JsonIgnore
     public LocalDate getStartDateForWeek(LocalDate date, Patient patient) {
         DayOfWeek preferredCallDay = patient.getPatientPreferences().getDayOfWeeklyCall();
         int retryDayCount = 0;
