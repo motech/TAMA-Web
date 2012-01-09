@@ -234,7 +234,9 @@ public class FourDayRecallSchedulerServiceTest {
         for (int i = 0; i < 3; i++) {
             verify(motechSchedulerService).unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, i + patient_id);
         }
-        verify(motechSchedulerService).unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, patient_id);
+        for (int i = 0; i <= 2; i++) {
+            verify(motechSchedulerService).unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, i + patient_id);
+        }
     }
 
     private void assertFourDayRecallCallJob(CronSchedulableJob cronSchedulableJob, String cronExpression, Date jobStartDate ) {
