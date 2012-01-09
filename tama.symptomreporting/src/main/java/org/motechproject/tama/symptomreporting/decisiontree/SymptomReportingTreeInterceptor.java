@@ -21,7 +21,7 @@ public class SymptomReportingTreeInterceptor {
     private String[] secondPriorityFilterCriteria = {"adv_stopmedicineseeclinicasap", "adv_seeclinicasapdepression"};
     private String[] thirdPriorityFilterCriteria = {"adv_continuemedicineseeclinicasap"};
     private String[] fourthPriorityFilterCriteria = {"adv_callclinic"};
-    private String[] fifthPriorityFilterCriteria = {"adv_tingpainfeetcropanto", "adv_tingpainfeetcro", "adv_crocin02", "adv_crocin03", "adv`_crocinpanto01", "adv_crocinpanto02",
+    private String[] fifthPriorityFilterCriteria = {"adv_tingpainfeetcropanto", "adv_tingpainfeetcro", "adv_crocin02", "adv_crocin03", "adv_crocinpanto01", "adv_crocinpanto02",
             "adv_halfhourcontmed01", "adv_halfhourcro01", "adv_halfhourcrocinpanto01", "adv_halfhourpanto01", "adv_levo01", "adv_levopanto01", "adv_panto01",
             "adv_panto02", "adv_tingpainfeet", "adv_tingpainfeetpanto"};
     private String[] switchToDialPromptFilterCriteria = (String[]) ArrayUtils.addAll(firstPriorityFilterCriteria, secondPriorityFilterCriteria);
