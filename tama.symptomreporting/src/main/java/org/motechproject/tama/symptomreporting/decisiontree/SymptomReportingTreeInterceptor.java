@@ -43,6 +43,11 @@ public class SymptomReportingTreeInterceptor {
         addAlerts(node);
         addDialPrompt(node);
         addSuspendAdherenceCallsCommand(node);
+        addCommandToLogSymptoms(node);
+    }
+
+    private void addCommandToLogSymptoms(Node node) {
+
     }
 
     private void addAlerts(Node node) {
