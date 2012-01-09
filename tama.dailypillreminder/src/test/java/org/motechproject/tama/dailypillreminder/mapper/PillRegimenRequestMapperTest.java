@@ -49,8 +49,8 @@ public class PillRegimenRequestMapperTest {
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
             setPatientId("123");
             setDrugDosages(new ArrayList<DrugDosage>() {{
-                add(drugDosage("Drug1Id", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10), "09:00am", "08:30pm"));
-                add(drugDosage("Drug2Id", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10), "09:00am", "05:45pm"));
+                add(drugDosage("Drug1Id", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10), "09:00am", "08:30pm", 0));
+                add(drugDosage("Drug2Id", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10), "09:00am", "05:45pm", 0));
             }});
         }};
         DailyPillRegimenRequest request = pillRegimenRequestMapper.map(patient, treatmentAdvice);
@@ -67,8 +67,8 @@ public class PillRegimenRequestMapperTest {
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
             setPatientId("123");
             setDrugDosages(new ArrayList<DrugDosage>() {{
-                add(drugDosage("Drug1Id", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10), "09:00am", "08:30pm"));
-                add(drugDosage("Drug2Id", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10), "09:00am", "05:45pm"));
+                add(drugDosage("Drug1Id", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10), "09:00am", "08:30pm", 0));
+                add(drugDosage("Drug2Id", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10), "09:00am", "05:45pm", 15));
             }});
         }};
 
@@ -83,7 +83,7 @@ public class PillRegimenRequestMapperTest {
         DosageRequest dosageRequest1 = getByStartHour(17, pillRegimenRequest.getDosageRequests());
         assertDosageRequestWithReminderTimeLag(dosageRequest1, 17, 50);
         Assert.assertEquals(1, dosageRequest1.getMedicineRequests().size());
-        assertMedicineRequest(dosageRequest1.getMedicineRequests().get(0), "Drug2_brandName", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10));
+        assertMedicineRequest(dosageRequest1.getMedicineRequests().get(0), "Drug2_brandName", DateUtil.newDate(2011, 2, 25), DateUtil.newDate(2011, 6, 10));
 
         DosageRequest dosageRequest2 = getByStartHour(20, pillRegimenRequest.getDosageRequests());
         assertDosageRequestWithReminderTimeLag(dosageRequest2, 20, 35);
@@ -166,7 +166,7 @@ public class PillRegimenRequestMapperTest {
         Assert.assertEquals(endDate, medicineRequest.getEndDate());
     }
 
-    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final String morningTime, final String eveningTime) {
+    private DrugDosage drugDosage(final String drugId, final LocalDate startDate, final LocalDate endDate, final String morningTime, final String eveningTime, final Integer offsetDays) {
         return new DrugDosage() {{
             setDrugId(drugId);
             setBrandId("brandId");
@@ -174,6 +174,7 @@ public class PillRegimenRequestMapperTest {
             setEndDate(endDate);
             setEveningTime(eveningTime);
             setMorningTime(morningTime);
+            setOffsetDays(offsetDays);
         }};
     }
 }

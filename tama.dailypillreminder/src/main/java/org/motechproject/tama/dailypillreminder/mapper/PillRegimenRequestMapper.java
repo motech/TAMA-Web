@@ -47,8 +47,8 @@ public class PillRegimenRequestMapper {
     }
 
     public DailyPillRegimenRequest map(Patient patient, TreatmentAdvice treatmentAdvice) {
-        final Converter<DrugDosage, MedicineRequest> morningDrugDosageToMedicineRequestConverter = new DrugDosageMedicineRequestConverter(false, patient);
-        final Converter<DrugDosage, MedicineRequest> eveningDrugDosageToMedicineRequestConverter = new DrugDosageMedicineRequestConverter(true, patient);
+        final Converter<DrugDosage, MedicineRequest> morningDrugDosageToMedicineRequestConverter = new DrugDosageMedicineRequestConverter(true, patient);
+        final Converter<DrugDosage, MedicineRequest> eveningDrugDosageToMedicineRequestConverter = new DrugDosageMedicineRequestConverter(false, patient);
         final Converter<String, DosageRequest> dosageRequestFromSchedule = new DosageTimeDosageRequestConverter(treatmentAdvice, morningDrugDosageToMedicineRequestConverter, eveningDrugDosageToMedicineRequestConverter);
         final Set<String> dosageSchedule = treatmentAdvice.groupDosagesByTime().keySet();
         return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(),
