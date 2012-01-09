@@ -321,14 +321,4 @@ public class Patient extends CouchEntity {
         boolean moreThan4WeeksAfterActivation = Days.daysBetween(getActivationDate(), DateUtil.now()).getDays() >= 28;
         return moreThan4WeeksAfterActivation && patientPreferences.getCallPreference().isDaily();
     }
-
-    @JsonIgnore
-    public LocalDate getDosageStartDate(DrugDosage drugDosage) {
-        LocalDate drugDosageStartDate = drugDosage.getStartDate().plusDays(drugDosage.getOffsetDays());
-        DateTime transitionDate = patientPreferences.getCallPreferenceTransitionDate();
-        if (transitionDate != null && drugDosageStartDate.isBefore(transitionDate.toLocalDate())) {
-            drugDosageStartDate = transitionDate.toLocalDate();
-        }
-        return drugDosageStartDate;
-    }
 }

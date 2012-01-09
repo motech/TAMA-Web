@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.BaseEntity;
@@ -205,5 +206,22 @@ public class DrugDosage extends BaseEntity {
             }
             return o1.getStartDate().compareTo(o2.getStartDate());
         }
+    }
+
+    public LocalDate morningDoseTrackingStartDate(Patient patient) {
+        return getTrackingStartDate(patient, getStartDate());
+    }
+
+    public LocalDate eveningDoseTrackingStartDate(Patient patient) {
+        LocalDate startDate = getStartDate().plusDays(offsetDays);
+        return getTrackingStartDate(patient, startDate);
+    }
+
+    private LocalDate getTrackingStartDate(Patient patient, LocalDate startDate) {
+        DateTime transitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
+        if (transitionDate != null && startDate.isBefore(transitionDate.toLocalDate())) {
+            return transitionDate.toLocalDate();
+        }
+        return startDate;
     }
 }

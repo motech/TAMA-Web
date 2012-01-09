@@ -98,7 +98,7 @@ public class PillRegimenRequestMapperTest {
     }
 
     @Test
-    public void shouldConvertDosageRequestToMedicine() {
+    public void shouldConvertEveningDoseToMedicineRequest() {
         final LocalDate startDate = DateUtil.newDate(2011, 12, 12);
         final int offsetDays = 15;
         final String testBrandName = "testBrand";
@@ -110,8 +110,33 @@ public class PillRegimenRequestMapperTest {
             }
         });
 
+        final MedicineRequest medicineRequest = mapDrugDosageToMedicineRequest(false, startDate, offsetDays);
+
+        assertEquals(startDate.plusDays(offsetDays), medicineRequest.getStartDate());
+    }
+
+    @Test
+    public void shouldConvertMorningDoseToMedicineRequest_ForVariableDosage() {
+        boolean morningDose = true;
+        LocalDate startDate = DateUtil.newDate(2011, 12, 12);
+        int offsetDays = 15;
+        final String testBrandName = "testBrand";
+
+        when(allDrugs.get(Matchers.<String>any())).thenReturn(new Drug() {
+            @Override
+            public String fullName(String brandId) {
+                return testBrandName;
+            }
+        });
+
+        MedicineRequest medicineRequest = mapDrugDosageToMedicineRequest(morningDose, startDate, offsetDays);
+
+        assertEquals(startDate, medicineRequest.getStartDate());
+    }
+
+    private MedicineRequest mapDrugDosageToMedicineRequest(boolean morningDose, final LocalDate startDate, final int offsetDays) {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        final PillRegimenRequestMapper.DrugDosageMedicineRequestConverter drugDosageMedicineRequestConverter = new PillRegimenRequestMapper(allDrugs, 1, 1, 1).new DrugDosageMedicineRequestConverter(patient);
+        final PillRegimenRequestMapper.DrugDosageMedicineRequestConverter drugDosageMedicineRequestConverter = new PillRegimenRequestMapper(allDrugs, 1, 1, 1).new DrugDosageMedicineRequestConverter(morningDose, patient);
         DrugDosage drugDosage = new DrugDosage() {{
             setMorningTime("10:00am");
             setEveningTime("10:00pm");
@@ -119,11 +144,8 @@ public class PillRegimenRequestMapperTest {
             setStartDate(startDate);
         }};
 
-        final MedicineRequest medicineRequest = drugDosageMedicineRequestConverter.convert(drugDosage);
-
-        assertEquals(startDate.plusDays(offsetDays), medicineRequest.getStartDate());
+        return drugDosageMedicineRequestConverter.convert(drugDosage);
     }
-
 
     private DosageRequest getByStartHour(int startHour, List<DosageRequest> dosageRequests) {
         for (DosageRequest dosageRequest : dosageRequests) {
