@@ -65,7 +65,6 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
     }
 
     private void setupData() {
-        super.setUp();
         clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
