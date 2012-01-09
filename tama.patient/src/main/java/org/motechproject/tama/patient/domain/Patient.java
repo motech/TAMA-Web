@@ -315,10 +315,10 @@ public class Patient extends CouchEntity {
     }
 
     @JsonIgnore
-    public boolean canTransitionToWeekly() {
+    public boolean canTransitionToWeekly(int minNumberOfDaysOnDailyBeforeTransitioningToWeekly) {
         if (getActivationDate() == null)
             return false;
-        boolean moreThan4WeeksAfterActivation = Days.daysBetween(getActivationDate(), DateUtil.now()).getDays() >= 28;
+        boolean moreThan4WeeksAfterActivation = Days.daysBetween(getActivationDate(), DateUtil.now()).getDays() >= minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
         return moreThan4WeeksAfterActivation && patientPreferences.getCallPreference().isDaily();
     }
 }

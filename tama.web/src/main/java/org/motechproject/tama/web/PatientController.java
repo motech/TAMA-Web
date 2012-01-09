@@ -25,6 +25,7 @@ import org.motechproject.tama.web.view.IVRLanguagesView;
 import org.motechproject.tama.web.view.ModesOfTransmissionView;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,11 +73,12 @@ public class PatientController extends BaseController {
     private PatientService patientService;
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
     private ResumeFourDayRecallService resumeFourDayRecallService;
+    private Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
 
     @Autowired
-
     public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
-                             AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService) {
+                             AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
+                             @Value("#{dailyPillReminderProperties['"+ TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY  +"']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -89,6 +91,7 @@ public class PatientController extends BaseController {
         this.patientService = patientService;
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
         this.resumeFourDayRecallService = resumeFourDayRecallService;
+        this.minNumberOfDaysOnDailyBeforeTransitioningToWeekly = minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -196,7 +199,7 @@ public class PatientController extends BaseController {
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         initUIModel(uiModel, patient);
         uiModel.addAttribute("systemCategories", patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories());
-        uiModel.addAttribute("canTransitionToWeekly", patient.canTransitionToWeekly());
+        uiModel.addAttribute("canTransitionToWeekly", patient.canTransitionToWeekly(minNumberOfDaysOnDailyBeforeTransitioningToWeekly));
         return UPDATE_VIEW;
     }
 

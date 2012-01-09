@@ -148,22 +148,22 @@ public class PatientTest extends BaseUnitTest {
     public void canTransitionToWeeklyAfterFourWeeksAfterActivation() {
         final DateTime now = DateTime.now();
         Patient patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(1)).withCallPreference(CallPreference.DailyPillReminder).build();
-        assertFalse(patient.canTransitionToWeekly());
+        assertFalse(patient.canTransitionToWeekly(28));
 
         patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(1)).withCallPreference(CallPreference.FourDayRecall).build();
-        assertFalse(patient.canTransitionToWeekly());
+        assertFalse(patient.canTransitionToWeekly(28));
 
         patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(28)).withCallPreference(CallPreference.FourDayRecall).build();
-        assertFalse(patient.canTransitionToWeekly());
+        assertFalse(patient.canTransitionToWeekly(28));
 
         patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(28)).withCallPreference(CallPreference.DailyPillReminder).build();
-        assertTrue(patient.canTransitionToWeekly());
+        assertTrue(patient.canTransitionToWeekly(28));
     }
 
     @Test
     public void cannotTransitionToWeeklyIfPatientIsNotActivated() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withActivationDate(null).withCallPreference(CallPreference.DailyPillReminder).build();
-        assertFalse(patient.canTransitionToWeekly());
+        assertFalse(patient.canTransitionToWeekly(28));
     }
 
     @Test
