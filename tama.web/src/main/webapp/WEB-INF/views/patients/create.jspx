@@ -19,8 +19,8 @@
     </script>
 
     <div id="patientPreferences.fourWeekWarningDialog" title="Warning" data-dojo-type="dijit.Dialog">
-        Starting the patient on weekly adherence is not recommended. <br/>
-        Are you sure you want to continue? <br/>
+        The patient has not been on 'Daily Pill Reminder' calls for sufficient amount of time. <br/>
+        Are you sure you want to enroll him/her on 'Weekly Adherence'? <br/>
 		<button dojoType="dijit.form.Button" type="submit" id="four_week_warning_confirm">Yes</button>
 		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
 	</div>
