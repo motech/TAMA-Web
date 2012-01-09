@@ -25,6 +25,16 @@ public class FourDayRecallSchedulerService {
     private Properties fourDayRecallProperties;
     private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
+    public static class Helper {
+        public static LocalDate getStartDateForJobScheduling(LocalDate weeklyAdherenceTrackingStartDate, DayOfWeek dayOfWeeklyCall) {
+            LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(PatientPreferences.DAYS_TO_RECALL);
+            if(startDate.getDayOfWeek() > dayOfWeeklyCall.getValue()){
+                startDate = startDate.plusDays(7).minusDays(startDate.getDayOfWeek()-dayOfWeeklyCall.getValue());
+            }
+            return startDate;
+        }
+    }
+
     @Autowired
     public FourDayRecallSchedulerService(MotechSchedulerService motechSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService,
                                          @Qualifier("ivrProperties") Properties ivrProperties, @Qualifier("fourDayRecallProperties") Properties fourDayRecallProperties) {
@@ -98,7 +108,7 @@ public class FourDayRecallSchedulerService {
         Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
         LocalDate weeklyAdherenceTrackingStartDate = fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
-        LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(PatientPreferences.DAYS_TO_RECALL);
+        LocalDate startDate = FourDayRecallSchedulerService.Helper.getStartDateForJobScheduling(weeklyAdherenceTrackingStartDate, dayOfWeeklyCall);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek day = dayOfWeek(dayOfWeeklyCall, count);

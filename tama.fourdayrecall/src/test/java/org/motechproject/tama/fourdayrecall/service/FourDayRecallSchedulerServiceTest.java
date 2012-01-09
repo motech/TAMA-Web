@@ -79,8 +79,9 @@ public class FourDayRecallSchedulerServiceTest {
         verify(motechSchedulerService, times(2 * (1 + numDaysToRetry))).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
-        LocalDate startDate = TREATMENT_ADVICE_START_DATE.plusDays(WAIT_TIME_TO_START_FOURDAY_RECALL);
-		assertFourDayRecallCallJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6",startDate.toDate()  );
+        LocalDate nextFriday = new LocalDate(2012, 12, 21);
+        LocalDate startDate = nextFriday;
+		assertFourDayRecallCallJob(cronSchedulableJobList.get(0), "0 30 10 ? * 6", startDate.toDate());
         assertFourDayRecallCallJob(cronSchedulableJobList.get(1), "0 30 10 ? * 7", startDate.plusDays(1).toDate());
         assertFourDayRecallCallJob(cronSchedulableJobList.get(2), "0 30 10 ? * 1", startDate.plusDays(2).toDate());
 
@@ -120,7 +121,7 @@ public class FourDayRecallSchedulerServiceTest {
     }
 
     @Test
-    public void shouldScheduleFourDayRecallJobsStartingNow_StartDateIsBeforeToday() {
+    public void shouldScheduleFourDayRecallJobsStartingNow_WhenTreatmentStartDateIsFourDaysBeforeToday() {
         DayOfWeek dayOfWeek = DayOfWeek.Friday;
         DateTime now = DateUtil.now();
         LocalDate today = now.toLocalDate();
@@ -272,5 +273,29 @@ public class FourDayRecallSchedulerServiceTest {
         } else {
             assertEquals(false, cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.RETRY_EVENT_KEY));
         }
+    }
+
+    @Test
+    public void startDateForJobScheduling_shouldBeInCurrentWeek_whenDayOfWeeklyCallIsOnOrAfterFourDaysFromWeeklyAdherenceStartDate(){
+        LocalDate weeklyAdherenceStartDate = new LocalDate(2012, 1, 9);
+        DayOfWeek dayOfWeeklyCall = DayOfWeek.Friday;
+
+        assertEquals(new LocalDate(2012, 1, 13), FourDayRecallSchedulerService.Helper.getStartDateForJobScheduling(weeklyAdherenceStartDate, dayOfWeeklyCall));
+    }
+
+    @Test
+    public void startDateForJobScheduling_shouldBeNextWeek_whenDayOfWeeklyCallIsBeforeFourDayFromWeeklyAdherenceStartDate(){
+        LocalDate weeklyAdherenceStartDate = new LocalDate(2012, 1, 9);
+        DayOfWeek dayOfWeeklyCall = DayOfWeek.Thursday;
+
+        assertEquals(new LocalDate(2012, 1, 19), FourDayRecallSchedulerService.Helper.getStartDateForJobScheduling(weeklyAdherenceStartDate, dayOfWeeklyCall));
+    }
+
+    @Test
+    public void startDateForJobScheduling_shouldBeNextWeek_whenDayOfWeeklyCallIsBeforeFourDaysFromWeeklyAdherenceStartDate(){
+        LocalDate weeklyAdherenceStartDate = new LocalDate(2012, 1, 10);
+        DayOfWeek dayOfWeeklyCall = DayOfWeek.Wednesday;
+
+        assertEquals(new LocalDate(2012, 1, 18), FourDayRecallSchedulerService.Helper.getStartDateForJobScheduling(weeklyAdherenceStartDate, dayOfWeeklyCall));
     }
 }
