@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.motechproject.tama.patient.util.CallPlanUtil.callPlanStartDate;
+
 @Component
 public class FourDayRecallSchedulerService {
     private MotechSchedulerService motechSchedulerService;
@@ -87,7 +89,7 @@ public class FourDayRecallSchedulerService {
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
         Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        LocalDate startDate = fourDayRecallAdherenceService.firstFourDayRecallDate(patientDocId, fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice)).minusDays(1);
+        LocalDate startDate = fourDayRecallAdherenceService.firstFourDayRecallDate(patientDocId, callPlanStartDate(patient, treatmentAdvice)).minusDays(1);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1); // +1 is so that it is scheduled at midnight. 12:00 AM of NEXT day
@@ -107,7 +109,7 @@ public class FourDayRecallSchedulerService {
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
         Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        LocalDate weeklyAdherenceTrackingStartDate = fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate weeklyAdherenceTrackingStartDate = callPlanStartDate(patient, treatmentAdvice);
         LocalDate startDate = FourDayRecallSchedulerService.Helper.getStartDateForJobScheduling(weeklyAdherenceTrackingStartDate, dayOfWeeklyCall);
 
         for (int count = 0; count <= daysToRetry; count++) {
@@ -142,4 +144,5 @@ public class FourDayRecallSchedulerService {
     private Date getJobEndDate(TreatmentAdvice treatmentAdvice) {
         return DateUtil.newDate(treatmentAdvice.getEndDate()) == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).toDate();
     }
+
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
+import static org.motechproject.tama.patient.util.CallPlanUtil.callPlanStartDate;
 
 @Service
 public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
@@ -116,17 +117,10 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
     }
 
-    public LocalDate getWeeklyAdherenceTrackingStartDate(Patient patient, TreatmentAdvice treatmentAdvice) {
-        LocalDate weeklyAdherenceTrackingStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
-        if (patient.getPatientPreferences().getCallPreferenceTransitionDate() != null && weeklyAdherenceTrackingStartDate.isBefore(patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate()))
-            weeklyAdherenceTrackingStartDate = patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate();
-        return weeklyAdherenceTrackingStartDate;
-    }
-
     boolean isCurrentWeekTheFirstWeekOfTreatmentAdvice(String patientId) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         Patient patient = allPatients.get(patientId);
-        LocalDate weeklyAdherenceTrackingStartDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate weeklyAdherenceTrackingStartDate = callPlanStartDate(patient, treatmentAdvice);
         LocalDate calculatedStartDateForCurrentWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
         return weeklyAdherenceTrackingStartDate.isEqual(calculatedStartDateForCurrentWeek) || calculatedStartDateForCurrentWeek.isBefore(weeklyAdherenceTrackingStartDate);
     }
@@ -191,7 +185,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
 
     public DateTime getFirstWeeksFourDayRecallRetryEndDate(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        LocalDate weeklyAdherenceTakingStartDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
+        LocalDate weeklyAdherenceTakingStartDate = callPlanStartDate(patient, treatmentAdvice);
         LocalDate firstRecallDate = weeklyAdherenceTakingStartDate.plusDays(PatientPreferences.DAYS_TO_RECALL);
         DayOfWeek preferredDayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         while (preferredDayOfWeeklyCall.getValue() != firstRecallDate.getDayOfWeek()) {

@@ -243,29 +243,6 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnTransitionDateAsStartDate_WhenThereIsATransition() {
-        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 1, 1);
-        LocalDate transitionDay = new LocalDate(2011, 11, 10);
-        DateTime transitionDateTime = transitionDay.toDateTimeAtCurrentTime();
-
-        Patient patient = new Patient();
-        patient.getPatientPreferences().setCallPreferenceTransitionDate(transitionDateTime);
-        setupExpectations(patient, treatmentAdviceStartDate.toDate());
-
-        assertEquals(transitionDay, fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice));
-    }
-
-    @Test
-    public void shouldReturnTreatmentAdviseStartDateAsStartDate_WhenThereIsNoTransition() {
-        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 12, 1);
-
-        Patient patient = new Patient();
-        setupExpectations(patient, treatmentAdviceStartDate.toDate());
-
-        assertEquals(treatmentAdviceStartDate, fourDayRecallAdherenceService.getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice));
-    }
-
-    @Test
     public void shouldTestFourDayRecallRetryEndDateForFirstCall() {
         LocalDate treatmentAdviceStartDate = new LocalDate(2011, 12, 1);
         Patient patient = new Patient();

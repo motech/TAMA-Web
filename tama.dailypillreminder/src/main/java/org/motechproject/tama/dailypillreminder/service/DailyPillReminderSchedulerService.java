@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.Map;
 
+import static org.motechproject.tama.patient.util.CallPlanUtil.callPlanStartDate;
+
 @Component
 public class DailyPillReminderSchedulerService {
     private MotechSchedulerService motechSchedulerService;
@@ -42,7 +44,7 @@ public class DailyPillReminderSchedulerService {
                 .withExternalId(treatmentAdvice.getPatientId())
                 .payload();
         MotechEvent adherenceWeeklyTrendEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
-        LocalDate startDate = getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice).plusWeeks(5);
+        LocalDate startDate = callPlanStartDate(patient, treatmentAdvice).plusWeeks(5);
 
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
         Date jobStartDate = startDate.toDate();
@@ -56,7 +58,7 @@ public class DailyPillReminderSchedulerService {
                 .payload();
         MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, eventParams);
 
-        Date jobStartDate = getJobStartDate(getDailyPillReminderAdherenceTrackingStartDate(patient, treatmentAdvice));
+        Date jobStartDate = getJobStartDate(callPlanStartDate(patient, treatmentAdvice));
         Date jobEndDate = treatmentAdvice.getEndDate() == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).plusDays(1).toDate();
 
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
@@ -73,13 +75,6 @@ public class DailyPillReminderSchedulerService {
 
     void unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient) {
         motechSchedulerService.unscheduleJob(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patient.getId());
-    }
-
-    public LocalDate getDailyPillReminderAdherenceTrackingStartDate(Patient patient, TreatmentAdvice treatmentAdvice) {
-        LocalDate dailyPillReminderAdherenceTrackingStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
-        if (patient.getPatientPreferences().getCallPreferenceTransitionDate() != null && dailyPillReminderAdherenceTrackingStartDate.isBefore(patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate()))
-            dailyPillReminderAdherenceTrackingStartDate = patient.getPatientPreferences().getCallPreferenceTransitionDate().toLocalDate();
-        return dailyPillReminderAdherenceTrackingStartDate;
     }
 
     private Date getJobStartDate(LocalDate startDate) {
