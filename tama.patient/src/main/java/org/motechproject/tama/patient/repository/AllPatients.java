@@ -131,10 +131,6 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         super.add(entity);
     }
 
-    public void remove(String id) {
-        remove(get(id));
-    }
-
     @Override
     public void remove(Patient entity) {
         allUniquePatientFields.remove(entity);
@@ -165,11 +161,5 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
             if (!StringUtils.isBlank(hivMedicalHistory.getModeOfTransmissionId()))
                 hivMedicalHistory.setModeOfTransmission(allModesOfTransmission.get(hivMedicalHistory.getModeOfTransmissionId()));
         }
-    }
-
-    public void deactivate(String id) {
-        Patient patient = get(id);
-        patient.deactivate();
-        update(patient);
     }
 }

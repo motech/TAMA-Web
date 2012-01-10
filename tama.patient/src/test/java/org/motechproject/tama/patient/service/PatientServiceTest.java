@@ -82,6 +82,21 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldDeactivatePatient() {
+        DateTime now = DateUtil.newDateTime(DateUtil.today(), 10, 0, 0);
+        mockCurrentDate(now);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("Id").build();
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+
+        patientService.deactivate(patient.getId(), Status.Temporary_Deactivation);
+
+        verify(allPatients).update(patient);
+        assertEquals(Status.Temporary_Deactivation, patient.getStatus());
+        assertEquals(now, patient.getLastDeactivationDate());
+    }
+
+    @Test
     public void shouldSuspendPatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
@@ -113,10 +128,11 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldNotModifyActivationDateOnUpdate() {
+    public void shouldNotModifyDateFieldsOnUpdate() {
         DateTime now = DateUtil.now();
         LocalDate today = now.toLocalDate();
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withActivationDate(now).withLastSuspendedDate(now.plusDays(1)).withRegistrationDate(today).build();
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withRegistrationDate(today).
+                withActivationDate(now).withLastSuspendedDate(now.plusDays(10)).withLastDeactivationDate(now.plusDays(4)).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withPasscode("9999").build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
@@ -126,6 +142,7 @@ public class PatientServiceTest extends BaseUnitTest {
         patientService.update(patient);
 
         assertEquals(dbPatient.getActivationDate(), patient.getActivationDate());
+        assertEquals(dbPatient.getLastDeactivationDate(), patient.getLastDeactivationDate());
         assertEquals(dbPatient.getLastSuspendedDate(), patient.getLastSuspendedDate());
         assertEquals(dbPatient.getRegistrationDate(), patient.getRegistrationDate());
     }

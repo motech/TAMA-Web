@@ -62,7 +62,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         return allDosageAdherenceLogs.getDoseTakenLateCount(patient.getId(), since, true) > 0;
     }
 
-    public void backFillAdherence(String patientId, boolean wasDoseTaken, DateTime startDate, DateTime endDate) {
+    public void backFillAdherence(String patientId, DateTime startDate, DateTime endDate, boolean wasDoseTaken) {
         PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientId);
 
         Dose firstProbableDose = pillRegimen.getDoseAt(startDate);

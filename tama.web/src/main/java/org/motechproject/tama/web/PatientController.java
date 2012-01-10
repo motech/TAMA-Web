@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.TAMAConstants;
@@ -57,6 +58,7 @@ public class PatientController extends BaseController {
     public static final String PATIENTS = "patients";
     public static final String WARNING = "warning";
     public static final String ITEM_ID = "itemId";
+    public static final String PATIENT_HAS_STARTED_TREATMENT = "patient_has_started_treatment";
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
     public static final String CLINIC_AND_PATIENT_ID_ALREADY_IN_USE = "Sorry, the entered patient-id already in use.";
@@ -78,7 +80,7 @@ public class PatientController extends BaseController {
     @Autowired
     public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
                              AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
-                             @Value("#{dailyPillReminderProperties['"+ TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY  +"']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly) {
+                             @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -108,9 +110,7 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
     public String deactivate(@RequestParam String id, @RequestParam Status status, HttpServletRequest request) {
-        Patient patient = allPatients.get(id);
-        patient.setStatus(status);
-        patientService.update(patient);
+        patientService.deactivate(id, status);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
@@ -131,13 +131,16 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/reactivatePatient")
     public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, HttpServletRequest request) {
-        patientService.activate(id);
         Patient patient = allPatients.get(id);
+
+        final DateTime startDate = patient.getStatus().isTemporarilyDeactivated() ? patient.getLastDeactivationDate() : patient.getLastSuspendedDate();
+        final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (patient.isOnDailyPillReminder()) {
-            dailyPillReminderAdherenceService.backFillAdherence(id, doseStatus.isTaken(), patient.getLastSuspendedDate(), DateUtil.now());
+            dailyPillReminderAdherenceService.backFillAdherence(id, startDate, DateUtil.now(), doseStatus.isTaken());
         } else {
-            resumeFourDayRecallService.backFillAdherenceForPeriodOfSuspension(id, doseStatus.isTaken());
+            resumeFourDayRecallService.backFillAdherence(patient, treatmentAdvice, startDate, DateUtil.now(), doseStatus.isTaken());
         }
+        patientService.activate(id);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
@@ -150,6 +153,7 @@ public class PatientController extends BaseController {
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
         uiModel.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
         uiModel.addAttribute(WARNING, warning);
+        uiModel.addAttribute(PATIENT_HAS_STARTED_TREATMENT, allTreatmentAdvices.currentTreatmentAdvice(patient.getId()) != null);
         return SHOW_VIEW;
     }
 

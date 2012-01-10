@@ -14,7 +14,6 @@ import org.motechproject.tama.patient.builder.MedicalHistoryBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.MedicalHistory;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.domain.UniquePatientField;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
@@ -32,9 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -200,17 +197,6 @@ public class AllPatientsTest extends SpringIntegrationTest {
         assertThat(dbPatients.get(0).getPatientId(), is("5678"));
         assertThat(uniquePatientFields.get(0).getId(), is(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "null/5678"));
         assertThat(uniquePatientFields.get(1).getId(), is(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + mobilePhoneNumber + "/1234"));
-    }
-
-    @Test
-    public void shouldDeactivatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withPatientId("7890").withGender(gender).withIVRLanguage(ivrLanguage).build();
-        allPatients.add(patient);
-
-        allPatients.deactivate(patient.getId());
-
-        List<Patient> dbPatients = allPatients.findByPatientId("7890");
-        assertEquals(Status.Inactive, dbPatients.get(0).getStatus());
     }
 
     @Test

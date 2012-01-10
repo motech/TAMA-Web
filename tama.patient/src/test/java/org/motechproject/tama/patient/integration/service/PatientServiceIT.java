@@ -1,5 +1,6 @@
 package org.motechproject.tama.patient.integration.service;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -46,5 +47,18 @@ public class PatientServiceIT extends SpringIntegrationTest {
         Patient reloadedPatient = allPatients.get(patient.getId());
         assertEquals(Status.Active, reloadedPatient.getStatus());
         assertEquals(DateUtil.today(), reloadedPatient.getActivationDate().toLocalDate());
+    }
+
+    @Test
+    public void shouldDeactivatePatient() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).build();
+        allPatients.add(patient);
+        markForDeletion(patient);
+
+        patientService.deactivate(patient.getId(), Status.Loss_To_Follow_Up);
+
+        Patient reloadedPatient = allPatients.get(patient.getId());
+        Assert.assertEquals(Status.Loss_To_Follow_Up, reloadedPatient.getStatus());
+        Assert.assertEquals(DateUtil.today(), reloadedPatient.getLastDeactivationDate().toLocalDate());
     }
 }

@@ -33,32 +33,33 @@ public class Patient extends CouchEntity {
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
     protected String mobilePhoneNumber;
-
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
     @NotNull
     protected Date dateOfBirthAsDate;
-
     @ManyToOne
     private Gender gender;
     @ManyToOne
     private Clinic clinic;
 
-    private MedicalHistory medicalHistory;
+    private String genderId;
+    private String clinic_id;
+
     @Valid
     private PatientPreferences patientPreferences = new PatientPreferences();
-
+    private MedicalHistory medicalHistory;
     private Status status = Status.Inactive;
+    private String notes;
+
     private int travelTimeToClinicInDays;
     private int travelTimeToClinicInHours;
     private int travelTimeToClinicInMinutes;
+
     private Date registrationDateAsDate;
-    private String genderId;
-    private String clinic_id;
     private DateTime lastSuspendedDate;
     private DateTime activationDate;
-    private String notes;
+    private DateTime lastDeactivationDate;
 
     @JsonIgnore
     public boolean allowAdherenceCalls() {
@@ -73,17 +74,6 @@ public class Patient extends CouchEntity {
     @JsonIgnore
     public boolean allowIncomingCalls() {
         return status.isActive() || status.isSuspended();
-    }
-
-    public Patient deactivate() {
-        this.status = Status.Inactive;
-        return this;
-    }
-
-    public Patient activate() {
-        this.status = Status.Active;
-        setActivationDate(DateUtil.now());
-        return this;
     }
 
     @JsonIgnore
@@ -205,19 +195,6 @@ public class Patient extends CouchEntity {
         this.patientPreferences = patientPreferences;
     }
 
-    public LocalDate getRegistrationDate() {
-        if (registrationDateAsDate == null) {
-            this.registrationDateAsDate = toDate(DateUtil.today());
-        }
-        return DateUtil.newDate(registrationDateAsDate);
-    }
-
-    public void setRegistrationDate(LocalDate registrationDate) {
-        if (registrationDate != null) {
-            this.registrationDateAsDate = toDate(registrationDate);
-        }
-    }
-
     @JsonIgnore
     public Date getRegistrationDateAsDate() {
         return registrationDateAsDate;
@@ -277,12 +254,17 @@ public class Patient extends CouchEntity {
         return PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + this.getMobilePhoneNumber() + "/" + this.getPatientPreferences().getPasscode();
     }
 
-    public DateTime getLastSuspendedDate() {
-        return lastSuspendedDate == null ? null : DateUtil.setTimeZone(lastSuspendedDate);
+    public LocalDate getRegistrationDate() {
+        if (registrationDateAsDate == null) {
+            this.registrationDateAsDate = toDate(DateUtil.today());
+        }
+        return DateUtil.newDate(registrationDateAsDate);
     }
 
-    public void setLastSuspendedDate(DateTime lastSuspendedDate) {
-        this.lastSuspendedDate = lastSuspendedDate;
+    public void setRegistrationDate(LocalDate registrationDate) {
+        if (registrationDate != null) {
+            this.registrationDateAsDate = toDate(registrationDate);
+        }
     }
 
     public DateTime getActivationDate() {
@@ -293,6 +275,34 @@ public class Patient extends CouchEntity {
         if (this.activationDate == null) {
             this.activationDate = activationDate;
         }
+    }
+
+    public DateTime getLastDeactivationDate() {
+        return lastDeactivationDate;
+    }
+
+    public void setLastDeactivationDate(DateTime lastDeactivationDate) {
+        this.lastDeactivationDate = lastDeactivationDate;
+    }
+
+    public DateTime getLastSuspendedDate() {
+        return lastSuspendedDate == null ? null : DateUtil.setTimeZone(lastSuspendedDate);
+    }
+
+    public void setLastSuspendedDate(DateTime lastSuspendedDate) {
+        this.lastSuspendedDate = lastSuspendedDate;
+    }
+
+    public Patient deactivate(Status status) {
+        this.status = status;
+        setLastDeactivationDate(DateUtil.now());
+        return this;
+    }
+
+    public Patient activate() {
+        this.status = Status.Active;
+        setActivationDate(DateUtil.now());
+        return this;
     }
 
     @JsonIgnore

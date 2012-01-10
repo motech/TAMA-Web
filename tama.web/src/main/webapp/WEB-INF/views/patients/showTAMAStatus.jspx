@@ -32,6 +32,16 @@
                             </form1:form>
                         </div>
                     </c:when>
+                    <c:when test="${patient.status.temporarilyDeactivated and patient_has_started_treatment}">
+                        <div class="update_patient">
+                            <spring:url value="revive/${patient.id}" var="custom_action_form_url"/>
+                            <form1:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
+                                <div class="submit">
+                                    <input type="submit" id="reActivatePatient" value="Reactivate"/>
+                                </div>
+                            </form1:form>
+                        </div>
+                    </c:when>
                     <c:otherwise>
                         <div class="update_patient">
                             <form action="activate" method="POST">

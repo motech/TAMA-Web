@@ -97,7 +97,7 @@ public class DailyPillReminderAdherenceServiceTest {
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(3)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -111,7 +111,7 @@ public class DailyPillReminderAdherenceServiceTest {
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
             when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -125,7 +125,7 @@ public class DailyPillReminderAdherenceServiceTest {
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
             when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -138,7 +138,7 @@ public class DailyPillReminderAdherenceServiceTest {
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(3)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -151,7 +151,7 @@ public class DailyPillReminderAdherenceServiceTest {
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -164,7 +164,7 @@ public class DailyPillReminderAdherenceServiceTest {
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(1)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -185,7 +185,7 @@ public class DailyPillReminderAdherenceServiceTest {
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(5)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -198,7 +198,7 @@ public class DailyPillReminderAdherenceServiceTest {
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
             when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(4)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -210,7 +210,7 @@ public class DailyPillReminderAdherenceServiceTest {
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(5)).add(Matchers.<DosageAdherenceLog>any());
         }
 
@@ -223,7 +223,7 @@ public class DailyPillReminderAdherenceServiceTest {
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
             when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
 
-            dailyReminderAdherenceService.backFillAdherence("patientId", false, startDate, endDate);
+            dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(3)).add(Matchers.<DosageAdherenceLog>any());
         }
 

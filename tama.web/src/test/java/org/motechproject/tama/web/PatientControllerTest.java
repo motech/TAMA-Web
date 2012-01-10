@@ -130,19 +130,12 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void shouldDeactivatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").build();
-        patient.setPatientPreferences(new PatientPreferences() {{
-            setCallPreference(CallPreference.DailyPillReminder);
-            setBestCallTime(new TimeOfDay());
-        }});
-        when(allPatients.get("patient_id")).thenReturn(patient);
+    public void shouldDeactivatePatientsByGet() {
+        String id = "patient_id";
+        String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, request);
 
-        String nextPage = controller.deactivate("patient_id", Status.Patient_Withdraws_Consent, request);
-
-        assertEquals(Status.Patient_Withdraws_Consent, patient.getStatus());
+        verify(patientService).deactivate(id, Status.Patient_Withdraws_Consent);
         assertEquals("redirect:/patients/patient_id", nextPage);
-        verify(patientService).update(patient);
     }
 
     @Test
@@ -274,7 +267,7 @@ public class PatientControllerTest {
         when(allPatients.get(patientId)).thenReturn(patientFromUI);
         controller.reactivatePatient(patientId, DoseStatus.NOT_TAKEN, request);
         ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
-        verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(patientId), eq(false), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture());
+        verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(patientId), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(false));
         assertTimeIsNow(dateTimeArgumentCaptor.getValue());
     }
 

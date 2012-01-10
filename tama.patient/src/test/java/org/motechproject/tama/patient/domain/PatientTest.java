@@ -128,10 +128,11 @@ public class PatientTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldTestDeactivationOfPatient() {
+    public void shouldDeactivatePatient() {
         Patient patient = PatientBuilder.startRecording().withStatus(Status.Active).build();
-        patient.deactivate();
+        patient.deactivate(Status.Inactive);
         assertTrue(patient.getStatus().equals(Status.Inactive));
+        assertEquals(DateUtil.today(), patient.getLastDeactivationDate().toLocalDate());
     }
 
     @Test

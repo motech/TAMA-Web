@@ -49,9 +49,3 @@ public class TreatmentAdviceService {
         allTreatmentAdvices.update(existingTreatmentAdvice);
     }
 }
-
-
-
-
-
-

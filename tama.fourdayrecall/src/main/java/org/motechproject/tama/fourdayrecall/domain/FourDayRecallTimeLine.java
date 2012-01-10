@@ -14,18 +14,20 @@ public class FourDayRecallTimeLine {
     private TreatmentAdvice treatmentAdvice;
     private int daysToRetry;
     private Patient patient;
+    private DateTime startDate;
     private DateTime toDate;
 
-    public FourDayRecallTimeLine(Patient patient, DateTime toDate, TreatmentAdvice treatmentAdvice, int daysToRetry) {
+    public FourDayRecallTimeLine(Patient patient, DateTime startDate, DateTime endDate, TreatmentAdvice treatmentAdvice, int daysToRetry) {
         this.patient = patient;
-        this.toDate = toDate;
+        this.startDate = startDate;
+        this.toDate = endDate;
         this.treatmentAdvice = treatmentAdvice;
         this.daysToRetry = daysToRetry;
     }
 
     public List<LocalDate> weekStartDates() {
         List<LocalDate> allWeekStartDates = new ArrayList<LocalDate>();
-        LocalDate weekStartDate = computeFirstWeekStartDate(patient.getLastSuspendedDate());
+        LocalDate weekStartDate = computeFirstWeekStartDate(startDate);
         while (weekStartDate != null) {
             allWeekStartDates.add(weekStartDate);
             weekStartDate = computeNextWeekStartDate(weekStartDate);

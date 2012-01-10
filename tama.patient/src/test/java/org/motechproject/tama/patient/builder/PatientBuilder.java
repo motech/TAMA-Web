@@ -127,8 +127,9 @@ public class PatientBuilder {
         return new PatientBuilder();
     }
 
-    public PatientBuilder withLastSuspendedDate(DateTime suspendedDate) {
-        patient.setLastSuspendedDate(suspendedDate);
+
+    public PatientBuilder withRegistrationDate(LocalDate registrationDate) {
+        patient.setRegistrationDate(registrationDate);
         return this;
     }
 
@@ -137,21 +138,26 @@ public class PatientBuilder {
         return this;
     }
 
-    public PatientBuilder withWeeklyCallPreference(DayOfWeek dayOfWeeklyCall, TimeOfDay patientBestCallTime) {
-        PatientPreferences preferences = patient.getPatientPreferences();
-        preferences.setCallPreference(CallPreference.FourDayRecall);
-        preferences.setDayOfWeeklyCall(dayOfWeeklyCall);
-        preferences.setBestCallTime(patientBestCallTime);
+    public PatientBuilder withLastDeactivationDate(DateTime lastDeactivationDate) {
+        patient.setLastDeactivationDate(lastDeactivationDate);
         return this;
     }
 
-    public PatientBuilder withRegistrationDate(LocalDate registrationDate) {
-        patient.setRegistrationDate(registrationDate);
+    public PatientBuilder withLastSuspendedDate(DateTime suspendedDate) {
+        patient.setLastSuspendedDate(suspendedDate);
         return this;
     }
 
     public PatientBuilder withTransitionDate(LocalDate transitionDate) {
         patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.newDateTime(transitionDate, 0, 0, 0));
+        return this;
+    }
+
+    public PatientBuilder withWeeklyCallPreference(DayOfWeek dayOfWeeklyCall, TimeOfDay patientBestCallTime) {
+        PatientPreferences preferences = patient.getPatientPreferences();
+        preferences.setCallPreference(CallPreference.FourDayRecall);
+        preferences.setDayOfWeeklyCall(dayOfWeeklyCall);
+        preferences.setBestCallTime(patientBestCallTime);
         return this;
     }
 }

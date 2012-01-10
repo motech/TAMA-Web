@@ -34,7 +34,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     private AllPatients allPatients;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
-
     @Mock
     private Properties properties;
 
@@ -77,7 +76,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     }
 
     private void backFill(boolean doseTaken) {
-        resumeFourDayRecallService.backFillAdherenceForPeriodOfSuspension(patient.getId(), doseTaken);
+        resumeFourDayRecallService.backFillAdherence(patient, treatmentAdvice, patient.getLastSuspendedDate(), DateUtil.now(), doseTaken);
     }
 
     private void logsRecorded(int count) {

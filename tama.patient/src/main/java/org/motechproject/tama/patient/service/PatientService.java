@@ -1,10 +1,7 @@
 package org.motechproject.tama.patient.service;
 
 import org.motechproject.tama.common.TamaException;
-import org.motechproject.tama.patient.domain.CallPreference;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.tama.patient.domain.UniquePatientField;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
@@ -54,21 +51,28 @@ public class PatientService {
         patient.setRevision(dbPatient.getRevision());
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
         patient.setActivationDate(dbPatient.getActivationDate());
+        patient.setLastDeactivationDate(dbPatient.getLastDeactivationDate());
         patient.setLastSuspendedDate(dbPatient.getLastSuspendedDate());
         updateUniquePatientField(patient);
         allPatients.update(patient);
         updateOnPatientPreferencesChanged(dbPatient, patient);
     }
 
-    public void suspend(String patientId) {
-        Patient patient = allPatients.get(patientId);
-        patient.suspend();
-        allPatients.update(patient);
-    }
-
     public void activate(String id) {
         Patient patient = allPatients.get(id);
         patient.activate();
+        allPatients.update(patient);
+    }
+
+    public void deactivate(String id, Status deactivationStatus) {
+        Patient patient = allPatients.get(id);
+        patient.deactivate(deactivationStatus);
+        allPatients.update(patient);
+    }
+
+    public void suspend(String patientId) {
+        Patient patient = allPatients.get(patientId);
+        patient.suspend();
         allPatients.update(patient);
     }
 
@@ -93,9 +97,3 @@ public class PatientService {
         }
     }
 }
-
-
-
-
-
-

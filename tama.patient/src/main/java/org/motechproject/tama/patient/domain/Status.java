@@ -43,6 +43,10 @@ public enum Status {
         return this.equals(Status.Inactive);
     }
 
+    public boolean isTemporarilyDeactivated() {
+        return this.equals(Status.Temporary_Deactivation);
+    }
+
     @Override
     public String toString() {
         return getDisplayName();
