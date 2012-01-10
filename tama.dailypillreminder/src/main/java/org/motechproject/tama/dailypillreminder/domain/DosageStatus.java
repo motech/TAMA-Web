@@ -3,7 +3,8 @@ package org.motechproject.tama.dailypillreminder.domain;
 public enum DosageStatus {
     TAKEN,
     NOT_TAKEN,
-    WILL_TAKE_LATER;
+    WILL_TAKE_LATER,
+    NOT_RECORDED;
 
     public static DosageStatus from(String input) {
         switch (Integer.valueOf(input)) {
@@ -14,7 +15,7 @@ public enum DosageStatus {
             case 3:
                 return NOT_TAKEN;
             default:
-                return null;
+                return NOT_RECORDED;
         }
     }
 }
