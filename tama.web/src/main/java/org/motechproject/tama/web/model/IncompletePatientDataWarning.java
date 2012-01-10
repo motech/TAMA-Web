@@ -34,7 +34,7 @@ public class IncompletePatientDataWarning {
     }
 
     private void findAllRequiredInfo(){
-        VitalStatistics vitalStatistics = allVitalStatistics.findByPatientId(patient.getId());
+        VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patient.getId());
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         LabResults labResults = allLabResults.findByPatientId(patient.getId());
         labResults = labResults.isEmpty() ? null: labResults;

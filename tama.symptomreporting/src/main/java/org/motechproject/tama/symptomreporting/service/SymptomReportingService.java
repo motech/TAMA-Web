@@ -32,7 +32,7 @@ public class SymptomReportingService {
     public MedicalCondition getPatientMedicalConditions(String patientId) {
         Patient patient = allPatients.get(patientId);
         LabResults labResults = allLabResults.findByPatientId(patientId);
-        VitalStatistics vitalStatistics = allVitalStatistics.findByPatientId(patientId);
+        VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientId);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         Regimen currentRegimen = allRegimens.get(currentTreatmentAdvice.getRegimenId());

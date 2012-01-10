@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -20,15 +21,14 @@ public class AllVitalStatistics extends AbstractCouchRepository<VitalStatistics>
     }
 
     @View(name = "find_by_patientId", map = "function(doc) {if (doc.documentType =='VitalStatistics' && doc.patientId) {emit(doc.patientId, doc._id);}}")
-    public VitalStatistics findByPatientId(String patientId) {
+    public List<VitalStatistics> findByPatientId(String patientId) {
         List<VitalStatistics> vitalStatisticsOfPatient = db.queryView(createQuery("find_by_patientId").key(patientId).includeDocs(true), VitalStatistics.class);
-        return singleResult(vitalStatisticsOfPatient);
+        return vitalStatisticsOfPatient;
     }
 
-    @Override
-    public void update(VitalStatistics vitalStatistics) {
-        VitalStatistics existingVitalStatistics = get(vitalStatistics.getId());
-        vitalStatistics.setRevision(existingVitalStatistics.getRevision());
-        super.update(vitalStatistics);
+    public VitalStatistics findLatestVitalStatisticByPatientId(String patientId) {
+        List<VitalStatistics> vitalStatisticsOfPatient = findByPatientId(patientId);
+        Collections.sort(vitalStatisticsOfPatient);
+        return singleResult(vitalStatisticsOfPatient);
     }
 }

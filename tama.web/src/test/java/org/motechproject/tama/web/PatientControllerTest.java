@@ -95,7 +95,7 @@ public class PatientControllerTest {
         when(request.getSession()).thenReturn(session);
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withStatus(Status.Active).build();
         when(allPatients.findByIdAndClinicId("patient_id", patient.getClinic_id())).thenReturn(patient);
-        when(allVitalStatistics.findByPatientId("patient_id")).thenReturn(null);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patient_id")).thenReturn(null);
         when(allLabResults.findByPatientId("patient_id")).thenReturn(new LabResults());
 

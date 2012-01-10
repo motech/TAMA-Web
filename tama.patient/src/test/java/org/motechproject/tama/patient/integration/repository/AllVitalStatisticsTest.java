@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -19,9 +20,10 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
     public void shouldFindVitalStatisticsByPatientId() {
         VitalStatistics vitalStatistics = new VitalStatistics();
         vitalStatistics.setPatientId("patient_id");
+        vitalStatistics.setCaptureDate(DateUtil.today());
         allVitalStatistics.add(vitalStatistics);
 
-        assertEquals("patient_id", allVitalStatistics.findByPatientId("patient_id").getPatientId());
+        assertEquals("patient_id", allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id").getPatientId());
         markForDeletion(vitalStatistics);
     }
 
@@ -29,6 +31,7 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
     public void shouldUpdateVitalStatisticsPreservingTheRevision() {
         VitalStatistics vitalStatistics = new VitalStatistics();
         vitalStatistics.setPatientId("patient_id");
+        vitalStatistics.setCaptureDate(DateUtil.today());
         vitalStatistics.setPulse(100);
         allVitalStatistics.add(vitalStatistics);
 
@@ -38,5 +41,6 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
         VitalStatistics savedVitalStatistics = allVitalStatistics.get(vitalStatistics.getId());
         assertEquals(new Integer(200), savedVitalStatistics.getPulse());
         assertEquals(vitalStatistics.getRevision(), savedVitalStatistics.getRevision());
+        markForDeletion(vitalStatistics);
     }
 }

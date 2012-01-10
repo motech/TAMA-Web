@@ -32,7 +32,7 @@ public class VitalStatisticsControllerTest {
         Model uiModel = mock(Model.class);
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
 
-        when(allVitalStatistics.findByPatientId("patient_id")).thenReturn(null);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(null);
 
         assertEquals("vital_statistics/form", vitalStatisticsController.createForm("patient_id", uiModel, servletRequest));
         verify(uiModel).addAttribute("vitalStatistics", new VitalStatistics("patient_id"));
@@ -44,7 +44,7 @@ public class VitalStatisticsControllerTest {
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
 
         VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
-        when(allVitalStatistics.findByPatientId("patient_id")).thenReturn(vitalStatistics);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(vitalStatistics);
 
         assertEquals("redirect:/vital_statistics/" + "patient_id", vitalStatisticsController.createForm("patient_id", uiModel, servletRequest));
         verify(uiModel).addAttribute("vitalStatistics", vitalStatistics);
@@ -67,7 +67,7 @@ public class VitalStatisticsControllerTest {
         Model uiModel = mock(Model.class);
 
         VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
-        when(allVitalStatistics.findByPatientId("patient_id")).thenReturn(vitalStatistics);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(vitalStatistics);
 
         assertEquals("vital_statistics/show", vitalStatisticsController.show("patient_id", uiModel));
         verify(uiModel).addAttribute("vitalStatistics", vitalStatistics);
@@ -79,7 +79,7 @@ public class VitalStatisticsControllerTest {
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
 
         VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
-        when(allVitalStatistics.findByPatientId("patient_id")).thenReturn(vitalStatistics);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(vitalStatistics);
 
         assertEquals("vital_statistics/form", vitalStatisticsController.updateForm("patient_id", uiModel));
         verify(uiModel).addAttribute("vitalStatistics", vitalStatistics);
@@ -93,7 +93,7 @@ public class VitalStatisticsControllerTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
         VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
-        when(allVitalStatistics.findByPatientId("patient_id")).thenReturn(vitalStatistics);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(vitalStatistics);
 
         vitalStatisticsController.update(vitalStatistics, bindingResult, uiModel, httpServletRequest);
 

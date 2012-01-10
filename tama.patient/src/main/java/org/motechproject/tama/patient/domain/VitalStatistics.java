@@ -2,13 +2,14 @@ package org.motechproject.tama.patient.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.tama.common.util.MathUtil;
 
 import javax.validation.constraints.NotNull;
 
 @TypeDiscriminator("doc.documentType == 'VitalStatistics'")
-public class VitalStatistics extends CouchEntity {
+public class VitalStatistics extends CouchEntity implements Comparable<VitalStatistics> {
 
     @NotNull
     private Double weightInKg;
@@ -30,6 +31,8 @@ public class VitalStatistics extends CouchEntity {
 
     @NotNull
     private String patientId;
+
+    private LocalDate captureDate;
 
     public VitalStatistics() {
     }
@@ -104,9 +107,22 @@ public class VitalStatistics extends CouchEntity {
         this.patientId = patientId;
     }
 
+    public LocalDate getCaptureDate() {
+        return captureDate;
+    }
+
+    public void setCaptureDate(LocalDate captureDate) {
+        this.captureDate = captureDate;
+    }
+
     @JsonIgnore
     public double getBMI() {
         double heightInMetres = heightInCm / 100;
         return MathUtil.roundOffTo(weightInKg / Math.pow(heightInMetres, 2), 2);
+    }
+
+    @Override
+    public int compareTo(VitalStatistics vitalStatistics) {
+        return vitalStatistics.getCaptureDate().compareTo(getCaptureDate());
     }
 }
