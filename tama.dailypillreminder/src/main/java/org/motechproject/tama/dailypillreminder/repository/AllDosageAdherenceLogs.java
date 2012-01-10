@@ -74,6 +74,12 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return db.queryView(q, DosageAdherenceLog.class).size();
     }
 
+    @View(name = "find_by_regimen_and_date_range", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.regimenId, doc.dosageDate], doc._id);}}")
+    public int countAllLogsForRegimenBetween(String regimenId, LocalDate from, LocalDate till) {
+        ViewQuery q = createQuery("find_by_regimen_and_date_range").startKey(ComplexKey.of(regimenId, from)).endKey(ComplexKey.of(regimenId, till)).inclusiveEnd(true).includeDocs(true);
+        return db.queryView(q, DosageAdherenceLog.class).size();
+    }
+
     @View(name = "ordered_by_date", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog') {emit([doc.patientId, doc.dosageDate], doc._id);}}")
     public DosageAdherenceLog getLatestLogForPatient(String patientId) {
         ViewQuery q = createQuery("ordered_by_date").startKey(patientId).includeDocs(true);

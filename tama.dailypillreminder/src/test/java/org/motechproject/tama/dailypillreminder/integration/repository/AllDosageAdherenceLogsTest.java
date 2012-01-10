@@ -96,6 +96,22 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
+    public void shouldCountAllLogs_ForARegimen_ForGivenDateRange() {
+        LocalDate someDay = new LocalDate(2011, 10, 22);
+        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, someDay);
+        allDosageAdherenceLogs.add(dosageAdherenceLog1);
+        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen1_id", "dosage1_id", DosageStatus.TAKEN, someDay.minusDays(1));
+        allDosageAdherenceLogs.add(dosageAdherenceLog2);
+        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2));
+        allDosageAdherenceLogs.add(dosageAdherenceLog3);
+        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_RECORDED, someDay.minusDays(4));
+        allDosageAdherenceLogs.add(dosageAdherenceLog4);
+        markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4);
+
+        assertEquals(3, allDosageAdherenceLogs.countAllLogsForRegimenBetween("regimen_id", someDay.minusDays(5), someDay));
+    }
+
+    @Test
     public void shouldGetTheLatestDosageAdherenceLogForThePatient() {
         LocalDate createdOn = new LocalDate(2011, 10, 10);
         List<DosageAdherenceLog> dosageAdherenceLogs = Arrays.asList(

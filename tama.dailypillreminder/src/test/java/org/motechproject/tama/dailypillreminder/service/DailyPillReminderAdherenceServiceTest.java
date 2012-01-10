@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
@@ -316,32 +317,31 @@ public class DailyPillReminderAdherenceServiceTest {
         public void forPatient() {
             String patientId = "patientId";
             int dosesTaken = 7;
-            int totalDoses = 28;
+            int totalLogs = 28;
 
             PillRegimen pillRegimen = mock(PillRegimen.class);
             DateTime asOfDate = now;
 
             when(dailyPillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
             when(pillRegimen.getId()).thenReturn("regimenId");
-            when(pillRegimen.getDosesBetween(asOfDate.minusWeeks(4).toLocalDate(), asOfDate)).thenReturn(totalDoses);
             when(allPatients.get(anyString())).thenReturn(patient);
+            when(allDosageAdherenceLogs.countAllLogsForRegimenBetween(same("regimenId"), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(totalLogs);
             when(allDosageAdherenceLogs.countBy(same("regimenId"), same(DosageStatus.TAKEN), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(dosesTaken);
 
-            assertEquals(((double) dosesTaken / totalDoses) * 100, dailyReminderAdherenceService.getAdherencePercentage(patientId, asOfDate));
+            assertEquals(((double) dosesTaken / totalLogs) * 100, dailyReminderAdherenceService.getAdherencePercentage(patientId, asOfDate));
         }
 
-        @Test
-        public void shouldReturn100PercentIfDosageNotStartedYet() {
+        @Test(expected = NoAdherenceRecordedException.class)
+        public void shouldRaiseExceptionIfNoDosageRecordedYet() {
             String patientId = "patientId";
             PillRegimen pillRegimen = mock(PillRegimen.class);
 
             when(pillRegimen.getId()).thenReturn("regimenId");
             when(dailyPillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
-            when(pillRegimen.getDosesBetween(Matchers.<LocalDate>any(), Matchers.<DateTime>any())).thenReturn(0);
+            when(allDosageAdherenceLogs.countAllLogsForRegimenBetween(Matchers.eq("regimenId"), Matchers.<LocalDate>any(), Matchers.<LocalDate>any())).thenReturn(0);
             when(allPatients.get(anyString())).thenReturn(patient);
 
-            assertEquals(100.0, dailyReminderAdherenceService.getAdherencePercentage(patientId, now));
-            verifyZeroInteractions(allDosageAdherenceLogs);
+            dailyReminderAdherenceService.getAdherencePercentage(patientId, now);
         }
     }
 
@@ -378,17 +378,17 @@ public class DailyPillReminderAdherenceServiceTest {
             when(dailyPillReminderService.getPillRegimen(patientId)).thenReturn(pillRegimen);
 
             ArgumentCaptor<LocalDate> fromDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
-            ArgumentCaptor<DateTime> toDateCaptor = ArgumentCaptor.forClass(DateTime.class);
-            when(pillRegimen.getDosesBetween(fromDateCaptor.capture(), toDateCaptor.capture())).thenReturn(7);
+            ArgumentCaptor<LocalDate> toDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
 
             ArgumentCaptor<LocalDate> adherenceLogFromDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
             ArgumentCaptor<LocalDate> adherenceLogToDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
             when(allDosageAdherenceLogs.countBy(Matchers.eq("regimenId"), Matchers.eq(DosageStatus.TAKEN), adherenceLogFromDateArgumentCaptor.capture(), adherenceLogToDateArgumentCaptor.capture())).thenReturn(1);
+            when(allDosageAdherenceLogs.countAllLogsForRegimenBetween(Matchers.eq("regimenId"), fromDateCaptor.capture(), toDateCaptor.capture())).thenReturn(10);
 
             assertTrue(dailyReminderAdherenceService.wasAnyDoseMissedLastWeek(patient));
 
             assertEquals(DateUtil.now().minusWeeks(1).toString("MM/dd/YYYY"), fromDateCaptor.getValue().toString("MM/dd/YYYY"));
-            assertEquals(DateUtil.newDateTime(DateUtil.today().minusDays(1), 23, 59, 59).toString("MM/dd/YYYY HH:mm:ss"), toDateCaptor.getValue().toString("MM/dd/YYYY HH:mm:ss"));
+            assertEquals(DateUtil.today().minusDays(1).toString("MM/dd/YYYY"), toDateCaptor.getValue().toString("MM/dd/YYYY"));
 
             assertEquals(DateUtil.today().minusWeeks(1).toString("MM/dd/YYYY"), adherenceLogFromDateArgumentCaptor.getValue().toString("MM/dd/YYYY"));
             assertEquals(DateUtil.today().minusDays(1).toString("MM/dd/YYYY"), adherenceLogToDateArgumentCaptor.getValue().toString("MM/dd/YYYY"));

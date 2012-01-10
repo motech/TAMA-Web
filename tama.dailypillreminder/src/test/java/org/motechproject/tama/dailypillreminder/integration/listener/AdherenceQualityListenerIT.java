@@ -96,8 +96,10 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
     }
 
     public void setUpAdherenceBelowThreshold() {
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
-        when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimen));
+        int totalDoses = 28;
+        int threshold = Integer.parseInt(ADHERENCE_THRESHOLD);
+        int dosesToBeTaken = (int)((((double) threshold / 100) * totalDoses) - 1);
+        setUpAdherenceLogs(totalDoses, dosesToBeTaken);
     }
 
     @Test
@@ -108,21 +110,15 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
                 .payload();
         MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, eventParams);
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(eventToDetermineAdherenceInRed);
-        double expectedAdherencePercentage = 0.0;
+        double expectedAdherencePercentage = dailyReminderAdherenceService.getAdherencePercentage(PATIENT_ID, DateUtil.now());
         verify(dailyReminderAdherenceTrendService).raiseAdherenceInRedAlert(PATIENT_ID, expectedAdherencePercentage);
     }
 
     private void setUpAdherenceAboveThreshold() {
         int totalDoses = 28;
         int threshold = Integer.parseInt(ADHERENCE_THRESHOLD);
-        double dosesToBeTaken = (((double) threshold / 100) * totalDoses) + 1;
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
-        when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimen));
-        for (int dosesTaken = 0; dosesTaken < dosesToBeTaken; dosesTaken++) {
-            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusDays(dosesTaken));
-            allDosageAdherenceLogs.add(dosageAdherenceLog);
-            markForDeletion(dosageAdherenceLog);
-        }
+        int dosesToBeTaken = (int)((((double) threshold / 100) * totalDoses) + 1);
+        setUpAdherenceLogs(totalDoses, dosesToBeTaken);
     }
 
     @Test
@@ -134,5 +130,20 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
         MotechEvent eventToDetermineAdherenceInRed = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, eventParams);
         adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(eventToDetermineAdherenceInRed);
         verify(dailyReminderAdherenceTrendService, never()).raiseAdherenceInRedAlert(same(PATIENT_ID), Matchers.<Double>any());
+    }
+
+    private void setUpAdherenceLogs(int totalDoses, int dosesToBeTaken) {
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
+        when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimenResponse));
+        for (int dosesTaken = 0; dosesTaken < dosesToBeTaken; dosesTaken++) {
+            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusDays(dosesTaken));
+            allDosageAdherenceLogs.add(dosageAdherenceLog);
+            markForDeletion(dosageAdherenceLog);
+        }
+        for (int dosesNotTaken = dosesToBeTaken; dosesNotTaken < totalDoses; dosesNotTaken++) {
+            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_RECORDED, DateUtil.today().minusDays(dosesNotTaken));
+            allDosageAdherenceLogs.add(dosageAdherenceLog);
+            markForDeletion(dosageAdherenceLog);
+        }
     }
 }

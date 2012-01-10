@@ -3,6 +3,7 @@ package org.motechproject.tama.dailypillreminder.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.*;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
@@ -39,17 +40,21 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         Patient patient = allPatients.get(patientId);
         DateTime fromDate = asOfDate.minusWeeks(4);
         DateTime callPreferenceTransitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
-        if(callPreferenceTransitionDate != null){
+        if (callPreferenceTransitionDate != null) {
             fromDate = asOfDate.minusWeeks(4).isBefore(callPreferenceTransitionDate) ? callPreferenceTransitionDate : asOfDate.minusWeeks(4);
         }
         return getAdherencePercentage(patientId, fromDate.toLocalDate(), asOfDate);
-     }
+    }
 
     @Override
     public boolean wasAnyDoseMissedLastWeek(Patient patient) {
         LocalDate oneWeekAgo = DateUtil.now().minusWeeks(1).toLocalDate();
         DateTime yesterday = DateUtil.newDateTime(DateUtil.today().minusDays(1), 23, 59, 59);
-        return getAdherencePercentage(patient.getId(), oneWeekAgo, yesterday) != 100;
+        try {
+            return getAdherencePercentage(patient.getId(), oneWeekAgo, yesterday) != 100;
+        }catch (NoAdherenceRecordedException e){
+            return false;
+        }
     }
 
     @Override
@@ -61,7 +66,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientId);
 
         Dose firstProbableDose = pillRegimen.getDoseAt(startDate);
-        if(firstProbableDose != null && firstProbableDose.getDoseTime().isBefore(startDate)) {
+        if (firstProbableDose != null && firstProbableDose.getDoseTime().isBefore(startDate)) {
             startDate = firstProbableDose.getDoseTime();
         }
 
@@ -101,9 +106,12 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
 
     private double getAdherencePercentage(String patientId, LocalDate fromDate, DateTime toDate) {
         PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientId);
-        int totalDoses = pillRegimen.getDosesBetween(fromDate, toDate);
-        if (totalDoses == 0) return 100;
-        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countBy(pillRegimen.getId(), DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
-        return ((double) dosagesTakenForLastFourWeeks) * 100 / totalDoses;
+        String pillRegimenId = pillRegimen.getId();
+        int totalLogs = allDosageAdherenceLogs.countAllLogsForRegimenBetween(pillRegimenId, fromDate, toDate.toLocalDate());
+        if (totalLogs == 0) {
+            throw new NoAdherenceRecordedException("No Adherence Log was recorded for given date range");
+        }
+        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countBy(pillRegimenId, DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
+        return ((double) dosagesTakenForLastFourWeeks) * 100 / totalLogs;
     }
 }

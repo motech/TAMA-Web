@@ -1,6 +1,7 @@
 package org.motechproject.tama.dailypillreminder.service;
 
 import org.joda.time.DateTime;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.patient.domain.PatientAlert;
@@ -25,7 +26,11 @@ public class DailyPillReminderAdherenceTrendService {
     }
 
     public boolean isAdherenceFallingAsOf(String patientId, DateTime asOf) {
-        return dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf) < dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf.minusWeeks(1));
+        try{
+            return dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf) < dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf.minusWeeks(1));
+        } catch (NoAdherenceRecordedException e){
+            return false;
+        }
     }
 
     public void raiseAlertIfAdherenceTrendIsFalling(String patientId, DateTime asOf) {

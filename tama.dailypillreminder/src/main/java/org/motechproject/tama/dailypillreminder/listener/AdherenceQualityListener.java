@@ -3,6 +3,7 @@ package org.motechproject.tama.dailypillreminder.listener;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
@@ -38,7 +39,12 @@ public class AdherenceQualityListener {
 
         if (patient != null && patient.allowAdherenceCalls()) {
             double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
-            double adherencePercentage = dailyReminderAdherenceService.getAdherencePercentage(patientId, DateUtil.now());
+            double adherencePercentage;
+            try{
+                adherencePercentage = dailyReminderAdherenceService.getAdherencePercentage(patientId, DateUtil.now());
+            } catch (NoAdherenceRecordedException e){
+                adherencePercentage = 100.00;
+            }
             if (adherencePercentage < acceptableAdherencePercentage) {
                 dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
             }

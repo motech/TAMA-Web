@@ -7,6 +7,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
@@ -23,6 +24,7 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.verifyNoMoreInteractions;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class AdherenceQualityListenerTest {
@@ -67,6 +69,21 @@ public class AdherenceQualityListenerTest {
 
         verify(dailyReminderAdherenceService).getAdherencePercentage(same(PATIENT_ID), Matchers.<DateTime>any());
         verify(dailyReminderAdherenceTrendService, times(1)).raiseAdherenceInRedAlert(eq(PATIENT_ID), eq(adherencePercentage));
+    }
+
+    @Test
+    public void shouldDetermineAdherenceQualityAndRaiseRedAlertIfNoAdherenceIsRecorded() throws Exception {
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(dailyReminderAdherenceService.getAdherencePercentage(same(PATIENT_ID), Matchers.<DateTime>any())).thenThrow(new NoAdherenceRecordedException("some error"));
+
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT);
+        Map<String, Object> parameters = motechEvent.getParameters();
+        parameters.put(EventKeys.EXTERNAL_ID_KEY, PATIENT_ID);
+
+        adherenceQualityListener.determineAdherenceQualityAndRaiseAlert(motechEvent);
+
+        verify(dailyReminderAdherenceService).getAdherencePercentage(same(PATIENT_ID), Matchers.<DateTime>any());
+        verifyZeroInteractions(dailyReminderAdherenceTrendService);
     }
 
     @Test

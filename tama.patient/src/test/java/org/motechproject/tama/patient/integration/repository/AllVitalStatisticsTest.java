@@ -22,9 +22,9 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
         vitalStatistics.setPatientId("patient_id");
         vitalStatistics.setCaptureDate(DateUtil.today());
         allVitalStatistics.add(vitalStatistics);
+        markForDeletion(vitalStatistics);
 
         assertEquals("patient_id", allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id").getPatientId());
-        markForDeletion(vitalStatistics);
     }
 
     @Test
@@ -37,10 +37,10 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
 
         vitalStatistics.setPulse(200);
         allVitalStatistics.update(vitalStatistics);
-
         VitalStatistics savedVitalStatistics = allVitalStatistics.get(vitalStatistics.getId());
+        markForDeletion(vitalStatistics);
+        
         assertEquals(new Integer(200), savedVitalStatistics.getPulse());
         assertEquals(vitalStatistics.getRevision(), savedVitalStatistics.getRevision());
-        markForDeletion(vitalStatistics);
     }
 }

@@ -1,6 +1,7 @@
 package org.motechproject.tama.dailypillreminder.command;
 
 import org.joda.time.DateTime;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -26,8 +27,13 @@ public class PlayAdherenceTrendFeedbackCommand {
     public String[] execute(String patientId) {
         ArrayList<String> result = new ArrayList<String>();
         DateTime now = DateUtil.now();
+        double adherencePercentageAsOfNow;
+        try{
+            adherencePercentageAsOfNow = dailyReminderAdherenceService.getAdherencePercentage(patientId, now);
+        } catch(NoAdherenceRecordedException e){
+            adherencePercentageAsOfNow = 0.00;
+        }
 
-        double adherencePercentageAsOfNow = dailyReminderAdherenceService.getAdherencePercentage(patientId, now);
         boolean falling = dailyReminderAdherenceTrendService.isAdherenceFallingAsOf(patientId, DateUtil.now());
 
         if (adherencePercentageAsOfNow > 90) {
