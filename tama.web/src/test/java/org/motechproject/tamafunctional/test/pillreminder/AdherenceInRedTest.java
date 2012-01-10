@@ -3,7 +3,6 @@ package org.motechproject.tamafunctional.test.pillreminder;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tama.dailypillreminder.listener.AdherenceQualityListener;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
@@ -12,18 +11,20 @@ import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.page.ShowAlertPage;
 import org.motechproject.tamafunctional.page.UpdateAlertPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
+import org.motechproject.tamafunctional.test.ivr.IVRAssert;
+import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
+import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
+import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 public class AdherenceInRedTest extends BaseIVRTest {
     private TestPatient patient;
@@ -44,10 +45,16 @@ public class AdherenceInRedTest extends BaseIVRTest {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
         scheduledTaskManager = new ScheduledTaskManager(webClient);
+        caller = caller(patient);
     }
 
     @Test
     public void shouldRaise_RedAlert_WhenAdherenceFalls_Below70Percent() throws IOException {
+        caller.replyToCall(new PillReminderCallInfo(1));
+        IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, PILL_REMINDER_RESPONSE_MENU);
+        ivrResponse = caller.enter("2");
+        caller.hangup();
         triggerRedAlertJob();
         verifyCreationOfRedAlertForThePatient();
     }
