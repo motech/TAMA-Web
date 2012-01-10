@@ -7,6 +7,7 @@ import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.builder.FourDayRecallEventPayloadBuilder;
+import org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class FourDayRecallSchedulerService {
 
     public static class Helper {
         public static LocalDate getStartDateForJobScheduling(LocalDate weeklyAdherenceTrackingStartDate, DayOfWeek dayOfWeeklyCall) {
-            LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(PatientPreferences.DAYS_TO_RECALL);
+            LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(FourDayRecallUtil.DAYS_TO_RECALL);
             if(startDate.getDayOfWeek() > dayOfWeeklyCall.getValue()){
                 startDate = startDate.plusDays(7).minusDays(startDate.getDayOfWeek()-dayOfWeeklyCall.getValue());
             }

@@ -6,8 +6,8 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.domain.FourDayRecallTimeLine;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -36,13 +36,13 @@ public class ResumeFourDayRecallService {
         List<LocalDate> weekStartDates = fourDayRecallTimeLine.weekStartDates();
         if (weekStartDates.size() > 0){
             if(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDates.get(0)).size() == 0) {
-                allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patient.getId(), treatmentAdvice.getId(), weekStartDates.get(0), doseTaken ? 0 : PatientPreferences.DAYS_TO_RECALL));
+                allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patient.getId(), treatmentAdvice.getId(), weekStartDates.get(0), doseTaken ? 0 : FourDayRecallUtil.DAYS_TO_RECALL));
             }
             weekStartDates.remove(0);
         }
 
         for (LocalDate date : weekStartDates) {
-            allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patient.getId(), treatmentAdvice.getId(), date, doseTaken ? 0 : PatientPreferences.DAYS_TO_RECALL));
+            allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patient.getId(), treatmentAdvice.getId(), date, doseTaken ? 0 : FourDayRecallUtil.DAYS_TO_RECALL));
         }
     }
 }

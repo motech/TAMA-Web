@@ -1,5 +1,6 @@
 package org.motechproject.tama.fourdayrecall.util;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,10 +8,13 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TimeMeridiem;
+import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 
 import static junit.framework.Assert.assertEquals;
 import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
+import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.nextRecallOn;
 
 public class FourDayRecallUtilTest {
 
@@ -18,7 +22,6 @@ public class FourDayRecallUtilTest {
 
     @Before
     public void setUp() {
-        treatmentAdvice = TreatmentAdvice.newDefault();
     }
 
     @Test
@@ -72,5 +75,45 @@ public class FourDayRecallUtilTest {
 
     private Patient patient(DayOfWeek dayOfWeek) {
         return PatientBuilder.startRecording().withWeeklyCallPreference(dayOfWeek, null).build();
+    }
+
+
+    @Test
+    public void shouldGetNextRecallDateTimeWhenPreferredDayIs4DaysAfterWeekStartDate() {
+        LocalDate weekStartDate = new LocalDate(2011, 12, 11);
+        TimeOfDay bestCallTime = new TimeOfDay(10, 10, TimeMeridiem.AM);
+        Patient patient = PatientBuilder.startRecording().withWeeklyCallPreference(DayOfWeek.Friday, bestCallTime).build();
+
+        DateTime nextRecall = nextRecallOn(weekStartDate, patient);
+
+        assertEquals(new LocalDate(2011, 12, 16), nextRecall.toLocalDate());
+        assertEquals(10, nextRecall.getHourOfDay());
+        assertEquals(10, nextRecall.getMinuteOfHour());
+    }
+
+    @Test
+    public void shouldGetNextRecallDateTimeWhenPreferredDayIsWithin4DaysAfterWeekStartDate() {
+        LocalDate weekStartDate = new LocalDate(2011, 12, 11);
+        TimeOfDay bestCallTime = new TimeOfDay(10, 10, TimeMeridiem.AM);
+        Patient patient = PatientBuilder.startRecording().withWeeklyCallPreference(DayOfWeek.Tuesday, bestCallTime).build();
+
+        DateTime nextRecall = nextRecallOn(weekStartDate, patient);
+
+        assertEquals(new LocalDate(2011, 12, 20), nextRecall.toLocalDate());
+        assertEquals(10, nextRecall.getHourOfDay());
+        assertEquals(10, nextRecall.getMinuteOfHour());
+    }
+
+    @Test
+    public void shouldGetRecallDateTimeWhenPreferredDayIsOnTheFourthDayFromWeekStartDate() {
+        LocalDate weekStartDate = new LocalDate(2011, 12, 11);
+        TimeOfDay bestCallTime = new TimeOfDay(10, 10, TimeMeridiem.PM);
+        Patient patient = PatientBuilder.startRecording().withWeeklyCallPreference(DayOfWeek.Wednesday, bestCallTime).build();
+
+        DateTime nextRecall = nextRecallOn(weekStartDate, patient);
+
+        assertEquals(new LocalDate(2011, 12, 21), nextRecall.toLocalDate());
+        assertEquals(22, nextRecall.getHourOfDay());
+        assertEquals(10, nextRecall.getMinuteOfHour());
     }
 }

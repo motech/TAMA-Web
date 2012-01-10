@@ -2,14 +2,11 @@ package org.motechproject.tama.patient.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.model.Time;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.common.domain.BaseEntity;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
-import org.motechproject.util.DateUtil;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -36,8 +33,6 @@ public class PatientPreferences extends BaseEntity {
     private boolean activateAppointmentReminders = true;
 
     private DateTime callPreferenceTransitionDate;
-
-    public static final int DAYS_TO_RECALL = 4;
 
     public CallPreference getCallPreference() {
         return this.callPreference;
@@ -121,15 +116,5 @@ public class PatientPreferences extends BaseEntity {
 
     public void setActivateAppointmentReminders(boolean activateAppointmentReminders) {
         this.activateAppointmentReminders = activateAppointmentReminders;
-    }
-
-    @JsonIgnore
-    public DateTime nextRecallOn(LocalDate weekStartDate) {
-        Time bestCallTime = getBestCallTime().toTime();
-        LocalDate recallDate = weekStartDate.plusDays(DAYS_TO_RECALL);
-        while (recallDate.getDayOfWeek() != getDayOfWeeklyCall().getValue()) {
-            recallDate = recallDate.plusDays(1);
-        }
-        return DateUtil.newDateTime(recallDate, bestCallTime);
     }
 }
