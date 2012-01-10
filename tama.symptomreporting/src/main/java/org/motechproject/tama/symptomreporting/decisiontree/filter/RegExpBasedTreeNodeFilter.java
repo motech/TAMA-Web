@@ -4,22 +4,21 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.springframework.stereotype.Component;
 
+import java.util.regex.Pattern;
+
 @Component
 public class RegExpBasedTreeNodeFilter extends DecisionTreeNodesFilter {
 
-    private String includeFilter;
-
-    private RegExpBasedTreeNodeFilter() {
-    }
+    private Pattern pattern;
 
     public RegExpBasedTreeNodeFilter(String includeFilter) {
-        this.includeFilter = includeFilter;
+        pattern = Pattern.compile(includeFilter);
     }
 
     @Override
     public boolean select(Node node) {
         for (Prompt prompt : node.getPrompts()) {
-            return prompt.getName().matches("cy_.*");
+            if (pattern.matcher(prompt.getName()).find()) return true;
         }
         return false;
     }

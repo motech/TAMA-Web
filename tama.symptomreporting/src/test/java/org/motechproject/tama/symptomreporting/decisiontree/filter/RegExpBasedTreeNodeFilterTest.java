@@ -17,7 +17,7 @@ public class RegExpBasedTreeNodeFilterTest {
         final RegExpBasedTreeNodeFilter regExpBasedTreeNodeFilter = new RegExpBasedTreeNodeFilter("^cy_.*");
 
         final Node node = new Node().setPrompts(
-                new AudioPrompt().setName("cy_lowurineorgenweakness")
+                new AudioPrompt().setName("cn_lowurineorgenweakness")
                 , new MenuAudioPrompt().setName("q_swellfacelegs"))
                 .setTransitions(new Object[][]{
                         {"1", new Transition().setDestinationNode(
@@ -28,7 +28,7 @@ public class RegExpBasedTreeNodeFilterTest {
                         )}
                         , {"3", new Transition().setDestinationNode(
                         new Node().setPrompts(
-                                new AudioPrompt().setName("cn_swellfacelegs")
+                        new AudioPrompt().setName("cn_swellfacelegs")
                                 , new AudioPrompt().setName("cy_fever")
                                 , new AudioPrompt().setName("adv_crocin02")
                         )
@@ -36,7 +36,6 @@ public class RegExpBasedTreeNodeFilterTest {
                 });
         final List<Node> nodes = regExpBasedTreeNodeFilter.filter(node);
         assertEquals(1, nodes.size());
-        assertEquals(node, nodes.get(0));
     }
 
     @Test
