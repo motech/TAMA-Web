@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
-@Component
 public class RegExpBasedTreeNodeFilter extends DecisionTreeNodesFilter {
 
     private Pattern pattern;
