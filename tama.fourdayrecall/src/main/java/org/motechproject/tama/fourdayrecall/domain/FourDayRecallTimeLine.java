@@ -10,6 +10,8 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
+
 public class FourDayRecallTimeLine {
     private TreatmentAdvice treatmentAdvice;
     private int daysToRetry;
@@ -36,7 +38,7 @@ public class FourDayRecallTimeLine {
     }
 
     private LocalDate computeFirstWeekStartDate(DateTime fromDate) {
-        LocalDate startDateForFirstWeek = treatmentAdvice.getStartDateForWeek(fromDate.toLocalDate(), patient);
+        LocalDate startDateForFirstWeek = getStartDateForWeek(fromDate.toLocalDate(), patient, treatmentAdvice);
         PatientPreferences patientPreference = patient.getPatientPreferences();
 
         DateTime recallDateTimeForFirstWeek = patientPreference.nextRecallOn(startDateForFirstWeek);
@@ -56,6 +58,6 @@ public class FourDayRecallTimeLine {
         DateTime currentWeekRecallDateTime = patient.getPatientPreferences().nextRecallOn(currentWeekStartDate);
         DateTime nextWeekRecallDateTime = currentWeekRecallDateTime.plusWeeks(1);
         if (nextWeekRecallDateTime.isAfter(toDate)) return null;
-        return treatmentAdvice.getStartDateForWeek(nextWeekRecallDateTime.toLocalDate(), patient);
+        return getStartDateForWeek(nextWeekRecallDateTime.toLocalDate(), patient, treatmentAdvice);
     }
 }

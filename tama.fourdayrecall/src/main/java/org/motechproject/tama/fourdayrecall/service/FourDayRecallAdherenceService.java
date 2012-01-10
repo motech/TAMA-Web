@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
+
 @Service
 public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     private AllTreatmentAdvices allTreatmentAdvices;
@@ -46,7 +48,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     public LocalDate fourDayRecallDate(String patientDocId, LocalDate week) {
         Patient patient = allPatients.get(patientDocId);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-        LocalDate startDayOfWeek = treatmentAdvice.getStartDateForWeek(week, patient);
+        LocalDate startDayOfWeek = getStartDateForWeek(week, patient, treatmentAdvice);
         LocalDate iteratingDayOfWeek = startDayOfWeek;
         DayOfWeek preferredDayOfWeek = patient.getPatientPreferences().getDayOfWeeklyCall();
         while (true) {
@@ -77,7 +79,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     protected WeeklyAdherenceLog getAdherenceLog(String patientId, int weeksBefore) {
         Patient patient = allPatients.get(patientId);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        LocalDate startDateForPreviousWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient).minusWeeks(weeksBefore);
+        LocalDate startDateForPreviousWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice).minusWeeks(weeksBefore);
 
         List<WeeklyAdherenceLog> logs = allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdvice.getId(), startDateForPreviousWeek);
         return logs.size() == 0 ? null : logs.get(0);
@@ -93,7 +95,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
             return DateUtil.today().minusWeeks(1).isBefore(callPreferenceTransitionDate.toLocalDate());
         }
 
-        final LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
+        final LocalDate startDateForWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
         return startDateForWeek.equals(treatmentAdviceStartDate);
     }
 
@@ -125,7 +127,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         Patient patient = allPatients.get(patientId);
         LocalDate weeklyAdherenceTrackingStartDate = getWeeklyAdherenceTrackingStartDate(patient, treatmentAdvice);
-        LocalDate calculatedStartDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
+        LocalDate calculatedStartDateForCurrentWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
         return weeklyAdherenceTrackingStartDate.isEqual(calculatedStartDateForCurrentWeek) || calculatedStartDateForCurrentWeek.isBefore(weeklyAdherenceTrackingStartDate);
     }
 
@@ -137,7 +139,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         Patient patient = allPatients.get(patientId);
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
+        LocalDate startDateForWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
 
         DateTime nextRecallDate = patientPreferences.nextRecallOn(startDateForWeek);
         return patientAlertService.getAdherenceInRedAlerts(patientId, nextRecallDate, DateUtil.now()).size() > 0;
@@ -147,7 +149,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         Patient patient = allPatients.get(patientDocId);
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
+        LocalDate startDateForWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
 
         DateTime nextRecallDate = patientPreferences.nextRecallOn(startDateForWeek);
         return patientAlertService.getFallingAdherenceAlerts(patientDocId, nextRecallDate, DateUtil.now()).size() > 0;

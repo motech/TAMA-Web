@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
+
 @Service
 public class FourDayRecallListener {
     public static final String PATIENT_DOC_ID_KEY = "patient_id";
@@ -66,7 +68,7 @@ public class FourDayRecallListener {
     }
 
     private boolean isAdherenceCapturedForCurrentWeek(Patient patient, TreatmentAdvice treatmentAdvice) {
-        LocalDate startDateForWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
+        LocalDate startDateForWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
         return allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, startDateForWeek).size() > 0;
     }
 

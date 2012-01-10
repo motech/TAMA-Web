@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.builder.FourDayRecallEventPayloadBuilder;
@@ -15,9 +16,7 @@ import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceServic
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.Status;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
@@ -25,9 +24,9 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class FourDayRecallListenerTest {
@@ -58,6 +57,7 @@ public class FourDayRecallListenerTest {
         initMocks(this);
         when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(treatmentAdvice);
         when(treatmentAdvice.getId()).thenReturn(TREATMENT_ADVICE_ID);
+        when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
 
         fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAdherenceService, allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs);
     }
@@ -65,7 +65,7 @@ public class FourDayRecallListenerTest {
     @Test
     public void shouldScheduleRetryCalls() {
         LocalDate startDate = DateUtil.today();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
 
         Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
@@ -104,7 +104,7 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldNotCreateRetryJobsOnlyForSubsequentRetryCalls() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
 
         Map<String, Object> data = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
@@ -134,7 +134,7 @@ public class FourDayRecallListenerTest {
     }
 
     private void setUpPatientWithDefaults() {
-        patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).build();
+        patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
     }
 
@@ -228,5 +228,4 @@ public class FourDayRecallListenerTest {
 
         verifyNoMoreInteractions(fourDayRecallAdherenceService);
     }
-
 }

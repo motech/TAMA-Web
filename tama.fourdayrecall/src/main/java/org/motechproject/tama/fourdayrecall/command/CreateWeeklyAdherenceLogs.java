@@ -14,6 +14,8 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
+
 @Component
 public class CreateWeeklyAdherenceLogs implements ITreeCommand {
     private AllPatients allPatients;
@@ -42,7 +44,7 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
         String treatmentAdviceDocId = treatmentAdvice.getId();
 
         int numberOfDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
-        LocalDate startDateForCurrentWeek = treatmentAdvice.getStartDateForWeek(DateUtil.today(), patient);
+        LocalDate startDateForCurrentWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
         allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForCurrentWeek, numberOfDaysMissed));
         return new String[0];
     }
