@@ -31,7 +31,7 @@ public class HealthTipRuleService {
     public Map<String, String> getHealthTipsFromRuleEngine(LocalDate treatmentStartDate, Patient patient) {
         HealthTipList healthTipList = new HealthTipList();
         healthTipsSession.setGlobal("healthTips", healthTipList);
-        LabResults labResults = allLabResults.findByPatientId(patient.getId());
+        LabResults labResults = allLabResults.findLatestLabResultsByPatientId(patient.getId());
         final AdherenceComplianceReport report = adherenceService.lastWeekAdherence(patient);
         healthTipsSession.execute(new HealthTipParams(patient, report, labResults, treatmentStartDate));
         return healthTipList.getHealthTips();

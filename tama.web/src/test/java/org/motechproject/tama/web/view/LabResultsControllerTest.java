@@ -59,7 +59,7 @@ public class LabResultsControllerTest {
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
 
         when(allLabTests.getAll()).thenReturn(Collections.<LabTest>emptyList());
-        when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
+        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
 
         assertEquals("labresults/create", labResultsController.createForm("patientId", model, servletRequest));
     }
@@ -73,7 +73,7 @@ public class LabResultsControllerTest {
         Model model = mock(Model.class);
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
 
-        when(allLabResults.findByPatientId(patientId)).thenReturn(labResultsForPatient);
+        when(allLabResults.findLatestLabResultsByPatientId(patientId)).thenReturn(labResultsForPatient);
 
         assertEquals("redirect:/labresults/" + "patientId", labResultsController.createForm("patientId", model, servletRequest));
     }
@@ -87,7 +87,7 @@ public class LabResultsControllerTest {
         Model model = mock(Model.class);
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(allLabTests.getAll()).thenReturn(Arrays.asList(labTest, anotherLabTest));
-        when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
+        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
 
         labResultsController.createForm(patientId, model, servletRequest);
 
@@ -110,7 +110,7 @@ public class LabResultsControllerTest {
         Model model = mock(Model.class);
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(allLabTests.getAll()).thenReturn(labTests);
-        when(allLabResults.findByPatientId("somePatientId")).thenReturn(new LabResults());
+        when(allLabResults.findLatestLabResultsByPatientId("somePatientId")).thenReturn(new LabResults());
 
         labResultsController.createForm(patientId, model, servletRequest);
 
@@ -130,7 +130,7 @@ public class LabResultsControllerTest {
         Model model = mock(Model.class);
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(this.allLabTests.getAll()).thenReturn(labTests);
-        when(allLabResults.findByPatientId("patientId")).thenReturn(new LabResults());
+        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
 
         labResultsController.createForm(patientId, model, servletRequest);
 
@@ -156,7 +156,7 @@ public class LabResultsControllerTest {
         labResultsController.create(labResultsUIModel, bindingResult, uiModel, httpServletRequest);
 
 
-        verify(allLabResults, times(1)).add(labResult);
+        verify(allLabResults, times(1)).upsert(labResult);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class LabResultsControllerTest {
         String patientId = "patientId";
         LabResults labResultsForPatient = new LabResults(Arrays.asList(labresult));
 
-        when(allLabResults.findByPatientId(patientId)).thenReturn(labResultsForPatient);
+        when(allLabResults.findLatestLabResultsByPatientId(patientId)).thenReturn(labResultsForPatient);
 
         String showURL = labResultsController.show(patientId, uiModel);
 
@@ -218,7 +218,7 @@ public class LabResultsControllerTest {
         String patientId = "somePatientId";
         LabResults labResultsForPatient = new LabResults(Arrays.asList(labresult));
 
-        when(allLabResults.findByPatientId(patientId)).thenReturn(labResultsForPatient);
+        when(allLabResults.findLatestLabResultsByPatientId(patientId)).thenReturn(labResultsForPatient);
 
         labResultsController.show(patientId, uiModel);
 
@@ -251,7 +251,7 @@ public class LabResultsControllerTest {
         String patientId = "somePatientId";
         LabResults labResultsForPatient = new LabResults(Arrays.asList(labresult));
 
-        when(allLabResults.findByPatientId(patientId)).thenReturn(labResultsForPatient);
+        when(allLabResults.findLatestLabResultsByPatientId(patientId)).thenReturn(labResultsForPatient);
 
         labResultsController.updateForm(patientId, uiModel);
 
@@ -280,7 +280,7 @@ public class LabResultsControllerTest {
 
         String viewName = labResultsController.update(labResultsUIModel, bindingResult, uiModel, httpServletRequest);
 
-        verify(allLabResults, never()).merge(labResultsForPatient);
+        verify(allLabResults, never()).upsert(labResult);
         assertEquals("labresults/update", viewName);
     }
 
@@ -300,7 +300,7 @@ public class LabResultsControllerTest {
 
         labResultsController.update(labResultsUIModel, bindingResult, uiModel, httpServletRequest);
 
-        verify(allLabResults).merge(labResultsForPatient);
+        verify(allLabResults).upsert(labResult);
     }
 
     @Test

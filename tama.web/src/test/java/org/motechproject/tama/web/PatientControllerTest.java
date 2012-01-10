@@ -97,7 +97,7 @@ public class PatientControllerTest {
         when(allPatients.findByIdAndClinicId("patient_id", patient.getClinic_id())).thenReturn(patient);
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patient_id")).thenReturn(null);
-        when(allLabResults.findByPatientId("patient_id")).thenReturn(new LabResults());
+        when(allLabResults.findLatestLabResultsByPatientId("patient_id")).thenReturn(new LabResults());
 
         String returnPage = controller.show("patient_id", uiModel, request);
 

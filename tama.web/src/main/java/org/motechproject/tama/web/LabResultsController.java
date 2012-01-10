@@ -39,7 +39,7 @@ public class LabResultsController extends BaseController {
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (allLabResults.findByPatientId(patientId).isEmpty()) {
+        if (allLabResults.findLatestLabResultsByPatientId(patientId).isEmpty()) {
             uiModel.addAttribute("labResultsUIModel", LabResultsUIModel.newDefault());
             populateUIModel(uiModel, patientId);
             return CREATE_VIEW;
@@ -56,14 +56,14 @@ public class LabResultsController extends BaseController {
             return CREATE_VIEW;
         }
         for (LabResult labResult : labResultsUiModel.getLabResults()) {
-            this.allLabResults.add(labResult);
+            this.allLabResults.upsert(labResult);
         }
         return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUiModel.getPatientId(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String patientId, Model uiModel) {
-        uiModel.addAttribute("labResultsForPatient", allLabResults.findByPatientId(patientId));
+        uiModel.addAttribute("labResultsForPatient", allLabResults.findLatestLabResultsByPatientId(patientId));
         uiModel.addAttribute("patientId", patientId);
         return SHOW_VIEW;
     }
@@ -71,7 +71,7 @@ public class LabResultsController extends BaseController {
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String patientId, Model uiModel) {
         LabResultsUIModel labResultsUIModel = LabResultsUIModel.newDefault();
-        labResultsUIModel.setLabResults(allLabResults.findByPatientId(patientId));
+        labResultsUIModel.setLabResults(allLabResults.findLatestLabResultsByPatientId(patientId));
         uiModel.addAttribute("labResultsUIModel", labResultsUIModel);
         uiModel.addAttribute("patientId", patientId);
         return "labresults/update";
@@ -84,7 +84,9 @@ public class LabResultsController extends BaseController {
             uiModel.addAttribute("patientId", labResultsUIModel.getPatientId());
             return "labresults/update";
         }
-        allLabResults.merge(labResultsUIModel.getLabResults());
+        for (LabResult labResult : labResultsUIModel.getLabResults()) {
+            allLabResults.upsert(labResult);
+        }
         return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUIModel.getPatientId(), httpServletRequest);
     }
 

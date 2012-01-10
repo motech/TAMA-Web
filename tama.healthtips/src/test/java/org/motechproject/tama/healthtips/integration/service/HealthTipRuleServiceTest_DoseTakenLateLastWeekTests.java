@@ -21,7 +21,6 @@ import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -62,7 +61,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
                 LabResultBuilder.startRecording().withDefaults().withTestDate(DateUtil.today().minusMonths(3)).withResult("300").withLabTest(labTest).build(),
                 LabResultBuilder.startRecording().withDefaults().withTestDate(DateUtil.today().minusMonths(5)).withResult("400").withLabTest(labTest).build());
         labResults = new LabResults(labResultsForPatient);
-        when(allLabResults.findByPatientId("pid")).thenReturn(labResults);
+        when(allLabResults.findLatestLabResultsByPatientId("pid")).thenReturn(labResults);
     }
 
     @Before

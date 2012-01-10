@@ -57,7 +57,7 @@ public class SymptomReportingServiceTest {
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
         LabResult labResult = LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTest_id(labTestId).withResult("60").build();
         labResult.setLabTest(labTest);
-        when(allLabResults.findByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult)));
+        when(allLabResults.findLatestLabResultsByPatientId(patientId)).thenReturn(new LabResults(Arrays.asList(labResult)));
 
         when(allVitalStatistics.findLatestVitalStatisticByPatientId(patientId)).thenReturn(new VitalStatistics(74.00, 174.00, 10, 10, 10.00, 10, patientId));
 

@@ -54,7 +54,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
         initMocks(this);
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
-        when(allLabResults.findByPatientId("pid")).thenReturn(labResults);
+        when(allLabResults.findLatestLabResultsByPatientId("pid")).thenReturn(labResults);
         healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
     }
 
