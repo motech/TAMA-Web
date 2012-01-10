@@ -53,7 +53,7 @@ public class AdherenceInRedTest extends BaseIVRTest {
         caller.replyToCall(new PillReminderCallInfo(1));
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
         IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, PILL_REMINDER_RESPONSE_MENU);
-        ivrResponse = caller.enter("2");
+        ivrResponse = caller.enter("3");
         caller.hangup();
         triggerRedAlertJob();
         verifyCreationOfRedAlertForThePatient();

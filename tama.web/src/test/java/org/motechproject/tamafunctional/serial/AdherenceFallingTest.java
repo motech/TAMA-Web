@@ -3,7 +3,6 @@ package org.motechproject.tamafunctional.serial;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tama.dailypillreminder.listener.AdherenceTrendListener;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -23,8 +22,6 @@ import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
@@ -51,6 +48,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
         tamaDateTimeService.adjustDateTime(DateUtil.now().minusWeeks(1));
         patientRecordsAdherenceAWeekBack();
         tamaDateTimeService.adjustDateTime(DateUtil.now());
+        patientRecordsAdherenceNow();
         triggerAdherenceFallingJob();
         verifyCreationOfAdherenceFallingAlertForThePatient();
         verifyOutboxMessageCreated();
@@ -68,6 +66,22 @@ public class AdherenceFallingTest extends BaseIVRTest {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
         caller = caller(patient);
+    }
+
+
+    private void patientRecordsAdherenceNow() {
+        caller.replyToCall(new PillReminderCallInfo(1));
+
+        IVRResponse ivrResponse = caller.enter("1234");
+        patientConfirmsNotHavingTakenDose(ivrResponse);
+        caller.hangup();
+    }
+
+    private void patientConfirmsNotHavingTakenDose(IVRResponse ivrResponse) {
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        ivrResponse = caller.enter("3");
+        ivrResponse = caller.enter("2");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, PLEASE_CARRY_SMALL_BOX);
     }
 
     private void patientRecordsAdherenceAWeekBack() {
@@ -96,7 +110,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
         ShowAlertPage showAlertsPage = updateAlertPage.save();
         assertEquals(patient.patientId(), showAlertsPage.patientId());
         assertEquals("FallingAdherence", showAlertsPage.alertType());
-        assertEquals("Adherence fell by 50.00%, from 14.29% to 7.14%", showAlertsPage.description());
+        assertEquals("Adherence fell by 50.00%, from 100.00% to 50.00%", showAlertsPage.description());
         assertEquals("Daily", showAlertsPage.callPreference());
         assertEquals("testnotes", showAlertsPage.notes());
         showAlertsPage.logout();
@@ -104,11 +118,12 @@ public class AdherenceFallingTest extends BaseIVRTest {
 
     private void verifyOutboxMessageCreated() {
         caller = caller(patient);
+        caller.hangup();
         caller.replyToCall(new OutboxCallInfo());
         IVRResponse ivrResponse = caller.enter("1234");
         IVRAssert.assertAudioFilesPresent(ivrResponse, DEFAULT_OUTBOUND_CLINIC_MESSAGE, FILE_050_03_01_ITS_TIME_FOR_BEST_CALL_TIME);
         ivrResponse = caller.listenMore();
-        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW, "Num_006", PERCENT, M02_07_ADHERENCE_COMMENT_LT70_FALLING);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW, "Num_050", PERCENT, M02_07_ADHERENCE_COMMENT_LT70_FALLING);
         ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, THESE_WERE_YOUR_MESSAGES_FOR_NOW);
         caller.hangup();
