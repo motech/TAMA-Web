@@ -12,7 +12,7 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.builder.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.ivr.call.IVRCall;
@@ -40,7 +40,7 @@ public class FourDayRecallListenerTest {
     @Mock
     IVRCall ivrCall;
     @Mock
-    FourDayRecallAdherenceService fourDayRecallAdherenceService;
+    FourDayRecallAlertService fourDayRecallAlertService;
     @Mock
     AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     @Mock
@@ -60,7 +60,7 @@ public class FourDayRecallListenerTest {
         when(treatmentAdvice.getId()).thenReturn(TREATMENT_ADVICE_ID);
         when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
 
-        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAdherenceService, new FourDayRecallDateService(), allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs);
+        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAlertService, new FourDayRecallDateService(), allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class FourDayRecallListenerTest {
 
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, data);
         fourDayRecallListener.handle(motechEvent);
-        Mockito.verifyZeroInteractions(ivrCall, fourDayRecallSchedulerService, fourDayRecallAdherenceService);
+        Mockito.verifyZeroInteractions(ivrCall, fourDayRecallSchedulerService, fourDayRecallAlertService);
     }
 
     private void setUpPatientWithDefaults() {
@@ -155,8 +155,8 @@ public class FourDayRecallListenerTest {
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
-        verify(fourDayRecallAdherenceService).raiseAdherenceFallingAlert(PATIENT_ID);
-        verify(fourDayRecallAdherenceService).raiseAdherenceInRedAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).raiseAdherenceFallingAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
     @Test
@@ -166,7 +166,7 @@ public class FourDayRecallListenerTest {
         setupHasLogsForWeek(patient, false);
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
-        verifyZeroInteractions(fourDayRecallAdherenceService);
+        verifyZeroInteractions(fourDayRecallAlertService);
     }
 
     @Test
@@ -177,8 +177,8 @@ public class FourDayRecallListenerTest {
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
-        verify(fourDayRecallAdherenceService).raiseAdherenceFallingAlert(PATIENT_ID);
-        verify(fourDayRecallAdherenceService).raiseAdherenceInRedAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).raiseAdherenceFallingAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
     @Test
@@ -189,8 +189,8 @@ public class FourDayRecallListenerTest {
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
-        verify(fourDayRecallAdherenceService).raiseAdherenceFallingAlert(PATIENT_ID);
-        verify(fourDayRecallAdherenceService).raiseAdherenceInRedAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).raiseAdherenceFallingAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
     @Test
@@ -198,12 +198,12 @@ public class FourDayRecallListenerTest {
         setUpPatientWithDefaults();
         MotechEvent motechEvent = getFourDayRecallEvent(false);
         setupHasLogsForWeek(patient, true);
-        when(fourDayRecallAdherenceService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
+        when(fourDayRecallAlertService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
-        verify(fourDayRecallAdherenceService).hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_ID);
-        verify(fourDayRecallAdherenceService, never()).raiseAdherenceFallingAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_ID);
+        verify(fourDayRecallAlertService, never()).raiseAdherenceFallingAlert(PATIENT_ID);
     }
 
     @Test
@@ -211,12 +211,12 @@ public class FourDayRecallListenerTest {
         setUpPatientWithDefaults();
         MotechEvent motechEvent = getFourDayRecallEvent(false);
         setupHasLogsForWeek(patient, true);
-        when(fourDayRecallAdherenceService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
+        when(fourDayRecallAlertService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
-        verify(fourDayRecallAdherenceService).hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID);
-        verify(fourDayRecallAdherenceService, never()).raiseAdherenceInRedAlert(PATIENT_ID);
+        verify(fourDayRecallAlertService).hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID);
+        verify(fourDayRecallAlertService, never()).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
     @Test
@@ -227,6 +227,6 @@ public class FourDayRecallListenerTest {
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
-        verifyNoMoreInteractions(fourDayRecallAdherenceService);
+        verifyNoMoreInteractions(fourDayRecallAlertService);
     }
 }

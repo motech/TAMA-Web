@@ -5,9 +5,9 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -28,7 +28,7 @@ public class FourDayRecallListener {
 
     private IVRCall ivrCall;
     private FourDayRecallSchedulerService fourDayRecallSchedulerService;
-    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
+    private FourDayRecallAlertService fourDayRecallAlertService;
     private FourDayRecallDateService fourDayRecallDateService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private AllPatients allPatients;
@@ -36,11 +36,13 @@ public class FourDayRecallListener {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
 
     @Autowired
-    public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService, FourDayRecallDateService fourDayRecallDateService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
+    public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService,
+                                 FourDayRecallAlertService fourDayRecallAlertService, FourDayRecallDateService fourDayRecallDateService,
+                                 AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                  AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
         this.ivrCall = ivrCall;
         this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
-        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
+        this.fourDayRecallAlertService = fourDayRecallAlertService;
         this.fourDayRecallDateService = fourDayRecallDateService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -81,11 +83,11 @@ public class FourDayRecallListener {
             TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
 
             if (isAdherenceCapturedForCurrentWeek(patient, treatmentAdvice) || isLastRetryDay(motechEvent)) {
-                if (!fourDayRecallAdherenceService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId))
-                    fourDayRecallAdherenceService.raiseAdherenceFallingAlert(patientDocId);
+                if (!fourDayRecallAlertService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(patientDocId))
+                    fourDayRecallAlertService.raiseAdherenceFallingAlert(patientDocId);
 
-                if (!fourDayRecallAdherenceService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientDocId))
-                    fourDayRecallAdherenceService.raiseAdherenceInRedAlert(patientDocId);
+                if (!fourDayRecallAlertService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientDocId))
+                    fourDayRecallAlertService.raiseAdherenceInRedAlert(patientDocId);
             }
         }
     }
