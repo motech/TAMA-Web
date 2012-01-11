@@ -4,6 +4,7 @@ import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.util.DateUtil;
 
 @TypeDiscriminator("doc.documentType == 'DosageAdherenceLog'")
 public class DosageAdherenceLog extends CouchEntity {
@@ -22,15 +23,22 @@ public class DosageAdherenceLog extends CouchEntity {
 
     private boolean dosageTakenLate;
 
+    private DateTime dosageStatusUpdatedAt;
+
     public DosageAdherenceLog() {
+        dosageStatusUpdatedAt = DateUtil.now();
     }
 
     public DosageAdherenceLog(String patientId, String regimenId, String dosageId, DosageStatus dosageStatus, LocalDate dosageDate) {
+        this(patientId, regimenId, dosageId, dosageStatus, dosageDate, DateUtil.now());
+    }
+    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, DosageStatus dosageStatus, LocalDate dosageDate, DateTime dosageStatusUpdatedAt) {
         this.patientId = patientId;
         this.regimenId = regimenId;
         this.dosageId = dosageId;
         this.dosageDate = dosageDate;
         this.dosageStatus = dosageStatus;
+        this.dosageStatusUpdatedAt = dosageStatusUpdatedAt;
     }
 
     public String getPatientId() {
@@ -93,6 +101,14 @@ public class DosageAdherenceLog extends CouchEntity {
         dosageTakenLate = value;
     }
 
+    public DateTime getDosageStatusUpdatedAt() {
+        return dosageStatusUpdatedAt == null ? null : DateUtil.setTimeZone(dosageStatusUpdatedAt);
+    }
+
+    public void setDosageStatusUpdatedAt(DateTime dosageStatusUpdatedAt) {
+        this.dosageStatusUpdatedAt = dosageStatusUpdatedAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,5 +148,6 @@ public class DosageAdherenceLog extends CouchEntity {
     public void updateStatus(DosageStatus status, DateTime doseTakenTime, int dosageInterval, Dose dose) {
         setDosageStatus(status);
         if (dose.isLateToTake(doseTakenTime, dosageInterval)) dosageIsTakenLate();
+        setDosageStatusUpdatedAt(doseTakenTime);
     }
 }
