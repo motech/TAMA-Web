@@ -278,7 +278,7 @@ public class Patient extends CouchEntity {
     }
 
     public DateTime getLastDeactivationDate() {
-        return lastDeactivationDate;
+        return lastDeactivationDate == null ? null : DateUtil.setTimeZone(lastDeactivationDate);
     }
 
     public void setLastDeactivationDate(DateTime lastDeactivationDate) {
