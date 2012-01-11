@@ -7,8 +7,10 @@ import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.builder.FourDayRecallEventPayloadBuilder;
-import org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TimeMeridiem;
+import org.motechproject.tama.patient.domain.TimeOfDay;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,32 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.motechproject.tama.patient.util.CallPlanUtil.callPlanStartDate;
-
 @Component
 public class FourDayRecallSchedulerService {
     private MotechSchedulerService motechSchedulerService;
+    private FourDayRecallDateService fourDayRecallDateService;
     private Properties ivrProperties;
     private Properties fourDayRecallProperties;
-    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
-
-    public static class Helper {
-        public static LocalDate getStartDateForJobScheduling(LocalDate weeklyAdherenceTrackingStartDate, DayOfWeek dayOfWeeklyCall) {
-            LocalDate startDate = weeklyAdherenceTrackingStartDate.plusDays(FourDayRecallUtil.DAYS_TO_RECALL);
-            if(startDate.getDayOfWeek() > dayOfWeeklyCall.getValue()){
-                startDate = startDate.plusDays(7).minusDays(startDate.getDayOfWeek()-dayOfWeeklyCall.getValue());
-            }
-            return startDate;
-        }
-    }
 
     @Autowired
-    public FourDayRecallSchedulerService(MotechSchedulerService motechSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService,
+    public FourDayRecallSchedulerService(MotechSchedulerService motechSchedulerService, FourDayRecallDateService fourDayRecallDateService,
                                          @Qualifier("ivrProperties") Properties ivrProperties, @Qualifier("fourDayRecallProperties") Properties fourDayRecallProperties) {
         this.motechSchedulerService = motechSchedulerService;
+        this.fourDayRecallDateService = fourDayRecallDateService;
         this.ivrProperties = ivrProperties;
         this.fourDayRecallProperties = fourDayRecallProperties;
-        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
     }
 
     public void scheduleFourDayRecallJobs(Patient patient, TreatmentAdvice treatmentAdvice) {
@@ -60,7 +50,7 @@ public class FourDayRecallSchedulerService {
         motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, patient.getId());
 
         //The number of WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT jobs is not configurable. Three are scheduled one 3 successive days.
-        for (int count = 0; count <= 2; count++){
+        for (int count = 0; count <= 2; count++) {
             motechSchedulerService.unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, count + patient.getId());
         }
     }
@@ -84,34 +74,13 @@ public class FourDayRecallSchedulerService {
         motechSchedulerService.scheduleRepeatingJob(repeatingSchedulableJob);
     }
 
-    void scheduleFallingAdherenceAlertJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
-        String patientDocId = patient.getId();
-        DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
-        Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
-        Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
-
-        LocalDate startDate = fourDayRecallAdherenceService.firstFourDayRecallDate(patientDocId, callPlanStartDate(patient, treatmentAdvice)).minusDays(1);
-
-        for (int count = 0; count <= daysToRetry; count++) {
-            DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1); // +1 is so that it is scheduled at midnight. 12:00 AM of NEXT day
-            FourDayRecallEventPayloadBuilder paramsBuilder = new FourDayRecallEventPayloadBuilder()
-                    .withJobId(count + patientDocId)
-                    .withPatientDocId(patientDocId);
-
-            if (count == daysToRetry) paramsBuilder.withLastRetryDayFlagSet();
-
-            scheduleWeeklyEvent(getJobStartDate(startDate), getJobEndDate(treatmentAdvice), eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT);
-        }
-    }
-
     private void scheduleFourDayRecallCalls(Patient patient, TreatmentAdvice treatmentAdvice) {
         String patientDocId = patient.getId();
         DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time callTime = patient.getPatientPreferences().getBestCallTime().toTime();
         Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
 
-        LocalDate weeklyAdherenceTrackingStartDate = callPlanStartDate(patient, treatmentAdvice);
-        LocalDate startDate = FourDayRecallSchedulerService.Helper.getStartDateForJobScheduling(weeklyAdherenceTrackingStartDate, dayOfWeeklyCall);
+        LocalDate startDate = fourDayRecallDateService.firstRecallDate(patient, treatmentAdvice);
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek day = dayOfWeek(dayOfWeeklyCall, count);
@@ -120,7 +89,26 @@ public class FourDayRecallSchedulerService {
                     .withPatientDocId(patientDocId)
                     .payload();
 
-            scheduleWeeklyEvent(getJobStartDate(startDate.plusDays(count)), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
+            scheduleWeeklyEvent(getJobStartDate(startDate, patient, treatmentAdvice).plusDays(count).toDate(), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
+        }
+    }
+
+    void scheduleFallingAdherenceAlertJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
+        String patientDocId = patient.getId();
+        DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
+        Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();
+        Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
+
+        LocalDate startDate = fourDayRecallDateService.firstRecallDate(patient, treatmentAdvice);
+        for (int count = 0; count <= daysToRetry; count++) {
+            DayOfWeek eventDay = dayOfWeek(dayOfWeeklyCall, count + 1); // +1 is so that it is scheduled at midnight. 12:00 AM of NEXT day
+            FourDayRecallEventPayloadBuilder paramsBuilder = new FourDayRecallEventPayloadBuilder()
+                    .withJobId(count + patientDocId)
+                    .withPatientDocId(patientDocId);
+
+            if (count == daysToRetry) paramsBuilder.withLastRetryDayFlagSet();
+
+            scheduleWeeklyEvent(getJobStartDate(startDate, patient, treatmentAdvice).plusDays(count).toDate(), getJobEndDate(treatmentAdvice), eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT);
         }
     }
 
@@ -138,12 +126,16 @@ public class FourDayRecallSchedulerService {
         return DayOfWeek.getDayOfWeek(dayOfWeekNum);
     }
 
-    private Date getJobStartDate(LocalDate startDate) {
-        return DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
+    private LocalDate getJobStartDate(LocalDate firstRecallDate, Patient patient, TreatmentAdvice treatmentAdvice) {
+        LocalDate currentWeekStartDate = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), treatmentAdvice);
+        final LocalDate currentWeekRecallDate = fourDayRecallDateService.nextRecallOn(currentWeekStartDate, patient).toLocalDate();
+        if (firstRecallDate.isBefore(currentWeekRecallDate)) {
+            return currentWeekRecallDate;
+        }
+        return firstRecallDate;
     }
 
     private Date getJobEndDate(TreatmentAdvice treatmentAdvice) {
         return DateUtil.newDate(treatmentAdvice.getEndDate()) == null ? null : DateUtil.newDate(treatmentAdvice.getEndDate()).toDate();
     }
-
 }

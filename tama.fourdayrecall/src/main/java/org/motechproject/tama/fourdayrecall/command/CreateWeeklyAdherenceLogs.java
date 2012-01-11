@@ -5,6 +5,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -14,19 +15,19 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
-
 @Component
 public class CreateWeeklyAdherenceLogs implements ITreeCommand {
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
+    private FourDayRecallDateService fourDayRecallDateService;
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
 
     @Autowired
-    public CreateWeeklyAdherenceLogs(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
+    public CreateWeeklyAdherenceLogs(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, FourDayRecallDateService fourDayRecallDateService) {
         this.allPatients = allPatients;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.allTreatmentAdvices = allTreatmentAdvices;
+        this.fourDayRecallDateService = fourDayRecallDateService;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
         String treatmentAdviceDocId = treatmentAdvice.getId();
 
         int numberOfDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
-        LocalDate startDateForCurrentWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
+        LocalDate startDateForCurrentWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
         allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForCurrentWeek, numberOfDaysMissed));
         return new String[0];
     }

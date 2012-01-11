@@ -14,8 +14,6 @@ import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -30,10 +28,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     @Mock
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
-    @Mock
-    private AllPatients allPatients;
-    @Mock
-    private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
     private Properties properties;
 
@@ -53,13 +47,11 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
                 .withCallPreference(CallPreference.FourDayRecall)
                 .withId(patientId)
                 .build();
-        when(allPatients.get(patientId)).thenReturn(patient);
 
         LocalDate treatmentStartDate = new LocalDate(2011, 11, 27);
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(treatmentStartDate).withDefaults().build();
-        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(treatmentAdvice);
 
-        resumeFourDayRecallService = new ResumeFourDayRecallService(allWeeklyAdherenceLogs, allPatients, allTreatmentAdvices, properties);
+        resumeFourDayRecallService = new ResumeFourDayRecallService(allWeeklyAdherenceLogs, properties, new FourDayRecallDateService());
     }
 
     private void timeToday(int hour, int minute) {

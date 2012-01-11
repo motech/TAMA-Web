@@ -7,6 +7,7 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -19,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import static org.motechproject.tama.fourdayrecall.util.FourDayRecallUtil.getStartDateForWeek;
-
 @Service
 public class FourDayRecallListener {
     public static final String PATIENT_DOC_ID_KEY = "patient_id";
@@ -30,17 +29,19 @@ public class FourDayRecallListener {
     private IVRCall ivrCall;
     private FourDayRecallSchedulerService fourDayRecallSchedulerService;
     private FourDayRecallAdherenceService fourDayRecallAdherenceService;
+    private FourDayRecallDateService fourDayRecallDateService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
 
     @Autowired
-    public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
+    public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService, FourDayRecallAdherenceService fourDayRecallAdherenceService, FourDayRecallDateService fourDayRecallDateService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                  AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
         this.ivrCall = ivrCall;
         this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
+        this.fourDayRecallDateService = fourDayRecallDateService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
@@ -68,7 +69,7 @@ public class FourDayRecallListener {
     }
 
     private boolean isAdherenceCapturedForCurrentWeek(Patient patient, TreatmentAdvice treatmentAdvice) {
-        LocalDate startDateForWeek = getStartDateForWeek(DateUtil.today(), patient, treatmentAdvice);
+        LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
         return allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, startDateForWeek).size() > 0;
     }
 

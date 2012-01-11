@@ -13,6 +13,7 @@ import org.motechproject.tama.fourdayrecall.builder.FourDayRecallEventPayloadBui
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -59,7 +60,7 @@ public class FourDayRecallListenerTest {
         when(treatmentAdvice.getId()).thenReturn(TREATMENT_ADVICE_ID);
         when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
 
-        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAdherenceService, allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs);
+        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAdherenceService, new FourDayRecallDateService(), allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs);
     }
 
     @Test
