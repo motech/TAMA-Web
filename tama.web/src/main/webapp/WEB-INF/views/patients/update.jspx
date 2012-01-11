@@ -38,14 +38,21 @@
             }
         }
 
+        function getCallPreference() {
+            if(dojo.byId('dailyReminderCall').checked == true)
+                return "dailyReminderCall";
+            else
+                return "weeklyReminderCall";
+        }
+
         function warningWhenStartingOnFourDayRecall(event) {
             // The handler for the yes button in the dialog
             dialog.execute = function () {
                 dojo.byId("patient").submit();
             };
-            var isCallPreferenceDailyPillReminder = dojo.byId('dailyReminderCall').checked;
+            var currentCallPreference = getCallPreference();
             var canTransitionToWeekly = dojo.byId('can_transition_to_weekly').value;
-            if (!isCallPreferenceDailyPillReminder &amp;&amp; canTransitionToWeekly==='false') {
+            if (storedCallPreference === 'dailyReminderCall' &amp;&amp; currentCallPreference === 'weeklyReminderCall' &amp;&amp; canTransitionToWeekly==='false') {
                 if(Spring.validateAll()) {
                     event.preventDefault();
                     dialog.show();
@@ -61,6 +68,7 @@
             preferencesPanelWidget = dijit.byId('_title_fc_org_motechproject_tama_domain_patient_Preferences_id');
             Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientPreferences.fourWeekWarningDialog', widgetType : 'dijit.Dialog', widgetAttrs : {}}));
             dialog = dijit.byId('patientPreferences.fourWeekWarningDialog')
+            storedCallPreference = getCallPreference();
 
             if (formHasErrors()) {
                 openAllPanels();
