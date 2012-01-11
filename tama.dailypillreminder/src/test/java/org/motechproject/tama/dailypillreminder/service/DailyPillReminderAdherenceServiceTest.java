@@ -14,6 +14,7 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
@@ -93,12 +94,22 @@ public class DailyPillReminderAdherenceServiceTest {
             final DateTime startDate = new DateTime(2011, 10, 10, 9, 0);
             final DateTime endDate = new DateTime(2011, 10, 12, 15, 0);
             final Time dosageTime = new Time(6, 0);
+            DosageAdherenceLog dosageAdherenceLog1 = DosageAdherenceLogBuilder.startRecording().withDefaults().withDosageStatus(DosageStatus.NOT_RECORDED).build();
+            DosageAdherenceLog dosageAdherenceLog2 = DosageAdherenceLogBuilder.startRecording().withDefaults().withDosageStatus(DosageStatus.NOT_RECORDED).build();
             PillRegimen pillRegimen = pillRegimenWithSingleDosage(dosageTime, startDate.toLocalDate(), "dosageId1");
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
+            when(allDosageAdherenceLogs.findByDosageIdAndDate(Matchers.<String>any(), Matchers.<LocalDate>any())).thenReturn(dosageAdherenceLog1).thenReturn(dosageAdherenceLog1)
+                                                                                                                 .thenReturn(dosageAdherenceLog2).thenReturn(dosageAdherenceLog2)
+                                                                                                                 .thenReturn(null).thenReturn(null);
 
             dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
-            verify(allDosageAdherenceLogs, times(3)).add(Matchers.<DosageAdherenceLog>any());
+            ArgumentCaptor<DosageAdherenceLog> dosageAdherenceLogArgumentCaptor = ArgumentCaptor.forClass(DosageAdherenceLog.class);
+            verify(allDosageAdherenceLogs, times(2)).update(Matchers.<DosageAdherenceLog>any());
+            verify(allDosageAdherenceLogs, times(1)).add(dosageAdherenceLogArgumentCaptor.capture());
+            assertEquals(DosageStatus.NOT_TAKEN, dosageAdherenceLog1.getDosageStatus());
+            assertEquals(DosageStatus.NOT_TAKEN, dosageAdherenceLog2.getDosageStatus());
+            assertEquals(DosageStatus.NOT_TAKEN, dosageAdherenceLogArgumentCaptor.getValue().getDosageStatus());
         }
 
         @Test

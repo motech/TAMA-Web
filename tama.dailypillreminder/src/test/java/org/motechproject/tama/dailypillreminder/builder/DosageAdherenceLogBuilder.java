@@ -47,4 +47,8 @@ public class DosageAdherenceLogBuilder {
         adherenceLog.setPatientId(patientId);
         return this;
     }
+
+    public static DosageAdherenceLogBuilder startRecording() {
+        return new DosageAdherenceLogBuilder();
+    }
 }

@@ -10,6 +10,8 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdheren
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,7 @@ public class AdherenceQualityListener {
     private Properties properties;
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
     private AllPatients allPatients;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public AdherenceQualityListener(DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, @Qualifier("dailyPillReminderProperties") Properties properties, DailyPillReminderAdherenceService dailyReminderAdherenceService, AllPatients allPatients) {
@@ -40,13 +43,13 @@ public class AdherenceQualityListener {
         if (patient != null && patient.allowAdherenceCalls()) {
             double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
             double adherencePercentage;
-            try{
+            try {
                 adherencePercentage = dailyReminderAdherenceService.getAdherencePercentage(patientId, DateUtil.now());
-            } catch (NoAdherenceRecordedException e){
-                adherencePercentage = 100.00;
-            }
-            if (adherencePercentage < acceptableAdherencePercentage) {
-                dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
+                if (adherencePercentage < acceptableAdherencePercentage) {
+                    dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
+                }
+            } catch (NoAdherenceRecordedException e) {
+                logger.info("No Adherence was recorded for last 4 weeks. Red Alert cannot be raised.");
             }
         }
     }

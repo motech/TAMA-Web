@@ -51,7 +51,6 @@ public class AdherenceQualityListenerTest {
 
         patient = new PatientBuilder().withId(PATIENT_ID).withDefaults().withStatus(Status.Active).build();
         when(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE)).thenReturn("70");
-
     }
 
     @Test
