@@ -77,21 +77,9 @@ public class VitalStatisticsController extends BaseController {
             allVitalStatistics.update(vitalStatistics);
         }
         else{
-            VitalStatistics newVitalStatistics = createNewVitalStatistics(vitalStatistics);
+            VitalStatistics newVitalStatistics = new VitalStatistics(vitalStatistics);
             allVitalStatistics.add(newVitalStatistics);
         }
         return REDIRECT_AND_SHOW_VITAL_STATISTICS + encodeUrlPathSegment(vitalStatistics.getPatientId(), httpServletRequest);
-    }
-
-    private VitalStatistics createNewVitalStatistics(VitalStatistics vitalStatistics) {
-        VitalStatistics newVitalStatistics = new VitalStatistics(vitalStatistics.getPatientId());
-        newVitalStatistics.setWeightInKg(vitalStatistics.getWeightInKg());
-        newVitalStatistics.setHeightInCm(vitalStatistics.getHeightInCm());
-        newVitalStatistics.setSystolicBp(vitalStatistics.getSystolicBp());
-        newVitalStatistics.setDiastolicBp(vitalStatistics.getDiastolicBp());
-        newVitalStatistics.setTemperatureInFahrenheit(vitalStatistics.getTemperatureInFahrenheit());
-        newVitalStatistics.setPulse(vitalStatistics.getPulse());
-        newVitalStatistics.setCaptureDate(vitalStatistics.getCaptureDate());
-        return newVitalStatistics;
     }
 }

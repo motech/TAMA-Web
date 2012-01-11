@@ -37,6 +37,12 @@ public class VitalStatistics extends CouchEntity implements Comparable<VitalStat
     public VitalStatistics() {
     }
 
+    public VitalStatistics(VitalStatistics newVitalStatistics) {
+        this(newVitalStatistics.getWeightInKg(), newVitalStatistics.getHeightInCm(), newVitalStatistics.getSystolicBp(),
+                newVitalStatistics.getDiastolicBp(), newVitalStatistics.getTemperatureInFahrenheit(), newVitalStatistics.getPulse(),
+                newVitalStatistics.getPatientId());
+    }
+
     public VitalStatistics(String patientId) {
         this.patientId = patientId;
     }
