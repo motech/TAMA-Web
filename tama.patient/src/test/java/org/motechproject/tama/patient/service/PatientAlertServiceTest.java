@@ -6,10 +6,10 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.domain.AlertCriteria;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
@@ -20,11 +20,11 @@ import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static junit.framework.Assert.*;
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -51,7 +51,7 @@ public class PatientAlertServiceTest {
         String patientId = "patientId";
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
 
-        when(alertService.getBy(same(patientId), Matchers.<AlertType>any(), Matchers.<AlertStatus>any(), Matchers.<Integer>any(), anyInt())).thenReturn(null);
+        when(alertService.search(new AlertCriteria().byExternalId(same(patientId)))).thenReturn(null);
         when(allPatients.get(patientId)).thenReturn(patient);
         assertTrue(CollectionUtils.isEmpty(patientAlertService.getAllAlertsBy(patientId)));
     }
@@ -98,7 +98,12 @@ public class PatientAlertServiceTest {
         }};
 
         when(allPatients.get(testPatientId1)).thenReturn(patient1);
-        when(alertService.getBy(testPatientId1, null, null, null, 100)).thenReturn(alerts);
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).externalId().equals(testPatientId1);
+            }
+        }))).thenReturn(alerts);
 
         PatientAlerts unReadAlertsByPatientId = patientAlertService.getAllAlertsBy(testPatientId1);
         assertEquals(alerts.size(), unReadAlertsByPatientId.size());
@@ -124,23 +129,13 @@ public class PatientAlertServiceTest {
         Patient patient = new PatientBuilder().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         when(allPatients.get(testPatientId)).thenReturn(patient);
 
-        final ArgumentMatcher<Alert> alertArgumentMatcher = new ArgumentMatcher<Alert>() {
-            @Override
-            public boolean matches(Object testAlert) {
-                Alert alert = (Alert) testAlert;
-                return alert.getAlertType().equals(AlertType.MEDIUM)
-                        && alert.getExternalId().equals(testPatientId)
-                        && (alert.getPriority() == 2)
-                        && alert.getStatus().equals(AlertStatus.NEW)
-                        && alert.getData().get(PatientAlert.SYMPTOMS_ALERT_STATUS).equals(SymptomsAlertStatus.Open.name())
-                        && alert.getData().get(PatientAlert.PATIENT_CALL_PREFERENCE).equals("Daily")
-                        && alert.getDescription().equals(symptomReported)
-                        && alert.getData().get(PatientAlert.PATIENT_ALERT_TYPE).equals(PatientAlertType.SymptomReporting.name())
-                        && alert.getName().equals(adviceGiven);
-            }
-        };
         patientAlertService.createAlert(testPatientId, 2, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, new HashMap<String, String>());
-        verify(alertService).createAlert(argThat(alertArgumentMatcher));
+        HashMap<String, String> data = new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+            put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+            put(PatientAlert.PATIENT_CALL_PREFERENCE, CallPreference.DailyPillReminder.displayName());
+        }};
+        verify(alertService).create(testPatientId, adviceGiven, symptomReported, AlertType.MEDIUM, AlertStatus.NEW, 2, data);
     }
 
     @Test
@@ -160,22 +155,11 @@ public class PatientAlertServiceTest {
         final String symptomReported = "some ugly rash";
         final String adviceGiven = "have a bath";
 
-        final ArgumentMatcher<Alert> alertArgumentMatcher = new ArgumentMatcher<Alert>() {
-            @Override
-            public boolean matches(Object testAlert) {
-                Alert alert = (Alert) testAlert;
-                return alert.getAlertType().equals(AlertType.MEDIUM)
-                        && alert.getExternalId().equals(testPatientId)
-                        && (alert.getPriority() == 2)
-                        && alert.getStatus().equals(AlertStatus.NEW)
-                        && alert.getData().get(PatientAlert.SYMPTOMS_ALERT_STATUS) == null
-                        && alert.getDescription().equals(symptomReported)
-                        && alert.getData().get(PatientAlert.PATIENT_ALERT_TYPE).equals(PatientAlertType.AppointmentReminder.name())
-                        && alert.getName().equals(adviceGiven);
-            }
-        };
         patientAlertService.createAlert(testPatientId, 2, adviceGiven, symptomReported, PatientAlertType.AppointmentReminder, new HashMap<String, String>());
-        verify(alertService).createAlert(argThat(alertArgumentMatcher));
+        HashMap<String, String> data = new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AppointmentReminder.name());
+        }};
+        verify(alertService).create(testPatientId, adviceGiven, symptomReported, AlertType.MEDIUM, AlertStatus.NEW, 2, data);
     }
 
     @Test
@@ -207,7 +191,12 @@ public class PatientAlertServiceTest {
         }};
 
         when(allPatients.get(testPatientId)).thenReturn(patient);
-        when(alertService.getBy(testPatientId, null, null, null, 100)).thenReturn(alerts);
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).externalId().equals(testPatientId);
+            }
+        }))).thenReturn(alerts);
 
         patientAlertService.updateDoctorConnectedToDuringSymptomCall(testPatientId, doctorName);
 
@@ -222,7 +211,12 @@ public class PatientAlertServiceTest {
         final DateTime endDate = DateUtil.now().plusDays(2);
         final Patient patient = new PatientBuilder().withId(patientId).build();
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(alertService.getBy(patient.getId(), null, null, null, 100)).thenReturn(new ArrayList<Alert>() {{
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).externalId().equals(patient.getId());
+            }
+        }))).thenReturn(new ArrayList<Alert>() {{
             final HashMap<String, String> data = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
             }};
@@ -251,7 +245,12 @@ public class PatientAlertServiceTest {
         final DateTime endDate = DateUtil.now().plusDays(2);
         final Patient patient = new PatientBuilder().withId(patientId).build();
         when(allPatients.get(patientId)).thenReturn(patient);
-        when(alertService.getBy(patient.getId(), null, null, null, 100)).thenReturn(new ArrayList<Alert>() {{
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).externalId().equals(patient.getId());
+            }
+        }))).thenReturn(new ArrayList<Alert>() {{
             final HashMap<String, String> data = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.name());
             }};
@@ -292,7 +291,12 @@ public class PatientAlertServiceTest {
         }};
 
         when(allPatients.findByPatientIdAndClinicId(patient.getPatientId(), "testClinicId")).thenReturn(patient);
-        when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).externalId() == patient.getId() && ((AlertCriteria)o).alertStatus().equals(AlertStatus.READ);
+            }
+        }))).thenReturn(readAlerts);
 
         PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", patient.getPatientId(), AlertStatus.READ, null, null, null);
 
@@ -329,8 +333,12 @@ public class PatientAlertServiceTest {
         when(allPatients.get(patient_1.getId())).thenReturn(patient_1);
         when(allPatients.get(patient_2.getId())).thenReturn(patient_2);
         when(allPatients.findByClinic("testClinicId")).thenReturn(registeredPatients);
-        when(alertService.getBy(patient_1.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlertsForPatient_1);
-        when(alertService.getBy(patient_2.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlertsForPatient_2);
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).alertStatus().equals(AlertStatus.READ);
+            }
+        }))).thenReturn(readAlertsForPatient_1).thenReturn(readAlertsForPatient_2);
 
         PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", null, AlertStatus.READ, PatientAlertType.AdherenceInRed, null, null);
 
@@ -361,7 +369,12 @@ public class PatientAlertServiceTest {
 
         when(allPatients.get(patient.getId())).thenReturn(patient);
         when(allPatients.findByClinic("testClinicId")).thenReturn(registeredPatients);
-        when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).externalId().equals(patient.getId()) && ((AlertCriteria)o).alertStatus().equals(AlertStatus.READ);
+            }
+        }))).thenReturn(readAlerts);
 
         DateTime startDate = DateTime.now().minusDays(8);
         PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", null, AlertStatus.READ, null, startDate, null);
@@ -395,7 +408,12 @@ public class PatientAlertServiceTest {
 
         when(allPatients.get(patient.getId())).thenReturn(patient);
         when(allPatients.findByClinic("testClinicId")).thenReturn(registeredPatients);
-        when(alertService.getBy(patient.getId(), null, AlertStatus.READ, null, 100)).thenReturn(readAlerts);
+        when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((AlertCriteria)o).externalId().equals(patient.getId()) && ((AlertCriteria)o).alertStatus().equals(AlertStatus.READ);
+            }
+        }))).thenReturn(readAlerts);
 
         DateTime endDate = now.minusDays(5);
         PatientAlerts readAlertsForClinic = patientAlertService.getAlertsOfSpecificTypeAndStatusAndDateRange("testClinicId", null, AlertStatus.READ, null, null, endDate);

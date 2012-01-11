@@ -7,13 +7,13 @@ import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.domain.AlertCriteria;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,6 @@ import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static java.util.Collections.reverseOrder;
-import static org.hamcrest.CoreMatchers.equalTo;
 
 @Component
 public class PatientAlertService {
@@ -68,12 +67,7 @@ public class PatientAlertService {
         if (PatientAlertType.SymptomReporting.equals(patientAlertType)) {
             data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
         }
-        final Alert symptomsAlert = new Alert(externalId, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
-        final DateTime now = DateUtil.now();
-        symptomsAlert.setDateTime(now);
-        symptomsAlert.setDescription(description);
-        symptomsAlert.setName(name);
-        alertService.createAlert(symptomsAlert);
+        alertService.create(externalId, name, description, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
     }
 
     private List<PatientAlert> getAlerts(List<Patient> patients, final AlertStatus alertStatus) {
@@ -86,7 +80,7 @@ public class PatientAlertService {
                         return PatientAlert.newPatientAlert(alert, patient);
                     }
                 };
-                return Lambda.convert(alertService.getBy(patient.getId(), null, alertStatus, null, 100), alertPatientAlertConverter);
+                return Lambda.convert(alertService.search(new AlertCriteria().byExternalId(patient.getId()).byStatus(alertStatus)), alertPatientAlertConverter);
             }
         };
         return sort(flatten(convert(patients, patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
