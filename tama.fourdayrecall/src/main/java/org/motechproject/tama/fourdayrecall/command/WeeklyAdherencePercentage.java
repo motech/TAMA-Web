@@ -3,8 +3,11 @@ package org.motechproject.tama.fourdayrecall.command;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +18,18 @@ import java.util.List;
 public class WeeklyAdherencePercentage implements ITreeCommand {
 
     private TamaIVRMessage ivrMessage;
+    private AllPatients allPatients;
+    private AllTreatmentAdvices allTreatmentAdvices;
     private FourDayRecallAdherenceService fourDayRecallAdherenceService;
+    private FourDayRecallDateService fourDayRecallDateService;
 
     @Autowired
-    public WeeklyAdherencePercentage(TamaIVRMessage ivrMessage, FourDayRecallAdherenceService fourDayRecallAdherenceService) {
+    public WeeklyAdherencePercentage(TamaIVRMessage ivrMessage, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, FourDayRecallAdherenceService fourDayRecallAdherenceService, FourDayRecallDateService fourDayRecallDateService) {
         this.ivrMessage = ivrMessage;
+        this.allPatients = allPatients;
+        this.allTreatmentAdvices = allTreatmentAdvices;
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
+        this.fourDayRecallDateService = fourDayRecallDateService;
     }
 
     @Override
@@ -42,8 +51,9 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
         messages.add(ivrMessage.getNumberFilename(currentWeekAdherencePercentage));
         messages.add(TamaIVRMessage.FDR_PERCENT);
 
-        if (!fourDayRecallAdherenceService.isAdherenceBeingCapturedForFirstWeek(patientId))
+        if (!fourDayRecallDateService.isFirstTreatmentWeek(allPatients.get(patientId), allTreatmentAdvices.currentTreatmentAdvice(patientId))) {
             addTrendMessages(messages, currentWeekAdherencePercentage, falling);
+        }
 
         return messages.toArray(new String[messages.size()]);
     }

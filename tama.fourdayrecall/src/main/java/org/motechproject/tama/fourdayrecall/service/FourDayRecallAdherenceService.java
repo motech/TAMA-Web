@@ -2,8 +2,6 @@ package org.motechproject.tama.fourdayrecall.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
@@ -23,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.motechproject.tama.patient.util.CallPlanUtil.callPlanStartDate;
 
 @Service
 public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
@@ -69,26 +65,14 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         return logs.size() == 0 ? null : logs.get(0);
     }
 
-    public boolean isAdherenceBeingCapturedForFirstWeek(String patientId) {
-        Patient patient = allPatients.get(patientId);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        LocalDate treatmentAdviceStartDate = DateUtil.newDate(treatmentAdvice.getStartDate());
-        DateTime callPreferenceTransitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
-
-        if (callPreferenceTransitionDate != null && callPreferenceTransitionDate.toLocalDate().isAfter(treatmentAdviceStartDate)) {
-            return DateUtil.today().minusWeeks(1).isBefore(callPreferenceTransitionDate.toLocalDate());
-        }
-
-        final LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
-        return startDateForWeek.equals(treatmentAdviceStartDate);
-    }
-
     public boolean isAdherenceFalling(int dosageMissedDays, String patientId) {
         return adherencePercentageFor(dosageMissedDays) < getAdherencePercentageForPreviousWeek(patientId);
     }
 
     public void raiseAdherenceFallingAlert(String patientId) {
-        if (isCurrentWeekTheFirstWeekOfTreatmentAdvice(patientId)) return;
+        Patient patient = allPatients.get(patientId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        if (fourDayRecallDateService.isFirstTreatmentWeek(patient, treatmentAdvice)) return;
 
         int adherencePercentageForCurrentWeek = getAdherencePercentageForCurrentWeek(patientId);
         if (adherencePercentageForCurrentWeek >= getAdherencePercentageForPreviousWeek(patientId)) return;
@@ -98,14 +82,6 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         final double fall = ((previousWeekPercentage - adherencePercentageForCurrentWeek) / (double) previousWeekPercentage) * 100.0;
         final String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fall, (double) previousWeekPercentage, (double) adherencePercentageForCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
-    }
-
-    boolean isCurrentWeekTheFirstWeekOfTreatmentAdvice(String patientId) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        Patient patient = allPatients.get(patientId);
-        LocalDate weeklyAdherenceTrackingStartDate = callPlanStartDate(patient, treatmentAdvice);
-        LocalDate calculatedStartDateForCurrentWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
-        return weeklyAdherenceTrackingStartDate.isEqual(calculatedStartDateForCurrentWeek) || calculatedStartDateForCurrentWeek.isBefore(weeklyAdherenceTrackingStartDate);
     }
 
     protected int getAdherencePercentageForCurrentWeek(String patientId) {
@@ -130,11 +106,6 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         return patientAlertService.getFallingAdherenceAlerts(patientDocId, nextRecallDate, DateUtil.now()).size() > 0;
     }
 
-    boolean isStartDayEqualToOrSufficientlyBehindFourDayRecallDate(LocalDate treatmentAdviceStartDate, LocalDate fourDayRecallDate) {
-        return treatmentAdviceStartDate.plusDays(fourDayRecallDateService.DAYS_TO_RECALL).isBefore(fourDayRecallDate) ||
-                treatmentAdviceStartDate.plusDays(fourDayRecallDateService.DAYS_TO_RECALL).isEqual(fourDayRecallDate);
-    }
-
     public void raiseAdherenceInRedAlert(String patientId) {
         WeeklyAdherenceLog adherenceLog = getAdherenceLog(patientId, 0);
         String description = PatientAlertService.RED_ALERT_MESSAGE_NO_RESPONSE;
@@ -150,25 +121,11 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);
     }
 
-    public DateTime getFirstWeeksFourDayRecallRetryEndDate(Patient patient) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        LocalDate weeklyAdherenceTakingStartDate = callPlanStartDate(patient, treatmentAdvice);
-        LocalDate firstRecallDate = weeklyAdherenceTakingStartDate.plusDays(fourDayRecallDateService.DAYS_TO_RECALL);
-        DayOfWeek preferredDayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
-        while (preferredDayOfWeeklyCall.getValue() != firstRecallDate.getDayOfWeek()) {
-            firstRecallDate = firstRecallDate.plusDays(1);
-        }
-        Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
-        TimeOfDay bestCallTime = patient.getPatientPreferences().getBestCallTime();
-        return firstRecallDate.plusDays(daysToRetry).toDateTime(new LocalTime(bestCallTime.getHour(), bestCallTime.getMinute()));
-    }
-
     @Override
     public boolean wasAnyDoseMissedLastWeek(Patient patient) {
-        double adherenceForLastWeek = getAdherencePercentageForPreviousWeek(patient.getId());
-        if (adherenceForLastWeek == 0.0 && getFirstWeeksFourDayRecallRetryEndDate(patient).isAfter(DateUtil.now()))
-            return false;
-        return (adherenceForLastWeek != 100.0);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        if (fourDayRecallDateService.isFirstTreatmentWeek(patient, treatmentAdvice)) return false;
+        return ((double) getAdherencePercentageForPreviousWeek(patient.getId()) != 100.0);
     }
 
     @Override

@@ -28,8 +28,11 @@ public class FourDayRecallDateService {
 
     public LocalDate treatmentWeekStartDate(LocalDate callDate, Patient patient, TreatmentAdvice treatmentAdvice) {
         LocalDate weekStartDate = treatmentWeekStartDate(callDate, treatmentAdvice);
-        final DateTime nextRecallDate = nextRecallOn(weekStartDate, patient);
-        if (nextRecallDate.toLocalDate().isAfter(callDate)) {
+        if (Days.daysBetween(weekStartDate, callDate).getDays() < 4) {
+            weekStartDate = weekStartDate.minusWeeks(1);
+        }
+        final LocalDate nextRecallDate = nextRecallOn(weekStartDate, patient).toLocalDate();
+        if (callDate.isBefore(nextRecallDate)) {
             weekStartDate = weekStartDate.minusWeeks(1);
         }
         return weekStartDate;
@@ -44,13 +47,24 @@ public class FourDayRecallDateService {
         return DateUtil.newDateTime(recallDate, bestCallTime);
     }
 
-    public LocalDate firstRecallDate(Patient patient, TreatmentAdvice treatmentAdvice) {
+    public LocalDate firstTreatmentWeekStartDate(Patient patient, TreatmentAdvice treatmentAdvice) {
         final LocalDate callPlanStartDate = callPlanStartDate(patient, treatmentAdvice);
-        final LocalDate firstWeekStartDate = treatmentWeekStartDate(callPlanStartDate, treatmentAdvice);
+        LocalDate firstWeekStartDate = treatmentWeekStartDate(callPlanStartDate, treatmentAdvice);
         LocalDate nextRecallDate = nextRecallOn(firstWeekStartDate, patient).toLocalDate();
         if (Days.daysBetween(callPlanStartDate, nextRecallDate).getDays() < 4) {
-            nextRecallDate = nextRecallDate.plusWeeks(1);
+            firstWeekStartDate = firstWeekStartDate.plusWeeks(1);
         }
-        return nextRecallDate;
+        return firstWeekStartDate;
+    }
+
+    public LocalDate firstRecallDate(Patient patient, TreatmentAdvice treatmentAdvice) {
+        final LocalDate firstWeekStartDate = firstTreatmentWeekStartDate(patient, treatmentAdvice);
+        return nextRecallOn(firstWeekStartDate, patient).toLocalDate();
+    }
+
+    public boolean isFirstTreatmentWeek(Patient patient, TreatmentAdvice treatmentAdvice) {
+        final LocalDate firstWeekStartDate = firstTreatmentWeekStartDate(patient, treatmentAdvice);
+        final LocalDate currentWeekStartDate = treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
+        return firstWeekStartDate.equals(currentWeekStartDate) || currentWeekStartDate.isBefore(firstWeekStartDate);
     }
 }

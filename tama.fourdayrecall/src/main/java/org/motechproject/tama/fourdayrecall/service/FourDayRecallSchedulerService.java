@@ -93,7 +93,7 @@ public class FourDayRecallSchedulerService {
         }
     }
 
-    void scheduleFallingAdherenceAlertJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
+    private void scheduleFallingAdherenceAlertJobsForFourDayRecall(Patient patient, TreatmentAdvice treatmentAdvice) {
         String patientDocId = patient.getId();
         DayOfWeek dayOfWeeklyCall = patient.getPatientPreferences().getDayOfWeeklyCall();
         Time eventTime = new TimeOfDay(0, 0, TimeMeridiem.AM).toTime();

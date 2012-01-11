@@ -5,8 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,9 +23,15 @@ public class WeeklyAdherencePercentageTest {
 
     public static final String PATIENT_ID = "patientId";
     @Mock
+    private TamaIVRMessage ivrMessage;
+    @Mock
+    private AllPatients allPatients;
+    @Mock
+    private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
     private FourDayRecallAdherenceService fourDayRecallAdherenceService;
     @Mock
-    private TamaIVRMessage ivrMessage;
+    private FourDayRecallDateService fourDayRecallDateService;
 
     private WeeklyAdherencePercentage weeklyAdherencePercentage;
     private TAMAIVRContextForTest ivrContext;
@@ -31,7 +40,7 @@ public class WeeklyAdherencePercentageTest {
     public void setUp() {
         initMocks(this);
         ivrContext = new TAMAIVRContextForTest().patientId(PATIENT_ID);
-        weeklyAdherencePercentage = new WeeklyAdherencePercentage(ivrMessage, fourDayRecallAdherenceService);
+        weeklyAdherencePercentage = new WeeklyAdherencePercentage(ivrMessage, allPatients, allTreatmentAdvices, fourDayRecallAdherenceService, fourDayRecallDateService);
     }
 
     @Test
@@ -79,7 +88,6 @@ public class WeeklyAdherencePercentageTest {
         assertThat(audios[3], is(TamaIVRMessage.M02_06_ADHERENCE_COMMENT_70TO90_RISING));
     }
 
-
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndFalling() {
         when(fourDayRecallAdherenceService.adherencePercentageFor(anyInt())).thenReturn(60);
@@ -94,7 +102,6 @@ public class WeeklyAdherencePercentageTest {
         assertThat(audios[2], is(TamaIVRMessage.FDR_PERCENT));
         assertThat(audios[3], is(TamaIVRMessage.M02_07_ADHERENCE_COMMENT_LT70_FALLING));
     }
-
 
     @Test
     public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsLessThan70_AndRising() {
