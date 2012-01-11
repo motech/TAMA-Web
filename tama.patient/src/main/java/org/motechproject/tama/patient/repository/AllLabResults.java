@@ -4,6 +4,7 @@ import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -53,11 +55,22 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
             ViewQuery query = createQuery("find_by_patientId_and_labTest_id").key(ComplexKey.of(patientId, labTest.getId())).includeDocs(true);
             List<LabResult> labResults = db.queryView(query, LabResult.class);
 
-            if(labResults.size() > 0) {
+            if (labResults.size() > 0) {
                 latestLabResults.add(getLatestLabResult(labResults));
             }
         }
         return latestLabResults;
+    }
+
+    @View(name = "find_by_patientId_and_labTestId_and_testDate", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId && doc.labTest_id && doc.testDate) {emit([doc.patientId, doc.labTest_id, doc.testDate], doc._id);}}")
+    public LabResult findByPatientIdLabTestIdAndTestDate(String patientId, LabTest labTest, LocalDate testDate) {
+        ViewQuery query = createQuery("find_by_patientId_and_labTestId_and_testDate").key(ComplexKey.of(patientId, labTest.getId(), testDate)).includeDocs(true);
+        List<LabResult> labResults = db.queryView(query, LabResult.class);
+        if(labResults.size() == 0)
+            return null;
+        LabResult labResult = labResults.get(0);
+        loadDependencies(labResult);
+        return labResult;
     }
 
     private LabResult getLatestLabResult(List<LabResult> labResults) {
@@ -72,16 +85,13 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
     }
 
     public void upsert(LabResult labResult) {
-        if(labResult.getId() == null) {
+        LabResult labResultInDb = findByPatientIdLabTestIdAndTestDate(labResult.getPatientId(), labResult.getLabTest(), labResult.getTestDate());
+        if(labResultInDb == null) {
             addLabResult(labResult);
             return;
-        }
-        LabResult labResultInDb = get(labResult.getId());
-        if (labResultInDb.getTestDate().isEqual(labResult.getTestDate())) {
+        } else {
             labResultInDb.setResult(labResult.getResult());
             update(labResultInDb);
-        } else {
-            addLabResult(labResult);
         }
     }
 
