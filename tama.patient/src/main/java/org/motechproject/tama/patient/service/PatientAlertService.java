@@ -80,7 +80,14 @@ public class PatientAlertService {
                         return PatientAlert.newPatientAlert(alert, patient);
                     }
                 };
-                return Lambda.convert(alertService.search(new AlertCriteria().byExternalId(patient.getId()).byStatus(alertStatus)), alertPatientAlertConverter);
+                AlertCriteria alertCriteria = new AlertCriteria();
+                if (patient.getId() != null){
+                    alertCriteria.byExternalId(patient.getId());
+                }
+                if (alertStatus != null){
+                    alertCriteria.byStatus(alertStatus);
+                }
+                return Lambda.convert(alertService.search(alertCriteria), alertPatientAlertConverter);
             }
         };
         return sort(flatten(convert(patients, patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());

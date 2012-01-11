@@ -101,7 +101,7 @@ public class PatientAlertServiceTest {
         when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
             @Override
             public boolean matches(Object o) {
-                return ((AlertCriteria)o).externalId().equals(testPatientId1);
+                return ((AlertCriteria)o).externalId().equals(testPatientId1) && ((AlertCriteria)o).alertStatus() == null;
             }
         }))).thenReturn(alerts);
 
