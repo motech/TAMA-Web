@@ -30,7 +30,7 @@ public class CacheAudioFiles {
     static Logger logger = Logger.getLogger(CacheAudioFiles.class);
 
     private static String wavFilesLocation;
-    private static int poolSize = 50;
+    private static int poolSize = 10;
     private static String API_KEY;
     private static String CONTENT_LOCATION_URL;
 
