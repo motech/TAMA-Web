@@ -3,9 +3,9 @@ package org.motechproject.tamafunctional.test;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.test.ivr.IVRAssert;
+import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -14,8 +14,6 @@ import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,9 +72,24 @@ public class HealthTipsTest extends BaseIVRTest {
 
     @Test
     public void shouldPlayHealthTips_WhenARTLessThan1MonthAndPatientOnDailyPill() throws IOException {
+        patientConfirmsNotHavingTakenHisPreviousDose();
         assertHealthTipsForMissedDoseIsPlayed();
-        recordCurrentDosageAsTaken();
         assertHealthTipsForRegimenLessThanOneMonthIsPlayed();
+    }
+
+    private void patientConfirmsNotHavingTakenHisPreviousDose() {
+        caller = caller(patient);
+        caller.replyToCall(new PillReminderCallInfo(1));
+
+        IVRResponse ivrResponse = caller.enter("5678");
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        ivrResponse = caller.enter("1");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_RECORDED);
+        ivrResponse = caller.listenMore();
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR, YESTERDAYS, DOSE_NOT_RECORDED, YESTERDAY, YOU_WERE_SUPPOSED_TO_TAKE, FROM_THE_BOTTLE, PREVIOUS_DOSE_MENU);
+        ivrResponse = caller.enter("3");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOU_SAID_YOU_DID_NOT_TAKE, DOSE_NOT_TAKEN, DOSE_RECORDED, TRY_NOT_TO_MISS);
+        caller.hangup();
     }
 
     private void assertHealthTipsForMissedDoseIsPlayed() {
@@ -84,7 +97,7 @@ public class HealthTipsTest extends BaseIVRTest {
         caller = caller(patient);
         caller.call();
         IVRResponse ivrResponse = caller.enter("5678");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
 
         // collect only highest priority health tips and assert
         List<String> highestPriorityFilesExpectedToBePlayed = getHealthTipsWithPriorityWhenARTLessThan1MonthAndPatientOnDailyPillAndDosageMissed().get("1");
@@ -94,16 +107,6 @@ public class HealthTipsTest extends BaseIVRTest {
         assertEquals(highestPriorityFilesExpectedToBePlayed.size(), audiosPlayed.size());
         assertHealthTipsPlayed(highestPriorityFilesExpectedToBePlayed, audiosPlayed);
 
-    }
-
-    public void recordCurrentDosageAsTaken() throws IOException {
-        caller = caller(patient);
-        caller.call();
-        IVRResponse ivrResponse = caller.enter("5678");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
-        ivrResponse = caller.enter("1");
-        IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_TAKEN_ON_TIME);
-        caller.hangup();
     }
 
     private void assertHealthTipsForRegimenLessThanOneMonthIsPlayed() {
