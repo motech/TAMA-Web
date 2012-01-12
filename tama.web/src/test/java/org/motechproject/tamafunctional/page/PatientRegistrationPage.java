@@ -26,6 +26,7 @@ public class PatientRegistrationPage extends Page {
         createBasicPatientInformationSection.postInitialize();
         createPatientMedicalHistorySection.postInitialize();
         createPatientPreferencesSection.postInitialize();
+        confirmCreationDialog.postInitialize();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class PatientRegistrationPage extends Page {
         createPatientMedicalHistorySection.enterDetails(patient);
         createPatientPreferencesSection.enterDetails(patient);
         createPatientPreferencesSection.getPasscode().submit();
-        confirmCreationDialog.confirm(wait);
+        confirmCreationDialog.confirm();
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 }

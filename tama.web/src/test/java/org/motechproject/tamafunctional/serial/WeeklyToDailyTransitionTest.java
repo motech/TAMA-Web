@@ -12,6 +12,7 @@ import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
+import org.motechproject.tamafunctional.testdata.TestPatientPreferences;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
@@ -27,30 +28,46 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
     private TAMADateTimeService tamaDateTimeService;
 
     private DateTime now = DateUtil.now();
+    private DateTime registrationTime;
 
     @Before
     public void setUp() {
         super.setUp();
         tamaDateTimeService = new TAMADateTimeService(webClient);
-        tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2011, 12, 25), now.getHourOfDay(), now.getMinuteOfHour(), 0));
-        setupData();
+        setUpPatientOnDailyPillReminder();
+    }
+
+    private void setUpPatientOnDailyPillReminder() {
+        registrationTime = DateUtil.newDateTime(DateUtil.newDate(2011, 12, 25), now.getHourOfDay(), now.getMinuteOfHour(), 0);
+        tamaDateTimeService.adjustDateTime(registrationTime);
+
+        clinician = TestClinician.withMandatory();
+        patient = TestPatient.withMandatory().callPreference(TestPatientPreferences.CallPreference.DAILY_CALL);
+        PatientDataService patientDataService = new PatientDataService(webDriver);
+        TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceOn(registrationTime.toLocalDate());
+        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        caller = caller(patient);
     }
 
     @Test
     public void shouldRecordAdherenceAfreshWhenPatientChangesFromWeeklyToDailyPillReminder() {
-        for (int i = 3; i >= 0; i--) {
-            tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0).minusDays(6).minusDays(i));
-            recordCurrentDosageAsTaken();
+        for (int i=0; i<=3; i++) {
+            tamaDateTimeService.adjustDateTime(registrationTime.plusDays(i));
+            recordCurrentDoseAsTaken();
         }
 
-        tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0).minusDays(6));
+        DateTime transitionTime = registrationTime.plusDays(3);
+
+        tamaDateTimeService.adjustDateTime(transitionTime);
+
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithClinicianUserNamePassword(clinician.userName(), clinician.password())
                 .gotoShowPatientPage(patient)
                 .clickOnEditTAMAPreferences().
                 changePatientToWeeklyCallPlanWithBestCallDayAndTime("Monday", "09:05", true).logout();
 
-        tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(DateUtil.newDate(2012, 01, 03), now.getHourOfDay(), now.getMinuteOfHour(), 0));
+        DateTime firstWeeklyCallTime = now;
+        tamaDateTimeService.adjustDateTime(firstWeeklyCallTime);
 
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithClinicianUserNamePassword(clinician.userName(), clinician.password())
@@ -60,28 +77,18 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
 
         caller.replyToCall(new PillReminderCallInfo(1));
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
-        patientSaysHeDidNotTakeTheDose(ivrResponse);
+        assertIsPatientOnDailyPillReminder(ivrResponse);
         caller.hangup();
     }
 
-    private void setupData() {
-        clinician = TestClinician.withMandatory();
-        patient = TestPatient.withMandatory();
-        PatientDataService patientDataService = new PatientDataService(webDriver);
-        TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFrom1AndAHalfWeeksAgo();
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
-        caller = caller(patient);
-    }
-
-    private TestTreatmentAdvice setUpTreatmentAdviceToStartFrom1AndAHalfWeeksAgo() {
+    private TestTreatmentAdvice setUpTreatmentAdviceOn(LocalDate treatmentAdviceStartDate) {
         TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
-        LocalDate oneAndAHalfWeeksAgo = DateUtil.newDate(2012, 01, 03).minusDays(9);
-        drugDosages[0].startDate(oneAndAHalfWeeksAgo);
-        drugDosages[1].startDate(oneAndAHalfWeeksAgo);
+        drugDosages[0].startDate(treatmentAdviceStartDate);
+        drugDosages[1].startDate(treatmentAdviceStartDate);
         return TestTreatmentAdvice.withExtrinsic(drugDosages);
     }
 
-    public void recordCurrentDosageAsTaken() {
+    private void recordCurrentDoseAsTaken() {
         caller = caller(patient);
         caller.call();
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
@@ -91,7 +98,11 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         caller.hangup();
     }
 
-    private void patientSaysHeDidNotTakeTheDose(IVRResponse ivrResponse) {
+    private void assertIsPatientOnDailyPillReminder(IVRResponse ivrResponse){
+        assertPatientCanCallTAMAAndReportAdherence(ivrResponse);
+    }
+
+    private void assertPatientCanCallTAMAAndReportAdherence(IVRResponse ivrResponse) {
         IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
         ivrResponse = caller.enter("3");
         ivrResponse = caller.enter("2");

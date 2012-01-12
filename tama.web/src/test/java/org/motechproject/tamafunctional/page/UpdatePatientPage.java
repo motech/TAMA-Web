@@ -25,7 +25,6 @@ public class UpdatePatientPage extends Page {
     private ConfirmCreationDialog confirmCreationDialog;
     private CreatePatientPreferencesSection createPatientPreferencesSection;
 
-
     public UpdatePatientPage(WebDriver webDriver) {
         super(webDriver);
         confirmCreationDialog = PageFactory.initElements(webDriver, ConfirmCreationDialog.class);
@@ -33,16 +32,19 @@ public class UpdatePatientPage extends Page {
     }
 
     @Override
-    public void postInitialize() {
-        createPatientPreferencesSection.postInitialize();
+    protected void waitForPageToLoad() {
+       waitForElementWithIdToLoad("four_week_warning_confirm");
     }
 
     @Override
-    protected void waitForPageToLoad() {
+    public void postInitialize() {
         weeklyReminderCallRadioButton = WebDriverFactory.createWebElement(weeklyReminderCallRadioButton);
         dailyReminderCallRadioButton = WebDriverFactory.createWebElement(dailyReminderCallRadioButton);
         dayOfWeeklyCallBox = WebDriverFactory.createWebElement(dayOfWeeklyCallBox);
         bestCallTimeBox = WebDriverFactory.createWebElement(bestCallTimeBox);
+
+        createPatientPreferencesSection.postInitialize();
+        confirmCreationDialog.postInitialize();
     }
 
     public ShowPatientPage changePatientToWeeklyCallPlanWithBestCallDayAndTime(String bestCallDay, String bestCallTime, boolean expectWarningDialog) {
@@ -51,7 +53,7 @@ public class UpdatePatientPage extends Page {
         bestCallTimeBox.sendKeys(bestCallTime);
         createPatientPreferencesSection.getPasscode().submit();
         if (expectWarningDialog) {
-            confirmCreationDialog.confirm(wait);
+            confirmCreationDialog.confirm();
         }
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
