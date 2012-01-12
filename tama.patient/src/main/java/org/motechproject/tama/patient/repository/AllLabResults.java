@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -63,8 +62,8 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
     }
 
     @View(name = "find_by_patientId_and_labTestId_and_testDate", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId && doc.labTest_id && doc.testDate) {emit([doc.patientId, doc.labTest_id, doc.testDate], doc._id);}}")
-    public LabResult findByPatientIdLabTestIdAndTestDate(String patientId, LabTest labTest, LocalDate testDate) {
-        ViewQuery query = createQuery("find_by_patientId_and_labTestId_and_testDate").key(ComplexKey.of(patientId, labTest.getId(), testDate)).includeDocs(true);
+    public LabResult findByPatientIdLabTestIdAndTestDate(String patientId, String labTestId, LocalDate testDate) {
+        ViewQuery query = createQuery("find_by_patientId_and_labTestId_and_testDate").key(ComplexKey.of(patientId, labTestId, testDate)).includeDocs(true);
         List<LabResult> labResults = db.queryView(query, LabResult.class);
         if(labResults.size() == 0)
             return null;
@@ -85,7 +84,7 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
     }
 
     public void upsert(LabResult labResult) {
-        LabResult labResultInDb = findByPatientIdLabTestIdAndTestDate(labResult.getPatientId(), labResult.getLabTest(), labResult.getTestDate());
+        LabResult labResultInDb = findByPatientIdLabTestIdAndTestDate(labResult.getPatientId(), labResult.getLabTest_id(), labResult.getTestDate());
         if(labResultInDb == null) {
             addLabResult(labResult);
             return;

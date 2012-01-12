@@ -103,7 +103,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabResults.add(labResult3);
         markForDeletion(labResult3);
 
-        LabResult labResult = allLabResults.findByPatientIdLabTestIdAndTestDate(patientId, labTest2, DateUtil.today());
+        LabResult labResult = allLabResults.findByPatientIdLabTestIdAndTestDate(patientId, labTest2.getId(), DateUtil.today());
 
         assertNotNull(labResult);
         assertLabResult("1", labResult);
@@ -203,7 +203,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
         assertEquals(0, labResultsForPatient.size());
 
-        LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withLabTest(labTest).withTestDate(DateUtil.today()).withResult("2").withPatientId(patientId).build();
+        LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withTestDate(DateUtil.today()).withResult("2").withPatientId(patientId).build();
 
         allLabResults.upsert(labResultFromUI);
 
