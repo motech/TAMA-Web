@@ -1,13 +1,20 @@
 package org.motechproject.tama.symptomreporting.decisiontree;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.DialPrompt;
 import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.symptomreporting.command.DialStateCommand;
+import org.motechproject.tama.symptomreporting.command.RecordSymptomCommand;
 import org.motechproject.tama.symptomreporting.command.SuspendAdherenceCallsCommand;
 import org.motechproject.tama.symptomreporting.command.SymptomReportingAlertsCommand;
+import org.motechproject.tama.symptomreporting.decisiontree.filter.RegExpBasedTreeNodeFilter;
 import org.motechproject.tama.symptomreporting.decisiontree.filter.TreeNodeFilter;
+import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,11 +39,26 @@ public class SymptomReportingTreeInterceptor {
     private DialStateCommand dialStateCommand;
     private SuspendAdherenceCallsCommand suspendAdherenceCallsCommand;
 
+    private TAMAIVRContextFactory contextFactory;
+    private SymptomRecordingService symptomRecordingService;
+
     @Autowired
-    public SymptomReportingTreeInterceptor(SymptomReportingAlertsCommand symptomReportingAlertsCommand, DialStateCommand dialStateCommand, SuspendAdherenceCallsCommand suspendAdherenceCallsCommand) {
+    public SymptomReportingTreeInterceptor(SymptomReportingAlertsCommand symptomReportingAlertsCommand, DialStateCommand dialStateCommand, SuspendAdherenceCallsCommand suspendAdherenceCallsCommand,
+                                           SymptomRecordingService symptomRecordingService) {
         this.symptomReportingAlertsCommand = symptomReportingAlertsCommand;
         this.dialStateCommand = dialStateCommand;
         this.suspendAdherenceCallsCommand = suspendAdherenceCallsCommand;
+        this.contextFactory = new TAMAIVRContextFactory();
+        this.symptomRecordingService = symptomRecordingService;
+    }
+
+    SymptomReportingTreeInterceptor(SymptomReportingAlertsCommand symptomReportingAlertsCommand, DialStateCommand dialStateCommand, SuspendAdherenceCallsCommand suspendAdherenceCallsCommand,
+                                    TAMAIVRContextFactory contextFactory, SymptomRecordingService symptomRecordingService) {
+        this.symptomReportingAlertsCommand = symptomReportingAlertsCommand;
+        this.dialStateCommand = dialStateCommand;
+        this.suspendAdherenceCallsCommand = suspendAdherenceCallsCommand;
+        this.contextFactory = contextFactory;
+        this.symptomRecordingService = symptomRecordingService;
     }
 
     public void addCommands(Node node) {
@@ -47,10 +69,27 @@ public class SymptomReportingTreeInterceptor {
     }
 
     private void addCommandToLogSymptoms(Node node) {
-
+        RegExpBasedTreeNodeFilter filter = new RegExpBasedTreeNodeFilter("^q_.*");
+        final List<Node> nodes = filter.filter(node);
+        for (Node priorityNode : nodes) {
+        	Prompt questionPrompt = filter.selectPrompt(priorityNode);
+            setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt));
+        }
     }
 
-    private void addAlerts(Node node) {
+	private String convertQuestionToSymptomId(Prompt questionPrompt) {
+		return questionPrompt.getName().replaceFirst(".*_", "");
+	}
+
+    private void setRecordSymptomReportTreeCommand(Node priorityNode, String symptomId) {
+    	Transition yesTransition = priorityNode.getTransitions().get("1");
+    	Node yesNode = yesTransition.getDestinationNode();
+    	if (yesNode != null){
+    		yesNode.setTreeCommands(new RecordSymptomCommand(contextFactory, symptomRecordingService, symptomId));
+    	}
+	}
+
+	private void addAlerts(Node node) {
         List<TreeNodeFilter> finders = Arrays.asList(
                 new TreeNodeFilter(firstPriorityFilterCriteria),
                 new TreeNodeFilter(secondPriorityFilterCriteria),

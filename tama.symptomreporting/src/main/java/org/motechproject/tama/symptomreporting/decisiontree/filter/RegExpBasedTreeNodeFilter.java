@@ -1,5 +1,6 @@
 package org.motechproject.tama.symptomreporting.decisiontree.filter;
 
+import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.springframework.stereotype.Component;
@@ -16,9 +17,13 @@ public class RegExpBasedTreeNodeFilter extends DecisionTreeNodesFilter {
 
     @Override
     public boolean select(Node node) {
+        return selectPrompt(node) != null;
+    }
+
+    public Prompt selectPrompt(Node node) {
         for (Prompt prompt : node.getPrompts()) {
-            if (pattern.matcher(prompt.getName()).find()) return true;
+            if (prompt instanceof AudioPrompt && pattern.matcher(prompt.getName()).find()) return prompt;
         }
-        return false;
+        return null;
     }
 }

@@ -1,10 +1,7 @@
 package org.motechproject.tama.symptomreporting.decisiontree.filter;
 
 import org.junit.Test;
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.MenuAudioPrompt;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.*;
 
 import java.util.List;
 
@@ -31,6 +28,7 @@ public class RegExpBasedTreeNodeFilterTest {
                         new AudioPrompt().setName("cn_swellfacelegs")
                                 , new AudioPrompt().setName("cy_fever")
                                 , new AudioPrompt().setName("adv_crocin02")
+                                , new DialPrompt()
                         )
                 )}
                 });
@@ -46,6 +44,5 @@ public class RegExpBasedTreeNodeFilterTest {
                 new AudioPrompt().setName("prompt3")
         );
         assertEquals(0, regExpBasedTreeNodeFilter.filter(node).size());
-
     }
 }
