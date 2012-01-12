@@ -63,6 +63,7 @@ public class VitalStatisticsController extends BaseController {
         return FORM ;
     }
 
+    //TODO: The upsert logic can be moved to the repository layer
     @RequestMapping(method = RequestMethod.PUT)
     public String update(@Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         vitalStatistics.setCaptureDate(DateUtil.today());
@@ -72,7 +73,7 @@ public class VitalStatisticsController extends BaseController {
             return FORM;
         }
         VitalStatistics dbVitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(vitalStatistics.getPatientId());
-        if(dbVitalStatistics.getCaptureDate().compareTo(vitalStatistics.getCaptureDate()) == 0){
+        if(dbVitalStatistics.getCaptureDate().equals(vitalStatistics.getCaptureDate())){
             vitalStatistics.setRevision(dbVitalStatistics.getRevision());
             allVitalStatistics.update(vitalStatistics);
         }
