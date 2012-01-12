@@ -60,7 +60,7 @@ public class AdherenceMessageCommandTest {
     }
 
     private void setupIvrContext(DosageResponse currentDosage) {
-        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Outbound).callStartTime(callStartTime).patientId("patient_id");
+        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Outbound).callStartTime(callStartTime).patientDocumentId("patient_id");
         tamaIvrContext = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(pillRegimenResponse);
     }
 }

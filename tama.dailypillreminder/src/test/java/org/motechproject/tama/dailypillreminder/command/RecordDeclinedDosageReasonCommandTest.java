@@ -36,7 +36,7 @@ public class RecordDeclinedDosageReasonCommandTest {
         dosageId = "currentDosageId";
         patientId = "test";
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withRegimenId(pillRegimenId).build();
-        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).patientId(patientId).dtmfInput("1").callStartTime(DateUtil.newDateTime(DateUtil.today(), 16, 0, 0));
+        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).patientDocumentId(patientId).dtmfInput("1").callStartTime(DateUtil.newDateTime(DateUtil.today(), 16, 0, 0));
     }
 
     @Test

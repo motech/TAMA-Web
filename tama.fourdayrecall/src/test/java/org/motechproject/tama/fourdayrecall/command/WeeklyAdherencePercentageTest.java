@@ -39,7 +39,7 @@ public class WeeklyAdherencePercentageTest {
     @Before
     public void setUp() {
         initMocks(this);
-        ivrContext = new TAMAIVRContextForTest().patientId(PATIENT_ID);
+        ivrContext = new TAMAIVRContextForTest().patientDocumentId(PATIENT_ID);
         weeklyAdherencePercentage = new WeeklyAdherencePercentage(ivrMessage, allPatients, allTreatmentAdvices, fourDayRecallAdherenceService, fourDayRecallDateService);
     }
 

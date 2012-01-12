@@ -23,7 +23,7 @@ public class UpdateAdherenceAsNotCapturedForCurrentDosageCommand extends DailyPi
     public String[] executeCommand(DailyPillReminderContext context) {
         DosageStatus newStatus = DosageStatus.from(context.dtmfInput());
         PillRegimen pillRegimen = context.pillRegimen();
-        dailyReminderAdherenceService.recordDosageAdherenceAsNotCaptured(context.patientId(),
+        dailyReminderAdherenceService.recordDosageAdherenceAsNotCaptured(context.patientDocumentId(),
                 pillRegimen.getId(),
                 context.currentDose(),
                 newStatus,

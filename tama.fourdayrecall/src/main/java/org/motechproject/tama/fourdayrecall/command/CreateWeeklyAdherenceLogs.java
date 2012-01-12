@@ -39,7 +39,7 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
     }
 
     String[] executeCommand(TAMAIVRContext tamaivrContext) {
-        String patientId = tamaivrContext.patientId();
+        String patientId = tamaivrContext.patientDocumentId();
         Patient patient = allPatients.get(patientId);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         String treatmentAdviceDocId = treatmentAdvice.getId();

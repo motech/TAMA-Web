@@ -64,7 +64,7 @@ public class TAMACallFlowControllerTest {
     public void outboxURLShouldBeReturnedWhenTheDecisionTreesAreComplete() {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
-        tamaIVRContext.patientId(patientId);
+        tamaIVRContext.patientDocumentId(patientId);
         when(outboxModuleStrategy.hasPendingOutboxMessages(patientId)).thenReturn(true);
         assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
@@ -73,7 +73,7 @@ public class TAMACallFlowControllerTest {
     public void menuRepeatURLShouldBeReturnedWhenThereAreNoMessagesInOutbox() {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
         String patientId = "1234";
-        tamaIVRContext.patientId(patientId);
+        tamaIVRContext.patientDocumentId(patientId);
         when(outboxModuleStrategy.hasPendingOutboxMessages(patientId)).thenReturn(false);
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
@@ -117,7 +117,7 @@ public class TAMACallFlowControllerTest {
         tamaIVRContext.callState(CallState.OUTBOX);
         when(outboxModuleStrategy.hasOutboxCompleted(tamaIVRContext)).thenReturn(true);
         String patientId = "1234";
-        tamaIVRContext.patientId(patientId);
+        tamaIVRContext.patientDocumentId(patientId);
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 

@@ -26,7 +26,7 @@ public class DailyPillReminderContext extends TAMAIVRContext {
         HttpSession session = httpRequest.getSession();
         PillRegimen pillRegimen = (PillRegimen) session.getAttribute(PILL_REGIMEN);
         if (pillRegimen == null) {
-            pillRegimen = dailyPillReminderService.getPillRegimen(patientId());
+            pillRegimen = dailyPillReminderService.getPillRegimen(patientDocumentId());
             session.setAttribute(PILL_REGIMEN, pillRegimen);
         }
         return pillRegimen;

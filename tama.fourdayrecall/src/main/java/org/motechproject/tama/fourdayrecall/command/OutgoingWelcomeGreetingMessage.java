@@ -32,7 +32,7 @@ public class OutgoingWelcomeGreetingMessage extends BaseTreeCommand {
     public String[] executeCommand(TAMAIVRContext ivrContext) {
         List<String> messages = new ArrayList<String>();
 
-        Patient patient = allPatients.get(ivrContext.patientId());
+        Patient patient = allPatients.get(ivrContext.patientDocumentId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         messages.add(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));

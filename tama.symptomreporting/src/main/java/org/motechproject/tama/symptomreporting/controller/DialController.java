@@ -53,7 +53,7 @@ public class DialController extends SafeIVRController {
     public KookooIVRResponseBuilder dial(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = contextFactory.create(kooKooIVRContext);
         SymptomsReportingContext symptomsReportingContext = new SymptomsReportingContext(kooKooIVRContext);
-        Patient patient = allPatients.get(tamaivrContext.patientId());
+        Patient patient = allPatients.get(tamaivrContext.patientDocumentId());
 
         List<Clinic.ClinicianContact> clinicianContacts = patient.getClinic().getClinicianContacts();
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder().language(tamaivrContext.preferredLanguage());
@@ -67,7 +67,7 @@ public class DialController extends SafeIVRController {
 
     private void updateAlertAndEndCurrentCall(TAMAIVRContext tamaivrContext, SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts) {
         String clinicianName = clinicianContacts.get(symptomsReportingContext.numberOfCliniciansCalled() - 1).getName();
-        patientAlertService.updateDoctorConnectedToDuringSymptomCall(tamaivrContext.patientId(), clinicianName);
+        patientAlertService.updateDoctorConnectedToDuringSymptomCall(tamaivrContext.patientDocumentId(), clinicianName);
         symptomsReportingContext.endCall();
     }
 

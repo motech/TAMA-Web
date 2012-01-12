@@ -62,7 +62,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
     }
 
     private void setUpContexts() {
-        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientId("patientId");
+        TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientDocumentId("patientId");
         context = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(new PillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()));
     }
 

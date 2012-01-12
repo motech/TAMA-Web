@@ -71,7 +71,7 @@ public class TAMACallFlowController implements CallFlowController {
     }
 
     private boolean hasPendingOutboxMessages(TAMAIVRContext tamaivrContext) {
-        return outboxModuleStrategy.hasPendingOutboxMessages(tamaivrContext.patientId());
+        return outboxModuleStrategy.hasPendingOutboxMessages(tamaivrContext.patientDocumentId());
     }
 
     @Override
@@ -91,7 +91,7 @@ public class TAMACallFlowController implements CallFlowController {
     }
 
     private String getStartingTree(TAMAIVRContext tamaivrContext) {
-        Patient patient = allPatients.get(tamaivrContext.patientId());
+        Patient patient = allPatients.get(tamaivrContext.patientDocumentId());
         if (tamaivrContext.isIncomingCall()) {
             if (!patient.isOnDailyPillReminder())
                 return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;

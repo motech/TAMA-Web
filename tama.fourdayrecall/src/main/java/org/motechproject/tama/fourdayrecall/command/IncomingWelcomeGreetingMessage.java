@@ -33,7 +33,7 @@ public class IncomingWelcomeGreetingMessage extends BaseTreeCommand {
         if (ivrContext.hasTraversedTree(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL)) {
             return new String[0];
         }
-        Patient patient =  allPatients.get(ivrContext.patientId());
+        Patient patient =  allPatients.get(ivrContext.patientDocumentId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         messages.add(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));

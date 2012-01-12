@@ -133,7 +133,7 @@ public class TAMAIVRContext {
         return (DateTime) httpRequest.getSession().getAttribute(CALL_START_TIME);
     }
 
-    public String patientId() {
+    public String patientDocumentId() {
         return fromSession(PATIENT_ID);
     }
 

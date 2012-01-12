@@ -119,11 +119,11 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     }
 
     @Override
-    public String patientId() {
+    public String patientDocumentId() {
         return patientId;
     }
 
-    public TAMAIVRContextForTest patientId(String patientId) {
+    public TAMAIVRContextForTest patientDocumentId(String patientId) {
         this.patientId = patientId;
         return this;
     }

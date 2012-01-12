@@ -53,12 +53,12 @@ public class DailyPillReminderContextForTest extends DailyPillReminderContext {
     }
 
     @Override
-    public String patientId() {
-        return tamaIVRContext.patientId();
+    public String patientDocumentId() {
+        return tamaIVRContext.patientDocumentId();
     }
 
-    public DailyPillReminderContextForTest patientId(String patientId) {
-        tamaIVRContext.patientId(patientId);
+    public DailyPillReminderContextForTest patientDocumentId(String patientId) {
+        tamaIVRContext.patientDocumentId(patientId);
         return this;
     }
 

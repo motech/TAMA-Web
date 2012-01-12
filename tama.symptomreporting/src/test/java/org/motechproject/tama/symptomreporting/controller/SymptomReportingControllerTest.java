@@ -49,7 +49,7 @@ public class SymptomReportingControllerTest {
         String callId = "123";
         String patientId = "patientId";
         TAMAIVRContextForTest tamaivrContext = new TAMAIVRContextForTest();
-        tamaivrContext.patientId(patientId).callId(callId);
+        tamaivrContext.patientDocumentId(patientId).callId(callId);
 
         String symptomReportingTree = "RegimenTree";
         MedicalCondition medicalCondition = new MedicalCondition();

@@ -24,7 +24,7 @@ public class MainMenu implements ITreeCommand {
 
     String[] executeCommand(TAMAIVRContext tamaivrContext) {
         ArrayList<String> messages = new ArrayList<String>();
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(tamaivrContext.patientId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(tamaivrContext.patientDocumentId());
 
         if (treatmentAdvice.hasMultipleDosages())
             messages.add(TamaIVRMessage.FDR_MENU_FOR_MULTIPLE_DOSAGES);

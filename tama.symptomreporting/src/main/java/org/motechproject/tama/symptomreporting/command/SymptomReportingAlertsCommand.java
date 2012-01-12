@@ -52,7 +52,7 @@ public class SymptomReportingAlertsCommand {
             @Override
             public String[] execute(Object o) {
                 TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) o);
-                String externalId = ivrContext.patientId();
+                String externalId = ivrContext.patientDocumentId();
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put(PatientAlert.CONNECTED_TO_DOCTOR, symptomReportedToDoctor.toString());
                 patientAlertService.createAlert(externalId, priority, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, data);

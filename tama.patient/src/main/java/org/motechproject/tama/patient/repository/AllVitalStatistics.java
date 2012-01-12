@@ -26,6 +26,7 @@ public class AllVitalStatistics extends AbstractCouchRepository<VitalStatistics>
         return vitalStatisticsOfPatient;
     }
 
+    //TODO: Remove in memory sort: By emitting Date in couchdb view
     public VitalStatistics findLatestVitalStatisticByPatientId(String patientId) {
         List<VitalStatistics> vitalStatisticsOfPatient = findByPatientId(patientId);
         Collections.sort(vitalStatisticsOfPatient);

@@ -26,7 +26,7 @@ public class SuspendAdherenceCallsCommand implements ITreeCommand {
     @Override
     public String[] execute(Object obj) {
         TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) obj);
-        patientService.suspend(ivrContext.patientId());
+        patientService.suspend(ivrContext.patientDocumentId());
         return new String[0];
     }
 }

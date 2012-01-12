@@ -45,7 +45,7 @@ public class OutgoingWelcomeGreetingMessageTest {
         initMocks(this);
         clinic = ClinicBuilder.startRecording().withDefaults().withId("clinicId").withName("clinicName").build();
         patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).withIVRLanguage(IVRLanguage.newIVRLanguage("english", "en")).build();
-        context = new TAMAIVRContextForTest().patientId("patientId");
+        context = new TAMAIVRContextForTest().patientDocumentId("patientId");
 
         welcomeGreetingMessage = new OutgoingWelcomeGreetingMessage(allPatients, allClinics, clinicNameMessageBuilder);
         when(allPatients.get("patientId")).thenReturn(patient);

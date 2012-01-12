@@ -32,7 +32,7 @@ public class MessageForMedicines extends DailyPillReminderTreeCommand {
     public String[] executeCommand(DailyPillReminderContext context) {
         List<String> messages = new ArrayList<String>();
 
-        Patient patient = allPatients.get(context.patientId());
+        Patient patient = allPatients.get(context.patientDocumentId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         messages.add(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));

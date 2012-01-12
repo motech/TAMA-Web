@@ -42,7 +42,7 @@ public class MessageForMedicinesTest {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").build();
 
         messageForMedicines = new MessageForMedicines(allPatients, allClinics, null, clinicNameMessageBuilder);
-        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).patientId("patientId").callDirection(CallDirection.Outbound);
+        context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(PillRegimenResponseBuilder.startRecording().withDefaults().build()).patientDocumentId("patientId").callDirection(CallDirection.Outbound);
         when(allPatients.get("patientId")).thenReturn(patient);
         when(allClinics.get("clinicId")).thenReturn(clinic);
         when(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("test_clinic");

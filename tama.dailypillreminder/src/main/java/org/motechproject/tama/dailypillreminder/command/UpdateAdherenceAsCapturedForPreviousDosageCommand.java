@@ -23,7 +23,7 @@ public class UpdateAdherenceAsCapturedForPreviousDosageCommand extends DailyPill
     public String[] executeCommand(DailyPillReminderContext context) {
         DosageStatus newStatus = DosageStatus.from(context.dtmfInput());
         PillRegimen pillRegimen = context.pillRegimen();
-        dailyReminderAdherenceService.recordDosageAdherenceAsCaptured(context.patientId(),
+        dailyReminderAdherenceService.recordDosageAdherenceAsCaptured(context.patientDocumentId(),
                 pillRegimen.getId(),
                 context.previousDose(),
                 newStatus,

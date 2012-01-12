@@ -46,7 +46,7 @@ public class IncomingWelcomeGreetingMessageTest {
         incomingWelcomeGreetingMessage = new IncomingWelcomeGreetingMessage(allPatients, allClinics, clinicNameMessageBuilder);
         clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
         patient = PatientBuilder.startRecording().withId(patientId).withClinic(clinic).withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).build();
-        ivrContext = new TAMAIVRContextForTest().patientId(patientId);
+        ivrContext = new TAMAIVRContextForTest().patientDocumentId(patientId);
 
         when(allPatients.get(patientId)).thenReturn(patient);
         when(allClinics.get("testClinicId")).thenReturn(clinic);

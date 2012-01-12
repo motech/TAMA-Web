@@ -27,7 +27,7 @@ public class AdherenceMessageCommand extends DailyPillReminderTreeCommand {
     }
 
     protected String[] getAdherenceMessage(DailyPillReminderContext context) {
-        int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherencePercentage(context.patientId(), context.currentDose().getDoseTime()));
+        int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherencePercentage(context.patientDocumentId(), context.currentDose().getDoseTime()));
         return new String[]{
                 TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
                 ivrMessage.getNumberFilename(adherencePercentage),

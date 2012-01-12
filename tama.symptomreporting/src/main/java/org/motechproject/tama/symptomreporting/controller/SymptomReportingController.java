@@ -42,7 +42,7 @@ public class SymptomReportingController extends SafeIVRController {
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaIvrContext = contextFactory.create(kooKooIVRContext);
         String callId = tamaIvrContext.callId();
-        String patientId = tamaIvrContext.patientId();
+        String patientId = tamaIvrContext.patientDocumentId();
 
         MedicalCondition medicalCondition = symptomReportingService.getPatientMedicalConditions(patientId);
         String symptomReportingTree = symptomReportingTreeService.parseRulesAndFetchTree(medicalCondition);

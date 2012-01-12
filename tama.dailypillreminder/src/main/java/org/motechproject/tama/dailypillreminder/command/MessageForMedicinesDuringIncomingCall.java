@@ -32,7 +32,7 @@ public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTree
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
         ArrayList<String> messages = new ArrayList<String>();
-        Patient patient = allPatients.get(context.patientId());
+        Patient patient = allPatients.get(context.patientDocumentId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
 
         if (!context.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM)) {

@@ -25,7 +25,7 @@ public class DosagesMissedOnOneDay implements ITreeCommand {
 
     String[] executeCommand(TAMAIVRContext tamaivrContext) {
         List<String> messages = new ArrayList<String>();
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(tamaivrContext.patientId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(tamaivrContext.patientDocumentId());
 
         if (treatmentAdvice.hasMultipleDosages())
             messages.add(TamaIVRMessage.FDR_MISSED_MULTIPLE_DOSAGES_ON_ONE_DAY);

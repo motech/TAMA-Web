@@ -47,7 +47,7 @@ public class UpdateAdherenceAsNotCapturedForCurrentDosageCommandTest {
                 new DosageResponse("nextDosageId", new Time(9, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()
                 )));
         DateTime doseTakenTime = DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11), 18, 59, 0);
-        context.pillRegimen(pillRegimen).patientId("patientId").callDirection(CallDirection.Inbound).callStartTime(doseTakenTime);
+        context.pillRegimen(pillRegimen).patientDocumentId("patientId").callDirection(CallDirection.Inbound).callStartTime(doseTakenTime);
 
         command.executeCommand(context);
 

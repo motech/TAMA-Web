@@ -40,7 +40,7 @@ public class SymptomReportingAlertsCommandTest {
     @Before
     public void setup() {
         initMocks(this);
-        TAMAIVRContextForTest context = new TAMAIVRContextForTest().patientId("dummyPatientId");
+        TAMAIVRContextForTest context = new TAMAIVRContextForTest().patientDocumentId("dummyPatientId");
         when(contextFactory.create(any(KooKooIVRContext.class))).thenReturn(context);
         command = new SymptomReportingAlertsCommand(alertService, properties, contextFactory);
         naReportedTypeDataMatcher = new ArgumentMatcher<Map<String, String>>() {

@@ -53,7 +53,7 @@ public class MissedPillFeedbackCommandTest {
         dosageResponses.add(new DosageResponse("d2", new Time(15, 5), new LocalDate(2011, 7, 5), new LocalDate(2012, 7, 5), DateUtil.today(), null));
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 
-        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(new PillRegimen(pillRegimenResponse)).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientId("p1");
+        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(new PillRegimen(pillRegimenResponse)).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientDocumentId("p1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(64);
 
@@ -67,7 +67,7 @@ public class MissedPillFeedbackCommandTest {
         dosageResponses.add(new DosageResponse("d2", new Time(15, 5), new LocalDate(2011, 7, 5), new LocalDate(2012, 7, 5), DateUtil.today(), null));
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 
-        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientId("p1");
+        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientDocumentId("p1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(63);
 
@@ -86,7 +86,7 @@ public class MissedPillFeedbackCommandTest {
         );
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 
-        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientId("p1");
+        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientDocumentId("p1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(51);
         when(dailyReminderAdherenceService.getAdherencePercentage(same("p1"), Matchers.<DateTime>any())).thenReturn(91.0);
@@ -106,7 +106,7 @@ public class MissedPillFeedbackCommandTest {
         );
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 
-        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientId("p1");
+        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientDocumentId("p1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(51);
         when(dailyReminderAdherenceService.getAdherencePercentage(same("p1"), Matchers.<DateTime>any())).thenReturn(89.0);
@@ -121,7 +121,7 @@ public class MissedPillFeedbackCommandTest {
         dosageResponses.add(new DosageResponse("d2", new Time(15, 5), new LocalDate(2011, 7, 5), new LocalDate(2012, 7, 5), DateUtil.today(), null));
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
 
-        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientId("p1");
+        DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientDocumentId("p1");
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(60);
         LocalDate today = DateUtil.today();

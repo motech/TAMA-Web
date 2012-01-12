@@ -54,7 +54,7 @@ public class CreateWeeklyAdherenceLogsTest extends BaseUnitTest {
         String treatmentAdviceId = "treatmentAdviceId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(treatmentAdviceId).withStartDate(treatmentStartDate).build();
 
-        context.patientId(patientId).dtmfInput("1");
+        context.patientDocumentId(patientId).dtmfInput("1");
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         when(allPatients.get(patientId)).thenReturn(patient);
 

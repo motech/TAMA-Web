@@ -29,7 +29,7 @@ public class WelcomeMessageForOutboundCall extends BaseTreeCommand {
     @Override
     public String[] executeCommand(TAMAIVRContext tamaivrContext) {
         List<String> messages = new ArrayList<String>();
-        Patient patient = allPatients.get(tamaivrContext.patientId());
+        Patient patient = allPatients.get(tamaivrContext.patientDocumentId());
         Clinic clinic = allClinics.get(patient.getClinic_id());
         messages.add(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
         return messages.toArray(new String[messages.size()]);
