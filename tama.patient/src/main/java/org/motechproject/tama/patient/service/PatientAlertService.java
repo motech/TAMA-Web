@@ -29,12 +29,14 @@ public class PatientAlertService {
 
     private AllPatients allPatients;
     private AlertService alertService;
+    private PatientAlertSearchService patientAlertSearchService;
     private Logger logger = Logger.getLogger(PatientAlertService.class);
 
     @Autowired
     public PatientAlertService(AllPatients allPatients, AlertService alertService) {
         this.allPatients = allPatients;
         this.alertService = alertService;
+        this.patientAlertSearchService = new PatientAlertSearchService(alertService);
     }
 
     public PatientAlert readAlert(String alertId) {
@@ -55,7 +57,7 @@ public class PatientAlertService {
         final ArrayList<Patient> patients = new ArrayList<Patient>() {{
             add(allPatients.get(patientId));
         }};
-        return new PatientAlerts(getAlerts(patients, null));
+        return patientAlertSearchService.search(patients, null);
     }
 
     public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
@@ -68,29 +70,6 @@ public class PatientAlertService {
             data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
         }
         alertService.create(externalId, name, description, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
-    }
-
-    private List<PatientAlert> getAlerts(List<Patient> patients, final AlertStatus alertStatus) {
-        final Converter<Patient, List<PatientAlert>> patientListConverter = new Converter<Patient, List<PatientAlert>>() {
-            @Override
-            public List<PatientAlert> convert(final Patient patient) {
-                final Converter<Alert, PatientAlert> alertPatientAlertConverter = new Converter<Alert, PatientAlert>() {
-                    @Override
-                    public PatientAlert convert(Alert alert) {
-                        return PatientAlert.newPatientAlert(alert, patient);
-                    }
-                };
-                AlertCriteria alertCriteria = new AlertCriteria();
-                if (patient.getId() != null){
-                    alertCriteria.byExternalId(patient.getId());
-                }
-                if (alertStatus != null){
-                    alertCriteria.byStatus(alertStatus);
-                }
-                return Lambda.convert(alertService.search(alertCriteria), alertPatientAlertConverter);
-            }
-        };
-        return sort(flatten(convert(patients, patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
     }
 
     public boolean updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType) {
@@ -133,7 +112,7 @@ public class PatientAlertService {
         } else {
             patients = allPatients.findByClinic(clinicId);
         }
-        PatientAlerts allAlerts = new PatientAlerts(getAlerts(patients, alertStatus));
+        PatientAlerts allAlerts = patientAlertSearchService.search(patients, alertStatus);
         Predicate selectorForAlertTypeAndDateRange = getSelectorForAlertTypeAndDateRangeIfPresent(patientAlertType, startDate, endDate);
         return filterAlertsByPredicate(allAlerts, selectorForAlertTypeAndDateRange);
     }
