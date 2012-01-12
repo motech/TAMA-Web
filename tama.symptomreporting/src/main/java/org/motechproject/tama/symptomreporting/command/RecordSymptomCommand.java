@@ -21,7 +21,7 @@ public class RecordSymptomCommand implements ITreeCommand {
     @Override
     public String[] execute(Object obj) {
         TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) obj);
-        symptomRecordingService.save(symptomFileName, ivrContext.patientDocumentId(), ivrContext.callId(), DateUtil.now());
+        symptomRecordingService.save(symptomFileName, ivrContext.patientId(), ivrContext.callId(), DateUtil.now());
         return new String[0];
     }
 }

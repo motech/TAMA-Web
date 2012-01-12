@@ -27,13 +27,13 @@ public class RecordSymptomCommandTest {
     @Test
     public void shouldRecordSymptomReported() {
         KooKooIVRContext kooKooIVRContext = mock(KooKooIVRContext.class);
-        TAMAIVRContext tamaivrContext = new TAMAIVRContextForTest().patientDocumentId("patientId").callId("callId");
+        TAMAIVRContext tamaivrContext = new TAMAIVRContextForTest().patientId("patientId").callId("callId");
         when(tamaivrContextFactory.create(kooKooIVRContext)).thenReturn(tamaivrContext);
 
         RecordSymptomCommand recordSymptomCommand = new RecordSymptomCommand(tamaivrContextFactory, symptomRecordingService, "fever");
         recordSymptomCommand.execute(kooKooIVRContext);
 
-        verify(symptomRecordingService).save(eq("fever"), eq(tamaivrContext.patientDocumentId()), eq(tamaivrContext.callId()), any(DateTime.class));
+        verify(symptomRecordingService).save(eq("fever"), eq(tamaivrContext.patientId()), eq(tamaivrContext.callId()), any(DateTime.class));
     }
 
 }

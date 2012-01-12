@@ -83,8 +83,9 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
         return callId;
     }
 
-    public void callId(String callid) {
+    public TAMAIVRContextForTest callId(String callid) {
         this.callId = callid;
+        return this;
     }
 
     @Override
