@@ -55,6 +55,7 @@ public class SymptomReportingChartController {
         result.put("dateTimeFormat", "Gregorian");
         return result.toString();
     }
+
 	class TrackNumberGenerator{
     	int nextAvailableTrack = 1;
     	Map<String, Integer> tracksUsed = new HashMap<String, Integer>(); 
@@ -66,11 +67,12 @@ public class SymptomReportingChartController {
 			return tracksUsed.get(symptom);
 		}
     }
+
     private String lookupSymptom(String symptomId) {
         return symptomTable.getProperty(symptomId);
     }
+
     private String lookupDesc(String symptomId) {
     	return symptomTable.getProperty(symptomId + ".desc");
 	}
-
 }

@@ -1,7 +1,5 @@
 package org.motechproject.tama.symptomreporting.integration;
 
-import static junit.framework.Assert.assertTrue;
-
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +16,8 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:applicationSymptomReportingContext.xml", inheritLocations = false)
@@ -36,24 +36,23 @@ public class SymptomReportingChartControllerIT extends SpringIntegrationTest {
     public void setUp() {
         LocalDate today = DateUtil.today();
 
-        recordSymptomAt(today.minusDays(1), "1", "fever");
-        recordSymptomAt(today.minusDays(2), "1", "depression");
-    }
-
-    private void recordSymptomAt(LocalDate asOfDate, String callId, String symptom) {
-        SymptomReport symptomReport = recordingService.save(symptom, patientDocId, callId, asOfDate.toDateTimeAtCurrentTime());
-        //markForDeletion(symptomReport);
+        recordSymptomAt(today.minusDays(1), "1", "ppc_fevhead");
+        recordSymptomAt(today.minusDays(2), "1", "ppc_fevdepress");
     }
 
     @Test
     public void shouldListAllSymptomReportsForAPatientOverGivenNumberOfMonths() throws JSONException {
-        int rangeInMonths;
-        String symptomReports = controller.list(patientDocId, rangeInMonths = 1);
+        String symptomReports = controller.list(patientDocId, 1);
 
         JSONObject resultAsJsonObject = new JSONObject(symptomReports);
         JSONArray events = resultAsJsonObject.getJSONArray("events");
         JSONObject event = events.getJSONObject(0);
         assertTrue(event.has("start"));
         assertTrue(event.has("title"));
+    }
+
+    private void recordSymptomAt(LocalDate asOfDate, String callId, String symptom) {
+        SymptomReport symptomReport = recordingService.save(symptom, patientDocId, callId, asOfDate.toDateTimeAtCurrentTime());
+        markForDeletion(symptomReport);
     }
 }
