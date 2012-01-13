@@ -1,8 +1,8 @@
 package org.motechproject.tama.symptomreporting.mapper;
 
-import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
 import org.motechproject.util.DateUtil;
 
 import java.util.List;

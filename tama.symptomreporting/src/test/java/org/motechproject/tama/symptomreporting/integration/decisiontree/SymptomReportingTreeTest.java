@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
-import org.motechproject.tama.ivr.decisiontree.service.SymptomReportingTreeService;
+import org.motechproject.tama.symptomsreporting.decisiontree.service.SymptomReportingTreeService;
 import org.motechproject.tama.symptomreporting.decisiontree.SymptomReportingTree;
 import org.motechproject.tama.symptomreporting.decisiontree.SymptomReportingTreeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

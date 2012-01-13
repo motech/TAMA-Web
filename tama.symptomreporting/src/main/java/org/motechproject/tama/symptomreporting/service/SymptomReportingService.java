@@ -1,6 +1,5 @@
 package org.motechproject.tama.symptomreporting.service;
 
-import org.motechproject.tama.ivr.decisiontree.domain.MedicalCondition;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -9,6 +8,7 @@ import org.motechproject.tama.patient.repository.*;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.symptomreporting.mapper.MedicalConditionsMapper;
+import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

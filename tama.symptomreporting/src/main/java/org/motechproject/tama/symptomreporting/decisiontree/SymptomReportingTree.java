@@ -5,7 +5,7 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
-import org.motechproject.tama.ivr.decisiontree.service.SymptomReportingTreeService;
+import org.motechproject.tama.symptomsreporting.decisiontree.service.SymptomReportingTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
