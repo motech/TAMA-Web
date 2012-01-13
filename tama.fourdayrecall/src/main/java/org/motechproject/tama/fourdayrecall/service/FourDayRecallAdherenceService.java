@@ -26,6 +26,10 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         adherenceService.register(CallPreference.FourDayRecall, this);
     }
 
+    public void recordAdherence(String patientId, int numberOfDaysMissed) {
+        weeklyAdherenceLogService.createLogFor(patientId, numberOfDaysMissed);
+    }
+
     public int getAdherencePercentageForPreviousWeek(String patientId) {
         return adherencePercentageFor(getAdherenceLog(patientId, 1));
     }

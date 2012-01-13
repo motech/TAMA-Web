@@ -43,4 +43,12 @@ public class WeeklyAdherenceLogService {
 
         return allWeeklyAdherenceLogs.findLogByWeekStartDate(patientId, treatmentAdvice.getId(), startDateForPreviousWeek);
     }
+
+    public void createLogFor(String patientId, int numberOfDaysMissed) {
+        Patient patient = allPatients.get(patientId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        String treatmentAdviceDocId = treatmentAdvice.getId();
+        LocalDate startDateForCurrentWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
+        allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForCurrentWeek, numberOfDaysMissed));
+    }
 }

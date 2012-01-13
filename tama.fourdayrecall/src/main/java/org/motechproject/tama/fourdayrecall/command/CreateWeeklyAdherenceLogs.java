@@ -5,6 +5,7 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.domain.Patient;
@@ -17,17 +18,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CreateWeeklyAdherenceLogs implements ITreeCommand {
-    private AllPatients allPatients;
-    private AllTreatmentAdvices allTreatmentAdvices;
-    private FourDayRecallDateService fourDayRecallDateService;
-    private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     @Autowired
-    public CreateWeeklyAdherenceLogs(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, FourDayRecallDateService fourDayRecallDateService) {
-        this.allPatients = allPatients;
-        this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
-        this.allTreatmentAdvices = allTreatmentAdvices;
-        this.fourDayRecallDateService = fourDayRecallDateService;
+    public CreateWeeklyAdherenceLogs(FourDayRecallAdherenceService fourDayRecallAdherenceService) {
+        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
     }
 
     @Override
@@ -40,13 +35,8 @@ public class CreateWeeklyAdherenceLogs implements ITreeCommand {
 
     String[] executeCommand(TAMAIVRContext tamaivrContext) {
         String patientId = tamaivrContext.patientDocumentId();
-        Patient patient = allPatients.get(patientId);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        String treatmentAdviceDocId = treatmentAdvice.getId();
-
         int numberOfDaysMissed = Integer.parseInt(tamaivrContext.dtmfInput());
-        LocalDate startDateForCurrentWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
-        allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForCurrentWeek, numberOfDaysMissed));
+        fourDayRecallAdherenceService.recordAdherence(patientId, numberOfDaysMissed);
         return new String[0];
     }
 }
