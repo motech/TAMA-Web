@@ -63,6 +63,11 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     }
 
     public void backFillAdherence(String patientId, DateTime startDate, DateTime endDate, boolean wasDoseTaken) {
+        DosageStatus dosageStatus = wasDoseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
+        backFillAdherence(patientId, startDate, endDate, dosageStatus);
+    }
+
+    public void backFillAdherence(String patientId, DateTime startDate, DateTime endDate, DosageStatus dosageStatus) {
         PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientId);
 
         Dose firstProbableDose = pillRegimen.getDoseAt(startDate);
@@ -71,7 +76,6 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         }
 
         List<DosageResponse> dosageResponses = pillRegimen.getDosageResponses();
-        DosageStatus dosageStatus = wasDoseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
         for (DosageResponse dosageResponse : dosageResponses) {
             DosageTimeLine dosageTimeLine = new DosageTimeLine(dosageResponse, startDate, endDate);
             while (dosageTimeLine.hasNext()) {

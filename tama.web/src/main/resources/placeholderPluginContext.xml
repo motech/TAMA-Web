@@ -5,4 +5,5 @@
     <!-- A placeholder file which can be replaced in deployed environment to provide additional beans -->
     <import resource="classpath:applicationJobHandlerInvokerContext.xml"/>
     <import resource="classpath:applicationDateTimeSimulatorContext.xml"/>
+    <import resource="classpath:applicationToolsContext.xml"/>
 </beans>
