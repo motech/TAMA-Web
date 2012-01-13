@@ -25,10 +25,10 @@ public class PatientAlertService {
     private Logger logger = Logger.getLogger(PatientAlertService.class);
 
     @Autowired
-    public PatientAlertService(AllPatients allPatients, AlertService alertService) {
+    public PatientAlertService(AllPatients allPatients, AlertService alertService, PatientAlertSearchService patientAlertSearchService) {
         this.allPatients = allPatients;
         this.alertService = alertService;
-        this.patientAlertSearchService = new PatientAlertSearchService(alertService);
+        this.patientAlertSearchService = patientAlertSearchService;
     }
 
     public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
@@ -64,7 +64,7 @@ public class PatientAlertService {
     }
 
     public void updateDoctorConnectedToDuringSymptomCall(String patientId, String doctorName) {
-        PatientAlerts allAlerts = getAllAlertsBy(patientId);
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientId);
         PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
         if (lastReportedAlert == null) return;
         alertService.setData(lastReportedAlert.getAlertId(), PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
@@ -72,41 +72,22 @@ public class PatientAlertService {
     }
 
     public PatientAlerts getReadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-        return getAlertsOfSpecificTypeAndStatusAndDateRange(clinicId, patientId, AlertStatus.READ, patientAlertType, startDate, endDate);
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientId, startDate, endDate, AlertStatus.READ);
+        return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
     }
 
     public PatientAlerts getUnreadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-        return getAlertsOfSpecificTypeAndStatusAndDateRange(clinicId, patientId, AlertStatus.NEW, patientAlertType, startDate, endDate);
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientId, startDate, endDate, AlertStatus.NEW);
+        return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
     }
 
     public PatientAlerts getFallingAdherenceAlerts(String patientID, final DateTime startDate, final DateTime endDate) {
-        PatientAlerts allAlerts = getAllAlertsBy(patientID);
-        return allAlerts.filterByAlertTypeAndDateRange(PatientAlertType.FallingAdherence, startDate, endDate);
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientID, startDate, endDate, null);
+        return allAlerts.filterByAlertType(PatientAlertType.FallingAdherence);
     }
 
     public PatientAlerts getAdherenceInRedAlerts(String patientID, final DateTime startDate, final DateTime endDate) {
-        PatientAlerts allAlerts = getAllAlertsBy(patientID);
-        return allAlerts.filterByAlertTypeAndDateRange(PatientAlertType.AdherenceInRed, startDate, endDate);
-    }
-
-    PatientAlerts getAllAlertsBy(final String patientId) {
-        final ArrayList<Patient> patients = new ArrayList<Patient>() {{
-            add(allPatients.get(patientId));
-        }};
-        return patientAlertSearchService.search(patients, null);
-    }
-
-    PatientAlerts getAlertsOfSpecificTypeAndStatusAndDateRange(String clinicId, String patientId, AlertStatus alertStatus, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-        List<Patient> patients = Collections.emptyList();
-        if (patientId != null) {
-            Patient patient = allPatients.findByPatientIdAndClinicId(patientId, clinicId);
-            if (patient != null) {
-                patients = Arrays.asList(patient);
-            }
-        } else {
-            patients = allPatients.findByClinic(clinicId);
-        }
-        PatientAlerts allAlerts = patientAlertSearchService.search(patients, alertStatus);
-        return allAlerts.filterByAlertTypeAndDateRangeIfPresent(patientAlertType, startDate, endDate);
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientID, startDate, endDate, null);
+        return allAlerts.filterByAlertType(PatientAlertType.AdherenceInRed);
     }
 }

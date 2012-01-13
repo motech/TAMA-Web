@@ -2,6 +2,8 @@ package org.motechproject.tama.patient.service;
 
 import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;
+import ch.lambdaj.group.Group;
+import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertCriteria;
 import org.motechproject.server.alerts.domain.AlertStatus;
@@ -9,29 +11,45 @@ import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlerts;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static java.util.Collections.reverseOrder;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
+@Component
 public class PatientAlertSearchService {
     private AlertService alertService;
+    private AllPatients allPatients;
 
-    public PatientAlertSearchService(AlertService alertService) {
+    @Autowired
+    public PatientAlertSearchService(AlertService alertService, AllPatients allPatients) {
         this.alertService = alertService;
+        this.allPatients = allPatients;
     }
 
-    public PatientAlerts search(List<Patient> patients, AlertStatus alertStatus) {
-        final Converter<Patient, List<PatientAlert>> patientListConverter = convertToAListOfPatientAlerts(alertStatus);
-        List<PatientAlert> patientAlerts = sort(flatten(convert(patients, patientListConverter)), on(PatientAlert.class).getAlert().getDateTime(), reverseOrder());
-        return new PatientAlerts(patientAlerts);
+    public PatientAlerts search(String patientId) {
+        return search(patientId, null, null, null);
     }
 
-    private AlertCriteria constructAlertCriteria(Patient patient, AlertStatus alertStatus) {
+    public PatientAlerts search(String patientId, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
+        AlertCriteria alertCriteria = constructAlertCriteria(patientId, startDate, endDate, alertStatus);
+        List<Alert> filteredAlertsForAPatient = alertService.search(alertCriteria);
+        Group<Alert> group = Lambda.group(filteredAlertsForAPatient, by(on(Alert.class).getExternalId()));
+        return convertToPatientAlerts(group);
+    }
+
+    private AlertCriteria constructAlertCriteria(String patientId, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
         AlertCriteria alertCriteria = new AlertCriteria();
-        if (patient.getId() != null){
-            alertCriteria.byExternalId(patient.getId());
+        if (patientId != null){
+            alertCriteria.byExternalId(patientId);
+        }
+        if (startDate != null && endDate != null) {
+            alertCriteria.byDateRange(startDate, endDate);
         }
         if (alertStatus != null){
             alertCriteria.byStatus(alertStatus);
@@ -39,22 +57,14 @@ public class PatientAlertSearchService {
         return alertCriteria;
     }
 
-    private Converter<Patient, List<PatientAlert>> convertToAListOfPatientAlerts(final AlertStatus alertStatus) {
-        return new Converter<Patient, List<PatientAlert>>() {
-            @Override
-            public List<PatientAlert> convert(final Patient patient) {
-                AlertCriteria alertCriteria = constructAlertCriteria(patient, alertStatus);
-                return Lambda.convert(alertService.search(alertCriteria), convertToPatientAlert(patient));
+    private PatientAlerts convertToPatientAlerts(Group<Alert> group) {
+        PatientAlerts patientAlerts = new PatientAlerts();
+        for (String externalId : group.keySet()) {
+            Patient patient = allPatients.get(externalId);
+            for (Alert alert : group.find(externalId)) {
+                patientAlerts.add(PatientAlert.newPatientAlert(alert, patient));
             }
-        };
-    }
-
-    private Converter<Alert, PatientAlert> convertToPatientAlert(final Patient patient) {
-        return new Converter<Alert, PatientAlert>() {
-            @Override
-            public PatientAlert convert(Alert alert) {
-                return PatientAlert.newPatientAlert(alert, patient);
-            }
-        };
+        }
+        return patientAlerts;
     }
 }
