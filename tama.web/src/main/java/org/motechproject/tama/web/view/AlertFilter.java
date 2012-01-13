@@ -2,6 +2,7 @@ package org.motechproject.tama.web.view;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.util.DateUtil;
@@ -47,11 +48,11 @@ public class AlertFilter {
     }
 
     public DateTime getStartDateTime() {
-        return startDate == null ? null : DateUtil.newDateTime(startDate);
+        return startDate == null ? null : DateUtil.newDateTime(DateUtil.newDate(startDate), 0, 0, 0);
     }
 
     public DateTime getEndDateTime() {
-        return endDate == null ? null : DateUtil.newDateTime(endDate);
+        return endDate == null ? null : DateUtil.newDateTime(DateUtil.newDate(endDate), 23, 59, 59);
     }
 
     public AlertFilter setPatientId(String patientId) {

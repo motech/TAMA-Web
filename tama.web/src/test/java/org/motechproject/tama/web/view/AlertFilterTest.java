@@ -3,16 +3,15 @@ package org.motechproject.tama.web.view;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.motechproject.tama.patient.domain.PatientAlertType;
+import org.motechproject.util.DateUtil;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 public class AlertFilterTest {
     @Test
-    public void shouldReturnAllPatientAlertTypes(){
+    public void shouldReturnAllPatientAlertTypes() {
         List<String> allPatientAlertTypes = new AlertFilter().getAllPatientAlertTypes();
         assertTrue(CollectionUtils.isNotEmpty(allPatientAlertTypes));
         assertEquals("Any", allPatientAlertTypes.get(0));
@@ -20,19 +19,31 @@ public class AlertFilterTest {
     }
 
     @Test
-    public void shouldReturnNullIfAlertTypeIsEmpty(){
+    public void shouldReturnNullIfAlertTypeIsEmpty() {
         AlertFilter alertFilter = new AlertFilter().setAlertType("");
         assertNull(alertFilter.getPatientAlertType());
     }
 
     @Test
-    public void shouldReturnNullIfAlertTypeIsAny(){
+    public void shouldReturnNullIfAlertTypeIsAny() {
         AlertFilter alertFilter = new AlertFilter().setAlertType("Any");
         assertNull(alertFilter.getPatientAlertType());
     }
 
     @Test
-    public void shouldReturnPatientAlertType(){
+    public void shouldSetStartDateToSOD_ToSearchAllAlerts_RaisedAfter_TheStartDateTime() {
+        AlertFilter alertFilter = new AlertFilter().setEndDate(DateUtil.now().toDate());
+        assertEquals(DateUtil.newDateTime(DateUtil.today(), 0, 0, 0), alertFilter.getStartDateTime());
+    }
+
+    @Test
+    public void shouldSetEndDateToEOD_ToSearchAllAlerts_RaisedUntil_TheEndDateTime() {
+        AlertFilter alertFilter = new AlertFilter().setEndDate(DateUtil.now().toDate());
+        assertEquals(DateUtil.newDateTime(DateUtil.today(), 23, 59, 59), alertFilter.getEndDateTime());
+    }
+
+    @Test
+    public void shouldReturnPatientAlertType() {
         AlertFilter alertFilter = new AlertFilter().setAlertType(PatientAlertType.AdherenceInRed.toString());
         assertEquals(PatientAlertType.AdherenceInRed, alertFilter.getPatientAlertType());
     }

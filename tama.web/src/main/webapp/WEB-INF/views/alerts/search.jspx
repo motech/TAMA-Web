@@ -11,8 +11,8 @@
                 <form:options items="${alertFilter.allPatientAlertTypes}" />
             </form:select>
             <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'searchByAlertType', widgetType: 'dijit.form.FilteringSelect', widgetAttrs : {hasDownArrow : true}})); </script>
-            <field:datetime dateTimePattern="dd/MM/yyyy" field="startDate" label="Starting From" id="alertFilterStartDate"/>
-            <field:datetime dateTimePattern="dd/MM/yyyy" field="endDate" label="Till" id="alertFilterEndDate"/>
+            <field:datetime dateTimePattern="dd/MM/yyyy" field="startDate" label="Starting From" id="alertFilterStartDate" required="true"/>
+            <field:datetime dateTimePattern="dd/MM/yyyy" field="endDate" label="Till" id="alertFilterEndDate" required="true"/>
             <span class="submit" id="filter">
                 <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'alertFilter', event:'onclick'}));</script>
                 <input id="alertFilter" type="submit" value="Filter"/>
