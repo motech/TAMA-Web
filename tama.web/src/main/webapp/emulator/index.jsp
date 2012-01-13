@@ -162,6 +162,7 @@ jQuery.cookie = function (key, value, options) {
 var contextRoot = "<%=application.getContextPath() %>/";
 var collectdtmf = 1;
 var dtmf = "";
+var callId;
 
 function deleteCookie()
 {
@@ -259,16 +260,18 @@ function call(path) {
 		alert(e);
 	}
 }
+
 function newCall(){
+	callId = Math.floor(Math.random()*10000000000);
 	var phone = $('#phone').val();
 	var symptoms_reporting_option = ($('#symptoms_reporting').is(":checked")?"&symptoms_reporting=true":"");
-	call(contextRoot + 'ivr/reply?event=NewCall&cid='+phone+'&sid=0000000000' + symptoms_reporting_option);
+	call(contextRoot + 'ivr/reply?event=NewCall&cid='+phone+'&sid=' + callId + symptoms_reporting_option);
 }
 function endCall() {
 	var phone = $('#phone').val();
 	var symptoms_reporting_option = ($('#symptoms_reporting').is(":checked")?"&symptoms_reporting=true":"");
     deleteCookie();
-	call(contextRoot + 'ivr/reply?event=Hangup&cid='+phone+'&sid=0000000000' + symptoms_reporting_option);
+	call(contextRoot + 'ivr/reply?event=Hangup&cid='+phone+'&sid=' + callId + symptoms_reporting_option);
     $.cookie('current_decision_tree_position', null , {'path':'<%=application.getContextPath() %>/ivr/'});
     $.cookie('preferred_lang_code', null , {'path':'<%=application.getContextPath() %>/ivr/'});
     $.cookie('call_id', null , {'path':'<%=application.getContextPath() %>/ivr/'});
@@ -278,6 +281,8 @@ function endCall() {
     $.cookie('outboxCompleted', null , {'path':'<%=application.getContextPath() %>/ivr/'});
     $.cookie('lastPlayedHealthTip', null , {'path':'<%=application.getContextPath() %>/ivr/'});
     $.cookie('healthTipsPlayedCount', null , {'path':'<%=application.getContextPath() %>/ivr/'});
+    $.cookie('switch_to_dial_state', null , {'path':'<%=application.getContextPath() %>/ivr/'});
+    $.cookie('number_of_clinicians_called', null , {'path':'<%=application.getContextPath() %>/ivr/'});
 }
 
 function login() {
@@ -294,7 +299,7 @@ function login() {
 	var dataMap = "";
 	if (is_outbound_call == 'true')
 		dataMap = ($('#symptoms_reporting').is(":checked"))?"":('&dataMap={%27dosage_id%27:%27'+dosageId+'%27, %27regimen_id%27:%27' + regimen_id + '%27, %27times_sent%27:%27' +times_sent+'%27, %27total_times_to_send%27:%27'+total+'%27, %27call_id%27:%27'+call_id+'%27, %27outbox_call%27:%27'+outbox_call+'%27, %27is_outbound_call%27:%27'+is_outbound_call+'%27}');
-	call(contextRoot + 'ivr/reply?event=GotDTMF&cid='+phone+'&data=' + pin + '&sid=0000000000' + dataMap + symptoms_reporting_option);
+	call(contextRoot + 'ivr/reply?event=GotDTMF&cid='+phone+'&data=' + pin + '&sid=' + callId + dataMap + symptoms_reporting_option);
 }
 function send(i){
 	if (i==='') dtmf=i;
@@ -319,7 +324,7 @@ function send(i){
     if (collectdtmf) event = "event=GotDTMF&" +'&data=' + dtmf + "&";
 	if (is_outbound_call == 'true')
 		dataMap = ($('#symptoms_reporting').is(":checked"))?"":('&dataMap={%27dosage_id%27:%27'+dosageId+'%27, %27regimen_id%27:%27' + regimen_id + '%27, %27times_sent%27:%27' +times_sent+'%27, %27total_times_to_send%27:%27'+total+'%27, %27outbox_call%27:%27'+outbox_call+'%27, %27is_outbound_call%27:%27'+is_outbound_call+'%27}');
-	call(contextRoot + 'ivr/reply?' + event + 'cid='+phone + 'sid=0000000000' + dataMap + symptoms_reporting_option);
+	call(contextRoot + 'ivr/reply?' + event + 'cid='+phone + 'sid=' + callId + dataMap + symptoms_reporting_option);
 	dtmf="";
 }
 function play(i){
@@ -353,8 +358,8 @@ function play(i){
 </td><td style="width:450px;"></td><td>
 <form id="timeForm" action="" method="POST">
 <table>
-  <tr><td><input id="fakeTimeOption" type="radio" name="type" value="Use Faketime" <%=fakeTimeAvailable?"checked='true'":"disabled" %>> Use Faketime</td>
-  	  <td><input type="radio" name="type" value=""/ <%=fakeTimeAvailable?"":"checked='true'" %>>Use DateUtil hack</td></tr>
+  <tr><td><input id="fakeTimeOption" type="radio" name="type" value="Use Faketime" <%=(fakeTimeAvailable?"checked=\'true\'":"disabled") %>> Use Faketime</td>
+  	  <td><input type="radio" name="type" value=""/ <%=(fakeTimeAvailable?"":"checked=\'true\'") %>>Use DateUtil hack</td></tr>
   <tr><td align="center" colspan="2" id="timeMessage" style="background-color:lightBlue;display:none;"></td></tr>
     <tr><td>Date</td><td><input dojoType="dijit.form.DateTextBox" id="date" name="date"  value="<%=new java.text.SimpleDateFormat("yyyy-MM-dd").format(curdate)%>" style="width:12em;"/></td></tr>
     <tr><td>Time</td><td><input   id="time" name="time" timePattern='HH:mm:ss' value="T<%=new java.text.SimpleDateFormat("HH:mm:ss").format(curdate)%>" style="width:12em;"/></td></tr>
