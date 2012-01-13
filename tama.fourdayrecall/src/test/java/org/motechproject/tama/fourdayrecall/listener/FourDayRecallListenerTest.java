@@ -84,9 +84,12 @@ public class FourDayRecallListenerTest {
     }
 
     private void setupHasLogsForWeek(Patient patient, boolean hasLogs) {
-        final ArrayList<WeeklyAdherenceLog> weeklyAdherenceLogs = new ArrayList<WeeklyAdherenceLog>();
-        if (hasLogs) weeklyAdherenceLogs.add(new WeeklyAdherenceLog());
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(eq(patient), eq(treatmentAdvice), Matchers.<LocalDate>any())).thenReturn(weeklyAdherenceLogs);
+        WeeklyAdherenceLog log;
+        if(hasLogs)
+             log = new WeeklyAdherenceLog();
+        else
+            log = null;
+        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(eq(patient), eq(treatmentAdvice), Matchers.<LocalDate>any())).thenReturn(log);
     }
 
     @Test

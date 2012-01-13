@@ -24,13 +24,13 @@ public class AllWeeklyAdherenceLogs extends AbstractCouchRepository<WeeklyAdhere
     }
 
     @View(name = "find_log_count_by_patient_id_and_treatment_advice_id_and_start_date", map = "function(doc) {if (doc.documentType =='WeeklyAdherenceLog') {emit([doc.patientId, doc.treatmentAdviceId, doc.weekStartDate], doc._id);}}")
-    public List<WeeklyAdherenceLog> findLogsByWeekStartDate(String patientDocId, String treatmentAdviceId, LocalDate weekStartDate) {
+    public WeeklyAdherenceLog findLogByWeekStartDate(String patientDocId, String treatmentAdviceId, LocalDate weekStartDate) {
         ComplexKey key = ComplexKey.of(patientDocId, treatmentAdviceId, weekStartDate);
         ViewQuery q = createQuery("find_log_count_by_patient_id_and_treatment_advice_id_and_start_date").key(key).includeDocs(true);
-        return db.queryView(q, WeeklyAdherenceLog.class);
+        return singleResult(db.queryView(q, WeeklyAdherenceLog.class));
     }
 
-    public List<WeeklyAdherenceLog> findLogsByWeekStartDate(Patient patient, TreatmentAdvice treatmentAdvice, LocalDate weekStartDate) {
-        return findLogsByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate);
+    public WeeklyAdherenceLog findLogsByWeekStartDate(Patient patient, TreatmentAdvice treatmentAdvice, LocalDate weekStartDate) {
+        return findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate);
     }
 }

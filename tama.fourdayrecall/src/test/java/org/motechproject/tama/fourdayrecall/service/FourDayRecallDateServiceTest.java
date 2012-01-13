@@ -31,16 +31,21 @@ public class FourDayRecallDateServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldGetTheStartDateForWeek_WhenBestCallDayIsMoreThan4DaysIntoFirstTreatmentWeek_AndOnFirstRecallDate() {
-        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 11, 6)).build();
-        LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(new LocalDate(2011, 11, 11), patient(DayOfWeek.Friday), treatmentAdvice);
-        assertEquals(new LocalDate(2011, 11, 6), startDateForWeek);
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 6);
+        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(treatmentAdviceStartDate).build();
+        LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(treatmentAdviceStartDate.plusDays(5), patient(DayOfWeek.Friday), treatmentAdvice);
+        assertEquals(treatmentAdviceStartDate, startDateForWeek);
     }
 
     @Test
     public void shouldGetTheStartDateForWeek_WhenBestCallDayIsMoreThan4DaysIntoFirstTreatmentWeek_AndOnFirstRetryCallDate() {
-        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(new LocalDate(2011, 11, 6)).build();
-        LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(new LocalDate(2011, 11, 12), patient(DayOfWeek.Friday), treatmentAdvice);
-        assertEquals(new LocalDate(2011, 11, 6), startDateForWeek);
+        LocalDate treatmentAdviceStartDate = new LocalDate(2011, 11, 6);
+        LocalDate bestCallDay = treatmentAdviceStartDate.plusDays(5);
+        LocalDate firstRetryDate = bestCallDay.plusDays(1);
+
+        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(treatmentAdviceStartDate).build();
+        LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(firstRetryDate, patient(DayOfWeek.Friday), treatmentAdvice);
+        assertEquals(treatmentAdviceStartDate, startDateForWeek);
     }
 
     @Test

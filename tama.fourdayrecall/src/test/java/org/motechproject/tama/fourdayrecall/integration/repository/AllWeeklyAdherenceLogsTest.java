@@ -12,6 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 
 @ContextConfiguration(locations = "classpath*:applicationFourDayRecallContext.xml", inheritLocations = false)
 public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
@@ -31,19 +33,18 @@ public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldReturnTrueIfLogExistsForSpecifiedWeek() {
+    public void shouldFetchLogIfItExists() {
         LocalDate weekStartDate = DateUtil.newDate(2000, 10, 5);
-        List<WeeklyAdherenceLog> adherenceLogs = allWeeklyAdherenceLogs.findLogsByWeekStartDate("Patient1", "TADocID1", weekStartDate);
-        assertEquals(1, adherenceLogs.size());
-        WeeklyAdherenceLog log = adherenceLogs.get(0);
+        WeeklyAdherenceLog log = allWeeklyAdherenceLogs.findLogByWeekStartDate("Patient1", "TADocID1", weekStartDate);
+        assertNotNull(log);
         assertEquals(weekStartDate, log.getWeekStartDate());
     }
 
     @Test
-    public void shouldReturnFalseIfLogDoesNotExistForSpecifiedWeek() {
+    public void shouldReturnNullIfNoLogExists() {
         LocalDate weekStartDate = DateUtil.newDate(2000, 10, 11);
-        List<WeeklyAdherenceLog> adherenceLogs = allWeeklyAdherenceLogs.findLogsByWeekStartDate("Patient1", "TADocID1", weekStartDate);
-        assertEquals(0, adherenceLogs.size());
+        WeeklyAdherenceLog log = allWeeklyAdherenceLogs.findLogByWeekStartDate("Patient1", "TADocID1", weekStartDate);
+        assertNull(log);
     }
 
     @Override

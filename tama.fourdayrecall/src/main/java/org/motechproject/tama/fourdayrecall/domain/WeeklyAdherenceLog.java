@@ -66,10 +66,6 @@ public class WeeklyAdherenceLog extends CouchEntity {
         this.weekStartDate = weekStartDate;
     }
 
-    public static boolean logExists(AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, String patientId, String treatmentAdviceId, LocalDate weekStartDate) {
-        return allWeeklyAdherenceLogs.findLogsByWeekStartDate(patientId, treatmentAdviceId, weekStartDate).size() > 0;
-    }
-
     public static WeeklyAdherenceLog create(String patientId, String treatmentAdviceDocId, LocalDate startDateForAnyWeek, int numberOfDaysMissed) {
         return new WeeklyAdherenceLog(patientId,
                 treatmentAdviceDocId,

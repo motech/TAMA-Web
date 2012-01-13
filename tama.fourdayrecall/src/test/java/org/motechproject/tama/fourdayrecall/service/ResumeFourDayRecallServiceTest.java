@@ -60,7 +60,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     }
 
     private void adherenceNotCaptured(LocalDate weekStartDate) {
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate)).thenReturn(new ArrayList<WeeklyAdherenceLog>());
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate)).thenReturn(null);
     }
 
     private void suspendedOn(int year, int month, int day, int hour, int minute) {
