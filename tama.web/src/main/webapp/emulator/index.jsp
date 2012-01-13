@@ -1,37 +1,53 @@
+<%@page import="org.motechproject.util.DateUtil"%>
+<%@page import="java.lang.reflect.Method"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%
-    java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
-          m.setAccessible(true);
-          m.invoke(null, java.lang.System.class, "jvmfaketime", false);
-    System.registerFakeCurrentTimeMillis();
-   java.util.Date curdate = new java.util.Date();
-%>
-<%
-	if (request.getMethod() == "POST") {
-	try{
-		String date = request.getParameter("date");
-		String time = request.getParameter("time");
-		Date dateValue = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-		Date timeValue = new SimpleDateFormat("HH:mm:ss").parse(time.substring(1, time.length()));
-		dateValue.setHours(timeValue.getHours());
-        dateValue.setMinutes(timeValue.getMinutes());
-        dateValue.setSeconds(timeValue.getSeconds());
-        System.out.println("Posted date " + time.substring(1, time.length()-1));
-        System.deregisterFakeCurrentTimeMillis();
-		long diffValue = (dateValue.getTime() - System.currentTimeMillis());
-		System.registerFakeCurrentTimeMillis();
-		System.out.println("offset calculated " + diffValue);
-		System.setTimeOffset(diffValue);
-		System.out.println("Date :" + new Date());
-		System.out.println("offset :" +System.getTimeOffset());
-	  } catch(java.lang.Exception e) {
-	      out.println("Error: " + e.getMessage());
-	      return;
-	  }
-	  out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-	  return;
-	}
+	boolean fakeTimeAvailable = false;
+	try {
+    	java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
+        m.setAccessible(true);
+        m.invoke(null, java.lang.System.class, "jvmfaketime", false);
+    	Method registerFakeCurrentTimeMillis = System.class.getMethod("registerFakeCurrentTimeMillis");
+		if (registerFakeCurrentTimeMillis!=null) registerFakeCurrentTimeMillis.invoke(null);
+   		
+ 
+   
+		if (request.getMethod() == "POST") {
+		try{
+			
+			String date = request.getParameter("date");
+			String time = request.getParameter("time");
+			Date dateValue = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+			Date timeValue = new SimpleDateFormat("HH:mm:ss").parse(time.substring(1, time.length()));
+			dateValue.setHours(timeValue.getHours());
+	        dateValue.setMinutes(timeValue.getMinutes());
+	        dateValue.setSeconds(timeValue.getSeconds());
+	        System.out.println("Posted date " + time.substring(1, time.length()-1));
+			
+			Method deregisterFakeCurrentTimeMillis = System.class.getMethod("deregisterFakeCurrentTimeMillis");
+			if (deregisterFakeCurrentTimeMillis!=null) deregisterFakeCurrentTimeMillis.invoke(null);        
+	
+			long diffValue = (dateValue.getTime() - System.currentTimeMillis());
+			registerFakeCurrentTimeMillis = System.class.getMethod("registerFakeCurrentTimeMillis");
+			if (registerFakeCurrentTimeMillis!=null) registerFakeCurrentTimeMillis.invoke(null);
+	
+			System.out.println("offset calculated " + diffValue);
+			Method setTimeOffset = System.class.getMethod("setTimeOffset");
+			if (setTimeOffset!=null) setTimeOffset.invoke(diffValue);
+			System.out.println("Date :" + new Date());
+		  } catch(java.lang.Exception e) {
+		      out.println("Error: " + e.getMessage());
+		      return;
+		  }
+		  out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		  return;
+		}
+		fakeTimeAvailable = true;
+	 } catch(Exception ignore){}
+	java.util.Date curdate = new java.util.Date();
+	if (!fakeTimeAvailable)
+		curdate = DateUtil.now().toDate();
 %><html>
   <head>
     <script type="text/javascript">
@@ -68,20 +84,32 @@
     }
     </style>
     <script>
+    function displayMsg(data){
+    	dojo.byId('timeMessage').style.display="";
+        dojo.byId('timeMessage').innerHTML = data;
+        setTimeout(function() {
+            dojo.byId('timeMessage').style.display="none";
+        }, 3000);	
+    }
+    
     function submitTime() {
-        dojo.xhrPost({
-            form:"timeForm",
-            load: function(data, ioArgs){
-                dojo.byId('timeMessage').style.display="";
-                dojo.byId('timeMessage').innerHTML = "Updated: " + data;
-                setTimeout(function() {
-                    dojo.byId('timeMessage').style.display="none";
-                }, 3000);
-            },
-            error: function(err, ioArgs){
-                alert(err);
-            }
-         });
+    	if (dojo.byId('fakeTimeOption').checked) {
+	        dojo.xhrPost({
+	            form:"timeForm",
+	            load: function(data, ioArgs){
+	                displayMsg("Updated: " + data);
+	            },
+	            error: function(err, ioArgs){
+	                alert(err);
+	            }
+	         });
+    	} else {
+    		var urlString = "<%=application.getContextPath() %>" + "/motech-delivery-tools/datetime/update?date=" + dojo.byId('date').value + "&hour=" + dijit.byId('time').value.getHours() + "&minute=" + dijit.byId('time').value.getMinutes();
+    		dojo.xhrGet({
+    			url : urlString,
+    			load : function(data) { displayMsg	(data);}
+    		});
+    	}
      }
     </script>
 
@@ -325,6 +353,8 @@ function play(i){
 </td><td style="width:450px;"></td><td>
 <form id="timeForm" action="" method="POST">
 <table>
+  <tr><td><input id="fakeTimeOption" type="radio" name="type" value="Use Faketime" <%=fakeTimeAvailable?"checked='true'":"disabled" %>> Use Faketime</td>
+  	  <td><input type="radio" name="type" value=""/ <%=fakeTimeAvailable?"":"checked='true'" %>>Use DateUtil hack</td></tr>
   <tr><td align="center" colspan="2" id="timeMessage" style="background-color:lightBlue;display:none;"></td></tr>
     <tr><td>Date</td><td><input dojoType="dijit.form.DateTextBox" id="date" name="date"  value="<%=new java.text.SimpleDateFormat("yyyy-MM-dd").format(curdate)%>" style="width:12em;"/></td></tr>
     <tr><td>Time</td><td><input   id="time" name="time" timePattern='HH:mm:ss' value="T<%=new java.text.SimpleDateFormat("HH:mm:ss").format(curdate)%>" style="width:12em;"/></td></tr>
