@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 
 public class CacheAudioFiles {
     private static final String WAV_FILES_LOCATION = "wav.files.location";
-    private static final String APPLICATION_CONTEXT_XML = "applicationToolsContext.xml";
+    private static final String APPLICATION_CONTEXT_XML = "applicationSeedDataContext.xml";
 
     static Logger logger = Logger.getLogger(CacheAudioFiles.class);
 

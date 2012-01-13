@@ -41,17 +41,6 @@
         <path refid="lib.path"/>
     </target>
 
-    <target name="setup.outbox.messages">
-        <echo message="Loading outbox messages..."/>
-        <java fork="false" classname="${outboxmessage.setup.main.class}">
-            <classpath>
-                <path location="../tama.web/target/tama-0.4-SNAPSHOT/WEB-INF/classes"/>
-                <path refid="lib.path"/>
-            </classpath>
-            <arg line="${params}"></arg>
-        </java>
-    </target>
-
     <target name="drop.db">
         <exec executable="curl">
             <arg value="-X"/>
