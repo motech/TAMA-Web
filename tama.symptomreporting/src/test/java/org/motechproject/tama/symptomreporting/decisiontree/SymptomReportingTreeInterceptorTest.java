@@ -189,6 +189,29 @@ public class SymptomReportingTreeInterceptorTest {
 		assertHasRecordSymptomCommand(innerNode);
 	}
 
+	@Test
+	public void shouldAddCommandToLogSymptomsForLocalRash() {
+		Node noInnerNode = new Node().setPrompts(
+				new AudioPrompt().setName("ppc_nvrashallbody"),
+				new AudioPrompt().setName("adv_stopmedicineseeclinicasap"));
+		Node yesInnerNode = new Node().setPrompts(
+                new AudioPrompt().setName("ppc_nvrashallbody")
+                , new AudioPrompt().setName("adv_stopmedicineseeclinicasap"));
+
+		final Node node = new Node()
+				.setPrompts(new AudioPrompt().setName("cy_rash"),
+						new MenuAudioPrompt().setName("q_rashalloverbody"))
+				.setTransitions(
+						new Object[][] {
+								{ "1", new Transition().setDestinationNode(yesInnerNode)},
+								{ "3", new Transition().setDestinationNode(noInnerNode)}}
+						);
+
+		interceptor.addCommands(node);
+		assertHasRecordSymptomCommand(yesInnerNode);
+		assertHasRecordSymptomCommand(noInnerNode);
+	}
+
 	private void assertHasRecordSymptomCommand(Node node) {
 		for (ITreeCommand command : node.getTreeCommands()) {
 			if (command instanceof RecordSymptomCommand) {

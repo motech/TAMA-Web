@@ -24,7 +24,9 @@ import java.util.List;
 @Component
 public class SymptomReportingTreeInterceptor {
 
-    private String[] firstPriorityFilterCriteria = {"adv_crocin01", "adv_noteatanythg"};
+    private static final String USER_OPTION_SYMPTOM_YES = "1";
+	private static final String USER_OPTION_SYMPTOM_NO = "3";
+	private String[] firstPriorityFilterCriteria = {"adv_crocin01", "adv_noteatanythg"};
     private String[] secondPriorityFilterCriteria = {"adv_stopmedicineseeclinicasap", "adv_seeclinicasapdepression"};
     private String[] thirdPriorityFilterCriteria = {"adv_continuemedicineseeclinicasap"};
     private String[] fourthPriorityFilterCriteria = {"adv_callclinic"};
@@ -73,7 +75,10 @@ public class SymptomReportingTreeInterceptor {
         final List<Node> nodes = filter.filter(node);
         for (Node priorityNode : nodes) {
         	Prompt questionPrompt = filter.selectPrompt(priorityNode);
-            setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt));
+			setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt), USER_OPTION_SYMPTOM_YES);
+			if ("q_rashalloverbody".equals(questionPrompt.getName())) { 
+				setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt), USER_OPTION_SYMPTOM_NO);
+			}
         }
     }
 
@@ -81,8 +86,8 @@ public class SymptomReportingTreeInterceptor {
 		return questionPrompt.getName().replaceFirst(".*_", "");
 	}
 
-    private void setRecordSymptomReportTreeCommand(Node priorityNode, String symptomId) {
-    	Transition yesTransition = priorityNode.getTransitions().get("1");
+    private void setRecordSymptomReportTreeCommand(Node priorityNode, String symptomId, String userSelectedOption) {
+		Transition yesTransition = priorityNode.getTransitions().get(userSelectedOption);
     	Node yesNode = yesTransition.getDestinationNode();
     	if (yesNode != null){
     		yesNode.setTreeCommands(new RecordSymptomCommand(contextFactory, symptomRecordingService, symptomId));
