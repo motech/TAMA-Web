@@ -25,8 +25,7 @@ public class SymptomReportingChartControllerIT extends SpringIntegrationTest {
 
     @Autowired
     private SymptomReportingChartController controller;
-    @Autowired
-    private AllSymptomReports allSymptomReports;
+    
     @Autowired
     private SymptomRecordingService recordingService;
 
@@ -36,8 +35,8 @@ public class SymptomReportingChartControllerIT extends SpringIntegrationTest {
     public void setUp() {
         LocalDate today = DateUtil.today();
 
-        recordSymptomAt(today.minusDays(1), "1", "ppc_fevhead");
-        recordSymptomAt(today.minusDays(2), "1", "ppc_fevdepress");
+        recordSymptomAt(today.minusDays(1), "1", "fever");
+        recordSymptomAt(today.minusDays(2), "1", "depression");
     }
 
     @Test
