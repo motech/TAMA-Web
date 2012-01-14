@@ -1,10 +1,12 @@
 package org.motechproject.tama.fourdayrecall.service;
 
+import org.drools.core.util.debug.NodeInfo;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
@@ -21,7 +23,10 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
+import javax.net.ssl.SSLSession;
+
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -73,5 +78,29 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
         assertEquals(patientId, weeklyAdherenceLog.getPatientId());
         assertEquals(treatmentAdviceId, weeklyAdherenceLog.getTreatmentAdviceId());
         assertEquals(treatmentStartDate, weeklyAdherenceLog.getWeekStartDate());
+    }
+
+    @Test
+    public void shouldCreateAdherenceLogIfLogDoesNotExistOnSameDate() {
+        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        LocalDate logDate = new LocalDate(2011, 1, 1);
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), currentTreatmentAdvice.getId(), logDate)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+
+        weeklyAdherenceLogsService.createLogOn(patient.getId(), logDate, 0);
+        verify(allWeeklyAdherenceLogs).add(Matchers.<WeeklyAdherenceLog>any());
+    }
+
+    @Test
+    public void shouldNotCreateAdherenceLogIfLogExistOnSameDate() {
+        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), currentTreatmentAdvice.getId(), new LocalDate(2011, 1, 1), new LocalDate(2011, 1, 1), 0);
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), currentTreatmentAdvice.getId(), weeklyAdherenceLog.getLogDate())).thenReturn(weeklyAdherenceLog);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+
+        weeklyAdherenceLogsService.createLogOn(patient.getId(), weeklyAdherenceLog.getLogDate(), 0);
+        verify(allWeeklyAdherenceLogs, never()).add(Matchers.<WeeklyAdherenceLog>any());
     }
 }

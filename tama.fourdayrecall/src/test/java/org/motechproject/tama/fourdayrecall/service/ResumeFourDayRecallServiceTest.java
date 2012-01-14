@@ -14,12 +14,17 @@ import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.Properties;
 
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -30,11 +35,17 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     @Mock
     private Properties properties;
+    @Mock
+    private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllPatients allPatients;
+    @Mock
+    private WeeklyAdherenceLogService weeklyAdherenceLogService;
 
     private ResumeFourDayRecallService resumeFourDayRecallService;
     private Patient patient;
-    private LocalDate today;
     private TreatmentAdvice treatmentAdvice;
+    private LocalDate today;
 
     @Before
     public void setUp() {
@@ -42,16 +53,17 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         when(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY)).thenReturn("2");
         today = new LocalDate(2011, 12, 27);
 
-        String patientId = "patientId";
         patient = PatientBuilder.startRecording().withDefaults()
                 .withCallPreference(CallPreference.FourDayRecall)
-                .withId(patientId)
+                .withId("patientId")
                 .build();
+        when(allPatients.get(patient.getId())).thenReturn(patient);
 
         LocalDate treatmentStartDate = new LocalDate(2011, 11, 27);
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(treatmentStartDate).withDefaults().build();
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
 
-        resumeFourDayRecallService = new ResumeFourDayRecallService(allWeeklyAdherenceLogs, properties, new FourDayRecallDateService());
+        resumeFourDayRecallService = new ResumeFourDayRecallService(allTreatmentAdvices, properties, new FourDayRecallDateService(), weeklyAdherenceLogService);
     }
 
     private void timeToday(int hour, int minute) {
@@ -68,7 +80,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     }
 
     private void backFill(boolean doseTaken) {
-        resumeFourDayRecallService.backFillAdherence(patient, treatmentAdvice, patient.getLastSuspendedDate(), DateUtil.now(), doseTaken);
+        resumeFourDayRecallService.backFillAdherence(patient, patient.getLastSuspendedDate(), DateUtil.now(), doseTaken);
     }
 
     private void logsRecorded(int count) {
@@ -92,7 +104,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(16, 0);
         suspendedOn(2011, 12, 27, 8, 0);
         backFill(true);
-        logsRecorded(0);
+        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
     }
 
     @Test
@@ -102,7 +114,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService).createLogOn(same(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -112,7 +124,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -122,7 +134,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 8, 0);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -132,7 +144,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -142,7 +154,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        logsRecorded(0);
+        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
     }
 
     @Test
@@ -152,7 +164,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -162,7 +174,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -172,7 +184,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -182,7 +194,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 20, 12, 0);
         backFill(true);
-        logsRecorded(2);
+        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -192,7 +204,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 11));
         suspendedOn(2011, 12, 17, 10, 0);
         backFill(true);
-        logsRecorded(2);
+        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -202,7 +214,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 11));
         suspendedOn(2011, 12, 19, 15, 30);
         backFill(false);
-        logsRecorded(2);
+        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
     }
 
     @Test
@@ -212,7 +224,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 11));
         suspendedOn(2011, 12, 23, 15, 30);
         backFill(false);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
     }
 
     @Test
@@ -222,7 +234,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(true);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -232,7 +244,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(true);
-        logsRecorded(2);
+        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
     }
 
     @Test
@@ -242,8 +254,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(false);
-        logsRecorded(2);
-
+        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
     }
 
     @Test
@@ -253,7 +264,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 12, 15, 30);
         backFill(false);
-        logsRecorded(3);
+        verify(weeklyAdherenceLogService, times(3)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
     }
 
     @Test
@@ -264,7 +275,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 25));
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
-        logsRecorded(0);
+        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
     }
 
     @Test
@@ -275,7 +286,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 25));
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
-        logsRecorded(0);
+        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
     }
 
     @Test
@@ -286,6 +297,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         adherenceNotCaptured(new LocalDate(2011, 12, 19));
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
-        logsRecorded(1);
+        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
     }
 }

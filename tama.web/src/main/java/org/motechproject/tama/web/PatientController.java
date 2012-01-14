@@ -138,7 +138,7 @@ public class PatientController extends BaseController {
         if (patient.isOnDailyPillReminder()) {
             dailyPillReminderAdherenceService.backFillAdherence(id, startDate, DateUtil.now(), doseStatus.isTaken());
         } else {
-            resumeFourDayRecallService.backFillAdherence(patient, treatmentAdvice, startDate, DateUtil.now(), doseStatus.isTaken());
+            resumeFourDayRecallService.backFillAdherence(patient, startDate, DateUtil.now(), doseStatus.isTaken());
         }
         patientService.activate(id);
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);

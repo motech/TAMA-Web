@@ -5,9 +5,9 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.domain.FourDayRecallTimeLine;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
-import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,31 +17,27 @@ import java.util.Properties;
 
 @Service
 public class ResumeFourDayRecallService {
-    private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
+    private AllTreatmentAdvices allTreatmentAdvices;
+    private WeeklyAdherenceLogService weeklyAdherenceLogService;
     private Properties properties;
     private FourDayRecallDateService fourDayRecallDateService;
 
     @Autowired
-    public ResumeFourDayRecallService(AllWeeklyAdherenceLogs allWeeklyAdherenceLogs, @Qualifier("fourDayRecallProperties") Properties properties, FourDayRecallDateService fourDayRecallDateService) {
-        this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
+    public ResumeFourDayRecallService(AllTreatmentAdvices allTreatmentAdvices, @Qualifier("fourDayRecallProperties") Properties properties, FourDayRecallDateService fourDayRecallDateService, WeeklyAdherenceLogService weeklyAdherenceLogService) {
+        this.allTreatmentAdvices = allTreatmentAdvices;
         this.properties = properties;
         this.fourDayRecallDateService = fourDayRecallDateService;
+        this.weeklyAdherenceLogService = weeklyAdherenceLogService;
     }
 
-    public void backFillAdherence(Patient patient, TreatmentAdvice treatmentAdvice, DateTime fromDate, DateTime toDate, boolean doseTaken) {
+    public void backFillAdherence(Patient patient, DateTime fromDate, DateTime toDate, boolean doseTaken) {
         Integer daysToRetry = Integer.valueOf(properties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
+        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
 
-        FourDayRecallTimeLine fourDayRecallTimeLine = new FourDayRecallTimeLine(patient, fromDate, toDate, treatmentAdvice, daysToRetry, fourDayRecallDateService);
+        FourDayRecallTimeLine fourDayRecallTimeLine = new FourDayRecallTimeLine(patient, fromDate, toDate, currentTreatmentAdvice, daysToRetry, fourDayRecallDateService);
         List<LocalDate> weekStartDates = fourDayRecallTimeLine.weekStartDates();
-        if (weekStartDates.size() > 0) {
-            if (allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDates.get(0)) == null) {
-                allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patient.getId(), treatmentAdvice.getId(), weekStartDates.get(0), doseTaken ? 0 : fourDayRecallDateService.DAYS_TO_RECALL));
-            }
-            weekStartDates.remove(0);
-        }
-
         for (LocalDate date : weekStartDates) {
-            allWeeklyAdherenceLogs.add(WeeklyAdherenceLog.create(patient.getId(), treatmentAdvice.getId(), date, doseTaken ? 0 : fourDayRecallDateService.DAYS_TO_RECALL));
+            weeklyAdherenceLogService.createLogOn(patient.getId(), date, doseTaken ? 0 : fourDayRecallDateService.DAYS_TO_RECALL);
         }
     }
 }
