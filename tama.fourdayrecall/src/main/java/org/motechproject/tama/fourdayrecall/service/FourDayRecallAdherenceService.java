@@ -40,6 +40,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
 
     protected int adherencePercentageFor(WeeklyAdherenceLog weeklyAdherenceLog) {
         if (weeklyAdherenceLog == null) return 0;
+        if(weeklyAdherenceLog.getNotResponded()) return 0;
         return adherencePercentageFor(weeklyAdherenceLog.getNumberOfDaysMissed());
     }
 
@@ -59,6 +60,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     public boolean wasAnyDoseMissedLastWeek(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (fourDayRecallDateService.isFirstTreatmentWeek(patient, treatmentAdvice)) return false;
+        if(getAdherenceLog(patient.getId(), 1).getNotResponded()) return false;
         return ((double) getAdherencePercentageForPreviousWeek(patient.getId()) != 100.0);
     }
 

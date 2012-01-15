@@ -9,8 +9,6 @@ import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
-import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
@@ -24,15 +22,11 @@ import java.util.Properties;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
-    @Mock
-    private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
     @Mock
     private Properties properties;
     @Mock
@@ -71,20 +65,12 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         mockCurrentDate(now);
     }
 
-    private void adherenceNotCaptured(LocalDate weekStartDate) {
-        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate)).thenReturn(null);
-    }
-
     private void suspendedOn(int year, int month, int day, int hour, int minute) {
         patient.setLastSuspendedDate(DateUtil.newDateTime(new LocalDate(year, month, day), hour, minute, 0));
     }
 
     private void backFill(boolean doseTaken) {
         resumeFourDayRecallService.backFillAdherence(patient, patient.getLastSuspendedDate(), DateUtil.now(), doseTaken);
-    }
-
-    private void logsRecorded(int count) {
-        verify(allWeeklyAdherenceLogs, times(count)).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
     private void callTime(int hour, int minute, TimeMeridiem timeMeridiem, DayOfWeek day) {
@@ -111,7 +97,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedResumedInTheSameWeek_AndSuspendedDateIsAfterRecallDateTime_AndResumptionDateIsBeforeBestCallTimeOnFirstRetryDate_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(8, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService).createLogOn(same(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -121,7 +106,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedResumedInTheSameWeek_AndSuspendedDateIsOnRecallDate_AfterBestCallTime_AndResumptionDateIsAfterBestCallTimeOnFirstRetryDate_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(12, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -131,7 +115,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedResumedInTheSameWeek_AndSuspendedDateIsOnRetryDate_BeforeBestCallTime_AndResumptionDateIsBeforeBestCallTimeOnLastRetryDate_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Sunday);
         timeToday(8, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 8, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -141,7 +124,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedResumedInTheSameWeek_AndSuspendedDateIsOnSecondRetryDate_AfterBestCallTime_AndResumptionDateIsAfterBestCallTimeOnLastRetryDate_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Sunday);
         timeToday(16, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -151,7 +133,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedResumedInTheSameWeek_AndSuspendedDateIsAfterSecondRetryDate_AfterBestCallTime_AndResumptionDateIsBeforeNextWeekRecallDateAndBeforeBestCallTime_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Tuesday);
         timeToday(8, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
@@ -161,7 +142,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsAfterSecondRetryDate_AfterBestCallTime_AndResumptionDateIsOnNextWeekRecallDateAndAfterBestCallTime_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Tuesday);
         timeToday(12, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -171,7 +151,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsAfterSecondRetryDate_AfterBestCallTime_AndIsResumedOnFirstRetryDateOfNextWeekAndBeforeBestCallTime_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(8, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -181,7 +160,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsAfterSecondRetryDate_AfterBestCallTime_AndIsResumedOnFirstRetryDateOfNextWeekAndAfterBestCallTime_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(12, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -191,7 +169,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsOnRecallDate_AfterBestCallTime_AndIsResumedOnRecallDateOfNextWeekAndAfterBestCallTime_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Tuesday);
         timeToday(12, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 18));
         suspendedOn(2011, 12, 20, 12, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -201,7 +178,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsARecallDate_BeforeBestCallTime_AndIsResumedAfterLastRetryDateOfNextWeekAndAfterBestCallTime_AdherenceNotCaptured() {
         callTime(10, 30, TimeMeridiem.PM, DayOfWeek.Saturday);
         timeToday(23, 30);
-        adherenceNotCaptured(new LocalDate(2011, 12, 11));
         suspendedOn(2011, 12, 17, 10, 0);
         backFill(true);
         verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -211,7 +187,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsARetryDate_AndResumedAfterLastRetryDateOfNextWeekAndAfterBestCallTime_AdherenceNotCaptured() {
         callTime(10, 30, TimeMeridiem.PM, DayOfWeek.Saturday);
         timeToday(23, 30);
-        adherenceNotCaptured(new LocalDate(2011, 12, 11));
         suspendedOn(2011, 12, 19, 15, 30);
         backFill(false);
         verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
@@ -221,7 +196,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsAfterLastRetryDate_AndResumedAfterOnFirstRetryDateOfNextWeekAndBeforeBestCallTime_AdherenceNotCaptured() {
         callTime(10, 0, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(8, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 11));
         suspendedOn(2011, 12, 23, 15, 30);
         backFill(false);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
@@ -231,7 +205,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverThreeWeeks_AndSuspendedDateIsAfterLastRetryDate_AndResumedBeforeRecallDateAndBeforeBestCallTime_AdherenceNotCaptured() {
         callTime(10, 30, TimeMeridiem.PM, DayOfWeek.Tuesday);
         timeToday(8, 30);
-        adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(true);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -241,7 +214,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverThreeWeeks_AndSuspendedDateIsAfterLastRetryDate_AndResumedBeforeRecallDateAndAfterBestCallTime_AdherenceNotCaptured() {
         callTime(10, 30, TimeMeridiem.AM, DayOfWeek.Tuesday);
         timeToday(14, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(true);
         verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
@@ -251,7 +223,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverThreeWeeks_AndSuspendedDateIsAfterLastRetryDate_AndResumptionDateIsOnFirstRetryDate_AndResumptionTimeIsBeforeBestCallTime_AdherenceNotCaptured() {
         callTime(10, 30, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(9, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(false);
         verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
@@ -261,7 +232,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
     public void whenPatientIsSuspendedAndResumedOverThreeWeeks_AndSuspendedDateIsOnRecallDate_AndAfterBestCallTime_AndResumptionDateIsOnFirstRetryDate_AndResumptionTimeIsBeforeBestCallTime_AdherenceNotCaptured() {
         callTime(10, 30, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(9, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 4));
         suspendedOn(2011, 12, 12, 15, 30);
         backFill(false);
         verify(weeklyAdherenceLogService, times(3)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
@@ -272,7 +242,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         treatmentStartDate(new LocalDate(2011, 12, 25));
         callTime(10, 30, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(11, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 25));
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
         verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
@@ -283,7 +252,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         treatmentStartDate(new LocalDate(2011, 12, 25));
         callTime(10, 30, TimeMeridiem.AM, DayOfWeek.Friday);
         timeToday(11, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 25));
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
         verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
@@ -294,7 +262,6 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         treatmentStartDate(new LocalDate(2011, 12, 19));
         callTime(10, 30, TimeMeridiem.AM, DayOfWeek.Monday);
         timeToday(11, 0);
-        adherenceNotCaptured(new LocalDate(2011, 12, 19));
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
         verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));

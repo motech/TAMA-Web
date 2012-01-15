@@ -26,9 +26,9 @@ import org.motechproject.util.DateUtil;
 import javax.net.ssl.SSLSession;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
@@ -41,66 +41,111 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
     @Mock
     private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
 
-    WeeklyAdherenceLogService weeklyAdherenceLogsService;
     private LocalDate today;
+    private Patient patient;
+    private TreatmentAdvice treatmentAdvice;
+
+    WeeklyAdherenceLogService weeklyAdherenceLogsService;
+
+    @Before
+    public void setUpTreatmentAdvice() {
+        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").withStartDate(new LocalDate(2011, 10, 2)).build();
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
+    }
+
+    @Before
+    public void setUpPatient() {
+        patient = PatientBuilder.startRecording().withId("patient_id").withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+    }
+
+    @Before
+    public void setUpTime() {
+        today = new LocalDate(2011, 10, 7);
+        mockCurrentDate(DateUtil.newDateTime(today, 9, 0, 0));
+    }
 
     @Before
     public void setUp() {
         initMocks(this);
-        today = new LocalDate(2011, 10, 7);
-        mockCurrentDate(DateUtil.newDateTime(today, 9, 0, 0));
 
         fourdayRecallDateService = new FourDayRecallDateService();
         weeklyAdherenceLogsService = new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourdayRecallDateService);
     }
 
-
     @Test
-    public void shouldCreateWeeklyAdherenceLog() {
-        String patientId = "patient_id";
-        Patient patient = PatientBuilder.startRecording().withId(patientId).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
-        LocalDate treatmentStartDate = new LocalDate(2011, 10, 2);
-        String treatmentAdviceId = "treatmentAdviceId";
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(treatmentAdviceId).withStartDate(treatmentStartDate).build();
-
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        when(allPatients.get(patientId)).thenReturn(patient);
-
-        weeklyAdherenceLogsService.createLogFor(patientId, 1);
+    public void shouldCreateLogForPatient() {
+        weeklyAdherenceLogsService.createLogFor(patient.getId(), 1);
 
         ArgumentCaptor<WeeklyAdherenceLog> weeklyAdherenceLogCaptor = ArgumentCaptor.forClass(WeeklyAdherenceLog.class);
         verify(allWeeklyAdherenceLogs).add(weeklyAdherenceLogCaptor.capture());
 
         WeeklyAdherenceLog weeklyAdherenceLog = weeklyAdherenceLogCaptor.getValue();
-
-        assertEquals(today, weeklyAdherenceLog.getLogDate());
-        assertEquals(1, weeklyAdherenceLog.getNumberOfDaysMissed());
-        assertEquals(patientId, weeklyAdherenceLog.getPatientId());
-        assertEquals(treatmentAdviceId, weeklyAdherenceLog.getTreatmentAdviceId());
-        assertEquals(treatmentStartDate, weeklyAdherenceLog.getWeekStartDate());
+        assertWeeklyAdherenceLog(weeklyAdherenceLog);
     }
 
     @Test
-    public void shouldCreateAdherenceLogIfLogDoesNotExistOnSameDate() {
-        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+    public void shouldNotModifyForPatientIfLogExistsOnSameDate() {
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), new LocalDate(treatmentAdvice.getStartDate()))).thenReturn(new WeeklyAdherenceLog());
+
+        weeklyAdherenceLogsService.createLogFor(patient.getId(), 1);
+        verify(allWeeklyAdherenceLogs, never()).add(Matchers.<WeeklyAdherenceLog>any());
+        verify(allWeeklyAdherenceLogs, never()).update(Matchers.<WeeklyAdherenceLog>any());
+    }
+
+    @Test
+    public void shouldUpdateLogForPatientIfNotRespondedLogExistsOnSameDate() {
+        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
+        weeklyAdherenceLog.setNotResponded(true);
+
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), new LocalDate(treatmentAdvice.getStartDate()))).thenReturn(weeklyAdherenceLog);
+
+        weeklyAdherenceLogsService.createLogFor(patient.getId(), 1);
+
+        ArgumentCaptor<WeeklyAdherenceLog> logCaptor = ArgumentCaptor.forClass(WeeklyAdherenceLog.class);
+        verify(allWeeklyAdherenceLogs).update(logCaptor.capture());
+        assertFalse(logCaptor.getValue().getNotResponded());
+        assertEquals(1, logCaptor.getValue().getNumberOfDaysMissed());
+    }
+
+    @Test
+    public void shouldCreateLogOnGivenDate() {
         LocalDate logDate = new LocalDate(2011, 1, 1);
-        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), currentTreatmentAdvice.getId(), logDate)).thenReturn(null);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), logDate)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
 
         weeklyAdherenceLogsService.createLogOn(patient.getId(), logDate, 0);
         verify(allWeeklyAdherenceLogs).add(Matchers.<WeeklyAdherenceLog>any());
     }
 
     @Test
-    public void shouldNotCreateAdherenceLogIfLogExistOnSameDate() {
-        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), currentTreatmentAdvice.getId(), new LocalDate(2011, 1, 1), new LocalDate(2011, 1, 1), 0);
-        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), currentTreatmentAdvice.getId(), weeklyAdherenceLog.getLogDate())).thenReturn(weeklyAdherenceLog);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+    public void shouldNotModifyLogOnGivenDateIfLogExistOnSameDate() {
+        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), treatmentAdvice.getId(), new LocalDate(2011, 1, 1), new LocalDate(2011, 1, 1), 0);
+        weeklyAdherenceLog.setNotResponded(false);
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weeklyAdherenceLog.getLogDate())).thenReturn(weeklyAdherenceLog);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
 
         weeklyAdherenceLogsService.createLogOn(patient.getId(), weeklyAdherenceLog.getLogDate(), 0);
         verify(allWeeklyAdherenceLogs, never()).add(Matchers.<WeeklyAdherenceLog>any());
+        verify(allWeeklyAdherenceLogs, never()).update(Matchers.<WeeklyAdherenceLog>any());
+    }
+
+    @Test
+    public void shouldUpdateLogOnGivenDateIfNotRespondedLogExistsOnSameDate(){
+        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), treatmentAdvice.getId(), new LocalDate(2011, 1, 1), new LocalDate(2011, 1, 1), 0);
+        weeklyAdherenceLog.setNotResponded(true);
+        when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weeklyAdherenceLog.getLogDate())).thenReturn(weeklyAdherenceLog);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
+
+        weeklyAdherenceLogsService.createLogOn(patient.getId(), weeklyAdherenceLog.getLogDate(), 0);
+        verify(allWeeklyAdherenceLogs).update(Matchers.<WeeklyAdherenceLog>any());
+    }
+
+    private void assertWeeklyAdherenceLog(WeeklyAdherenceLog weeklyAdherenceLog) {
+        assertEquals(today, weeklyAdherenceLog.getLogDate());
+        assertEquals(1, weeklyAdherenceLog.getNumberOfDaysMissed());
+        assertEquals(patient.getId(), weeklyAdherenceLog.getPatientId());
+        assertEquals(treatmentAdvice.getId(), weeklyAdherenceLog.getTreatmentAdviceId());
+        assertEquals(new LocalDate(treatmentAdvice.getStartDate()), weeklyAdherenceLog.getWeekStartDate());
     }
 }

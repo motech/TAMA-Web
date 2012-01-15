@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
-public class FourDayRecallAlertService  {
+public class FourDayRecallAlertService {
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
     private Properties properties;
@@ -48,7 +48,8 @@ public class FourDayRecallAlertService  {
         if (fourDayRecallDateService.isFirstTreatmentWeek(patient, treatmentAdvice)) return;
 
         int adherencePercentageForCurrentWeek = fourDayRecallAdherenceService.getAdherencePercentageForCurrentWeek(patientId);
-        if (adherencePercentageForCurrentWeek >= fourDayRecallAdherenceService.getAdherencePercentageForPreviousWeek(patientId)) return;
+        if (adherencePercentageForCurrentWeek >= fourDayRecallAdherenceService.getAdherencePercentageForPreviousWeek(patientId))
+            return;
 
         final Map<String, String> data = new HashMap<String, String>();
         final int previousWeekPercentage = fourDayRecallAdherenceService.getAdherencePercentageForPreviousWeek(patientId);
@@ -67,11 +68,16 @@ public class FourDayRecallAlertService  {
     }
 
     public void raiseAdherenceInRedAlert(String patientId) {
+        String description;
         WeeklyAdherenceLog adherenceLog = fourDayRecallAdherenceService.getAdherenceLog(patientId, 0);
-        String description = PatientAlertService.RED_ALERT_MESSAGE_NO_RESPONSE;
-        double adherencePercentage = fourDayRecallAdherenceService.adherencePercentageFor(adherenceLog);
 
-        if (adherenceLog != null) {
+        if(adherenceLog == null)
+            return;
+
+        double adherencePercentage = fourDayRecallAdherenceService.adherencePercentageFor(adherenceLog);
+        if (adherenceLog.getNotResponded()) {
+            description = PatientAlertService.RED_ALERT_MESSAGE_NO_RESPONSE;
+        } else {
             double acceptableAdherencePercentage = Double.parseDouble(properties.getProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE));
             if (adherencePercentage >= acceptableAdherencePercentage) return;
             description = String.format(TAMAMessages.ADHERENCE_PERCENTAGE_IS, adherencePercentage);

@@ -15,13 +15,14 @@ import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+/*
+ * TODO: Verify the new tests
+ */
 public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
 
     @Mock
@@ -81,17 +82,61 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldReturnZeroWhenAdherenceLogDoesNotExist() {
+        when(weeklyAdherenceLogService.get("patientId", 0)).thenReturn(null);
+        assertEquals(0, fourDayRecallAdherenceService.getAdherencePercentageForCurrentWeek("patientId"));
+    }
+
+    @Test
+    public void shouldReturnZeroWhenAdherenceStatusIsNotAnswered() {
+        String patientId = "patientId";
+        WeeklyAdherenceLog notRespondedLog = new WeeklyAdherenceLog();
+        notRespondedLog.setLogDate(today);
+        notRespondedLog.setNumberOfDaysMissed(1);
+        notRespondedLog.setPatientId(patientId);
+        notRespondedLog.setNotResponded(true);
+
+        when(weeklyAdherenceLogService.get("patientId", 0)).thenReturn(notRespondedLog);
+        assertEquals(0, fourDayRecallAdherenceService.getAdherencePercentageForCurrentWeek("patientId"));
+    }
+
+    @Test
+    public void shouldReturnFalseForAnyDoseMissedLastWeekIfAdherenceStatusIsNotAnswered() {
+        String patientId = "patientId";
+        Patient patient = PatientBuilder.startRecording().withId(patientId).withCallPreference(CallPreference.FourDayRecall)
+                .withWeeklyCallPreference(DayOfWeek.Thursday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        WeeklyAdherenceLog notRespondedLog = new WeeklyAdherenceLog();
+        notRespondedLog.setLogDate(today.minusWeeks(1));
+        notRespondedLog.setNumberOfDaysMissed(4);
+        notRespondedLog.setPatientId(patientId);
+        notRespondedLog.setNotResponded(true);
+
+        TreatmentAdvice adviceStartingOnSaturday = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(today.minusWeeks(2)).build();
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(adviceStartingOnSaturday);
+        when(weeklyAdherenceLogService.get(patient.getId(), 1)).thenReturn(notRespondedLog);
+
+        assertFalse(fourDayRecallAdherenceService.wasAnyDoseMissedLastWeek(patient));
+    }
+
+    @Test
     public void shouldReturnTrueForAnyDoseMissedLastWeekIfPatientMissedADose() {
         TreatmentAdvice adviceStartingOnSaturday = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(today.minusWeeks(2)).build();
         Patient patient = PatientBuilder.startRecording().withId("patientDocumentId").withCallPreference(CallPreference.FourDayRecall)
                 .withWeeklyCallPreference(DayOfWeek.Thursday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
 
+        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
+        weeklyAdherenceLog.setLogDate(today.minusWeeks(1));
+        weeklyAdherenceLog.setNumberOfDaysMissed(1);
+        weeklyAdherenceLog.setPatientId(patient.getId());
+
+
+        when(weeklyAdherenceLogService.get(patient.getId(), 1)).thenReturn(weeklyAdherenceLog);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(adviceStartingOnSaturday);
         assertTrue(fourDayRecallAdherenceService.wasAnyDoseMissedLastWeek(patient));
     }
 
     @Test
-    public void shouldReturnFalseForDoseTakeLate(){
+    public void shouldReturnFalseForDoseTakeLate() {
         assertFalse(fourDayRecallAdherenceService.wasAnyDoseTakenLateSince(null, null));
     }
 

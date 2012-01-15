@@ -14,8 +14,10 @@ public class WeeklyAdherenceLog extends CouchEntity {
     private LocalDate weekStartDate;
     private LocalDate logDate;
     private int numberOfDaysMissed;
+    private boolean notResponded;
 
     public WeeklyAdherenceLog() {
+        notResponded = false;
     }
 
     public WeeklyAdherenceLog(String patientId, String treatmentAdviceDocId, LocalDate weekStartDate, LocalDate logDate, int numberOfDaysMissed) {
@@ -71,5 +73,22 @@ public class WeeklyAdherenceLog extends CouchEntity {
                 treatmentAdviceDocId,
                 startDateForAnyWeek,
                 DateUtil.today(), numberOfDaysMissed);
+    }
+
+    public void setNotResponded(boolean notResponded) {
+        this.notResponded = notResponded;
+    }
+
+    public boolean getNotResponded(){
+        return this.notResponded;
+    }
+
+    public void merge(WeeklyAdherenceLog that) {
+        this.setNotResponded(that.getNotResponded());
+        this.setLogDate(that.getLogDate());
+        this.setNumberOfDaysMissed(that.getNumberOfDaysMissed());
+        this.setTreatmentAdviceId(that.getTreatmentAdviceId());
+        this.setPatientId(that.getPatientId());
+        this.setWeekStartDate(that.getWeekStartDate());
     }
 }
