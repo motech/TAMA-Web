@@ -1,7 +1,5 @@
 package org.motechproject.tama.fourdayrecall.service;
 
-import org.drools.core.util.debug.NodeInfo;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +9,6 @@ import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
-import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -23,11 +20,8 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import javax.net.ssl.SSLSession;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -45,32 +39,32 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
     private Patient patient;
     private TreatmentAdvice treatmentAdvice;
 
-    WeeklyAdherenceLogService weeklyAdherenceLogsService;
-
-    @Before
-    public void setUpTreatmentAdvice() {
-        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").withStartDate(new LocalDate(2011, 10, 2)).build();
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
-    }
-
-    @Before
-    public void setUpPatient() {
-        patient = PatientBuilder.startRecording().withId("patient_id").withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
-        when(allPatients.get(patient.getId())).thenReturn(patient);
-    }
-
-    @Before
-    public void setUpTime() {
-        today = new LocalDate(2011, 10, 7);
-        mockCurrentDate(DateUtil.newDateTime(today, 9, 0, 0));
-    }
+    private WeeklyAdherenceLogService weeklyAdherenceLogsService;
 
     @Before
     public void setUp() {
         initMocks(this);
+        setUpTime();
+        setUpPatient();
+        setUpTreatmentAdvice();
 
         fourdayRecallDateService = new FourDayRecallDateService();
         weeklyAdherenceLogsService = new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourdayRecallDateService);
+    }
+
+    private void setUpTime() {
+        today = new LocalDate(2011, 10, 7);
+        mockCurrentDate(DateUtil.newDateTime(today, 9, 0, 0));
+    }
+
+    private void setUpPatient() {
+        patient = PatientBuilder.startRecording().withId("patient_id").withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+    }
+
+    private void setUpTreatmentAdvice() {
+        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").withStartDate(new LocalDate(2011, 10, 2)).build();
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
     }
 
     @Test

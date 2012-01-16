@@ -35,9 +35,26 @@ public class FourDayRecallTest extends BaseIVRTest {
     @Before
     public void setUp() {
         caller = caller(patient);
+        registerPatient();
+        createTreatmentAdvice();
     }
 
-    @Before
+    @Test
+    public void shouldReportAdherenceOnBestCallDay() {
+        tamaDateTimeService.adjustDateTime(now);
+        caller.replyToCall(new FourDayRecallCallInfo());
+        IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
+        ivrResponse = enterAdherenceInformation(ivrResponse, "0");
+        assertAdherencePercentage(ivrResponse, "100");
+    }
+
+    public void registerPatient() {
+        tamaDateTimeService.adjustDateTime(registrationTime);
+        clinician = TestClinician.withMandatory();
+        TestPatientPreferences preferences = TestPatientPreferences.withMandatory().callPreference(TestPatientPreferences.CallPreference.WEEKLY_CALL).dayOfWeeklyCall("Monday").bestCallTime("10:10");
+        patient = TestPatient.withMandatory().patientPreferences(preferences);
+    }
+
     public void createTreatmentAdvice() {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceOn(registrationTime.toLocalDate());
@@ -49,23 +66,6 @@ public class FourDayRecallTest extends BaseIVRTest {
         drugDosages[0].startDate(treatmentAdviceStartDate);
         drugDosages[1].startDate(treatmentAdviceStartDate);
         return TestTreatmentAdvice.withExtrinsic(drugDosages);
-    }
-
-    @Before
-    public void registerPatient() {
-        tamaDateTimeService.adjustDateTime(registrationTime);
-        clinician = TestClinician.withMandatory();
-        TestPatientPreferences preferences = TestPatientPreferences.withMandatory().callPreference(TestPatientPreferences.CallPreference.WEEKLY_CALL).dayOfWeeklyCall("Monday").bestCallTime("10:10");
-        patient = TestPatient.withMandatory().patientPreferences(preferences);
-    }
-
-    @Test
-    public void shouldReportAdherenceOnBestCallDay() {
-        tamaDateTimeService.adjustDateTime(now);
-        caller.replyToCall(new FourDayRecallCallInfo());
-        IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
-        ivrResponse = enterAdherenceInformation(ivrResponse, "0");
-        assertAdherencePercentage(ivrResponse, "100");
     }
 
     private IVRResponse enterAdherenceInformation(IVRResponse ivrResponse, String keyPressed) {

@@ -68,7 +68,6 @@ public class AdherenceFallingTest extends BaseIVRTest {
         caller = caller(patient);
     }
 
-
     private void patientRecordsAdherenceNow() {
         caller.replyToCall(new PillReminderCallInfo(1));
 
