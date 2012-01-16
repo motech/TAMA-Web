@@ -12,20 +12,24 @@ import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 
-public class UnreadAlertsPage extends Page {
+public class AlertsPage extends Page {
 
     public static final String LIST_ALERT_PANE_ID = "_title_pl_org_motechproject_tama_domain_patientalert_id_pane";
 
     @FindBy(how = How.ID, using = "_startDate_id")
     private WebElement startDate;
 
-    public UnreadAlertsPage(WebDriver webDriver) {
+    @FindBy(how = How.ID, using = "searchByAlertStatus")
+    private WebElement alertStatus;
+
+    public AlertsPage(WebDriver webDriver) {
         super(webDriver);
     }
 
     @Override
     public void postInitialize() {
         startDate = WebDriverFactory.createWebElement(startDate);
+        alertStatus = WebDriverFactory.createWebElement(alertStatus);
     }
 
     @Override
@@ -70,9 +74,17 @@ public class UnreadAlertsPage extends Page {
         return -1;
     }
 
-    public UnreadAlertsPage filter() {
+    public AlertsPage filterUnreadAlerts() {
+        alertStatus.sendKeys("Unread");
         startDate.submit();
         waitForElementWithIdToLoad(LIST_ALERT_PANE_ID);
-        return MyPageFactory.initElements(webDriver, UnreadAlertsPage.class);
+        return MyPageFactory.initElements(webDriver, AlertsPage.class);
+    }
+
+    public AlertsPage filterReadAlerts() {
+        alertStatus.sendKeys("Read");
+        startDate.submit();
+        waitForElementWithIdToLoad(LIST_ALERT_PANE_ID);
+        return MyPageFactory.initElements(webDriver, AlertsPage.class);
     }
 }

@@ -19,6 +19,14 @@ public class AlertFilterTest {
     }
 
     @Test
+    public void shouldReturnAllAlertStatuses() {
+        List<String> allAlertStatuses = new AlertFilter().getAllAlertStatuses();
+        assertTrue(CollectionUtils.isNotEmpty(allAlertStatuses));
+        assertEquals(AlertFilter.STATUS_UNREAD, allAlertStatuses.get(0));
+        assertEquals(AlertFilter.STATUS_READ, allAlertStatuses.get(1));
+    }
+
+    @Test
     public void shouldReturnNullIfAlertTypeIsEmpty() {
         AlertFilter alertFilter = new AlertFilter().setAlertType("");
         assertNull(alertFilter.getPatientAlertType());

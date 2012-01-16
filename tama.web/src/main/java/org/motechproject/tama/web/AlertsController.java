@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.tama.patient.domain.PatientAlert;
+import org.motechproject.tama.patient.domain.PatientAlerts;
 import org.motechproject.tama.patient.domain.SymptomsAlertStatus;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.web.view.AlertFilter;
@@ -25,34 +26,18 @@ public class AlertsController extends BaseController {
         this.patientAlertService = patientAlertService;
     }
 
-    @RequestMapping(value = "/unread", method = RequestMethod.GET)
-    public String unread(Model uiModel) {
-        uiModel.addAttribute("alertFilter", new AlertFilter());
-        return "alerts/unread";
-    }
-
-    @RequestMapping(value = "/unread/filter", method = RequestMethod.GET)
-    public String unread(AlertFilter alertFilter, Model uiModel, HttpServletRequest request) {
+    @RequestMapping(value = "/list/filter", method = RequestMethod.GET)
+    public String list(AlertFilter filter, Model uiModel, HttpServletRequest request) {
         final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", patientAlertService.getUnreadAlertsFor(clinicId, alertFilter.getPatientId(),
-                alertFilter.getPatientAlertType(), alertFilter.getStartDateTime(), alertFilter.getEndDateTime()));
-        uiModel.addAttribute("alertFilter", alertFilter);
-        return "alerts/unread";
-    }
-
-    @RequestMapping(value = "/read", method = RequestMethod.GET)
-    public String read(Model uiModel) {
-        uiModel.addAttribute("alertFilter", new AlertFilter());
-        return "alerts/read";
-    }
-
-    @RequestMapping(value = "/read/filter", method = RequestMethod.GET)
-    public String read(AlertFilter filter, Model uiModel, HttpServletRequest request) {
-        final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(),
-                filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime()));
+        uiModel.addAttribute("alerts", getFilteredAlerts(filter, clinicId));
         uiModel.addAttribute("alertFilter", filter);
-        return "alerts/read";
+        return "alerts/list";
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public String list(Model uiModel) {
+        uiModel.addAttribute("alertFilter", new AlertFilter());
+        return "alerts/list";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -85,5 +70,11 @@ public class AlertsController extends BaseController {
     private void initUIModel(String id, Model uiModel, PatientAlert patientAlert) {
         uiModel.addAttribute("alertInfo", patientAlert);
         uiModel.addAttribute("symptomsStatuses", Arrays.asList(SymptomsAlertStatus.values()));
+    }
+
+    private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {
+        if (filter.getAlertStatus().equals(AlertFilter.STATUS_UNREAD))
+            return patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+        return patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
     }
 }

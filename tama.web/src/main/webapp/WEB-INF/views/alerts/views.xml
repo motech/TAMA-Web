@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
-    <definition extends="default" name="alerts/unread">
-        <put-attribute name="body" value="/WEB-INF/views/alerts/unreadlist.jspx"/>
-    </definition>
-    <definition extends="default" name="alerts/read">
-        <put-attribute name="body" value="/WEB-INF/views/alerts/readlist.jspx"/>
+    <definition extends="default" name="alerts/list">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/list.jspx"/>
     </definition>
     <definition extends="default" name="alerts/showAdherenceInRed">
         <put-attribute name="body" value="/WEB-INF/views/alerts/showAdherenceInRed.jspx"/>

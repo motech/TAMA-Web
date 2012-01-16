@@ -2,7 +2,6 @@ package org.motechproject.tama.web.view;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.util.DateUtil;
@@ -17,9 +16,14 @@ import java.util.List;
 
 public class AlertFilter {
 
+    public static final String STATUS_UNREAD = "Unread";
+    public static final String STATUS_READ = "Read";
+
     private String patientId;
 
     private String alertType;
+
+    private String alertStatus;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -64,17 +68,26 @@ public class AlertFilter {
         return patientId;
     }
 
+    public String getAlertType() {
+        return alertType;
+    }
+
     public AlertFilter setAlertType(String alertType) {
         this.alertType = alertType;
         return this;
     }
 
-    public String getAlertType() {
-        return alertType;
-    }
-
     public PatientAlertType getPatientAlertType() {
         return StringUtils.isBlank(alertType) || alertType.equals("Any") ? null : PatientAlertType.valueOf(alertType);
+    }
+
+    public String getAlertStatus() {
+        return alertStatus;
+    }
+
+    public AlertFilter setAlertStatus(String alertStatus) {
+        this.alertStatus = alertStatus;
+        return this;
     }
 
     public List<String> getAllPatientAlertTypes() {
@@ -84,5 +97,12 @@ public class AlertFilter {
             alertTypes.add(alertType.toString());
         }
         return alertTypes;
+    }
+
+    public List<String> getAllAlertStatuses() {
+        ArrayList<String> alertStatuses = new ArrayList<String>();
+        alertStatuses.add(STATUS_UNREAD);
+        alertStatuses.add(STATUS_READ);
+        return alertStatuses;
     }
 }

@@ -5,12 +5,18 @@
      xmlns:spring="http://www.springframework.org/tags">
 
     <util:panel id="something" title="Filter Alerts" openPane="true">
-            <field:input field="patientId" label="Patient ID" id = "searchByPatientId" required="false" />
-            <form:label path="patientAlertType">Alert Type</form:label>
+            <field:input field="patientId" label="Patient ID :" id = "searchByPatientId" required="false" />
+            <form:label path="patientAlertType">Alert Type :</form:label>
             <form:select title="Alert Type" field="alertType" id="searchByAlertType" path="alertType" required="false">
                 <form:options items="${alertFilter.allPatientAlertTypes}" />
             </form:select>
+            <br/>
             <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'searchByAlertType', widgetType: 'dijit.form.FilteringSelect', widgetAttrs : {hasDownArrow : true}})); </script>
+            <form:label path="alertStatus">Alert Status * :</form:label>
+            <form:select title="Alert Status" field="alertStatus" id="searchByAlertStatus" path="alertStatus" required="true">
+                <form:options items="${alertFilter.allAlertStatuses}" />
+            </form:select>
+            <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'searchByAlertStatus', widgetType: 'dijit.form.FilteringSelect', widgetAttrs : {hasDownArrow : true}})); </script>
             <field:datetime dateTimePattern="dd/MM/yyyy" field="startDate" label="Starting From" id="alertFilterStartDate" required="true"/>
             <field:datetime dateTimePattern="dd/MM/yyyy" field="endDate" label="Till" id="alertFilterEndDate" required="true"/>
             <span class="submit" id="filter">

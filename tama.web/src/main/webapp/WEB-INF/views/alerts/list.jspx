@@ -1,9 +1,28 @@
-<table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts" delete="false" create="false" update="true" typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields">
-    <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient Id" />
-    <table:column id="org_motechproject_tama_domain_patientalert" property="patientPhoneNumber" label="Phone Number" />
-    <table:column id="org_motechproject_tama_domain_patientalert" property="alertPriority" label="Alert Priority" />
-    <table:column id="org_motechproject_tama_domain_patientalert" property="type" label="Alert Type" />
-    <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOn" label="Alert Generated On" />
-    <table:column id="org_motechproject_tama_domain_patientalert" property="symptomsAlertStatus" label="Symptoms Call Status" />
-    <table:column id="org_motechproject_tama_domain_patientalert" property="notes" label="Notes" />
-</table:table>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/alerts/list/filter" var="filter_url"/>
+    <form:form action="${filter_url}" method="GET" modelAttribute="alertFilter">
+        <jsp:include page="search.jspx" />
+    </form:form>
+    <c:if test="${alerts != null}" >
+        <page:list id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Alerts" label="Alert">
+            <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts" delete="false" create="false" update="true" typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields">
+                <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient Id" />
+                <table:column id="org_motechproject_tama_domain_patientalert" property="patientPhoneNumber" label="Phone Number" />
+                <table:column id="org_motechproject_tama_domain_patientalert" property="alertPriority" label="Alert Priority" />
+                <table:column id="org_motechproject_tama_domain_patientalert" property="type" label="Alert Type" />
+                <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOn" label="Alert Generated On" />
+                <table:column id="org_motechproject_tama_domain_patientalert" property="symptomsAlertStatus" label="Symptoms Call Status" />
+                <table:column id="org_motechproject_tama_domain_patientalert" property="notes" label="Notes" />
+            </table:table>
+        </page:list>
+    </c:if>
+</div>

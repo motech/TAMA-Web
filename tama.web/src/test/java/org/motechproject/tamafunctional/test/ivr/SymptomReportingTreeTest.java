@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.*;
-import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
-import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
@@ -34,14 +32,14 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         ListPatientsPage listPatientsPage = loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
-        UnreadAlertsPage unreadAlertsPage = listPatientsPage.goToUnreadAlertsPage().filter();
+        AlertsPage alertsPage = listPatientsPage.goToAlertsPage().filterUnreadAlerts();
 
-        assertAlertIsCreated(patient, unreadAlertsPage);
+        assertAlertIsCreated(patient, alertsPage);
 
         String notes = "some notes";
         String status = "Closed";
 
-        ShowAlertPage showAlertPage = updateNotesAndCloseAlert(patient, status, notes, unreadAlertsPage);
+        ShowAlertPage showAlertPage = updateNotesAndCloseAlert(patient, status, notes, alertsPage);
         assertShowAlert(notes, status, showAlertPage);
 
         assertAlertIsUpdated(patient, listPatientsPage, status, notes);
@@ -60,17 +58,17 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
     }
 
     private void assertAlertIsUpdated(TestPatient patient, ListPatientsPage listPatientsPage, String status, String notes) {
-        ReadAlertsPage readAlertsPage = listPatientsPage.goToReadAlertsPage().filter();
+        AlertsPage readAlertsPage = listPatientsPage.goToAlertsPage().filterReadAlerts();
         assertTableContainsAlert(readAlertsPage.alertsTable(), patient.patientId(), patient.mobileNumber(), status, notes);
     }
 
-    private void assertAlertIsCreated(TestPatient patient, UnreadAlertsPage unreadAlertsPage) {
-        List<WebElement> webElements = unreadAlertsPage.alertsTable();
+    private void assertAlertIsCreated(TestPatient patient, AlertsPage alertsPage) {
+        List<WebElement> webElements = alertsPage.alertsTable();
         assertTableContainsAlert(webElements, patient.patientId(), patient.mobileNumber(), "Open", "");
     }
 
-    private ShowAlertPage updateNotesAndCloseAlert(TestPatient patient, String status, String notes, UnreadAlertsPage unreadAlertsPage) {
-        UpdateAlertPage updateAlertPage = unreadAlertsPage.openUpdateAlertPage(patient.patientId());
+    private ShowAlertPage updateNotesAndCloseAlert(TestPatient patient, String status, String notes, AlertsPage alertsPage) {
+        UpdateAlertPage updateAlertPage = alertsPage.openUpdateAlertPage(patient.patientId());
         updateAlertPage.changeSymptomReportingAlertStatus(status);
         updateAlertPage.changeNotes(notes);
         return updateAlertPage.save();
