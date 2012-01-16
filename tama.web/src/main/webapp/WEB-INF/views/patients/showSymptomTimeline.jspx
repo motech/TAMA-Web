@@ -1,74 +1,72 @@
-<div><div>
-<link rel="stylesheet" type="text/css" href="/tama/resources/styles/timeline.css" />
-<script>
-//<![CDATA[
-function addURL(url) {           
-    var heads = document.documentElement.getElementsByTagName("head");
-	if (heads.length>0){
-		   var script= document.createElement('script');
-		   script.type= 'text/javascript';
-		   script.src= url;
-		   heads[0].appendChild(script);
-	}
-}
-	addURL('/tama/js/timeline_js/timeline-api.js?bundle=true');
-	addURL('/tama/js/timeline_ajax/simile-ajax-api.js?bundle=true');
-           
-	var tl;
-	function onLoad() {
-		updateChart(Timeline.DateTime.WEEK);
-	} 
-	function updateChart(interval) {
-	 var eventSource = new Timeline.DefaultEventSource(0);
-	  var bandInfos = [
-	    Timeline.createBandInfo({
-	        eventSource:    eventSource,
-	        width:          "80%",
-	        intervalUnit:   interval,
-	        intervalPixels: 200
-	    })
-	    ,Timeline.createBandInfo({
-	        eventSource:    eventSource,
-	        width:          "20%",
-	        intervalUnit:   Timeline.DateTime.MONTH,
-	        intervalPixels: 300,
-		 overview:       true
-	    })
-	  ];
-	  
-	     bandInfos[1].syncWith = 0;
-	     bandInfos[1].highlight = true;
-	           
-	  tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
-	  //Timeline.loadXML("example1.xml", function(xml, url) { eventSource.loadXML(xml, url); });
-	   tl.loadJSON("/tama/json/symptoms/list?id=${patient.id}&rangeInMonths=1&"+ (new Date().getTime()), function(json, url) {
-	               eventSource.loadJSON(json, url);
-	           });
-	}
+<div>
+	<div id="timelineGraphPane" style="display: none;">
+		<link rel="stylesheet" type="text/css" href="/tama/resources/styles/timeline.css" />
+			<div id="reported-symptoms-timeline"
+				style="height: 350px; border: 1px solid #aaa"></div>
+			<noscript>This page uses Javascript to show you a
+				Timeline. Please enable Javascript in your browser to see the full
+				page. Thank you.</noscript>
+	</div>
+	<div id="trackthisdiv" style="text-align: right;">
+		<button onclick="updateChart(Timeline.DateTime.DAY);">Day</button>
+		<button onclick="updateChart(Timeline.DateTime.WEEK);">Week</button>
+		<button onclick="updateChart(Timeline.DateTime.MONTH);">Month</button>
+		<br />
+	</div>
+	<script>
+			//<![CDATA[         
+			function addURL(url) {
+				var heads = document.documentElement
+						.getElementsByTagName("head");
+				if (heads.length > 0) {
+					var script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src = url;
+					heads[0].appendChild(script);
+				}
+			}
+			addURL('/tama/js/timeline_js/timeline-api.js?bundle=true');
+			addURL('/tama/js/timeline_ajax/simile-ajax-api.js?bundle=true');
+
+			var tl;
+			function onLoad() {
+			    var urlString = "/tama/json/symptoms/list?id=${patient.id}&rangeInMonths=12&"+ (new Date().getTime());
+			    dojo.xhrGet({
+				  url: urlString,
+				  handleAs: "json",
+				  load: function(json, ioArgs) {
+						if (json.events.length>0) {
+						    dojo.byId('timelineGraphPane').style.display = '';
+						    updateChart(Timeline.DateTime.WEEK, json, urlString);
+						}
+				  }});
+			}
+			function updateChart(interval,json, urlString) {
+				var eventSource = new Timeline.DefaultEventSource(0);
+				var bandInfos = [Timeline.createBandInfo({
+									eventSource : eventSource,
+									width : "80%",
+									intervalUnit : interval,
+									intervalPixels : 200
+								}), Timeline.createBandInfo({
+									eventSource : eventSource,
+									width : "20%",
+									intervalUnit : Timeline.DateTime.MONTH,
+									intervalPixels : 300,
+									overview : true
+								})];
+
+				bandInfos[1].syncWith = 0;
+				bandInfos[1].highlight = true;
 	
-	var resizeTimerID = null;
-	function onResize() {
-	    if (resizeTimerID == null) {
-	        resizeTimerID = window.setTimeout(function() {
-	            resizeTimerID = null;
-	            tl.layout();
-	        }, 500);
-	    }
-	}
-	
-	dojo.addOnLoad(onLoad);
-	
-	//]]>
-</script>
-<body onload="onLoad();" onresize="onResize();">
-<div id="my-timeline" style="height: 350px; border: 1px solid #aaa"></div>
-<noscript>
-This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
-</noscript>
-</body>
-</div>
-<div id="trackthisdiv" style="text-align: right;">
-<button onclick="updateChart(Timeline.DateTime.DAY);">Day</button><button onclick="updateChart(Timeline.DateTime.WEEK);">Week</button><button onclick="updateChart(Timeline.DateTime.MONTH);">Month</button>
-<br/>
-</div>
+				tl = Timeline.create(document.getElementById("reported-symptoms-timeline"), bandInfos);
+				eventSource.loadJSON(json, urlString);
+			}
+
+			dojo.addOnLoad(function(){
+					onLoad(); 
+			});
+
+			//]]>
+		</script>
 </div>
