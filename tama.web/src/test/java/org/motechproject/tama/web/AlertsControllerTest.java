@@ -71,7 +71,7 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldSetAllAlertsForDisplay() {
-        assertEquals("alerts/list", alertsController.list(uiModel));
+        assertEquals("alerts/list", alertsController.list(uiModel, request));
     }
 
     @Test

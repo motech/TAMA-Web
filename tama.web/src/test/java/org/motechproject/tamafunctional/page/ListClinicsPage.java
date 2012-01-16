@@ -9,7 +9,7 @@ import org.openqa.selenium.support.How;
 
 
 public class ListClinicsPage extends Page {
-    public final static String WELCOME_MESSAGE = "List all Clinics";
+    public final static String WELCOME_MESSAGE = "Clinics";
     public static final String CLINICS_LISTING_LINK_XPATH = "//li[@id='i_clinic_new']/a";
 
     @FindBy(how = How.XPATH, using = "//li[@id='i_clinic_new']/a")

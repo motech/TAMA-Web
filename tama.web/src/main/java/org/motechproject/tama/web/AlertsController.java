@@ -26,17 +26,20 @@ public class AlertsController extends BaseController {
         this.patientAlertService = patientAlertService;
     }
 
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public String list(Model uiModel, HttpServletRequest request) {
+        AlertFilter unreadAlertsFilter = AlertFilter.UNREAD_ALERTS_FILER;
+        final String clinicId = loggedInClinic(request);
+        uiModel.addAttribute("alerts", getFilteredAlerts(unreadAlertsFilter, clinicId));
+        uiModel.addAttribute("alertFilter", unreadAlertsFilter);
+        return "alerts/list";
+    }
+
     @RequestMapping(value = "/list/filter", method = RequestMethod.GET)
     public String list(AlertFilter filter, Model uiModel, HttpServletRequest request) {
         final String clinicId = loggedInClinic(request);
         uiModel.addAttribute("alerts", getFilteredAlerts(filter, clinicId));
         uiModel.addAttribute("alertFilter", filter);
-        return "alerts/list";
-    }
-
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list(Model uiModel) {
-        uiModel.addAttribute("alertFilter", new AlertFilter());
         return "alerts/list";
     }
 
