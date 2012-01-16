@@ -33,8 +33,8 @@
 			if (registerFakeCurrentTimeMillis!=null) registerFakeCurrentTimeMillis.invoke(null);
 	
 			System.out.println("offset calculated " + diffValue);
-			Method setTimeOffset = System.class.getMethod("setTimeOffset");
-			if (setTimeOffset!=null) setTimeOffset.invoke(diffValue);
+			Method setTimeOffset = System.class.getMethod("setTimeOffset", long.class);
+			if (setTimeOffset!=null) setTimeOffset.invoke(null, diffValue);
 			System.out.println("Date :" + new Date());
 		  } catch(java.lang.Exception e) {
 		      out.println("Error: " + e.getMessage());
