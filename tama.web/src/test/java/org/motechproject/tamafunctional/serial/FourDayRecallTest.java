@@ -1,4 +1,4 @@
-package org.motechproject.tamafunctional.test.fourdayrecall;
+package org.motechproject.tamafunctional.serial;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -27,16 +27,13 @@ public class FourDayRecallTest extends BaseIVRTest {
     private DateTime now = new DateTime(2012, 1, 1, 10, 0, 0, 0);
     private DateTime registrationTime = now.minusDays(7);
 
-    public FourDayRecallTest() {
-        super.setUp();
-        tamaDateTimeService = new TAMADateTimeService(webClient);
-    }
-
     @Before
     public void setUp() {
-        caller = caller(patient);
+        super.setUp();
+        tamaDateTimeService = new TAMADateTimeService(webClient);
         registerPatient();
         createTreatmentAdvice();
+        caller = caller(patient);
     }
 
     @Test
