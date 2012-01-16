@@ -12,7 +12,7 @@ function addURL(url) {
 	}
 }
 	addURL('/tama/js/timeline_js/timeline-api.js?bundle=true');
-	addURL('/tama/js/timeline_ajax/simile-ajax-api.js?bundle=false');
+	addURL('/tama/js/timeline_ajax/simile-ajax-api.js?bundle=true');
            
 	var tl;
 	function onLoad() {
