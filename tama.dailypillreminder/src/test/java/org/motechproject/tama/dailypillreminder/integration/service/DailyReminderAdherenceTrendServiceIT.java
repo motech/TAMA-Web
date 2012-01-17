@@ -89,19 +89,19 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         }});
         when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5).plusDays(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5).plusDays(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4).plusDays(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3).plusDays(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_RECORDED, today.minusWeeks(1).plusDays(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_TAKEN, today.minusWeeks(1).plusDays(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_RECORDED, today.minusWeeks(1).plusDays(3)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5), DateUtil.newDateTime(today.minusWeeks(5), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5).plusDays(1), DateUtil.newDateTime(today.minusWeeks(5).plusDays(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5).plusDays(2), DateUtil.newDateTime(today.minusWeeks(5).plusDays(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4), DateUtil.newDateTime(today.minusWeeks(4), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4).plusDays(2), DateUtil.newDateTime(today.minusWeeks(4).plusDays(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3), DateUtil.newDateTime(today.minusWeeks(3), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3).plusDays(2), DateUtil.newDateTime(today.minusWeeks(3).plusDays(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(2), DateUtil.newDateTime(today.minusWeeks(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1), DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_RECORDED, today.minusWeeks(1).plusDays(1), DateUtil.newDateTime(today.minusWeeks(1).plusDays(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_TAKEN, today.minusWeeks(1).plusDays(2), DateUtil.newDateTime(today.minusWeeks(1).plusDays(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_RECORDED, today.minusWeeks(1).plusDays(3), DateUtil.newDateTime(today.minusWeeks(1).plusDays(3), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today, DateUtil.newDateTime(today, 0, 0, 0)));
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
 
         assertTrue(dailyReminderAdherenceTrendService.isAdherenceFallingAsOf("patientId", DateUtil.now()));
@@ -119,19 +119,19 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         }});
         when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.NOT_TAKEN, today.minusWeeks(5)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(5).plusDays(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(4)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(3)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_TAKEN, today.minusWeeks(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.WILL_TAKE_LATER, today.minusWeeks(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.WILL_TAKE_LATER, today));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5), DateUtil.newDateTime(today.minusWeeks(5), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.NOT_TAKEN, today.minusWeeks(5), DateUtil.newDateTime(today.minusWeeks(5), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(5).plusDays(1), DateUtil.newDateTime(today.minusWeeks(5).plusDays(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4), DateUtil.newDateTime(today.minusWeeks(4), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(4), DateUtil.newDateTime(today.minusWeeks(4), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3), DateUtil.newDateTime(today.minusWeeks(3), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(3), DateUtil.newDateTime(today.minusWeeks(3), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_TAKEN, today.minusWeeks(2), DateUtil.newDateTime(today.minusWeeks(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today.minusWeeks(2), DateUtil.newDateTime(today.minusWeeks(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1), DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.WILL_TAKE_LATER, today.minusWeeks(1), DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.WILL_TAKE_LATER, today, DateUtil.newDateTime(today, 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today, DateUtil.newDateTime(today, 0, 0, 0)));
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
 
         assertTrue(dailyReminderAdherenceTrendService.isAdherenceFallingAsOf("patientId", DateUtil.now()));
@@ -148,12 +148,12 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         }});
         when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(2)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1).plusDays(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5), DateUtil.newDateTime(today.minusWeeks(5), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4), DateUtil.newDateTime(today.minusWeeks(4), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(2), DateUtil.newDateTime(today.minusWeeks(2), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1), DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(1).plusDays(1), DateUtil.newDateTime(today.minusWeeks(1).plusDays(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today, DateUtil.newDateTime(today, 0, 0, 0)));
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
 
         assertFalse(dailyReminderAdherenceTrendService.isAdherenceFallingAsOf("patientId", DateUtil.now()));
@@ -171,12 +171,12 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         }});
         when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
 
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.NOT_TAKEN, today.minusWeeks(5)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.WILL_TAKE_LATER, today.minusWeeks(1)));
-        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(5), DateUtil.newDateTime(today.minusWeeks(5), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.NOT_TAKEN, today.minusWeeks(5), DateUtil.newDateTime(today.minusWeeks(5), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(4), DateUtil.newDateTime(today.minusWeeks(4), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, today.minusWeeks(3), DateUtil.newDateTime(today.minusWeeks(3), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.WILL_TAKE_LATER, today.minusWeeks(1), DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog("patientId", "pillRegimenId", "dosage2Id", DosageStatus.TAKEN, today, DateUtil.newDateTime(today, 0, 0, 0)));
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
 
         assertFalse(dailyReminderAdherenceTrendService.isAdherenceFallingAsOf("patientId", DateUtil.now()));

@@ -25,13 +25,8 @@ public class DosageAdherenceLog extends CouchEntity {
 
     private DateTime dosageStatusUpdatedAt;
 
-    public DosageAdherenceLog() {
-        dosageStatusUpdatedAt = DateUtil.now();
-    }
+    private DosageAdherenceLog(){}
 
-    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, DosageStatus dosageStatus, LocalDate dosageDate) {
-        this(patientId, regimenId, dosageId, dosageStatus, dosageDate, DateUtil.now());
-    }
     public DosageAdherenceLog(String patientId, String regimenId, String dosageId, DosageStatus dosageStatus, LocalDate dosageDate, DateTime dosageStatusUpdatedAt) {
         this.patientId = patientId;
         this.regimenId = regimenId;
@@ -140,7 +135,7 @@ public class DosageAdherenceLog extends CouchEntity {
     }
 
     public static DosageAdherenceLog create(String patientId, String regimenId, DosageStatus dosageStatus, Dose dose, DateTime doseTakenTime, int dosageInterval) {
-        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), dosageStatus, dose.getDate());
+        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), dosageStatus, dose.getDate(), doseTakenTime);
         if (dose.isLateToTake(doseTakenTime, dosageInterval)) adherenceLog.dosageIsTakenLate();
         return adherenceLog;
     }

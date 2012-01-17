@@ -120,7 +120,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithSingleDosage(dosageTime, startDate.toLocalDate().minusDays(10), "dosageId");
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, null, null));
 
             dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
@@ -134,7 +134,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithSingleDosage(dosageTime, startDate.toLocalDate(), "dosageId");
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, null, null));
 
             dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
@@ -207,7 +207,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithMultipleDosages(new Time(6, 0), startDate.toLocalDate(), "dosageId1", new Time(16, 0), startDate.toLocalDate(), "dosageId2");
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, null, null));
 
             dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(4)).add(Matchers.<DosageAdherenceLog>any());
@@ -232,7 +232,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithMultipleDosages(new Time(6, 0), startDate.toLocalDate(), "dosageId1", new Time(16, 0), startDate.toLocalDate().plusDays(2), "dosageId2");
 
             when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog());
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, null, null));
 
             dailyReminderAdherenceService.backFillAdherence("patientId", startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(3)).add(Matchers.<DosageAdherenceLog>any());
@@ -268,7 +268,7 @@ public class DailyPillReminderAdherenceServiceTest {
         @Test
         public void whenDoseIsTaken_AfterFirstCall_ButWithinDosageInterval() {
             DateTime doseDate = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
-            DosageAdherenceLog existingLog = new DosageAdherenceLog("patientId", "regimenId", "dosageId", DosageStatus.NOT_TAKEN, doseDate.toLocalDate());
+            DosageAdherenceLog existingLog = new DosageAdherenceLog("patientId", "regimenId", "dosageId", DosageStatus.NOT_TAKEN, doseDate.toLocalDate(), DateUtil.newDateTime(doseDate.toLocalDate(), 0, 0, 0));
             when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", doseDate.toLocalDate())).thenReturn(existingLog);
 
             Dose dose = mock(Dose.class);

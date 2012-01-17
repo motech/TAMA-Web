@@ -7,15 +7,14 @@ import org.motechproject.util.DateUtil;
 
 public class DosageAdherenceLogBuilder {
 
-    private DosageAdherenceLog adherenceLog = new DosageAdherenceLog();
+    private DosageAdherenceLog adherenceLog = new DosageAdherenceLog(null, null, null, null, null, null);
 
     public DosageAdherenceLog build() {
         return this.adherenceLog;
     }
 
     public DosageAdherenceLogBuilder withDefaults() {
-        this
-                .withPatientId("12345")
+        this.withPatientId("12345")
                 .withRegimenId("56789")
                 .withDosageId("123")
                 .withDosageDate(DateUtil.newDate(2001, 1, 1))

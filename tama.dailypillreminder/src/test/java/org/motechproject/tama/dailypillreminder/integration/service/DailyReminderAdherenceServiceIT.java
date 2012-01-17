@@ -136,6 +136,6 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     }
 
     private void addAdherenceLog(String dosageId, DosageStatus dosageStatus, LocalDate dosageDate) {
-        allDosageAdherenceLogs.add(new DosageAdherenceLog(patient.getId(), "pillRegimenId", dosageId, dosageStatus, dosageDate));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog(patient.getId(), "pillRegimenId", dosageId, dosageStatus, dosageDate, DateUtil.newDateTime(dosageDate, 0, 0, 0)));
     }
 }

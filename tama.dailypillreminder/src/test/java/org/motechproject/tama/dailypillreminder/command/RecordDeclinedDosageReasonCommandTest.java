@@ -41,7 +41,7 @@ public class RecordDeclinedDosageReasonCommandTest {
 
     @Test
     public void shouldUpdateTheDeclinedDosageAdherenceLogWithReason() {
-        DosageAdherenceLog log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN, DateUtil.today());
+        DosageAdherenceLog log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, DosageStatus.NOT_TAKEN, DateUtil.today(), DateUtil.newDateTime(DateUtil.today(), 0, 0, 0));
         when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(log);
 
         RecordDeclinedDosageReasonCommand command = new RecordDeclinedDosageReasonCommand(logs, null);

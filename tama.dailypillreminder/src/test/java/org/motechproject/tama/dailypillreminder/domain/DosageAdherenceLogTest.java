@@ -14,12 +14,12 @@ public class DosageAdherenceLogTest {
 
     @Test
     public void dosageTakenLate_isFalseByDefault() {
-        assertFalse(new DosageAdherenceLog().isDosageTakenLate());
+        assertFalse(new DosageAdherenceLog(null, null, null, null, null, null).isDosageTakenLate());
     }
 
     @Test
     public void dosageTakenLate() {
-        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog();
+        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(null, null, null, null, null, null);
         dosageAdherenceLog.setDosageStatus(DosageStatus.TAKEN);
         dosageAdherenceLog.dosageIsTakenLate();
         assertTrue(dosageAdherenceLog.isDosageTakenLate());
@@ -27,7 +27,7 @@ public class DosageAdherenceLogTest {
 
     @Test
     public void dosageTakenLateIsFalseIfDosageNotTaken() {
-        DosageAdherenceLog notTakenDose = new DosageAdherenceLog();
+        DosageAdherenceLog notTakenDose = new DosageAdherenceLog(null, null, null, null, null, null);
         notTakenDose.setDosageStatus(DosageStatus.NOT_TAKEN);
 
         notTakenDose.dosageIsTakenLate();
@@ -35,12 +35,19 @@ public class DosageAdherenceLogTest {
     }
 
     @Test
+    public void shouldSet_DosageStatusUpdatedOnDate_AsDoseDate_WhenLogIsCreated(){
+        Dose dose = mock(Dose.class);
+        DateTime tenDaysBack = DateUtil.now().minusDays(10);
+
+        DosageAdherenceLog dosageAdherenceLog = DosageAdherenceLog.create(null, null, DosageStatus.TAKEN, dose, tenDaysBack, 15);
+        assertEquals(tenDaysBack, dosageAdherenceLog.getDosageStatusUpdatedAt());
+    }
+
+    @Test
     public void shouldUpdate_DosageStatusUpdatedOnDate_AsDoseDate_WhenStatusIsUpdated(){
         DosageAdherenceLog dosageAdherenceLog = DosageAdherenceLogBuilder.startRecording().withDefaults().build();
         Dose dose = mock(Dose.class);
         DateTime yesterday = DateUtil.now().minusDays(1);
-
-        assertFalse(dosageAdherenceLog.getDosageStatusUpdatedAt().equals(yesterday));
 
         dosageAdherenceLog.updateStatus(DosageStatus.TAKEN, yesterday, 15, dose);
 
