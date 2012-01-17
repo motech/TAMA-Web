@@ -81,7 +81,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             while (dosageTimeLine.hasNext()) {
                 Dose dose = dosageTimeLine.next();
                 DosageAdherenceLog dosageAdherenceLog = allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate());
-                if ((dosageAdherenceLog == null) || (dosageAdherenceLog.getDosageStatus() == DosageStatus.NOT_RECORDED)) {
+                if (dosageAdherenceLog == null || dosageAdherenceLog.getDosageStatus().wasNotReported()) {
                     recordDosageAdherenceAsCaptured(patientId, pillRegimen.getId(), dose, dosageStatus, dose.getDoseTime());
                 }
             }

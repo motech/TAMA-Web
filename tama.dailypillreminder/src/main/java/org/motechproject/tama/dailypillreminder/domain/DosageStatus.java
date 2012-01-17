@@ -18,4 +18,12 @@ public enum DosageStatus {
                 return NOT_RECORDED;
         }
     }
+
+    public boolean wasReported(){
+        return this == TAKEN || this == NOT_TAKEN;
+    }
+
+    public boolean wasNotReported(){
+        return !wasReported();
+    }
 }
