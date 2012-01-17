@@ -25,8 +25,6 @@ public class AlertFilter {
 
     private String alertStatus;
 
-    public static AlertFilter UNREAD_ALERTS_FILER = new AlertFilter().setAlertStatus(STATUS_UNREAD);
-
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date startDate = DateUtil.today().toDate();
