@@ -1,6 +1,6 @@
 package org.motechproject.tama.healthtips.integration.service;
 
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.KnowledgeBase;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,11 +39,8 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     private AdherenceService adherenceService;
     @Mock
     private AllLabResults allLabResults;
-
     @Autowired
-    AllPatients allPatients;
-    @Autowired
-    private StatelessKnowledgeSession healthTipsSession;
+    private KnowledgeBase healthTipsKnowledgeBase;
 
     private Patient patient;
     private LabResults labResults;
@@ -55,7 +52,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         when(allLabResults.findLatestLabResultsByPatientId("pid")).thenReturn(labResults);
-        healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
+        healthTipRuleService = new HealthTipRuleService(healthTipsKnowledgeBase, adherenceService, allLabResults);
     }
 
     private void setupLabResults(LocalDate testDate1, String testResult1, LocalDate testDate2, String testResult2) {
@@ -69,7 +66,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     public void shouldReturnHealthTipWithPriorityWhenPatientOnDailyReminder() {
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.DailyPillReminder).build();
         when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, true));
-        healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
+        healthTipRuleService = new HealthTipRuleService(healthTipsKnowledgeBase, adherenceService, allLabResults);
 
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("1", healthTips.get("HT002a"));
@@ -84,7 +81,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     public void shouldReturnHealthTipWithPriorityWhenPatientOnFourDayRecall() {
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.FourDayRecall).build();
         when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, true));
-        healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
+        healthTipRuleService = new HealthTipRuleService(healthTipsKnowledgeBase, adherenceService, allLabResults);
 
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("1", healthTips.get("HT002a"));
@@ -99,7 +96,7 @@ public class HealthTipRuleServiceTest_WhenDoseMissedInLastWeek {
     public void shouldReturnHealthTipWithPriorityWhenPatientOnFourDayRecallAndPatientOnRegimenLessThanAMonth() {
         patient = PatientBuilder.startRecording().withId("pid").withCallPreference(CallPreference.FourDayRecall).build();
         when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, true));
-        healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
+        healthTipRuleService = new HealthTipRuleService(healthTipsKnowledgeBase, adherenceService, allLabResults);
 
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
 

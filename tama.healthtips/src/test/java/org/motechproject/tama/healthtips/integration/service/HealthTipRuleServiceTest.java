@@ -1,6 +1,6 @@
 package org.motechproject.tama.healthtips.integration.service;
 
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.KnowledgeBase;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +37,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class HealthTipRuleServiceTest {
 
     @Autowired
-    private AllPatients allPatients;
-    @Autowired
-    private StatelessKnowledgeSession healthTipsSession;
-
+    private KnowledgeBase healthTipsKnowledgeBase;
     @Mock
     private AdherenceService adherenceService;
     @Mock
@@ -58,7 +55,7 @@ public class HealthTipRuleServiceTest {
         patient = PatientBuilder.startRecording().withId("patientDocId").withCallPreference(CallPreference.DailyPillReminder).build();
 
         when(adherenceService.lastWeekAdherence(patient)).thenReturn(new AdherenceComplianceReport(false, false));
-        healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
+        healthTipRuleService = new HealthTipRuleService(healthTipsKnowledgeBase, adherenceService, allLabResults);
     }
 
     private void setupLabResults(LocalDate testDate1, String testResult1, LocalDate testDate2, String testResult2) {

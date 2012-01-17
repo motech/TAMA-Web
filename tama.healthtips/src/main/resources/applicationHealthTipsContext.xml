@@ -16,10 +16,9 @@
     <context:spring-configured/>
     <context:property-placeholder location="classpath*:/*.properties"/>
 
-    <drools:kbase id="healthTipsRules">
+    <drools:kbase id="healthTipsKnowledgeBase">
         <drools:resources>
             <drools:resource source="classpath:healthTips.drl" type="DRL"/>
         </drools:resources>
     </drools:kbase>
-    <drools:ksession id="healthTipsSession" type="stateless" kbase="healthTipsRules"/>
 </beans>

@@ -1,6 +1,6 @@
 package org.motechproject.tama.healthtips.integration.service;
 
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.KnowledgeBase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,15 +39,10 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
 
     @Mock
     private AdherenceService adherenceService;
-
     @Mock
     private AllLabResults allLabResults;
-
     @Autowired
-    private AllPatients allPatients;
-
-    @Autowired
-    private StatelessKnowledgeSession healthTipsSession;
+    private KnowledgeBase healthTipsKnowledgeBase;
 
     private Patient patient;
 
@@ -68,7 +63,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
     public void setup() {
         initMocks(this);
         patientHasLabResults();
-        healthTipRuleService = new HealthTipRuleService(healthTipsSession, adherenceService, allLabResults);
+        healthTipRuleService = new HealthTipRuleService(healthTipsKnowledgeBase, adherenceService, allLabResults);
     }
 
     @Test
