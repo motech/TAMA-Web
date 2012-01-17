@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -45,7 +46,7 @@ public class PlayAdherenceTrendFeedbackCommandTest {
     }
 
     @Test
-    public void testExecute() {
+    public void testExecute() throws NoAdherenceRecordedException {
         String externalId = "someExternalId";
         String[] result;
 

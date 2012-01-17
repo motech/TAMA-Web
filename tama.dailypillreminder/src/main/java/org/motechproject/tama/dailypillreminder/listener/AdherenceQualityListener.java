@@ -49,7 +49,7 @@ public class AdherenceQualityListener {
                     dailyReminderAdherenceTrendService.raiseAdherenceInRedAlert(patientId, adherencePercentage);
                 }
             } catch (NoAdherenceRecordedException e) {
-                logger.info("No Adherence was recorded for last 4 weeks. Red Alert cannot be raised.");
+                logger.info("No Adherence records found!");
             }
         }
     }

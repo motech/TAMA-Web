@@ -1,6 +1,7 @@
 package org.motechproject.tama.common;
 
-public class NoAdherenceRecordedException extends RuntimeException {
+public class NoAdherenceRecordedException extends Exception {
+
     public NoAdherenceRecordedException(String s) {
         super(s);
     }

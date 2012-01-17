@@ -15,8 +15,8 @@ import java.util.Map;
 
 @Component
 public class DailyPillReminderAdherenceTrendService {
-    public DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
+    public DailyPillReminderAdherenceService dailyReminderAdherenceService;
     private PatientAlertService patientAlertService;
 
     @Autowired
@@ -37,8 +37,15 @@ public class DailyPillReminderAdherenceTrendService {
         if (!isAdherenceFallingAsOf(patientId, asOf))
             return;
         Map<String, String> data = new HashMap<String, String>();
-        double adherencePercentageAsOfLastWeek = dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf.minusWeeks(1));
-        double adherencePercentageAsOfCurrentWeek = dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf);
+        double adherencePercentageAsOfLastWeek = 0;
+        double adherencePercentageAsOfCurrentWeek = 0;
+
+        try {
+            adherencePercentageAsOfLastWeek = dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf.minusWeeks(1));
+            adherencePercentageAsOfCurrentWeek = dailyReminderAdherenceService.getAdherencePercentage(patientId, asOf);
+        } catch (NoAdherenceRecordedException e) {
+            return;
+        }
         double fallPercent = ((adherencePercentageAsOfLastWeek - adherencePercentageAsOfCurrentWeek) / adherencePercentageAsOfLastWeek) * 100;
         String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fallPercent, adherencePercentageAsOfLastWeek, adherencePercentageAsOfCurrentWeek);
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);

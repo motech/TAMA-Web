@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
@@ -84,7 +85,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     }
 
     @Test
-    public void adherenceWhenLessThan4WeeksIntoRegimen() {
+    public void adherenceWhenLessThan4WeeksIntoRegimen() throws NoAdherenceRecordedException {
         PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(1), null, null, null));
         }});
@@ -111,7 +112,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     }
 
     @Test
-    public void adherenceWhenLessThan4WeeksIntoRegimen_WhenPatientTransitionedFromDailyPillReminderToWeeklyPillReminder_AndBackToDailyPillReminder() {
+    public void adherenceWhenLessThan4WeeksIntoRegimen_WhenPatientTransitionedFromDailyPillReminderToWeeklyPillReminder_AndBackToDailyPillReminder() throws NoAdherenceRecordedException {
         PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(2), null, null, null));
         }});

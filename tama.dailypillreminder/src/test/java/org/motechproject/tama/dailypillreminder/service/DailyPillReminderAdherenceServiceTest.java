@@ -345,7 +345,7 @@ public class DailyPillReminderAdherenceServiceTest {
     public static class CalculateAdherence extends TestSubject {
 
         @Test
-        public void forPatient() {
+        public void forPatient() throws NoAdherenceRecordedException {
             int dosesTaken = 7;
             int totalLogs = 28;
 
@@ -362,7 +362,7 @@ public class DailyPillReminderAdherenceServiceTest {
         }
 
         @Test(expected = NoAdherenceRecordedException.class)
-        public void shouldRaiseExceptionIfNoDosageRecordedYet() {
+        public void shouldRaiseExceptionIfNoDosageRecordedYet() throws NoAdherenceRecordedException {
 
             PillRegimen pillRegimen = mock(PillRegimen.class);
 

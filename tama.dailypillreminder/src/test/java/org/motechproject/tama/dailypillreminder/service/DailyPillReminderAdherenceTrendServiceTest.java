@@ -8,6 +8,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.util.EmptyMapMatcher;
 import org.motechproject.tama.patient.domain.PatientAlert;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DateUtil.class})
-public class DailyReminderAdherenceTrendServiceTest {
+public class DailyPillReminderAdherenceTrendServiceTest {
 
     @Mock
     private PatientAlertService patientAlertService;
@@ -37,21 +38,16 @@ public class DailyReminderAdherenceTrendServiceTest {
     @Mock
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
-    private DateTime dateTime = DateTime.now();
-
-    private DailyPillReminderAdherenceTrendService service;
-
     private EmptyMapMatcher emptyMapMatcher;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         emptyMapMatcher = new EmptyMapMatcher();
-        service = new DailyPillReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
     }
 
     @Test
-    public void shouldRaiseAlertWhenAdherenceIsFalling() {
+    public void shouldRaiseAlertWhenAdherenceIsFalling() throws NoAdherenceRecordedException {
         DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService = new DailyPillReminderAdherenceTrendService(patientAlertService, dailyReminderAdherenceService);
         final String patientId = "patientId";
         DateTime now = DateUtil.now();

@@ -6,6 +6,8 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdheren
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +16,8 @@ import java.util.ArrayList;
 @Component
 public class PlayAdherenceTrendFeedbackCommand {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
-
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
     @Autowired
@@ -32,6 +34,7 @@ public class PlayAdherenceTrendFeedbackCommand {
             adherencePercentageAsOfNow = dailyReminderAdherenceService.getAdherencePercentage(patientId, now);
         } catch(NoAdherenceRecordedException e){
             adherencePercentageAsOfNow = 0.00;
+            logger.info("No Adherence records found!");
         }
 
         boolean falling = dailyReminderAdherenceTrendService.isAdherenceFallingAsOf(patientId, DateUtil.now());

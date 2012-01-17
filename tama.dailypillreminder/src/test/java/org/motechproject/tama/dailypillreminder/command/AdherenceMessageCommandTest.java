@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
@@ -45,7 +46,7 @@ public class AdherenceMessageCommandTest {
     }
 
     @Test
-    public void shouldReportAdherenceAsOfLastRecordedDose() {
+    public void shouldReportAdherenceAsOfLastRecordedDose() throws NoAdherenceRecordedException {
         when(dailyReminderAdherenceService.getAdherencePercentage("patient_id", callStartTime)).thenReturn(25.0);
         assertArrayEquals(new String[]{TamaIVRMessage.YOUR_ADHERENCE_IS_NOW, "Num_025", TamaIVRMessage.PERCENT}, adherenceMessageCommand.executeCommand(tamaIvrContext));
     }

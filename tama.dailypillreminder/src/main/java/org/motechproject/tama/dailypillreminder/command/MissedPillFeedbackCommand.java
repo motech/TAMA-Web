@@ -1,5 +1,6 @@
 package org.motechproject.tama.dailypillreminder.command;
 
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
@@ -7,11 +8,14 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdheren
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public MissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, DailyPillReminderService dailyPillReminderService) {
@@ -31,7 +35,12 @@ public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
             case 4:
                 return new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_SECOND_TO_FOURTH_TIME};
             default:
-                int adherencePercentage = (int) (dailyReminderAdherenceService.getAdherencePercentage(context.patientDocumentId(), context.callStartTime()));
+                int adherencePercentage = 0;
+                try {
+                    adherencePercentage = (int) (dailyReminderAdherenceService.getAdherencePercentage(context.patientDocumentId(), context.callStartTime()));
+                } catch (NoAdherenceRecordedException ignored) {
+                    logger.info("No Adherence records found!");
+                }
                 return new String[]{getMissedPillFeedbackMessageFor(adherencePercentage)};
         }
     }

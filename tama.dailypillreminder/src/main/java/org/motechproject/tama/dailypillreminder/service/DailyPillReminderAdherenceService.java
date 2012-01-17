@@ -36,7 +36,7 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         adherenceService.register(CallPreference.DailyPillReminder, this);
     }
 
-    public double getAdherencePercentage(String patientId, DateTime asOfDate) {
+    public double getAdherencePercentage(String patientId, DateTime asOfDate) throws NoAdherenceRecordedException {
         Patient patient = allPatients.get(patientId);
         DateTime fromDate = asOfDate.minusWeeks(4);
         DateTime callPreferenceTransitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
@@ -44,6 +44,17 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             fromDate = asOfDate.minusWeeks(4).isBefore(callPreferenceTransitionDate) ? callPreferenceTransitionDate : asOfDate.minusWeeks(4);
         }
         return getAdherencePercentage(patientId, fromDate.toLocalDate(), asOfDate);
+    }
+
+    private double getAdherencePercentage(String patientId, LocalDate fromDate, DateTime toDate) throws NoAdherenceRecordedException {
+        PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientId);
+        String pillRegimenId = pillRegimen.getId();
+        int totalLogs = allDosageAdherenceLogs.countByDosageDate(pillRegimenId, fromDate, toDate.toLocalDate());
+        if (totalLogs == 0) {
+            throw new NoAdherenceRecordedException("No Adherence Log was recorded for given date range");
+        }
+        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countByDosageStatusAndDate(pillRegimenId, DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
+        return ((double) dosagesTakenForLastFourWeeks) * 100 / totalLogs;
     }
 
     @Override
@@ -110,16 +121,5 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             existingLog.updateStatus(status, doseTakenTime, dosageInterval, dose);
             allDosageAdherenceLogs.update(existingLog);
         }
-    }
-
-    private double getAdherencePercentage(String patientId, LocalDate fromDate, DateTime toDate) throws NoAdherenceRecordedException {
-        PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientId);
-        String pillRegimenId = pillRegimen.getId();
-        int totalLogs = allDosageAdherenceLogs.countByDosageDate(pillRegimenId, fromDate, toDate.toLocalDate());
-        if (totalLogs == 0) {
-            throw new NoAdherenceRecordedException("No Adherence Log was recorded for given date range");
-        }
-        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countByDosageStatusAndDate(pillRegimenId, DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
-        return ((double) dosagesTakenForLastFourWeeks) * 100 / totalLogs;
     }
 }

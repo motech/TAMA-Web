@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
@@ -75,7 +76,7 @@ public class MissedPillFeedbackCommandTest {
     }
 
     @Test
-    public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceMoreThan90() {
+    public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceMoreThan90() throws NoAdherenceRecordedException {
         final LocalDate dosage1StartDate = new LocalDate(2011, 7, 1);
         final LocalDate dosage1EndDate = dosage1StartDate.plusWeeks(4);
         final LocalDate dosage2StartDate = dosage1StartDate.plusDays(4);
@@ -95,7 +96,7 @@ public class MissedPillFeedbackCommandTest {
     }
 
     @Test
-    public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceBetween70And90() {
+    public void shouldReturnMissedPillFeedbackWhenDosageMissedForMoreThanFourTimesAndAdherenceBetween70And90() throws NoAdherenceRecordedException {
         final LocalDate dosage1StartDate = new LocalDate(2011, 7, 1);
         final LocalDate dosage1EndDate = dosage1StartDate.plusWeeks(4);
         final LocalDate dosage2StartDate = dosage1StartDate.plusDays(4);

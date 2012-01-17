@@ -10,6 +10,7 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
@@ -56,7 +57,7 @@ public class AdherenceMessageWhenPreviousDoseCapturedCommandTest {
     }
 
     @Test
-    public void shouldPlayAdherenceMessageWhenPreviousDosageIsRecorded() {
+    public void shouldPlayAdherenceMessageWhenPreviousDosageIsRecorded() throws NoAdherenceRecordedException {
         DateTime now = new DateTime(2011, 8, 4, 12, 0);
         LocalDate today = now.toLocalDate();
         LocalDate yesterday = today.minusDays(1);

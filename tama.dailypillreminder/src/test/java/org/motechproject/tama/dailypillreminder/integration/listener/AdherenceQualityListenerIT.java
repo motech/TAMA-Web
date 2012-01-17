@@ -13,6 +13,7 @@ import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
@@ -103,7 +104,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldRaiseAdherenceInRedAlert() {
+    public void shouldRaiseAdherenceInRedAlert() throws NoAdherenceRecordedException {
         setUpAdherenceBelowThreshold();
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(PATIENT_ID)
                 .withExternalId(PATIENT_ID)
