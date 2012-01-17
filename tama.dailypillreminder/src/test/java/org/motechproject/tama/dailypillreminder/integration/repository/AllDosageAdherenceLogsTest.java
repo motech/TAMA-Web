@@ -2,18 +2,17 @@ package org.motechproject.tama.dailypillreminder.integration.repository;
 
 import org.joda.time.LocalDate;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
+import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -33,6 +32,8 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
 
     @After
     public void after() {
+        for (DosageAdherenceLog log : allDosageAdherenceLogs.getAll())
+            markForDeletion(log);
         super.after();
     }
 
@@ -47,7 +48,6 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLog3);
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
 
-        markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4);
         assertEquals(1, allDosageAdherenceLogs.getDosageTakenCount("1"));
     }
 
@@ -71,7 +71,6 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
         DosageAdherenceLog dosageAdherenceLog5 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, someDay.minusDays(4), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog5);
-        markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4, dosageAdherenceLog5);
 
         assertEquals(3, allDosageAdherenceLogs.getDosageTakenCount("regimen_id"));
     }
@@ -89,11 +88,10 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
         DosageAdherenceLog dosageAdherenceLog5 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.TAKEN, someDay.minusDays(4), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog5);
-        markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4, dosageAdherenceLog5);
 
-        assertEquals(3, allDosageAdherenceLogs.countBy("regimen_id", DosageStatus.TAKEN, someDay.minusDays(5), someDay));
-        assertEquals(2, allDosageAdherenceLogs.countBy("regimen_id", DosageStatus.TAKEN, someDay.minusDays(3), someDay));
-        assertEquals(0, allDosageAdherenceLogs.countBy("regimen_id", DosageStatus.TAKEN, someDay.minusDays(6), someDay.minusDays(5)));
+        assertEquals(3, allDosageAdherenceLogs.countByDosageStatusAndDate("regimen_id", DosageStatus.TAKEN, someDay.minusDays(5), someDay));
+        assertEquals(2, allDosageAdherenceLogs.countByDosageStatusAndDate("regimen_id", DosageStatus.TAKEN, someDay.minusDays(3), someDay));
+        assertEquals(0, allDosageAdherenceLogs.countByDosageStatusAndDate("regimen_id", DosageStatus.TAKEN, someDay.minusDays(6), someDay.minusDays(5)));
     }
 
     @Test
@@ -107,35 +105,8 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(dosageAdherenceLog3);
         DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_RECORDED, someDay.minusDays(4), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
-        markForDeletion(dosageAdherenceLog1, dosageAdherenceLog2, dosageAdherenceLog3, dosageAdherenceLog4);
 
-        assertEquals(3, allDosageAdherenceLogs.countAllLogsForRegimenBetween("regimen_id", someDay.minusDays(5), someDay));
-    }
-
-    @Test
-    public void shouldGetTheLatestDosageAdherenceLogForThePatient() {
-        LocalDate createdOn = new LocalDate(2011, 10, 10);
-        List<DosageAdherenceLog> dosageAdherenceLogs = Arrays.asList(
-                new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, createdOn, DateUtil.newDateTime(createdOn, 0, 0, 0)),
-                new DosageAdherenceLog("patient_id", "regimen_id", "dosage2_id", DosageStatus.NOT_TAKEN, createdOn.plusDays(1), DateUtil.newDateTime(createdOn.plusDays(1), 0, 0, 0))
-        );
-        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(0));
-        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(1));
-        markForDeletion(dosageAdherenceLogs.toArray());
-        assertEquals(dosageAdherenceLogs.get(1), allDosageAdherenceLogs.getLatestLogForPatient("patientId"));
-    }
-
-    @Test
-    public void shouldGetRecentlyAddedLogWhenTwoLogsHaveSameDate() {
-        LocalDate createdOn = new LocalDate(2011, 10, 10);
-        List<DosageAdherenceLog> dosageAdherenceLogs = Arrays.asList(
-                new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", DosageStatus.NOT_TAKEN, createdOn, DateUtil.newDateTime(createdOn, 0, 0, 0)),
-                new DosageAdherenceLog("patient_id", "regimen_id", "dosage2_id", DosageStatus.NOT_TAKEN, createdOn, DateUtil.newDateTime(createdOn, 0, 0, 0))
-        );
-        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(0));
-        allDosageAdherenceLogs.add(dosageAdherenceLogs.get(1));
-        markForDeletion(dosageAdherenceLogs.toArray());
-        assertEquals(dosageAdherenceLogs.get(1), allDosageAdherenceLogs.getLatestLogForPatient("patientId"));
+        assertEquals(3, allDosageAdherenceLogs.countByDosageDate("regimen_id", someDay.minusDays(5), someDay));
     }
 
     @Test
@@ -157,9 +128,55 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         allDosageAdherenceLogs.add(doseTakenLate_2);
         allDosageAdherenceLogs.add(doseTakenLate_3);
 
-        markForDeletion(doseTakenLateBeforeGivenDate, doseTakenLate_1, doseTakenLate_2, doseTakenOnTime, doseTakenLate_3);
+        assertEquals(3, allDosageAdherenceLogs.getDoseTakenLateCount("regimen_id", today.minusWeeks(1).plusDays(1), true));
+    }
 
-        assertEquals(3, allDosageAdherenceLogs.getDoseTakenLateCount("patient_id", today.minusWeeks(1).plusDays(1), true));
+    @Test
+    public void shouldSaveDosageAdherenceLogRecord() {
+        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLogBuilder().withDefaults().build();
+        allDosageAdherenceLogs.add(dosageAdherenceLog);
 
+        assertNotNull(dosageAdherenceLog.getId());
+
+        DosageAdherenceLog loadedDosageAdherenceLog = allDosageAdherenceLogs.get(dosageAdherenceLog.getId());
+        assertEquals(dosageAdherenceLog.getPatientId(), loadedDosageAdherenceLog.getPatientId());
+        assertEquals(dosageAdherenceLog.getRegimenId(), loadedDosageAdherenceLog.getRegimenId());
+        assertEquals(dosageAdherenceLog.getDosageId(), loadedDosageAdherenceLog.getDosageId());
+        assertEquals(dosageAdherenceLog.getDosageStatus(), loadedDosageAdherenceLog.getDosageStatus());
+    }
+
+    @Test
+    public void shouldGetDosageAdherenceLogsOfPatientForGivenDosageAndDate() {
+        LocalDate dosageDate = DateUtil.newDate(2011, 12, 12);
+        DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(dosageDate).build();
+        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withDosageId("123").withDosageDate(DateUtil.newDate(2011, 12, 13)).build();
+        allDosageAdherenceLogs.add(log1);
+        allDosageAdherenceLogs.add(log2);
+
+        DosageAdherenceLog log = allDosageAdherenceLogs.findByDosageIdAndDate("123", dosageDate);
+        assertNotNull(log);
+    }
+
+    @Test
+    public void shouldGetDosageTakenCount() {
+        LocalDate today = DateUtil.today();
+        DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today).withDosageStatus(DosageStatus.TAKEN).build();
+        DosageAdherenceLog log1 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("234").withDosageDate(today).withDosageStatus(DosageStatus.NOT_TAKEN).build();
+        DosageAdherenceLog log2 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today.minusDays(1)).withDosageStatus(DosageStatus.TAKEN).build();
+        DosageAdherenceLog log3 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("234").withDosageDate(today.minusDays(1)).withDosageStatus(DosageStatus.WILL_TAKE_LATER).build();
+        DosageAdherenceLog log4 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r2").withDosageId("222").withDosageDate(today.minusDays(20)).withDosageStatus(DosageStatus.TAKEN).build();
+        DosageAdherenceLog log5 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("123").withDosageDate(today.minusDays(50)).withDosageStatus(DosageStatus.NOT_TAKEN).build();
+        DosageAdherenceLog log6 = new DosageAdherenceLogBuilder().withDefaults().withRegimenId("r1").withDosageId("234").withDosageDate(today.minusDays(50)).withDosageStatus(DosageStatus.TAKEN).build();
+        allDosageAdherenceLogs.add(log0);
+        allDosageAdherenceLogs.add(log1);
+        allDosageAdherenceLogs.add(log2);
+        allDosageAdherenceLogs.add(log3);
+        allDosageAdherenceLogs.add(log4);
+        allDosageAdherenceLogs.add(log5);
+        allDosageAdherenceLogs.add(log6);
+
+        int count = allDosageAdherenceLogs.getDosageTakenCount("r1");
+
+        Assert.assertEquals(3, count);
     }
 }

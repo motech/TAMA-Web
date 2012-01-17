@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
@@ -16,7 +15,6 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
 
 import static junit.framework.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -31,8 +29,8 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     protected WeeklyAdherenceLogService weeklyAdherenceLogService;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
-    protected FourDayRecallDateService fourDayRecallDateService;
 
+    protected FourDayRecallDateService fourDayRecallDateService;
     protected FourDayRecallAdherenceService fourDayRecallAdherenceService;
     protected final DateTime now;
     private final LocalDate today;
@@ -137,7 +135,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldReturnFalseForDoseTakeLate() {
-        assertFalse(fourDayRecallAdherenceService.wasAnyDoseTakenLateSince(null, null));
+        assertFalse(fourDayRecallAdherenceService.wasAnyDoseTakenLateLastWeek(null));
     }
 
     @Test

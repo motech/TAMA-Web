@@ -125,7 +125,6 @@ public class MissedPillFeedbackCommandTest {
 
         when(allDosageAdherenceLogs.getDosageTakenCount("regimen_id")).thenReturn(60);
         LocalDate today = DateUtil.today();
-        when(allDosageAdherenceLogs.findScheduledDosagesSuccessCount("regimen_id", today, today.minusDays(28))).thenReturn(56 * 69 / 100);
         String[] message = forMissedPillFeedbackCommand.executeCommand(context);
         Assert.assertEquals(1, message.length);
         Assert.assertEquals(TamaIVRMessage.MISSED_PILL_FEEDBACK_LESS_THAN_70, message[0]);

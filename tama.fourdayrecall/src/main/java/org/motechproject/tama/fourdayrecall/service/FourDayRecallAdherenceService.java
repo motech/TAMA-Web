@@ -1,6 +1,5 @@
 package org.motechproject.tama.fourdayrecall.service;
 
-import org.joda.time.LocalDate;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.ivr.service.AdherenceServiceStrategy;
@@ -65,7 +64,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     }
 
     @Override
-    public boolean wasAnyDoseTakenLateSince(Patient patient, LocalDate since) {
+    public boolean wasAnyDoseTakenLateLastWeek(Patient patient) {
         return false;
     }
 }

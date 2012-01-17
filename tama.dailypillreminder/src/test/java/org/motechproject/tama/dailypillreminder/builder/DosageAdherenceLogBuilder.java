@@ -50,4 +50,9 @@ public class DosageAdherenceLogBuilder {
     public static DosageAdherenceLogBuilder startRecording() {
         return new DosageAdherenceLogBuilder();
     }
+
+    public DosageAdherenceLogBuilder withDoseTakenLate() {
+        adherenceLog.setDosageTakenLate(true);
+        return this;
+    }
 }

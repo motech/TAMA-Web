@@ -1,15 +1,13 @@
 package org.motechproject.tama.ivr.service;
 
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -22,13 +20,8 @@ public class AdherenceServiceTest {
 
     @Mock
     Patient patient;
-
-    @Mock
-    TreatmentAdvice treatmentAdvice;
-
     @Mock
     AdherenceServiceStrategy dailyReminderAdherenceService;
-
     @Mock
     AdherenceServiceStrategy fourDayRecallService;
 
@@ -41,36 +34,27 @@ public class AdherenceServiceTest {
     }
 
     @Test
-    public void shouldCheckForAnyMissedDosageInThePreviousWeekForDailyReminderPatient() {
+    public void shouldReturnAdherenceReport_WhenPatientIsOnDaily() {
         adherenceService.register(CallPreference.DailyPillReminder, dailyReminderAdherenceService);
-        patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
-        when(dailyReminderAdherenceService.wasAnyDoseMissedLastWeek(patient)).thenReturn(true);
-        assertTrue(adherenceService.isDosageMissedLastWeek(patient));
+        patient = PatientBuilder.startRecording().withCallPreference(CallPreference.DailyPillReminder).build();
+        when(dailyReminderAdherenceService.wasAnyDoseMissedLastWeek(patient)).thenReturn(false);
+        when(dailyReminderAdherenceService.wasAnyDoseTakenLateLastWeek(patient)).thenReturn(true);
+        final AdherenceComplianceReport adherenceComplianceReport = adherenceService.lastWeekAdherence(patient);
+        assertFalse(adherenceComplianceReport.missed());
+        assertTrue(adherenceComplianceReport.late());
+        verifyZeroInteractions(fourDayRecallService);
+
     }
 
     @Test
-    public void shouldCheckForAnyMissedDosageInThePreviousWeekForFourDayRecallPatient() {
+    public void shouldReturnAdherenceReport_WhenPatientIsOnWeekly() {
         adherenceService.register(CallPreference.FourDayRecall, fourDayRecallService);
-        patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.FourDayRecall).build();
+        patient = PatientBuilder.startRecording().withCallPreference(CallPreference.FourDayRecall).build();
         when(fourDayRecallService.wasAnyDoseMissedLastWeek(patient)).thenReturn(true);
-        assertTrue(adherenceService.isDosageMissedLastWeek(patient));
-    }
-
-    @Test
-    public void anyDoseTakenLateSinceShouldBeTrueWhenAnyDoseWasTakenLateSinceGivenTime_PatientOnDailyPillReminder() {
-        adherenceService.register(CallPreference.DailyPillReminder, dailyReminderAdherenceService);
-        patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
-        LocalDate since = DateUtil.newDate(2011, 10, 1);
-        when(dailyReminderAdherenceService.wasAnyDoseTakenLateSince(patient, since)).thenReturn(true);
-        assertTrue(adherenceService.anyDoseTakenLateSince(patient, since));
-    }
-
-    @Test
-    public void doseTakenLateShouldReturnFalseWhenPatientIsOnFourDayRecall() {
-        adherenceService.register(CallPreference.FourDayRecall, fourDayRecallService);
-        patient = PatientBuilder.startRecording().withId("externalId").withPatientId("patientId").withCallPreference(CallPreference.FourDayRecall).build();
-        LocalDate since = DateUtil.newDate(2011, 10, 1);
-        assertFalse(adherenceService.anyDoseTakenLateSince(patient, since));
+        when(fourDayRecallService.wasAnyDoseTakenLateLastWeek(patient)).thenReturn(false);
+        final AdherenceComplianceReport adherenceComplianceReport = adherenceService.lastWeekAdherence(patient);
+        assertTrue(adherenceComplianceReport.missed());
+        assertFalse(adherenceComplianceReport.late());
         verifyZeroInteractions(dailyReminderAdherenceService);
     }
 }

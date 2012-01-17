@@ -50,16 +50,19 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     public boolean wasAnyDoseMissedLastWeek(Patient patient) {
         LocalDate oneWeekAgo = DateUtil.now().minusWeeks(1).toLocalDate();
         DateTime yesterday = DateUtil.newDateTime(DateUtil.today().minusDays(1), 23, 59, 59);
-        try {
-            return getAdherencePercentage(patient.getId(), oneWeekAgo, yesterday) != 100;
-        }catch (NoAdherenceRecordedException e){
-            return false;
-        }
+        PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patient.getId());
+        String pillRegimenId = pillRegimen.getId();
+        int totalLogs = allDosageAdherenceLogs.countByDosageDate(pillRegimenId, oneWeekAgo, yesterday.toLocalDate());
+        int dosagesTaken = allDosageAdherenceLogs.countByDosageStatusAndDate(pillRegimenId, DosageStatus.TAKEN, oneWeekAgo, yesterday.toLocalDate());
+        return totalLogs == 0 ? false : totalLogs - dosagesTaken > 0;
     }
 
     @Override
-    public boolean wasAnyDoseTakenLateSince(Patient patient, LocalDate since) {
-        return allDosageAdherenceLogs.getDoseTakenLateCount(patient.getId(), since, true) > 0;
+    public boolean wasAnyDoseTakenLateLastWeek(Patient patient) {
+        PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patient.getId());
+        String pillRegimenId = pillRegimen.getId();
+
+        return allDosageAdherenceLogs.getDoseTakenLateCount(pillRegimenId, DateUtil.today().minusDays(6), true) > 0;
     }
 
     public void backFillAdherence(String patientId, DateTime startDate, DateTime endDate, boolean wasDoseTaken) {
@@ -109,14 +112,14 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         }
     }
 
-    private double getAdherencePercentage(String patientId, LocalDate fromDate, DateTime toDate) {
+    private double getAdherencePercentage(String patientId, LocalDate fromDate, DateTime toDate) throws NoAdherenceRecordedException {
         PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientId);
         String pillRegimenId = pillRegimen.getId();
-        int totalLogs = allDosageAdherenceLogs.countAllLogsForRegimenBetween(pillRegimenId, fromDate, toDate.toLocalDate());
+        int totalLogs = allDosageAdherenceLogs.countByDosageDate(pillRegimenId, fromDate, toDate.toLocalDate());
         if (totalLogs == 0) {
             throw new NoAdherenceRecordedException("No Adherence Log was recorded for given date range");
         }
-        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countBy(pillRegimenId, DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
+        int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countByDosageStatusAndDate(pillRegimenId, DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
         return ((double) dosagesTakenForLastFourWeeks) * 100 / totalLogs;
     }
 }
