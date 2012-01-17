@@ -17,17 +17,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
 
-		<util:load-scripts />
-
-        <script type="text/javascript">
-            function validatePatientId() {
-                var patientId = document.getElementById("patientId").value;
-                if(patientId == null || dojo.trim(patientId).length==0) {
-                    return false;
-                }
-            }
-        </script>
-
         <!-- START: Script includes for SymptomReporting TimeLine -->
         <spring:url value="/js/timeline_js/" var="timeline_js_root"/>
         <spring:url value="/js/timeline_js/timeline-api.js" var="timeline_api_js"/>
@@ -45,6 +34,17 @@
             Timeline_urlPrefix="${timeline_js_root}";
         </script>
         <!-- END: Script includes for SymptomReporting TimeLine -->
+
+		<util:load-scripts />
+
+        <script type="text/javascript">
+            function validatePatientId() {
+                var patientId = document.getElementById("patientId").value;
+                if(patientId == null || dojo.trim(patientId).length==0) {
+                    return false;
+                }
+            }
+        </script>
 
 		<spring:message code="application_name" var="app_name" htmlEscape="false"/>
 		<title><spring:message code="welcome_h3" arguments="${app_name}" /></title>
