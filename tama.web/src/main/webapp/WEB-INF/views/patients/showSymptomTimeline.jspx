@@ -1,8 +1,13 @@
-<div>
+<div xmlns:spring="http://www.springframework.org/tags">
+
+    <spring:url value="/resources/styles/timeline.css" var="timeline_css"/>
+    <spring:url value="/js/timeline_js/timeline-api.js?bundle=true" var="timeline_api_js"/>
+    <spring:url value="/js/timeline_ajax/simile-ajax-api.js?bundle=true" var="simile_ajax_api_js"/>
+    <spring:url value="/json/symptoms/list" var="symptoms_list_url"/>
+
 	<div id="timelineGraphPane" style="display: none;">
-		<link rel="stylesheet" type="text/css" href="/tama/resources/styles/timeline.css" />
-			<div id="reported-symptoms-timeline"
-				style="height: 350px; border: 1px solid #aaa"></div>
+		<link rel="stylesheet" type="text/css" href="${timeline_css}" />
+			<div id="reported-symptoms-timeline" style="height: 350px; border: 1px solid #aaa"></div>
 			<noscript>This page uses Javascript to show you a
 				Timeline. Please enable Javascript in your browser to see the full
 				page. Thank you.</noscript>
@@ -19,8 +24,8 @@
 			heads[0].appendChild(script);
 		}
 	}
-	addURL('/tama/js/timeline_js/timeline-api.js?bundle=true');
-	addURL('/tama/js/timeline_ajax/simile-ajax-api.js?bundle=true');
+	addURL("${timeline_api_js}");
+	addURL("${simile_ajax_api_js}");
 	var timelineDAY = 4;  
 	var timelineWEEK = 5;  
 	var timelineMONTH = 6;  //from date-time.js of simile timeline widget. 
@@ -37,7 +42,7 @@
 	
 	var tl;
 	function symptomListURL() {
-	    return "/tama/json/symptoms/list?id=${patient.id}&rangeInMonths=12&"+ (new Date().getTime());
+	    return "${symptoms_list_url}?id=${patient.id}&rangeInMonths=12&"+ (new Date().getTime());
 	}
 	
 	function onLoad() {

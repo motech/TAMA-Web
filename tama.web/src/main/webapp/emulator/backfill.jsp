@@ -1,7 +1,8 @@
-<html>
+<html xmlns:spring="http://www.springframework.org/tags">
     <head>
+        <spring:url value="/resources/dojo/dojo.js" var="dojo_js"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-        <script src="/tama/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+        <script src="${dojo_js}" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
         <script type="text/javascript">
             dojo.require("dijit.dijit");
             dojo.require("dijit.form.DateTextBox");
@@ -33,7 +34,8 @@
             dojo.ready(sendForm);
         </script>
 
-        <link rel="stylesheet" type="text/css" href="/tama/resources/dijit/themes/tundra/tundra.css" />
+        <spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_css"/>
+        <link rel="stylesheet" type="text/css" href="${tundra_css}" />
         <style>
             .dijitPopup {
                 background-color: #bbeeff;
@@ -49,7 +51,8 @@
         </style>
     </head>
     <body>
-        <form id="backfillForm" action="/tama/tama-tools/backfill/daily" method="POST">
+        <spring:url value="/tama-tools/backfill/daily" var="backfill_action_url"/>
+        <form id="backfillForm" action="${backfill_action_url}" method="POST">
             <h4 align="center" style="background-color:lightBlue;width:400px;">Backfill Adherence</h4>
             <table>
                 <%  java.util.Date today = new java.util.Date(); %>

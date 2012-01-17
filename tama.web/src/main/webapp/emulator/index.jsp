@@ -48,12 +48,13 @@
 	java.util.Date curdate = new java.util.Date();
 	if (!fakeTimeAvailable)
 		curdate = DateUtil.now().toDate();
-%><html>
+%><html xmlns:spring="http://www.springframework.org/tags">
   <head>
     <script type="text/javascript">
         var djConfig = {parseOnLoad: false, isDebug: false, locale: 'en_in'};
     </script>
-    <script src="/tama/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+    <spring:url value="/resources/dojo/dojo.js" var="dojo_js"/>
+    <script src="${dojo_js}" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
     <script type="text/javascript">
           dojo.require("dijit.dijit"); // loads the optimized dijit layer
           dojo.require("dijit.form.DateTextBox");
@@ -73,7 +74,8 @@
                   "time");
              });
     </script>
-    <link rel="stylesheet" type="text/css" href="/tama/resources/dijit/themes/tundra/tundra.css" />
+    <spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_css"/>
+    <link rel="stylesheet" type="text/css" href="${tundra_css}" />
     <style>
     .dijitPopup {
         background-color: lightgray;
