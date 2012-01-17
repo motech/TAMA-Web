@@ -2,3 +2,13 @@
     height: 1em;
     width: 1em;
 }
+
+#reported-symptoms {
+    height: 350px;
+    border: 1px solid #aaa;
+}
+
+#intervalControls {
+    text-align: right;
+    margin-top: 5px;
+}

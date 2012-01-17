@@ -28,6 +28,24 @@
             }
         </script>
 
+        <!-- START: Script includes for SymptomReporting TimeLine -->
+        <spring:url value="/js/timeline_js/" var="timeline_js_root"/>
+        <spring:url value="/js/timeline_js/timeline-api.js" var="timeline_api_js"/>
+        <spring:url value="/js/timeline_ajax/simile-ajax-api.js" var="simile_ajax_api_js"/>
+
+        <script type="text/javascript">
+            Timeline_ajax_url="${simile_ajax_api_js}";
+            Timeline_parameters="timeline-use-local-resources&amp;bundle=true&amp;defaultLocale=en";
+        </script>
+
+        <script src="${timeline_api_js}?bundle=true" type="text/javascript" />
+        <script src="${simile_ajax_api_js}?bundle=true" type="text/javascript" />
+
+        <script type="text/javascript">
+            Timeline_urlPrefix="${timeline_js_root}";
+        </script>
+        <!-- END: Script includes for SymptomReporting TimeLine -->
+
 		<spring:message code="application_name" var="app_name" htmlEscape="false"/>
 		<title><spring:message code="welcome_h3" arguments="${app_name}" /></title>
 	</head>

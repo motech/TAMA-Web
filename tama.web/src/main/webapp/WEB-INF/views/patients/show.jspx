@@ -12,8 +12,10 @@
     <script type="text/javascript">
         dojo.addOnLoad(function() {
             deactivationStatusesWidget = dijit.byId('_patient.status_id');
-            deactivationStatusesWidget.setValue('');
-            Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'deactivatePatientButton', event:'onclick'}));
+            if (deactivationStatusesWidget != null) {
+                deactivationStatusesWidget.setValue('');
+                Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'deactivatePatientButton', event:'onclick'}));
+            }
         });
     </script>
 
@@ -26,8 +28,8 @@
         <jsp:include page="showMedicalHistory.jspx" />
         <jsp:include page="showPatientPreferences.jspx" />
         <jsp:include page="showTAMAStatus.jspx" />
-        <jsp:include page="showPatientPageLinks.jspx" />
         <jsp:include page="showSymptomTimeline.jspx" />
+        <jsp:include page="showPatientPageLinks.jspx" />
     </page:show>
 
 </div>
