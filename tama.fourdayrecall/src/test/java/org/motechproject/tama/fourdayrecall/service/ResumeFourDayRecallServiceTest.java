@@ -90,7 +90,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(16, 0);
         suspendedOn(2011, 12, 27, 8, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
+        verify(weeklyAdherenceLogService, never()).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt(), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(8, 0);
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService).createLogOn(same(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService).createLogFor(same(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -108,7 +108,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(12, 0);
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(8, 0);
         suspendedOn(2011, 12, 26, 8, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -126,7 +126,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(16, 0);
         suspendedOn(2011, 12, 26, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(8, 0);
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
+        verify(weeklyAdherenceLogService, never()).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt(), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -144,7 +144,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(12, 0);
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(8, 0);
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -162,7 +162,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(12, 0);
         suspendedOn(2011, 12, 23, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(12, 0);
         suspendedOn(2011, 12, 20, 12, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(2)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -180,16 +180,16 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(23, 30);
         suspendedOn(2011, 12, 17, 10, 0);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(2)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
     public void whenPatientIsSuspendedAndResumedOverTwoWeeks_AndSuspendedDateIsARetryDate_AndResumedAfterLastRetryDateOfNextWeekAndAfterBestCallTime_AdherenceNotCaptured() {
         callTime(10, 30, TimeMeridiem.PM, DayOfWeek.Saturday);
-        timeToday(23, 30);
         suspendedOn(2011, 12, 19, 15, 30);
+        timeToday(23, 30);
         backFill(false);
-        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
+        verify(weeklyAdherenceLogService, times(2)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -198,7 +198,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(8, 0);
         suspendedOn(2011, 12, 23, 15, 30);
         backFill(false);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -207,7 +207,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(8, 30);
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -216,7 +216,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(14, 0);
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(true);
-        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0));
+        verify(weeklyAdherenceLogService, times(2)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(0), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -225,7 +225,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(9, 0);
         suspendedOn(2011, 12, 16, 15, 30);
         backFill(false);
-        verify(weeklyAdherenceLogService, times(2)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
+        verify(weeklyAdherenceLogService, times(2)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -234,7 +234,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(9, 0);
         suspendedOn(2011, 12, 12, 15, 30);
         backFill(false);
-        verify(weeklyAdherenceLogService, times(3)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
+        verify(weeklyAdherenceLogService, times(3)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -244,7 +244,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(11, 0);
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
-        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
+        verify(weeklyAdherenceLogService, never()).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt(), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -254,7 +254,7 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(11, 0);
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
-        verify(weeklyAdherenceLogService, never()).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt());
+        verify(weeklyAdherenceLogService, never()).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), anyInt(), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -264,6 +264,21 @@ public class ResumeFourDayRecallServiceTest extends BaseUnitTest {
         timeToday(11, 0);
         suspendedOn(2011, 12, 26, 15, 30);
         backFill(false);
-        verify(weeklyAdherenceLogService, times(1)).createLogOn(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4));
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4), Matchers.<LocalDate>any());
+    }
+
+    @Test
+    public void shouldCreateLogOnBestCallDay(){
+        LocalDate firstMonday = new LocalDate(2011, 12, 19);
+        treatmentStartDate(firstMonday);
+        callTime(10, 30, TimeMeridiem.AM, DayOfWeek.Friday);
+
+        LocalDate firstTuesday = new LocalDate(2011, 12, 20);
+        LocalDate secondTuesday = today;
+
+        timeToday(11, 0);
+        suspendedOn(firstTuesday.getYear(), firstTuesday.getMonthOfYear(), firstTuesday.getDayOfMonth(), 15, 30);
+        backFill(false);
+        verify(weeklyAdherenceLogService, times(1)).createLogFor(eq(patient.getId()), Matchers.<LocalDate>any(), eq(4), Matchers.<LocalDate>eq(new LocalDate(2011, 12, 23)));
     }
 }

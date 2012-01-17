@@ -37,7 +37,8 @@ public class ResumeFourDayRecallService {
         FourDayRecallTimeLine fourDayRecallTimeLine = new FourDayRecallTimeLine(patient, fromDate, toDate, currentTreatmentAdvice, daysToRetry, fourDayRecallDateService);
         List<LocalDate> weekStartDates = fourDayRecallTimeLine.weekStartDates();
         for (LocalDate date : weekStartDates) {
-            weeklyAdherenceLogService.createLogOn(patient.getId(), date, doseTaken ? 0 : fourDayRecallDateService.DAYS_TO_RECALL);
+            DateTime bestCallDate = fourDayRecallDateService.nextRecallOn(date, patient);
+            weeklyAdherenceLogService.createLogFor(patient.getId(), date, doseTaken ? 0 : fourDayRecallDateService.DAYS_TO_RECALL, bestCallDate.toLocalDate());
         }
     }
 }

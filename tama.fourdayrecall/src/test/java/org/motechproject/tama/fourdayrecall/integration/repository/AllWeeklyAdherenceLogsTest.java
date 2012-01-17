@@ -27,7 +27,7 @@ public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
         allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 9, 28), DateUtil.newDate(2000, 10, 5), 0));
         allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 5), DateUtil.newDate(2000, 10, 13), 0));
         allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 13), DateUtil.newDate(2000, 10, 21), 0));
-        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID2", DateUtil.newDate(2000, 10, 13), DateUtil.newDate(2000, 10, 21), 0));
+        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID2", DateUtil.newDate(2000, 10, 13), DateUtil.newDate(2000, 10, 22), 0));
         allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient2", "TADocID21", DateUtil.newDate(2000, 9, 30), DateUtil.newDate(2000, 10, 7), 0));
         allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient3", "TADocID31", DateUtil.newDate(2000, 10, 2), DateUtil.newDate(2000, 10, 9), 0));
     }
@@ -45,6 +45,13 @@ public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
         LocalDate weekStartDate = DateUtil.newDate(2000, 10, 11);
         WeeklyAdherenceLog log = allWeeklyAdherenceLogs.findLogByWeekStartDate("Patient1", "TADocID1", weekStartDate);
         assertNull(log);
+    }
+
+    @Test
+    public void shouldFindLogByDate() {
+        LocalDate logDate = DateUtil.newDate(2000, 10, 5);
+        WeeklyAdherenceLog log = allWeeklyAdherenceLogs.findLogByDate("Patient1", "TADocID1", logDate);
+        assertEquals(logDate, log.getLogDate());
     }
 
     @Override

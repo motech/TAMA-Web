@@ -20,14 +20,6 @@ public class WeeklyAdherenceLogService {
 
     @Autowired
     public WeeklyAdherenceLogService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
-                                     AllWeeklyAdherenceLogs allWeeklyAdherenceLogs) {
-        this.allPatients = allPatients;
-        this.allTreatmentAdvices = allTreatmentAdvices;
-        this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
-        this.fourDayRecallDateService = new FourDayRecallDateService();
-    }
-
-    public WeeklyAdherenceLogService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                      AllWeeklyAdherenceLogs allWeeklyAdherenceLogs,
                                      FourDayRecallDateService fourDayRecallDateService) {
         this.allPatients = allPatients;
@@ -45,21 +37,24 @@ public class WeeklyAdherenceLogService {
     }
 
     public void createLogFor(String patientId, int numberOfDaysMissed) {
-        Patient patient = allPatients.get(patientId);
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        String treatmentAdviceDocId = treatmentAdvice.getId();
-        LocalDate startDateForCurrentWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
+        LocalDate startDateForCurrentWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), allPatients.get(patientId), treatmentAdvice);
 
-        WeeklyAdherenceLog currentLog = allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), startDateForCurrentWeek);
-        WeeklyAdherenceLog newLog = WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForCurrentWeek, numberOfDaysMissed);
-        upsertLog(currentLog, newLog);
+        createLogFor(patientId, startDateForCurrentWeek, numberOfDaysMissed);
     }
 
-    public void createLogOn(String patientId, LocalDate logDate, int dosesTaken) {
-        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        WeeklyAdherenceLog logByWeekStartDate = allWeeklyAdherenceLogs.findLogByWeekStartDate(patientId, currentTreatmentAdvice.getId(), logDate);
-        WeeklyAdherenceLog weeklyAdherenceLog = WeeklyAdherenceLog.create(patientId, currentTreatmentAdvice.getId(), logDate, dosesTaken);
-        upsertLog(logByWeekStartDate, weeklyAdherenceLog);
+    public void createLogFor(String patientId, LocalDate weekStartDate, int numberOfDaysMissed) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        WeeklyAdherenceLog logInDb = allWeeklyAdherenceLogs.findLogByWeekStartDate(patientId, treatmentAdvice.getId(), weekStartDate);
+        WeeklyAdherenceLog newLog = WeeklyAdherenceLog.create(patientId, treatmentAdvice.getId(), weekStartDate, numberOfDaysMissed);
+        upsertLog(logInDb, newLog);
+    }
+
+    public void createLogFor(String patientId, LocalDate weekStartDate, int numberOfDaysMissed, LocalDate logDate) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        WeeklyAdherenceLog logInDb = allWeeklyAdherenceLogs.findLogByDate(patientId, treatmentAdvice.getId(), logDate);
+        WeeklyAdherenceLog newLog = WeeklyAdherenceLog.create(patientId, treatmentAdvice.getId(), weekStartDate, numberOfDaysMissed, logDate);
+        upsertLog(logInDb, newLog);
     }
 
     public void createNotRespondedLog(String patientId, int numberOfDaysMissed) {
