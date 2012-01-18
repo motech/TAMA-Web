@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.service;
 
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
@@ -9,6 +10,7 @@ import org.motechproject.tama.patient.strategy.CallPlan;
 import org.motechproject.tama.patient.strategy.ChangePatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.ChangePatientPreferenceStrategy;
 import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +24,16 @@ public class PatientService {
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllUniquePatientFields allUniquePatientFields;
+    private AllPatientEventLogs allPatientEventLogs;
     private Map<CallPreference, CallPlan> callPlans;
     private Outbox outbox;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllUniquePatientFields allUniquePatientFields) {
+    public PatientService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllUniquePatientFields allUniquePatientFields, AllPatientEventLogs allPatientEventLogs) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allUniquePatientFields = allUniquePatientFields;
+        this.allPatientEventLogs = allPatientEventLogs;
         this.callPlans = new HashMap<CallPreference, CallPlan>();
     }
 
@@ -62,18 +66,23 @@ public class PatientService {
         Patient patient = allPatients.get(id);
         patient.activate();
         allPatients.update(patient);
+        allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Activation, DateUtil.now()));
     }
 
     public void deactivate(String id, Status deactivationStatus) {
         Patient patient = allPatients.get(id);
         patient.deactivate(deactivationStatus);
         allPatients.update(patient);
+        if(deactivationStatus.isTemporarilyDeactivated()) {
+            allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation, DateUtil.now()));
+        }
     }
 
     public void suspend(String patientId) {
         Patient patient = allPatients.get(patientId);
         patient.suspend();
         allPatients.update(patient);
+        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension, DateUtil.now()));
     }
 
     private void updateUniquePatientField(Patient patient) {

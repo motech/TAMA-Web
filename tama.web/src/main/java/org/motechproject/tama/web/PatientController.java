@@ -134,7 +134,6 @@ public class PatientController extends BaseController {
         Patient patient = allPatients.get(id);
 
         final DateTime startDate = patient.getStatus().isTemporarilyDeactivated() ? patient.getLastDeactivationDate() : patient.getLastSuspendedDate();
-        final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         if (patient.isOnDailyPillReminder()) {
             dailyPillReminderAdherenceService.backFillAdherence(id, startDate, DateUtil.now(), doseStatus.isTaken());
         } else {

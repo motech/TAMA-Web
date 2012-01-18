@@ -10,6 +10,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
@@ -21,6 +22,7 @@ import org.motechproject.util.DateUtil;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -32,6 +34,8 @@ public class PatientServiceTest extends BaseUnitTest {
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
     private AllUniquePatientFields allUniquePatientFields;
+    @Mock
+    private AllPatientEventLogs allPatientEventLogs;
     @Mock
     private Outbox outbox;
     @Mock
@@ -47,7 +51,7 @@ public class PatientServiceTest extends BaseUnitTest {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(allPatients, allTreatmentAdvices, allUniquePatientFields);
+        patientService = new PatientService(allPatients, allTreatmentAdvices, allUniquePatientFields, allPatientEventLogs);
         patientService.registerOutbox(outbox);
         registerKnownCallPlans();
     }
@@ -79,6 +83,12 @@ public class PatientServiceTest extends BaseUnitTest {
 
         verify(allPatients).update(patient);
         assertEquals(now, patient.getActivationDate());
+
+        ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
+        assertEquals(PatientEvent.Activation, eventLogArgumentCaptor.getValue().getEvent());
+        assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
+        assertEquals(DateUtil.now(), eventLogArgumentCaptor.getValue().getDate());
     }
 
     @Test
@@ -94,10 +104,20 @@ public class PatientServiceTest extends BaseUnitTest {
         verify(allPatients).update(patient);
         assertEquals(Status.Temporary_Deactivation, patient.getStatus());
         assertEquals(now, patient.getLastDeactivationDate());
+
+        ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
+        assertEquals(PatientEvent.Temporary_Deactivation, eventLogArgumentCaptor.getValue().getEvent());
+        assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
+        assertEquals(now, eventLogArgumentCaptor.getValue().getDate());
+
     }
 
     @Test
     public void shouldSuspendPatient() {
+        DateTime now = DateUtil.newDateTime(DateUtil.today(), 10, 0, 0);
+        mockCurrentDate(now);
+
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
@@ -107,6 +127,12 @@ public class PatientServiceTest extends BaseUnitTest {
         verify(allPatients).update(patientArgumentCaptor.capture());
         assertEquals(Status.Suspended, patientArgumentCaptor.getValue().getStatus());
         assertEquals(DateUtil.today(), patientArgumentCaptor.getValue().getLastSuspendedDate().toLocalDate());
+
+        ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
+        assertEquals(PatientEvent.Suspension, eventLogArgumentCaptor.getValue().getEvent());
+        assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
+        assertEquals(now, eventLogArgumentCaptor.getValue().getDate());
     }
 
     @Test
