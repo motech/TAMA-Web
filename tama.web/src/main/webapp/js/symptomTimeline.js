@@ -21,7 +21,6 @@ SymptomsReportingWidget.prototype = {
                 onLoad();
             },
             error: function(result, args) {
-                alert(result);
             }
         });
     },
