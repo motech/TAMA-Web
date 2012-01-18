@@ -1,5 +1,6 @@
 package org.motechproject.tama.patient.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
@@ -72,22 +73,30 @@ public class PatientAlertService {
     }
 
     public PatientAlerts getReadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-        PatientAlerts allAlerts = patientAlertSearchService.search(patientId, startDate, endDate, AlertStatus.READ);
-        return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
+	return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.READ);
     }
 
     public PatientAlerts getUnreadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-        PatientAlerts allAlerts = patientAlertSearchService.search(patientId, startDate, endDate, AlertStatus.NEW);
-        return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
+	return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.NEW);
     }
 
-    public PatientAlerts getFallingAdherenceAlerts(String patientID, final DateTime startDate, final DateTime endDate) {
-        PatientAlerts allAlerts = patientAlertSearchService.search(patientID, startDate, endDate, null);
+    public PatientAlerts getFallingAdherenceAlerts(String patientDocumentId, final DateTime startDate, final DateTime endDate) {
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientDocumentId, startDate, endDate, null);
         return allAlerts.filterByAlertType(PatientAlertType.FallingAdherence);
     }
 
-    public PatientAlerts getAdherenceInRedAlerts(String patientID, final DateTime startDate, final DateTime endDate) {
-        PatientAlerts allAlerts = patientAlertSearchService.search(patientID, startDate, endDate, null);
+    public PatientAlerts getAdherenceInRedAlerts(String patientDocumentId, final DateTime startDate, final DateTime endDate) {
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientDocumentId, startDate, endDate, null);
         return allAlerts.filterByAlertType(PatientAlertType.AdherenceInRed);
+    }
+    
+    private PatientAlerts getAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
+	Patient patient = allPatients.findByPatientIdAndClinicId(patientId, clinicId);
+	if (StringUtils.isNotEmpty(patientId) && patient == null) {
+	    return new PatientAlerts();
+	}
+	String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
+        return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
     }
 }

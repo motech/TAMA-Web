@@ -32,21 +32,21 @@ public class PatientAlertSearchService {
         this.allPatients = allPatients;
     }
 
-    public PatientAlerts search(String patientId) {
-        return search(patientId, null, null, null);
+    public PatientAlerts search(String patientDocumentId) {
+        return search(patientDocumentId, null, null, null);
     }
 
-    public PatientAlerts search(String patientId, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
-        AlertCriteria alertCriteria = constructAlertCriteria(patientId, startDate, endDate, alertStatus);
+    public PatientAlerts search(String patientDocumentId, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
+        AlertCriteria alertCriteria = constructAlertCriteria(patientDocumentId, startDate, endDate, alertStatus);
         List<Alert> filteredAlertsForAPatient = alertService.search(alertCriteria);
         Group<Alert> group = Lambda.group(filteredAlertsForAPatient, by(on(Alert.class).getExternalId()));
         return convertToPatientAlerts(group);
     }
 
-    private AlertCriteria constructAlertCriteria(String patientId, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
+    private AlertCriteria constructAlertCriteria(String patientDocumentId, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
         AlertCriteria alertCriteria = new AlertCriteria();
-        if (patientId != null){
-            alertCriteria.byExternalId(patientId);
+        if (patientDocumentId != null){
+            alertCriteria.byExternalId(patientDocumentId);
         }
         if (startDate != null && endDate != null) {
             alertCriteria.byDateRange(startDate, endDate);

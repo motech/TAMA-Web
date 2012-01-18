@@ -204,12 +204,31 @@ public class PatientAlertServiceTest {
             add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null), patient));
         }};
 
-        when(allPatients.findByPatientIdAndClinicId(patient.getId(), "testClinicId")).thenReturn(patient);
+        when(allPatients.findByPatientIdAndClinicId("patientId_1", "testClinicId")).thenReturn(patient);
         when(patientAlertSearchService.search(patient.getId(), null, null, AlertStatus.READ)).thenReturn(readAlerts);
 
-        PatientAlerts readAlertsForClinic = patientAlertService.getReadAlertsFor("testClinicId", patient.getId(), null, null, null);
+        PatientAlerts readAlertsForClinic = patientAlertService.getReadAlertsFor("testClinicId", "patientId_1", null, null, null);
 
         assertEquals(2, readAlertsForClinic.size());
+    }
+
+    @Test
+    public void shouldReturnNoReadAlerts_filteredByAnInvalidPatientId() {
+        final Clinic clinic = new Clinic() {{
+            setId("testClinicId");
+        }};
+        final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withPatientId("patientId_1").build();
+
+        PatientAlerts readAlerts = new PatientAlerts() {{
+            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null), patient));
+            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null), patient));
+        }};
+
+        when(allPatients.findByPatientIdAndClinicId("invalidPatientId", "testClinicId")).thenReturn(null);
+
+        PatientAlerts readAlertsForClinic = patientAlertService.getReadAlertsFor("testClinicId", "invalidPatientId", null, null, null);
+
+        assertEquals(0, readAlertsForClinic.size());
     }
 
     @Test

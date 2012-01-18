@@ -87,12 +87,12 @@ public class FourDayRecallAlertService {
         patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);
     }
 
-    public boolean hasAdherenceInRedAlertBeenRaisedForCurrentWeek(String patientId) {
-        Patient patient = allPatients.get(patientId);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+    public boolean hasAdherenceInRedAlertBeenRaisedForCurrentWeek(String patientDocumentId) {
+        Patient patient = allPatients.get(patientDocumentId);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocumentId);
         LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
 
         DateTime nextRecallDate = fourDayRecallDateService.nextRecallOn(startDateForWeek, patient);
-        return patientAlertService.getAdherenceInRedAlerts(patientId, nextRecallDate, DateUtil.now()).size() > 0;
+        return patientAlertService.getAdherenceInRedAlerts(patientDocumentId, nextRecallDate, DateUtil.now()).size() > 0;
     }
 }

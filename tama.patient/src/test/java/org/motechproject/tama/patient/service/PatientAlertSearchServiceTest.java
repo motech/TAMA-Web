@@ -36,19 +36,19 @@ public class PatientAlertSearchServiceTest {
     @Mock
     private AlertService alertService;
     private PatientAlertSearchService patientAlertSearchService;
-    private String testPatientId1;
-    private String testPatientId2;
+    private String patient1DocId;
+    private String patient2DocId;
     private ArrayList<Alert> allAlerts;
 
     @Before
     public void setUp() {
         initMocks(this);
-        testPatientId1 = "patientId1";
-        testPatientId2 = "patientId2";
+        patient1DocId = "docId1";
+        patient2DocId = "docId2";
         allAlerts = new ArrayList<Alert>() {{
-            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
-            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
-            add(new Alert(testPatientId2, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+            add(new Alert(patient1DocId, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+            add(new Alert(patient1DocId, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+            add(new Alert(patient2DocId, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
         }};
         patientAlertSearchService = new PatientAlertSearchService(alertService, allPatients);
     }
@@ -64,17 +64,17 @@ public class PatientAlertSearchServiceTest {
     @Test
     public void shouldReturnAllAlerts_ByPatientId() {
         allAlerts = new ArrayList<Alert>() {{
-            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
-            add(new Alert(testPatientId1, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+            add(new Alert(patient1DocId, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
+            add(new Alert(patient1DocId, AlertType.MEDIUM, AlertStatus.NEW, 2, null));
         }};
         when(alertService.search(argThat(new ArgumentMatcher<AlertCriteria>() {
             @Override
             public boolean matches(Object o) {
-                return ((AlertCriteria) o).externalId().equals(testPatientId1) && ((AlertCriteria) o).alertStatus() == null;
+                return ((AlertCriteria) o).externalId().equals(patient1DocId) && ((AlertCriteria) o).alertStatus() == null;
             }
         }))).thenReturn(allAlerts);
 
-        PatientAlerts unReadAlertsByPatientId = patientAlertSearchService.search(testPatientId1);
+        PatientAlerts unReadAlertsByPatientId = patientAlertSearchService.search(patient1DocId);
         assertEquals(allAlerts.size(), unReadAlertsByPatientId.size());
     }
 
@@ -93,7 +93,7 @@ public class PatientAlertSearchServiceTest {
         PatientAlerts patientAlerts = patientAlertSearchService.search(null, fromDate, toDate, AlertStatus.NEW);
         assertEquals(allAlerts.size(), patientAlerts.size());
 
-        verify(allPatients, times(1)).get(testPatientId1);
-        verify(allPatients, times(1)).get(testPatientId2);
+        verify(allPatients, times(1)).get(patient1DocId);
+        verify(allPatients, times(1)).get(patient2DocId);
     }
 }
