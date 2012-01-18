@@ -4,6 +4,7 @@ package org.motechproject.tama.fourdayrecall.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
@@ -44,7 +45,7 @@ public class WeeklyAdherencePercentageTest {
     }
 
     @Test
-    public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan90() {
+    public void shouldReturnCorrectMessage_WhenCurrentWeekAdherenceIsGreaterThan90() throws NoAdherenceRecordedException {
         when(fourDayRecallAdherenceService.adherencePercentageFor(anyInt())).thenReturn(100);
         when(fourDayRecallAdherenceService.getAdherencePercentageForPreviousWeek(PATIENT_ID)).thenReturn(50);
         ivrContext.dtmfInput("0");

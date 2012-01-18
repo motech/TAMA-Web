@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -57,7 +58,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnAdherencePercentageForPreviousWeek() {
+    public void shouldReturnAdherencePercentageForPreviousWeek() throws NoAdherenceRecordedException {
         String patientId = "patientId";
         WeeklyAdherenceLog weeklyAdherenceLogForPreviousWeek = new WeeklyAdherenceLog();
         weeklyAdherenceLogForPreviousWeek.setNumberOfDaysMissed(0);
@@ -79,14 +80,14 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
         assertFalse(fourDayRecallAdherenceService.wasAnyDoseMissedLastWeek(patient));
     }
 
-    @Test
-    public void shouldReturnZeroWhenAdherenceLogDoesNotExist() {
+    @Test(expected= NoAdherenceRecordedException.class)
+    public void shouldRaiseExceptionWhenAdherenceLogDoesNotExist() throws NoAdherenceRecordedException {
         when(weeklyAdherenceLogService.get("patientId", 0)).thenReturn(null);
-        assertEquals(0, fourDayRecallAdherenceService.getAdherencePercentageForCurrentWeek("patientId"));
+        fourDayRecallAdherenceService.getAdherencePercentageForCurrentWeek("patientId");
     }
 
     @Test
-    public void shouldReturnZeroWhenAdherenceStatusIsNotAnswered() {
+    public void shouldReturnZeroWhenAdherenceStatusIsNotAnswered() throws NoAdherenceRecordedException {
         String patientId = "patientId";
         WeeklyAdherenceLog notRespondedLog = new WeeklyAdherenceLog();
         notRespondedLog.setLogDate(today);

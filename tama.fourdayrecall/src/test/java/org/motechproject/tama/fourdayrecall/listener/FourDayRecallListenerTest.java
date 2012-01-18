@@ -159,18 +159,6 @@ public class FourDayRecallListenerTest {
     }
 
     @Test
-    public void shouldRedAlertWhenThereIsALogForThisWeek() {
-        boolean isLastRetry;
-        setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false);
-        setupLogsForWeek(patient, true);
-
-        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
-
-        verify(fourDayRecallAlertService).raiseAdherenceInRedAlert(PATIENT_ID);
-    }
-
-    @Test
     public void shouldNotRaiseAlertsWhenThereIsNoLogForTheWeek() {
         boolean isLastRetry;
         setUpPatientWithDefaults();
@@ -179,6 +167,18 @@ public class FourDayRecallListenerTest {
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
         verifyZeroInteractions(fourDayRecallAlertService);
+    }
+
+    @Test
+    public void shouldRaiseRedAlertWhenThereIsALogForThisWeek() {
+        boolean isLastRetry;
+        setUpPatientWithDefaults();
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false);
+        setupLogsForWeek(patient, true);
+
+        fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
+
+        verify(fourDayRecallAlertService).raiseAdherenceInRedAlert(PATIENT_ID);
     }
 
     @Test
@@ -242,7 +242,6 @@ public class FourDayRecallListenerTest {
         verifyNoMoreInteractions(fourDayRecallAlertService);
     }
 
-    /*TODO: Verify the following tests*/
     @Test
     public void shouldCreateLogWithNotRespondedStatusOnFirstCall() {
         LocalDate startDate = DateUtil.today();

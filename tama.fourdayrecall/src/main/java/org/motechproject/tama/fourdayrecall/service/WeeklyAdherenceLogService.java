@@ -36,23 +36,23 @@ public class WeeklyAdherenceLogService {
         return allWeeklyAdherenceLogs.findLogByWeekStartDate(patientId, treatmentAdvice.getId(), startDateForPreviousWeek);
     }
 
-    public void createLogFor(String patientId, int numberOfDaysMissed) {
+    public void createLog(String patientId, int numberOfDaysMissed) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         LocalDate startDateForCurrentWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), allPatients.get(patientId), treatmentAdvice);
 
-        createLogFor(patientId, startDateForCurrentWeek, numberOfDaysMissed);
+        createLog(patientId, startDateForCurrentWeek, numberOfDaysMissed);
     }
 
-    public void createLogFor(String patientId, LocalDate weekStartDate, int numberOfDaysMissed) {
+    public void createLog(String patientId, LocalDate weekStartDate, int numberOfDaysMissed) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         WeeklyAdherenceLog logInDb = allWeeklyAdherenceLogs.findLogByWeekStartDate(patientId, treatmentAdvice.getId(), weekStartDate);
         WeeklyAdherenceLog newLog = WeeklyAdherenceLog.create(patientId, treatmentAdvice.getId(), weekStartDate, numberOfDaysMissed);
         upsertLog(logInDb, newLog);
     }
 
-    public void createLogFor(String patientId, LocalDate weekStartDate, int numberOfDaysMissed, LocalDate logDate) {
+    public void createLog(String patientId, LocalDate weekStartDate, int numberOfDaysMissed, LocalDate logDate) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        WeeklyAdherenceLog logInDb = allWeeklyAdherenceLogs.findLogByDate(patientId, treatmentAdvice.getId(), logDate);
+        WeeklyAdherenceLog logInDb = allWeeklyAdherenceLogs.findLogByWeekStartDate(patientId, treatmentAdvice.getId(), weekStartDate);
         WeeklyAdherenceLog newLog = WeeklyAdherenceLog.create(patientId, treatmentAdvice.getId(), weekStartDate, numberOfDaysMissed, logDate);
         upsertLog(logInDb, newLog);
     }

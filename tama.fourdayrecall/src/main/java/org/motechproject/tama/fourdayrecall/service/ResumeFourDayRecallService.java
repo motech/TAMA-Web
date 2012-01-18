@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.domain.FourDayRecallTimeLine;
-import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -38,7 +37,7 @@ public class ResumeFourDayRecallService {
         List<LocalDate> weekStartDates = fourDayRecallTimeLine.weekStartDates();
         for (LocalDate date : weekStartDates) {
             DateTime bestCallDate = fourDayRecallDateService.nextRecallOn(date, patient);
-            weeklyAdherenceLogService.createLogFor(patient.getId(), date, doseTaken ? 0 : fourDayRecallDateService.DAYS_TO_RECALL, bestCallDate.toLocalDate());
+            weeklyAdherenceLogService.createLog(patient.getId(), date, doseTaken ? 0 : fourDayRecallDateService.DAYS_TO_RECALL, bestCallDate.toLocalDate());
         }
     }
 }
