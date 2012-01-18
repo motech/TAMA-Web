@@ -30,18 +30,7 @@
   <script src="${utilsjs}" type="text/javascript"/>
   <script language="JavaScript" type="text/javascript">dojo.require("dojo.parser");</script>
 
-  <!-- START: Script includes for SymptomReporting TimeLine -->
-  <script type="text/javascript">
-      var Timeline_ajax_url="${simile_ajax_api_js}";
-      var Timeline_parameters="timeline-use-local-resources&amp;bundle=true&amp;defaultLocale=en";
-  </script>
-
-  <script src="${timeline_api_js}?bundle=true" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${simile_ajax_api_js}?bundle=true" type="text/javascript"><!-- required for FF3 and Opera --></script>
-
-  <script type="text/javascript">
-      var Timeline_urlPrefix="${timeline_js_root}";
-  </script>
-  <!-- END: Script includes for SymptomReporting TimeLine -->
+  <script src="${timeline_api_js}?bundle=true" type="text/javascript"><!-- required for FF3 and Opera --></script>
 
 </jsp:root>
