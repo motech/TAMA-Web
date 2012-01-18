@@ -13,7 +13,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Map;
 
 @Component
 public class PatientAlertService {
@@ -73,11 +73,11 @@ public class PatientAlertService {
     }
 
     public PatientAlerts getReadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-	return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.READ);
+        return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.READ);
     }
 
     public PatientAlerts getUnreadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
-	return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.NEW);
+        return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.NEW);
     }
 
     public PatientAlerts getFallingAdherenceAlerts(String patientDocumentId, final DateTime startDate, final DateTime endDate) {
@@ -89,13 +89,13 @@ public class PatientAlertService {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocumentId, startDate, endDate, null);
         return allAlerts.filterByAlertType(PatientAlertType.AdherenceInRed);
     }
-    
+
     private PatientAlerts getAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
-	Patient patient = allPatients.findByPatientIdAndClinicId(patientId, clinicId);
-	if (StringUtils.isNotEmpty(patientId) && patient == null) {
-	    return new PatientAlerts();
-	}
-	String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
+        Patient patient = patientId == null ? null : allPatients.findByPatientIdAndClinicId(patientId, clinicId);
+        if (StringUtils.isNotEmpty(patientId) && patient == null) {
+            return new PatientAlerts();
+        }
+        String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
         return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
     }
