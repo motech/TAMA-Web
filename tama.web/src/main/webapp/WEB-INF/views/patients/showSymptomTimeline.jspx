@@ -7,7 +7,7 @@
 
     <div id="symptoms-reporting-widget-placeholder" style="display: none;">
         <script src="${symptomTimeline_js}" type="text/javascript"/>
-        <util:panel id="symptom_reporting_timeline" title="Symptoms Reported over time" openPane="true">
+        <util:panel id="symptom_reporting_timeline" title="Symptoms Reported Over Time" openPane="true">
             <link rel="stylesheet" type="text/css" href="${timeline_css}" />
             <noscript>This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.</noscript>
             <div>
