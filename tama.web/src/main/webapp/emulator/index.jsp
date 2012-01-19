@@ -2,7 +2,6 @@
 <%@page import="java.lang.reflect.Method"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%
 	boolean fakeTimeAvailable = false;
 	try {
@@ -54,8 +53,7 @@
     <script type="text/javascript">
         var djConfig = {parseOnLoad: false, isDebug: false, locale: 'en_in'};
     </script>
-    <spring:url value="/resources/dojo/dojo.js" var="dojo_js"/>
-    <script src="${dojo_js}" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+    <script src="<%=application.getContextPath() %>/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
     <script type="text/javascript">
           dojo.require("dijit.dijit"); // loads the optimized dijit layer
           dojo.require("dijit.form.DateTextBox");
@@ -75,8 +73,7 @@
                   "time");
              });
     </script>
-    <spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_css"/>
-    <link rel="stylesheet" type="text/css" href="${tundra_css}" />
+    <link rel="stylesheet" type="text/css" href="<%= application.getContextPath() %>/resources/dijit/themes/tundra/tundra.css" />
     <style>
     .dijitPopup {
         background-color: lightgray;
