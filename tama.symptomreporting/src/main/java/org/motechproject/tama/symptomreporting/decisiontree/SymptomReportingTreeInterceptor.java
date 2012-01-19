@@ -24,6 +24,8 @@ import java.util.List;
 @Component
 public class SymptomReportingTreeInterceptor {
 
+    private static final String QUESTION_RASHALLOVERBODY = "q_rashalloverbody";
+    private static final String LOCALRASH = "localrash";
     private static final String USER_OPTION_SYMPTOM_YES = "1";
 	private static final String USER_OPTION_SYMPTOM_NO = "3";
 	private String[] firstPriorityFilterCriteria = {"adv_crocin01", "adv_noteatanythg"};
@@ -76,8 +78,8 @@ public class SymptomReportingTreeInterceptor {
         for (Node priorityNode : nodes) {
         	Prompt questionPrompt = filter.selectPrompt(priorityNode);
 			setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt), USER_OPTION_SYMPTOM_YES);
-			if ("q_rashalloverbody".equals(questionPrompt.getName())) { 
-				setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt), USER_OPTION_SYMPTOM_NO);
+			if (QUESTION_RASHALLOVERBODY.equals(questionPrompt.getName())) { 
+				setRecordSymptomReportTreeCommand(priorityNode, LOCALRASH, USER_OPTION_SYMPTOM_NO);
 			}
         }
     }

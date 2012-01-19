@@ -13,6 +13,7 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.symptomreporting.command.DialStateCommand;
 import org.motechproject.tama.symptomreporting.command.RecordSymptomCommand;
@@ -209,16 +210,18 @@ public class SymptomReportingTreeInterceptorTest {
 
 		interceptor.addCommands(node);
 		assertHasRecordSymptomCommand(yesInnerNode);
-		assertHasRecordSymptomCommand(noInnerNode);
+		RecordSymptomCommand command = assertHasRecordSymptomCommand(noInnerNode);
+		assertEquals("localrash", command.getFileName());
 	}
 
-	private void assertHasRecordSymptomCommand(Node node) {
+	private RecordSymptomCommand assertHasRecordSymptomCommand(Node node) {
 		for (ITreeCommand command : node.getTreeCommands()) {
 			if (command instanceof RecordSymptomCommand) {
-				return;
+				return (RecordSymptomCommand)command;
 			}
 		}
 		fail("Expected a symptom reporting command. None found");
+		return null;
 	}
 
 	private Node node(String promptName) {
