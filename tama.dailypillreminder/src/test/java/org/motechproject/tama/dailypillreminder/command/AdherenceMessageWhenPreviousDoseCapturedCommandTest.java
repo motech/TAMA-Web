@@ -3,6 +3,7 @@ package org.motechproject.tama.dailypillreminder.command;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
@@ -19,6 +20,7 @@ import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +46,9 @@ public class AdherenceMessageWhenPreviousDoseCapturedCommandTest {
     private DailyPillReminderContextForTest ivrContext;
 
     private AdherenceMessageWhenPreviousDosageCapturedCommand command;
+
+    @Rule
+    public PowerMockRule rule = new PowerMockRule();
 
     @Before
     public void setup() {
