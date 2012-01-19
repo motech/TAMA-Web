@@ -1,5 +1,6 @@
 package org.motechproject.tama.dailypillreminder.command;
 
+import org.joda.time.LocalDate;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
@@ -24,9 +25,10 @@ public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
 
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
-        PillRegimen pillRegimen = context.pillRegimen();
-        int dosagesTaken = allDosageAdherenceLogs.getDosageTakenCount(pillRegimen.getId());
-        int dosagesNotTaken = pillRegimen.getNumberOfDosesAsOf(context.callStartTime()) - dosagesTaken;
+        final PillRegimen pillRegimen = context.pillRegimen();
+        final int dosesTaken = allDosageAdherenceLogs.getDosageTakenCount(pillRegimen.getId());
+        final int totalDoses = allDosageAdherenceLogs.countByDosageDate(pillRegimen.getId(), new LocalDate(0), context.callStartTime().toLocalDate());
+        final int dosagesNotTaken = totalDoses - dosesTaken;
         switch (dosagesNotTaken) {
             case 1:
                 return new String[]{TamaIVRMessage.MISSED_PILL_FEEDBACK_FIRST_TIME};

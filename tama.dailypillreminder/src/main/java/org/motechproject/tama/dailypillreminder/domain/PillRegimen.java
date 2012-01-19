@@ -33,19 +33,6 @@ public class PillRegimen {
         return pillRegimenResponse.getDosages();
     }
 
-    public int getNumberOfDosesAsOf(DateTime till) {
-        final LocalDate startOfTime = new LocalDate(0);
-        return getDosesBetween(startOfTime, till);
-    }
-
-    public int getDosesBetween(LocalDate fromDate, DateTime toDate) {
-        int count = 0;
-        for (DosageResponse dosageResponse : getDosageResponses()) {
-            count += new Dosage(dosageResponse).getDosesBetween(fromDate, toDate);
-        }
-        return count;
-    }
-
     public Dose getPreviousDoseAt(DateTime specifiedDateTime) {
         HashMap<DosageType, Dose> proximateDosesAt = getProximateDosesAt(specifiedDateTime);
         return proximateDosesAt.isEmpty() ? null : proximateDosesAt.get(DosageType.Previous);
