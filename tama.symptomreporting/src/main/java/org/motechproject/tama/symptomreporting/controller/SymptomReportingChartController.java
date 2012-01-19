@@ -1,5 +1,6 @@
 package org.motechproject.tama.symptomreporting.controller;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,16 +39,20 @@ public class SymptomReportingChartController {
         LocalDate from = today.minusMonths(rangeInMonths);
         List<SymptomReport> symptomReports = allSymptomReports.getSymptomReports(patientDocId, from, today);
         JSONArray events = new JSONArray();
+        Map<String, DateTime> lastReportedAtMap = new HashMap<String, DateTime>();
         TrackNumberGenerator trackNumberGenerator = new TrackNumberGenerator();
-        for(SymptomReport report: symptomReports){
+        for(int i=symptomReports.size()-1; i>=0; i--){
+            SymptomReport report = symptomReports.get(i);
         	for (String symptomId : report.getSymptomIds()) {
 	            JSONObject event = new JSONObject();
 	            event.put("start", report.getReportedAt());
-	            event.put("title", lookupSymptom(symptomId));
+	            if (lastReportedAtMap.get(symptomId) == null || report.getReportedAt().isBefore(lastReportedAtMap.get(symptomId).minusDays(7)))
+                    event.put("title", lookupSymptom(symptomId));
 	            event.put("durationEvent", false);
 	            event.put("trackNum", trackNumberGenerator.trackNumberFor(symptomId));
 	            event.put("description", lookupDesc(symptomId));
 	            events.put(event);
+                lastReportedAtMap.put(symptomId,report.getReportedAt());
         	}
         }
         JSONObject result = new JSONObject();
