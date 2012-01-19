@@ -2,6 +2,7 @@
 <%@page import="java.lang.reflect.Method"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%
 	boolean fakeTimeAvailable = false;
 	try {
@@ -48,7 +49,7 @@
 	java.util.Date curdate = new java.util.Date();
 	if (!fakeTimeAvailable)
 		curdate = DateUtil.now().toDate();
-%><html xmlns:spring="http://www.springframework.org/tags">
+%><html>
   <head>
     <script type="text/javascript">
         var djConfig = {parseOnLoad: false, isDebug: false, locale: 'en_in'};
