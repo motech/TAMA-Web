@@ -24,4 +24,8 @@ public class RecordSymptomCommand implements ITreeCommand {
         symptomRecordingService.save(symptomFileName, ivrContext.patientDocumentId(), ivrContext.callId(), DateUtil.now());
         return new String[0];
     }
+    
+    public String getFileName() {
+	return symptomFileName;
+    }
 }
