@@ -46,11 +46,12 @@ SymptomsReportingWidget.prototype = {
     drawTimelineChart: function(interval){
         var self = this;
         var eventSource = new Timeline.DefaultEventSource(0);
+
         var bandInfos = [Timeline.createBandInfo({
                             eventSource : eventSource,
                             width : "80%",
                             intervalUnit : interval,
-                            intervalPixels : 200
+                            intervalPixels : self.getIntervalPixels(interval)
                         }), Timeline.createBandInfo({
                             eventSource : eventSource,
                             width : "20%",
@@ -64,5 +65,12 @@ SymptomsReportingWidget.prototype = {
 
         Timeline.create(dojo.byId(this.timelineGraphDivId), bandInfos);
         eventSource.loadJSON(this.data, this.dataURL);
+    },
+
+    getIntervalPixels: function(interval){
+        if (interval == timelineDAY) return 50;
+        if (interval == timelineWEEK) return 150;
+        if (interval == timelineMONTH) return 300;
+        return 200;
     }
 }
