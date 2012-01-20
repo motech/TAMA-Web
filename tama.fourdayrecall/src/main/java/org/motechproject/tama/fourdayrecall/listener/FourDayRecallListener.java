@@ -27,6 +27,7 @@ public class FourDayRecallListener {
     public static final String PATIENT_DOC_ID_KEY = "patient_id";
     public static final String RETRY_EVENT_KEY = "retry_event";
     public static final String IS_LAST_RETRY_DAY = "is_last_retry_day";
+    public static final String FIRST_CALL = "first_call";
 
     private IVRCall ivrCall;
     private FourDayRecallSchedulerService fourDayRecallSchedulerService;
@@ -61,13 +62,14 @@ public class FourDayRecallListener {
             try {
                 TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
                 Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
+                Boolean isFirstCall = (Boolean) motechEvent.getParameters().get(FIRST_CALL);
 
                 if (isAdherenceCapturedForCurrentWeek(patient, treatmentAdvice))
                     return;
-                if (!isRetryEvent) {
+                if (isFirstCall)
                     weeklyAdherenceLogService.createNotRespondedLog(patient.getId(), 4);
-                    fourDayRecallSchedulerService.scheduleRepeatingJobsForFourDayRecall(patient);
-                }
+                if (!isRetryEvent)
+                    fourDayRecallSchedulerService.scheduleRetryJobsForFourDayRecall(patient);
 
                 ivrCall.makeCall(patient);
             } catch (Exception e) {

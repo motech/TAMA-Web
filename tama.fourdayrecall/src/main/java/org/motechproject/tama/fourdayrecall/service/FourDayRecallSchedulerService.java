@@ -55,7 +55,7 @@ public class FourDayRecallSchedulerService {
         }
     }
 
-    public void scheduleRepeatingJobsForFourDayRecall(Patient patient) {
+    public void scheduleRetryJobsForFourDayRecall(Patient patient) {
         Integer maxOutboundRetries = Integer.valueOf(ivrProperties.getProperty(TAMAConstants.RETRIES_PER_DAY));
         int repeatIntervalInMinutes = Integer.valueOf(ivrProperties.getProperty(TAMAConstants.RETRY_INTERVAL));
 
@@ -84,11 +84,12 @@ public class FourDayRecallSchedulerService {
 
         for (int count = 0; count <= daysToRetry; count++) {
             DayOfWeek day = dayOfWeek(dayOfWeeklyCall, count);
-            HashMap<String, Object> eventParams = new FourDayRecallEventPayloadBuilder()
+            FourDayRecallEventPayloadBuilder builder = new FourDayRecallEventPayloadBuilder()
                     .withJobId(count + patientDocId)
-                    .withPatientDocId(patientDocId)
-                    .payload();
+                    .withPatientDocId(patientDocId);
+            builder = (count == 0) ? builder.withFirstCall(true) : builder.withFirstCall(false);
 
+            HashMap<String, Object> eventParams = builder.payload();
             scheduleWeeklyEvent(getJobStartDate(startDate, patient, treatmentAdvice).plusDays(count).toDate(), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
         }
     }

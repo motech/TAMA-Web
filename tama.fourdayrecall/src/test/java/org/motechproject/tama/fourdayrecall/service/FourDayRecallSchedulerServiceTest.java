@@ -14,18 +14,18 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.listener.FourDayRecallListener;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TimeMeridiem;
-import org.motechproject.tama.patient.domain.TimeOfDay;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -236,13 +236,13 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldScheduleRepeatingJobsForFourDayRecall() {
+    public void shouldScheduleRetryJobsForFourDayRecall() {
         patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withBestCallTime(new TimeOfDay(10, 30, TimeMeridiem.AM)).build();
         treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(DateUtil.newDate(2011, 12, 12)).build();
         when(ivrProperties.getProperty(TAMAConstants.RETRIES_PER_DAY)).thenReturn("5");
         when(ivrProperties.getProperty(TAMAConstants.RETRY_INTERVAL)).thenReturn("15");
 
-        schedulerService.scheduleRepeatingJobsForFourDayRecall(patient);
+        schedulerService.scheduleRetryJobsForFourDayRecall(patient);
 
         ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
         verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
@@ -272,6 +272,38 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
         for (int i = 0; i <= 2; i++) {
             verify(motechSchedulerService).unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, i + PATIENT_ID);
         }
+    }
+
+    @Test
+    public void shouldCreateJobWithFirstCallParameterTrueWhenSchedulingTheFirstCallForTheWeek() {
+        patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 30, TimeMeridiem.AM)).build();
+        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(DateUtil.newDate(2011, 12, 12)).build(); //Monday
+
+        schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
+
+        ArgumentCaptor<CronSchedulableJob> cronJobForFourDayRecallArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+        verify(motechSchedulerService, times(6)).scheduleJob(cronJobForFourDayRecallArgumentCaptor.capture());
+        CronSchedulableJob cronSchedulableJob = cronJobForFourDayRecallArgumentCaptor.getAllValues().get(0);
+
+        assertTrue((Boolean) cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.FIRST_CALL));
+    }
+
+    @Test
+    public void shouldCreateJobWithFirstCallParameterFalseWhenSchedulingTheRepeatWeeklyJobs() {
+        patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 30, TimeMeridiem.AM)).build();
+        treatmentAdvice = TreatmentAdviceBuilder.startRecording().withStartDate(DateUtil.newDate(2011, 12, 12)).build(); //Monday
+
+        schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
+
+        ArgumentCaptor<CronSchedulableJob> cronJobForFourDayRecallArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
+        verify(motechSchedulerService, times(6)).scheduleJob(cronJobForFourDayRecallArgumentCaptor.capture());
+        List<CronSchedulableJob> allValues = cronJobForFourDayRecallArgumentCaptor.getAllValues();
+        System.out.println(Arrays.toString(allValues.toArray()));
+        CronSchedulableJob cronSchedulableRepeatJob_1 = allValues.get(1);
+        CronSchedulableJob cronSchedulableRepeatJob_2 = allValues.get(2);
+
+        assertFalse((Boolean) cronSchedulableRepeatJob_1.getMotechEvent().getParameters().get(FourDayRecallListener.FIRST_CALL));
+        assertFalse((Boolean) cronSchedulableRepeatJob_2.getMotechEvent().getParameters().get(FourDayRecallListener.FIRST_CALL));
     }
 
     private void assertDates(DateTime dateTime1, DateTime dateTime2) {
