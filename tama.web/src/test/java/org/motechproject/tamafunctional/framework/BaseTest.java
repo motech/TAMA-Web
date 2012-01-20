@@ -56,8 +56,8 @@ public abstract class BaseTest extends FunctionalTestObject {
             output = new BufferedWriter(new FileWriter(file));
             output.write(pageSource);
             logInfo("HTML Output logged to %s", file.getName());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
+            System.err.println("Unable to write html result to file " + ignore.getMessage());
         } finally {
             webDriver.manage().deleteAllCookies();
             webDriver.quit();

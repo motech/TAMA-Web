@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.testdata.treatmentadvice;
 import org.apache.commons.lang.NotImplementedException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.motechproject.tamafunctional.testdata.TestEntity;
 import org.motechproject.util.DateUtil;
 
@@ -25,13 +26,17 @@ public class TestDrugDosage extends TestEntity {
     }
 
     public static TestDrugDosage[] create(String... brandNames) {
-        DateTime now = DateUtil.now();
-        String dosageType = now.getHourOfDay() <= 11 ? MORNING_DAILY : EVENING_DAILY;
-        DateTime hourNowIn12HourFormat = now.getHourOfDay() > 12 ? now.minusHours(12) : now;
+        final DateTime now = DateUtil.now();
+        return create(now.toLocalDate(), now.toLocalTime(), brandNames);
+    }
+
+    public static TestDrugDosage[] create(LocalDate startDate, LocalTime doseTime, String... brandNames) {
+        String dosageType = doseTime.getHourOfDay() <= 11 ? MORNING_DAILY : EVENING_DAILY;
+        LocalTime hourNowIn12HourFormat = doseTime.getHourOfDay() > 12 ? doseTime.minusHours(12) : doseTime;
         String dosageSchedule = hourNowIn12HourFormat.toString("HH:mm");
         ArrayList<TestDrugDosage> drugDosages = new ArrayList<TestDrugDosage>();
         for (String brandName : brandNames) {
-            drugDosages.add(withExtrinsic().dosageType(dosageType).dosageSchedule(dosageSchedule).brandName(brandName).startDate(DateUtil.today()));
+            drugDosages.add(withExtrinsic().dosageType(dosageType).dosageSchedule(dosageSchedule).brandName(brandName).startDate(startDate));
         }
         return drugDosages.toArray(new TestDrugDosage[brandNames.length]);
     }
