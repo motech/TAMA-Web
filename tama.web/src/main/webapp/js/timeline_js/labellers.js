@@ -1,7 +1,7 @@
 /*==================================================
- *  Localization of labellers.js
- *==================================================
- */
+* Localization of labellers.js
+*==================================================
+*/
 if (typeof Timeline.GregorianDateLabeller.monthNames == "undefined") Timeline.GregorianDateLabeller.monthNames = {};
 Timeline.GregorianDateLabeller.monthNames["en"] = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
