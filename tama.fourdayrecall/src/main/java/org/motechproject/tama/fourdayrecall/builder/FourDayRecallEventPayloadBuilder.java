@@ -35,4 +35,9 @@ public class FourDayRecallEventPayloadBuilder {
     public HashMap<String, Object> payload() {
         return params;
     }
+
+    public FourDayRecallEventPayloadBuilder withFirstCall(boolean isFirstCall) {
+        params.put(FourDayRecallListener.FIRST_CALL, isFirstCall);
+        return this;
+    }
 }
