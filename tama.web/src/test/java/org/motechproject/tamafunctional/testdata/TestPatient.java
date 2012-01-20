@@ -25,7 +25,7 @@ public class TestPatient extends TestEntity {
                 mobileNumber(Long.toString(UniqueMobileNumber.generate())).
                 travelTimeToClinicInDays("1").
                 travelTimeToClinicInHours("2").
-                travelTimeToClinicInHours("3").
+                travelTimeToClinicInMinutes("3").
                 hivMedicalHistory(TestHIVMedicalHistory.withMandatory()).
                 nonHIVMedicalHistory(TestNonHIVMedicalHistory.withMandatory()).
                 patientPreferences(TestPatientPreferences.withMandatory());
@@ -59,7 +59,7 @@ public class TestPatient extends TestEntity {
         return this;
     }
 
-    public TestPatient travelTimeToClinicInMinutues(String minutes) {
+    public TestPatient travelTimeToClinicInMinutes(String minutes) {
         travelTimeToClinicInMinutes = minutes;
         return this;
     }
