@@ -70,7 +70,7 @@ SymptomsReportingWidget.prototype = {
     getIntervalPixels: function(interval){
         if (interval == timelineDAY) return 50;
         if (interval == timelineWEEK) return 150;
-        if (interval == timelineMONTH) return 300;
+        if (interval == timelineMONTH) return 700;
         return 200;
     }
 }
