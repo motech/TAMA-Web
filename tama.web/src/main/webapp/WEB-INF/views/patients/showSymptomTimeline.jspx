@@ -2,24 +2,39 @@
       xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
 
     <spring:url value="/resources/styles/timeline.css" var="timeline_css"/>
-    <spring:url value="/js/timeline_ajax/" var="timeline_ajax_root"/>
-    <spring:url value="/js/timeline_js/" var="timeline_js_root"/>
-    <spring:url value="/js/timeline_ajax/simile-ajax-api.js" var="simile_ajax_api_js"/>
-    <spring:url value="/js/timeline_js/timeline-api.js" var="timeline_api_js"/>
+    <spring:url value="/js/timeline_ajax" var="timeline_ajax_root"/>
+    <spring:url value="/js/timeline_js" var="timeline_js_root"/>
     <spring:url value="/json/symptoms/list" var="symptoms_list_url"/>
     <spring:url value="/resources/js/symptomTimeline.js" var="symptomTimeline_js"/>
 	
 	<script>
 		<![CDATA[
-		var SimileAjax_urlPrefix = "${timeline_ajax_root}";
-		var Timeline_urlPrefix = "${timeline_js_root}";
-		var Timeline_parameters="bundle=true&defaultLocale=en";
+		var SimileAjax_urlPrefix = "${timeline_ajax_root}/";
+		var Timeline_urlPrefix = "${timeline_js_root}/";
+
+		window.Timeline ={
+            urlPrefix : Timeline_urlPrefix,
+		    clientLocale : "en",
+		    serverLocale : "en"
+		};
+		var SimileAjax = {
+            loaded:                 false,
+            loadingScriptsCount:    0,
+            error:                  null,
+            params:                 { bundle:"true" },
+            Platform : {}
+        };
+
 		]]>
 	</script>
 
     <link rel="stylesheet" type="text/css" href="${timeline_css}" ><!-- required for FF3 and Opera --></link>
-    <script src="${simile_ajax_api_js}?bundle=true" type="text/javascript" ><!-- required for FF3 and Opera --></script>
-    <script src="${timeline_api_js}?bundle=true" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+    <link rel="stylesheet" type="text/css" href="${timeline_js_root}/timeline-bundle.css" ><!-- required for FF3 and Opera --></link>
+    <script src="${timeline_ajax_root}/simile-ajax-bundle.js" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+    <script src="${timeline_js_root}/timeline-bundle.js" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+    <script src="${timeline_js_root}/labellers.js" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+    <script src="${timeline_js_root}/timeline.js" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+
     <script src="${symptomTimeline_js}" type="text/javascript" ><!-- required for FF3 and Opera --></script>
     
     <div id="symptoms-reporting-widget-placeholder" style="display: none;">
