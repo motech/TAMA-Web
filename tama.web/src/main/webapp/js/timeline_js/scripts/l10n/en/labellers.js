@@ -10,3 +10,9 @@ if (typeof Timeline.GregorianDateLabeller.dayNames == "undefined") Timeline.Greg
 Timeline.GregorianDateLabeller.dayNames["en"] = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 ];
+Timeline.GregorianDateLabeller.prototype.labelPrecise = function(date) {
+    return SimileAjax.DateTime.removeTimeZoneOffset(
+        date,
+        this._timeZone //+ (new Date().getTimezoneOffset() / 60)
+    ).toLocaleDateString();
+};
