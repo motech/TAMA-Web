@@ -10,6 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tama.healthtips</artifactId>
     <name>tama.healthtips</name>
+    <properties>
+        <build.dir>../build</build.dir>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
