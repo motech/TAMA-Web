@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -23,6 +24,9 @@ public class ShowClinicPage extends Page {
     @FindBy(how = How.XPATH, xpath = "//a[@title='Home']")
     private WebElement homePageLink;
 
+    @FindBy(how = How.XPATH, using = "//li[@id='i_clinician_new']/a")
+    private WebElement clinicianRegistrationLink;
+
     public ShowClinicPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -43,5 +47,10 @@ public class ShowClinicPage extends Page {
 
     public String getPhone() {
         return phone.getText();
+    }
+
+    public ClinicianRegistrationPage goToClinicianRegistrationPage() {
+        clinicianRegistrationLink.click();
+        return MyPageFactory.initElements(webDriver, ClinicianRegistrationPage.class);
     }
 }
