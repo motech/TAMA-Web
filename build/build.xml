@@ -2,8 +2,15 @@
 <project name="tama" basedir=".">
 
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
-        <classpath>
+         <classpath>
             <pathelement location="lib/ant-contrib-1.0b3.jar"/>
+         </classpath>
+    </taskdef>
+
+    <property name="build.dir" value="../build"/>
+    <taskdef name="for" classname="net.sf.antcontrib.logic.ForTask">
+        <classpath>
+            <pathelement location="${build.dir}/lib/ant-contrib-1.0b3.jar"/>
         </classpath>
     </taskdef>
 
@@ -41,12 +48,17 @@
         <path refid="lib.path"/>
     </target>
 
-    <target name="drop.db">
-        <exec executable="curl">
-            <arg value="-X"/>
-            <arg value="DELETE"/>
-            <arg value="http://${db.server}:5984/${db.name}"/>
-        </exec>
+    <target name="drop.all.dbs">
+        <for list="tama-web,motech-pillreminder,motech-alert,motech-ivr-kookoo,motech-outbox" param="db.name">
+            <sequential>
+                <exec executable="curl">
+                    <arg value="-s"/>
+                    <arg value="-S"/>
+                    <arg value="-X"/>
+                    <arg value="DELETE"/>
+                    <arg value="http://${couchdb.server}:${couchdb.port}/@{db.name}"/>
+                </exec>
+            </sequential>
+        </for>
     </target>
-
 </project>
