@@ -2,8 +2,8 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,22 +13,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RequestMapping("/clinicvisits")
 @Controller
 public class ClinicVisitsController extends BaseController {
-    @Qualifier("treatmentAdviceController")
-    @Autowired
+
     private TreatmentAdviceController treatmentAdviceController;
-    @Autowired
+    private LabResultsController labResultsController;
     private AllTreatmentAdvices allTreatmentAdvices;
 
-    protected ClinicVisitsController() {
-    }
-
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices) {
+    @Autowired
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController) {
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
+        this.labResultsController = labResultsController;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
@@ -38,16 +37,18 @@ public class ClinicVisitsController extends BaseController {
             return "redirect:/clinicvisits/" + encodeUrlPathSegment(adviceForPatient.getId(), httpServletRequest);
         }
         treatmentAdviceController.createForm(patientId, uiModel);
+        labResultsController.createForm(patientId, uiModel, httpServletRequest);
         return "clinicvisits/create";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String create(TreatmentAdvice treatmentAdvice, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(TreatmentAdvice treatmentAdvice, @Valid LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
             return "clinicvisits/create";
         }
         treatmentAdviceController.create(treatmentAdvice, uiModel);
+        labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 
