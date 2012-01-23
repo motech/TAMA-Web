@@ -7,7 +7,13 @@
     <spring:url value="/resources/styles/create-lab-result.css" var="create_labresult_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"></link>
 
+    <spring:url value="/resources/js/labresult.js" var="labresultjs"/>
+    <script src="${labresultjs}" type="text/javascript"/>
+
     <util:panel id="fc_org_motechproject_tama_domain_Lab_Result" title="Create Lab Results" openPane="true">
+        <div>
+            <div id="lab_results_error" class="error"/>
+        </div>
         <table>
             <thead>
             <tr>
@@ -31,13 +37,13 @@
                 <field:hidden  path="labResultsUIModel.labResults[${labTestIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_labtest_id" value="${labTest.id}"/>
                 <tr>
                     <td class="test-field">
-                        <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResultsUIModel.labResults[${labTestIndex.index}].testDateAsDate" label="Test Date" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false" required="true" />
+                        <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResultsUIModel.labResults[${labTestIndex.index}].testDateAsDate" label="Test Date" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false"  />
                     </td>
                     <td>
                         <c:out value="${labTest.name}"/>
                     </td>
                     <td class="test-field">
-                        <formfield:input validationRegex="^[0-9]+$" field="labResultsUIModel.labResults[${labTestIndex.index}].result" label="Result" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result" required="true"/>
+                        <formfield:input validationRegex="^[0-9]+$" field="labResultsUIModel.labResults[${labTestIndex.index}].result" label="Result" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result"/>
                     </td>
                     <td>
                         <c:out value="${labTest.normalRange}"/>

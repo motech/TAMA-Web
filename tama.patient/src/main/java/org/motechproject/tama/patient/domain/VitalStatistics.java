@@ -11,22 +11,16 @@ import javax.validation.constraints.NotNull;
 @TypeDiscriminator("doc.documentType == 'VitalStatistics'")
 public class VitalStatistics extends CouchEntity implements Comparable<VitalStatistics> {
 
-    @NotNull
     private Double weightInKg;
 
-    @NotNull
     private Double heightInCm;
 
-    @NotNull
     private Integer systolicBp;
 
-    @NotNull
     private Integer diastolicBp;
 
-    @NotNull
     private Double temperatureInFahrenheit;
 
-    @NotNull
     private Integer pulse;
 
     @NotNull

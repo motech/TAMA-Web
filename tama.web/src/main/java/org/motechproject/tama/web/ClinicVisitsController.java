@@ -50,7 +50,7 @@ public class ClinicVisitsController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String create(TreatmentAdvice treatmentAdvice, @Valid LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
             return "clinicvisits/create";

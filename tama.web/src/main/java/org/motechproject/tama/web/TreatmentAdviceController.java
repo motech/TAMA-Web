@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -81,7 +82,19 @@ public class TreatmentAdviceController extends BaseController {
 
     public void create(TreatmentAdvice treatmentAdvice, Model uiModel) {
         uiModel.asMap().clear();
+        fixTimeString(treatmentAdvice);
         treatmentAdviceService.createRegimen(treatmentAdvice);
+    }
+
+    private void fixTimeString(TreatmentAdvice treatmentAdvice) {
+        for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
+            final String morningTime = drugDosage.getMorningTime();
+            if (morningTime != null && !morningTime.isEmpty())
+                drugDosage.setMorningTime(morningTime + "am");
+            final String eveningTime = drugDosage.getEveningTime();
+            if (eveningTime != null && !eveningTime.isEmpty())
+                drugDosage.setEveningTime(eveningTime + "pm");
+        }
     }
 
     public void show(String id, Model uiModel) {

@@ -227,21 +227,6 @@ dojo.addOnLoad(function() {
                 var error = dojo.byId("dosage_times_error");
                 dojo.html.set(error, validation_error);
                 evt.preventDefault();
-            } else {
-                var drug1AmTime = dojo.byId("_treatmentAdvice.drugDosages[0].morningTime_id");
-                var drug1PmTime = dojo.byId("_treatmentAdvice.drugDosages[0].eveningTime_id");
-                var drug2AmTime = dojo.byId("_treatmentAdvice.drugDosages[1].morningTime_id");
-                var drug2PmTime = dojo.byId("_treatmentAdvice.drugDosages[1].eveningTime_id");
-                var amTimesArray = [drug1AmTime, drug2AmTime];
-                var pmTimesArray = [drug1PmTime, drug2PmTime];
-                dojo.forEach(amTimesArray, function(item) {
-                    if (item != null && item != undefined && item.value !== "")
-                        item.value = item.value + 'am';
-                });
-                dojo.forEach(pmTimesArray, function(item) {
-                    if (item != null && item != undefined && item.value !== "")
-                        item.value = item.value + 'pm';
-                });
             }
         });
     }

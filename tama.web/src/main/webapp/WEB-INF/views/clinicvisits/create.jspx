@@ -6,7 +6,7 @@
 
     <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Clinic Visits / Appointment Details" openPane="true">
         <spring:url value="/clinicvisits/create" var="form_url"/>
-        <form action="${form_url}" method="POST">
+        <form id="clinicvisit" action="${form_url}" method="POST">
 
             <input type="hidden" name="patientId" value="${patientId}"/>
 
