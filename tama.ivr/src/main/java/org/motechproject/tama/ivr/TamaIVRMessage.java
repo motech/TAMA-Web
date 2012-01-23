@@ -28,7 +28,6 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String DOSE_TAKEN_MENU_OPTION = "010_00_00_mainMenu_doseTaken";
 
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
-    public static final String PILL_CONFIRM_CALL_MENU = "010_03_02_MainMenu2";
     public static final String ITS_TIME_FOR_THE_PILL = "001_02_02_itsTimeForPill1";
     public static final String PILL_FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
     public static final String PILL_FROM_THE_BOTTLE_AFTER_PILL_WINDOW = "010_02_06_fromTheBottle2";
@@ -51,7 +50,6 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String MORNING = "001_07_02_doseTimeOfMorning";
     public static final String AFTERNOON = "001_07_02_doseTimeOfAfternoon";
     public static final String EVENING = "001_07_02_doseTimeOfEvening";
-    public static final String LAST_NIGHT = "001_07_02_doseTimeOfLastnight";
 
     public static final String DOSE_NOT_RECORDED = "001_07_03_doseNotRecorded";
 
@@ -59,13 +57,11 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String IN_THE_MORNING = "001_07_04_doseTimeAtMorning";
     public static final String IN_THE_AFTERNOON = "001_07_04_doseTimeAtAfternoon";
     public static final String IN_THE_EVENING = "001_07_04_doseTimeAtEvening";
-    public static final String IN_THE_LAST_NIGHT = "001_07_04_doseTimeAtLastnight";
 
     public static final String YESTERDAYS_CONFIRMATION = "001_08_02_doseTimeOfYesterdays";
     public static final String MORNING_CONFIRMATION = "001_08_02_doseTimeOfMorning";
     public static final String AFTERNOON_CONFIRMATION = "001_08_02_doseTimeOfAfternoon";
     public static final String EVENING_CONFIRMATION = "001_08_02_doseTimeOfEvening";
-    public static final String LAST_NIGHT_CONFIRMATION = "001_08_02_doseTimeOfLastnight";
 
     public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
     public static final String FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
@@ -110,12 +106,12 @@ public class TamaIVRMessage implements IVRMessage {
 
     public static final String NO_MESSAGES = "010_07_03_NoOutboxMessages";
 
+    public static final String NO_HEALTHTIP_MESSAGES = "010_11_04_NoHealthTips";
+
     /* -------- Adherence Feedback ----------- */
     /*----------Outbox -------------------------*/
     public static final String CONTINUE_TO_OUTBOX = "001_06_04_mayEndThisCallNow1";
-    public static final String THOSE_WERE_YOUR_MESSAGES = "001_06_05_mayEndThisCallNow2";
     public static final String THESE_WERE_YOUR_MESSAGES_FOR_NOW = "001_06_05_thoseWereYourMessages";
-
 
     public static final String FILE_050_03_01_ITS_TIME_FOR_BEST_CALL_TIME = "050_03_01_itsTimeForBestCallTime";
 
@@ -181,9 +177,5 @@ public class TamaIVRMessage implements IVRMessage {
 
     public String getNumberFilename(int n) {
         return String.format(NUMBER_WAV_FORMAT, n);
-    }
-
-    public String getSignatureMusic() {
-        return SIGNATURE_MUSIC;
     }
 }
