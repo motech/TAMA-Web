@@ -223,7 +223,7 @@
                         <id>recreate-Db</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
-                            <target>
+                            <target unless="skipTests">
                                 <echo message="Recreating DB: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
                                 <java classname="org.motechproject.tama.tools.RecreateDB">
@@ -242,7 +242,7 @@
                         <id>load-seed-data-in-Db</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
-                            <target>
+                            <target unless="skipTests">
                                 <echo message="Seed data loading: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
                                 <java classname="org.motechproject.tama.tools.seed.SetupSeedData">
@@ -261,7 +261,7 @@
                         <id>start-activemq</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
-                            <target name="start.activemq">
+                            <target name="start.activemq" unless="skipTests">
                                 <condition property="script.interpreter" value="bash" else="cmd">
                                     <os family="unix"/>
                                 </condition>
@@ -292,7 +292,7 @@
                         <id>setup-quartz-schema</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
-                            <target>
+                            <target unless="skipTests">
                                 <echo message="Quartz schema loading: START"/>
                                 <path id="dependencies">
                                     <fileset file="${project.basedir}/../build/lib/mysql-connector-java-5.1.13.jar"/>
@@ -334,6 +334,7 @@
                         <configuration>
                             <background>true</background>
                             <logOutput>true</logOutput>
+                            <skip>${skipTests}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -342,6 +343,9 @@
                         <goals>
                             <goal>stop-server</goal>
                         </goals>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -458,6 +462,7 @@
                         </goals>
                         <configuration>
                             <daemon>true</daemon>
+                            <skip>${skipTests}</skip>
                         </configuration>
                     </execution>
                     <execution>
