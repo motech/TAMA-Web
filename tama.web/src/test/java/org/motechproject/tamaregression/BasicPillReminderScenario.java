@@ -3,13 +3,17 @@ package org.motechproject.tamaregression;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tamafunctional.framework.*;
+import org.motechproject.tama.dailypillreminder.listener.AdherenceTrendListener;
+import org.motechproject.tamafunctional.framework.BaseTest;
+import org.motechproject.tamafunctional.framework.MyPageFactory;
+import org.motechproject.tamafunctional.framework.MyWebClient;
+import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
 import org.motechproject.tamafunctional.ivr.Caller;
 import org.motechproject.tamafunctional.page.LoginPage;
-import org.motechproject.tamafunctional.testdata.*;
+import org.motechproject.tamafunctional.testdata.TestClinic;
+import org.motechproject.tamafunctional.testdata.TestClinician;
+import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.ivrrequest.OutgoingCallInfo;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
@@ -25,14 +29,18 @@ import static org.motechproject.tamafunctional.test.ivr.IVRAssert.assertAudioFil
 public class BasicPillReminderScenario extends BaseTest {
 
     public static final String INCORRECT_PASSCODE = "9888";
+    public static final String PATIENT_PIN = "1234";
 
     private TestClinician clinician;
     private MyWebClient webClient = new MyWebClient();
+    private ScheduledTaskManager scheduledTaskManager;
 
-    @BeforeClass
+    @Before
     public void setUpScenario() {
         final TestClinic clinic = TestClinic.withMandatory();
         clinician = TestClinician.withMandatory().clinic(clinic);
+        scheduledTaskManager = new ScheduledTaskManager(webClient);
+
         MyPageFactory.initElements(webDriver, LoginPage.class)
                 .loginWithCorrectAdminUserNamePassword()
                 .goToClinicRegistrationPage()
@@ -70,11 +78,44 @@ public class BasicPillReminderScenario extends BaseTest {
 
         verifyRepeatMenuPlayed(caller);
 
+        triggerAdherenceInRedJob(patient);
+//        verifyAdherenceInRedAlertIsRaised
         verifyHangup(caller);
 
 
         patientSwitchesFromDailyToWeekly(patient);
 
+        final Caller fourDayRecallCaller = new Caller(unique("sid"), patient.mobileNumber(), webClient);
+        verifyIncorrectPinRepeatsSignatureMusic(fourDayRecallCaller);
+        verifyFourDayRecallMenu(fourDayRecallCaller);
+
+        enter2ForDaysMissedAndVerifyAdherencePercentageAs50Percent(fourDayRecallCaller);
+
+        verifyRepeatMenuPlayed(fourDayRecallCaller);
+
+    }
+
+    private void triggerAdherenceInRedJob(TestPatient patient) {
+        scheduledTaskManager.trigger(AdherenceTrendListener.class, "handleAdherenceTrendEvent", patient.id());
+    }
+
+    private void enter2ForDaysMissedAndVerifyAdherencePercentageAs50Percent(Caller fourDayRecallCaller) {
+        assertAudioFilesPresent(fourDayRecallCaller.enter("2"),
+                FDR_MISSED_ONE_DOSAGE_ON_MULTIPLE_DAYS_PART_1,
+                "num_002",
+                FDR_MISSED_ONE_DOSAGE_ON_MULTIPLE_DAYS_PART_2,
+                FDR_TAKE_DOSAGES_REGULARLY,
+                FDR_YOUR_WEEKLY_ADHERENCE_IS,
+                "num_050",
+                FDR_PERCENT);
+    }
+
+    private void verifyFourDayRecallMenu(Caller fourDayRecallCaller) {
+        assertAudioFilesPresent(fourDayRecallCaller.enter(PATIENT_PIN),
+                DEFAULT_OUTBOUND_CLINIC_MESSAGE,
+                FDR_GREETING,
+                FDR_MENU_FOR_SINGLE_DOSAGE
+                );
     }
 
     private void patientSwitchesFromDailyToWeekly(TestPatient patient) {
@@ -131,7 +172,7 @@ public class BasicPillReminderScenario extends BaseTest {
     }
 
     private void verifyLoginWithCorrectPasscodeAndPillNamesInResponse(Caller caller) {
-        assertAudioFilesPresent(caller.enter("1234"),
+        assertAudioFilesPresent(caller.enter(PATIENT_PIN),
                 DEFAULT_OUTBOUND_CLINIC_MESSAGE,
                 ITS_TIME_FOR_THE_PILL,
                 "pillazt3tc_combivir",
