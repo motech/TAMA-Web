@@ -11,6 +11,7 @@ import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.healthtips.domain.HealthTipsProperties;
 import org.motechproject.tama.healthtips.service.HealthTipService;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -69,6 +70,7 @@ public class HealthTipsController extends SafeIVRController {
             ivrResponseBuilder.withPlayAudios(healthTip);
             tamaivrContext.setPlayedHealthTipsCount(playedCount + 1);
         } else {
+            ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NO_HEALTHTIP_MESSAGES);
             endHealthTipFlow(tamaivrContext);
         }
         return ivrResponseBuilder;
@@ -78,5 +80,4 @@ public class HealthTipsController extends SafeIVRController {
         tamaivrContext.callState(CallState.END_OF_FLOW);
         tamaivrContext.setPlayedHealthTipsCount(0);
     }
-
 }

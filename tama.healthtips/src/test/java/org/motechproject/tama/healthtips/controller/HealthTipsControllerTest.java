@@ -10,6 +10,7 @@ import org.motechproject.tama.healthtips.constants.HealthTipPropertiesForTest;
 import org.motechproject.tama.healthtips.service.HealthTipService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 import static org.junit.Assert.assertEquals;
@@ -35,26 +36,37 @@ public class HealthTipsControllerTest {
     private TAMAIVRContext tamaIVRContext;
 
     private HealthTipsController healthTipsController;
+    private String patientId;
 
     @Before
     public void setUp() {
         initMocks(this);
-        String patientId = "patientId";
+        patientId = "patientId";
         HealthTipPropertiesForTest properties = new HealthTipPropertiesForTest();
         healthTipsController = new HealthTipsController(healthTipService, tamaIvrMessage,
                 callDetailRecordsService, standardResponseController, properties, tamaivrContextFactory);
         when(kookooIVRContext.callId()).thenReturn("34");
         when(kookooIVRContext.preferredLanguage()).thenReturn("en");
         when(kookooIVRContext.externalId()).thenReturn(patientId);
-        when(healthTipService.nextHealthTip(patientId)).thenReturn("fuuQux.wav");
         when(tamaivrContextFactory.create(kookooIVRContext)).thenReturn(tamaIVRContext);
         when(tamaIVRContext.getPlayedHealthTipsCount()).thenReturn(0);
     }
 
     @Test
     public void shouldPlayKookooPlayAudioFromPlaylist() {
-        assertEquals("fuuQux.wav", healthTipsController.gotDTMF(kookooIVRContext).getPlayAudios().get(0));
-        verify(tamaIVRContext).setLastPlayedHealthTip("fuuQux.wav");
+        when(healthTipService.nextHealthTip(patientId)).thenReturn("yourHealthTipsIs");
+
+        assertEquals("yourHealthTipsIs", healthTipsController.gotDTMF(kookooIVRContext).getPlayAudios().get(0));
+        verify(tamaIVRContext).setLastPlayedHealthTip("yourHealthTipsIs");
         verify(tamaIVRContext).setPlayedHealthTipsCount(1);
+    }
+
+    @Test
+    public void shouldPlayNoHealthTipsMessage_IfAllHealthTipsAreExhausted() {
+        when(healthTipService.nextHealthTip(patientId)).thenReturn("");
+
+        assertEquals("010_11_04_NoHealthTips", healthTipsController.gotDTMF(kookooIVRContext).getPlayAudios().get(0));
+        verify(tamaIVRContext).callState(CallState.END_OF_FLOW);
+        verify(tamaIVRContext).setPlayedHealthTipsCount(0);
     }
 }
