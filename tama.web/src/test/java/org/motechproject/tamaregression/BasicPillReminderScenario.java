@@ -155,7 +155,7 @@ public class BasicPillReminderScenario extends BaseTest {
                 YOU_WERE_SUPPOSED_TO_TAKE,
                 "pillazt3tc_combivir",
                 "pillefv_efavir",
-                PILL_FROM_THE_BOTTLE,
+                ITS_TIME_FOR_THE_PILL_2,
                 PREVIOUS_DOSE_MENU);
     }
 

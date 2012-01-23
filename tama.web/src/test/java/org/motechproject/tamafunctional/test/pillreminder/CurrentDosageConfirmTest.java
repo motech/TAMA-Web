@@ -2,7 +2,6 @@ package org.motechproject.tamafunctional.test.pillreminder;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.test.ivr.IVRAssert;
 import org.motechproject.tamafunctional.testdata.TestClinician;
@@ -11,8 +10,6 @@ import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
@@ -36,7 +33,7 @@ public class CurrentDosageConfirmTest extends BaseIVRTest {
     public void outboxFlow_WhenPatient_CallsTAMA() throws IOException {
         caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
         ivrResponse = caller.enter("3");
         IVRAssert.assertAudioFilesPresent(ivrResponse, NO_MESSAGES);
         ivrResponse = caller.listenMore();

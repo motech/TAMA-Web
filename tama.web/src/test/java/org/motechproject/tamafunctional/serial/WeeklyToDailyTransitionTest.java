@@ -92,7 +92,7 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         caller = caller(patient);
         caller.call();
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL, FROM_THE_BOTTLE, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_RECORDED);
         caller.hangup();
@@ -103,7 +103,7 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
     }
 
     private void assertPatientCanCallTAMAAndReportAdherence(IVRResponse ivrResponse) {
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, ITS_TIME_FOR_THE_PILL_2);
         ivrResponse = caller.enter("3");
         ivrResponse = caller.enter("2");
         IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW);
