@@ -38,7 +38,7 @@ public class MessageForMedicines extends DailyPillReminderTreeCommand {
         messages.add(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
         messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
         messages.addAll(context.currentDose().medicineNames());
-        messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);
+        messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL_2);
         return messages.toArray(new String[messages.size()]);
     }
 }
