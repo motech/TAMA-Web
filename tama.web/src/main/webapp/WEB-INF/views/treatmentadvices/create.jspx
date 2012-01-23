@@ -11,7 +11,6 @@
 
         <util:panel id="fc_org_motechproject_tama_domain_TreatmentAdvice" title="Register new Treatment Advice"
                     openPane="true">
-            <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}"/>
             <field:display object="${patientIdentifier}" field=""
                            id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
             <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="treatmentAdvice.regimenId"
