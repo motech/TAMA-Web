@@ -12,6 +12,7 @@ import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
+import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
 
@@ -38,9 +39,10 @@ public class HealthTipsTest extends BaseIVRTest {
         tamaDateTimeService.adjustDateTime(DateUtil.now().minusWeeks(2));
 
         TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFrom2WeeksAgo();
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
+        patientDataService.registerAndActivate(patient, clinician);
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
-        patientDataService.createRegimenWithLabResults(patient, clinician, null, labResult);
+        patientDataService.createRegimenWithLabResults(patient, clinician, treatmentAdvice, labResult);
 
         tamaDateTimeService.adjustDateTime(DateUtil.now());
     }
