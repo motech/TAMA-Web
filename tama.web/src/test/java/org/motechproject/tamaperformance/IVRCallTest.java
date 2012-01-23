@@ -1,6 +1,5 @@
 package org.motechproject.tamaperformance;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.ivr.TamaIVRMessage;
@@ -21,7 +20,10 @@ import org.motechproject.util.DateUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -133,7 +135,7 @@ public class IVRCallTest extends BaseIVRTest {
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("1234#");
-        asksForCollectDtmfWith(ivrResponse, welcomeAudioForClinic(clinic), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.PILL_FROM_THE_BOTTLE);
+        asksForCollectDtmfWith(ivrResponse, welcomeAudioForClinic(clinic), TamaIVRMessage.ITS_TIME_FOR_THE_PILL, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.FROM_THE_BOTTLE);
 
         ivrResponse = caller.enter("3#");
         assertAudioFilesPresent(ivrResponse, TamaIVRMessage.NO_MESSAGES);

@@ -82,7 +82,7 @@ public class HealthTipsTest extends BaseIVRTest {
         caller.replyToCall(new PillReminderCallInfo(1));
 
         IVRResponse ivrResponse = caller.enter("5678");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, PILL_FROM_THE_BOTTLE);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, ITS_TIME_FOR_THE_PILL_2);
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_RECORDED);
         ivrResponse = caller.listenMore();

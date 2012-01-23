@@ -42,7 +42,7 @@ public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTree
         if (pillRegimen.isWithinPillWindow(context.callStartTime())) {
             messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL);
             messages.addAll(context.currentDose().medicineNames());
-            messages.add(TamaIVRMessage.PILL_FROM_THE_BOTTLE);
+            messages.add(TamaIVRMessage.FROM_THE_BOTTLE);
         } else {
             messages.add(TamaIVRMessage.NOT_REPORTED_IF_TAKEN);
             messages.addAll(context.currentDose().medicineNames());
