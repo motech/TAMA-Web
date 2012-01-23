@@ -63,6 +63,6 @@ public class MessageForMedicinesTest {
         assertEquals("001_02_02_itsTimeForPill1", messages[1]);
         assertEquals("pillmedicine1", messages[2]);
         assertEquals("pillmedicine2", messages[3]);
-        assertEquals("001_07_07_fromTheBottle1", messages[4]);
+        assertEquals("001_02_04_itsTimeForPill2", messages[4]);
     }
 }

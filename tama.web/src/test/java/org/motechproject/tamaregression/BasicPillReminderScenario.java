@@ -177,7 +177,7 @@ public class BasicPillReminderScenario extends BaseTest {
                 ITS_TIME_FOR_THE_PILL,
                 "pillazt3tc_combivir",
                 "pillefv_efavir",
-                "001_07_07_fromthebottle1",
+                ITS_TIME_FOR_THE_PILL_2,
                 "001_02_05_pilltimemenu"
         );
     }
