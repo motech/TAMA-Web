@@ -66,7 +66,7 @@ public class FourDayRecallListener {
 
                 if (isAdherenceCapturedForCurrentWeek(patient, treatmentAdvice))
                     return;
-                if (isFirstCall)
+                if (isFirstCall != null && isFirstCall == Boolean.TRUE)
                     weeklyAdherenceLogService.createNotRespondedLog(patient.getId(), 4);
                 if (!isRetryEvent)
                     fourDayRecallSchedulerService.scheduleRetryJobsForFourDayRecall(patient);

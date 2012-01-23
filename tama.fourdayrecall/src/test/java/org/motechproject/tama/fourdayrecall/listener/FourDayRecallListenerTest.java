@@ -304,6 +304,24 @@ public class FourDayRecallListenerTest {
         verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()),anyInt());
     }
 
+    @Test
+    public void shouldMakeCallWhenFirstCallFlagIsNotSet() {
+        LocalDate startDate = DateUtil.today();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
+        FourDayRecallEventPayloadBuilder dataBuilder = new FourDayRecallEventPayloadBuilder()
+                .withJobId("job_id")
+                .withPatientDocId(PATIENT_ID)
+                ;//.withFirstCall(false);
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, dataBuilder.payload());
+
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(treatmentAdvice.getStartDate()).thenReturn(startDate.toDate());
+
+        fourDayRecallListener.handle(motechEvent);
+
+        verify(ivrCall).makeCall(patient);
+    }
+
     private void setupLogsForWeek(Patient patient, boolean hasLogs) {
         WeeklyAdherenceLog log;
         if (hasLogs)
