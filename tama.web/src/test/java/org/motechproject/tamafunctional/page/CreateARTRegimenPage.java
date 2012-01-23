@@ -3,12 +3,15 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
+import org.motechproject.tamafunctional.testdata.TestLabResult;
+import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 
 public class CreateARTRegimenPage extends Page {
 
@@ -63,8 +66,13 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "nextToRegisterNewTreatmentAdvice")
     private WebElement nextToRegisterNewTreatmentAdvice;
 
+    private VitalStatisticsSection vitalStatisticsSection;
+    private LabResultsSection labResultsSection;
+
     public CreateARTRegimenPage(WebDriver webDriver) {
         super(webDriver);
+        vitalStatisticsSection = PageFactory.initElements(webDriver, VitalStatisticsSection.class);
+        labResultsSection = PageFactory.initElements(webDriver, LabResultsSection.class);
     }
 
     @Override
@@ -84,6 +92,9 @@ public class CreateARTRegimenPage extends Page {
 
         discontinuationReasonElement = WebDriverFactory.createWebElement(discontinuationReasonElement);
         nextToRegisterNewTreatmentAdvice = WebDriverFactory.createWebElement(nextToRegisterNewTreatmentAdvice);
+
+        vitalStatisticsSection.postInitialize();
+        labResultsSection.postInitialize();
     }
 
     @Override
@@ -92,6 +103,28 @@ public class CreateARTRegimenPage extends Page {
     }
 
     public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
+        setupNewARTRegimen(treatmentAdvice);
+        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics testVitalStatistics) {
+        vitalStatisticsSection.enterVitalStatistics(testVitalStatistics, webDriver);
+        setupNewARTRegimen(treatmentAdvice);
+        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
+        labResultsSection.enterLabResults(labResult, this);
+        setupNewARTRegimen(treatmentAdvice);
+        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+    }
+
+    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics testVitalStatistics) {
+        labResultsSection.enterLabResults(labResult, this);
+        vitalStatisticsSection.enterVitalStatistics(testVitalStatistics, webDriver);
         setupNewARTRegimen(treatmentAdvice);
         waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);

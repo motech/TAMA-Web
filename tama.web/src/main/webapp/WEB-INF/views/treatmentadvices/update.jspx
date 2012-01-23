@@ -24,6 +24,7 @@
                 <input id="nextToRegisterNewTreatmentAdvice" type="button" value="${next_button}"
                        onClick="registerNewTreatmentAdvice();"/>
             </span>
+            <input type="hidden" name="patientId" value="${treatmentAdvice.patientId}"/>
             <jsp:include page="create.jspx"/>
             <div class="submit" id="fc_org_motechproject_tama_domain_patient_New_Treatment_Advice_submit">
                 <spring:message code="button_save" var="save_button" htmlEscape="false"/>

@@ -8,33 +8,28 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class FormVitalStatisticsPage extends Page {
+public class VitalStatisticsSection {
 
     public static final String PAGE_LOAD_MARKER = "page_load_marker";
 
-    @FindBy(how = How.ID, using = "_weightInKg_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.weightInKg_id")
     private WebElement weightElement;
 
-    @FindBy(how = How.ID, using = "_heightInCm_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.heightInCm_id")
     private WebElement heightElement;
 
-    @FindBy(how = How.ID, using = "_systolicBp_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.systolicBp_id")
     private WebElement systolicBpElement;
 
-    @FindBy(how = How.ID, using = "_diastolicBp_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.diastolicBp_id")
     private WebElement diastolicElement;
 
-    @FindBy(how = How.ID, using = "_temperatureInFahrenheit_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.temperatureInFahrenheit_id")
     private WebElement temperatureElement;
 
-    @FindBy(how = How.ID, using = "_pulse_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.pulse_id")
     private WebElement pulseElement;
 
-    public FormVitalStatisticsPage(WebDriver webDriver) {
-        super(webDriver);
-    }
-
-    @Override
     public void postInitialize() {
         weightElement = WebDriverFactory.createWebElement(weightElement);
         heightElement = WebDriverFactory.createWebElement(heightElement);
@@ -44,12 +39,7 @@ public class FormVitalStatisticsPage extends Page {
         pulseElement = WebDriverFactory.createWebElement(pulseElement);
     }
 
-    @Override
-    protected void waitForPageToLoad() {
-        waitForDojoElementToLoad("_weightInKg_id", "dijitInputInner");
-    }
-
-    public ShowVitalStatisticsPage enterVitalStatistics(TestVitalStatistics testVitalStatistics) {
+    public ShowVitalStatisticsPage enterVitalStatistics(TestVitalStatistics testVitalStatistics, WebDriver webDriver) {
         weightElement.clear();
         heightElement.clear();
         systolicBpElement.clear();

@@ -69,6 +69,7 @@ public class TreatmentAdviceController extends BaseController {
     @RequestMapping(method = RequestMethod.POST)
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, Model uiModel, HttpServletRequest httpServletRequest) {
         uiModel.asMap().clear();
+        fixTimeString(treatmentAdvice);
         treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
     }

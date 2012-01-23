@@ -81,7 +81,7 @@ public class VitalStatisticsControllerTest {
         VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(vitalStatistics);
 
-        assertEquals("vital_statistics/form", vitalStatisticsController.updateForm("patient_id", uiModel));
+        assertEquals("vital_statistics/update", vitalStatisticsController.updateForm("patient_id", uiModel));
         verify(uiModel).addAttribute("vitalStatistics", vitalStatistics);
         verify(uiModel).addAttribute("_method", "put");
     }

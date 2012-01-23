@@ -152,10 +152,10 @@ public class ShowPatientPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
     }
 
-    public CreateLabResultsPage goToLabResultsPage() {
+    public ShowLabResultsPage goToShowLabResultsPage() {
         this.labResultsLink.click();
-        waitForElementWithIdToLoad(CreateLabResultsPage.TEST_DATE_ELEMENT);
-        return MyPageFactory.initElements(webDriver, CreateLabResultsPage.class);
+        waitForElementWithIdToLoad(ShowLabResultsPage.TEST_DATE_ELEMENT);
+        return MyPageFactory.initElements(webDriver, ShowLabResultsPage.class);
     }
 
     public ListPatientsPage goToListPatientsPage() {
@@ -173,12 +173,6 @@ public class ShowPatientPage extends Page {
 
     public TestPatientPreferences.CallPreference getCallPreference() {
         return callPreference.getText().equals("Daily") ? TestPatientPreferences.CallPreference.DAILY_CALL : TestPatientPreferences.CallPreference.WEEKLY_CALL;
-    }
-
-    public FormVitalStatisticsPage clickVitalStatisticsLink_WhenPatientHasNone() {
-        this.showOrCreateVitalStatisticsLink.click();
-        waitForElementWithIdToLoad(FormVitalStatisticsPage.PAGE_LOAD_MARKER);
-        return MyPageFactory.initElements(webDriver, FormVitalStatisticsPage.class);
     }
 
     public ShowVitalStatisticsPage clickVitalStatisticsLink_WhenPatientHasOne() {

@@ -20,6 +20,7 @@ import javax.validation.Valid;
 public class VitalStatisticsController extends BaseController {
 
     private static final String FORM = "vital_statistics/form";
+    private static final String UPDATE_FORM = "vital_statistics/update";
     public static final String REDIRECT_AND_SHOW_VITAL_STATISTICS = "redirect:/vital_statistics/";
     public static final String SHOW_VIEW = "vital_statistics/show";
 
@@ -60,7 +61,7 @@ public class VitalStatisticsController extends BaseController {
         VitalStatistics vitalStatisticsOfPatient = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
         uiModel.addAttribute("vitalStatistics", vitalStatisticsOfPatient);
         uiModel.addAttribute("_method", "put");
-        return FORM ;
+        return UPDATE_FORM;
     }
 
     //TODO: The upsert logic can be moved to the repository layer
@@ -70,7 +71,7 @@ public class VitalStatisticsController extends BaseController {
         uiModel.addAttribute("vitalStatistics", vitalStatistics);
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("_method", "put");
-            return FORM;
+            return UPDATE_FORM;
         }
         VitalStatistics dbVitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(vitalStatistics.getPatientId());
         if(dbVitalStatistics.getCaptureDate().equals(vitalStatistics.getCaptureDate())){

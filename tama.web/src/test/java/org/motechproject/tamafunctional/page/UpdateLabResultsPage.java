@@ -10,7 +10,7 @@ import org.openqa.selenium.support.How;
 
 import java.util.List;
 
-public class CreateLabResultsPage extends Page {
+public class UpdateLabResultsPage extends Page {
 
     public static final String TEST_DATE_ELEMENT = "_labResults[0].testDateAsDate_id";
 
@@ -26,7 +26,7 @@ public class CreateLabResultsPage extends Page {
     @FindBy(how = How.ID, using = "_labResults[1].result_id")
     private WebElement resultForPVL;
 
-    public CreateLabResultsPage(WebDriver webDriver) {
+    public UpdateLabResultsPage(WebDriver webDriver) {
         super(webDriver);
     }
 

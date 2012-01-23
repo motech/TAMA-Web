@@ -5,6 +5,9 @@
     <definition extends="default" name="vital_statistics/form">
         <put-attribute name="body" value="/WEB-INF/views/vital_statistics/form.jspx"/>
     </definition>
+    <definition extends="default" name="vital_statistics/update">
+        <put-attribute name="body" value="/WEB-INF/views/vital_statistics/update.jspx"/>
+    </definition>
     <definition extends="default" name="vital_statistics/show">
         <put-attribute name="body" value="/WEB-INF/views/vital_statistics/show.jspx"/>
     </definition>

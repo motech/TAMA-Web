@@ -11,6 +11,8 @@ import java.util.List;
 
 public class ShowLabResultsPage extends Page {
 
+    public static final String TEST_DATE_ELEMENT = "_labResults[0].testDateAsDate_id";
+
     public static final String EDIT_LAB_RESULT_LINK = "labresults_edit_link";
 
     @FindBy(how = How.ID, using = "_labResults[0].testDateAsDate_id")
@@ -58,9 +60,9 @@ public class ShowLabResultsPage extends Page {
         return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
-    public CreateLabResultsPage gotoEditPage() {
+    public UpdateLabResultsPage gotoEditPage() {
         editLink.click();
-        waitForElementWithIdToLoad(CreateLabResultsPage.TEST_DATE_ELEMENT);
-        return MyPageFactory.initElements(webDriver, CreateLabResultsPage.class);
+        waitForElementWithIdToLoad(TEST_DATE_ELEMENT);
+        return MyPageFactory.initElements(webDriver, UpdateLabResultsPage.class);
     }
 }

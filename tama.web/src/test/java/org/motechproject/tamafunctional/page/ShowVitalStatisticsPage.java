@@ -64,9 +64,9 @@ public class ShowVitalStatisticsPage extends Page {
         return Integer.parseInt(pulseElement.getText());
     }
 
-    public FormVitalStatisticsPage goToEditVitalStatisticsPage() {
+    public VitalStatisticsPage goToEditVitalStatisticsPage() {
         this.editLink.click();
-        waitForElementWithIdToLoad(FormVitalStatisticsPage.PAGE_LOAD_MARKER);
-        return MyPageFactory.initElements(webDriver, FormVitalStatisticsPage.class);
+        waitForElementWithIdToLoad(VitalStatisticsSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, VitalStatisticsPage.class);
     }
 }

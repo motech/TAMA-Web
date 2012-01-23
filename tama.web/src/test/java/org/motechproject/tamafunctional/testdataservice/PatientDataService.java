@@ -52,10 +52,6 @@ public class PatientDataService extends EntityDataService {
         return login(clinician).gotoShowPatientPage(patient);
     }
 
-    public void createARTRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
-        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice).logout();
-    }
-
     public void reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
         viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice)
                 .goToViewARTRegimenPage().goToChangeARTRegimenPage().reCreateARTRegimen(treatmentAdvice).logout();
@@ -71,15 +67,19 @@ public class PatientDataService extends EntityDataService {
     public void setupARTRegimenWithDependents(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
         new ClinicianDataService(webDriver).createWithClinic(clinician);
         registerAndActivate(patient, clinician);
-        createARTRegimen(treatmentAdvice, patient, clinician);
+        createRegimen(treatmentAdvice, patient, clinician);
     }
 
-    public void setInitialVitalStatistics(TestVitalStatistics testVitalStatistics, TestPatient patient, TestClinician clinician) {
-        viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasNone().enterVitalStatistics(testVitalStatistics).logout();
+    public void createRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
+        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice).logout();
     }
 
-    public void updateVitalStatistics(TestVitalStatistics testVitalStatistics, TestPatient patient, TestClinician clinician) {
-        viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasOne().goToEditVitalStatisticsPage().enterVitalStatistics(testVitalStatistics).logout();
+    public void createRegimenWithVitalStatistics(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics, TestPatient patient, TestClinician clinician) {
+        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice, vitalStatistics).logout();
+    }
+
+    public void createRegimenWithLabResults(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
+        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice, labResult).logout();
     }
 
     public TestVitalStatistics getInitialVitalStatistics(TestPatient patient, TestClinician clinician) {
@@ -95,10 +95,21 @@ public class PatientDataService extends EntityDataService {
         return testVitalStatistics;
     }
 
-    public void setupLabResult(TestPatient patient, TestClinician clinician, TestLabResult labResult) {
-        CreateLabResultsPage createLabResultsPage = viewPatient(patient, clinician).goToLabResultsPage();
-        createLabResultsPage.registerNewLabResult(labResult);
-        createLabResultsPage.logout();
+    public TestLabResult getLabResult(TestPatient patient, TestClinician clinician) {
+        ShowLabResultsPage showLabResultsPage = viewPatient(patient, clinician).goToShowLabResultsPage();
+        TestLabResult labResult = new TestLabResult();
+        labResult.results(showLabResultsPage.getResults());
+        labResult.testDates(showLabResultsPage.getTestDates());
+        showLabResultsPage.logout();
+        return labResult;
+    }
+
+    public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {
+        viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasOne().goToEditVitalStatisticsPage().enterVitalStatistics(vitalStatistics, webDriver).logout();
+    }
+
+    public void updateLabResults(TestPatient patient, TestClinician clinician, TestLabResult labResults) {
+        viewPatient(patient, clinician).goToShowLabResultsPage().gotoEditPage().registerNewLabResult(labResults).logout();
     }
 
     public void createTestPatientForSymptomReporting(TestPatient patient, TestClinician clinician) {
@@ -107,11 +118,7 @@ public class PatientDataService extends EntityDataService {
         registerAndActivate(patient, clinician);
 
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
-        setupLabResult(patient, clinician, labResult);
-
-        setInitialVitalStatistics(TestVitalStatistics.withMandatory(), patient, clinician);
-
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        createARTRegimen(treatmentAdvice, patient, clinician);
+        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice, labResult, TestVitalStatistics.withMandatory()).logout();
     }
 }
