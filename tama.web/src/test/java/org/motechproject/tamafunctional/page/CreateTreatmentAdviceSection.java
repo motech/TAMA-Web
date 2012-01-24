@@ -11,7 +11,6 @@ import org.openqa.selenium.support.How;
 public class CreateTreatmentAdviceSection {
 
     public static final String REGIMEN_ID = "_treatmentAdvice.regimenId_id";
-    public static final String DISCONTINUATION_REASON_ID = "_discontinuationReason_id";
 
     public static final String DRUG_BRAND1_ID = "_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_drugName_id";
     public static final String TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID = "_treatmentAdvice.drugDosages[0].morningTime_id";
@@ -55,12 +54,6 @@ public class CreateTreatmentAdviceSection {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugDosages[1].mealAdviceId_id")
     private WebElement drug2MealAdviceTypeElement;
 
-    @FindBy(how = How.ID, using = DISCONTINUATION_REASON_ID)
-    private WebElement discontinuationReasonElement;
-
-    @FindBy(how = How.ID, using = "nextToRegisterNewTreatmentAdvice")
-    private WebElement nextToRegisterNewTreatmentAdvice;
-
     public void postInitialize() {
         regimenElement = WebDriverFactory.createWebElement(regimenElement);
         drugCompositionGroupElement = WebDriverFactory.createWebElement(drugCompositionGroupElement);
@@ -74,9 +67,6 @@ public class CreateTreatmentAdviceSection {
         drug2MorningDosageTimeElement = WebDriverFactory.createWebElement(drug2MorningDosageTimeElement);
         drug2EveningDosageTimeElement = WebDriverFactory.createWebElement(drug2EveningDosageTimeElement);
         drug2MealAdviceTypeElement = WebDriverFactory.createWebElement(drug2MealAdviceTypeElement);
-
-        discontinuationReasonElement = WebDriverFactory.createWebElement(discontinuationReasonElement);
-        nextToRegisterNewTreatmentAdvice = WebDriverFactory.createWebElement(nextToRegisterNewTreatmentAdvice);
     }
 
     protected void waitForPageToLoad(Page page) {

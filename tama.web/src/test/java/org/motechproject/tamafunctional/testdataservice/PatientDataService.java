@@ -9,10 +9,6 @@ import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
 
-/*
- *TODO : Update operations should be removed from this class.
- *        Patient Update flows are specific to data, so the client is in a better position to do them.
- */
 public class PatientDataService extends EntityDataService {
     public PatientDataService(WebDriver webDriver) {
         super(webDriver);
