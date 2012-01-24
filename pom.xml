@@ -31,9 +31,14 @@
             </snapshots>
         </repository>
         <repository>
-            <id>motech.nexus</id>
+            <id>motech.nexus.snapshots</id>
             <name>Motech Snapshots Repository</name>
             <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>motech.nexus.releases</id>
+            <name>Motech Releases Repository</name>
+            <url>http://nexus.motechproject.org/content/repositories/releases</url>
         </repository>
         <repository>
             <id>spring-maven-release</id>
@@ -65,6 +70,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-security.version>3.0.5.RELEASE</spring-security.version>
         <build.dir>build</build.dir>
+        <motech.version>0.7</motech.version>
     </properties>
     <dependencies>
         <dependency>
