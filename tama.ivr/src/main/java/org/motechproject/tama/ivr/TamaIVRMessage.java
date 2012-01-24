@@ -28,9 +28,6 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String DOSE_TAKEN_MENU_OPTION = "010_00_00_mainMenu_doseTaken";
 
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
-    public static final String ITS_TIME_FOR_THE_PILL = "001_02_02_itsTimeForPill1";
-    public static final String ITS_TIME_FOR_THE_PILL_2 = "001_02_04_itsTimeForPill2";
-    public static final String PILL_FROM_THE_BOTTLE_AFTER_PILL_WINDOW = "010_02_06_fromTheBottle2";
     public static final String PLEASE_TAKE_DOSE = "003_03_01_TAMAPillDelayWarning1";
     public static final String CALL_AFTER_SOME_TIME = "003_03_03_TAMAPillDelayWarning2";
     public static final String DOSE_RECORDED = "001_05_01_doseRecorded";
@@ -42,6 +39,17 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String DOSE_CANNOT_BE_TAKEN_MENU = "004_04_04_MissedPillMenu";
     public static final String LAST_REMINDER_WARNING = "005_04_01_CannotDelayPillsNow";
     public static final String LAST_REMINDER_WARNING_PADDING = "005_04_03_WillCallAgain";
+
+    /* -------- Pill from the bottle ----------- */
+    public static final String ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW = "010_02_01_itsTimeToTake";
+    public static final String FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW = "010_02_03_fromTheBottle1";
+    public static final String NOT_REPORTED_IF_TAKEN = "010_02_04_notReportedIfTaken";
+    public static final String FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW = "010_02_06_fromTheBottle2";
+    public static final String ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE = "001_02_02_itsTimeForPill1";
+    public static final String FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE = "001_02_04_itsTimeForPill2";
+    public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
+    public static final String FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE = "001_07_07_fromTheBottle1";
+    /* -------- Pill from the bottle ----------- */
 
     /* -------- PreviousDosage ----------- */
     public static final String YOUR = "001_07_01_your";
@@ -63,20 +71,15 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String AFTERNOON_CONFIRMATION = "001_08_02_doseTimeOfAfternoon";
     public static final String EVENING_CONFIRMATION = "001_08_02_doseTimeOfEvening";
 
-    public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
-    public static final String FROM_THE_BOTTLE = "001_07_07_fromTheBottle1";
     public static final String PREVIOUS_DOSE_MENU = "001_07_08_lastDoseMenu";
 
-    /* ------------------- */
     public static final String YOU_SAID_YOU_TOOK = "001_08_01_youSaidYouTook";
-
     public static final String YOU_SAID_YOU_DID_NOT_TAKE = "001_09_01_youSaidYouTookNot";
     public static final String DOSE_TAKEN = "001_08_03_doseTaken";
     public static final String DOSE_NOT_TAKEN = "001_09_03_doseNotTaken";
     public static final String TRY_NOT_TO_MISS = "001_09_05_tryNotToMiss";
     public static final String TOOK_DOSE_LATE = "010_10_01_tookDoseLate";
     public static final String TOOK_DOSE_BEFORE_TIME = "010_09_01_tookDoseBeforeTime";
-    public static final String NOT_REPORTED_IF_TAKEN = "010_02_04_notReportedIfTaken";
     /* -------- PreviousDosage ----------- */
     public static final String TODAY = "timeOfDayToday";
     public static final String TOMORROW = "timeOfDayTomorrow";

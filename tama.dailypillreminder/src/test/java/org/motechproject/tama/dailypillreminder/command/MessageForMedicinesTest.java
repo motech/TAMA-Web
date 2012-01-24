@@ -12,6 +12,7 @@ import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -60,9 +61,9 @@ public class MessageForMedicinesTest {
 
         assertEquals(5, messages.length);
         assertEquals("test_clinic", messages[0]);
-        assertEquals("001_02_02_itsTimeForPill1", messages[1]);
+        assertEquals(TamaIVRMessage.ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, messages[1]);
         assertEquals("pillmedicine1", messages[2]);
         assertEquals("pillmedicine2", messages[3]);
-        assertEquals("001_02_04_itsTimeForPill2", messages[4]);
+        assertEquals(TamaIVRMessage.FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE, messages[4]);
     }
 }

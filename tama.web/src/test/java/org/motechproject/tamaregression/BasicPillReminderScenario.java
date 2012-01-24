@@ -210,7 +210,7 @@ public class BasicPillReminderScenario extends BaseTest {
                 YOU_WERE_SUPPOSED_TO_TAKE,
                 "pillazt3tc_combivir",
                 "pillefv_efavir",
-                FROM_THE_BOTTLE,
+                FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE,
                 PREVIOUS_DOSE_MENU);
     }
 
@@ -229,10 +229,10 @@ public class BasicPillReminderScenario extends BaseTest {
     private void verifyLoginWithCorrectPasscodeAndPillNamesInResponse(Caller caller) {
         assertAudioFilesPresent(caller.enter(PATIENT_PIN),
                 DEFAULT_OUTBOUND_CLINIC_MESSAGE,
-                ITS_TIME_FOR_THE_PILL,
+                ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW,
                 "pillazt3tc_combivir",
                 "pillefv_efavir",
-                ITS_TIME_FOR_THE_PILL_2,
+                FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW,
                 "001_02_05_pilltimemenu"
         );
     }
