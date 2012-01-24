@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tama-all</artifactId>
         <groupId>org.motechproject.tama</groupId>
-        <version>0.4-SNAPSHOT</version>
+        <version>${tama.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tama.tools</artifactId>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.refdata</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>${tama.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.dailypillreminder</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>${tama.version}</version>
         </dependency>
     </dependencies>
 </project>
