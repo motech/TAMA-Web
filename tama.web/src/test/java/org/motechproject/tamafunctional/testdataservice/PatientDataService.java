@@ -71,45 +71,37 @@ public class PatientDataService extends EntityDataService {
     }
 
     public void createRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
-        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice).logout();
+        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice).logout();
     }
 
     public void createRegimenWithVitalStatistics(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics, TestPatient patient, TestClinician clinician) {
-        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice, vitalStatistics).logout();
+        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, vitalStatistics).logout();
     }
 
     public void createRegimenWithLabResults(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
-        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice, labResult).logout();
+        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, labResult).logout();
     }
 
-    public TestVitalStatistics getInitialVitalStatistics(TestPatient patient, TestClinician clinician) {
-        ShowVitalStatisticsPage showVitalStatisticsPage = viewPatient(patient, clinician).goToShowVitalStatisticsPage();
-        TestVitalStatistics testVitalStatistics = new TestVitalStatistics()
-                .weightInKg(showVitalStatisticsPage.getWeight())
-                .heightInCm(showVitalStatisticsPage.getHeight())
-                .systolicBp(showVitalStatisticsPage.getSystolicBp())
-                .diastolicBp(showVitalStatisticsPage.getDiastolicBp())
-                .temperatureInFahrenheit(showVitalStatisticsPage.getTemperature())
-                .pulse(showVitalStatisticsPage.getPulse());
-        showVitalStatisticsPage.logout();
-        return testVitalStatistics;
+    public TestVitalStatistics getSavedVitalStatistics(TestPatient patient, TestClinician clinician) {
+        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowClinicVisitPage();
+        TestVitalStatistics vitalStatistics = clinicVisitPage.getVitalStatistics();
+        clinicVisitPage.logout();
+        return vitalStatistics;
     }
 
-    public TestLabResult getLabResult(TestPatient patient, TestClinician clinician) {
-        ShowLabResultsPage showLabResultsPage = viewPatient(patient, clinician).goToShowLabResultsPage();
-        TestLabResult labResult = new TestLabResult();
-        labResult.results(showLabResultsPage.getResults());
-        labResult.testDates(showLabResultsPage.getTestDates());
-        showLabResultsPage.logout();
+    public TestLabResult getSavedLabResult(TestPatient patient, TestClinician clinician) {
+        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowClinicVisitPage();
+        TestLabResult labResult = clinicVisitPage.getLabResult();
+        clinicVisitPage.logout();
         return labResult;
     }
 
     public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {
-        viewPatient(patient, clinician).clickVitalStatisticsLink_WhenPatientHasOne().goToEditVitalStatisticsPage().enterVitalStatistics(vitalStatistics, webDriver).logout();
+        viewPatient(patient, clinician).goToShowClinicVisitPage().clickEditVitalStatisticsLink().enterVitalStatistics(vitalStatistics, webDriver).logout();
     }
 
     public void updateLabResults(TestPatient patient, TestClinician clinician, TestLabResult labResults) {
-        viewPatient(patient, clinician).goToShowLabResultsPage().gotoEditPage().registerNewLabResult(labResults).logout();
+        viewPatient(patient, clinician).goToShowClinicVisitPage().clickEditLabResultLink().registerNewLabResult(labResults).logout();
     }
 
     public void createTestPatientForSymptomReporting(TestPatient patient, TestClinician clinician) {
@@ -119,6 +111,6 @@ public class PatientDataService extends EntityDataService {
 
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice, labResult, TestVitalStatistics.withMandatory()).logout();
+        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, labResult, TestVitalStatistics.withMandatory()).logout();
     }
 }

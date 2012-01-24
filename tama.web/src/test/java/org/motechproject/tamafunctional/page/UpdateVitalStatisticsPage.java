@@ -8,7 +8,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class VitalStatisticsPage extends Page {
+public class UpdateVitalStatisticsPage extends Page {
+
+    public static final String PAGE_LOAD_MARKER = "page_load_marker";
 
     @FindBy(how = How.ID, using = "_weightInKg_id")
     private WebElement weightElement;
@@ -28,7 +30,7 @@ public class VitalStatisticsPage extends Page {
     @FindBy(how = How.ID, using = "_pulse_id")
     private WebElement pulseElement;
 
-    public VitalStatisticsPage(WebDriver webDriver) {
+    public UpdateVitalStatisticsPage(WebDriver webDriver) {
         super(webDriver);
     }
 

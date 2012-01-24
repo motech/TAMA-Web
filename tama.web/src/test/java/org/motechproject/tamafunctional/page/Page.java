@@ -74,6 +74,10 @@ public abstract class Page extends FunctionalTestObject {
         logoutLink.click();
     }
 
+    @Override
+    public void logInfo(String message, String... params) {
+        super.logInfo(message, params);
+    }
 
     protected void waitForElementWithIdToLoad(final String id) {
         waitForElementToLoad(By.id(id));

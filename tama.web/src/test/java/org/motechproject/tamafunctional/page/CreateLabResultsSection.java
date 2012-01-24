@@ -8,7 +8,7 @@ import org.openqa.selenium.support.How;
 
 import java.util.List;
 
-public class LabResultsSection {
+public class CreateLabResultsSection {
 
     public static final String TEST_DATE_ELEMENT = "_labResultsUIModel.labResults[0].testDateAsDate_id";
 
@@ -31,7 +31,7 @@ public class LabResultsSection {
         resultForPVL = WebDriverFactory.createWebElement(resultForPVL);
     }
 
-    public void enterLabResults(TestLabResult labResult, Page page) {
+    public void fillLabResults(TestLabResult labResult, Page page) {
         page.waitForDojoElementToLoad(TEST_DATE_ELEMENT, "dijitInputInner");
         enterTestData(labResult);
         results(labResult.results());

@@ -1,14 +1,12 @@
 package org.motechproject.tamafunctional.page;
 
-import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class VitalStatisticsSection {
+public class CreateVitalStatisticsSection {
 
     public static final String PAGE_LOAD_MARKER = "page_load_marker";
 
@@ -39,20 +37,18 @@ public class VitalStatisticsSection {
         pulseElement = WebDriverFactory.createWebElement(pulseElement);
     }
 
-    public ShowVitalStatisticsPage enterVitalStatistics(TestVitalStatistics testVitalStatistics, WebDriver webDriver) {
+    public void fillVitalStatistics(TestVitalStatistics vitalStatistics) {
         weightElement.clear();
         heightElement.clear();
         systolicBpElement.clear();
         diastolicElement.clear();
         temperatureElement.clear();
         pulseElement.clear();
-        weightElement.sendKeys(testVitalStatistics.weightInKg().toString());
-        heightElement.sendKeys(testVitalStatistics.heightInCm().toString());
-        systolicBpElement.sendKeys(testVitalStatistics.systolicBp().toString());
-        diastolicElement.sendKeys(testVitalStatistics.diastolicBp().toString());
-        temperatureElement.sendKeys(testVitalStatistics.temperatureInFahrenheit().toString());
-        pulseElement.sendKeys(testVitalStatistics.pulse().toString());
-        weightElement.submit();
-        return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
+        weightElement.sendKeys(vitalStatistics.weightInKg().toString());
+        heightElement.sendKeys(vitalStatistics.heightInCm().toString());
+        systolicBpElement.sendKeys(vitalStatistics.systolicBp().toString());
+        diastolicElement.sendKeys(vitalStatistics.diastolicBp().toString());
+        temperatureElement.sendKeys(vitalStatistics.temperatureInFahrenheit().toString());
+        pulseElement.sendKeys(vitalStatistics.pulse().toString());
     }
 }

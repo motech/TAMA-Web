@@ -70,26 +70,6 @@ public class PatientARTRegimenTest extends BaseTest {
     }
 
     @Test
-    public void testCreateRegimenWithVitalStatistics() {
-        TestPatient patient = TestPatient.withMandatory();
-        PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
-
-        TestVitalStatistics vitalStatistics = TestVitalStatistics.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createRegimenWithVitalStatistics(treatmentAdvice, vitalStatistics, patient, clinician);
-
-        TestVitalStatistics savedVitalStatistics = patientDataService.getInitialVitalStatistics(patient, clinician);
-        assertEquals(vitalStatistics, savedVitalStatistics);
-
-        vitalStatistics.heightInCm(new Double(155));
-        patientDataService.updateVitalStatistics(patient, clinician, vitalStatistics);
-
-        savedVitalStatistics = patientDataService.getInitialVitalStatistics(patient, clinician);
-        assertEquals(vitalStatistics, savedVitalStatistics);
-    }
-
-    @Test
     public void testCreateRegimenWithLabResults() {
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
@@ -99,13 +79,34 @@ public class PatientARTRegimenTest extends BaseTest {
         TestLabResult labResult = TestLabResult.withMandatory();
 
         patientDataService.createRegimenWithLabResults(patient, clinician, treatmentAdvice, labResult);
-        TestLabResult savedLabResult = patientDataService.getLabResult(patient, clinician);
+        TestLabResult savedLabResult = patientDataService.getSavedLabResult(patient, clinician);
         assertEquals(labResult, savedLabResult);
 
         final TestLabResult newLabResults = TestLabResult.withMandatory().results(Arrays.asList("1", "2"));
         patientDataService.updateLabResults(patient, clinician, newLabResults);
-        final TestLabResult updatedLabResult = patientDataService.getLabResult(patient, clinician);
+
+        final TestLabResult updatedLabResult = patientDataService.getSavedLabResult(patient, clinician);
         assertEquals(newLabResults, updatedLabResult);
+    }
+
+    @Test
+    public void testCreateRegimenWithVitalStatistics() {
+        TestPatient patient = TestPatient.withMandatory();
+        PatientDataService patientDataService = new PatientDataService(webDriver);
+        patientDataService.registerAndActivate(patient, clinician);
+
+        TestVitalStatistics vitalStatistics = TestVitalStatistics.withMandatory();
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        patientDataService.createRegimenWithVitalStatistics(treatmentAdvice, vitalStatistics, patient, clinician);
+
+        TestVitalStatistics savedVitalStatistics = patientDataService.getSavedVitalStatistics(patient, clinician);
+        assertEquals(vitalStatistics, savedVitalStatistics);
+
+        vitalStatistics.heightInCm(new Double(155));
+        patientDataService.updateVitalStatistics(patient, clinician, vitalStatistics);
+
+        savedVitalStatistics = patientDataService.getSavedVitalStatistics(patient, clinician);
+        assertEquals(vitalStatistics, savedVitalStatistics);
     }
 
 }

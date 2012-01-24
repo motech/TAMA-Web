@@ -1,19 +1,14 @@
 package org.motechproject.tamafunctional.page;
 
 import org.motechproject.tamafunctional.framework.ExtendedWebElement;
-import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
-import org.motechproject.tamafunctional.testdata.TestLabResult;
-import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
 
-public class CreateARTRegimenPage extends Page {
+public class CreateTreatmentAdviceSection {
 
     public static final String REGIMEN_ID = "_treatmentAdvice.regimenId_id";
     public static final String DISCONTINUATION_REASON_ID = "_discontinuationReason_id";
@@ -66,16 +61,6 @@ public class CreateARTRegimenPage extends Page {
     @FindBy(how = How.ID, using = "nextToRegisterNewTreatmentAdvice")
     private WebElement nextToRegisterNewTreatmentAdvice;
 
-    private CreateVitalStatisticsSection createVitalStatisticsSection;
-    private CreateLabResultsSection createLabResultsSection;
-
-    public CreateARTRegimenPage(WebDriver webDriver) {
-        super(webDriver);
-        createVitalStatisticsSection = PageFactory.initElements(webDriver, CreateVitalStatisticsSection.class);
-        createLabResultsSection = PageFactory.initElements(webDriver, CreateLabResultsSection.class);
-    }
-
-    @Override
     public void postInitialize() {
         regimenElement = WebDriverFactory.createWebElement(regimenElement);
         drugCompositionGroupElement = WebDriverFactory.createWebElement(drugCompositionGroupElement);
@@ -92,90 +77,54 @@ public class CreateARTRegimenPage extends Page {
 
         discontinuationReasonElement = WebDriverFactory.createWebElement(discontinuationReasonElement);
         nextToRegisterNewTreatmentAdvice = WebDriverFactory.createWebElement(nextToRegisterNewTreatmentAdvice);
-
-        createVitalStatisticsSection.postInitialize();
-        createLabResultsSection.postInitialize();
     }
 
-    @Override
-    protected void waitForPageToLoad() {
-        waitForDojoElementToLoad(REGIMEN_ID, "dijitInputInner");
+    protected void waitForPageToLoad(Page page) {
+        page.waitForDojoElementToLoad(REGIMEN_ID, "dijitInputInner");
     }
 
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics testVitalStatistics) {
-        createVitalStatisticsSection.fillVitalStatistics(testVitalStatistics);
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
-        createLabResultsSection.fillLabResults(labResult, this);
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics testVitalStatistics) {
-        createLabResultsSection.fillLabResults(labResult, this);
-        createVitalStatisticsSection.fillVitalStatistics(testVitalStatistics);
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowARTRegimenPage reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice) {
-        discontinuationReasonElement.sendKeys(treatmentAdvice.discontinuationReason());
-        nextToRegisterNewTreatmentAdvice.click();
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
-        return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
-    }
-
-    private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
+    protected void fillRegimenSection(TestTreatmentAdvice treatmentAdvice, Page page) {
         TestDrugDosage testDrugDosage1 = treatmentAdvice.drugDosages().get(0);
         TestDrugDosage testDrugDosage2 = treatmentAdvice.drugDosages().get(1);
         String dosageType = testDrugDosage1.dosageType();
-        createFirstDosage(testDrugDosage1, dosageType);
-        createSecondDosage(testDrugDosage2, dosageType);
+        createFirstDosage(testDrugDosage1, dosageType, page);
+        createSecondDosage(testDrugDosage2, dosageType, page);
+    }
+
+    protected void submit() {
         drug1StartDateElement.submit();
     }
 
-    private void createFirstDosage(TestDrugDosage testDrugDosage1, String dosageType) {
-        logDosage(testDrugDosage1);
+    private void createFirstDosage(TestDrugDosage testDrugDosage1, String dosageType, Page page) {
+        logDosage(testDrugDosage1, page);
         ((ExtendedWebElement) drug1DosageTypeElement).select(dosageType);
         ((ExtendedWebElement) drug1StartDateElement).select(testDrugDosage1.startDate());
         if (testDrugDosage1.isMorningDosage()) {
-            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID);
+            page.waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_MORNING_TIME_ID);
             drug1MorningDosageTimeElement.sendKeys(testDrugDosage1.dosageSchedule());
         } else {
-            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID);
+            page.waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_0_EVENING_TIME_ID);
             drug1EveningDosageTimeElement.sendKeys(testDrugDosage1.dosageSchedule());
         }
         drug1MealAdviceTypeElement.sendKeys(testDrugDosage1.mealAdvice());
     }
 
-    private void createSecondDosage(TestDrugDosage testDrugDosage2, String dosageType) {
-        logDosage(testDrugDosage2);
+    private void createSecondDosage(TestDrugDosage testDrugDosage2, String dosageType, Page page) {
+        logDosage(testDrugDosage2, page);
         ((ExtendedWebElement) drug2DosageTypeElement).select(dosageType);
         ((ExtendedWebElement) drug2StartDateElement).select(testDrugDosage2.startDate());
         if (testDrugDosage2.isMorningDosage()) {
-            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID);
+            page.waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_MORNING_TIME_ID);
             drug2MorningDosageTimeElement.sendKeys(testDrugDosage2.dosageSchedule());
         } else {
-            waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_EVENING_TIME_ID);
+            page.waitForElementWithIdToLoad(TREATMENT_ADVICE_DRUG_DOSAGES_1_EVENING_TIME_ID);
             drug2EveningDosageTimeElement.sendKeys(testDrugDosage2.dosageSchedule());
         }
         drug2MealAdviceTypeElement.sendKeys(testDrugDosage2.mealAdvice());
     }
 
-    private void logDosage(TestDrugDosage drugDosage) {
-        logInfo("%s Dosage at %s", drugDosage.dosageType(), drugDosage.dosageSchedule());
+    private void logDosage(TestDrugDosage drugDosage, Page page) {
+        page.logInfo("%s Dosage at %s", drugDosage.dosageType(), drugDosage.dosageSchedule());
     }
+
 }

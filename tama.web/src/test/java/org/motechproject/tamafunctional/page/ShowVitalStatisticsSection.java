@@ -1,14 +1,11 @@
 package org.motechproject.tamafunctional.page;
 
-import org.motechproject.tamafunctional.framework.MyPageFactory;
-import org.openqa.selenium.WebDriver;
+import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class ShowVitalStatisticsPage extends Page {
-
-    public static final String PAGE_LOAD_MARKER = "page_load_marker";
+public class ShowVitalStatisticsSection {
 
     @FindBy(how = How.ID, using = "_weight_weightInKg_id")
     private WebElement weightElement;
@@ -30,15 +27,6 @@ public class ShowVitalStatisticsPage extends Page {
 
     @FindBy(how = How.ID, using = "edit_link")
     private WebElement editLink;
-
-    public ShowVitalStatisticsPage(WebDriver webDriver) {
-        super(webDriver);
-    }
-
-    @Override
-    protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad(PAGE_LOAD_MARKER);
-    }
 
     public Double getWeight() {
         return Double.parseDouble(weightElement.getText());
@@ -64,9 +52,17 @@ public class ShowVitalStatisticsPage extends Page {
         return Integer.parseInt(pulseElement.getText());
     }
 
-    public UpdateVitalStatisticsPage goToEditVitalStatisticsPage() {
+    public void clickEdit() {
         this.editLink.click();
-        waitForElementWithIdToLoad(CreateVitalStatisticsSection.PAGE_LOAD_MARKER);
-        return MyPageFactory.initElements(webDriver, UpdateVitalStatisticsPage.class);
+    }
+
+    public TestVitalStatistics getVitalStatistics() {
+        return new TestVitalStatistics()
+                .weightInKg(getWeight())
+                .heightInCm(getHeight())
+                .systolicBp(getSystolicBp())
+                .diastolicBp(getDiastolicBp())
+                .temperatureInFahrenheit(getTemperature())
+                .pulse(getPulse());
     }
 }

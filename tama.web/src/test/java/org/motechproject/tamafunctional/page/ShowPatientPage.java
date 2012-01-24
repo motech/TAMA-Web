@@ -140,22 +140,30 @@ public class ShowPatientPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
+    // TODO : to delete
     public CreateARTRegimenPage goToCreateARTRegimenPage() {
         this.clinicVisitsLink.click();
         waitForElementWithIdToLoad(CreateARTRegimenPage.DRUG_BRAND1_ID);
         return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
     }
 
+    public CreateClinicVisitPage goToCreateClinicVisitPage() {
+        this.clinicVisitsLink.click();
+        waitForElementWithIdToLoad(CreateTreatmentAdviceSection.DRUG_BRAND1_ID);
+        return MyPageFactory.initElements(webDriver, CreateClinicVisitPage.class);
+    }
+
+    public ShowClinicVisitPage goToShowClinicVisitPage() {
+        this.clinicVisitsLink.click();
+        waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
+    }
+
+    // TODO : to delete
     public ShowARTRegimenPage goToViewARTRegimenPage() {
         this.clinicVisitsLink.click();
         waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
         return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
-    }
-
-    public ShowLabResultsPage goToShowLabResultsPage() {
-        this.labResultsLink.click();
-        waitForElementWithIdToLoad(ShowLabResultsPage.TEST_DATE_ELEMENT);
-        return MyPageFactory.initElements(webDriver, ShowLabResultsPage.class);
     }
 
     public ListPatientsPage goToListPatientsPage() {
@@ -176,12 +184,6 @@ public class ShowPatientPage extends Page {
     }
 
     public ShowVitalStatisticsPage clickVitalStatisticsLink_WhenPatientHasOne() {
-        this.showOrCreateVitalStatisticsLink.click();
-        waitForElementWithIdToLoad(ShowVitalStatisticsPage.PAGE_LOAD_MARKER);
-        return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
-    }
-
-    public ShowVitalStatisticsPage goToShowVitalStatisticsPage() {
         this.showOrCreateVitalStatisticsLink.click();
         waitForElementWithIdToLoad(ShowVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
