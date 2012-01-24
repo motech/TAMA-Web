@@ -59,12 +59,12 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
     private void assertAlertIsUpdated(TestPatient patient, ListPatientsPage listPatientsPage, String status, String notes) {
         AlertsPage readAlertsPage = listPatientsPage.goToAlertsPage().filterReadAlerts();
-        assertTableContainsAlert(readAlertsPage.alertsTable(), patient.patientId(), patient.mobileNumber(), status, notes);
+        readAlertsPage.assertTableContainsAlert(patient.patientId(), patient.mobileNumber(), status, notes);
     }
 
     private void assertAlertIsCreated(TestPatient patient, AlertsPage alertsPage) {
         List<WebElement> webElements = alertsPage.alertsTable();
-        assertTableContainsAlert(webElements, patient.patientId(), patient.mobileNumber(), "Open", "");
+        alertsPage.assertTableContainsAlert(patient.patientId(), patient.mobileNumber(), "Open", "");
     }
 
     private ShowAlertPage updateNotesAndCloseAlert(TestPatient patient, String status, String notes, AlertsPage alertsPage) {
@@ -74,31 +74,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         return updateAlertPage.save();
     }
 
-    private int getRowId(List<WebElement> webElements, String patientId) {
-        int rowId = 0;
-        for (WebElement trElement : webElements) {
-            List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
-            String actualPatientId = td_collection.get(0).getText();
-            if (patientId.equals(actualPatientId)) {
-                return rowId;
-            }
-            rowId++;
-        }
-        return -1;
-    }
-
-    private void assertTableContainsAlert(List<WebElement> webElements, String patientId, String phoneNumber, String status, String notes) {
-        int rowId = getRowId(webElements, patientId);
-        assertTrue(rowId >= 0);
-        WebElement trElement = webElements.get(rowId);
-        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
-        String actualPhoneNumber = td_collection.get(1).getText();
-        assertEquals(phoneNumber, actualPhoneNumber);
-        assertEquals(status, td_collection.get(5).getText());
-        assertEquals(notes, td_collection.get(6).getText());
-    }
-
-    private void assertSymptomReportingCallFlow(TestClinician clinician, TestPatient patient) throws IOException {
+   private void assertSymptomReportingCallFlow(TestClinician clinician, TestPatient patient) throws IOException {
         caller = caller(patient);
         IVRResponse ivrResponse = caller.call();
         IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);

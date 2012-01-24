@@ -24,6 +24,19 @@ public class ScheduledTaskManager {
         assertEquals(200, webResponse.getStatusCode());
     }
 
+    public boolean exists(Class handlerClass, String handlerMethod, String jobId) {
+        QueryParams queryParams = new QueryParams().
+                put("className", handlerClass.getSimpleName()).
+                put("methodName", handlerMethod).
+                put("jobId", jobId);
+
+        WebResponse webResponse = webClient.getWebResponse(TamaUrl.baseFor(BASE_SCHEDULER_INVOKER_URL + "exists"), queryParams);
+        assertEquals(200, webResponse.getStatusCode());
+        return "true".equals(webResponse.getContentAsString());
+    }
+
+
+
     public void clear() {
         webClient.getWebResponse(TamaUrl.baseFor(BASE_SCHEDULER_INVOKER_URL + "clear"), new QueryParams());
     }

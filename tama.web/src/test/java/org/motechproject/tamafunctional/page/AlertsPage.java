@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tama.facility.repository.AllClinicianIds;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
 import org.openqa.selenium.By;
@@ -10,6 +11,7 @@ import org.openqa.selenium.support.How;
 
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class AlertsPage extends Page {
@@ -86,5 +88,17 @@ public class AlertsPage extends Page {
         startDate.submit();
         waitForElementWithIdToLoad(LIST_ALERT_PANE_ID);
         return MyPageFactory.initElements(webDriver, AlertsPage.class);
+    }
+
+    public void assertTableContainsAlert(String patientId, String phoneNumber, String status, String notes) {
+        final List<WebElement> webElements = alertsTable();
+        int rowId = getRowId(webElements, patientId);
+        assertTrue(rowId >= 0);
+        WebElement trElement = webElements.get(rowId);
+        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
+        String actualPhoneNumber = td_collection.get(1).getText();
+        assertEquals(phoneNumber, actualPhoneNumber);
+        assertEquals(status, td_collection.get(5).getText());
+        assertEquals(notes, td_collection.get(6).getText());
     }
 }
