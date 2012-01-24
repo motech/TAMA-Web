@@ -28,6 +28,7 @@
 	</script>
 
     <link rel="stylesheet" type="text/css" href="${timeline_js_root}/timeline-bundle.css" ><!-- required for FF3 and Opera --></link>
+    <link rel="stylesheet" type="text/css" href="${timeline_ajax_root}/styles/graphics.css" ><!-- required for FF3 and Opera --></link>
     <link rel="stylesheet" type="text/css" href="${timeline_css}" ><!-- required for FF3 and Opera --></link>
     <script src="${timeline_ajax_root}/simile-ajax-bundle.js" type="text/javascript" ><!-- required for FF3 and Opera --></script>
     <script src="${timeline_js_root}/timeline-bundle.js" type="text/javascript" ><!-- required for FF3 and Opera --></script>
