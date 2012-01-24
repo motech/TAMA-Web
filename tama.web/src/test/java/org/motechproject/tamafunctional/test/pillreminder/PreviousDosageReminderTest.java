@@ -52,7 +52,7 @@ public class PreviousDosageReminderTest extends BaseIVRTest {
     }
 
     private void patientConfirmsNotTakingCurrentDose(IVRResponse ivrResponse) {
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, ITS_TIME_FOR_THE_PILL_2);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
         ivrResponse = caller.enter("3");
         IVRAssert.assertAudioFilesPresent(ivrResponse, MISSED_PILL_FEEDBACK_FIRST_TIME, DOSE_CANNOT_BE_TAKEN_MENU);
         ivrResponse = caller.enter("2");
@@ -60,7 +60,7 @@ public class PreviousDosageReminderTest extends BaseIVRTest {
     }
 
     private IVRResponse patientConfirmsTakingHisPreviousDose(IVRResponse ivrResponse) {
-        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR, YESTERDAYS, DOSE_NOT_RECORDED, YESTERDAY, YOU_WERE_SUPPOSED_TO_TAKE, FROM_THE_BOTTLE, PREVIOUS_DOSE_MENU);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR, YESTERDAYS, DOSE_NOT_RECORDED, YESTERDAY, YOU_WERE_SUPPOSED_TO_TAKE, FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE, PREVIOUS_DOSE_MENU);
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, YOU_SAID_YOU_TOOK, YESTERDAYS_CONFIRMATION, DOSE_TAKEN, DOSE_RECORDED);
         return ivrResponse;

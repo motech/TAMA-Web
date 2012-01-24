@@ -49,7 +49,7 @@ public class MessageFromPreviousDosageTest {
         assertTrue(messages.contains(TamaIVRMessage.YESTERDAY));
         assertTrue(messages.contains(TamaIVRMessage.YOU_WERE_SUPPOSED_TO_TAKE));
         assertTrue(messages.contains("pillmedicine1"));
-        assertTrue(messages.contains(TamaIVRMessage.FROM_THE_BOTTLE));
+        assertTrue(messages.contains(TamaIVRMessage.FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE));
         assertTrue(messages.contains(TamaIVRMessage.PREVIOUS_DOSE_MENU));
     }
 

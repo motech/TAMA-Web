@@ -83,11 +83,11 @@ public class HealthTipsTest extends BaseIVRTest {
         caller.replyToCall(new PillReminderCallInfo(1));
 
         IVRResponse ivrResponse = caller.enter("5678");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL, ITS_TIME_FOR_THE_PILL_2);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_RECORDED);
         ivrResponse = caller.listenMore();
-        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR, YESTERDAYS, DOSE_NOT_RECORDED, YESTERDAY, YOU_WERE_SUPPOSED_TO_TAKE, FROM_THE_BOTTLE, PREVIOUS_DOSE_MENU);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR, YESTERDAYS, DOSE_NOT_RECORDED, YESTERDAY, YOU_WERE_SUPPOSED_TO_TAKE, FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE, PREVIOUS_DOSE_MENU);
         ivrResponse = caller.enter("3");
         IVRAssert.assertAudioFilesPresent(ivrResponse, YOU_SAID_YOU_DID_NOT_TAKE, DOSE_NOT_TAKEN, DOSE_RECORDED, TRY_NOT_TO_MISS);
         caller.hangup();

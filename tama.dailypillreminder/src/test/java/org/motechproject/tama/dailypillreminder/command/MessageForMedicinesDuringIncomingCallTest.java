@@ -17,6 +17,7 @@ import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -86,7 +87,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
         context.callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{"welcome_to_someClinicName", "001_02_02_itsTimeForPill1", "pillmedicine1", "pillmedicine2", "001_07_07_fromTheBottle1"}, messages);
+        assertArrayEquals(new String[]{"welcome_to_someClinicName", TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillmedicine1", "pillmedicine2", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
     }
 
     @Test
@@ -102,7 +103,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         context.pillRegimen(new PillRegimen(pillRegimenResponse)).callDirection(CallDirection.Outbound);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{"welcome_to_someClinicName", "010_02_04_notReportedIfTaken", "pillmedicine3", "010_02_06_fromTheBottle2"}, messages);
+        assertArrayEquals(new String[]{"welcome_to_someClinicName", TamaIVRMessage.NOT_REPORTED_IF_TAKEN, "pillmedicine3", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW}, messages);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
 
-        assertArrayEquals(new String[]{"001_02_02_itsTimeForPill1", "pillmedicine1", "pillmedicine2", "001_07_07_fromTheBottle1"}, messages);
+        assertArrayEquals(new String[]{TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillmedicine1", "pillmedicine2", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
         assertFalse(Arrays.asList(messages).contains("welcome_to_someClinicName"));
         assertFalse(Arrays.asList(messages).contains("welcome_to_clinicName"));
     }
