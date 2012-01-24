@@ -5,7 +5,6 @@ import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.dailypillreminder.listener.AdherenceQualityListener;
-import org.motechproject.tama.dailypillreminder.listener.AdherenceTrendListener;
 import org.motechproject.tama.fourdayrecall.listener.FourDayRecallListener;
 import org.motechproject.tamafunctional.framework.BaseTest;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
@@ -13,7 +12,9 @@ import org.motechproject.tamafunctional.framework.MyWebClient;
 import org.motechproject.tamafunctional.framework.ScheduledTaskManager;
 import org.motechproject.tamafunctional.ivr.Caller;
 import org.motechproject.tamafunctional.page.AlertsPage;
+import org.motechproject.tamafunctional.page.ListPatientsPage;
 import org.motechproject.tamafunctional.page.LoginPage;
+import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.testdata.TestClinic;
 import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestPatient;
@@ -23,7 +24,6 @@ import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
-import org.openqa.selenium.WebElement;
 
 import java.util.HashMap;
 
@@ -59,8 +59,6 @@ public class BasicPillReminderScenario extends BaseTest {
 
     @Test
     public void shouldRegisterPatientAndTestIncomingCall() throws Exception {
-
-
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
 
@@ -96,6 +94,7 @@ public class BasicPillReminderScenario extends BaseTest {
         patientSwitchesFromDailyToWeekly(patient);
 
         verifyUnschedulingOfDailyReminderJobs(patient);
+        verifySchedulingOfFDRJobs(patient);
 
         final Caller fourDayRecallCaller = new Caller(unique("sid"), patient.mobileNumber(), webClient);
         verifyIncorrectPinRepeatsSignatureMusic(fourDayRecallCaller);
@@ -104,21 +103,52 @@ public class BasicPillReminderScenario extends BaseTest {
         enter2ForDaysMissedAndVerifyAdherencePercentageAs50Percent(fourDayRecallCaller);
 
         verifyRepeatMenuPlayed(fourDayRecallCaller);
+
+        patientSwitchesFromWeeklyToDaily(patient);
+
+        verifySchedulingOfDailyJobs(patient);
+        verifyUnschedulingOfFDRJobs(patient);
+    }
+
+    private void verifyUnschedulingOfFDRJobs(TestPatient patient) {
+        assertFalse(scheduledTaskManager.exists(FourDayRecallListener.class, "handle", "0" + patient.id()));
+        assertFalse(scheduledTaskManager.exists(FourDayRecallListener.class, "handleWeeklyFallingAdherenceAndRedAlert", "0" + patient.id()));
+    }
+
+    private void verifySchedulingOfDailyJobs(TestPatient patient) {
+        assertTrue(scheduledTaskManager.exists(AdherenceQualityListener.class, "determineAdherenceQualityAndRaiseAlert", patient.id()));
+        //todo assertTrue(dailyPillreminderJobExists());
+    }
+
+    private void patientSwitchesFromWeeklyToDaily(TestPatient patient) {
+        final ShowPatientPage showPatientPage = gotoListPatientPage().
+                gotoShowPatientPage(patient).
+                clickOnEditTAMAPreferences().
+                changePatientToDailyCallPlan();
+
+    }
+
+
+    private void verifySchedulingOfFDRJobs(TestPatient patient) {
+        assertTrue(scheduledTaskManager.exists(FourDayRecallListener.class, "handle", "0" + patient.id()));
+        assertTrue(scheduledTaskManager.exists(FourDayRecallListener.class, "handleWeeklyFallingAdherenceAndRedAlert", "0" + patient.id()));
     }
 
     public void verifyUnschedulingOfDailyReminderJobs(TestPatient patient) {
         assertFalse(scheduledTaskManager.exists(AdherenceQualityListener.class, "determineAdherenceQualityAndRaiseAlert", patient.id()));
         //todo assertFalse(dailyPillreminderJobExists());
-        assertTrue(scheduledTaskManager.exists(FourDayRecallListener.class, "handle", "0" + patient.id()));
-        assertTrue(scheduledTaskManager.exists(FourDayRecallListener.class, "handleWeeklyFallingAdherenceAndRedAlert", "0" + patient.id()));
     }
 
     private void verifyAdherenceInRedAlertIsRaised(TestPatient patient) {
-        final AlertsPage alertsPage = MyPageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithClinicianUserNamePassword(clinician.userName(), clinician.password())
+        final AlertsPage alertsPage = gotoListPatientPage()
                 .goToAlertsPage();
         alertsPage.assertTableContainsAlert(patient.patientId(), patient.mobileNumber(), "", "");
         alertsPage.logout();
+    }
+
+    private ListPatientsPage gotoListPatientPage() {
+        return MyPageFactory.initElements(webDriver, LoginPage.class)
+                .loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
     }
 
     private void triggerAdherenceInRedJob(TestPatient patient) {
@@ -145,8 +175,7 @@ public class BasicPillReminderScenario extends BaseTest {
     }
 
     private void patientSwitchesFromDailyToWeekly(TestPatient patient) {
-        MyPageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithClinicianUserNamePassword(clinician.userName(), clinician.password())
+        gotoListPatientPage()
                 .gotoShowPatientPage(patient)
                 .clickOnEditTAMAPreferences().
                 changePatientToWeeklyCallPlanWithBestCallDayAndTime("Monday", "09:05", true).logout();
@@ -181,7 +210,7 @@ public class BasicPillReminderScenario extends BaseTest {
                 YOU_WERE_SUPPOSED_TO_TAKE,
                 "pillazt3tc_combivir",
                 "pillefv_efavir",
-                ITS_TIME_FOR_THE_PILL_2,
+                FROM_THE_BOTTLE,
                 PREVIOUS_DOSE_MENU);
     }
 
