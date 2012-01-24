@@ -5,7 +5,7 @@
     <groupId>org.motechproject.tama</groupId>
     <artifactId>tama-all</artifactId>
     <packaging>pom</packaging>
-    <version>0.5-SNAPSHOT</version>
+    <version>${tama.version}</version>
     <modules>
         <module>tama.common</module>
         <module>tama.refdata</module>
@@ -71,6 +71,8 @@
         <spring-security.version>3.0.5.RELEASE</spring-security.version>
         <build.dir>build</build.dir>
         <motech.version>0.8-SNAPSHOT</motech.version>
+        <tama.version>0.5-SNAPSHOT</tama.version>
+        <tsr.version>0.5-SNAPSHOT</tsr.version>
     </properties>
     <dependencies>
         <dependency>
