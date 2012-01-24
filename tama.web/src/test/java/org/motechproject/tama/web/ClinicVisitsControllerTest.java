@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -48,7 +49,7 @@ public class ClinicVisitsControllerTest {
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
-        junit.framework.Assert.assertEquals("redirect:/clinicvisits/treatmentAdviceId", redirectURL);
+        assertEquals("redirect:/clinicvisits/" + patientId, redirectURL);
     }
 
     @Test
@@ -58,10 +59,10 @@ public class ClinicVisitsControllerTest {
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
-        junit.framework.Assert.assertEquals("clinicvisits/create", redirectURL);
+        assertEquals("clinicvisits/create", redirectURL);
         verify(treatmentAdviceController).createForm(patientId, uiModel);
-        verify(labResultsController).createForm(patientId, uiModel, request);
-        verify(vitalStatisticsController).createForm(patientId, uiModel, request);
+        verify(labResultsController).createForm(patientId, uiModel);
+        verify(vitalStatisticsController).createForm(patientId, uiModel);
     }
 
     @Test
@@ -71,7 +72,7 @@ public class ClinicVisitsControllerTest {
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = controller.createForm(patientId, uiModel, request);
 
-        junit.framework.Assert.assertEquals("clinicvisits/create", redirectURL);
+        assertEquals("clinicvisits/create", redirectURL);
     }
 
     @Test
@@ -86,9 +87,9 @@ public class ClinicVisitsControllerTest {
 
         String redirectURL = controller.create(treatmentAdvice, labResultsUiModel, vitalStatistics, bindingResult, uiModel, request);
 
-        junit.framework.Assert.assertEquals("redirect:/patients/patientId", redirectURL);
-        verify(treatmentAdviceController).create(treatmentAdvice, uiModel);
-        verify(labResultsController).create(labResultsUiModel, bindingResult, uiModel, request);
-        verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel, request);
+        assertEquals("redirect:/patients/patientId", redirectURL);
+        verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
+        verify(labResultsController).create(labResultsUiModel, bindingResult, uiModel);
+        verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
     }
 }

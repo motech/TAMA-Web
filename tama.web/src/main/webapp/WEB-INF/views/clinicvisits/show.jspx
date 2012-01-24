@@ -6,5 +6,11 @@
 
     <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Clinic Visits / Appointment Details" openPane="true">
         <jsp:include page="../treatmentadvices/show.jspx" />
+        <jsp:include page="../labresults/show.jspx" />
+        <jsp:include page="../vital_statistics/show.jspx" />
     </util:panel>
+
+    <spring:url value="/patients/${patientId}" var="patient_form_url"/>
+    <a id="showPatient" href="${patient_form_url}">Show Patient</a>
+    <br/>
 </div>

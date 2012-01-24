@@ -56,8 +56,5 @@
             </tbody>
         </table>
         <br/>
-        <spring:url value="/patients/${patientId}" var="patient_form_url"/>
-        <a id="showPatient" href="${patient_form_url}">Show Patient</a>
-        <br/>
     </util:panel>
 </div>

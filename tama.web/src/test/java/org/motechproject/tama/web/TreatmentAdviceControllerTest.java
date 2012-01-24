@@ -81,16 +81,15 @@ public class TreatmentAdviceControllerTest {
 
     @Test
     public void shouldCreateNewTreatmentAdviceFormGivenAPatientWithNoTreatmentAdvice() {
-        String patientId = this.PATIENT_ID;
         TreatmentAdvice treatmentAdviceAttr = TreatmentAdvice.newDefault();
-        treatmentAdviceAttr.setPatientId(this.PATIENT_ID);
+        treatmentAdviceAttr.setPatientId(PATIENT_ID);
         treatmentAdviceAttr.setDrugCompositionGroupId("");
 
-        Patient patient = PatientBuilder.startRecording().withPatientId(patientId).build();
+        Patient patient = PatientBuilder.startRecording().withId(PATIENT_ID).build();
 
-        when(allPatients.get(this.PATIENT_ID)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
-        controller.createForm(patientId, uiModel);
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
+        controller.createForm(PATIENT_ID, uiModel);
 
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
     }
@@ -102,7 +101,7 @@ public class TreatmentAdviceControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
 
-        controller.create(treatmentAdvice, uiModel);
+        controller.create(bindingResult, uiModel, treatmentAdvice);
 
         verify(treatmentAdviceService).createRegimen(treatmentAdvice);
     }
@@ -151,10 +150,10 @@ public class TreatmentAdviceControllerTest {
 
     @Test
     public void shouldCreateAChangeRegimenForm() {
-        String patientId = this.PATIENT_ID;
+        String patientId = PATIENT_ID;
         String treatmentAdviceId = "treatmentAdviceId";
         TreatmentAdvice treatmentAdviceAttr = TreatmentAdvice.newDefault();
-        treatmentAdviceAttr.setPatientId(this.PATIENT_ID);
+        treatmentAdviceAttr.setPatientId(PATIENT_ID);
         treatmentAdviceAttr.setDrugCompositionGroupId("");
         Patient patient = PatientBuilder.startRecording().withPatientId(patientId).build();
 
@@ -181,7 +180,7 @@ public class TreatmentAdviceControllerTest {
         when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/treatmentAdviceId"));
+        assertThat(redirectURL, is("redirect:/clinicvisits/" + PATIENT_ID));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
     }
 
@@ -196,7 +195,7 @@ public class TreatmentAdviceControllerTest {
         when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/treatmentAdviceId"));
+        assertThat(redirectURL, is("redirect:/clinicvisits/" + PATIENT_ID));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
     }
 

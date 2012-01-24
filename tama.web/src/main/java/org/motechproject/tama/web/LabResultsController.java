@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -24,9 +23,7 @@ import java.util.List;
 @Controller
 public class LabResultsController extends BaseController {
 
-    private static final String CREATE_VIEW = "labresults/create";
-    public static final String REDIRECT_AND_SHOW_LAB_RESULTS = "redirect:/labresults/";
-    public static final String SHOW_VIEW = "labresults/show";
+    public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
 
     private final AllLabResults allLabResults;
     private final AllLabTests allLabTests;
@@ -37,35 +34,25 @@ public class LabResultsController extends BaseController {
         this.allLabTests = allLabTests;
     }
 
-    @RequestMapping(params = "form", method = RequestMethod.GET)
-    public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (allLabResults.findLatestLabResultsByPatientId(patientId).isEmpty()) {
-            uiModel.addAttribute("labResultsUIModel", LabResultsUIModel.newDefault());
-            populateUIModel(uiModel, patientId);
-            return CREATE_VIEW;
-        } else {
-            return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(patientId, httpServletRequest);
-        }
+    public void createForm(String patientId, Model uiModel) {
+        uiModel.addAttribute("labResultsUIModel", LabResultsUIModel.newDefault());
+        populateUIModel(uiModel, patientId);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public String create(@Valid LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public void create(LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
             populateUIModel(uiModel, labResultsUiModel.getPatientId());
             uiModel.addAttribute("labResultUiModel", labResultsUiModel);
-            return CREATE_VIEW;
+            return;
         }
         for (LabResult labResult : labResultsUiModel.getLabResults()) {
             this.allLabResults.upsert(labResult);
         }
-        return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUiModel.getPatientId(), httpServletRequest);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String show(@PathVariable("id") String patientId, Model uiModel) {
+    public void show(String patientId, Model uiModel) {
         uiModel.addAttribute("labResultsForPatient", allLabResults.findLatestLabResultsByPatientId(patientId));
         uiModel.addAttribute("patientId", patientId);
-        return SHOW_VIEW;
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
@@ -87,7 +74,7 @@ public class LabResultsController extends BaseController {
         for (LabResult labResult : labResultsUIModel.getLabResults()) {
             allLabResults.upsert(labResult);
         }
-        return REDIRECT_AND_SHOW_LAB_RESULTS + encodeUrlPathSegment(labResultsUIModel.getPatientId(), httpServletRequest);
+        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getPatientId(), httpServletRequest);
     }
 
     private void populateUIModel(Model uiModel, String patientId) {

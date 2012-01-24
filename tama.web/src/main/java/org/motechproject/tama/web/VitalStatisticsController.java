@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -19,10 +18,8 @@ import javax.validation.Valid;
 @Controller
 public class VitalStatisticsController extends BaseController {
 
-    private static final String FORM = "vital_statistics/form";
     private static final String UPDATE_FORM = "vital_statistics/update";
-    public static final String REDIRECT_AND_SHOW_VITAL_STATISTICS = "redirect:/vital_statistics/";
-    public static final String SHOW_VIEW = "vital_statistics/show";
+    public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
 
     private final AllVitalStatistics allVitalStatistics;
 
@@ -31,29 +28,22 @@ public class VitalStatisticsController extends BaseController {
         this.allVitalStatistics = allVitalStatistics;
     }
 
-    @RequestMapping(params = "form", method = RequestMethod.GET)
-    public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        VitalStatistics vitalStatisticsOfPatient = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
-        uiModel.addAttribute("vitalStatistics", vitalStatisticsOfPatient == null ? new VitalStatistics(patientId) : vitalStatisticsOfPatient);
-        return vitalStatisticsOfPatient == null ? FORM : REDIRECT_AND_SHOW_VITAL_STATISTICS + encodeUrlPathSegment(patientId, httpServletRequest);
+    public void createForm(String patientId, Model uiModel) {
+        uiModel.addAttribute("vitalStatistics", new VitalStatistics(patientId));
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public String create(@Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public void create(VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel) {
         vitalStatistics.setCaptureDate(DateUtil.today());
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("vitalStatistics", vitalStatistics);
-            return FORM;
+            return;
         }
         allVitalStatistics.add(vitalStatistics);
-        return REDIRECT_AND_SHOW_VITAL_STATISTICS + encodeUrlPathSegment(vitalStatistics.getPatientId(), httpServletRequest);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String show(@PathVariable("id") String patientId, Model uiModel) {
+    public void show(String patientId, Model uiModel) {
         VitalStatistics vitalStatisticsForPatient = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
         uiModel.addAttribute("vitalStatistics", vitalStatisticsForPatient == null ? null : vitalStatisticsForPatient);
-        return SHOW_VIEW;
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
@@ -82,6 +72,6 @@ public class VitalStatisticsController extends BaseController {
             VitalStatistics newVitalStatistics = new VitalStatistics(vitalStatistics);
             allVitalStatistics.add(newVitalStatistics);
         }
-        return REDIRECT_AND_SHOW_VITAL_STATISTICS + encodeUrlPathSegment(vitalStatistics.getPatientId(), httpServletRequest);
+        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(vitalStatistics.getPatientId(), httpServletRequest);
     }
 }

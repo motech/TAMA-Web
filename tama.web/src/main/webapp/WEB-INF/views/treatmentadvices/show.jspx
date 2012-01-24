@@ -79,6 +79,4 @@
         </div>
     </page:show>
     <br/>
-    <spring:url value="/patients/${treatmentAdvice.patientIdentifier}" var="patient_form_url"/>
-    <a id="showPatient" href="${patient_form_url}">Show Patient</a>
 </div>

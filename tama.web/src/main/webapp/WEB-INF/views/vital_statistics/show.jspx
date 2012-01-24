@@ -6,19 +6,16 @@
     <jsp:output omit-xml-declaration="yes"/>
 
     <util:panel id="vital_statistics_panel" title="Vital Statistics" openPane="true">
-
-        <a id="edit_link" href="?form" style="float:right">[edit]</a>
-
+        <spring:url value="/vital_statistics/${patientId}" var="edit_url">
+            <spring:param name="form"/>
+        </spring:url>
+        <a id="edit_link" href="${edit_url}" style="float:right">[edit]</a>
         <field:display label="Weight (kg)" field="weightInKg" id="weight" object="${vitalStatistics}" />
         <field:display label="Height (cm)" field="heightInCm" id="height" object="${vitalStatistics}" />
         <field:display label="Systolic blood pressure" field="systolicBp" id="systolic_bp" object="${vitalStatistics}" />
         <field:display label="Diastolic blood pressure" field="diastolicBp" id="diastolic_bp" object="${vitalStatistics}" />
         <field:display label="Temperature (F)" field="temperatureInFahrenheit" id="temperature" object="${vitalStatistics}" />
         <field:display label="Pulse" field="pulse" id="pulse" object="${vitalStatistics}" />
-        <div>
-            <spring:url value="/patients/${vitalStatistics.patientId}" var="patient_form_url"/>
-            <a id="showPatient" href="${patient_form_url}">Show Patient</a>
-        </div>
     </util:panel>
     <div id="page_load_marker"></div>
 </div>

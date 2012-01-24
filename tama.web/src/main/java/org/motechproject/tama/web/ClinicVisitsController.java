@@ -37,34 +37,36 @@ public class ClinicVisitsController extends BaseController {
     public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
         TreatmentAdvice adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         if (adviceForPatient != null) {
-            return "redirect:/clinicvisits/" + encodeUrlPathSegment(adviceForPatient.getId(), httpServletRequest);
+            return "redirect:/clinicvisits/" + encodeUrlPathSegment(patientId, httpServletRequest);
         }
 
         uiModel.addAttribute("patientId", patientId);
 
         treatmentAdviceController.createForm(patientId, uiModel);
-        labResultsController.createForm(patientId, uiModel, httpServletRequest);
-        vitalStatisticsController.createForm(patientId, uiModel, httpServletRequest);
+        labResultsController.createForm(patientId, uiModel);
+        vitalStatisticsController.createForm(patientId, uiModel);
 
         return "clinicvisits/create";
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public String create(TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
+        labResultsController.create(labResultsUiModel, bindingResult, uiModel);
+        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
             return "clinicvisits/create";
         }
 
-        treatmentAdviceController.create(treatmentAdvice, uiModel);
-        labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
-        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String show(@PathVariable("id") String id, Model uiModel) {
-        treatmentAdviceController.show(id, uiModel);
+    @RequestMapping(value = "/{patientId}", method = RequestMethod.GET)
+    public String show(@PathVariable("patientId") String patientId, Model uiModel) {
+        treatmentAdviceController.show(patientId, uiModel);
+        labResultsController.show(patientId, uiModel);
+        vitalStatisticsController.show(patientId, uiModel);
         return "clinicvisits/show";
     }
 }

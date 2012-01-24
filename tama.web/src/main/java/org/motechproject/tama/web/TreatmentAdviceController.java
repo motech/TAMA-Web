@@ -22,6 +22,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +72,7 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
         treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getId(), httpServletRequest);
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -81,7 +82,11 @@ public class TreatmentAdviceController extends BaseController {
         populateModel(uiModel, treatmentAdvice);
     }
 
-    public void create(TreatmentAdvice treatmentAdvice, Model uiModel) {
+    public void create(BindingResult bindingResult, Model uiModel, TreatmentAdvice treatmentAdvice) {
+        if (bindingResult.hasErrors()) {
+            uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
+            return;
+        }
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
         treatmentAdviceService.createRegimen(treatmentAdvice);
@@ -98,10 +103,11 @@ public class TreatmentAdviceController extends BaseController {
         }
     }
 
-    public void show(String id, Model uiModel) {
+    public void show(String patientId, Model uiModel) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(allTreatmentAdvices, allPatients, allRegimens, allDrugs, allDosageTypes, allMealAdviceTypes);
-        uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(id));
-        uiModel.addAttribute("itemId", id);
+        uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(treatmentAdvice.getId()));
+        uiModel.addAttribute("itemId", treatmentAdvice.getId());
     }
 
     public List<ComboBoxView> regimens() {
