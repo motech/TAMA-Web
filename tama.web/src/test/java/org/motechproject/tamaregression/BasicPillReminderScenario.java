@@ -229,10 +229,10 @@ public class BasicPillReminderScenario extends BaseTest {
     private void verifyLoginWithCorrectPasscodeAndPillNamesInResponse(Caller caller) {
         assertAudioFilesPresent(caller.enter(PATIENT_PIN),
                 DEFAULT_OUTBOUND_CLINIC_MESSAGE,
-                ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW,
+                ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE,
                 "pillazt3tc_combivir",
                 "pillefv_efavir",
-                FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW,
+                FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE,
                 "001_02_05_pilltimemenu"
         );
     }
