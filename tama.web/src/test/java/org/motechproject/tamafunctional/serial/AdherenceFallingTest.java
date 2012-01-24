@@ -77,7 +77,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
     }
 
     private void patientConfirmsNotHavingTakenDose(IVRResponse ivrResponse) {
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE);
         ivrResponse = caller.enter("3");
         ivrResponse = caller.enter("2");
         IVRAssert.assertAudioFilesPresent(ivrResponse, PLEASE_CARRY_SMALL_BOX);
@@ -92,7 +92,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
     }
 
     private void patientConfirmsTakingLastWeeksDose(IVRResponse ivrResponse) {
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE);
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_RECORDED);
     }

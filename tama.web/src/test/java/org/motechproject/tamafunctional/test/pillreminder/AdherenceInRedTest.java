@@ -52,7 +52,7 @@ public class AdherenceInRedTest extends BaseIVRTest {
     public void shouldRaise_RedAlert_WhenAdherenceFalls_Below70Percent() throws IOException {
         caller.replyToCall(new PillReminderCallInfo(1));
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW, PILL_REMINDER_RESPONSE_MENU);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE, PILL_REMINDER_RESPONSE_MENU);
         ivrResponse = caller.enter("3");
         caller.hangup();
         triggerRedAlertJob();
