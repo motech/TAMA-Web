@@ -30,13 +30,6 @@ public class UpdateLabResultsPage extends Page {
         super(webDriver);
     }
 
-    public ShowLabResultsPage registerNewLabResult(TestLabResult labResult) {
-        waitForDojoElementToLoad(TEST_DATE_ELEMENT, "dijitInputInner");
-        enterTestData(labResult);
-        results(labResult.results());
-        return submit();
-    }
-
     @Override
     public void postInitialize() {
         testDateForCD4 = WebDriverFactory.createWebElement(testDateForCD4);
@@ -50,19 +43,26 @@ public class UpdateLabResultsPage extends Page {
         waitForElementWithIdToLoad(TEST_DATE_ELEMENT);
     }
 
+    public ShowClinicVisitPage update(TestLabResult labResult) {
+        waitForDojoElementToLoad(TEST_DATE_ELEMENT, "dijitInputInner");
+        enterTestData(labResult);
+        results(labResult.results());
+        return submit();
+    }
+
     private void enterTestData(TestLabResult labResult) {
         testDateForCD4.sendKeys(labResult.testDates().get(0));
         testDateForPVL.sendKeys(labResult.testDates().get(1));
     }
 
-    public void results(List<String> results) {
+    private void results(List<String> results) {
         resultForCD4.sendKeys(results.get(0));
         resultForPVL.sendKeys(results.get(1));
     }
 
-    public ShowLabResultsPage submit() {
+    private ShowClinicVisitPage submit() {
         resultForCD4.submit();
-        waitForElementWithIdToLoad(ShowLabResultsPage.EDIT_LAB_RESULT_LINK);
-        return MyPageFactory.initElements(webDriver, ShowLabResultsPage.class);
+        waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 }

@@ -40,7 +40,7 @@ public class HealthTipsTest extends BaseIVRTest {
         new ClinicianDataService(webDriver).createWithClinic(clinician);
         patientDataService.registerAndActivate(patient, clinician);
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
-        patientDataService.createRegimenWithLabResults(patient, clinician, treatmentAdvice, labResult);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice, labResult);
     }
 
     private TestTreatmentAdvice setUpTreatmentAdviceToStartFromYesterday() {
@@ -51,8 +51,8 @@ public class HealthTipsTest extends BaseIVRTest {
         return TestTreatmentAdvice.withExtrinsic(drugDosages);
     }
 
-    public Map<String, List> getHealthTipsWithPriorityWhenARTLessThan1MonthAndPatientOnDailyPillAndDosageMissed() {
-        HashMap<String, List> priorityMap = new HashMap<String, List>();
+    public Map<String, List<String>> getHealthTipsWithPriorityWhenARTLessThan1MonthAndPatientOnDailyPillAndDosageMissed() {
+        HashMap<String, List<String>> priorityMap = new HashMap<String, List<String>>();
 
         List<String> priority1Array = new ArrayList<String>();
         priority1Array.addAll(Arrays.asList("ht004a", "ht002a", "ht011a", "ht012a", "ht021a", "ht014a"));
@@ -117,13 +117,13 @@ public class HealthTipsTest extends BaseIVRTest {
         IVRResponse ivrResponse = caller.enter("5678");
         IVRAssert.asksForCollectDtmfWith(ivrResponse, YOUR_NEXT_DOSE_IS, TOMORROW, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
 
-        Map<String, List> tipsWithPriority = getHealthTipsWithPriorityWhenARTLessThan1MonthAndPatientOnDailyPillAndDosageMissed();
+        Map<String, List<String>> tipsWithPriority = getHealthTipsWithPriorityWhenARTLessThan1MonthAndPatientOnDailyPillAndDosageMissed();
         List<String> healthTipsAlreadyPlayed = tipsWithPriority.get("1");
 
-        List<String> priority2HealthTips = (List<String>) tipsWithPriority.get("2");
+        List<String> priority2HealthTips = tipsWithPriority.get("2");
         priority2HealthTips.removeAll(healthTipsAlreadyPlayed);
 
-        List<String> priority3HealthTips = (List<String>) tipsWithPriority.get("3");
+        List<String> priority3HealthTips = tipsWithPriority.get("3");
         priority3HealthTips.removeAll(healthTipsAlreadyPlayed);
         priority3HealthTips.removeAll(priority2HealthTips);
 

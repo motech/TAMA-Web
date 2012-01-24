@@ -6,11 +6,8 @@ import org.motechproject.tamafunctional.testdata.TestClinician;
 import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestPatient;
 import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
-import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
-
-import java.util.Arrays;
 
 /*
  *TODO : Update operations should be removed from this class.
@@ -19,6 +16,11 @@ import java.util.Arrays;
 public class PatientDataService extends EntityDataService {
     public PatientDataService(WebDriver webDriver) {
         super(webDriver);
+    }
+
+    public void register(TestPatient patient, TestClinician clinician) {
+        ShowPatientPage showPatientPage = registerWithoutLogout(patient, clinician);
+        showPatientPage.logout();
     }
 
     public void registerAndActivate(TestPatient patient, TestClinician clinician) {
@@ -38,11 +40,6 @@ public class PatientDataService extends EntityDataService {
         return showPatientPage;
     }
 
-    public void register(TestPatient patient, TestClinician clinician) {
-        ShowPatientPage showPatientPage = registerWithoutLogout(patient, clinician);
-        showPatientPage.logout();
-    }
-
     private ListPatientsPage login(TestClinician clinician) {
         return MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password());
@@ -52,34 +49,33 @@ public class PatientDataService extends EntityDataService {
         return login(clinician).gotoShowPatientPage(patient);
     }
 
-    public void reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
-        viewPatient(patient, clinician).goToCreateARTRegimenPage().registerNewARTRegimen(treatmentAdvice)
-                .goToViewARTRegimenPage().goToChangeARTRegimenPage().reCreateARTRegimen(treatmentAdvice).logout();
-    }
-
-    public TestTreatmentAdvice getTreatmentAdvice(TestPatient patient, TestClinician clinician) {
-        ShowARTRegimenPage showARTRegimenPage = viewPatient(patient, clinician).goToViewARTRegimenPage();
-        TestTreatmentAdvice treatmentAdvice = new TestTreatmentAdvice().regimenName(showARTRegimenPage.getRegimenName()).drugCompositionName(showARTRegimenPage.getDrugCompositionGroupName());
-        showARTRegimenPage.logout();
-        return treatmentAdvice;
-    }
-
-    public void setupARTRegimenWithDependents(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
+    public void setupRegimenWithDependents(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
         new ClinicianDataService(webDriver).createWithClinic(clinician);
         registerAndActivate(patient, clinician);
-        createRegimen(treatmentAdvice, patient, clinician);
+        createRegimen(patient, clinician, treatmentAdvice);
     }
 
-    public void createRegimen(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
+    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice) {
         viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice).logout();
     }
 
-    public void createRegimenWithVitalStatistics(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics, TestPatient patient, TestClinician clinician) {
+    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics) {
         viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, vitalStatistics).logout();
     }
 
-    public void createRegimenWithLabResults(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
+    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
         viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, labResult).logout();
+    }
+
+    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics vitalStatistics) {
+        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, labResult, vitalStatistics).logout();
+    }
+
+    public TestTreatmentAdvice getSavedTreatmentAdvice(TestPatient patient, TestClinician clinician) {
+        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowClinicVisitPage();
+        TestTreatmentAdvice treatmentAdvice = clinicVisitPage.getTreatmentAdvice();
+        clinicVisitPage.logout();
+        return treatmentAdvice;
     }
 
     public TestVitalStatistics getSavedVitalStatistics(TestPatient patient, TestClinician clinician) {
@@ -96,21 +92,16 @@ public class PatientDataService extends EntityDataService {
         return labResult;
     }
 
+    public void changeRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice) {
+        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice)
+                .goToShowClinicVisitPage().clickChangeRegimenLink().changeRegimen(treatmentAdvice).logout();
+    }
+
     public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {
         viewPatient(patient, clinician).goToShowClinicVisitPage().clickEditVitalStatisticsLink().enterVitalStatistics(vitalStatistics, webDriver).logout();
     }
 
     public void updateLabResults(TestPatient patient, TestClinician clinician, TestLabResult labResults) {
-        viewPatient(patient, clinician).goToShowClinicVisitPage().clickEditLabResultLink().registerNewLabResult(labResults).logout();
-    }
-
-    public void createTestPatientForSymptomReporting(TestPatient patient, TestClinician clinician) {
-        patient.patientPreferences().passcode("5678");
-
-        registerAndActivate(patient, clinician);
-
-        TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, labResult, TestVitalStatistics.withMandatory()).logout();
+        viewPatient(patient, clinician).goToShowClinicVisitPage().clickEditLabResultLink().update(labResults).logout();
     }
 }

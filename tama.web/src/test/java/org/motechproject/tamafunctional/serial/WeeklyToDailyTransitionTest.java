@@ -45,7 +45,7 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         patient = TestPatient.withMandatory().callPreference(TestPatientPreferences.CallPreference.DAILY_CALL);
         PatientDataService patientDataService = new PatientDataService(webDriver);
         TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceOn(registrationTime.toLocalDate());
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);
         caller = caller(patient);
     }
 

@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctional.page;
 
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -31,5 +32,9 @@ public class ShowTreatmentAdviceSection {
 
     public void clickChangeRegimen() {
         changeRegimenElement.click();
+    }
+
+    public TestTreatmentAdvice getTreatmentAdvice() {
+        return new TestTreatmentAdvice().regimenName(getRegimenName()).drugCompositionName(getDrugCompositionGroupName());
     }
 }

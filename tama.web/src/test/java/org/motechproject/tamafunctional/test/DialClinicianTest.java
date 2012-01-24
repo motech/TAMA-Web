@@ -10,13 +10,15 @@ import org.motechproject.tamafunctional.page.ShowAlertPage;
 import org.motechproject.tamafunctional.page.ShowPatientPage;
 import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
 import org.motechproject.tamafunctional.test.ivr.IVRAssert;
-import org.motechproject.tamafunctional.testdata.TestClinician;
-import org.motechproject.tamafunctional.testdata.TestPatient;
+import org.motechproject.tamafunctional.testdata.*;
 import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -56,8 +58,14 @@ public class DialClinicianTest extends BaseIVRTest {
     private void setupDataForSymptomReporting() {
         clinician = TestClinician.withMandatory();
         new ClinicianDataService(webDriver).createWithClinic(clinician);
-        patient = TestPatient.withMandatory();
-        new PatientDataService(webDriver).createTestPatientForSymptomReporting(patient, clinician);
+
+        patient = TestPatient.withMandatory().patientPreferences(TestPatientPreferences.withMandatory().passcode("5678"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
+
+        PatientDataService patientDataService = new PatientDataService(webDriver);
+        patientDataService.registerAndActivate(patient, clinician);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice, labResult, TestVitalStatistics.withMandatory());
     }
 
     private void patientCallsTAMA_AndListensToPillMenu() {

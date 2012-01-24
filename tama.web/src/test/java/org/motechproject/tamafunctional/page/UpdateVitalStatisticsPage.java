@@ -48,11 +48,11 @@ public class UpdateVitalStatisticsPage extends Page {
         pulseElement = WebDriverFactory.createWebElement(pulseElement);
     }
 
-    protected void waitForPageToLoad(CreateARTRegimenPage page) {
+    protected void waitForPageToLoad(ChangeRegimenPage page) {
         page.waitForDojoElementToLoad("_weightInKg_id", "dijitInputInner");
     }
 
-    public ShowVitalStatisticsPage enterVitalStatistics(TestVitalStatistics testVitalStatistics, WebDriver webDriver) {
+    public ShowClinicVisitPage enterVitalStatistics(TestVitalStatistics testVitalStatistics, WebDriver webDriver) {
         weightElement.clear();
         heightElement.clear();
         systolicBpElement.clear();
@@ -66,6 +66,6 @@ public class UpdateVitalStatisticsPage extends Page {
         temperatureElement.sendKeys(testVitalStatistics.temperatureInFahrenheit().toString());
         pulseElement.sendKeys(testVitalStatistics.pulse().toString());
         weightElement.submit();
-        return MyPageFactory.initElements(webDriver, ShowVitalStatisticsPage.class);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 }

@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctional.test.ivr;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.page.LoginPage;
 import org.motechproject.tamafunctional.testdata.PillReminderCallInfo;
@@ -11,8 +10,6 @@ import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctional.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
 
@@ -25,7 +22,7 @@ public class CallLogsTest extends BaseIVRTest {
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);
 
         caller = caller(patient);
         caller.replyToCall(new PillReminderCallInfo(1));

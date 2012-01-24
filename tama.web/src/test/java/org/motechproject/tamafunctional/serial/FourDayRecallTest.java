@@ -55,7 +55,7 @@ public class FourDayRecallTest extends BaseIVRTest {
     public void createTreatmentAdvice() {
         PatientDataService patientDataService = new PatientDataService(webDriver);
         TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceOn(registrationTime.toLocalDate());
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);
     }
 
     private TestTreatmentAdvice setUpTreatmentAdviceOn(LocalDate treatmentAdviceStartDate) {

@@ -27,7 +27,7 @@ public class CurrentDosageReminderTest extends BaseIVRTest {
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);
         caller = caller(patient);
     }
 

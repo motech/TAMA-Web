@@ -42,7 +42,7 @@ public class HealthTipsTest extends BaseIVRTest {
         new ClinicianDataService(webDriver).createWithClinic(clinician);
         patientDataService.registerAndActivate(patient, clinician);
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
-        patientDataService.createRegimenWithLabResults(patient, clinician, treatmentAdvice, labResult);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice, labResult);
 
         tamaDateTimeService.adjustDateTime(DateUtil.now());
     }

@@ -3,8 +3,6 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.ExtendedWebElement;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.framework.WebDriverFactory;
-import org.motechproject.tamafunctional.testdata.TestLabResult;
-import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +11,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
-public class CreateARTRegimenPage extends Page {
+public class ChangeRegimenPage extends Page {
 
     public static final String REGIMEN_ID = "_treatmentAdvice.regimenId_id";
     public static final String DISCONTINUATION_REASON_ID = "_discontinuationReason_id";
@@ -69,7 +67,7 @@ public class CreateARTRegimenPage extends Page {
     private CreateVitalStatisticsSection createVitalStatisticsSection;
     private CreateLabResultsSection createLabResultsSection;
 
-    public CreateARTRegimenPage(WebDriver webDriver) {
+    public ChangeRegimenPage(WebDriver webDriver) {
         super(webDriver);
         createVitalStatisticsSection = PageFactory.initElements(webDriver, CreateVitalStatisticsSection.class);
         createLabResultsSection = PageFactory.initElements(webDriver, CreateLabResultsSection.class);
@@ -102,48 +100,24 @@ public class CreateARTRegimenPage extends Page {
         waitForDojoElementToLoad(REGIMEN_ID, "dijitInputInner");
     }
 
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics testVitalStatistics) {
-        createVitalStatisticsSection.fillVitalStatistics(testVitalStatistics);
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
-        createLabResultsSection.fillLabResults(labResult, this);
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowPatientPage registerNewARTRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics testVitalStatistics) {
-        createLabResultsSection.fillLabResults(labResult, this);
-        createVitalStatisticsSection.fillVitalStatistics(testVitalStatistics);
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
-    }
-
-    public ShowARTRegimenPage reCreateARTRegimen(TestTreatmentAdvice treatmentAdvice) {
+    public ShowClinicVisitPage changeRegimen(TestTreatmentAdvice treatmentAdvice) {
         discontinuationReasonElement.sendKeys(treatmentAdvice.discontinuationReason());
         nextToRegisterNewTreatmentAdvice.click();
-        setupNewARTRegimen(treatmentAdvice);
-        waitForElementWithIdToLoad(ShowARTRegimenPage.REGIMEN_TEXT_ID);
-        return MyPageFactory.initElements(webDriver, ShowARTRegimenPage.class);
+        fillRegimen(treatmentAdvice);
+        clickSave();
+        waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 
-    private void setupNewARTRegimen(TestTreatmentAdvice treatmentAdvice) {
+    private void fillRegimen(TestTreatmentAdvice treatmentAdvice) {
         TestDrugDosage testDrugDosage1 = treatmentAdvice.drugDosages().get(0);
         TestDrugDosage testDrugDosage2 = treatmentAdvice.drugDosages().get(1);
         String dosageType = testDrugDosage1.dosageType();
         createFirstDosage(testDrugDosage1, dosageType);
         createSecondDosage(testDrugDosage2, dosageType);
+    }
+
+    private void clickSave() {
         drug1StartDateElement.submit();
     }
 

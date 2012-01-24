@@ -66,7 +66,7 @@ public class BasicPillReminderScenario extends BaseTest {
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(
                 TestDrugDosage.create(yesterday(), new LocalTime().plusMinutes(1), "Efferven", "Combivir")
             );
-        patientDataService.createRegimen(treatmentAdvice, patient, clinician);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice);
 
         final Caller caller = new Caller(unique("sid"), patient.mobileNumber(), webClient);
 

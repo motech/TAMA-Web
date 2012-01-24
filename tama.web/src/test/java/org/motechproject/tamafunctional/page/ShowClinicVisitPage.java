@@ -3,6 +3,7 @@ package org.motechproject.tamafunctional.page;
 import org.motechproject.tamafunctional.framework.MyPageFactory;
 import org.motechproject.tamafunctional.testdata.TestLabResult;
 import org.motechproject.tamafunctional.testdata.TestVitalStatistics;
+import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
@@ -30,19 +31,9 @@ public class ShowClinicVisitPage extends Page {
         waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
     }
 
-//    public String getRegimenName() {
-//        return treatmentAdviceSection.getRegimenName();
-//    }
-//
-//    public String getDrugCompositionGroupName() {
-//        return treatmentAdviceSection.getDrugCompositionGroupName();
-//    }
-//
-//    public CreateARTRegimenPage goToChangeARTRegimenPage() {
-//        treatmentAdviceSection.clickChangeRegimen();
-//        waitForElementWithIdToLoad(CreateARTRegimenPage.DISCONTINUATION_REASON_ID);
-//        return MyPageFactory.initElements(webDriver, CreateARTRegimenPage.class);
-//    }
+    public TestTreatmentAdvice getTreatmentAdvice() {
+        return treatmentAdviceSection.getTreatmentAdvice();
+    }
 
     public TestVitalStatistics getVitalStatistics() {
         return vitalStatisticsSection.getVitalStatistics();
@@ -50,6 +41,12 @@ public class ShowClinicVisitPage extends Page {
 
     public TestLabResult getLabResult() {
         return labResultsSection.getLabResult();
+    }
+
+    public ChangeRegimenPage clickChangeRegimenLink() {
+        treatmentAdviceSection.clickChangeRegimen();
+        waitForElementWithIdToLoad(ChangeRegimenPage.DISCONTINUATION_REASON_ID);
+        return MyPageFactory.initElements(webDriver, ChangeRegimenPage.class);
     }
 
     public UpdateLabResultsPage clickEditLabResultLink() {

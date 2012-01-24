@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 
-public class PatientARTRegimenTest extends BaseTest {
+public class ClinicVisitTest extends BaseTest {
 
     private TestClinician clinician;
 
@@ -31,9 +31,9 @@ public class PatientARTRegimenTest extends BaseTest {
         patientDataService.registerAndActivate(patient, clinician);
 
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createRegimen(treatmentAdvice, patient, clinician);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice);
 
-        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);
+        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getSavedTreatmentAdvice(patient, clinician);
         assertEquals(savedTreatmentAdvice.regimenName(), treatmentAdvice.regimenName());
         assertEquals(savedTreatmentAdvice.drugCompositionName(), treatmentAdvice.drugCompositionName());
     }
@@ -48,9 +48,9 @@ public class PatientARTRegimenTest extends BaseTest {
         patientDataService.registerAndActivate(patient, clinician);
 
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createRegimen(treatmentAdvice, patient, clinician);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice);
 
-        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);
+        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getSavedTreatmentAdvice(patient, clinician);
         assertEquals(savedTreatmentAdvice.regimenName(), treatmentAdvice.regimenName());
         assertEquals(savedTreatmentAdvice.drugCompositionName(), treatmentAdvice.drugCompositionName());
     }
@@ -62,9 +62,9 @@ public class PatientARTRegimenTest extends BaseTest {
         patientDataService.registerAndActivate(patient, clinician);
 
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.reCreateARTRegimen(treatmentAdvice, patient, clinician);
+        patientDataService.changeRegimen(patient, clinician, treatmentAdvice);
 
-        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getTreatmentAdvice(patient, clinician);
+        TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getSavedTreatmentAdvice(patient, clinician);
         assertEquals(savedTreatmentAdvice.regimenName(), treatmentAdvice.regimenName());
         assertEquals(savedTreatmentAdvice.drugCompositionName(), treatmentAdvice.drugCompositionName());
     }
@@ -78,7 +78,7 @@ public class PatientARTRegimenTest extends BaseTest {
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
         TestLabResult labResult = TestLabResult.withMandatory();
 
-        patientDataService.createRegimenWithLabResults(patient, clinician, treatmentAdvice, labResult);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice, labResult);
         TestLabResult savedLabResult = patientDataService.getSavedLabResult(patient, clinician);
         assertEquals(labResult, savedLabResult);
 
@@ -97,12 +97,12 @@ public class PatientARTRegimenTest extends BaseTest {
 
         TestVitalStatistics vitalStatistics = TestVitalStatistics.withMandatory();
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createRegimenWithVitalStatistics(treatmentAdvice, vitalStatistics, patient, clinician);
+        patientDataService.createRegimen(patient, clinician, treatmentAdvice, vitalStatistics);
 
         TestVitalStatistics savedVitalStatistics = patientDataService.getSavedVitalStatistics(patient, clinician);
         assertEquals(vitalStatistics, savedVitalStatistics);
 
-        vitalStatistics.heightInCm(new Double(155));
+        vitalStatistics.heightInCm((double) 155);
         patientDataService.updateVitalStatistics(patient, clinician, vitalStatistics);
 
         savedVitalStatistics = patientDataService.getSavedVitalStatistics(patient, clinician);

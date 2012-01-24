@@ -64,7 +64,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(drugDosages);
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.setupARTRegimenWithDependents(treatmentAdvice, patient, clinician);
+        patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);
         caller = caller(patient);
     }
 
