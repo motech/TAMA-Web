@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 @Service
@@ -54,7 +56,20 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             throw new NoAdherenceRecordedException("No Adherence Log was recorded for given date range");
         }
         int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countByDosageStatusAndDate(pillRegimenId, DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
-        return ((double) dosagesTakenForLastFourWeeks) * 100 / totalLogs;
+        return  calculateAdherencePercentage(dosagesTakenForLastFourWeeks, totalLogs);
+    }
+
+    public Map<DateTime, Double> getAdherenceOverTime(String patientDocId){
+        Map<DateTime, Double> adherenceOverTime = new HashMap<DateTime, Double> ();
+        List<AllDosageAdherenceLogs.DoseTakenSummaryForWeek> doseTakenSummaryForWeeks = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(patientDocId);
+        for(AllDosageAdherenceLogs.DoseTakenSummaryForWeek summary: doseTakenSummaryForWeeks){
+            adherenceOverTime.put(summary.getWeekStartDate(), calculateAdherencePercentage(summary.getTaken(), summary.getTotal()));
+        }
+        return adherenceOverTime;
+    }
+
+    private Double calculateAdherencePercentage(int taken, int total) {
+        return (double) taken / total * 100.0;
     }
 
     @Override

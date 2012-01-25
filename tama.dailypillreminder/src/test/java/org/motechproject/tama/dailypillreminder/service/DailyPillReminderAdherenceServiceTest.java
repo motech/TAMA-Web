@@ -28,10 +28,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
@@ -372,6 +369,26 @@ public class DailyPillReminderAdherenceServiceTest {
             when(allPatients.get(anyString())).thenReturn(patient);
 
             dailyReminderAdherenceService.getAdherencePercentage(PATIENT_ID, now);
+        }
+    }
+
+    public static class GetAdherenceOverTime extends TestSubject{
+        @Test
+        public void shouldCalculateAdherenceForDoseTakenSummaryPerWeek(){
+            DateTime week1StartDate = DateUtil.newDateTime(new LocalDate(2012, 01, 02), 0, 0, 0);
+            DateTime week2StartDate = week1StartDate.plusDays(7);
+            DateTime week3StartDate = week1StartDate.plusDays(14);
+            AllDosageAdherenceLogs.DoseTakenSummaryForWeek doseTakenSummaryForWeek1 = new AllDosageAdherenceLogs.DoseTakenSummaryForWeek().setWeekStartDate(week1StartDate).setTaken(3).setTotal(6);
+            AllDosageAdherenceLogs.DoseTakenSummaryForWeek doseTakenSummaryForWeek2 = new AllDosageAdherenceLogs.DoseTakenSummaryForWeek().setWeekStartDate(week2StartDate).setTaken(3).setTotal(4);
+            AllDosageAdherenceLogs.DoseTakenSummaryForWeek doseTakenSummaryForWeek3 = new AllDosageAdherenceLogs.DoseTakenSummaryForWeek().setWeekStartDate(week3StartDate).setTaken(7).setTotal(7);
+
+            when(allDosageAdherenceLogs.getDoseTakenSummaryPerWeek("patientId")).thenReturn(Arrays.asList(doseTakenSummaryForWeek1, doseTakenSummaryForWeek2,doseTakenSummaryForWeek3));
+
+            Map<DateTime, Double> result = dailyReminderAdherenceService.getAdherenceOverTime("patientId");
+
+            assertEquals(50.00, result.get(week1StartDate));
+            assertEquals(75.00, result.get(week2StartDate));
+            assertEquals(100.00, result.get(week3StartDate));
         }
     }
 

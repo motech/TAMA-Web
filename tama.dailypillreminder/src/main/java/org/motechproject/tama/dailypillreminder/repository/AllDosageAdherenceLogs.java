@@ -67,7 +67,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return singleResult(adherenceLogs);
     }
     @View(name="getPillsTakenAndTotalCountPerWeek", file = "doseTakenSummaryPerWeekMapReduce.json")
-    public List<DoseTakenSummaryForWeek> getAdherenceByWeek(String patientDocId) {
+    public List<DoseTakenSummaryForWeek> getDoseTakenSummaryPerWeek(String patientDocId) {
         final ComplexKey startKey = ComplexKey.of(patientDocId);
         final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
         ViewQuery q = createQuery("getPillsTakenAndTotalCountPerWeek").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
@@ -87,20 +87,23 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
             return total;
         }
 
-        public void setTaken(int taken) {
+        public DoseTakenSummaryForWeek setTaken(int taken) {
             this.taken = taken;
+            return this;
         }
 
-        public void setTotal(int total) {
+        public DoseTakenSummaryForWeek setTotal(int total) {
             this.total = total;
+            return this;
         }
 
         public DateTime getWeekStartDate() {
             return weekStartDate;
         }
 
-        public void setWeekStartDate(DateTime weekStartDate) {
+        public DoseTakenSummaryForWeek setWeekStartDate(DateTime weekStartDate) {
             this.weekStartDate = weekStartDate;
+            return this;
         }
     }
 }
