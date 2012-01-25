@@ -29,6 +29,7 @@
         <jsp:include page="showPatientPreferences.jspx" />
         <jsp:include page="showTAMAStatus.jspx" />
         <jsp:include page="showSymptomTimeline.jspx" />
+        <jsp:include page="showAdherenceOverTime.jspx" />
         <jsp:include page="showPatientPageLinks.jspx" />
     </page:show>
 
