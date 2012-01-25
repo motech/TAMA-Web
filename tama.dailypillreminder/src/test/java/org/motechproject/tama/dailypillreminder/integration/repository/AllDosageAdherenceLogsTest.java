@@ -14,6 +14,8 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -21,6 +23,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @ContextConfiguration(locations = "classpath*:applicationDailyPillReminderContext.xml", inheritLocations = false)
 public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
 
+    public static final String PATIENT_ID = "1234";
     @Autowired
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
@@ -178,5 +181,45 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         int count = allDosageAdherenceLogs.getDosageTakenCount("r1");
 
         Assert.assertEquals(3, count);
+    }
+
+    @Test
+    public void shouldGetCountOfDoseTakenAndTotalDosePerWeek() throws Exception {
+        LocalDate monday = DateUtil.newDate(2012, 1, 2);
+        LocalDate next_monday = DateUtil.newDate(2012, 1, 9);
+        DosageAdherenceLog log1_week1 = createLog(monday, DosageStatus.TAKEN);
+        DosageAdherenceLog log2_week1 = createLog(monday.plusDays(2), DosageStatus.TAKEN);
+        DosageAdherenceLog log3_week1 = createLog(monday.plusDays(4), DosageStatus.NOT_RECORDED);
+
+        DosageAdherenceLog log1_week2 = createLog(next_monday, DosageStatus.NOT_RECORDED);
+        DosageAdherenceLog log2_week2 = createLog(next_monday.plusDays(2), DosageStatus.TAKEN);
+
+        DosageAdherenceLog log1_week3 = createLog(next_monday.plusDays(7), DosageStatus.TAKEN);
+
+        List<AllDosageAdherenceLogs.DoseTakenSummaryForWeek> data = allDosageAdherenceLogs.getAdherenceByWeek(PATIENT_ID);
+        
+        assertEquals(monday, data.get(0).getWeekStartDate().toLocalDate());
+        assertEquals(2, data.get(0).getTaken());
+        assertEquals(3, data.get(0).getTotal());
+
+        assertEquals(next_monday, data.get(1).getWeekStartDate().toLocalDate());
+        assertEquals(1, data.get(1).getTaken());
+        assertEquals(2, data.get(1).getTotal());
+
+        assertEquals(next_monday.plusDays(7), data.get(2).getWeekStartDate().toLocalDate());
+        assertEquals(1, data.get(2).getTaken());
+        assertEquals(1, data.get(2).getTotal());
+    }
+
+    private DosageAdherenceLog createLog(LocalDate date, DosageStatus status) {
+        DosageAdherenceLog log0 = new DosageAdherenceLogBuilder().
+                withDefaults().
+                withPatientId(PATIENT_ID).
+                withRegimenId("r1").
+                withDosageId("123").
+                withDosageDate(date).
+                withDosageStatus(status).build();
+        allDosageAdherenceLogs.add(log0);
+        return log0;
     }
 }

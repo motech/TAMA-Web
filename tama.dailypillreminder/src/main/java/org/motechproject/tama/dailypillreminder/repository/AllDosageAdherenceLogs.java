@@ -5,6 +5,7 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.View;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
@@ -64,5 +65,42 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         ViewQuery q = createQuery("find_by_dosage_id_and_dosageDate").key(ComplexKey.of(dosageId, dosageDate)).includeDocs(true);
         List<DosageAdherenceLog> adherenceLogs = db.queryView(q, DosageAdherenceLog.class);
         return singleResult(adherenceLogs);
+    }
+    @View(name="getPillsTakenAndTotalCountPerWeek", file = "doseTakenSummaryPerWeekMapReduce.json")
+    public List<DoseTakenSummaryForWeek> getAdherenceByWeek(String patientDocId) {
+        final ComplexKey startKey = ComplexKey.of(patientDocId);
+        final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
+        ViewQuery q = createQuery("getPillsTakenAndTotalCountPerWeek").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
+        return db.queryView(q, DoseTakenSummaryForWeek.class);
+    }
+
+    public static class DoseTakenSummaryForWeek {
+        private DateTime weekStartDate;
+        private int taken;
+        private int total;
+
+        public int getTaken() {
+            return taken;
+        }
+
+        public int getTotal() {
+            return total;
+        }
+
+        public void setTaken(int taken) {
+            this.taken = taken;
+        }
+
+        public void setTotal(int total) {
+            this.total = total;
+        }
+
+        public DateTime getWeekStartDate() {
+            return weekStartDate;
+        }
+
+        public void setWeekStartDate(DateTime weekStartDate) {
+            this.weekStartDate = weekStartDate;
+        }
     }
 }

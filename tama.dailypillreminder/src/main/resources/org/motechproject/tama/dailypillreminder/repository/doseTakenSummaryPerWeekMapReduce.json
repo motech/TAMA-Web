@@ -1,0 +1,5 @@
+{
+"map" : "function getMonday(dateString) { var date = new Date(dateString); var day = date.getDay(), diff = date.getDate() - day + (day == 0 ? -6:1); return new Date(date.setDate(diff)); }; function(doc) { if(doc.documentType == 'DosageAdherenceLog') { emit([doc.patientId, getMonday(doc.dosageDate)], {\"taken\":doc.dosageStatus==\"TAKEN\"?1:0, \"date\": getMonday(doc.dosageDate)}) } }",
+"reduce" : "function (key, values) {var taken_array = values.map(function(elt) {return elt.taken}); return {\"weekStartDate\" : values[0].date, \"taken\":sum(taken_array), \"total\":values.length};}"
+}
+
