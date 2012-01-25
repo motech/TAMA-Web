@@ -3,6 +3,7 @@ package org.motechproject.tama.web;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/clinicvisits")
 @Controller
@@ -24,13 +26,15 @@ public class ClinicVisitsController extends BaseController {
     private LabResultsController labResultsController;
     private VitalStatisticsController vitalStatisticsController;
     private AllTreatmentAdvices allTreatmentAdvices;
+    private ClinicVisitService clinicVisitService;
 
     @Autowired
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController) {
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, ClinicVisitService clinicVisitService) {
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.labResultsController = labResultsController;
         this.vitalStatisticsController = vitalStatisticsController;
+        this.clinicVisitService = clinicVisitService;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
@@ -51,13 +55,15 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String create(TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
-        labResultsController.create(labResultsUiModel, bindingResult, uiModel);
-        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+        String treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
+        List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
+        String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
 
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
         }
+
+        clinicVisitService.createVisit(treatmentAdviceId, labResultIds, vitalStatisticsId);
 
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }

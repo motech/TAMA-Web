@@ -30,10 +30,11 @@ public class TreatmentAdviceService {
         this.callPlans.put(callPreference, callPlan);
     }
 
-    public void createRegimen(TreatmentAdvice treatmentAdvice) {
+    public String createRegimen(TreatmentAdvice treatmentAdvice) {
         allTreatmentAdvices.add(treatmentAdvice);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
+        return treatmentAdvice.getId();
     }
 
     public void changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice) {

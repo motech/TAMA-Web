@@ -83,18 +83,18 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
         labResult.setLabTest(allLabTests.get(labResult.getLabTest_id()));
     }
 
-    public void upsert(LabResult labResult) {
+    public String upsert(LabResult labResult) {
         LabResult labResultInDb = findByPatientIdLabTestIdAndTestDate(labResult.getPatientId(), labResult.getLabTest_id(), labResult.getTestDate());
         if(labResultInDb == null) {
-            addLabResult(labResult);
-            return;
+            return addLabResult(labResult);
         } else {
             labResultInDb.setResult(labResult.getResult());
             update(labResultInDb);
+            return labResultInDb.getId();
         }
     }
 
-    private void addLabResult(LabResult labResult) {
+    private String addLabResult(LabResult labResult) {
         LabResult newLabResult = LabResult.newDefault();
         newLabResult.setPatientId(labResult.getPatientId());
         newLabResult.setLabTest_id(labResult.getLabTest_id());
@@ -103,6 +103,7 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
         newLabResult.setResult(labResult.getResult());
 
         add(newLabResult);
+        return newLabResult.getId();
     }
 
 }

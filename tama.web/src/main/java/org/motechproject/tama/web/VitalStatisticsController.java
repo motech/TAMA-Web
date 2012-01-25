@@ -32,13 +32,18 @@ public class VitalStatisticsController extends BaseController {
         uiModel.addAttribute("vitalStatistics", new VitalStatistics(patientId));
     }
 
-    public void create(VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel) {
+    public String create(VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel) {
         vitalStatistics.setCaptureDate(DateUtil.today());
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("vitalStatistics", vitalStatistics);
-            return;
+            return null;
         }
-        allVitalStatistics.add(vitalStatistics);
+        if (vitalStatistics.getSystolicBp() != null || vitalStatistics.getDiastolicBp() != null
+                || vitalStatistics.getHeightInCm() != null || vitalStatistics.getWeightInKg() != null
+                || vitalStatistics.getPulse() != null || vitalStatistics.getTemperatureInFahrenheit() != null) {
+            allVitalStatistics.add(vitalStatistics);
+        }
+        return vitalStatistics.getId();
     }
 
     public void show(String patientId, Model uiModel) {
@@ -64,11 +69,10 @@ public class VitalStatisticsController extends BaseController {
             return UPDATE_FORM;
         }
         VitalStatistics dbVitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(vitalStatistics.getPatientId());
-        if(dbVitalStatistics.getCaptureDate().equals(vitalStatistics.getCaptureDate())){
+        if (dbVitalStatistics.getCaptureDate().equals(vitalStatistics.getCaptureDate())) {
             vitalStatistics.setRevision(dbVitalStatistics.getRevision());
             allVitalStatistics.update(vitalStatistics);
-        }
-        else{
+        } else {
             VitalStatistics newVitalStatistics = new VitalStatistics(vitalStatistics);
             allVitalStatistics.add(newVitalStatistics);
         }

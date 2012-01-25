@@ -82,14 +82,14 @@ public class TreatmentAdviceController extends BaseController {
         populateModel(uiModel, treatmentAdvice);
     }
 
-    public void create(BindingResult bindingResult, Model uiModel, TreatmentAdvice treatmentAdvice) {
+    public String create(BindingResult bindingResult, Model uiModel, TreatmentAdvice treatmentAdvice) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
-            return;
+            return null;
         }
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
-        treatmentAdviceService.createRegimen(treatmentAdvice);
+        return treatmentAdviceService.createRegimen(treatmentAdvice);
     }
 
     private void fixTimeString(TreatmentAdvice treatmentAdvice) {

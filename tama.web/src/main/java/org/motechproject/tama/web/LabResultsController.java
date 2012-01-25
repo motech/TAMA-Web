@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/labresults")
@@ -39,15 +39,19 @@ public class LabResultsController extends BaseController {
         populateUIModel(uiModel, patientId);
     }
 
-    public void create(LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel) {
+    public List<String> create(LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel) {
+        List<String> labResultIds = new ArrayList<String>();
         if (bindingResult.hasErrors()) {
             populateUIModel(uiModel, labResultsUiModel.getPatientId());
             uiModel.addAttribute("labResultUiModel", labResultsUiModel);
-            return;
+            return labResultIds;
         }
         for (LabResult labResult : labResultsUiModel.getLabResults()) {
-            this.allLabResults.upsert(labResult);
+            if (labResult.getResult() == null || labResult.getResult().isEmpty()) continue;
+            String labResultId = this.allLabResults.upsert(labResult);
+            labResultIds.add(labResultId);
         }
+        return labResultIds;
     }
 
     public void show(String patientId, Model uiModel) {
@@ -65,7 +69,7 @@ public class LabResultsController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public String update(@Valid LabResultsUIModel labResultsUIModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String update(LabResultsUIModel labResultsUIModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("labResultsUIModel", labResultsUIModel);
             uiModel.addAttribute("patientId", labResultsUIModel.getPatientId());

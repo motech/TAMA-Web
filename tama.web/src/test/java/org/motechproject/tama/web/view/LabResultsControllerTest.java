@@ -123,19 +123,31 @@ public class LabResultsControllerTest {
 
     @Test
     public void createShouldSaveLabResultsForPatient() {
-        String patientId = "patientId";
-        LabResult labResult = new LabResult();
-        labResult.setPatientId(patientId);
-
         BindingResult bindingResult = mock(BindingResult.class);
         Model uiModel = mock(Model.class);
 
         LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
+        LabResult labResult = new LabResult() {{
+            setResult("0");
+        }};
         labResultsUIModel.setLabResults(new LabResults(Arrays.asList(labResult)));
 
         labResultsController.create(labResultsUIModel, bindingResult, uiModel);
 
         verify(allLabResults, times(1)).upsert(labResult);
+    }
+
+    @Test
+    public void createShouldNotSaveLabResultsForPatient_WhenResultIsNotSet() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        Model uiModel = mock(Model.class);
+
+        LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
+        labResultsUIModel.setLabResults(new LabResults(Arrays.asList(new LabResult())));
+
+        labResultsController.create(labResultsUIModel, bindingResult, uiModel);
+
+        verifyZeroInteractions(allLabResults);
     }
 
     @Test

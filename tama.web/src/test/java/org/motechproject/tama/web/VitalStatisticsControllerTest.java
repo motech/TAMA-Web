@@ -45,6 +45,7 @@ public class VitalStatisticsControllerTest {
         Model uiModel = mock(Model.class);
 
         VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
+        vitalStatistics.setWeightInKg(200.0);
         vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
 
         verify(allVitalStatistics, times(1)).add(vitalStatistics);
@@ -57,10 +58,23 @@ public class VitalStatisticsControllerTest {
         Model uiModel = new ExtendedModelMap();
 
         VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
+        vitalStatistics.setWeightInKg(200.0);
         vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
 
         assertEquals(VitalStatistics.class, uiModel.asMap().get("vitalStatistics").getClass());
         assertEquals(vitalStatistics, uiModel.asMap().get("vitalStatistics"));
+        verifyZeroInteractions(allVitalStatistics);
+    }
+
+    @Test
+    public void shouldNotSaveVitalStatistics_WhenNoneOfTheParametersAreSet() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        Model uiModel = new ExtendedModelMap();
+
+        VitalStatistics vitalStatistics = new VitalStatistics("patient_id");
+        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+
         verifyZeroInteractions(allVitalStatistics);
     }
 
