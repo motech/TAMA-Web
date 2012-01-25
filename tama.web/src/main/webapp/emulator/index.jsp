@@ -4,50 +4,46 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%
 	boolean fakeTimeAvailable = false;
-	try {
-    	java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
+        try {
+        java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
         m.setAccessible(true);
         m.invoke(null, java.lang.System.class, "jvmfaketime", false);
-    	Method registerFakeCurrentTimeMillis = System.class.getMethod("registerFakeCurrentTimeMillis");
-		if (registerFakeCurrentTimeMillis!=null) registerFakeCurrentTimeMillis.invoke(null);
-   		
- 
-   
-		if (request.getMethod() == "POST") {
-		try{
-			
-			String date = request.getParameter("date");
-			String time = request.getParameter("time");
-			Date dateValue = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-			Date timeValue = new SimpleDateFormat("HH:mm:ss").parse(time.substring(1, time.length()));
-			dateValue.setHours(timeValue.getHours());
-	        dateValue.setMinutes(timeValue.getMinutes());
-	        dateValue.setSeconds(timeValue.getSeconds());
-	        System.out.println("Posted date " + time.substring(1, time.length()-1));
-			
-			Method deregisterFakeCurrentTimeMillis = System.class.getMethod("deregisterFakeCurrentTimeMillis");
-			if (deregisterFakeCurrentTimeMillis!=null) deregisterFakeCurrentTimeMillis.invoke(null);        
-	
-			long diffValue = (dateValue.getTime() - System.currentTimeMillis());
-			registerFakeCurrentTimeMillis = System.class.getMethod("registerFakeCurrentTimeMillis");
-			if (registerFakeCurrentTimeMillis!=null) registerFakeCurrentTimeMillis.invoke(null);
-	
-			System.out.println("offset calculated " + diffValue);
-			Method setTimeOffset = System.class.getMethod("setTimeOffset", long.class);
-			if (setTimeOffset!=null) setTimeOffset.invoke(null, diffValue);
-			System.out.println("Date :" + new Date());
-		  } catch(java.lang.Exception e) {
-		      out.println("Error: " + e.getMessage());
-		      return;
-		  }
-		  out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-		  return;
-		}
-		fakeTimeAvailable = true;
-	 } catch(Exception ignore){}
-	java.util.Date curdate = new java.util.Date();
-	if (!fakeTimeAvailable)
-		curdate = DateUtil.now().toDate();
+                System.registerFakeCurrentTimeMillis();
+
+
+
+                if (request.getMethod() == "POST") {
+                try{
+
+                        String date = request.getParameter("date");
+                        String time = request.getParameter("time");
+                        Date dateValue = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+                        Date timeValue = new SimpleDateFormat("HH:mm:ss").parse(time.substring(1, time.length()));
+                        dateValue.setHours(timeValue.getHours());
+                dateValue.setMinutes(timeValue.getMinutes());
+                dateValue.setSeconds(timeValue.getSeconds());
+                System.out.println("Posted date " + time.substring(1, time.length()-1));
+
+                        System.deregisterFakeCurrentTimeMillis();
+
+                        long diffValue = (dateValue.getTime() - System.currentTimeMillis());
+
+                        System.registerFakeCurrentTimeMillis();
+                        System.out.println("offset calculated " + diffValue);
+                        System.setTimeOffset(diffValue);
+                        System.out.println("Date :" + new Date());
+                  } catch(java.lang.Exception e) {
+                      out.println("Error: " + e.getMessage());
+                      return;
+                  }
+                  out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                  return;
+                }
+                fakeTimeAvailable = true;
+         } catch(Exception ignore){}
+        java.util.Date curdate = new java.util.Date();
+        if (!fakeTimeAvailable)
+                curdate = DateUtil.now().toDate();
 %><html>
   <head>
     <script type="text/javascript">
