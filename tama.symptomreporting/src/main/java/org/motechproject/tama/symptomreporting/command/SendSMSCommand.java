@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.sms.api.service.SmsService;
+import org.motechproject.tama.common.util.StringUtil;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.BaseTreeCommand;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
@@ -40,7 +41,7 @@ public class SendSMSCommand extends BaseTreeCommand {
             for (Prompt advicePrompt : getAdvicePrompts()) {
                 String messageBody = messageDescriptions.getProperty(advicePrompt.getName());
                 if (StringUtils.isNotEmpty(messageBody)) {
-                    smsService.sendSMS(patient.getMobilePhoneNumber(), messageBody);
+                    smsService.sendSMS(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber()), messageBody);
                     messages.add(TamaIVRMessage.WILL_SEND_SMS);
                 }
             }
