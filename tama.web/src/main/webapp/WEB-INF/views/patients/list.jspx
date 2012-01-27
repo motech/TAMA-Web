@@ -10,9 +10,12 @@
 
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
 
-        <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients" z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE=" customAction="true"
-                     customActionPath="patients/activate" customActionLabel="Activate" customActionCondition="!item.status.active and !item.status.suspended"
-                     customActionPath2="patients/revive" customActionLabel2="Reactivate" customActionCondition2="item.status.suspended"
+        <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients"
+                     z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE=" customAction="true"
+                     customActionPath="patients/activate" customActionLabel="Activate"
+                     customActionCondition="item.activateEnabled"
+                     customActionPath2="patients/revive" customActionLabel2="Reactivate"
+                     customActionCondition2="item.reviveEnabled"
                      delete="false" update="false">
             <table:column id="c_org_motechproject_tama_domain_patient_patientId" property="patientId"
                           z="4I1LBMUNYSxNw1zomaU2BkBlauc="/>

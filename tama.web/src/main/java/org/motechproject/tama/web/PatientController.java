@@ -20,6 +20,7 @@ import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
+import org.motechproject.tama.web.model.ListPatientViewModel;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -152,13 +154,23 @@ public class PatientController extends BaseController {
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
         uiModel.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
         uiModel.addAttribute(WARNING, warning);
+        //TODO: PATIENT_HAS_STARTED_TREATMENT logic to a service layer
         uiModel.addAttribute(PATIENT_HAS_STARTED_TREATMENT, allTreatmentAdvices.currentTreatmentAdvice(patient.getId()) != null);
         return SHOW_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
-        uiModel.addAttribute(PATIENTS, allPatients.findByClinic(loggedInClinic(request)));
+        String clinicId = loggedInClinic(request);
+        List<ListPatientViewModel> listPatientViewModels = new ArrayList<ListPatientViewModel>();
+        for (Patient patient : allPatients.findByClinic(clinicId)) {
+            ListPatientViewModel listPatientViewModel = new ListPatientViewModel(patient);
+            if (allTreatmentAdvices.currentTreatmentAdvice(patient.getId()) != null) {
+                listPatientViewModel.setOnTreatmentAdvice(true);
+            }
+            listPatientViewModels.add(listPatientViewModel);
+        }
+        uiModel.addAttribute(PATIENTS, listPatientViewModels);
         addDateTimeFormat(uiModel);
         return LIST_VIEW;
     }
