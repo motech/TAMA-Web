@@ -2,6 +2,7 @@ package org.motechproject.tama.symptomreporting.decisiontree.filter;
 
 import org.junit.Test;
 import org.motechproject.decisiontree.model.*;
+import org.motechproject.tama.symptomreporting.filter.RegExpBasedTreeNodeFilter;
 
 import java.util.List;
 

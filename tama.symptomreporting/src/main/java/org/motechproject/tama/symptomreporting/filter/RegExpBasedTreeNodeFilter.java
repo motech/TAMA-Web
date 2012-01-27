@@ -1,9 +1,8 @@
-package org.motechproject.tama.symptomreporting.decisiontree.filter;
+package org.motechproject.tama.symptomreporting.filter;
 
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
-import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 

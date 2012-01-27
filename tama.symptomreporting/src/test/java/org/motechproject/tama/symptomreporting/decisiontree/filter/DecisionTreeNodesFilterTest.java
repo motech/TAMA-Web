@@ -7,6 +7,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.tama.symptomreporting.filter.DecisionTreeNodesFilter;
 
 import java.util.List;
 

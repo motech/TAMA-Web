@@ -5,10 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -27,13 +29,18 @@ public class RecordSymptomCommandTest {
     @Test
     public void shouldRecordSymptomReported() {
         KooKooIVRContext kooKooIVRContext = mock(KooKooIVRContext.class);
-        TAMAIVRContext tamaivrContext = new TAMAIVRContextForTest().patientDocumentId("patientId").callId("callId");
-        when(tamaivrContextFactory.create(kooKooIVRContext)).thenReturn(tamaivrContext);
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        HttpSession httpSession = mock(HttpSession.class);
 
-        RecordSymptomCommand recordSymptomCommand = new RecordSymptomCommand(tamaivrContextFactory, symptomRecordingService, "fever");
+        when(kooKooIVRContext.httpRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getSession()).thenReturn(httpSession);
+        when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn("patientId");
+        when(kooKooIVRContext.callId()).thenReturn("callId");
+
+        RecordSymptomCommand recordSymptomCommand = new RecordSymptomCommand(symptomRecordingService, "fever");
         recordSymptomCommand.execute(kooKooIVRContext);
 
-        verify(symptomRecordingService).save(eq("fever"), eq(tamaivrContext.patientDocumentId()), eq(tamaivrContext.callId()), any(DateTime.class));
+        verify(symptomRecordingService).save(eq("fever"), eq("patientId"), eq("callId"), any(DateTime.class));
     }
 
 }

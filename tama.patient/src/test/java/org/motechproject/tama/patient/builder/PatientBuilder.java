@@ -160,4 +160,10 @@ public class PatientBuilder {
         preferences.setBestCallTime(patientBestCallTime);
         return this;
     }
+
+    public PatientBuilder withOTCPreference(boolean receiveOTCAdvice) {
+        PatientPreferences preferences = patient.getPatientPreferences();
+        preferences.setReceiveOTCAdvice(receiveOTCAdvice);
+        return this;
+    }
 }

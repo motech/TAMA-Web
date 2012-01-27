@@ -1,4 +1,4 @@
-package org.motechproject.tama.symptomreporting.decisiontree.filter;
+package org.motechproject.tama.symptomreporting.filter;
 
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;

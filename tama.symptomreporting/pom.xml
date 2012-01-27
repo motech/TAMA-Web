@@ -64,5 +64,15 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-sms-api</artifactId>
+            <version>${motech.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-sms-http</artifactId>
+            <version>${motech.version}</version>
+        </dependency>
     </dependencies>
 </project>

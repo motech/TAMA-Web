@@ -92,6 +92,11 @@ public class Patient extends CouchEntity {
     }
 
     @JsonIgnore
+    public boolean hasAgreedToReceiveOTCAdvice() {
+        return this.patientPreferences.getReceiveOTCAdvice();
+    }
+
+    @JsonIgnore
     public CallPreference callPreference() {
         return this.patientPreferences.getCallPreference();
     }

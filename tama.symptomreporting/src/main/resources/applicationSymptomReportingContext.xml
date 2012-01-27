@@ -10,7 +10,10 @@
     <import resource="classpath:applicationIVRContext.xml"/>
     <context:component-scan base-package="org.motechproject.tama.symptomreporting"/>
 
+
     <context:annotation-config/>
     <context:spring-configured/>
+    <import resource="classpath:applicationSmsAPI.xml"/>
+    <import resource="classpath:applicationSmsHttp.xml"/>
     <import resource="classpath:applicationContextSymptomReporting.xml"/>
 </beans>

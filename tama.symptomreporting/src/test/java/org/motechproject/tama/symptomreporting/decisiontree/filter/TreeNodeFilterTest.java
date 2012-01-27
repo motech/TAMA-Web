@@ -3,6 +3,7 @@ package org.motechproject.tama.symptomreporting.decisiontree.filter;
 import org.junit.Test;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
+import org.motechproject.tama.symptomreporting.filter.TreeNodeFilter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
