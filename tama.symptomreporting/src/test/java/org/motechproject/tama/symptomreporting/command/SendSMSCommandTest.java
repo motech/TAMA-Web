@@ -41,7 +41,7 @@ public class SendSMSCommandTest {
     @Before
     public void setUp() {
         initMocks(this);
-        patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withDefaults().withOTCPreference(true).build();
+        patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("1234567890").withOTCPreference(true).build();
         messageDescription = new Properties();
         messageDescription.setProperty("adv_crocin01", "Take one tablet of crocin");
         messageDescription.setProperty("adv_halfhourcro01", "Take a paracetamol tablet thrice a day for 5 days after eating something.");
@@ -56,7 +56,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS(eq(patient.getMobilePhoneNumber()), anyString());
+        verify(smsService, times(1)).sendSMS(eq("01234567890"), anyString());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS(patient.getMobilePhoneNumber(), descriptionOfAdvice);
+        verify(smsService, times(1)).sendSMS("01234567890", descriptionOfAdvice);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService).sendSMS(eq(patient.getMobilePhoneNumber()), anyString());
+        verify(smsService).sendSMS(eq("01234567890"), anyString());
     }
 
     @Test
@@ -109,8 +109,8 @@ public class SendSMSCommandTest {
                                             smsService, allPatients, messageDescription);
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         String[] willSendSMSMessage = sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS(patient.getMobilePhoneNumber(), descriptionOfAdvice1);
-        verify(smsService, times(1)).sendSMS(patient.getMobilePhoneNumber(), descriptionOfAdvice2);
+        verify(smsService, times(1)).sendSMS("01234567890", descriptionOfAdvice1);
+        verify(smsService, times(1)).sendSMS("01234567890", descriptionOfAdvice2);
         assertEquals(1, willSendSMSMessage.length);
     }
 
