@@ -19,8 +19,8 @@ public class LabResultBuilder {
     }
 
     public LabResultBuilder withDefaults() {
-        withLabTest_id("");
-        withPatientId("");
+        withLabTestId("");
+        withPatientId("patientId");
         withResult("");
         withTestDate(null);
         return this;
@@ -36,7 +36,7 @@ public class LabResultBuilder {
         return labResult;
     }
 
-    public LabResultBuilder withLabTest_id(String labTestId) {
+    public LabResultBuilder withLabTestId(String labTestId) {
         this.labTestId = labTestId;
         return this;
     }

@@ -1,6 +1,7 @@
 package org.motechproject.tama.patient.integration.repository;
 
 import org.ektorp.CouchDbConnector;
+import org.ektorp.DocumentNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
@@ -39,12 +40,13 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId").build();
         allLabTests.add(labTest);
         allLabResults = new AllLabResults(couchDbConnector, allLabTests);
-        markForDeletion(labTest);
+        markForDeletion(allLabResults.getAll().toArray());
+        markForDeletion(allLabTests.getAll().toArray());
     }
 
     @Test
     public void testGetShouldLoadLabTest() {
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id("someLabTestId").build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("someLabTestId").build();
         allLabResults.add(labResult);
         markForDeletion(labResult);
         String labResultId = labResult.getId();
@@ -65,8 +67,8 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabTests.add(labTest2);
         markForDeletion(labTest2);
 
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest1.getId()).withPatientId(patientId).build();
-        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest2.getId()).withPatientId(patientId).build();
+        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTest1.getId()).withPatientId(patientId).build();
+        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTest2.getId()).withPatientId(patientId).build();
         allLabResults.add(labResult1);
         markForDeletion(labResult1);
         allLabResults.add(labResult2);
@@ -83,33 +85,6 @@ public class AllLabResultsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldReturnALabResultForPatientGivenPatientIdAndLabTestIdAndTestDate() {
-        String patientId = "somePatientId_byPatient";
-
-        LabTest labTest1 = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId1_byPatient").build();
-        LabTest labTest2 = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId2_byPatient").build();
-        allLabTests.add(labTest1);
-        markForDeletion(labTest1);
-        allLabTests.add(labTest2);
-        markForDeletion(labTest2);
-
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withResult("1").withTestDate(DateUtil.today()).withLabTest_id(labTest1.getId()).withPatientId(patientId).build();
-        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withResult("1").withTestDate(DateUtil.today()).withLabTest_id(labTest2.getId()).withPatientId(patientId).build();
-        LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withResult("2").withTestDate(DateUtil.today()).withLabTest_id(labTest2.getId()).withPatientId(patientId).build();
-        allLabResults.add(labResult1);
-        markForDeletion(labResult1);
-        allLabResults.add(labResult2);
-        markForDeletion(labResult2);
-        allLabResults.add(labResult3);
-        markForDeletion(labResult3);
-
-        LabResult labResult = allLabResults.findByPatientIdLabTestIdAndTestDate(patientId, labTest2.getId(), DateUtil.today());
-
-        assertNotNull(labResult);
-        assertLabResult("1", labResult);
-    }
-
-    @Test
     public void shouldReturnLatestLabResultsForPatientGivenPatientId() {
         String patientId = "somePatientId_byPatient";
 
@@ -117,8 +92,8 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabTests.add(labTest1);
         markForDeletion(labTest1);
 
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withResult("1").withTestDate(DateUtil.today().minusDays(1)).withLabTest_id(labTest1.getId()).withPatientId(patientId).build();
-        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withResult("2").withTestDate(DateUtil.today()).withLabTest_id(labTest1.getId()).withPatientId(patientId).build();
+        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withResult("1").withTestDate(DateUtil.today().minusDays(1)).withLabTestId(labTest1.getId()).withPatientId(patientId).build();
+        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withResult("2").withTestDate(DateUtil.today()).withLabTestId(labTest1.getId()).withPatientId(patientId).build();
         allLabResults.add(labResult1);
         markForDeletion(labResult1);
         allLabResults.add(labResult2);
@@ -133,67 +108,40 @@ public class AllLabResultsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldMergeLabResultsWithLabResultsFromTheDatabase_WhenTestDateIsSame() {
-
-        String patientId = "patientId_merge";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId_merge1").build();
-        allLabTests.add(labTest);
-        markForDeletion(labTest);
-
-        LabResult labResultAlreadyPresentInDB = LabResultBuilder.startRecording().withDefaults().withTestDate(DateUtil.today()).withLabTest(labTest).withLabTest_id(labTest.getId()).withResult("1").withPatientId(patientId).build();
-        allLabResults.add(labResultAlreadyPresentInDB);
-        markForDeletion(labResultAlreadyPresentInDB);
-
-        LabResults labResultsForPatient = allLabResults.findByPatientId(patientId);
-
-        assertEquals(1, labResultsForPatient.size());
-        assertLabResult("1", labResultsForPatient.get(0));
-
-        LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withLabTest(labTest).withTestDate(DateUtil.today()).withResult("2").withPatientId(patientId).build();
-        labResultFromUI.setId(labResultAlreadyPresentInDB.getId());
-
-        allLabResults.upsert(labResultFromUI);
-
-        markLabResultsForDeletion(patientId);
-
-        labResultsForPatient = allLabResults.findByPatientId(patientId);
-
-        assertEquals(1, labResultsForPatient.size());
-        assertLabResult("2", labResultsForPatient.get(0));
+    public void shouldNotSaveLabResultsWhenResultIsEmptyForANewRecord() {
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withResult(null).build();
+        assertEquals(allLabResults.upsert(labResult), null);
     }
 
     @Test
-    public void upsertShouldCreateNewLabResults_WhenTestDateIsNotSame() {
+    public void shouldAddLabResultsWhenResultIsNotEmptyForANewRecord() {
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(allLabTests.getAll().get(0).getId()).withResult("1").build();
+        allLabResults.upsert(labResult);
+        final LabResult savedLabResult = allLabResults.get(labResult.getId());
+        assertEquals("1", savedLabResult.getResult());
+    }
 
-        String patientId = "patientId_merge";
-        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId_merge2").build();
-        allLabTests.add(labTest);
-        markForDeletion(labTest);
+    @Test
+    public void shouldUpdateLabResultsWhenResultIsNotEmptyForAnExistingRecord() {
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(allLabTests.getAll().get(0).getId()).withResult("1").build();
+        allLabResults.add(labResult);
+        labResult.setResult("100");
+        allLabResults.upsert(labResult);
+        final LabResult savedLabResult = allLabResults.get(labResult.getId());
+        assertEquals("100", savedLabResult.getResult());
+    }
 
-        LabResult labResultAlreadyPresentInDB = LabResultBuilder.startRecording().withDefaults().withLabTest(labTest).withTestDate(DateUtil.today().minusDays(1)).withLabTest_id(labTest.getId()).withResult("1").withPatientId(patientId).build();
-        allLabResults.add(labResultAlreadyPresentInDB);
-
-        LabResults labResultsForPatient = allLabResults.findByPatientId(patientId);
-
-        assertEquals(1, labResultsForPatient.size());
-        assertLabResult("1", labResultsForPatient.get(0));
-
-        LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withLabTest(labTest).withTestDate(DateUtil.today()).withResult("2").withPatientId(patientId).build();
-        labResultFromUI.setId(labResultAlreadyPresentInDB.getId());
-
-        allLabResults.upsert(labResultFromUI);
-
-        markLabResultsForDeletion(patientId);
-
-        labResultsForPatient = allLabResults.findByPatientId(patientId);
-
-        assertEquals(2, labResultsForPatient.size());
-        assertLabResult("2", labResultsForPatient.get(1));
+    @Test(expected = DocumentNotFoundException.class)
+    public void shouldRemoveLabResultsWhenResultIsEmptyEmptyForAnExistingRecord() {
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(allLabTests.getAll().get(0).getId()).withResult("1").build();
+        allLabResults.add(labResult);
+        labResult.setResult(null);
+        allLabResults.upsert(labResult);
+        allLabResults.get(labResult.getId());
     }
 
     @Test
     public void upsertShouldCreateNewLabResults_WhenItDoesNotExistInDb() {
-
         String patientId = "patientId_merge";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId_merge3").build();
         allLabTests.add(labTest);
@@ -203,11 +151,9 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
         assertEquals(0, labResultsForPatient.size());
 
-        LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTest.getId()).withTestDate(DateUtil.today()).withResult("2").withPatientId(patientId).build();
+        LabResult labResultFromUI = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTest.getId()).withTestDate(DateUtil.today()).withResult("2").withPatientId(patientId).build();
 
         allLabResults.upsert(labResultFromUI);
-
-        markLabResultsForDeletion(patientId);
 
         labResultsForPatient = allLabResults.findLatestLabResultsByPatientId(patientId);
 
@@ -219,11 +165,5 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         assertEquals(result, labResult.getResult());
         assertNotNull(labResult.getRevision());
         assertNotNull(labResult.getLabTest());
-    }
-
-    private void markLabResultsForDeletion(String patientId) {
-        LabResults labResults = allLabResults.findByPatientId(patientId);
-        for(LabResult labResult: labResults)
-            markForDeletion(labResult);
     }
 }

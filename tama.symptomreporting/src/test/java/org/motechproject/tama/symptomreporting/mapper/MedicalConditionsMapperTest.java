@@ -36,7 +36,7 @@ public class MedicalConditionsMapperTest {
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
 
-        labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
+        labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
         labResult.setLabTest(labTest);
 
         String regimenName = "Regimen I";

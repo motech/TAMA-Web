@@ -6,8 +6,9 @@
     <jsp:output omit-xml-declaration="yes"/>
 
     <util:panel id="vital_statistics_panel" title="Vital Statistics" openPane="true">
-        <spring:url value="/vital_statistics/${patientId}" var="edit_url">
+        <spring:url value="/vital_statistics/update" var="edit_url">
             <spring:param name="form"/>
+            <spring:param name="clinicVisitId" value="${clinicVisitId}" />
         </spring:url>
         <a id="edit_link" href="${edit_url}" style="float:right">[edit]</a>
         <field:display label="Weight (kg)" field="weightInKg" id="weight" object="${vitalStatistics}" />

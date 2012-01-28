@@ -23,11 +23,11 @@ public class LabResultsTest {
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
 
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
+        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
         labResult1.setLabTest(labTest);
-        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 10, 20)).withResult("50").build();
+        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 10, 20)).withResult("50").build();
         labResult2.setLabTest(labTest);
-        LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withTestDate(new LocalDate(2011, 9, 20)).withResult("70").build();
+        LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 9, 20)).withResult("70").build();
         labResult3.setLabTest(labTest);
 
         labResults.add(labResult1);

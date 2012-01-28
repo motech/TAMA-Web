@@ -37,11 +37,12 @@ public class TreatmentAdviceService {
         return treatmentAdvice.getId();
     }
 
-    public void changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice) {
+    public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice) {
         endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
         allTreatmentAdvices.add(treatmentAdvice);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         callPlans.get(patient.callPreference()).reEnroll(patient, treatmentAdvice);
+        return treatmentAdvice.getId();
     }
 
     private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {

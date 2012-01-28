@@ -65,6 +65,7 @@
             <form action="${form_url}" method="GET">
                <div class='submit'>
                   <input type="hidden" name="id" value="${treatmentAdvice.treatmentAdviceId}"/>
+                  <input type="hidden" name="clinicVisitId" value="${clinicVisitId}"/>
                   <input type="hidden" name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
                    <c:choose>
                        <c:when test="${treatmentAdvice.showChangeRegimenButton}">

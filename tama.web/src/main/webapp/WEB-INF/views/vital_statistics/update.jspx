@@ -18,20 +18,19 @@
 
     <util:panel id="vital_statistics_panel" title="Vital Statistics" openPane="true">
 
-        <spring:url value="/vital_statistics/create" var="form_url"/>
-        <springform:form action="${form_url}" modelAttribute="vitalStatistics" method="${_method}" id="vital_statistics_form">
+        <spring:url value="/vital_statistics/update" var="form_url"/>
+        <springform:form action="${form_url}" modelAttribute="vitalStatisticsUIModel" method="${_method}" id="vital_statistics_form">
 
-            <c:if test='${_method == "put"}'>
-                <field:hidden path="id" value="${vitalStatistics.id}"/>
-            </c:if>
-            <field:hidden path="patientId" value="${vitalStatistics.patientId}"/>
+            <input type="hidden" name="clinicVisitId" value="${vitalStatisticsUIModel.clinicVisitId}"/>
+            <input type="hidden" name="vitalStatistics.id" value="${vitalStatisticsUIModel.vitalStatistics.id}"/>
+            <field:hidden path="vitalStatistics.patientId" value="${vitalStatistics.patientId}"/>
 
-            <formfield:input field="weightInKg" label="Weight (in kg)" id="weight" required="true" validationRegex="^[0-9]*(\.[0-9]+)?$" />
-            <formfield:input field="heightInCm" label="Height (in cm)" id="height" required="true"  validationRegex="^[0-9]*(\.[0-9]+)?$" />
-            <formfield:input field="systolicBp" label="Systolic Blood Pressure" id="systolic_bp" required="true"  validationRegex="^[0-9]*" />
-            <formfield:input field="diastolicBp" label="Diastolic Blood Pressure" id="diastolic_bp" required="true" validationRegex="^[0-9]*" />
-            <formfield:input field="temperatureInFahrenheit" label="Temperature (in F)" id="temperature" required="true" validationRegex="^[0-9]*(\.[0-9]+)?$" />
-            <formfield:input field="pulse" label="Pulse" id="body_pulse" required="true" validationRegex="^[0-9]*" />
+            <formfield:input field="vitalStatistics.weightInKg" label="Weight (in kg)" id="weight" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+            <formfield:input field="vitalStatistics.heightInCm" label="Height (in cm)" id="height" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+            <formfield:input field="vitalStatistics.systolicBp" label="Systolic Blood Pressure" id="systolic_bp" validationRegex="^[0-9]*" />
+            <formfield:input field="vitalStatistics.diastolicBp" label="Diastolic Blood Pressure" id="diastolic_bp" validationRegex="^[0-9]*" />
+            <formfield:input field="vitalStatistics.temperatureInFahrenheit" label="Temperature (in F)" id="temperature" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+            <formfield:input field="vitalStatistics.pulse" label="Pulse" id="body_pulse" validationRegex="^[0-9]*" />
 
             <br/>
             <div class="submit" id="${fn:escapeXml(id)}_submit">

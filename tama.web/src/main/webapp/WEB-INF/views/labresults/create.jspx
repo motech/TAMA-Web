@@ -5,10 +5,9 @@
      xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields">
 
     <spring:url value="/resources/styles/create-lab-result.css" var="create_labresult_css_url" />
-    <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"></link>
-
-    <spring:url value="/resources/js/labresult.js" var="labresultjs"/>
-    <script src="${labresultjs}" type="text/javascript"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"/>
+    <spring:url value="/resources/js/create_labresult.js" var="labresultjs"/>
+    <script src="${labresultjs}" type="text/javascript"></script>
 
     <util:panel id="fc_org_motechproject_tama_domain_Lab_Result" title="Create Lab Results" openPane="true">
         <div>
@@ -32,21 +31,21 @@
             </tr>
             </thead>
             <tbody>
-            <c:forEach items="${labTests}" varStatus="labTestIndex" var="labTest">
-                <field:hidden  path="labResultsUIModel.labResults[${labTestIndex.index}].patientId" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_patient_id" value="${labResults[labTestIndex.index].patientId}"/>
-                <field:hidden  path="labResultsUIModel.labResults[${labTestIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_labtest_id" value="${labTest.id}"/>
+            <c:forEach items="${labResults}" varStatus="labResultIndex" var="labResult">
+                <field:hidden  path="labResultsUIModel.labResults[${labResultIndex.index}].patientId" id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_patient_id" value="${labResults[labResultIndex.index].patientId}"/>
+                <field:hidden  path="labResultsUIModel.labResults[${labResultIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_id" value="${labResults[labResultIndex.index].labTest.id}"/>
                 <tr>
                     <td class="test-field">
-                        <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResultsUIModel.labResults[${labTestIndex.index}].testDateAsDate" label="Test Date" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_testDate" past="true" future="false"  />
+                        <formfield:datetime dateTimePattern="dd/MM/yyyy" field="labResultsUIModel.labResults[${labResultIndex.index}].testDateAsDate" label="Test Date" id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_testDate" past="true" future="false"  />
                     </td>
                     <td>
-                        <c:out value="${labTest.name}"/>
+                        <c:out value="${labResults[labResultIndex.index].labTest.name}"/>
                     </td>
                     <td class="test-field">
-                        <formfield:input validationRegex="^[0-9]+$" field="labResultsUIModel.labResults[${labTestIndex.index}].result" label="Result" id="c_org_motechproject_tama_domain_LabResult[${labTestIndex.index}]_result"/>
+                        <formfield:input validationRegex="^[0-9]+$" field="labResultsUIModel.labResults[${labResultIndex.index}].result" label="Result" id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_result"/>
                     </td>
                     <td>
-                        <c:out value="${labTest.normalRange}"/>
+                        <c:out value="${labResults[labResultIndex.index].labTest.normalRange}"/>
                     </td>
                 </tr>
             </c:forEach>

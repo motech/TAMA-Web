@@ -1,8 +1,11 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
+import org.motechproject.tama.patient.repository.AllClinicVisits;
 import org.motechproject.tama.patient.repository.AllLabResults;
+import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.repository.AllLabTests;
 import org.motechproject.tama.web.model.LabResultsUIModel;
@@ -11,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/labresults")
 @Controller
@@ -26,12 +30,16 @@ public class LabResultsController extends BaseController {
     public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
 
     private final AllLabResults allLabResults;
+    private final AllClinicVisits allClinicVisits;
     private final AllLabTests allLabTests;
+    private ClinicVisitService clinicVisitService;
 
     @Autowired
-    public LabResultsController(AllLabResults allLabResults, AllLabTests allLabTests) {
+    public LabResultsController(AllLabResults allLabResults, AllLabTests allLabTests, AllClinicVisits allClinicVisits, ClinicVisitService clinicVisitService) {
         this.allLabResults = allLabResults;
         this.allLabTests = allLabTests;
+        this.allClinicVisits = allClinicVisits;
+        this.clinicVisitService = clinicVisitService;
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -54,17 +62,29 @@ public class LabResultsController extends BaseController {
         return labResultIds;
     }
 
-    public void show(String patientId, Model uiModel) {
-        uiModel.addAttribute("labResultsForPatient", allLabResults.findLatestLabResultsByPatientId(patientId));
+    public void show(String patientId, String clinicVisitId, List<String> labResultIds, Model uiModel) {
+        LabResults labResults = new LabResults();
+        for (String labResultId : labResultIds) {
+            labResults.add(allLabResults.get(labResultId));
+        }
+        uiModel.addAttribute("labResultsForPatient", labResults);
         uiModel.addAttribute("patientId", patientId);
+        uiModel.addAttribute("clinicVisitId", clinicVisitId);
     }
 
-    @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String updateForm(@PathVariable("id") String patientId, Model uiModel) {
+    @RequestMapping(value = "/update", params = "form", method = RequestMethod.GET)
+    public String updateForm(String clinicVisitId, Model uiModel) {
         LabResultsUIModel labResultsUIModel = LabResultsUIModel.newDefault();
-        labResultsUIModel.setLabResults(allLabResults.findLatestLabResultsByPatientId(patientId));
+        final ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+        final Map<String, LabResult> labResultsMap = emptyLabResultsForAllLabTests(clinicVisit.getPatientId());
+        for (String labResultId : clinicVisit.getLabResultIds()) {
+            final LabResult labResult = allLabResults.get(labResultId);
+            labResultsMap.put(labResult.getLabTest_id(), labResult);
+        }
+
+        labResultsUIModel.setLabResults(new LabResults(labResultsMap.values()));
         uiModel.addAttribute("labResultsUIModel", labResultsUIModel);
-        uiModel.addAttribute("patientId", patientId);
+        uiModel.addAttribute("clinicVisitId", clinicVisitId);
         return "labresults/update";
     }
 
@@ -72,12 +92,15 @@ public class LabResultsController extends BaseController {
     public String update(LabResultsUIModel labResultsUIModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("labResultsUIModel", labResultsUIModel);
-            uiModel.addAttribute("patientId", labResultsUIModel.getPatientId());
             return "labresults/update";
         }
+        List<String> allLabResultsIds = new ArrayList<String>();
         for (LabResult labResult : labResultsUIModel.getLabResults()) {
-            allLabResults.upsert(labResult);
+            final String labResultId = allLabResults.upsert(labResult);
+            if (labResultId != null) allLabResultsIds.add(labResultId);
         }
+
+        clinicVisitService.updateLabResults(labResultsUIModel.getClinicVisitId(), allLabResultsIds);
         return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getPatientId(), httpServletRequest);
     }
 
@@ -100,6 +123,19 @@ public class LabResultsController extends BaseController {
             labResult.setLabTest(labTest);
             labResult.setLabTest_id(labTest.getId());
             labResults.add(labResult);
+        }
+        return labResults;
+    }
+
+    private Map<String, LabResult> emptyLabResultsForAllLabTests(String patientId) {
+        final List<LabTest> labTests = allLabTests.getAll();
+        Map<String, LabResult> labResults = new HashMap<String, LabResult>();
+        for (LabTest labTest : labTests) {
+            LabResult labResult = LabResult.newDefault();
+            labResult.setPatientId(patientId);
+            labResult.setLabTest(labTest);
+            labResult.setLabTest_id(labTest.getId());
+            labResults.put(labTest.getId(), labResult);
         }
         return labResults;
     }

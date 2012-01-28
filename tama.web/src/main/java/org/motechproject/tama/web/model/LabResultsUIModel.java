@@ -2,8 +2,6 @@ package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.patient.domain.LabResults;
 
-import javax.validation.Valid;
-
 public class LabResultsUIModel {
 
     private String id;
@@ -12,8 +10,17 @@ public class LabResultsUIModel {
 
     private String z;
 
-    @Valid
     private LabResults labResults = new LabResults();
+
+    public String getClinicVisitId() {
+        return clinicVisitId;
+    }
+
+    public void setClinicVisitId(String clinicVisitId) {
+        this.clinicVisitId = clinicVisitId;
+    }
+
+    private String clinicVisitId;
 
     public String getId() {
         return id;

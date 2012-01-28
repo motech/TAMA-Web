@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -63,16 +64,20 @@ public class ClinicVisitsController extends BaseController {
             return "clinicvisits/create";
         }
 
-        clinicVisitService.createVisit(treatmentAdviceId, labResultIds, vitalStatisticsId);
+        clinicVisitService.createVisit(treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
 
         return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{patientId}", method = RequestMethod.GET)
     public String show(@PathVariable("patientId") String patientId, Model uiModel) {
-        treatmentAdviceController.show(patientId, uiModel);
-        labResultsController.show(patientId, uiModel);
-        vitalStatisticsController.show(patientId, uiModel);
+        ClinicVisit clinicVisit = clinicVisitService.visitZero(patientId);
+        treatmentAdviceController.show(clinicVisit.getTreatmentAdviceId(), uiModel);
+        labResultsController.show(patientId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
+        vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
+
+        uiModel.addAttribute("clinicVisitId", clinicVisit.getId());
+
         return "clinicvisits/show";
     }
 }

@@ -12,22 +12,22 @@ public class UpdateVitalStatisticsPage extends Page {
 
     public static final String PAGE_LOAD_MARKER = "page_load_marker";
 
-    @FindBy(how = How.ID, using = "_weightInKg_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.weightInKg_id")
     private WebElement weightElement;
 
-    @FindBy(how = How.ID, using = "_heightInCm_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.heightInCm_id")
     private WebElement heightElement;
 
-    @FindBy(how = How.ID, using = "_systolicBp_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.systolicBp_id")
     private WebElement systolicBpElement;
 
-    @FindBy(how = How.ID, using = "_diastolicBp_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.diastolicBp_id")
     private WebElement diastolicElement;
 
-    @FindBy(how = How.ID, using = "_temperatureInFahrenheit_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.temperatureInFahrenheit_id")
     private WebElement temperatureElement;
 
-    @FindBy(how = How.ID, using = "_pulse_id")
+    @FindBy(how = How.ID, using = "_vitalStatistics.pulse_id")
     private WebElement pulseElement;
 
     public UpdateVitalStatisticsPage(WebDriver webDriver) {
@@ -36,7 +36,7 @@ public class UpdateVitalStatisticsPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForDojoElementToLoad("_weightInKg_id", "dijitInputInner");
+        waitForDojoElementToLoad("_vitalStatistics.weightInKg_id", "dijitInputInner");
     }
 
     public void postInitialize() {
@@ -46,10 +46,6 @@ public class UpdateVitalStatisticsPage extends Page {
         systolicBpElement = WebDriverFactory.createWebElement(systolicBpElement);
         diastolicElement = WebDriverFactory.createWebElement(diastolicElement);
         pulseElement = WebDriverFactory.createWebElement(pulseElement);
-    }
-
-    protected void waitForPageToLoad(ChangeRegimenPage page) {
-        page.waitForDojoElementToLoad("_weightInKg_id", "dijitInputInner");
     }
 
     public ShowClinicVisitPage enterVitalStatistics(TestVitalStatistics testVitalStatistics, WebDriver webDriver) {

@@ -13,6 +13,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.DosageType;
@@ -21,10 +22,13 @@ import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
+import org.motechproject.tama.web.model.TreatmentAdviceView;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -34,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -60,6 +65,10 @@ public class TreatmentAdviceControllerTest {
     private AllMealAdviceTypes allMealAdviceTypes;
     @Mock
     private TreatmentAdviceService treatmentAdviceService;
+    @Mock
+    private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
+    @Mock
+    private ClinicVisitService clinicVisitService;
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
@@ -76,7 +85,7 @@ public class TreatmentAdviceControllerTest {
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        controller = new TreatmentAdviceController(allTreatmentAdvices, allPatients, allRegimens, null, allDosageTypes, allMealAdviceTypes, treatmentAdviceService);
+        controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, clinicVisitService);
     }
 
     @Test
@@ -104,6 +113,19 @@ public class TreatmentAdviceControllerTest {
         controller.create(bindingResult, uiModel, treatmentAdvice);
 
         verify(treatmentAdviceService).createRegimen(treatmentAdvice);
+    }
+
+    @Test
+    public void shouldShowTreatmentAdvice(){
+        final String treatmentAdviceId = "treatmentAdviceId";
+        final TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
+        when(treatmentAdviceViewMapper.map(treatmentAdviceId)).thenReturn(treatmentAdviceView);
+        uiModel = new ExtendedModelMap();
+
+        controller.show(treatmentAdviceId, uiModel);
+
+        assertEquals(treatmentAdviceView, uiModel.asMap().get("treatmentAdvice"));
+        assertEquals(treatmentAdviceId, uiModel.asMap().get("itemId"));
     }
 
     @Test
@@ -152,6 +174,7 @@ public class TreatmentAdviceControllerTest {
     public void shouldCreateAChangeRegimenForm() {
         String patientId = PATIENT_ID;
         String treatmentAdviceId = "treatmentAdviceId";
+        String clinicVisitId = "clinicVisitId";
         TreatmentAdvice treatmentAdviceAttr = TreatmentAdvice.newDefault();
         treatmentAdviceAttr.setPatientId(PATIENT_ID);
         treatmentAdviceAttr.setDrugCompositionGroupId("");
@@ -162,12 +185,13 @@ public class TreatmentAdviceControllerTest {
 
         when(allPatients.get(patientId)).thenReturn(patient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
-        String returnURL = controller.changeRegimenForm(treatmentAdviceId, patientId, uiModel);
+        String returnURL = controller.changeRegimenForm(treatmentAdviceId, patientId, clinicVisitId, uiModel);
 
         assertThat(returnURL, is("treatmentadvices/update"));
         verify(uiModel).addAttribute("adviceEndDate", "12/12/2012");
         verify(uiModel).addAttribute("existingTreatmentAdviceId", treatmentAdviceId);
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
+        verify(uiModel).addAttribute("clinicVisitId", clinicVisitId);
     }
 
     @Test
@@ -175,13 +199,16 @@ public class TreatmentAdviceControllerTest {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
         String regimenId = "existingTreatmentRegimenId";
+        String clinicVisitId = "clinicVisitId";
         TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
 
         when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
-        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, uiModel, request);
+        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
         assertThat(redirectURL, is("redirect:/clinicvisits/" + PATIENT_ID));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+        verify(clinicVisitService).changeRegimen(clinicVisitId, treatmentAdvice.getId());
     }
 
     @Test
@@ -190,13 +217,16 @@ public class TreatmentAdviceControllerTest {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
         String regimenId = "existingTreatmentRegimenId";
+        String clinicVisitId = "clinicVisitId";
         TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
 
         when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
-        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, uiModel, request);
+        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
         assertThat(redirectURL, is("redirect:/clinicvisits/" + PATIENT_ID));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+        verify(clinicVisitService).changeRegimen(clinicVisitId, treatmentAdvice.getId());
     }
 
     private TreatmentAdvice getTreatmentAdvice() {

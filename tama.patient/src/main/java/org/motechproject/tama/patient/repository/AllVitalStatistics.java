@@ -20,15 +20,10 @@ public class AllVitalStatistics extends AbstractCouchRepository<VitalStatistics>
         initStandardDesignDocument();
     }
 
-    @View(name = "find_by_patientId", map = "function(doc) {if (doc.documentType =='VitalStatistics' && doc.patientId) {emit(doc.patientId, doc._id);}}")
-    public List<VitalStatistics> findByPatientId(String patientId) {
-        List<VitalStatistics> vitalStatisticsOfPatient = db.queryView(createQuery("find_by_patientId").key(patientId).includeDocs(true), VitalStatistics.class);
-        return vitalStatisticsOfPatient;
-    }
-
     //TODO: Remove in memory sort: By emitting Date in couchdb view
+    @View(name = "find_by_patientId", map = "function(doc) {if (doc.documentType =='VitalStatistics' && doc.patientId) {emit(doc.patientId, doc._id);}}")
     public VitalStatistics findLatestVitalStatisticByPatientId(String patientId) {
-        List<VitalStatistics> vitalStatisticsOfPatient = findByPatientId(patientId);
+        List<VitalStatistics> vitalStatisticsOfPatient = db.queryView(createQuery("find_by_patientId").key(patientId).includeDocs(true), VitalStatistics.class);
         Collections.sort(vitalStatisticsOfPatient);
         return singleResult(vitalStatisticsOfPatient);
     }

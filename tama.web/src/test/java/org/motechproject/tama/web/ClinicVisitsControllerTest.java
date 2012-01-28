@@ -3,18 +3,20 @@ package org.motechproject.tama.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.patient.builder.ClinicVisitBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.web.model.LabResultsUIModel;
+import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -31,17 +33,17 @@ public class ClinicVisitsControllerTest {
     @Mock
     private HttpServletRequest request;
     @Mock
-    private Model uiModel;
-    @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
     private ClinicVisitService clinicVisitService;
 
+    private Model uiModel;
     private ClinicVisitsController controller;
 
     @Before
     public void setUp() {
         initMocks(this);
+        uiModel = new ExtendedModelMap();
         controller = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, clinicVisitService);
     }
 
@@ -80,16 +82,35 @@ public class ClinicVisitsControllerTest {
     }
 
     @Test
+    public void shouldShowClinicVisitForm() {
+        final String patientId = "patientId";
+        final String clinicVisitId = "clinicVisitId";
+        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(clinicVisitId).build();
+        when(clinicVisitService.visitZero(patientId)).thenReturn(clinicVisit);
+
+        final String showUrl = controller.show(patientId, uiModel);
+
+        assertEquals("clinicvisits/show", showUrl);
+        assertEquals(clinicVisitId, uiModel.asMap().get("clinicVisitId"));
+        verify(treatmentAdviceController).show(clinicVisit.getTreatmentAdviceId(), uiModel);
+        verify(labResultsController).show(patientId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
+        verify(vitalStatisticsController).show(clinicVisit.getVitalStatisticsId(), uiModel);
+    }
+
+    @Test
     public void shouldCreateClinicVisit() {
         BindingResult bindingResult = mock(BindingResult.class);
-        final TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{ setPatientId("patientId"); }};
+        final TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
+            setPatientId("patientId");
+        }};
         final LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
         final VitalStatistics vitalStatistics = new VitalStatistics();
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
         when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn("treatmentAdviceId");
-        when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(new ArrayList<String>() {{ add("labResultId"); }});
+        when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(new ArrayList<String>() {{
+            add("labResultId");
+        }});
         when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
 
         String redirectURL = controller.create(treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
@@ -98,6 +119,8 @@ public class ClinicVisitsControllerTest {
         verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
         verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
         verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
-        verify(clinicVisitService).createVisit("treatmentAdviceId", new ArrayList<String>() {{ add("labResultId"); }}, "vitalStatisticsId" );
+        verify(clinicVisitService).createVisit("patientId", "treatmentAdviceId", new ArrayList<String>() {{
+            add("labResultId");
+        }}, "vitalStatisticsId");
     }
 }

@@ -54,11 +54,11 @@ public class LabResultTest {
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
 
-        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
+        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
         labResult1.setLabTest(labTest);
-        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withResult("50").withTestDate(DateUtil.newDate(2011, 10, 10)).build();
+        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withResult("50").withTestDate(DateUtil.newDate(2011, 10, 10)).build();
         labResult2.setLabTest(labTest);
-        LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTest_id(labTestId).withResult("70").withTestDate(DateUtil.newDate(2011, 9, 10)).build();
+        LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withResult("70").withTestDate(DateUtil.newDate(2011, 9, 10)).build();
         labResult3.setLabTest(labTest);
 
         LabResults labResults = new LabResults();
@@ -77,7 +77,7 @@ public class LabResultTest {
         String labTestId = "labTestId1";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withType(TAMAConstants.LabTestType.CD4).build();
 
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
         labResult.setLabTest(labTest);
 
         assertTrue(labResult.isCD4());
@@ -88,7 +88,7 @@ public class LabResultTest {
         String labTestId = "labTestId1";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withType(TAMAConstants.LabTestType.PVL).build();
 
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
         labResult.setLabTest(labTest);
 
         assertFalse(labResult.isCD4());
@@ -96,7 +96,7 @@ public class LabResultTest {
 
     @Test
     public void shouldReturnFalseForCD4LabResultWhenNoLabTestSet() {
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest_id("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
 
         assertFalse(labResult.isCD4());
     }

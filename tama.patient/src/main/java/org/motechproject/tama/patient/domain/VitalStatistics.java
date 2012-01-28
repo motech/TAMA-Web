@@ -125,4 +125,39 @@ public class VitalStatistics extends CouchEntity implements Comparable<VitalStat
     public int compareTo(VitalStatistics vitalStatistics) {
         return vitalStatistics.getCaptureDate().compareTo(getCaptureDate());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        VitalStatistics that = (VitalStatistics) o;
+
+        if (captureDate != null ? !captureDate.equals(that.captureDate) : that.captureDate != null) return false;
+        if (diastolicBp != null ? !diastolicBp.equals(that.diastolicBp) : that.diastolicBp != null) return false;
+        if (heightInCm != null ? !heightInCm.equals(that.heightInCm) : that.heightInCm != null) return false;
+        if (patientId != null ? !patientId.equals(that.patientId) : that.patientId != null) return false;
+        if (pulse != null ? !pulse.equals(that.pulse) : that.pulse != null) return false;
+        if (systolicBp != null ? !systolicBp.equals(that.systolicBp) : that.systolicBp != null) return false;
+        if (temperatureInFahrenheit != null ? !temperatureInFahrenheit.equals(that.temperatureInFahrenheit) : that.temperatureInFahrenheit != null)
+            return false;
+        if (weightInKg != null ? !weightInKg.equals(that.weightInKg) : that.weightInKg != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (weightInKg != null ? weightInKg.hashCode() : 0);
+        result = 31 * result + (heightInCm != null ? heightInCm.hashCode() : 0);
+        result = 31 * result + (systolicBp != null ? systolicBp.hashCode() : 0);
+        result = 31 * result + (diastolicBp != null ? diastolicBp.hashCode() : 0);
+        result = 31 * result + (temperatureInFahrenheit != null ? temperatureInFahrenheit.hashCode() : 0);
+        result = 31 * result + (pulse != null ? pulse.hashCode() : 0);
+        result = 31 * result + (patientId != null ? patientId.hashCode() : 0);
+        result = 31 * result + (captureDate != null ? captureDate.hashCode() : 0);
+        return result;
+    }
 }

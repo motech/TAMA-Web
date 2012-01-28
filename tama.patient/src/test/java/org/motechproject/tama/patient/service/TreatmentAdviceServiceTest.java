@@ -12,6 +12,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.strategy.CallPlan;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -70,7 +71,9 @@ public class TreatmentAdviceServiceTest {
         when(allTreatmentAdvices.get(existingTreatmentAdvice.getId())).thenReturn(existingTreatmentAdvice);
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
 
-        treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice);
+        final String newTreatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice);
+
+        assertEquals(treatmentAdvice.getId(), newTreatmentAdviceId);
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(dailyCallPlan).reEnroll(patient, treatmentAdvice);

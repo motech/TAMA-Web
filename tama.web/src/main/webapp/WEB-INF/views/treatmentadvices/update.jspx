@@ -29,6 +29,7 @@
             <div class="submit" id="fc_org_motechproject_tama_domain_patient_New_Treatment_Advice_submit">
                 <spring:message code="button_save" var="save_button" htmlEscape="false"/>
                 <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+                <input type="hidden" name="clinicVisitId" value="${clinicVisitId}"/>
                 <div class='submit'>
                     <input id="proceed" type="submit" value="${save_button}"/>
                 </div>

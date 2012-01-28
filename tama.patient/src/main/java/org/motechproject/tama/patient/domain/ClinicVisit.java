@@ -1,20 +1,22 @@
 package org.motechproject.tama.patient.domain;
 
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.DateTime;
 import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'ClinicVisit'")
-public class ClinicVisit extends CouchEntity {
-
+public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> {
     @NotNull
     private String patientId;
     @NotNull
     private String treatmentAdviceId;
     private List<String> labResultIds;
     private String vitalStatisticsId;
+    private DateTime visitDate;
+
 
     public String getPatientId() {
         return patientId;
@@ -47,4 +49,18 @@ public class ClinicVisit extends CouchEntity {
     public void setVitalStatisticsId(String vitalStatisticsId) {
         this.vitalStatisticsId = vitalStatisticsId;
     }
+
+    public DateTime getVisitDate() {
+        return visitDate;
+    }
+
+    public void setVisitDate(DateTime visitDate) {
+        this.visitDate = visitDate;
+    }
+
+    @Override
+    public int compareTo(ClinicVisit clinicVisit) {
+        return getVisitDate().compareTo(clinicVisit.getVisitDate());
+    }
+
 }

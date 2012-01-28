@@ -4,13 +4,12 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
-import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
@@ -35,21 +34,21 @@ public class TreatmentAdviceController extends BaseController {
 
     private AllMealAdviceTypes allMealAdviceTypes;
     private AllDosageTypes allDosageTypes;
-    private AllDrugs allDrugs;
     private AllRegimens allRegimens;
-    private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
     private TreatmentAdviceService treatmentAdviceService;
+    private ClinicVisitService clinicVisitService;
+    private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
 
     @Autowired
-    public TreatmentAdviceController(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService) {
-        this.allTreatmentAdvices = allTreatmentAdvices;
+    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, ClinicVisitService clinicVisitService) {
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
-        this.allDrugs = allDrugs;
         this.allDosageTypes = allDosageTypes;
         this.allMealAdviceTypes = allMealAdviceTypes;
         this.treatmentAdviceService = treatmentAdviceService;
+        this.treatmentAdviceViewMapper = treatmentAdviceViewMapper;
+        this.clinicVisitService = clinicVisitService;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
@@ -59,7 +58,8 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/changeRegimen")
-    public String changeRegimenForm(@RequestParam String id, @RequestParam String patientId, Model uiModel) {
+    public String changeRegimenForm(@RequestParam String id, @RequestParam String patientId, @RequestParam String clinicVisitId, Model uiModel) {
+        uiModel.addAttribute("clinicVisitId", clinicVisitId);
         uiModel.addAttribute("adviceEndDate", DateUtil.today().toString(TAMAConstants.DATE_FORMAT));
         uiModel.addAttribute("existingTreatmentAdviceId", id);
         uiModel.addAttribute("discontinuationReason", "");
@@ -68,10 +68,11 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
-        treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+        final String newTreatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+        clinicVisitService.changeRegimen(clinicVisitId, newTreatmentAdviceId);
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 
@@ -103,11 +104,9 @@ public class TreatmentAdviceController extends BaseController {
         }
     }
 
-    public void show(String patientId, Model uiModel) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        TreatmentAdviceViewMapper treatmentAdviceViewMapper = new TreatmentAdviceViewMapper(allTreatmentAdvices, allPatients, allRegimens, allDrugs, allDosageTypes, allMealAdviceTypes);
-        uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(treatmentAdvice.getId()));
-        uiModel.addAttribute("itemId", treatmentAdvice.getId());
+    public void show(String treatmentAdviceId, Model uiModel) {
+        uiModel.addAttribute("treatmentAdvice", treatmentAdviceViewMapper.map(treatmentAdviceId));
+        uiModel.addAttribute("itemId", treatmentAdviceId);
     }
 
     public List<ComboBoxView> regimens() {

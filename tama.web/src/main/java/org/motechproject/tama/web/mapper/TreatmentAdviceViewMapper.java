@@ -12,7 +12,10 @@ import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TreatmentAdviceViewMapper {
 
     private AllRegimens allRegimens;
@@ -22,6 +25,7 @@ public class TreatmentAdviceViewMapper {
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
 
+    @Autowired
     public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
