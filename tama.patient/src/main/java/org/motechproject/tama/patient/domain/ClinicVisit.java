@@ -3,6 +3,7 @@ package org.motechproject.tama.patient.domain;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.util.DateUtil;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -51,7 +52,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     }
 
     public DateTime getVisitDate() {
-        return visitDate;
+        return visitDate == null ? null : DateUtil.setTimeZone(visitDate);
     }
 
     public void setVisitDate(DateTime visitDate) {

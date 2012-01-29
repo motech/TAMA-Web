@@ -14,9 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'SymptomReport'")
-public class SymptomReport extends CouchEntity{
+public class SymptomReport extends CouchEntity {
     @JsonProperty
-    private List<String> symptomIds =  new ArrayList<String>();
+    private List<String> symptomIds = new ArrayList<String>();
     @JsonProperty
     private String patientDocId;
     @JsonProperty
@@ -25,7 +25,7 @@ public class SymptomReport extends CouchEntity{
     @JsonProperty
     private DateTime reportedAt;
 
-    protected SymptomReport(){
+    protected SymptomReport() {
     }
 
     public SymptomReport(String patientDocId, String callId) {
@@ -67,7 +67,7 @@ public class SymptomReport extends CouchEntity{
 
     @JsonIgnore
     public SymptomReport merge(SymptomReport report) {
-        setSymptomIds((List<String>)CollectionUtils.union(getSymptomIds(), report.getSymptomIds()));
+        setSymptomIds((List<String>) CollectionUtils.union(getSymptomIds(), report.getSymptomIds()));
         return this;
     }
 
@@ -80,7 +80,8 @@ public class SymptomReport extends CouchEntity{
         SymptomReport that = (SymptomReport) o;
 
         if (patientDocId != null ? !patientDocId.equals(that.patientDocId) : that.patientDocId != null) return false;
-        if (symptomIds != null ? !CollectionUtils.isEqualCollection(symptomIds, that.symptomIds) : that.symptomIds != null) return false;
+        if (symptomIds != null ? !CollectionUtils.isEqualCollection(symptomIds, that.symptomIds) : that.symptomIds != null)
+            return false;
 
         return true;
     }

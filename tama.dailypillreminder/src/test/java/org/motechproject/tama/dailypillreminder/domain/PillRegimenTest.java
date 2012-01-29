@@ -144,6 +144,7 @@ public class PillRegimenTest extends BaseUnitTest {
 
     @Test
     public void previousDosageIsTakenWhenYesterdaysDoseWasTaken() {
+        mockCurrentDate(new DateTime(1983, 1, 30, 11, 20, 0));
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(DateUtil.now());
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate currentDosageLastTakenDate = DateUtil.today();
