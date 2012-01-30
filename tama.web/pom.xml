@@ -8,7 +8,7 @@
     <parent>
         <artifactId>tama-all</artifactId>
         <groupId>org.motechproject.tama</groupId>
-        <version>${tama.version}</version>
+        <version>0.5-SNAPSHOT</version>
     </parent>
     <properties>
         <build.dir>../build</build.dir>
@@ -17,32 +17,32 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.dailypillreminder</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.fourdayrecall</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.symptomreporting</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.healthtips</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.tools</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.refdata</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.patient</artifactId>
-            <version>${tama.version}</version>
+            <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
