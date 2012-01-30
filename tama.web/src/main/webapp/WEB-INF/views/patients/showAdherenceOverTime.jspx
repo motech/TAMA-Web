@@ -31,13 +31,17 @@
                     return {y: elt.percentage,
                             color: self.colorFor(elt.percentage)}
                 });
+            },
+
+            totalNumberOfWeeks: function(){
+                return this.list.length;
             }
         }
 
         var AdherenceOverTimeWidget = function(targetDivId, dataUrl){
             this.targetDivId = targetDivId;
             this.dataURL = dataUrl;
-            this.chartRenderer = new dojox.charting.Chart2D(targetDivId);
+            this.chartRenderer = new dojox.charting.Chart2D(this.targetDivId);
             this.chartRenderer.addPlot("default", {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
         }
 
@@ -57,15 +61,22 @@
                     self.chartRenderer.addAxis("x", {'labels': adherencePerWeekData.xLabels(), minorTicks: false})
                     self.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
                     self.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues());
+                    self.resizeChart(adherencePerWeekData.totalNumberOfWeeks());
                     self.chartRenderer.render();
                 });
+            },
+
+            resizeChart: function(numberOfWeeks){
+                var chartDiv = dojo.byId(this.targetDivId);
+                var width = numberOfWeeks > 20 ? numberOfWeeks * 20 : chartDiv.style.width;
+                this.chartRenderer.resize(width, chartDiv.style.height);
             }
         }
 
         dojo.addOnLoad(function(){
-            var dataURL = "${adherence_list_url}?id=${patient.id}";
-            x = new AdherenceOverTimeWidget("chartOne", dataURL);
-            x.draw();
+            var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
+            var adherenceOverTimeWidget = new AdherenceOverTimeWidget("chartOne", adherenceListUrl);
+            adherenceOverTimeWidget.draw();
         });
     </script>
 
