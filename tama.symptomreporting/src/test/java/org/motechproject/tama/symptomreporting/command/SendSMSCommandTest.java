@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.sms.api.service.SmsService;
+import org.motechproject.tama.common.util.StringUtil;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -56,7 +57,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS(eq("01234567890"), anyString());
+        verify(smsService, times(1)).sendSMS(eq(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber())), anyString());
     }
 
     @Test
@@ -67,7 +68,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS("01234567890", descriptionOfAdvice);
+        verify(smsService, times(1)).sendSMS(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber()), descriptionOfAdvice);
     }
 
     @Test
@@ -88,7 +89,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService).sendSMS(eq("01234567890"), anyString());
+        verify(smsService).sendSMS(eq(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber())), anyString());
     }
 
     @Test
@@ -109,8 +110,8 @@ public class SendSMSCommandTest {
                                             smsService, allPatients, messageDescription);
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         String[] willSendSMSMessage = sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS("01234567890", descriptionOfAdvice1);
-        verify(smsService, times(1)).sendSMS("01234567890", descriptionOfAdvice2);
+        verify(smsService, times(1)).sendSMS(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber()), descriptionOfAdvice1);
+        verify(smsService, times(1)).sendSMS(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber()), descriptionOfAdvice2);
         assertEquals(1, willSendSMSMessage.length);
     }
 
