@@ -1,6 +1,7 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
 
+    <spring:url value="/json/adherence/list" var="adherence_list_url"/>
     <script type="text/javascript">
         dojo.require("dojox.charting.Chart2D");
         dojo.require("dojox.charting.axis2d.Default");
@@ -8,38 +9,63 @@
         dojo.require("dojox.charting.plot2d.Areas");
         dojo.require("dojox.charting.widget.Legend");
 
-        var AdherenceOverTimeWidget = function(targetDivId){
+        var AdherencePerWeekData = function(list){
+            this.list = list;
+        }
+
+        AdherencePerWeekData.prototype = {
+            colorFor: function(percentage){
+                if(percentage >= 90 ) return "green";
+                if(percentage >= 70 ) return "orange";
+                return "red";
+            },
+
+            xLabels: function(){
+                var dateList = this.list.map(function(elt){ return elt.date});
+                return dateList.map(function(elt, index) { return {value: index + 1, text: elt}});
+            },
+
+            yValues: function(){
+                var self = this;
+                return this.list.map(function(elt){
+                    return {y: elt.percentage,
+                            color: self.colorFor(elt.percentage)}
+                });
+            }
+        }
+
+        var AdherenceOverTimeWidget = function(targetDivId, dataUrl){
             this.targetDivId = targetDivId;
+            this.dataURL = dataUrl;
             this.chartRenderer = new dojox.charting.Chart2D(targetDivId);
-            this.chartRenderer.addPlot("default", {type: "Columns"});
+            this.chartRenderer.addPlot("default", {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
         }
 
         AdherenceOverTimeWidget.prototype = {
-            fetchData: function(){
-                return [{date: "2011-12-05", percentage: 75},
-                        {date: "2011-12-12", percentage: 80},
-                        {date: "2011-12-19", percentage: 89},
-                        {date: "2011-12-26", percentage: 85}];
+            fetchData: function(onLoad){
+                dojo.xhrGet({
+                    url: this.dataURL,
+                    handleAs: "json",
+                    load: function(json, ioArgs) { onLoad(new AdherencePerWeekData(json.adherencePerWeek)); },
+                    error: function(result, args) { }
+                });
             },
 
             draw: function(){
-                data = this.fetchData();
-                var dateList = data.map(function(elt){ return elt.date});
-                labels = dateList.map(function(elt, index) { return {value: index + 1, text: elt}})
-
-                this.chartRenderer.addAxis("x", {'labels': labels})
-                this.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
-                values = data.map(function(elt){ return elt.percentage});
-                this.chartRenderer.addSeries("Series 1", values);
-                this.chartRenderer.render();
-                //var legend = new dojox.charting.widget.Legend({ chart: this.chartRenderer }, "legend")
+                var self = this;
+                this.fetchData(function(adherencePerWeekData){
+                    self.chartRenderer.addAxis("x", {'labels': adherencePerWeekData.xLabels(), minorTicks: false})
+                    self.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
+                    self.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues());
+                    self.chartRenderer.render();
+                });
             }
         }
 
         dojo.addOnLoad(function(){
-            x = new AdherenceOverTimeWidget("chartOne");
+            var dataURL = "${adherence_list_url}?id=${patient.id}";
+            x = new AdherenceOverTimeWidget("chartOne", dataURL);
             x.draw();
-
         });
     </script>
 
