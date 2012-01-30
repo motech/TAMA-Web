@@ -20,6 +20,7 @@ public class TimeConstructBuilder {
         map.put(IVRLanguage.ENGLISH_CODE, new EnglishTimeConstructBuilder());
         map.put(IVRLanguage.HINDI_CODE, new HindiTimeConstructBuilder());
         map.put(IVRLanguage.MARATHI_CODE, new MarathiTimeConstructBuilder());
+        map.put(IVRLanguage.TAMIL_CODE, new TamilTimeConstructBuilder());
     }
 
     public List<String> build(String preferredLanguage, LocalTime localTime) {
