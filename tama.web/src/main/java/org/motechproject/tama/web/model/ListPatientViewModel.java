@@ -10,6 +10,8 @@ public class ListPatientViewModel extends Patient {
 
     public ListPatientViewModel(Patient patient) {
         this.setId(patient.getId());
+        this.setDateOfBirth(patient.getDateOfBirth());
+        this.setDateOfBirthAsDate(patient.getDateOfBirthAsDate());
         this.setPatientId(patient.getPatientId());
         this.setMobilePhoneNumber(patient.getMobilePhoneNumber());
         this.setGender(patient.getGender());
