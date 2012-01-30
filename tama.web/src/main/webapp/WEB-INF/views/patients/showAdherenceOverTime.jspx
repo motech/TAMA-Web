@@ -58,18 +58,17 @@
             draw: function(){
                 var self = this;
                 this.fetchData(function(adherencePerWeekData){
-                    self.chartRenderer.addAxis("x", {'labels': adherencePerWeekData.xLabels(), minorTicks: false})
+                    self.chartRenderer.addAxis("x", {'labels': adherencePerWeekData.xLabels(), majorTicks: true, majorTickStep: 1, rotation: 50})
                     self.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
                     self.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues());
-                    self.resizeChart(adherencePerWeekData.totalNumberOfWeeks());
-                    self.chartRenderer.render();
+                    self.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
                 });
             },
 
-            resizeChart: function(numberOfWeeks){
+            resizeAndRenderChart: function(numberOfWeeks){
                 var chartDiv = dojo.byId(this.targetDivId);
-                var width = numberOfWeeks > 20 ? numberOfWeeks * 20 : chartDiv.style.width;
-                this.chartRenderer.resize(width, chartDiv.style.height);
+                var width = numberOfWeeks > 20 ? numberOfWeeks * 25 : parseInt(chartDiv.style.width);
+                this.chartRenderer.resize(width, parseInt(chartDiv.style.height));
             }
         }
 
