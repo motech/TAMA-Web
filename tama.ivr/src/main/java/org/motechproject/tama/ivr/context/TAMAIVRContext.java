@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr.context;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooRequest;
@@ -93,7 +94,7 @@ public class TAMAIVRContext {
 
     public int numberOfLoginAttempts() {
         String numberOfAttempts = fromSession(NUMBER_OF_ATTEMPTS);
-        return Integer.parseInt(numberOfAttempts);
+        return Integer.parseInt(StringUtils.isEmpty(numberOfAttempts) ? "0" : numberOfAttempts);
     }
 
     public void userAuthenticated(IVRAuthenticationStatus authenticationStatus) {
