@@ -21,28 +21,33 @@
             },
 
             xLabels: function(){
-                var dateList = this.list.map(function(elt){ return elt.date});
-                return dateList.map(function(elt, index) { return {value: index + 1, text: elt}});
+                return this.dateList().map(function(elt, index) { return {value: index + 1, text: elt}});
             },
 
-            yValues: function(){
+            dateList: function() {
+                var dailyDateList = this.list.dailyAdherenceSummary.map(function(elt){ return elt.date});
+                var weeklyDateList = this.list.weeklyAdherenceSummary.map(function(elt){ return elt.date});
+                return dailyDateList.concat(weeklyDateList).sort();
+            },
+
+            yValues: function(adherenceSummaryType){
                 var self = this;
-                return this.list.map(function(elt){
-                    return {y: elt.percentage,
-                            color: self.colorFor(elt.percentage)}
+                return this.dateList().map(function(weekStartDate) {
+                    var adherenceSummary = self.list[adherenceSummaryType].filter(function(adherenceList) { return adherenceList.date == weekStartDate})[0];
+                    var percentage = (adherenceSummary == undefined) ? 0 : adherenceSummary.percentage;
+                    return {y: percentage, color: self.colorFor(percentage)};
                 });
             },
 
             totalNumberOfWeeks: function(){
-                return this.list.length;
+                return this.dateList().length;
             }
         }
 
-        var AdherenceOverTimeWidget = function(targetDivId, dataUrl){
-            this.targetDivId = targetDivId;
+        var AdherenceOverTimeWidget = function(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, dataUrl){
+            this.dailyAdherenceOverTimeChart = dailyAdherenceOverTimeChart;
+            this.weeklyAdherenceOverTimeChart = weeklyAdherenceOverTimeChart;
             this.dataURL = dataUrl;
-            this.chartRenderer = new dojox.charting.Chart2D(this.targetDivId);
-            this.chartRenderer.addPlot("default", {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
         }
 
         AdherenceOverTimeWidget.prototype = {
@@ -50,7 +55,7 @@
                 dojo.xhrGet({
                     url: this.dataURL,
                     handleAs: "json",
-                    load: function(json, ioArgs) { onLoad(new AdherencePerWeekData(json.adherencePerWeek)); },
+                    load: function(json, ioArgs) { onLoad(new AdherencePerWeekData(json)); },
                     error: function(result, args) { }
                 });
             },
@@ -58,15 +63,29 @@
             draw: function(){
                 var self = this;
                 this.fetchData(function(adherencePerWeekData){
-                    self.chartRenderer.addAxis("x", {labels: adherencePerWeekData.xLabels(),
-                                                     majorTicks: true,
-                                                     majorTickStep: 1,
-                                                     minorTicks: false,
-                                                     rotation: -50})
-                    self.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
-                    self.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues());
-                    self.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
+                    self.dailyAdherenceOverTimeChart.draw(adherencePerWeekData);
+                    self.weeklyAdherenceOverTimeChart.draw(adherencePerWeekData);
                 });
+            },
+        }
+
+        var AdherenceOverTimeChartWidget = function(targetDivId, adherenceSummaryType){
+            this.targetDivId = targetDivId;
+            this.adherenceSummaryType = adherenceSummaryType;
+            this.chartRenderer = new dojox.charting.Chart2D(this.targetDivId);
+            this.chartRenderer.addPlot("default", {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
+        }
+
+        AdherenceOverTimeChartWidget.prototype = {
+            draw : function(adherencePerWeekData){
+                this.chartRenderer.addAxis("x", {labels: adherencePerWeekData.xLabels(),
+                                                 majorTicks: true,
+                                                 majorTickStep: 1,
+                                                 minorTicks: false,
+                                                 rotation: -50})
+                this.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
+                this.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues(this.adherenceSummaryType));
+                this.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
             },
 
             resizeAndRenderChart: function(numberOfWeeks){
@@ -78,7 +97,9 @@
 
         dojo.addOnLoad(function(){
             var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
-            var adherenceOverTimeWidget = new AdherenceOverTimeWidget("chartOne", adherenceListUrl);
+            var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("chartOne", "dailyAdherenceSummary");
+            var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("chartTwo", "weeklyAdherenceSummary");
+            var adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl);
             adherenceOverTimeWidget.draw();
         });
     </script>
@@ -87,6 +108,9 @@
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
                 <div id="chartOne" style="width: 800px; height: 300px; display:inline-block"/>
+            </div>
+            <div style="overflow-x:auto">
+                <div id="chartTwo" style="width: 800px; height: 300px; display:inline-block"/>
             </div>
             <div id="legend"></div>
         </util:panel>
