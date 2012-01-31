@@ -50,7 +50,7 @@ public class ClinicNameMessageBuilderTest {
         clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
-        when(cmsLiteService.isStreamContentAvailable("en", "testclinicname.wav")).thenReturn(false);
+        when(cmsLiteService.isStreamContentAvailable("en", "welcome_to_testclinicname.wav")).thenReturn(false);
         assertEquals("Greeting2Generic", clinicNameMessageBuilder.getInboundMessage(clinic, ivrLanguage));
     }
 
@@ -59,7 +59,7 @@ public class ClinicNameMessageBuilderTest {
         clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
-        when(cmsLiteService.isStreamContentAvailable("en", "testclinicname.wav")).thenReturn(true);
+        when(cmsLiteService.isStreamContentAvailable("en", "welcome_to_testclinicname.wav")).thenReturn(true);
         assertEquals("welcome_to_testClinicName", clinicNameMessageBuilder.getInboundMessage(clinic, ivrLanguage));
     }
 }
