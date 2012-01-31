@@ -9,11 +9,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.*;
 
 @ContextConfiguration(locations = "classpath*:applicationFourDayRecallContext.xml", inheritLocations = false)
 public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
@@ -24,12 +20,12 @@ public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
     @Override
     public void before() {
         super.before();
-        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 9, 28), DateUtil.newDate(2000, 10, 5), 0));
-        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 5), DateUtil.newDate(2000, 10, 13), 0));
-        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 13), DateUtil.newDate(2000, 10, 21), 0));
-        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID2", DateUtil.newDate(2000, 10, 13), DateUtil.newDate(2000, 10, 22), 0));
-        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient2", "TADocID21", DateUtil.newDate(2000, 9, 30), DateUtil.newDate(2000, 10, 7), 0));
-        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient3", "TADocID31", DateUtil.newDate(2000, 10, 2), DateUtil.newDate(2000, 10, 9), 0));
+        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 9, 28), DateUtil.newDateTime(DateUtil.newDate(2000, 10, 5), 0, 0, 0), 0));
+        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 5), DateUtil.newDateTime(DateUtil.newDate(2000, 10, 13),  0, 0, 0),0));
+        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID1", DateUtil.newDate(2000, 10, 13), DateUtil.newDateTime(DateUtil.newDate(2000, 10, 21),  0, 0, 0), 0));
+        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient1", "TADocID2", DateUtil.newDate(2000, 10, 13), DateUtil.newDateTime(DateUtil.newDate(2000, 10, 22),  0, 0, 0), 0));
+        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient2", "TADocID21", DateUtil.newDate(2000, 9, 30), DateUtil.newDateTime(DateUtil.newDate(2000, 10, 7),  0, 0, 0), 0));
+        allWeeklyAdherenceLogs.add(new WeeklyAdherenceLog("Patient3", "TADocID31", DateUtil.newDate(2000, 10, 2), DateUtil.newDateTime(DateUtil.newDate(2000, 10, 9),  0, 0, 0), 0));
     }
 
     @Test
@@ -45,13 +41,6 @@ public class AllWeeklyAdherenceLogsTest extends SpringIntegrationTest {
         LocalDate weekStartDate = DateUtil.newDate(2000, 10, 11);
         WeeklyAdherenceLog log = allWeeklyAdherenceLogs.findLogByWeekStartDate("Patient1", "TADocID1", weekStartDate);
         assertNull(log);
-    }
-
-    @Test
-    public void shouldFindLogByDate() {
-        LocalDate logDate = DateUtil.newDate(2000, 10, 5);
-        WeeklyAdherenceLog log = allWeeklyAdherenceLogs.findLogByDate("Patient1", "TADocID1", logDate);
-        assertEquals(logDate, log.getLogDate());
     }
 
     @Override

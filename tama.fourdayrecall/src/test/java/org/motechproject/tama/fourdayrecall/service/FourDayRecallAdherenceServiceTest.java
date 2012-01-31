@@ -14,6 +14,7 @@ import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -62,7 +63,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
         String patientId = "patientId";
         WeeklyAdherenceLog weeklyAdherenceLogForPreviousWeek = new WeeklyAdherenceLog();
         weeklyAdherenceLogForPreviousWeek.setNumberOfDaysMissed(0);
-        weeklyAdherenceLogForPreviousWeek.setLogDate(today.minusWeeks(1));
+        weeklyAdherenceLogForPreviousWeek.setLogDate(DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0));
         weeklyAdherenceLogForPreviousWeek.setPatientId(patientId);
 
         when(weeklyAdherenceLogService.get(patientId, 1)).thenReturn(weeklyAdherenceLogForPreviousWeek);
@@ -90,7 +91,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     public void shouldReturnZeroWhenAdherenceStatusIsNotAnswered() throws NoAdherenceRecordedException {
         String patientId = "patientId";
         WeeklyAdherenceLog notRespondedLog = new WeeklyAdherenceLog();
-        notRespondedLog.setLogDate(today);
+        notRespondedLog.setLogDate(DateUtil.newDateTime(today, 0, 0, 0));
         notRespondedLog.setNumberOfDaysMissed(1);
         notRespondedLog.setPatientId(patientId);
         notRespondedLog.setNotResponded(true);
@@ -105,7 +106,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withId(patientId).withCallPreference(CallPreference.FourDayRecall)
                 .withWeeklyCallPreference(DayOfWeek.Thursday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
         WeeklyAdherenceLog notRespondedLog = new WeeklyAdherenceLog();
-        notRespondedLog.setLogDate(today.minusWeeks(1));
+        notRespondedLog.setLogDate(DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0));
         notRespondedLog.setNumberOfDaysMissed(4);
         notRespondedLog.setPatientId(patientId);
         notRespondedLog.setNotResponded(true);
@@ -124,7 +125,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
                 .withWeeklyCallPreference(DayOfWeek.Thursday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
 
         WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
-        weeklyAdherenceLog.setLogDate(today.minusWeeks(1));
+        weeklyAdherenceLog.setLogDate(DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0));
         weeklyAdherenceLog.setNumberOfDaysMissed(1);
         weeklyAdherenceLog.setPatientId(patient.getId());
 

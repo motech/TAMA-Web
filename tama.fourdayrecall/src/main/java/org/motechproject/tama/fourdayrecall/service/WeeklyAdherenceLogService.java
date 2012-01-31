@@ -1,5 +1,6 @@
 package org.motechproject.tama.fourdayrecall.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
@@ -49,7 +50,7 @@ public class WeeklyAdherenceLogService {
         upsertLog(logInDb, newLog);
     }
 
-    public void createLog(String patientId, LocalDate weekStartDate, int numberOfDaysMissed, LocalDate logDate) {
+    public void createLog(String patientId, LocalDate weekStartDate, int numberOfDaysMissed, DateTime logDate) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         WeeklyAdherenceLog logInDb = allWeeklyAdherenceLogs.findLogByWeekStartDate(patientId, treatmentAdvice.getId(), weekStartDate);
         WeeklyAdherenceLog newLog = WeeklyAdherenceLog.create(patientId, treatmentAdvice.getId(), weekStartDate, numberOfDaysMissed, logDate);
