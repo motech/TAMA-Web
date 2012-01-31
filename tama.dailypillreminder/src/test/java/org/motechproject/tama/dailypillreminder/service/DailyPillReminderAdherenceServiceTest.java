@@ -384,11 +384,11 @@ public class DailyPillReminderAdherenceServiceTest {
 
             when(allDosageAdherenceLogs.getDoseTakenSummaryPerWeek("patientId")).thenReturn(Arrays.asList(doseTakenSummaryForWeek1, doseTakenSummaryForWeek2,doseTakenSummaryForWeek3));
 
-            Map<DateTime, Double> result = dailyReminderAdherenceService.getAdherenceOverTime("patientId");
+            Map<LocalDate, Double> result = dailyReminderAdherenceService.getAdherenceOverTime("patientId");
 
-            assertEquals(50.00, result.get(week1StartDate));
-            assertEquals(75.00, result.get(week2StartDate));
-            assertEquals(100.00, result.get(week3StartDate));
+            assertEquals(50.00, result.get(week1StartDate.toLocalDate()));
+            assertEquals(75.00, result.get(week2StartDate.toLocalDate()));
+            assertEquals(100.00, result.get(week3StartDate.toLocalDate()));
         }
     }
 

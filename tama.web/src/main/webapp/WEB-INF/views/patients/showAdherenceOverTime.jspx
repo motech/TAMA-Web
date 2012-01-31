@@ -58,7 +58,11 @@
             draw: function(){
                 var self = this;
                 this.fetchData(function(adherencePerWeekData){
-                    self.chartRenderer.addAxis("x", {'labels': adherencePerWeekData.xLabels(), majorTicks: true, majorTickStep: 1, rotation: 50})
+                    self.chartRenderer.addAxis("x", {labels: adherencePerWeekData.xLabels(),
+                                                     majorTicks: true,
+                                                     majorTickStep: 1,
+                                                     minorTicks: false,
+                                                     rotation: -50})
                     self.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
                     self.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues());
                     self.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
@@ -82,7 +86,7 @@
     <div>
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
-                <div id="chartOne" style="width: 800px; height: 400px; display:inline-block"/>
+                <div id="chartOne" style="width: 800px; height: 300px; display:inline-block"/>
             </div>
             <div id="legend"></div>
         </util:panel>

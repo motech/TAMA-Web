@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,11 +29,11 @@ public class AdherenceApiController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public String list(@RequestParam("id") String patientDocId) throws JSONException {
-        Map<DateTime, Double> adherenceSummaryPerWeek = dailyPillReminderAdherenceService.getAdherenceOverTime(patientDocId);
+        Map<LocalDate, Double> adherenceSummaryPerWeek = dailyPillReminderAdherenceService.getAdherenceOverTime(patientDocId);
         JSONArray adherencePerWeek = new JSONArray();
-        for(DateTime weekStartDate : new TreeSet<DateTime>(adherenceSummaryPerWeek.keySet())){
+        for(LocalDate weekStartDate : new TreeSet<LocalDate>(adherenceSummaryPerWeek.keySet())){
             JSONObject adherenceForAWeek = new JSONObject();
-            adherenceForAWeek.put("date", weekStartDate.toLocalDate());
+            adherenceForAWeek.put("date", weekStartDate);
             adherenceForAWeek.put("percentage", adherenceSummaryPerWeek.get(weekStartDate));
 
             adherencePerWeek.put(adherenceForAWeek);

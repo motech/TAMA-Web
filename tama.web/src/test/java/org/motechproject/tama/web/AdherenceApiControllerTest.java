@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,7 +7,6 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
-import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +30,8 @@ public class AdherenceApiControllerTest {
 
     @Test
     public void shouldListAdherencePerWeekForThePatient() throws JSONException {
-        Map<DateTime, Double> adherencePerWeek = new HashMap<DateTime, Double>();
-        DateTime monday = DateUtil.newDateTime(new LocalDate(2012, 01, 02), 0, 0, 0);
+        Map<LocalDate, Double> adherencePerWeek = new HashMap<LocalDate, Double>();
+        LocalDate monday = new LocalDate(2012, 01, 02);
         adherencePerWeek.put(monday, (Double) 80.3);
         adherencePerWeek.put(monday.plusDays(7), 90.4);
         when(dailyPillReminderAdherenceService.getAdherenceOverTime("patientDocId")).thenReturn(adherencePerWeek);
@@ -44,11 +42,11 @@ public class AdherenceApiControllerTest {
         JSONArray adherencePerWeekResponse = resultAsJsonObject.getJSONArray("adherencePerWeek");
 
         JSONObject adherenceForFirstWeek = adherencePerWeekResponse.getJSONObject(0);
-        assertEquals(monday.toLocalDate().toString(), adherenceForFirstWeek.get("date").toString());
+        assertEquals(monday.toString(), adherenceForFirstWeek.get("date"));
         assertEquals(80.3, adherenceForFirstWeek.get("percentage"));
 
         JSONObject adherenceForSecondWeek = adherencePerWeekResponse.getJSONObject(1);
-        assertEquals(monday.plusDays(7).toLocalDate().toString(), adherenceForSecondWeek.get("date").toString());
+        assertEquals(monday.plusDays(7).toString(), adherenceForSecondWeek.get("date"));
         assertEquals(90.4, adherenceForSecondWeek.get("percentage"));
     }
 }

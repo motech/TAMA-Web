@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
@@ -15,6 +16,9 @@ import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
+
+import java.util.Arrays;
+import java.util.Map;
 
 import static junit.framework.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -31,6 +35,8 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     protected WeeklyAdherenceLogService weeklyAdherenceLogService;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
 
     protected FourDayRecallDateService fourDayRecallDateService;
     protected FourDayRecallAdherenceService fourDayRecallAdherenceService;
@@ -47,7 +53,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     @Before
     public void setUp() {
         initMocks(this);
-        fourDayRecallAdherenceService = new FourDayRecallAdherenceService(allTreatmentAdvices, weeklyAdherenceLogService, fourDayRecallDateService, adherenceService);
+        fourDayRecallAdherenceService = new FourDayRecallAdherenceService(allTreatmentAdvices, allWeeklyAdherenceLogs, weeklyAdherenceLogService, fourDayRecallDateService, adherenceService);
     }
 
     @Test
@@ -56,6 +62,23 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
         int numberOfDosesSupposedToTake = 4;
         int adherence = (numberOfDosesMissed * 100) / numberOfDosesSupposedToTake;
         assertEquals(adherence, fourDayRecallAdherenceService.adherencePercentageFor(numberOfDosesMissed));
+    }
+
+    @Test
+    public void shouldReturnMapOfWeekStartDateAndAdherencePercentageOverTime() throws NoAdherenceRecordedException {
+        LocalDate tuesday = new LocalDate(2012, 01, 03);
+        LocalDate nextTuesday = new LocalDate(2012, 01, 10);
+        WeeklyAdherenceLog threeDaysMissed = new WeeklyAdherenceLog("patientId", null, tuesday, null, 3);
+        WeeklyAdherenceLog twoDaysMissed = new WeeklyAdherenceLog("patientId", null, nextTuesday, null, 2);
+        when(allWeeklyAdherenceLogs.findAllByPatientId("patientId")).thenReturn(Arrays.asList(threeDaysMissed, twoDaysMissed));
+
+        Map<LocalDate, Double> adherencePerWeek = fourDayRecallAdherenceService.getAdherenceOverTime("patientId");
+
+        assertTrue(adherencePerWeek.containsKey(tuesday));
+        assertTrue(adherencePerWeek.containsKey(nextTuesday));
+
+        assertEquals(25.0, adherencePerWeek.get(tuesday));
+        assertEquals(50.0, adherencePerWeek.get(nextTuesday));
     }
 
     @Test
@@ -144,7 +167,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     public void shouldDetermineIfTheCurrentAdherenceIsFalling() {
         final int numberOfDaysMissed = 2;
         final String testPatientId = "testPatientId";
-        FourDayRecallAdherenceService fourDayRecallService = new FourDayRecallAdherenceService(null, null, null, adherenceService) {
+        FourDayRecallAdherenceService fourDayRecallService = new FourDayRecallAdherenceService(null, null, null, null, adherenceService) {
             @Override
             public int adherencePercentageFor(int daysMissed) {
                 if (numberOfDaysMissed == daysMissed) return 23;

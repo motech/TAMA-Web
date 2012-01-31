@@ -59,11 +59,11 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         return  calculateAdherencePercentage(dosagesTakenForLastFourWeeks, totalLogs);
     }
 
-    public Map<DateTime, Double> getAdherenceOverTime(String patientDocId){
-        Map<DateTime, Double> adherenceOverTime = new HashMap<DateTime, Double> ();
+    public Map<LocalDate, Double> getAdherenceOverTime(String patientDocId){
+        Map<LocalDate, Double> adherenceOverTime = new HashMap<LocalDate, Double> ();
         List<AllDosageAdherenceLogs.DoseTakenSummaryForWeek> doseTakenSummaryForWeeks = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(patientDocId);
         for(AllDosageAdherenceLogs.DoseTakenSummaryForWeek summary: doseTakenSummaryForWeeks){
-            adherenceOverTime.put(summary.getWeekStartDate(), calculateAdherencePercentage(summary.getTaken(), summary.getTotal()));
+            adherenceOverTime.put(summary.getWeekStartDate().toLocalDate(), calculateAdherencePercentage(summary.getTaken(), summary.getTotal()));
         }
         return adherenceOverTime;
     }
