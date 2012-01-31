@@ -1,6 +1,7 @@
 package org.motechproject.tama.fourdayrecall.domain;
 
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
@@ -11,7 +12,7 @@ public class WeeklyAdherenceLog extends CouchEntity {
     private String patientId;
     private String treatmentAdviceId;
     private LocalDate weekStartDate;
-    private LocalDate logDate;
+    private DateTime logDate;
     private int numberOfDaysMissed;
     private boolean notResponded;
 
@@ -19,7 +20,7 @@ public class WeeklyAdherenceLog extends CouchEntity {
         notResponded = false;
     }
 
-    public WeeklyAdherenceLog(String patientId, String treatmentAdviceDocId, LocalDate weekStartDate, LocalDate logDate, int numberOfDaysMissed) {
+    public WeeklyAdherenceLog(String patientId, String treatmentAdviceDocId, LocalDate weekStartDate, DateTime logDate, int numberOfDaysMissed) {
         this.patientId = patientId;
         this.treatmentAdviceId = treatmentAdviceDocId;
         this.weekStartDate = weekStartDate;
@@ -35,11 +36,11 @@ public class WeeklyAdherenceLog extends CouchEntity {
         this.patientId = patientId;
     }
 
-    public LocalDate getLogDate() {
+    public DateTime getLogDate() {
         return logDate;
     }
 
-    public void setLogDate(LocalDate logDate) {
+    public void setLogDate(DateTime logDate) {
         this.logDate = logDate;
     }
 
@@ -71,10 +72,10 @@ public class WeeklyAdherenceLog extends CouchEntity {
         return new WeeklyAdherenceLog(patientId,
                 treatmentAdviceDocId,
                 startDateForAnyWeek,
-                DateUtil.today(), numberOfDaysMissed);
+                DateUtil.now(), numberOfDaysMissed);
     }
 
-    public static WeeklyAdherenceLog create(String patientId, String treatmentAdviceDocId, LocalDate startDateForAnyWeek, int numberOfDaysMissed, LocalDate logDate) {
+    public static WeeklyAdherenceLog create(String patientId, String treatmentAdviceDocId, LocalDate startDateForAnyWeek, int numberOfDaysMissed, DateTime logDate) {
         return new WeeklyAdherenceLog(patientId,
                 treatmentAdviceDocId,
                 startDateForAnyWeek,
