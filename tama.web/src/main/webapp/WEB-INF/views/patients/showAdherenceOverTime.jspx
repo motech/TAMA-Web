@@ -82,7 +82,7 @@
                                                  majorTicks: true,
                                                  majorTickStep: 1,
                                                  minorTicks: false,
-                                                 rotation: -50})
+                                                 rotation: -50 })
                 this.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
                 this.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues(this.adherenceSummaryType));
                 this.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
@@ -107,12 +107,15 @@
     <div>
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
-                <div id="chartOne" style="width: 800px; height: 300px; display:inline-block"/>
+                <div>
+                    <div class="adherenceChartTitle">Daily Adherence over time Graph</div>
+                    <div id="chartOne" style="width: 800px; height: 300px; display: inline-block;"/>
+                </div>
+                <div>
+                    <div class="adherenceChartTitle">Weekly Adherence over time Graph</div>
+                    <div id="chartTwo" style="width: 800px; height: 300px; display: inline-block;"/>
+                </div>
             </div>
-            <div style="overflow-x:auto">
-                <div id="chartTwo" style="width: 800px; height: 300px; display:inline-block"/>
-            </div>
-            <div id="legend"></div>
         </util:panel>
     </div>
 </div>

@@ -15,3 +15,8 @@
     text-align: center;
     margin-bottom: 5px;
 }
+
+.adherenceChartTitle {
+    text-align: center;
+    font-weight: bold;
+}
