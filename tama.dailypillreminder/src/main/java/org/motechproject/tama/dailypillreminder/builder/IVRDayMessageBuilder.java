@@ -14,7 +14,7 @@ public class IVRDayMessageBuilder {
         List<String> messages = new ArrayList<String>();
         messages.add(nextDosageDateTime.toLocalDate().equals(DateUtil.today()) ? TamaIVRMessage.TODAY : TamaIVRMessage.TOMORROW);
         messages.add(TamaIVRMessage.AT);
-        messages.addAll(new TimeConstructBuilder().build(preferredLanguage, nextDosageDateTime.toLocalTime()));
+        messages.addAll(new TimeConstructBuilder().builder(preferredLanguage).build(nextDosageDateTime.toLocalTime()));
         return messages;
     }
 
