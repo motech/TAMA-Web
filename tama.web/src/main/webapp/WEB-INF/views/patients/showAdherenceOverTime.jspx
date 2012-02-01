@@ -2,110 +2,21 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
 
     <spring:url value="/json/adherence/list" var="adherence_list_url"/>
+    <spring:url value="/resources/js/date.js" var="date_js"/>
+    <spring:url value="/resources/js/adherenceChart.js" var="adherence_chart_js"/>
+
+    <script src="${date_js}" type="text/javascript"><!-- required--></script>
+    <script src="${adherence_chart_js}" type="text/javascript"><!-- required--></script>
     <script type="text/javascript">
-        dojo.require("dojox.charting.Chart2D");
-        dojo.require("dojox.charting.axis2d.Default");
-        dojo.require("dojox.charting.plot2d.Lines");
-        dojo.require("dojox.charting.plot2d.Areas");
-        dojo.require("dojox.charting.widget.Legend");
-
-        var AdherencePerWeekData = function(data){
-            this.mergeAndSortData(data);
-        }
-
-        AdherencePerWeekData.prototype = {
-            mergeAndSortData: function(data){
-                data.dailyAdherenceSummary.forEach(function(elt){ elt.type = "dailyAdherenceSummary"});
-                data.weeklyAdherenceSummary.forEach(function(elt){ elt.type = "weeklyAdherenceSummary"});
-                var mergedList = data.dailyAdherenceSummary.concat(data.weeklyAdherenceSummary);
-                this.sortedList = mergedList.sort(function(eltA, eltB){ return (eltA.date > eltB.date) ? 1 : -1; });
-            },
-
-            xLabels: function(){
-                return this.sortedList.map(function(elt, index) { return {value: index + 1, text: elt.date}});
-            },
-
-            yValues: function(adherenceSummaryType){
-                var self = this;
-                return this.sortedList.map(function(elt) {
-                    var percentage = (elt.type == adherenceSummaryType) ? elt.percentage : 0;
-                    return {y: percentage, color: self.colorFor(percentage)};
-                });
-            },
-
-            colorFor: function(percentage){
-                if(percentage >= 90 ) return "green";
-                if(percentage >= 70 ) return "orange";
-                return "red";
-            },
-
-            totalNumberOfWeeks: function(){
-                return this.sortedList.length;
-            }
-        }
-
-        var AdherenceOverTimeWidget = function(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, dataUrl){
-            this.dailyAdherenceOverTimeChart = dailyAdherenceOverTimeChart;
-            this.weeklyAdherenceOverTimeChart = weeklyAdherenceOverTimeChart;
-            this.dataURL = dataUrl;
-        }
-
-        AdherenceOverTimeWidget.prototype = {
-            fetchData: function(onLoad){
-                dojo.xhrGet({
-                    url: this.dataURL,
-                    handleAs: "json",
-                    load: function(json, ioArgs) { onLoad(new AdherencePerWeekData(json)); },
-                    error: function(result, args) { }
-                });
-            },
-
-            draw: function(){
-                var self = this;
-                this.fetchData(function(adherencePerWeekData){
-                    self.dailyAdherenceOverTimeChart.draw(adherencePerWeekData);
-                    self.weeklyAdherenceOverTimeChart.draw(adherencePerWeekData);
-                });
-            },
-        }
-
-        var AdherenceOverTimeChartWidget = function(targetDivId, adherenceSummaryType){
-            this.targetDivId = targetDivId;
-            this.adherenceSummaryType = adherenceSummaryType;
-            this.chartRenderer = new dojox.charting.Chart2D(this.targetDivId);
-            this.chartRenderer.addPlot("default", {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
-        }
-
-        AdherenceOverTimeChartWidget.prototype = {
-            draw : function(adherencePerWeekData){
-                this.chartRenderer.addAxis("x", this.xAxisOptions(adherencePerWeekData));
-                this.chartRenderer.addAxis("y", {vertical:true, min:0, max: 100});
-                this.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues(this.adherenceSummaryType));
-                this.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
-            },
-
-            resizeAndRenderChart: function(numberOfWeeks){
-                var chartDiv = dojo.byId(this.targetDivId);
-                var width = numberOfWeeks > 20 ? numberOfWeeks * 25 : parseInt(chartDiv.style.width);
-                this.chartRenderer.resize(width, parseInt(chartDiv.style.height));
-            },
-
-            xAxisOptions : function(adherencePerWeekData){
-                return {labels: adherencePerWeekData.xLabels(),
-                        majorTicks: true,
-                        majorTickStep: 1,
-                        minorTicks: false,
-                        rotation: -50 }
-            }
-        }
-
-        dojo.addOnLoad(function(){
-            var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
-            var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("chartOne", "dailyAdherenceSummary");
-            var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("chartTwo", "weeklyAdherenceSummary");
-            var adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl);
-            adherenceOverTimeWidget.draw();
-        });
+        <![CDATA[
+            dojo.addOnLoad(function(){
+                var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
+                var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", "dailyAdherenceSummary");
+                var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", "weeklyAdherenceSummary");
+                adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl);
+                adherenceOverTimeWidget.draw();
+            });
+        ]]>
     </script>
 
     <div>
@@ -113,11 +24,11 @@
             <div style="overflow-x:auto">
                 <div>
                     <div class="adherenceChartTitle">Daily Adherence over time Graph</div>
-                    <div id="chartOne" style="width: 800px; height: 300px; display: inline-block;"/>
+                    <div id="dailyAdherenceOverTimeChart" style="width: 800px; height: 300px; display: inline-block;"/>
                 </div>
                 <div>
                     <div class="adherenceChartTitle">Weekly Adherence over time Graph</div>
-                    <div id="chartTwo" style="width: 800px; height: 300px; display: inline-block;"/>
+                    <div id="weeklyAdherenceOverTimeChart" style="width: 800px; height: 300px; display: inline-block;"/>
                 </div>
             </div>
         </util:panel>

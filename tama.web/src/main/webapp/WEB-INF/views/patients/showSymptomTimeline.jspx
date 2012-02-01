@@ -54,7 +54,7 @@
         <![CDATA[
             dojo.addOnLoad(function(){
                 var dataURL = "${symptoms_list_url}?id=${patient.id}&rangeInMonths=12&" + (new Date().getTime())
-                symptomsReportingWidget = new SymptomsReportingWidget("symptoms-reporting-widget-placeholder", "reported-symptoms", dataURL);
+                var symptomsReportingWidget = new SymptomsReportingWidget("symptoms-reporting-widget-placeholder", "reported-symptoms", dataURL);
                 symptomsReportingWidget.draw(timelineWEEK);
             });
         ]]>
