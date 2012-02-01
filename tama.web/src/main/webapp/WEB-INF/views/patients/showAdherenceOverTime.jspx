@@ -11,8 +11,8 @@
         <![CDATA[
             dojo.addOnLoad(function(){
                 var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
-                var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", "dailyAdherenceSummary");
-                var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", "weeklyAdherenceSummary");
+                var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", DAILY_ADHERENCE_TYPE);
+                var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", WEEKLY_ADHERENCE_TYPE);
                 adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl);
                 adherenceOverTimeWidget.draw();
             });
@@ -23,12 +23,10 @@
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
                 <div>
-                    <div class="adherenceChartTitle">Daily Adherence over time Graph</div>
-                    <div id="dailyAdherenceOverTimeChart" style="width: 800px; height: 300px; display: inline-block;"/>
+                    <div id="dailyAdherenceOverTimeChart" style="width: 800px; height: 0px; display: inline-block;"/>
                 </div>
                 <div>
-                    <div class="adherenceChartTitle">Weekly Adherence over time Graph</div>
-                    <div id="weeklyAdherenceOverTimeChart" style="width: 800px; height: 300px; display: inline-block;"/>
+                    <div id="weeklyAdherenceOverTimeChart" style="width: 800px; height: 0px; display: inline-block;"/>
                 </div>
             </div>
         </util:panel>
