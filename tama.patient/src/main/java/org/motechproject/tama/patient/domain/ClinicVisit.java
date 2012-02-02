@@ -20,7 +20,6 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     private String patientId;
     @NotNull
     private String treatmentAdviceId;
-    private TreatmentAdvice treatmentAdvice;
 
     private List<String> labResultIds;
     private String vitalStatisticsId;
