@@ -53,7 +53,7 @@
     <script type="text/javascript">
         <![CDATA[
             dojo.addOnLoad(function(){
-                var dataURL = "${symptoms_list_url}?id=${patient.id}&rangeInMonths=12&" + (new Date().getTime())
+                var dataURL = "${symptoms_list_url}?id=${patient.id}&rangeInMonths=36&" + (new Date().getTime())
                 var symptomsReportingWidget = new SymptomsReportingWidget("symptoms-reporting-widget-placeholder", "reported-symptoms", dataURL);
                 symptomsReportingWidget.draw(timelineWEEK);
             });
