@@ -31,7 +31,6 @@ public class OutboxStrategy extends OutboxModuleStrategy {
 
     @Override
     public boolean hasPendingOutboxMessages(String patientId) {
-        Patient patient = allPatients.get(patientId);
-        return patient.isOnDailyPillReminder() && voiceOutboxService.getNumberPendingMessages(patientId) != 0;
+        return voiceOutboxService.getNumberPendingMessages(patientId) != 0;
     }
 }
