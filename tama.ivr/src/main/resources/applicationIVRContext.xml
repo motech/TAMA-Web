@@ -26,4 +26,6 @@
     <import resource="classpath:applicationDecisionTree.xml"/>
     <import resource="classpath:applicationIvrKookoo.xml"/>
     <import resource="classpath:applicationPlatformScheduler.xml"/>
+    <import resource="classpath:applicationSmsAPI.xml"/>
+    <import resource="classpath:applicationSmsHttp.xml"/>
 </beans>

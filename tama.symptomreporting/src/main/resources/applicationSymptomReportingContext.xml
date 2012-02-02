@@ -13,7 +13,5 @@
 
     <context:annotation-config/>
     <context:spring-configured/>
-    <import resource="classpath:applicationSmsAPI.xml"/>
-    <import resource="classpath:applicationSmsHttp.xml"/>
     <import resource="classpath:applicationContextSymptomReporting.xml"/>
 </beans>

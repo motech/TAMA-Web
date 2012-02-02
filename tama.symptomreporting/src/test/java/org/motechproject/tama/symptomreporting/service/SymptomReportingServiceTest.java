@@ -4,6 +4,8 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
@@ -18,6 +20,7 @@ import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
+import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
 import org.motechproject.util.DateUtil;
 
@@ -46,6 +49,8 @@ public class SymptomReportingServiceTest {
     private SendSMSService sendSMSService;
     @Mock
     private Properties symptomsReportingAdviceMap;
+    @Mock
+    private AllSymptomReports allSymptomReports;
 
     private final String patientId = "patientId";
     private SymptomReportingService symptomReportingService;
@@ -53,7 +58,7 @@ public class SymptomReportingServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, sendSMSService, symptomsReportingAdviceMap);
+        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, sendSMSService, symptomsReportingAdviceMap);
     }
 
     @Test
@@ -115,5 +120,54 @@ public class SymptomReportingServiceTest {
         symptomReportingService.notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
 
         verify(sendSMSService).send(Arrays.asList("ph1", "ph2", "ph3"), "patientId:1234567890:D4T+EFV+NVP,trying to contact. fever,nauseavomiting,headache. ADV: Some advice");
+    }
+
+    @Test
+    public void shouldNotifyClinicians_WhenCallWasMissed(){
+        SymptomReport symptomReport = mock(SymptomReport.class);
+        String patientDocId = "patientDocId";
+        symptomReportingService = Mockito.spy(symptomReportingService);
+
+        when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
+        when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.No);
+
+        doNothing().when(symptomReportingService).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
+        
+        symptomReportingService.notifyCliniciansIfCallMissed("callId", patientDocId);
+
+        verify(symptomReportingService).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+    }
+
+    @Test
+    public void shouldNot_NotifyClinicians_WhenCallWasNotMissed(){
+        SymptomReport symptomReport = mock(SymptomReport.class);
+        String patientDocId = "patientDocId";
+        symptomReportingService = Mockito.spy(symptomReportingService);
+
+        when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
+        when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.Yes);
+
+        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
+
+        symptomReportingService.notifyCliniciansIfCallMissed("callId", patientDocId);
+
+        verify(symptomReportingService, never()).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+    }
+
+    @Test
+    public void shouldNot_NotifyClinicians_WhenDoctorDidNotHaveToBeContacted(){
+        SymptomReport symptomReport = mock(SymptomReport.class);
+        String patientDocId = "patientDocId";
+        symptomReportingService = Mockito.spy(symptomReportingService);
+
+        when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
+        when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.NA);
+
+        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
+
+        symptomReportingService.notifyCliniciansIfCallMissed("callId", patientDocId);
+
+        verify(symptomReportingService, never()).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
     }
 }
