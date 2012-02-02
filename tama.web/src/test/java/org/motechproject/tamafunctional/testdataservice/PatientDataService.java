@@ -90,7 +90,7 @@ public class PatientDataService extends EntityDataService {
 
     public void changeRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice) {
         viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice)
-                .goToShowClinicVisitPage().clickChangeRegimenLink().changeRegimen(treatmentAdvice).logout();
+                .clickChangeRegimenLink().changeRegimen(treatmentAdvice).logout();
     }
 
     public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {

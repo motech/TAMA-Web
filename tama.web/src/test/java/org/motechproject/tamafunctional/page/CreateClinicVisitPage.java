@@ -32,36 +32,36 @@ public class CreateClinicVisitPage extends Page {
         waitForDojoElementToLoad(CreateTreatmentAdviceSection.REGIMEN_ID, "dijitInputInner");
     }
 
-    public ShowPatientPage createNewRegimen(TestTreatmentAdvice treatmentAdvice) {
+    public ShowClinicVisitPage createNewRegimen(TestTreatmentAdvice treatmentAdvice) {
         createTreatmentAdviceSection.fillRegimenSection(treatmentAdvice, this);
         createTreatmentAdviceSection.submit();
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+        waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 
-    public ShowPatientPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics) {
+    public ShowClinicVisitPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics) {
         createTreatmentAdviceSection.fillRegimenSection(treatmentAdvice, this);
         createVitalStatisticsSection.fillVitalStatistics(vitalStatistics);
         createTreatmentAdviceSection.submit();
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+        waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 
-    public ShowPatientPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
+    public ShowClinicVisitPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
         createTreatmentAdviceSection.fillRegimenSection(treatmentAdvice, this);
         createLabResultsSection.fillLabResults(labResult, this);
         createTreatmentAdviceSection.submit();
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+        waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 
-    public ShowPatientPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics vitalStatistics) {
+    public ShowClinicVisitPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics vitalStatistics) {
         createTreatmentAdviceSection.fillRegimenSection(treatmentAdvice, this);
         createLabResultsSection.fillLabResults(labResult, this);
         createVitalStatisticsSection.fillVitalStatistics(vitalStatistics);
         createTreatmentAdviceSection.submit();
-        waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+        waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 
 }

@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-/*TODO: verify behavior for no log exists*/
 public class FourDayRecallListenerTest {
 
     public static final String PATIENT_ID = "patientId";

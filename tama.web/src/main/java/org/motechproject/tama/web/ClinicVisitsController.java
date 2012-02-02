@@ -6,6 +6,7 @@ import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.web.model.LabResultsUIModel;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +47,7 @@ public class ClinicVisitsController extends BaseController {
         }
 
         uiModel.addAttribute("patientId", patientId);
+        uiModel.addAttribute("clinicVisit", new ClinicVisit());
 
         treatmentAdviceController.createForm(patientId, uiModel);
         labResultsController.createForm(patientId, uiModel);
@@ -55,7 +57,7 @@ public class ClinicVisitsController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String create(TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(ClinicVisit visit, TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         String treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
@@ -64,9 +66,9 @@ public class ClinicVisitsController extends BaseController {
             return "clinicvisits/create";
         }
 
-        clinicVisitService.createVisit(treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
+        clinicVisitService.createVisit(visit.getVisitDate(), treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
 
-        return "redirect:/patients/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{patientId}", method = RequestMethod.GET)
@@ -75,9 +77,7 @@ public class ClinicVisitsController extends BaseController {
         treatmentAdviceController.show(clinicVisit.getTreatmentAdviceId(), uiModel);
         labResultsController.show(patientId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
-
-        uiModel.addAttribute("clinicVisitId", clinicVisit.getId());
-
+        uiModel.addAttribute("clinicVisit",clinicVisit);
         return "clinicvisits/show";
     }
 }

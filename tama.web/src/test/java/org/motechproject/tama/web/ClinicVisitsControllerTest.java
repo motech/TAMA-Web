@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,12 +12,14 @@ import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.web.model.LabResultsUIModel;
+import org.motechproject.util.DateUtil;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -91,7 +94,6 @@ public class ClinicVisitsControllerTest {
         final String showUrl = controller.show(patientId, uiModel);
 
         assertEquals("clinicvisits/show", showUrl);
-        assertEquals(clinicVisitId, uiModel.asMap().get("clinicVisitId"));
         verify(treatmentAdviceController).show(clinicVisit.getTreatmentAdviceId(), uiModel);
         verify(labResultsController).show(patientId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         verify(vitalStatisticsController).show(clinicVisit.getVitalStatisticsId(), uiModel);
@@ -112,15 +114,15 @@ public class ClinicVisitsControllerTest {
             add("labResultId");
         }});
         when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
+        ClinicVisit clinicVisit = new ClinicVisit();
+        final DateTime visitDate = DateUtil.now();
+        clinicVisit.setVisitDate(visitDate);
+        String redirectURL = controller.create(clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
 
-        String redirectURL = controller.create(treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
-
-        assertEquals("redirect:/patients/patientId", redirectURL);
+        assertEquals("redirect:/clinicvisits/patientId", redirectURL);
         verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
         verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
         verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
-        verify(clinicVisitService).createVisit("patientId", "treatmentAdviceId", new ArrayList<String>() {{
-            add("labResultId");
-        }}, "vitalStatisticsId");
+        verify(clinicVisitService).createVisit(visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId");
     }
 }

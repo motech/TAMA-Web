@@ -10,7 +10,8 @@ import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.repository.AllClinicVisits;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -34,12 +35,11 @@ public class ClinicVisitServiceTest {
     public void shouldCreateVisit() {
         String patientId = "patientId";
         String treatmentAdviceId = "treatmentAdviceId";
-        ArrayList<String> labResultIds = new ArrayList<String>() {{
-            add("labResultId");
-        }};
+        List<String> labResultIds = Arrays.asList("labResultId");
         String vitalStatisticsId = "vitalStatisticsId";
+        DateTime now = DateUtil.now();
 
-        clinicVisitService.createVisit(patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+        clinicVisitService.createVisit(now, patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
 
         ArgumentCaptor<ClinicVisit> clinicVisitArgumentCaptor = ArgumentCaptor.forClass(ClinicVisit.class);
         verify(allClinicVisits).add(clinicVisitArgumentCaptor.capture());
@@ -62,11 +62,8 @@ public class ClinicVisitServiceTest {
         final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(yesterday).build();
         final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(today).build();
 
-        final ArrayList<ClinicVisit> clinicVisits = new ArrayList<ClinicVisit>() {{
-            add(visit0);
-            add(visit1);
-            add(visit2);
-        }};
+        final List<ClinicVisit> clinicVisits = Arrays.asList(visit0, visit1, visit2);
+
         when(allClinicVisits.find_by_patient_id("pid")).thenReturn(clinicVisits);
 
         final ClinicVisit visitZero = clinicVisitService.visitZero("pid");
@@ -86,5 +83,4 @@ public class ClinicVisitServiceTest {
         verify(allClinicVisits).update(clinicVisit);
         assertEquals(newTreatmentAdviceId, clinicVisit.getTreatmentAdviceId());
     }
-
 }

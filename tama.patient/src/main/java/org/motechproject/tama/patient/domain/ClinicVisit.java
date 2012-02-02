@@ -1,11 +1,17 @@
 package org.motechproject.tama.patient.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'ClinicVisit'")
@@ -14,10 +20,14 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     private String patientId;
     @NotNull
     private String treatmentAdviceId;
+    private TreatmentAdvice treatmentAdvice;
+
     private List<String> labResultIds;
     private String vitalStatisticsId;
-    private DateTime visitDate;
 
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    private DateTime visitDate = DateUtil.now();
 
     public String getPatientId() {
         return patientId;
@@ -63,5 +73,4 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     public int compareTo(ClinicVisit clinicVisit) {
         return getVisitDate().compareTo(clinicVisit.getVisitDate());
     }
-
 }

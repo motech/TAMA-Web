@@ -24,9 +24,6 @@ import static junit.framework.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-/*
- * TODO: Verify the new tests
- */
 public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
 
     @Mock
