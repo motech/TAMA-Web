@@ -18,6 +18,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.context.SymptomsReportingContext;
+import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -45,11 +46,13 @@ public class DialControllerTest {
     private HttpServletResponse response;
     @Mock
     private PatientAlertService patientAlertService;
+    @Mock
+    private SymptomRecordingService symptomRecordingService;
     private Clinic clinic;
     private KookooRequest kookooRequest;
     private DialController dialController;
     private KooKooIVRContext kooKooIVRContext;
-    private TAMAIVRContextForTest tamaivrcontext;
+    private TAMAIVRContextForTest tamaIvrContext;
 
     @Before
     public void setup() {
@@ -67,11 +70,11 @@ public class DialControllerTest {
 
         kookooRequest = new KookooRequest("", "", "Dial", "", IVRStatus.NotAnswered.toString());
         kooKooIVRContext = new KooKooIVRContext(kookooRequest, httpRequest, response);
-        tamaivrcontext = new TAMAIVRContextForTest().patient(patient).patientDocumentId(patient.getId());
+        tamaIvrContext = new TAMAIVRContextForTest().patient(patient).patientDocumentId(patient.getId());
         when(allPatients.get("patientId")).thenReturn(patient);
-        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService);
+        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService, symptomRecordingService);
 
-        when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaivrcontext);
+        when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIvrContext);
     }
 
     @Test
@@ -91,6 +94,8 @@ public class DialControllerTest {
 
     @Test
     public void shouldSwitchedToDialledState_OnAnswered_CallStatus() {
+        final String callId = "callId";
+        when(kooKooIVRContext.callId()).thenReturn(callId);
         kookooRequest.setStatus(IVRStatus.Answered.toString());
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
@@ -102,10 +107,14 @@ public class DialControllerTest {
         assertEquals(TAMAIVRContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getValue().getName());
         assertEquals("false", cookieCaptor.getValue().getValue());
         verify(patientAlertService).updateDoctorConnectedToDuringSymptomCall("patientId", "name1");
+        verify(symptomRecordingService).setAsNotConnectedToDoctor(callId);
+        verify(symptomRecordingService).setAsConnectedToDoctor(callId);
     }
 
     @Test
     public void shouldSwitchedToDialledState_OnSettingTheLast_ClinicianPhoneNumber() {
+        final String callId = "callId";
+        when(kooKooIVRContext.callId()).thenReturn(callId);
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("3");
         when(ivrMessage.getWav(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR, "en")).thenReturn("cannot-connect");
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
@@ -119,6 +128,7 @@ public class DialControllerTest {
         assertEquals(TAMAIVRContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
         assertEquals("4", cookieCaptor.getAllValues().get(0).getValue());
         assertEquals("false", cookieCaptor.getAllValues().get(1).getValue());
+        verify(symptomRecordingService).setAsNotConnectedToDoctor(callId);
     }
 
     @Test
@@ -143,7 +153,7 @@ public class DialControllerTest {
 
     @Test
     public void shouldPickUpPreferredLanguage_WhileBuilding_KookooResponse() {
-        tamaivrcontext.preferredLanguage("mr");
+        tamaIvrContext.preferredLanguage("mr");
         when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
 
         dialController.dial(kooKooIVRContext).create(ivrMessage);

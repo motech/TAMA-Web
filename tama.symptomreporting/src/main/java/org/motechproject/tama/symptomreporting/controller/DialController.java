@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.context.SymptomsReportingContext;
+import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -31,17 +32,19 @@ public class DialController extends SafeIVRController {
     private AllPatients allPatients;
     private TAMAIVRContextFactory contextFactory;
     private PatientAlertService patientAlertService;
+    private SymptomRecordingService symptomRecordingService;
 
     @Autowired
-    public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, @Qualifier("standardResponseController") StandardResponseController standardResponseController, AllPatients allPatients, PatientAlertService patientAlertService) {
-        this(ivrMessage, callDetailRecordsService, standardResponseController, new TAMAIVRContextFactory(), allPatients, patientAlertService);
+    public DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, @Qualifier("standardResponseController") StandardResponseController standardResponseController, AllPatients allPatients, PatientAlertService patientAlertService, SymptomRecordingService symptomRecordingService) {
+        this(ivrMessage, callDetailRecordsService, standardResponseController, new TAMAIVRContextFactory(), allPatients, patientAlertService, symptomRecordingService);
     }
 
-    protected DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, TAMAIVRContextFactory contextFactory, AllPatients allPatients, PatientAlertService patientAlertService) {
+    protected DialController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, TAMAIVRContextFactory contextFactory, AllPatients allPatients, PatientAlertService patientAlertService, SymptomRecordingService symptomRecordingService) {
         super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.allPatients = allPatients;
         this.contextFactory = contextFactory;
         this.patientAlertService = patientAlertService;
+        this.symptomRecordingService = symptomRecordingService;
     }
 
     @Override
@@ -51,6 +54,7 @@ public class DialController extends SafeIVRController {
 
     @Override
     public KookooIVRResponseBuilder dial(KooKooIVRContext kooKooIVRContext) {
+        symptomRecordingService.setAsNotConnectedToDoctor(kooKooIVRContext.callId());
         TAMAIVRContext tamaivrContext = contextFactory.create(kooKooIVRContext);
         SymptomsReportingContext symptomsReportingContext = new SymptomsReportingContext(kooKooIVRContext);
         Patient patient = allPatients.get(tamaivrContext.patientDocumentId());
@@ -58,6 +62,7 @@ public class DialController extends SafeIVRController {
         List<Clinic.ClinicianContact> clinicianContacts = patient.getClinic().getClinicianContacts();
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder().language(tamaivrContext.preferredLanguage());
         if (kooKooIVRContext.isAnswered()) {
+            symptomRecordingService.setAsConnectedToDoctor(kooKooIVRContext.callId());
             updateAlertAndEndCurrentCall(tamaivrContext, symptomsReportingContext, clinicianContacts);
         } else {
             tryAndDialTheNextClinician(symptomsReportingContext, clinicianContacts, kookooIVRResponseBuilder);

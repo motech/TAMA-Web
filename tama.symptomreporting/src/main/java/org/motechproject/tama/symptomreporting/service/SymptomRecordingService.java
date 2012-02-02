@@ -1,14 +1,13 @@
 package org.motechproject.tama.symptomreporting.service;
 
 import org.joda.time.DateTime;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Properties;
 
 @Component
 public class SymptomRecordingService {
@@ -25,6 +24,24 @@ public class SymptomRecordingService {
         symptomReport.setSymptomIds(Arrays.asList(symptomId));
         symptomReport.setReportedAt(reportedAt);
         return allSymptomReports.insertOrMerge(symptomReport);
+    }
+
+    public void saveAdviceGiven(String callId, String advice) {
+        final SymptomReport symptomReport = allSymptomReports.findByCallId(callId);
+        symptomReport.setAdviceGiven(advice);
+        allSymptomReports.update(symptomReport);
+    }
+
+    public void setAsNotConnectedToDoctor(String callId) {
+        final SymptomReport symptomReport = allSymptomReports.findByCallId(callId);
+        symptomReport.setDoctorContacted(TAMAConstants.ReportedType.No);
+        allSymptomReports.update(symptomReport);
+    }
+
+    public void setAsConnectedToDoctor(String callId) {
+        final SymptomReport symptomReport = allSymptomReports.findByCallId(callId);
+        symptomReport.setDoctorContacted(TAMAConstants.ReportedType.Yes);
+        allSymptomReports.update(symptomReport);
     }
 
 }

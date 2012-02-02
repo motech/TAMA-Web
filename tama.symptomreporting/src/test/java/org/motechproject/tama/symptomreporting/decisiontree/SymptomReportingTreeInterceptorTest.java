@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.*;
-import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.symptomreporting.command.*;
 import org.motechproject.tama.symptomreporting.filter.*;
@@ -35,7 +35,7 @@ public class SymptomReportingTreeInterceptorTest {
     @Mock
     private SymptomRecordingService symptomRecordingService;
     @Mock
-    private SmsService smsService;
+    private SendSMSService sendSMSService;
     @Mock
     private AllPatients allPatients;
     @Mock
@@ -76,7 +76,7 @@ public class SymptomReportingTreeInterceptorTest {
         interceptor = new SymptomReportingTreeInterceptor(
                 symptomReportingAlertsCommand, dialStateCommand,
                 suspendAdherenceCallsCommand,
-                symptomRecordingService, alertFilters, switchDialPromptFilter, suspendAdherenceCallsFilter, smsFilter, smsService, allPatients, properties);
+                symptomRecordingService, alertFilters, switchDialPromptFilter, suspendAdherenceCallsFilter, smsFilter, sendSMSService, allPatients, properties);
     }
 
     @Test
@@ -204,6 +204,43 @@ public class SymptomReportingTreeInterceptorTest {
 
         interceptor.addCommands(node);
         assertHasRecordSymptomCommand(innerNode);
+    }
+
+    @Test
+    public void shouldAddRecordAdviceGivenCommand() {
+        final Node nodeWithAdvice = new Node().setPrompts(
+                new AudioPrompt()
+                        .setName("cn_swellfacelegs"),
+                new AudioPrompt()
+                        .setName("cy_fever"),
+                new AudioPrompt()
+                        .setName("adv_crocin02"),
+                new DialPrompt());
+        final Node node = new Node()
+                .setPrompts(
+                        new AudioPrompt().setName("cn_lowurineorgenweakness"),
+                        new MenuAudioPrompt().setName("q_swellfacelegs"))
+                .setTransitions(
+                        new Object[][]{
+                                {
+                                        "1",
+                                        new Transition()
+                                                .setDestinationNode(new Node().setPrompts(
+                                                        new AudioPrompt().setName("ppc_fevswellfacelegs"),
+                                                        new AudioPrompt().setName("adv_continuemedicineseeclinicasap")))},
+                                {
+                                        "3",
+                                        new Transition().setDestinationNode(nodeWithAdvice)}});
+        interceptor.addCommands(node);
+        final List<ITreeCommand> commands = nodeWithAdvice.getTreeCommands();
+        boolean recordAdviceGivenCommandFound = false;
+        for (ITreeCommand command : commands) {
+            if (command instanceof RecordAdviceGivenCommand) {
+                recordAdviceGivenCommandFound =  true;
+                assertEquals("adv_crocin02", ((RecordAdviceGivenCommand) command).getAdviceNodeName());
+            }
+        }
+        assertTrue(recordAdviceGivenCommandFound);
     }
 
     @Test

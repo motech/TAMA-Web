@@ -9,8 +9,6 @@ import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -18,12 +16,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class SymptomRecordingServiceTest {
-    private static final String FEVER = "Fever";
     private static final String FEVER_ID = "fever";
     @Mock
     private AllSymptomReports allSymptomReports;
     private SymptomRecordingService symptomRecordingService;
-    private String summarySymptomId = "depression";
 
     @Before
     public void setUp() {
@@ -48,6 +44,7 @@ public class SymptomRecordingServiceTest {
     @Test
     public void shouldInsertIfOnlySummarySymptomIdReported() {
         SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId");
+        String summarySymptomId = "depression";
         expectedReport.setSymptomIds(Arrays.asList(summarySymptomId));
         when(allSymptomReports.findByCallId("callId")).thenReturn(null);
 
@@ -56,5 +53,14 @@ public class SymptomRecordingServiceTest {
         ArgumentCaptor<SymptomReport> reportCapture = ArgumentCaptor.forClass(SymptomReport.class);
         verify(allSymptomReports).insertOrMerge(reportCapture.capture());
         assertEquals(expectedReport, reportCapture.getValue());
+    }
+
+    @Test
+    public void shouldSetAdviceGivenOnSymptomsReport() {
+        SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId");
+        when(allSymptomReports.findByCallId("callId")).thenReturn(expectedReport);
+        symptomRecordingService.saveAdviceGiven("callId", "some advice");
+        verify(allSymptomReports).update(expectedReport);
+        assertEquals("some advice", expectedReport.getAdviceGiven());
     }
 }

@@ -5,12 +5,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.CouchEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'SymptomReport'")
@@ -21,7 +19,10 @@ public class SymptomReport extends CouchEntity {
     private String patientDocId;
     @JsonProperty
     private String callId;
-
+    @JsonProperty
+    private String adviceGiven;
+    @JsonProperty
+    private TAMAConstants.ReportedType doctorContacted = TAMAConstants.ReportedType.NA;
     @JsonProperty
     private DateTime reportedAt;
 
@@ -63,6 +64,22 @@ public class SymptomReport extends CouchEntity {
 
     public void setReportedAt(DateTime reportedAt) {
         this.reportedAt = reportedAt;
+    }
+
+    public TAMAConstants.ReportedType getDoctorContacted() {
+        return doctorContacted;
+    }
+
+    public void setDoctorContacted(TAMAConstants.ReportedType doctorContacted) {
+        this.doctorContacted = doctorContacted;
+    }
+
+    public String getAdviceGiven() {
+        return adviceGiven;
+    }
+
+    public void setAdviceGiven(String adviceGiven) {
+        this.adviceGiven = adviceGiven;
     }
 
     @JsonIgnore

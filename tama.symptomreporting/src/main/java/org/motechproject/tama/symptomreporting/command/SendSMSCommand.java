@@ -3,10 +3,10 @@ package org.motechproject.tama.symptomreporting.command;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.BaseTreeCommand;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 
@@ -21,13 +21,13 @@ import static org.hamcrest.text.StringStartsWith.startsWith;
 public class SendSMSCommand extends BaseTreeCommand {
 
     private List<Prompt> prompts;
-    private SmsService smsService;
+    private SendSMSService sendSMSService;
     private AllPatients allPatients;
     private Properties messageDescriptions;
 
-    public SendSMSCommand(List<Prompt> prompts, SmsService smsService, AllPatients allPatients, Properties messageDescriptions) {
+    public SendSMSCommand(List<Prompt> prompts, SendSMSService sendSMSService, AllPatients allPatients, Properties messageDescriptions) {
         this.prompts = prompts;
-        this.smsService = smsService;
+        this.sendSMSService = sendSMSService;
         this.allPatients = allPatients;
         this.messageDescriptions = messageDescriptions;
     }
@@ -40,7 +40,7 @@ public class SendSMSCommand extends BaseTreeCommand {
             for (Prompt advicePrompt : getAdvicePrompts()) {
                 String messageBody = messageDescriptions.getProperty(advicePrompt.getName());
                 if (StringUtils.isNotEmpty(messageBody)) {
-                    smsService.sendSMS(patient.getMobilePhoneNumber(), messageBody);
+                    sendSMSService.send(patient.getMobilePhoneNumber(), messageBody);
                     messages.add(TamaIVRMessage.WILL_SEND_SMS);
                 }
             }

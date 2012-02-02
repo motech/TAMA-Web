@@ -1,8 +1,8 @@
 package org.motechproject.tama.symptomreporting.decisiontree;
 
 import org.motechproject.decisiontree.model.*;
-import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.symptomreporting.command.*;
 import org.motechproject.tama.symptomreporting.filter.*;
@@ -19,7 +19,7 @@ public class SymptomReportingTreeInterceptor {
     private static final String QUESTION_RASHALLOVERBODY = "q_rashalloverbody";
     private static final String LOCALRASH = "localrash";
     private static final String USER_OPTION_SYMPTOM_YES = "1";
-	private static final String USER_OPTION_SYMPTOM_NO = "3";
+    private static final String USER_OPTION_SYMPTOM_NO = "3";
 
     private SymptomReportingAlertsCommand symptomReportingAlertsCommand;
     private DialStateCommand dialStateCommand;
@@ -28,7 +28,7 @@ public class SymptomReportingTreeInterceptor {
     private SwitchDialPromptFilter switchDialPromptFilter;
     private SuspendAdherenceCallsFilter suspendAdherenceCallsFilter;
     private SMSFilter smsFilter;
-    private SmsService smsService;
+    private SendSMSService sendSMSService;
     private AllPatients allPatients;
     private Properties properties;
 
@@ -43,7 +43,7 @@ public class SymptomReportingTreeInterceptor {
                                            SwitchDialPromptFilter switchDialPromptFilter,
                                            SuspendAdherenceCallsFilter suspendAdherenceCallsFilter,
                                            SMSFilter smsFilter,
-                                           SmsService smsService,
+                                           SendSMSService sendSMSService,
                                            AllPatients allPatients,
                                            @Qualifier("symptomSMSProperties") Properties properties) {
 
@@ -54,7 +54,7 @@ public class SymptomReportingTreeInterceptor {
         this.switchDialPromptFilter = switchDialPromptFilter;
         this.suspendAdherenceCallsFilter = suspendAdherenceCallsFilter;
         this.smsFilter = smsFilter;
-        this.smsService = smsService;
+        this.sendSMSService = sendSMSService;
         this.allPatients = allPatients;
         this.properties = properties;
         this.symptomRecordingService = symptomRecordingService;
@@ -66,33 +66,42 @@ public class SymptomReportingTreeInterceptor {
         addSendSMSCommand(node);
         addSuspendAdherenceCallsCommand(node);
         addCommandToLogSymptoms(node);
+        addRecordAdviceGivenCommand(node);
+    }
+
+    private void addRecordAdviceGivenCommand(Node root) {
+        RegExpBasedTreeNodeFilter filter = new RegExpBasedTreeNodeFilter("^adv_.*");
+        final List<Node> nodes = filter.filter(root);
+        for (Node node : nodes) {
+            node.setTreeCommands(new RecordAdviceGivenCommand(symptomRecordingService, filter.selectPrompt(node).getName()));
+        }
     }
 
     private void addCommandToLogSymptoms(Node node) {
         RegExpBasedTreeNodeFilter filter = new RegExpBasedTreeNodeFilter("^q_.*");
         final List<Node> nodes = filter.filter(node);
         for (Node priorityNode : nodes) {
-        	Prompt questionPrompt = filter.selectPrompt(priorityNode);
-			setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt), USER_OPTION_SYMPTOM_YES);
-			if (QUESTION_RASHALLOVERBODY.equals(questionPrompt.getName())) { 
-				setRecordSymptomReportTreeCommand(priorityNode, LOCALRASH, USER_OPTION_SYMPTOM_NO);
-			}
+            Prompt questionPrompt = filter.selectPrompt(priorityNode);
+            setRecordSymptomReportTreeCommand(priorityNode, convertQuestionToSymptomId(questionPrompt), USER_OPTION_SYMPTOM_YES);
+            if (QUESTION_RASHALLOVERBODY.equals(questionPrompt.getName())) {
+                setRecordSymptomReportTreeCommand(priorityNode, LOCALRASH, USER_OPTION_SYMPTOM_NO);
+            }
         }
     }
 
-	private String convertQuestionToSymptomId(Prompt questionPrompt) {
-		return questionPrompt.getName().replaceFirst(".*_", "");
-	}
+    private String convertQuestionToSymptomId(Prompt questionPrompt) {
+        return questionPrompt.getName().replaceFirst(".*_", "");
+    }
 
     private void setRecordSymptomReportTreeCommand(Node priorityNode, String symptomId, String userSelectedOption) {
-		Transition yesTransition = priorityNode.getTransitions().get(userSelectedOption);
-    	Node yesNode = yesTransition.getDestinationNode();
-    	if (yesNode != null){
-    		yesNode.setTreeCommands(new RecordSymptomCommand(symptomRecordingService, symptomId));
-    	}
-	}
+        Transition yesTransition = priorityNode.getTransitions().get(userSelectedOption);
+        Node yesNode = yesTransition.getDestinationNode();
+        if (yesNode != null) {
+            yesNode.setTreeCommands(new RecordSymptomCommand(symptomRecordingService, symptomId));
+        }
+    }
 
-	private void addAlerts(Node node) {
+    private void addAlerts(Node node) {
         List<TreeNodeFilter> finders = alertFilters.getAll();
         for (int i = 0; i < finders.size(); i++) {
             final List<Node> nodes = finders.get(i).filter(node);
@@ -117,7 +126,7 @@ public class SymptomReportingTreeInterceptor {
         final List<Node> nodes = smsFilter.filter(node);
         for (Node priorityNode : nodes) {
             AudioPrompt audioPrompt = new AudioPrompt();
-            SendSMSCommand sendSMSCommand = new SendSMSCommand(priorityNode.getPrompts(), smsService, allPatients, properties);
+            SendSMSCommand sendSMSCommand = new SendSMSCommand(priorityNode.getPrompts(), sendSMSService, allPatients, properties);
             audioPrompt.setName("n10:sendSMS").setCommand(sendSMSCommand);
             priorityNode.addPrompts(audioPrompt);
         }

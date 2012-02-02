@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -26,7 +26,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class SendSMSCommandTest {
     @Mock
-    private SmsService smsService;
+    private SendSMSService sendSMSService;
     @Mock
     private AllPatients allPatients;
 
@@ -52,53 +52,53 @@ public class SendSMSCommandTest {
     public void shouldSMSTheAdviceToPatient() {
         Prompt advicePrompt = new AudioPrompt().setName("adv_crocin01");
         Prompt notAnAdvicePrompt = new AudioPrompt().setName("ppc_crocin01");
-        sendSMSCommand = new SendSMSCommand(Arrays.asList(advicePrompt, notAnAdvicePrompt), smsService, allPatients, messageDescription);
+        sendSMSCommand = new SendSMSCommand(Arrays.asList(advicePrompt, notAnAdvicePrompt), sendSMSService, allPatients, messageDescription);
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS(eq(patient.getMobilePhoneNumber()), anyString());
+        verify(sendSMSService, times(1)).send(eq(patient.getMobilePhoneNumber()), anyString());
     }
 
     @Test
     public void shouldSendSMSWithDescriptionOfAdvice() {
         String descriptionOfAdvice = "Take one tablet of crocin";
         messageDescription.setProperty("adv_crocin01", descriptionOfAdvice);
-        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), smsService, allPatients, messageDescription);
+        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), sendSMSService, allPatients, messageDescription);
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS(patient.getMobilePhoneNumber(), descriptionOfAdvice);
+        verify(sendSMSService, times(1)).send(patient.getMobilePhoneNumber(), descriptionOfAdvice);
     }
 
     @Test
     public void shouldNotSendSMSWhenDescriptionIsEmpty() {
         String emptyDescription = "";
         messageDescription.setProperty("adv_crocin01", emptyDescription);
-        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), smsService, allPatients, messageDescription);
+        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), sendSMSService, allPatients, messageDescription);
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verifyZeroInteractions(smsService);
+        verifyZeroInteractions(sendSMSService);
     }
 
     @Test
     public void shouldSendSMSWhenPatientHasAgreedToReceiveSMS() {
         patient.getPatientPreferences().setReceiveOTCAdvice(true);
-        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), smsService, allPatients, messageDescription);
+        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), sendSMSService, allPatients, messageDescription);
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService).sendSMS(eq(patient.getMobilePhoneNumber()), anyString());
+        verify(sendSMSService).send(eq(patient.getMobilePhoneNumber()), anyString());
     }
 
     @Test
     public void shouldNotSendSMSWhenPatientHasNotAgreedToReceiveSMS() {
         patient.getPatientPreferences().setReceiveOTCAdvice(false);
-        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), smsService, allPatients, messageDescription);
+        sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01")), sendSMSService, allPatients, messageDescription);
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verifyZeroInteractions(smsService);
+        verifyZeroInteractions(sendSMSService);
     }
 
     @Test
@@ -106,11 +106,11 @@ public class SendSMSCommandTest {
         String descriptionOfAdvice1 = "Take one tablet of crocin";
         String descriptionOfAdvice2 = "Take a paracetamol tablet thrice a day for 5 days after eating something.";
         sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01"), new AudioPrompt().setName("adv_halfhourcro01")),
-                                            smsService, allPatients, messageDescription);
+                sendSMSService, allPatients, messageDescription);
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         String[] willSendSMSMessage = sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(smsService, times(1)).sendSMS(patient.getMobilePhoneNumber(), descriptionOfAdvice1);
-        verify(smsService, times(1)).sendSMS(patient.getMobilePhoneNumber(), descriptionOfAdvice2);
+        verify(sendSMSService, times(1)).send(patient.getMobilePhoneNumber(), descriptionOfAdvice1);
+        verify(sendSMSService, times(1)).send(patient.getMobilePhoneNumber(), descriptionOfAdvice2);
         assertEquals(1, willSendSMSMessage.length);
     }
 

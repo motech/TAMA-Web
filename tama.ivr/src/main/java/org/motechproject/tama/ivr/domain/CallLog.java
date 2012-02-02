@@ -53,7 +53,7 @@ public class CallLog extends CouchEntity {
     }
 
     public DateTime getStartTime() {
-        return DateUtil.setTimeZone(startTime);
+        return startTime == null ? null : DateUtil.setTimeZone(startTime);
     }
 
     public void setStartTime(DateTime startTime) {
@@ -61,7 +61,7 @@ public class CallLog extends CouchEntity {
     }
 
     public DateTime getEndTime() {
-        return DateUtil.setTimeZone(endTime);
+        return endTime == null ? null : DateUtil.setTimeZone(endTime);
     }
 
     public void setEndTime(DateTime endTime) {
