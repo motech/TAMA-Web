@@ -264,7 +264,7 @@
                         <phase>process-test-classes</phase>
                         <configuration>
                             <target unless="skipTests">
-                                <ant antfile="${build.dir}/build.xml" target="drop.all.dbs"/>
+                                <ant antfile="build.xml" target="drop.all.dbs" dir="${build.dir}"/>
                             </target>
                         </configuration>
                         <goals>

@@ -7,11 +7,10 @@
          </classpath>
     </taskdef>
 
-    <property name="build.dir" value="../build"/>
     <taskdef name="for" classname="net.sf.antcontrib.logic.ForTask">
-        <classpath>
-            <pathelement location="${build.dir}/lib/ant-contrib-1.0b3.jar"/>
-        </classpath>
+	 <classpath>
+            <pathelement location="lib/ant-contrib-1.0b3.jar"/>
+         </classpath>
     </taskdef>
 
     <property file="${basedir}\build.properties"/>
