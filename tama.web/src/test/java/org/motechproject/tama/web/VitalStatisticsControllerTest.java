@@ -28,7 +28,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class VitalStatisticsControllerTest {
 
     private VitalStatisticsController vitalStatisticsController;
-
     @Mock
     private AllVitalStatistics allVitalStatistics;
     @Mock

@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 
@@ -8,6 +9,13 @@ public class VitalStatisticsUIModel {
     private String clinicVisitId;
 
     private VitalStatistics vitalStatistics = new VitalStatistics();
+
+    public VitalStatisticsUIModel() {
+    }
+
+    public VitalStatisticsUIModel(VitalStatistics vitalStatistics) {
+        vitalStatistics = vitalStatistics;
+    }
 
     public String getClinicVisitId() {
         return clinicVisitId;
@@ -23,6 +31,16 @@ public class VitalStatisticsUIModel {
 
     public void setVitalStatistics(VitalStatistics vitalStatistics) {
         this.vitalStatistics = vitalStatistics;
+    }
+
+    public String getId() {
+        return vitalStatistics.getId();
+    }
+
+    public void setId(String id) {
+        if (StringUtils.isNotEmpty(id)) {
+            vitalStatistics.setId(id);
+        }
     }
 
     public static VitalStatisticsUIModel newDefault(ClinicVisit clinicVisit) {

@@ -22,7 +22,7 @@
         <springform:form action="${form_url}" modelAttribute="vitalStatisticsUIModel" method="${_method}" id="vital_statistics_form">
 
             <input type="hidden" name="clinicVisitId" value="${vitalStatisticsUIModel.clinicVisitId}"/>
-            <input type="hidden" name="vitalStatistics.id" value="${vitalStatisticsUIModel.vitalStatistics.id}"/>
+            <input type="hidden" name="id" value="${vitalStatisticsUIModel.id}"/>
             <field:hidden path="vitalStatistics.patientId" value="${vitalStatistics.patientId}"/>
 
             <formfield:input field="vitalStatistics.weightInKg" label="Weight (in kg)" id="weight" validationRegex="^[0-9]*(\.[0-9]+)?$" />
