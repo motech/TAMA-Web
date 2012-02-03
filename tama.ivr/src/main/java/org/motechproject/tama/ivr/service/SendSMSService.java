@@ -21,6 +21,8 @@ public class SendSMSService {
     }
 
     public void send(List<String> recipients, String messageBody){
-        smsService.sendSMS(recipients, messageBody);
+        for(String recipient : recipients){
+            smsService.sendSMS(recipient, messageBody);
+        }
     }
 }
