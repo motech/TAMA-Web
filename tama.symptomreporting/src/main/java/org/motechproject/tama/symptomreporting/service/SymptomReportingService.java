@@ -36,6 +36,7 @@ public class SymptomReportingService {
     private AllLabResults allLabResults;
     private AllRegimens allRegimens;
     private Properties symptomReportingAdviceMap;
+    private Properties symptomReportingProperties;
     private AllSymptomReports allSymptomReports;
     private SendSMSService sendSMSService;
     private KookooCallDetailRecordsService kookooCallDetailRecordsService;
@@ -46,7 +47,8 @@ public class SymptomReportingService {
                                    AllVitalStatistics allVitalStatistics,
                                    AllSymptomReports allSymptomReports, KookooCallDetailRecordsService kookooCallDetailRecordsService,
                                    SendSMSService sendSMSService,
-                                   @Qualifier("adviceMap") Properties symptomReportingAdviceMap) {
+                                   @Qualifier("adviceMap") Properties symptomReportingAdviceMap,
+                                   @Qualifier("symptomProperties") Properties symptomReportingProperties) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allLabResults = allLabResults;
@@ -56,6 +58,7 @@ public class SymptomReportingService {
         this.kookooCallDetailRecordsService = kookooCallDetailRecordsService;
         this.sendSMSService = sendSMSService;
         this.symptomReportingAdviceMap = symptomReportingAdviceMap;
+        this.symptomReportingProperties = symptomReportingProperties;
     }
 
     public MedicalCondition getPatientMedicalConditions(String patientId) {
@@ -81,7 +84,11 @@ public class SymptomReportingService {
         Patient patient = allPatients.get(patientDocId);
         Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
 
-        String symptomsReported = StringUtils.join(symptomReport.getSymptomIds(), ",");
+        List<String> symptoms = new ArrayList<String>();
+        for(String symptomId : symptomReport.getSymptomIds()){
+            symptoms.add(((String) symptomReportingProperties.get(symptomId)));
+        }
+        String symptomsReported = StringUtils.join(symptoms, ",");
         String adviceGiven = fullAdviceGiven(symptomReport.getAdviceGiven());
 
         List<Clinic.ClinicianContact> clinicianContacts = patient.getClinic().getClinicianContacts();
@@ -90,7 +97,7 @@ public class SymptomReportingService {
             cliniciansMobileNumbers.add(clinicianContact.getPhoneNumber());
         }
 
-        String message = patient.getPatientId() + ":" + patient.getMobilePhoneNumber() + ":" + regimen.getDisplayName() + ",trying to contact. " + symptomsReported + ". " + adviceGiven;
+        String message = patient.getPatientId() + ":" + patient.getMobilePhoneNumber() + ":" + regimen.getDisplayName() + ", trying to contact. " + symptomsReported + ". " + adviceGiven;
 
         sendSMSService.send(cliniciansMobileNumbers, message);
     }

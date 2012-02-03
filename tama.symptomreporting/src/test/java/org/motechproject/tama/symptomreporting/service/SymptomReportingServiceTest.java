@@ -52,6 +52,8 @@ public class SymptomReportingServiceTest {
     @Mock
     private Properties symptomsReportingAdviceMap;
     @Mock
+    private Properties symptomReportingProperties;
+    @Mock
     private AllSymptomReports allSymptomReports;
     @Mock
     private KookooCallDetailRecordsService kookooCallDetailRecordsService;
@@ -62,7 +64,7 @@ public class SymptomReportingServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, kookooCallDetailRecordsService, sendSMSService, symptomsReportingAdviceMap);
+        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, kookooCallDetailRecordsService, sendSMSService, symptomsReportingAdviceMap, symptomReportingProperties);
     }
 
     @Test
@@ -120,10 +122,13 @@ public class SymptomReportingServiceTest {
         when(symptomReport.getAdviceGiven()).thenReturn("adv_crocin01");
         when(symptomsReportingAdviceMap.get("adv_crocin01")).thenReturn("ADV: Some advice");
         when(symptomReport.getSymptomIds()).thenReturn(Arrays.asList("fever", "nauseavomiting", "headache"));
+        when(symptomReportingProperties.get("fever")).thenReturn("Fever");
+        when(symptomReportingProperties.get("nauseavomiting")).thenReturn("Nausea or Vomiting");
+        when(symptomReportingProperties.get("headache")).thenReturn("Headache");
 
         symptomReportingService.notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
 
-        verify(sendSMSService).send(Arrays.asList("ph1", "ph2", "ph3"), "patientId:1234567890:D4T+EFV+NVP,trying to contact. fever,nauseavomiting,headache. ADV: Some advice");
+        verify(sendSMSService).send(Arrays.asList("ph1", "ph2", "ph3"), "patientId:1234567890:D4T+EFV+NVP, trying to contact. Fever,Nausea or Vomiting,Headache. ADV: Some advice");
     }
 
     @Test
