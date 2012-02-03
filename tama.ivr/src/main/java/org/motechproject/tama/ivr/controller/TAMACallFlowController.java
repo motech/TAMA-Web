@@ -93,7 +93,7 @@ public class TAMACallFlowController implements CallFlowController {
     private String getStartingTree(TAMAIVRContext tamaivrContext) {
         Patient patient = allPatients.get(tamaivrContext.patientDocumentId());
         if (tamaivrContext.isIncomingCall()) {
-            if (!patient.isOnDailyPillReminder())
+            if (patient.isOnWeeklyPillReminder())
                 return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
             else {
                 if (patient.getStatus().isSuspended())
