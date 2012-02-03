@@ -24,11 +24,16 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     private String treatmentAdviceId;
 
     private List<String> labResultIds;
+
     private String vitalStatisticsId;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private DateTime visitDate;
+
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    private DateTime expectedVisitTime;
 
     public String getPatientId() {
         return patientId;
@@ -70,6 +75,10 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         this.visitDate = visitDate;
     }
 
+    public void setExpectedVisitTime(DateTime expectedVisitTime) {
+        this.expectedVisitTime = expectedVisitTime;
+    }
+
     @Override
     public int compareTo(ClinicVisit clinicVisit) {
         return getVisitDate().compareTo(clinicVisit.getVisitDate());
@@ -78,6 +87,13 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     public static ClinicVisit createVisitForToday() {
         ClinicVisit clinicVisit = new ClinicVisit();
         clinicVisit.setVisitDate(DateUtil.now());
+        return clinicVisit;
+    }
+
+    public static ClinicVisit createExpectedVisit(DateTime expectedVisitTime, String patientId) {
+        ClinicVisit clinicVisit = new ClinicVisit();
+        clinicVisit.setExpectedVisitTime(expectedVisitTime);
+        clinicVisit.setPatientId(patientId);
         return clinicVisit;
     }
 }

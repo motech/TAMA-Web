@@ -15,6 +15,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -69,6 +70,12 @@ public class ClinicVisitServiceTest {
         final ClinicVisit visitZero = clinicVisitService.visitZero("pid");
         assertNotNull(visitZero);
         assertEquals(visit0, visitZero);
+    }
+
+    @Test
+    public void shouldCreateExpectedVisit() {
+        clinicVisitService.createExpectedVisit(DateUtil.now(), "patientId");
+        verify(allClinicVisits).add(any(ClinicVisit.class));
     }
 
     @Test

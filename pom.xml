@@ -19,6 +19,7 @@
         <module>tama.healthtips</module>
         <module>tama.tools</module>
         <module>tama.web</module>
+        <module>tama.appointments</module>
     </modules>
     <name>tama-all</name>
     <repositories>
