@@ -1,6 +1,8 @@
 package org.motechproject.tama.symptomreporting.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
+import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.service.SendSMSService;
@@ -36,12 +38,14 @@ public class SymptomReportingService {
     private Properties symptomReportingAdviceMap;
     private AllSymptomReports allSymptomReports;
     private SendSMSService sendSMSService;
+    private KookooCallDetailRecordsService kookooCallDetailRecordsService;
 
     @Autowired
     public SymptomReportingService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                    AllLabResults allLabResults, AllRegimens allRegimens,
                                    AllVitalStatistics allVitalStatistics,
-                                   AllSymptomReports allSymptomReports, SendSMSService sendSMSService,
+                                   AllSymptomReports allSymptomReports, KookooCallDetailRecordsService kookooCallDetailRecordsService,
+                                   SendSMSService sendSMSService,
                                    @Qualifier("adviceMap") Properties symptomReportingAdviceMap) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -49,6 +53,7 @@ public class SymptomReportingService {
         this.allRegimens = allRegimens;
         this.allVitalStatistics = allVitalStatistics;
         this.allSymptomReports = allSymptomReports;
+        this.kookooCallDetailRecordsService = kookooCallDetailRecordsService;
         this.sendSMSService = sendSMSService;
         this.symptomReportingAdviceMap = symptomReportingAdviceMap;
     }
@@ -64,8 +69,9 @@ public class SymptomReportingService {
         return new MedicalConditionsMapper(patient, labResults, vitalStatistics, earliestTreatmentAdvice, currentRegimen).map();
     }
 
-    public void notifyCliniciansIfCallMissed(String callId, String patientDocId) {
-        SymptomReport symptomReport = allSymptomReports.findByCallId(callId);
+    public void notifyCliniciansIfCallMissed(String callLogDocId, String patientDocId) {
+        KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callLogDocId);
+        SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
         if (symptomReport.getDoctorContacted().equals(TAMAConstants.ReportedType.No)) {
             notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
         }
