@@ -2,22 +2,15 @@ package org.motechproject.tama.common.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewResult;
-import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.GenerateView;
+import org.motechproject.dao.MotechBaseRepository;
+import org.motechproject.model.MotechBaseDataObject;
 
 import java.util.List;
 
-public abstract class AbstractCouchRepository<T> extends CouchDbRepositorySupport<T> {
+public abstract class AbstractCouchRepository<T extends MotechBaseDataObject> extends MotechBaseRepository<T> {
 
     public AbstractCouchRepository(Class<T> clazz, CouchDbConnector db) {
         super(clazz, db);
-        initStandardDesignDocument();
-    }
-
-    @GenerateView
-    @Override
-    public List<T> getAll() {
-        return super.getAll();
     }
 
     protected int rowCount(ViewResult viewResult) {

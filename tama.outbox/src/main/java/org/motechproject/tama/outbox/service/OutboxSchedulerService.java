@@ -37,7 +37,7 @@ public class OutboxSchedulerService {
         eventParams.put(EXTERNAL_ID_KEY, patient.getId());
         MotechEvent outboxCallEvent = new MotechEvent(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, eventParams);
         CronSchedulableJob outboxCallJob = new CronSchedulableJob(outboxCallEvent, outboxCallJobCronExpression, DateUtil.now().toDate(), null);
-        motechSchedulerService.scheduleJob(outboxCallJob);
+        motechSchedulerService.safeScheduleJob(outboxCallJob);
     }
 
     public void unscheduleOutboxJobs(Patient patient) {

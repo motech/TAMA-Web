@@ -36,6 +36,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
@@ -92,16 +93,15 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
         allPatients.add(patient);
 
-        assertEquals(0, allPatients.findByPatientId("9999").size());
+        assertNull(allPatients.findByPatientId("9999"));
 
-        Patient loadedPatient = allPatients.findByPatientId("12345678").get(0);
+        Patient loadedPatient = allPatients.findByPatientId("12345678");
         assertNotNull(loadedPatient);
         assertEquals("12345678", loadedPatient.getPatientId());
     }
 
     @Test
-    @ExpectedException(TamaException.class)
-    public void shouldNotAddPatientWithNonUniqueCombinationOfPatientIdAndClinicId() {
+    public void shouldUpdatePatientWhenPatientWithPatientIdAndClinicIdAlreadyExists() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         allClinics.add(clinic);
         markForDeletion(clinic);
@@ -112,13 +112,18 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withPatientId("12345678").
                 withClinic(clinic).build();
         allPatients.addToClinic(patient, clinic.getId());
+        List<Patient> patients = allPatients.getAll();
 
         Patient similarPatient = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
                 withIVRLanguage(ivrLanguage).
                 withPatientId("12345678").
+                withId(patient.getId()).
+                withRevision(patient.getRevision()).
                 withClinic(clinic).build();
         allPatients.addToClinic(similarPatient, clinic.getId());
+
+        assertEquals(patients.size(), allPatients.getAll().size());
     }
 
     @Test
@@ -177,10 +182,10 @@ public class AllPatientsTest extends SpringIntegrationTest {
         allPatients.add(patient);
 
         allPatients.remove(patient);
-        List<Patient> dbPatients = allPatients.findByPatientId("5678");
+        Patient dbPatient = allPatients.findByPatientId("5678");
         List<UniquePatientField> uniquePatientFields = allUniquePatientFields.get(patient);
 
-        assertTrue(dbPatients.isEmpty());
+        assertNull(dbPatient);
         assertTrue(uniquePatientFields.isEmpty());
     }
 
@@ -191,10 +196,10 @@ public class AllPatientsTest extends SpringIntegrationTest {
         String mobilePhoneNumber = patient.getMobilePhoneNumber();
         allPatients.add(patient);
 
-        List<Patient> dbPatients = allPatients.findByPatientId("5678");
+        Patient dbPatient = allPatients.findByPatientId("5678");
         List<UniquePatientField> uniquePatientFields = allUniquePatientFields.getAll();
 
-        assertThat(dbPatients.get(0).getPatientId(), is("5678"));
+        assertThat(dbPatient.getPatientId(), is("5678"));
         assertThat(uniquePatientFields.get(0).getId(), is(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "null/5678"));
         assertThat(uniquePatientFields.get(1).getId(), is(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + mobilePhoneNumber + "/1234"));
     }
@@ -326,7 +331,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withHIVTestReason(testReason).withModeOfTransmission(modeOfTransmission).build();
         allPatients.add(patient);
 
-        Patient loadedPatient = allPatients.findByPatientId(patient.getPatientId()).get(0);
+        Patient loadedPatient = allPatients.findByPatientId(patient.getPatientId());
         Assert.assertEquals("Vertical", loadedPatient.getMedicalHistory().getHivMedicalHistory().getModeOfTransmission().getType());
         Assert.assertEquals("STDs", loadedPatient.getMedicalHistory().getHivMedicalHistory().getTestReason().getName());
         markForDeletion(testReason);

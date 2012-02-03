@@ -43,7 +43,7 @@ public class OutboxSchedulerServiceTest {
         patientPreferences.setCallPreference(callPreference);
         schedulerService.scheduleOutboxJobs(patient);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
+        verify(motechSchedulerService).safeScheduleJob(jobCaptor.capture());
         Assert.assertEquals("0 30 10 * * ?", jobCaptor.getValue().getCronExpression());
     }
 }

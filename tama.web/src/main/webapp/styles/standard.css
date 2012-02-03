@@ -518,3 +518,23 @@ fieldset th {
 #_s_org_motechproject_tama_alert_notes_notes_id {
   margin-left : 155px;
 }
+
+.warning {
+    height: 15px;
+    background-color: ORANGE;
+    color: WHITE;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.errorBanner {
+    height: 15px;
+    background-color: RED;
+    color: WHITE;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}

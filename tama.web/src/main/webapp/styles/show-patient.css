@@ -6,16 +6,6 @@
     padding-bottom : 140px;
 }
 
-.warning {
-    height: 15px;
-    background-color: ORANGE;
-    color: WHITE;
-    padding: 5px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 5px;
-}
-
 .adherenceChartTitle {
     text-align: center;
     font-weight: bold;

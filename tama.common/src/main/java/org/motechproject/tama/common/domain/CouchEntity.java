@@ -3,13 +3,13 @@ package org.motechproject.tama.common.domain;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.ektorp.support.CouchDbDocument;
 import org.joda.time.LocalDate;
+import org.motechproject.model.MotechBaseDataObject;
 
 import java.util.Date;
 
 
-public abstract class CouchEntity extends CouchDbDocument {
+public abstract class CouchEntity extends MotechBaseDataObject {
 
     private static final long serialVersionUID = 4517930750095396426L;
 

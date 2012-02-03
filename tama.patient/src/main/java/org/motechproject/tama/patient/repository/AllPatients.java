@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
+import org.ektorp.support.GenerateView;
 import org.ektorp.support.View;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.common.util.UUIDUtil;
@@ -45,14 +46,15 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         initStandardDesignDocument();
     }
 
-    @View(name = "find_by_patient_id", map = "function(doc) {if (doc.documentType =='Patient' && doc.patientId) {emit(doc.patientId, doc._id);}}")
-    public List<Patient> findByPatientId(String patientId) {
-        ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
+    @GenerateView
+    public Patient findByPatientId(String patientId) {
+        ViewQuery q = createQuery("by_patientId").key(patientId).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
-        for (Patient patient : patients) {
-            loadPatientDependencies(patient);
-        }
-        return patients;
+        if (patients.isEmpty()) return null;
+
+        Patient patient = patients.get(0);
+        loadPatientDependencies(patient);
+        return patient;
     }
 
     @View(name = "find_by_clinic", map = "function(doc) {if (doc.documentType =='Patient' && doc.clinic_id) {emit(doc.clinic_id, doc._id);}}")
@@ -121,7 +123,7 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
 
     public void addToClinic(Patient patient, String clinicId) {
         patient.setClinic_id(clinicId);
-        add(patient);
+        addOrReplace(patient, "patientId", patient.getPatientId());
     }
 
     @Override

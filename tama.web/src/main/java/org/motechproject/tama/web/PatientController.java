@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
@@ -33,6 +32,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,6 +65,8 @@ public class PatientController extends BaseController {
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
     public static final String CLINIC_AND_PATIENT_ID_ALREADY_IN_USE = "Sorry, the entered patient-id already in use.";
     private static final String PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE = "Sorry, the entered combination of phone number and TAMA-PIN is already in use.";
+    public static final String PATIENT_CREATE_ERROR_KEY = "patientCreateError";
+    private static final String PATIENT_CREATE_ERROR = "Sorry, there was an error while creating the patient. Please try again.";
     private AllPatients allPatients;
     private AllClinics allClinics;
     private AllGenders allGenders;
@@ -184,14 +186,14 @@ public class PatientController extends BaseController {
         try {
             patientService.create(patient, loggedInClinic(request));
             uiModel.asMap().clear();
-        } catch (TamaException e) {
+        } catch (RuntimeException e) {
             decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
             return CREATE_VIEW;
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
-    private void decorateViewWithUniqueConstraintError(Patient patient, BindingResult bindingResult, Model uiModel, TamaException e) {
+    private void decorateViewWithUniqueConstraintError(Patient patient, BindingResult bindingResult, Model uiModel, RuntimeException e) {
         String message = e.getMessage();
         if (message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)) {
             bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
@@ -199,6 +201,9 @@ public class PatientController extends BaseController {
         } else if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
             bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
                     new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
+        } else {
+            bindingResult.addError(new ObjectError("Patient", ""));
+            uiModel.addAttribute(PATIENT_CREATE_ERROR_KEY, PATIENT_CREATE_ERROR);
         }
         initUIModel(uiModel, patient);
     }
@@ -227,7 +232,7 @@ public class PatientController extends BaseController {
         try {
             patientService.update(patient);
             uiModel.asMap().clear();
-        } catch (TamaException e) {
+        } catch (RuntimeException e) {
             String message = e.getMessage();
             if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
                 bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
