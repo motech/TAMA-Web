@@ -14,8 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
 public class AllClinicVisitsTest extends SpringIntegrationTest {
@@ -78,4 +77,10 @@ public class AllClinicVisitsTest extends SpringIntegrationTest {
         assertEquals("newNew", updatedClinicVisit.getTreatmentAdviceId());
     }
 
+    @Test
+    public void shouldNotSetVisitDateIfItIsNotInTheDocument() {
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVisitDate(null).build();
+        allClinicVisits.add(clinicVisit);
+        assertNull(allClinicVisits.get(clinicVisit.getId()).getVisitDate());
+    }
 }

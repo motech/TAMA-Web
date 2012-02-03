@@ -1,6 +1,5 @@
 package org.motechproject.tama.patient.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.tama.common.TAMAConstants;
@@ -11,11 +10,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
+
 
 @TypeDiscriminator("doc.documentType == 'ClinicVisit'")
 public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> {
+    /*
+     * TODO: Verify implication on migration for each change.
+     */
     @NotNull
     private String patientId;
     @NotNull
@@ -26,7 +28,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    private DateTime visitDate = DateUtil.now();
+    private DateTime visitDate;
 
     public String getPatientId() {
         return patientId;
@@ -71,5 +73,11 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     @Override
     public int compareTo(ClinicVisit clinicVisit) {
         return getVisitDate().compareTo(clinicVisit.getVisitDate());
+    }
+
+    public static ClinicVisit createVisitForToday() {
+        ClinicVisit clinicVisit = new ClinicVisit();
+        clinicVisit.setVisitDate(DateUtil.now());
+        return clinicVisit;
     }
 }
