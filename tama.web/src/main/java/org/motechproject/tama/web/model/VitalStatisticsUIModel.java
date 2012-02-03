@@ -10,13 +10,6 @@ public class VitalStatisticsUIModel {
 
     private VitalStatistics vitalStatistics = new VitalStatistics();
 
-    public VitalStatisticsUIModel() {
-    }
-
-    public VitalStatisticsUIModel(VitalStatistics vitalStatistics) {
-        vitalStatistics = vitalStatistics;
-    }
-
     public String getClinicVisitId() {
         return clinicVisitId;
     }
