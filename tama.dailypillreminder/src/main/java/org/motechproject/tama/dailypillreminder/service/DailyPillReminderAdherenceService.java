@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.dailypillreminder.domain.*;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
@@ -17,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 @Service
@@ -59,16 +58,15 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         return  calculateAdherencePercentage(dosagesTakenForLastFourWeeks, totalLogs);
     }
 
-    public Map<LocalDate, Double> getAdherenceOverTime(String patientDocId){
-        Map<LocalDate, Double> adherenceOverTime = new HashMap<LocalDate, Double> ();
-        List<AllDosageAdherenceLogs.DoseTakenSummaryForWeek> doseTakenSummaryForWeeks = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(patientDocId);
-        for(AllDosageAdherenceLogs.DoseTakenSummaryForWeek summary: doseTakenSummaryForWeeks){
-            adherenceOverTime.put(summary.getWeekStartDate().toLocalDate(), calculateAdherencePercentage(summary.getTaken(), summary.getTotal()));
+    public List<AdherenceSummaryForAWeek> getAdherenceOverTime(String patientDocId){
+        List<AdherenceSummaryForAWeek> doseTakenSummaryForWeeks = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(patientDocId);
+        for(AdherenceSummaryForAWeek summary: doseTakenSummaryForWeeks){
+            summary.setPercentage(calculateAdherencePercentage(summary.getTaken(), summary.getTotal()));
         }
-        return adherenceOverTime;
+        return doseTakenSummaryForWeeks;
     }
 
-    private Double calculateAdherencePercentage(int taken, int total) {
+    private double calculateAdherencePercentage(int taken, int total) {
         return (double) taken / total * 100.0;
     }
 

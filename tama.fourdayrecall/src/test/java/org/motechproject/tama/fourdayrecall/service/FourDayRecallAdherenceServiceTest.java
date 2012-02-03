@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
+import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
@@ -18,7 +19,7 @@ import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 import static junit.framework.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -62,20 +63,20 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnMapOfWeekStartDateAndAdherencePercentageOverTime() throws NoAdherenceRecordedException {
+    public void shouldReturnMapOfWeekStartDateAndAdherencePercentageOverTime(){
         LocalDate tuesday = new LocalDate(2012, 01, 03);
         LocalDate nextTuesday = new LocalDate(2012, 01, 10);
         WeeklyAdherenceLog threeDaysMissed = new WeeklyAdherenceLog("patientId", null, tuesday, null, 3);
         WeeklyAdherenceLog twoDaysMissed = new WeeklyAdherenceLog("patientId", null, nextTuesday, null, 2);
         when(allWeeklyAdherenceLogs.findAllByPatientId("patientId")).thenReturn(Arrays.asList(threeDaysMissed, twoDaysMissed));
 
-        Map<LocalDate, Double> adherencePerWeek = fourDayRecallAdherenceService.getAdherenceOverTime("patientId");
+        List<AdherenceSummaryForAWeek> adherenceForAWeek = fourDayRecallAdherenceService.getAdherenceOverTime("patientId");
 
-        assertTrue(adherencePerWeek.containsKey(tuesday));
-        assertTrue(adherencePerWeek.containsKey(nextTuesday));
+        assertEquals(tuesday, adherenceForAWeek.get(0).getWeekStartDate().toLocalDate());
+        assertEquals(25.0, adherenceForAWeek.get(0).getPercentage());
 
-        assertEquals(25.0, adherencePerWeek.get(tuesday));
-        assertEquals(50.0, adherencePerWeek.get(nextTuesday));
+        assertEquals(nextTuesday, adherenceForAWeek.get(1).getWeekStartDate().toLocalDate());
+        assertEquals(50.0, adherenceForAWeek.get(1).getPercentage());
     }
 
     @Test

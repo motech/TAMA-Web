@@ -5,8 +5,8 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.View;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
@@ -67,43 +67,10 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return singleResult(adherenceLogs);
     }
     @View(name="getPillsTakenAndTotalCountPerWeek", file = "doseTakenSummaryPerWeekMapReduce.json")
-    public List<DoseTakenSummaryForWeek> getDoseTakenSummaryPerWeek(String patientDocId) {
+    public List<AdherenceSummaryForAWeek> getDoseTakenSummaryPerWeek(String patientDocId) {
         final ComplexKey startKey = ComplexKey.of(patientDocId);
         final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
         ViewQuery q = createQuery("getPillsTakenAndTotalCountPerWeek").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
-        return db.queryView(q, DoseTakenSummaryForWeek.class);
-    }
-
-    public static class DoseTakenSummaryForWeek {
-        private DateTime weekStartDate;
-        private int taken;
-        private int total;
-
-        public int getTaken() {
-            return taken;
-        }
-
-        public int getTotal() {
-            return total;
-        }
-
-        public DoseTakenSummaryForWeek setTaken(int taken) {
-            this.taken = taken;
-            return this;
-        }
-
-        public DoseTakenSummaryForWeek setTotal(int total) {
-            this.total = total;
-            return this;
-        }
-
-        public DateTime getWeekStartDate() {
-            return weekStartDate;
-        }
-
-        public DoseTakenSummaryForWeek setWeekStartDate(DateTime weekStartDate) {
-            this.weekStartDate = weekStartDate;
-            return this;
-        }
+        return db.queryView(q, AdherenceSummaryForAWeek.class);
     }
 }

@@ -14,12 +14,10 @@ import org.motechproject.server.pillreminder.contract.DosageResponse;
 import org.motechproject.server.pillreminder.contract.MedicineResponse;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
-import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
-import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
-import org.motechproject.tama.dailypillreminder.domain.Dose;
-import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
+import org.motechproject.tama.dailypillreminder.domain.*;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -374,21 +372,21 @@ public class DailyPillReminderAdherenceServiceTest {
 
     public static class GetAdherenceOverTime extends TestSubject{
         @Test
-        public void shouldCalculateAdherenceForDoseTakenSummaryPerWeek(){
+        public void shouldCalculateAdherencePercentageForDoseTakenSummaryPerWeek(){
             DateTime week1StartDate = DateUtil.newDateTime(new LocalDate(2012, 01, 02), 0, 0, 0);
             DateTime week2StartDate = week1StartDate.plusDays(7);
             DateTime week3StartDate = week1StartDate.plusDays(14);
-            AllDosageAdherenceLogs.DoseTakenSummaryForWeek doseTakenSummaryForWeek1 = new AllDosageAdherenceLogs.DoseTakenSummaryForWeek().setWeekStartDate(week1StartDate).setTaken(3).setTotal(6);
-            AllDosageAdherenceLogs.DoseTakenSummaryForWeek doseTakenSummaryForWeek2 = new AllDosageAdherenceLogs.DoseTakenSummaryForWeek().setWeekStartDate(week2StartDate).setTaken(3).setTotal(4);
-            AllDosageAdherenceLogs.DoseTakenSummaryForWeek doseTakenSummaryForWeek3 = new AllDosageAdherenceLogs.DoseTakenSummaryForWeek().setWeekStartDate(week3StartDate).setTaken(7).setTotal(7);
+            AdherenceSummaryForAWeek doseTakenSummaryForWeek1 = new AdherenceSummaryForAWeek().setWeekStartDate(week1StartDate).setTaken(3).setTotal(6);
+            AdherenceSummaryForAWeek doseTakenSummaryForWeek2 = new AdherenceSummaryForAWeek().setWeekStartDate(week2StartDate).setTaken(3).setTotal(4);
+            AdherenceSummaryForAWeek doseTakenSummaryForWeek3 = new AdherenceSummaryForAWeek().setWeekStartDate(week3StartDate).setTaken(7).setTotal(7);
 
             when(allDosageAdherenceLogs.getDoseTakenSummaryPerWeek("patientId")).thenReturn(Arrays.asList(doseTakenSummaryForWeek1, doseTakenSummaryForWeek2,doseTakenSummaryForWeek3));
 
-            Map<LocalDate, Double> result = dailyReminderAdherenceService.getAdherenceOverTime("patientId");
+            List<AdherenceSummaryForAWeek> result = dailyReminderAdherenceService.getAdherenceOverTime("patientId");
 
-            assertEquals(50.00, result.get(week1StartDate.toLocalDate()));
-            assertEquals(75.00, result.get(week2StartDate.toLocalDate()));
-            assertEquals(100.00, result.get(week3StartDate.toLocalDate()));
+            assertEquals(50.0, doseTakenSummaryForWeek1.getPercentage());
+            assertEquals(75.00, doseTakenSummaryForWeek2.getPercentage());
+            assertEquals(100.00, doseTakenSummaryForWeek3.getPercentage());
         }
     }
 

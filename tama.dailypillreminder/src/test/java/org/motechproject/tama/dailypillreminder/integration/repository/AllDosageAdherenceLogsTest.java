@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
@@ -196,7 +197,7 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
 
         DosageAdherenceLog log1_week3 = createLog(next_monday.plusDays(7), DosageStatus.TAKEN);
 
-        List<AllDosageAdherenceLogs.DoseTakenSummaryForWeek> data = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(PATIENT_ID);
+        List<AdherenceSummaryForAWeek> data = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(PATIENT_ID);
         
         assertEquals(monday, data.get(0).getWeekStartDate().toLocalDate());
         assertEquals(2, data.get(0).getTaken());
