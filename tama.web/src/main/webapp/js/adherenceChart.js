@@ -1,4 +1,5 @@
 dojo.require("dojox.charting.Chart2D");
+dojo.require("dojox.charting.widget.Legend");
 
 // This method is copied from http://www.reigndropsfall.net/2010/08/12/dojox-charting-axis-titles/
 dojo.declare("tama.Chart2D", dojox.charting.Chart2D, {
@@ -81,11 +82,17 @@ AdherencePerWeekData.prototype = {
         return this.sortedList.map(function(elt, index) { return {value: index + 1, text: dateFormatter(elt.date)}});
     },
 
-    yValues: function(adherenceSummaryType){
+    takenDoseValues: function(adherenceSummaryType){
         var self = this;
         return this.sortedList.map(function(elt) {
-            var percentage = (elt.type == adherenceSummaryType) ? elt.percentage : 0;
-            return {y: percentage, color: self.colorFor(percentage)};
+            var taken = (elt.type == adherenceSummaryType) ? elt.taken : 0;
+            return {y: taken, color: self.colorFor(elt.percentage)};
+        });
+    },
+
+    totalDoseValues: function(adherenceSummaryType){
+        return this.sortedList.map(function(elt) {
+            return (elt.type == adherenceSummaryType) ? elt.total : 0;
         });
     },
 
@@ -128,27 +135,31 @@ AdherenceOverTimeWidget.prototype = {
 }
 
 
-var AdherenceOverTimeChartWidget = function(targetDivId, adherenceSummaryType){
+var AdherenceOverTimeChartWidget = function(targetDivId, adherenceSummaryType, maxY){
     this.targetDivId = targetDivId;
     this.adherenceSummaryType = adherenceSummaryType;
+    this.maxY = maxY;
 }
 
 AdherenceOverTimeChartWidget.prototype = {
     draw : function(adherencePerWeekData){
         this.chartRenderer = new tama.Chart2D(this.targetDivId);
+        this.chartRenderer.addPlot("grid", this.gridOptions());
         this.chartRenderer.addPlot("default", {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
 
         this.chartRenderer.addAxis("x", this.xAxisOptions(adherencePerWeekData));
         this.chartRenderer.addAxis("y", this.yAxisOptions());
 
-        this.chartRenderer.addSeries("Adherence Over Time", adherencePerWeekData.yValues(this.adherenceSummaryType));
+        this.chartRenderer.addSeries("Taken ", adherencePerWeekData.takenDoseValues(this.adherenceSummaryType));
+        this.chartRenderer.addSeries("Total", adherencePerWeekData.totalDoseValues(this.adherenceSummaryType));
         this.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
     },
 
     resizeAndRenderChart: function(numberOfWeeks){
         var chartDiv = dojo.byId(this.targetDivId);
         var width = numberOfWeeks > 20 ? numberOfWeeks * 25 : 800;
-        this.chartRenderer.resize(width, 300);
+        var height = this.maxY > 10 ? 350 : 250;
+        this.chartRenderer.resize(width, height);
     },
 
     xAxisOptions : function(adherencePerWeekData){
@@ -162,8 +173,19 @@ AdherenceOverTimeChartWidget.prototype = {
     yAxisOptions : function(){
         return {vertical:true,
                 min:0,
-                max: 100,
+                max: this.maxY,
+                majorTicks: true,
+                majorTickStep: 1,
+                minorTicks: false,
                 title: this.adherenceSummaryType + " Chart",
                 font: "20px" }
+    },
+
+    gridOptions : function(){
+        return {type: "Grid",
+            hMajorLines: true,
+            hMinorLines: true,
+            vMajorLines: false,
+            vMinorLines: false }
     }
 }

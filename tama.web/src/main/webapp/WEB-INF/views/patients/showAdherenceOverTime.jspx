@@ -11,8 +11,8 @@
         <![CDATA[
             dojo.addOnLoad(function(){
                 var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
-                var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", DAILY_ADHERENCE_TYPE);
-                var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", WEEKLY_ADHERENCE_TYPE);
+                var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", DAILY_ADHERENCE_TYPE, 15);
+                var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", WEEKLY_ADHERENCE_TYPE, 5);
                 adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl);
                 adherenceOverTimeWidget.draw();
             });
@@ -22,11 +22,38 @@
     <div>
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
+                <table>
+                    <tr>
+                        <td>Legend</td>
+                        <td class="legendColor red"></td>
+                        <td class="legendLabel">Less Than 70%</td>
+                        <td class="legendColor orange"></td>
+                        <td class="legendLabel"> Between 70% and 90%</td>
+                        <td class="legendColor green"></td>
+                        <td class="legendLabel">More than 90%</td>
+                        <td class="legendColor grey"></td>
+                        <td class="legendLabel">Missed Dose</td>
+                    </tr>
+                </table>
                 <div>
-                    <div id="dailyAdherenceOverTimeChart" style="width: 800px; height: 0px; display: inline-block;"/>
+                    <div id="dailyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"/>
                 </div>
+
+                <table style="margin: 20px 0px">
+                    <tr>
+                        <td>Legend</td>
+                        <td class="legendColor red"></td>
+                        <td class="legendLabel"> Less Than 70%</td>
+                        <td class="legendColor orange"></td>
+                        <td class="legendLabel"> Between 70% and 90%</td>
+                        <td class="legendColor green"></td>
+                        <td class="legendLabel">More than 90%</td>
+                        <td class="legendColor grey"></td>
+                        <td class="legendLabel">Missed Days</td>
+                    </tr>
+                </table>
                 <div>
-                    <div id="weeklyAdherenceOverTimeChart" style="width: 800px; height: 0px; display: inline-block;"/>
+                    <div id="weeklyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"/>
                 </div>
             </div>
         </util:panel>
