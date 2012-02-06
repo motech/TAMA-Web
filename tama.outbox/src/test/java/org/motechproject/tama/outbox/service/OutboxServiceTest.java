@@ -2,6 +2,7 @@ package org.motechproject.tama.outbox.service;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -11,6 +12,7 @@ import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.call.IVRCall;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
@@ -22,11 +24,11 @@ import org.motechproject.tama.patient.service.PatientService;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.pillreminder.EventKeys.EXTERNAL_ID_KEY;
 import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
@@ -137,6 +139,32 @@ public class OutboxServiceTest {
     }
 
     @Test
+    public void shouldNotScheduleRepeatingJobs_WhenMakingAnOutboxCall() {
+        patient.setStatus(Status.Suspended);
+        Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
+
+        outboxService.call(patient, false);
+        ArgumentCaptor<Map> callParamsArg = ArgumentCaptor.forClass(Map.class);
+        verify(ivrCall).makeCall(same(patient), callParamsArg.capture());
+        assertEquals(1, callParamsArg.getValue().size());
+        assertEquals("true", callParamsArg.getValue().get(TAMAIVRContext.IS_OUTBOX_CALL));
+        verify(outboxSchedulerService, times(0)).scheduleRepeatingJobForOutBoxCall(patient);
+    }
+
+    @Test
+    public void shouldScheduleRepeatingJobs_WhenMakingAnOutboxCall() {
+        patient.setStatus(Status.Suspended);
+        Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
+
+        outboxService.call(patient, true);
+        ArgumentCaptor<Map> callParamsArg = ArgumentCaptor.forClass(Map.class);
+        verify(ivrCall).makeCall(same(patient), callParamsArg.capture());
+        assertEquals(1, callParamsArg.getValue().size());
+        assertEquals("true", callParamsArg.getValue().get(TAMAIVRContext.IS_OUTBOX_CALL));
+        verify(outboxSchedulerService).scheduleRepeatingJobForOutBoxCall(patient);
+    }
+
+    @Test
     public void shouldNotMakeACallEvenWhenPatientIsInactive() {
         patient.setStatus(Status.Loss_To_Follow_Up);
         Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
@@ -153,12 +181,12 @@ public class OutboxServiceTest {
     }
 
     private void setUpPatientAsActive() {
-        patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("0000000000").withPatientId("111").build();
+        patient = PatientBuilder.startRecording().withDefaults().withMobileNumber("0000000000").withPatientId("111").withId("patientDocId").build();
         patient.activate();
         when(allPatients.get(anyString())).thenReturn(patient);
     }
 
     private void setUpOutboxWithAtLeastOneUnreadMessage() {
-        when(voiceOutboxService.getNumberPendingMessages("patientId")).thenReturn(1);
+        when(voiceOutboxService.getNumberPendingMessages("patientDocId")).thenReturn(1);
     }
 }

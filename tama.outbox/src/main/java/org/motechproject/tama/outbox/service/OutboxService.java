@@ -74,24 +74,23 @@ public class OutboxService implements Outbox {
     }
 
     public void call(MotechEvent event) {
-        Map<String, Object> parameters = event.getParameters();
-        String externalId = (String) parameters.get(OutboxSchedulerService.EXTERNAL_ID_KEY);
+        String patientDocumentId = (String) event.getParameters().get(OutboxSchedulerService.EXTERNAL_ID_KEY);
+        boolean scheduleRepeatingJobs = !"true".equals(event.getParameters().get(OutboxSchedulerService.IS_RETRY));
+        call(allPatients.get(patientDocumentId), scheduleRepeatingJobs);
+    }
 
-        Patient patient = allPatients.get(externalId);
-        if (patient != null && patient.allowOutboxCalls()) {
-            try {
-                int numberPendingMessages = voiceOutboxService.getNumberPendingMessages(externalId);
-                if (numberPendingMessages > 0) {
-                    Map<String, String> callParams = new HashMap<String, String>();
-                    callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
-                    if (!"true".equals(event.getParameters().get(OutboxSchedulerService.IS_RETRY))) {
-                        outboxSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
-                    }
-                    ivrCall.makeCall(patient, callParams);
+    public void call(Patient patient, boolean scheduleRepeatingJobs) {
+        try {
+            if (patient != null && patient.allowOutboxCalls() && hasPendingOutboxMessages(patient.getId())) {
+                if (scheduleRepeatingJobs) {
+                    outboxSchedulerService.scheduleRepeatingJobForOutBoxCall(patient);
                 }
-            } catch (Exception e) {
-                logger.error("Failed to handle OutboxCall event, this event would not be retried but the subsequent repeats would happen.", e);
+                Map<String, String> callParams = new HashMap<String, String>();
+                callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
+                ivrCall.makeCall(patient, callParams);
             }
+        } catch (Exception e) {
+            logger.error("Failed to handle OutboxCall event", e);
         }
     }
 }

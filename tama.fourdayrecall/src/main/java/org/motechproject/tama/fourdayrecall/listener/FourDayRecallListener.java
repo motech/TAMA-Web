@@ -8,6 +8,7 @@ import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.fourdayrecall.service.WeeklyAdherenceLogService;
 import org.motechproject.tama.ivr.call.IVRCall;
+import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.slf4j.Logger;
@@ -30,36 +31,34 @@ public class FourDayRecallListener {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private AllPatients allPatients;
     private WeeklyAdherenceLogService weeklyAdherenceLogService;
+    private OutboxService outboxService;
 
     @Autowired
     public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService,
                                  FourDayRecallAlertService fourDayRecallAlertService, FourDayRecallAdherenceService fourDayRecallAdherenceService,
-                                 AllPatients allPatients, WeeklyAdherenceLogService weeklyAdherenceLogService) {
+                                 AllPatients allPatients, WeeklyAdherenceLogService weeklyAdherenceLogService, OutboxService outboxService) {
         this.ivrCall = ivrCall;
         this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         this.fourDayRecallAlertService = fourDayRecallAlertService;
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
         this.allPatients = allPatients;
         this.weeklyAdherenceLogService = weeklyAdherenceLogService;
+        this.outboxService = outboxService;
     }
 
     @MotechListener(subjects = TAMAConstants.FOUR_DAY_RECALL_SUBJECT)
     public void handle(MotechEvent motechEvent) {
         String patientDocId = motechEvent.getParameters().get(PATIENT_DOC_ID_KEY).toString();
         Patient patient = allPatients.get(patientDocId);
-        if (patient != null && patient.allowAdherenceCalls()) {
+        if (patient != null) {
             try {
-                Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
-                Boolean isFirstCall = (Boolean) motechEvent.getParameters().get(FIRST_CALL);
-
-                if (fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient))
-                    return;
-                if (isFirstCall != null && isFirstCall)
-                    weeklyAdherenceLogService.createNotRespondedLog(patient.getId());
-                if (!isRetryEvent)
-                    fourDayRecallSchedulerService.scheduleRetryJobsForFourDayRecall(patient);
-
-                ivrCall.makeCall(patient);
+                handleFirstCallOfDay(motechEvent, patient);
+                boolean adherenceCapturedForCurrentWeek = fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient);
+                if (adherenceCapturedForCurrentWeek) {
+                    outboxService.call(patient, false);
+                } else {
+                    makeFourDayRecallCall(motechEvent, patient);
+                }
             } catch (Exception e) {
                 logger.error("Failed to handle FourDayRecall event, this event would not be retried but the subsequent repeats would happen.", e);
             }
@@ -78,6 +77,21 @@ public class FourDayRecallListener {
                 if (!fourDayRecallAlertService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(patientDocId))
                     fourDayRecallAlertService.raiseAdherenceInRedAlert(patientDocId);
             }
+        }
+    }
+
+    private void handleFirstCallOfDay(MotechEvent motechEvent, Patient patient) {
+        Boolean isRetryEvent = (Boolean) motechEvent.getParameters().get(RETRY_EVENT_KEY);
+        if (isRetryEvent) return;
+        fourDayRecallSchedulerService.scheduleRetryJobsForFourDayRecall(patient);
+    }
+
+    private void makeFourDayRecallCall(MotechEvent motechEvent, Patient patient) {
+        if (patient.allowAdherenceCalls()) {
+            Boolean isVeryFirstCall = (Boolean) motechEvent.getParameters().get(FIRST_CALL);
+            if (isVeryFirstCall != null && isVeryFirstCall)
+                weeklyAdherenceLogService.createNotRespondedLog(patient.getId());
+            ivrCall.makeCall(patient);
         }
     }
 
