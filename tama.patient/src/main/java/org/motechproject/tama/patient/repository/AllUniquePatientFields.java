@@ -38,6 +38,19 @@ public class AllUniquePatientFields extends AbstractCouchRepository<UniquePatien
         }
     }
 
+    public void addOrReplace(Patient patient) {
+        List<UniquePatientField> oldUniquePatientFields = get(patient);
+        remove(patient);
+        try {
+            add(patient);
+        } catch (TamaException e) {
+            for (UniquePatientField uniquePatientField : oldUniquePatientFields) {
+                add(new UniquePatientField(uniquePatientField.getId(), uniquePatientField.getPrimaryDocId()));
+            }
+            throw e;
+        }
+    }
+
     public void remove(Patient patient) {
         for (UniquePatientField field : get(patient)) {
             this.remove(field);

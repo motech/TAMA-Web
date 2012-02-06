@@ -22,7 +22,6 @@ import org.motechproject.util.DateUtil;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -51,7 +50,7 @@ public class PatientServiceTest extends BaseUnitTest {
         dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(allPatients, allTreatmentAdvices, allUniquePatientFields, allPatientEventLogs);
+        patientService = new PatientService(allPatients, allTreatmentAdvices, allPatientEventLogs);
         patientService.registerOutbox(outbox);
         registerKnownCallPlans();
     }

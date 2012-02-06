@@ -129,8 +129,14 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
     @Override
     public void add(Patient entity) {
         entity.setId(UUIDUtil.newUUID());
-        allUniquePatientFields.add(entity);
+        allUniquePatientFields.addOrReplace(entity);
         super.add(entity);
+    }
+
+    @Override
+    public void update(Patient entity) {
+        allUniquePatientFields.addOrReplace(entity);
+        super.update(entity);
     }
 
     @Override

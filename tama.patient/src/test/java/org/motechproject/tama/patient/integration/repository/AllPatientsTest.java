@@ -101,7 +101,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldUpdatePatientWhenPatientWithPatientIdAndClinicIdAlreadyExists() {
+    public void addToClinicShouldUpdatePatientWhenPatientWithPatientIdAndClinicIdAlreadyExists() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         allClinics.add(clinic);
         markForDeletion(clinic);
@@ -124,6 +124,35 @@ public class AllPatientsTest extends SpringIntegrationTest {
         allPatients.addToClinic(similarPatient, clinic.getId());
 
         assertEquals(patients.size(), allPatients.getAll().size());
+    }
+
+    @Test
+    public void shouldUpdatePatient() {
+        Clinic clinic1 = ClinicBuilder.startRecording().withDefaults().withName("clinic1").build();
+        allClinics.add(clinic1);
+        markForDeletion(clinic1);
+        Clinic clinic2 = ClinicBuilder.startRecording().withDefaults().withName("clinic2").build();
+        allClinics.add(clinic2);
+        markForDeletion(clinic2);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().
+                withGender(gender).
+                withIVRLanguage(ivrLanguage).
+                withPatientId("12345678").
+                withClinic(clinic1).build();
+        allPatients.addToClinic(patient, clinic1.getId());
+
+        Patient similarPatient = PatientBuilder.startRecording().withDefaults().
+                withGender(gender).
+                withIVRLanguage(ivrLanguage).
+                withPatientId("12345678").
+                withId(patient.getId()).
+                withRevision(patient.getRevision()).
+                withClinic(clinic2).build();
+        allPatients.update(similarPatient);
+
+        Patient patientFromDb = allPatients.get(patient.getId());
+        assertEquals("clinic2", patientFromDb.getClinic().getName());
     }
 
     @Test
