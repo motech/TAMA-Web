@@ -26,10 +26,10 @@ public class WeeklyVoiceMessageResponseFactoryTest {
     }
 
     @Test
-    public void shouldReturnSignatureMusic() {
+    public void shouldReturnPlayTexts() {
         weeklyVoiceMessageResponseFactory.buildVoiceMessageResponse(null, null, null, ivrResponseBuilder);
 
-        assertEquals(1, ivrResponseBuilder.getPlayAudios().size());
+        assertEquals(1, ivrResponseBuilder.getPlayTexts().size());
         verify(voiceMessageResponseFactory).registerOutboxFactory(CallPreference.FourDayRecall, weeklyVoiceMessageResponseFactory);
     }
 }

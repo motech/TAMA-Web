@@ -3,7 +3,6 @@ package org.motechproject.tama.fourdayrecall.factory;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
-import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.tama.outbox.factory.OutboxMessageFactory;
 import org.motechproject.tama.outbox.factory.VoiceMessageResponseFactory;
@@ -20,6 +19,6 @@ public class WeeklyVoiceMessageResponseFactory implements OutboxMessageFactory {
     }
 
     public void buildVoiceMessageResponse(KooKooIVRContext kooKooIVRContext, OutboxContext outboxContext, OutboundVoiceMessage outboundVoiceMessage, KookooIVRResponseBuilder ivrResponseBuilder) {
-        ivrResponseBuilder.withPlayAudios(TamaIVRMessage.SIGNATURE_MUSIC);
+        ivrResponseBuilder.withPlayTexts("This is your outbox message");
     }
 }
