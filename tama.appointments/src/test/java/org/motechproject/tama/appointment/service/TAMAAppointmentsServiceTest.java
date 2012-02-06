@@ -1,4 +1,4 @@
-package org.motechproject.tama.appointment;
+package org.motechproject.tama.appointment.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;

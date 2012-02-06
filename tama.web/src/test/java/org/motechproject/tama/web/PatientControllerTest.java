@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.tama.appointment.service.TAMAAppointmentsService;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.facility.repository.AllClinics;
@@ -84,11 +85,13 @@ public class PatientControllerTest {
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
     @Mock
     private ResumeFourDayRecallService resumeFourDayRecallService;
+    @Mock
+    private TAMAAppointmentsService tamaAppointmentsService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, 28);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, tamaAppointmentsService, 28);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 
@@ -124,6 +127,18 @@ public class PatientControllerTest {
 
     @Test
     public void shouldActivatePatientsAndRedirectToPatientViewPage() {
+        final DateTime now = DateTime.now();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(DateUtil.now().minusDays(2)).withActivationDate(now).build();
+
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID, now);
+        String nextPage = controller.activate(PATIENT_ID, request);
+
+        verify(tamaAppointmentsService).scheduleAppointments(PATIENT_ID, now);
+    }
+
+    @Test
+    public void shouldActivatePatientsAndCreateAppointments() {
         String nextPage = controller.activate(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
