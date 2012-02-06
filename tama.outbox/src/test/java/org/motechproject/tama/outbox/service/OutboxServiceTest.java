@@ -94,7 +94,7 @@ public class OutboxServiceTest {
         outboxService.enroll(patient);
 
         verify(patientService).registerOutbox(outboxService);
-        verify(outboxSchedulerService, never()).scheduleOutboxJobs(patient);
+        verify(outboxSchedulerService).scheduleOutboxJobs(patient);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class OutboxServiceTest {
         outboxService.disEnroll(patient);
 
         verify(patientService).registerOutbox(outboxService);
-        verify(outboxSchedulerService, never()).unscheduleOutboxJobs(patient);
+        verify(outboxSchedulerService).unscheduleOutboxJobs(patient);
     }
 
     @Test
