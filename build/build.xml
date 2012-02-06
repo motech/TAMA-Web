@@ -49,7 +49,7 @@
     </target>
 
     <target name="drop.all.dbs">
-        <for list="tama-web,motech-pillreminder,motech-alert,motech-ivr-kookoo,motech-outbox" param="db.name">
+        <for list="tama-web,motech-pillreminder,motech-alert,motech-ivr-kookoo,motech-outbox,motech-appointments" param="db.name">
             <sequential>
                 <exec executable="curl">
                     <arg value="-s"/>

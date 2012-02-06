@@ -17,9 +17,9 @@
         <module>tama.fourdayrecall</module>
         <module>tama.symptomreporting</module>
         <module>tama.healthtips</module>
+        <module>tama.appointments</module>
         <module>tama.tools</module>
         <module>tama.web</module>
-        <module>tama.appointments</module>
     </modules>
     <name>tama-all</name>
     <repositories>
@@ -50,11 +50,6 @@
             <id>spring-maven-milestone</id>
             <name>Spring Maven Milestone Repository</name>
             <url>http://maven.springframework.org/milestone</url>
-        </repository>
-        <repository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
         <repository>
             <id>repository.jboss.org</id>
