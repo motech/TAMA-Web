@@ -1,31 +1,25 @@
 package org.motechproject.tama.fourdayrecall.listener;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.builder.FourDayRecallEventPayloadBuilder;
-import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
-import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.fourdayrecall.service.WeeklyAdherenceLogService;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.domain.TimeMeridiem;
+import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
-import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -33,80 +27,59 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class FourDayRecallListenerTest {
 
     public static final String PATIENT_ID = "patientId";
-    public static final String TREATMENT_ADVICE_ID = "TA_ID";
 
-    @Mock
-    FourDayRecallSchedulerService fourDayRecallSchedulerService;
     @Mock
     IVRCall ivrCall;
     @Mock
+    FourDayRecallSchedulerService fourDayRecallSchedulerService;
+    @Mock
     FourDayRecallAlertService fourDayRecallAlertService;
     @Mock
-    AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
+    FourDayRecallAdherenceService fourDayRecallAdherenceService;
     @Mock
     AllPatients allPatients;
     @Mock
-    AllTreatmentAdvices allTreatmentAdvices;
-    @Mock
-    private TreatmentAdvice treatmentAdvice;
-    @Mock
     private WeeklyAdherenceLogService weeklyAdherenceLogService;
 
-    FourDayRecallListener fourDayRecallListener;
+    private FourDayRecallListener fourDayRecallListener;
     private Patient patient;
 
     @Before
     public void setUp() {
         initMocks(this);
-        when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(treatmentAdvice);
-        when(treatmentAdvice.getId()).thenReturn(TREATMENT_ADVICE_ID);
-        when(treatmentAdvice.getStartDate()).thenReturn(DateUtil.today().toDate());
-
-        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAlertService, new FourDayRecallDateService(), allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, weeklyAdherenceLogService);
+        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAlertService, fourDayRecallAdherenceService, allPatients, weeklyAdherenceLogService);
     }
 
     @Test
-    public void shouldMakeCallWhenNoLogExistsForCurrentWeek() {
-        LocalDate startDate = DateUtil.today();
+    public void shouldMakeCallWhen_AdherenceHasNotBeenCapturedForCurrentWeek() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        when(treatmentAdvice.getStartDate()).thenReturn(startDate.toDate());
-
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(false);
         fourDayRecallListener.handle(motechEvent);
 
         verify(ivrCall).makeCall(patient);
     }
 
     @Test
-    public void shouldMakeCallWhenLogForCurrentWeekHasNotRespondedStatus(){
-        LocalDate startDate = DateUtil.today();
+    public void shouldNotMakeCallWhen_AdherenceHasBeenCapturedForCurrentWeek() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        when(treatmentAdvice.getStartDate()).thenReturn(startDate.toDate());
-
-        WeeklyAdherenceLog log = new WeeklyAdherenceLog();
-        log.setNotResponded(true);
-
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(Matchers.<Patient>any(), Matchers.<TreatmentAdvice>any(), Matchers.<LocalDate>any())).thenReturn(log);
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(true);
         fourDayRecallListener.handle(motechEvent);
 
-        verify(ivrCall).makeCall(patient);
+        verify(ivrCall, times(0)).makeCall(patient);
     }
 
     @Test
     public void shouldScheduleRetryCallsOnFirstCall() {
-        LocalDate startDate = DateUtil.today();
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, true);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        setupLogsForWeek(patient, false);
-        when(treatmentAdvice.getStartDate()).thenReturn(startDate.toDate());
-
         fourDayRecallListener.handle(motechEvent);
 
         verify(ivrCall).makeCall(patient);
@@ -125,7 +98,6 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldNotScheduleRetryCallsIfAdherenceIsAlreadyCaptured() {
-        setupLogsForWeek(patient, true);
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
         fourDayRecallListener.handle(motechEvent);
 
@@ -143,12 +115,11 @@ public class FourDayRecallListenerTest {
     }
 
     @Test
-    public void shouldRaiseAdherenceFallingAlertWhenThereIsALogForThisWeek() {
-        boolean isLastRetry;
+    public void shouldRaiseAdherenceFallingAlertWhen_AdherenceCapturedForThisWeek() {
         setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false, false);
-        setupLogsForWeek(patient, true);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(true);
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
         verify(fourDayRecallAlertService).raiseAdherenceFallingAlert(PATIENT_ID);
@@ -156,22 +127,19 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldNotRaiseAlertsWhenThereIsNoLogForTheWeek() {
-        boolean isLastRetry;
         setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false, false);
-        setupLogsForWeek(patient, false);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
         verifyZeroInteractions(fourDayRecallAlertService);
     }
 
     @Test
-    public void shouldRaiseRedAlertWhenThereIsALogForThisWeek() {
-        boolean isLastRetry;
+    public void shouldRaiseRedAlertWhen_AdherenceIsCapturedForTheCurrentWeek() {
         setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false, false);
-        setupLogsForWeek(patient, true);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(true);
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
         verify(fourDayRecallAlertService).raiseAdherenceInRedAlert(PATIENT_ID);
@@ -179,9 +147,8 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldRaiseAdherenceFallingAlertOnLastRetryDay() {
-        boolean isLastRetry;
         setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = true, false);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, true, false);
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
@@ -191,9 +158,8 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldRaiseRedAlertOnLastRetryDay() {
-        boolean isLastRetry;
         setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = true, false);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, true, false);
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
@@ -202,10 +168,8 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldRaiseAdherenceFallingAlertOnlyOnceForTheCurrentWeek() {
-        boolean isLastRetry;
         setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false, false);
-        setupLogsForWeek(patient, true);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
         when(fourDayRecallAlertService.hasAdherenceFallingAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
@@ -215,12 +179,11 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldRaiseRedAlertOnlyOnceForTheCurrentWeek() {
-        boolean isLastRetry;
         setUpPatientWithDefaults();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false, false);
-        setupLogsForWeek(patient, true);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
         when(fourDayRecallAlertService.hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID)).thenReturn(true);
 
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(true);
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
         verify(fourDayRecallAlertService).hasAdherenceInRedAlertBeenRaisedForCurrentWeek(PATIENT_ID);
@@ -229,10 +192,9 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldNotRaiseAlertsForASuspendedPatient() {
-        boolean isLastRetry;
         setUpPatientWithDefaults();
         patient.setStatus(Status.Suspended);
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, isLastRetry = false, false);
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
         fourDayRecallListener.handleWeeklyFallingAdherenceAndRedAlert(motechEvent);
 
@@ -241,93 +203,73 @@ public class FourDayRecallListenerTest {
 
     @Test
     public void shouldCreateLogWithNotRespondedStatusOnFirstCall() {
-        LocalDate startDate = DateUtil.today();
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, true);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         fourDayRecallListener.handle(motechEvent);
-        verify(weeklyAdherenceLogService).createNotRespondedLog(same(patient.getId()),anyInt());
+        verify(weeklyAdherenceLogService).createNotRespondedLog(same(patient.getId()));
     }
 
     @Test
-    public void shouldNotCreateLogWithNotRespondedStatusOnRepeatCalls(){
-        LocalDate startDate = DateUtil.today();
+    public void shouldNotCreateLogWithNotRespondedStatusOnRepeatCalls() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         fourDayRecallListener.handle(motechEvent);
-        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()),anyInt());
+        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()));
     }
 
     @Test
     public void shouldNotCreateLogWithNotRespondedStatusOnRetryCalls() {
-        LocalDate startDate = DateUtil.today();
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(true, false, false);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         fourDayRecallListener.handle(motechEvent);
-        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()),anyInt());
+        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()));
     }
 
     @Test
     public void shouldNotCreateLogWithNotRespondedStatusIfPatientIsInActive() {
-        LocalDate startDate = DateUtil.today();
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Inactive).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         fourDayRecallListener.handle(motechEvent);
-        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()),anyInt());
+        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()));
     }
 
     @Test
     public void shouldNotCreateLogWithNotRespondedStatusIfAdherenceRecorded() {
-        LocalDate startDate = DateUtil.today();
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-
-        when(treatmentAdvice.getStartDate()).thenReturn(startDate.toDate());
-        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog();
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(Matchers.<Patient>any(), Matchers.<TreatmentAdvice>any(), Matchers.<LocalDate>any())).thenReturn(weeklyAdherenceLog);
-
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(true);
         fourDayRecallListener.handle(motechEvent);
-        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()),anyInt());
+
+        verify(weeklyAdherenceLogService, never()).createNotRespondedLog(same(patient.getId()));
     }
 
     @Test
     public void shouldMakeCallWhenFirstCallFlagIsNotSet() {
-        LocalDate startDate = DateUtil.today();
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         FourDayRecallEventPayloadBuilder dataBuilder = new FourDayRecallEventPayloadBuilder()
                 .withJobId("job_id")
-                .withPatientDocId(PATIENT_ID)
-                ;//.withFirstCall(false);
+                .withPatientDocId(PATIENT_ID);//.withFirstCall(false);
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, dataBuilder.payload());
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        when(treatmentAdvice.getStartDate()).thenReturn(startDate.toDate());
 
         fourDayRecallListener.handle(motechEvent);
 
         verify(ivrCall).makeCall(patient);
-    }
-
-    private void setupLogsForWeek(Patient patient, boolean hasLogs) {
-        WeeklyAdherenceLog log;
-        if (hasLogs)
-            log = new WeeklyAdherenceLog();
-        else
-            log = null;
-        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(eq(patient), eq(treatmentAdvice), Matchers.<LocalDate>any())).thenReturn(log);
     }
 
     private void setUpPatientWithDefaults() {

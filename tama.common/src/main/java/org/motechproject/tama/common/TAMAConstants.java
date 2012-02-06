@@ -12,23 +12,22 @@ public class TAMAConstants {
     public static final String ACCEPTABLE_ADHERENCE_PERCENTAGE = "acceptable.adherence.percentage";
     public static final String MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY = "min.number.of.days.on.daily.before.transitioning.to.weekly";
     public static final String PILL_WINDOW = "pill.window.hrs";
-    public static final String REMINDER_LAG = "reminder.lag.mins";
     public static final String DOSAGE_INTERVAL = "dosage.interval";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
     public static final String PERCENTAGE_FORMAT = "%2.2f%%";
-    public static final int DAYS_IN_FOUR_WEEKS = 28;
     public static final String BASE_SUBJECT = "org.motechproject.server";
     public static final String ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT = BASE_SUBJECT + ".adherence.weeklyTrendFeedback";
     public static final String OUTBOX_CALL_SCHEDULER_SUBJECT = BASE_SUBJECT + ".outboxCall";
     public static final String FOUR_DAY_RECALL_SUBJECT = BASE_SUBJECT + ".fourDayRecall";
     public static final String WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT = BASE_SUBJECT + ".weekly.fallingTrend.and.adherenceInRed.alert";
     public static final String OUT_BOX_CALL_RETRY_INTERVAL = "retry.interval.mins";
-    public static final int NO_ALERT_PRIORITY = 0;
     public static final String DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT = BASE_SUBJECT + ".daily.adherenceInRed.alert";
     public static final String ADHERENCE_IN_RED_ALERT = "Adherence in Red";
     public static final String FALLING_ADHERENCE = "Falling Adherence";
     public static final String VOICE_MESSAGE_COMMAND_AUDIO = "AudioCommand";
     public static final String VOICE_MESSAGE_COMMAND = "command";
+    public static final int NO_ALERT_PRIORITY = 0;
+    public static final int DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL = 4;
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),

@@ -1,7 +1,9 @@
 package org.motechproject.tama.fourdayrecall.service;
 
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
@@ -11,6 +13,7 @@ import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,17 +54,23 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         for(WeeklyAdherenceLog log: weeklyAdherenceLogs){
             AdherenceSummaryForAWeek adherenceSummaryForAWeek = new AdherenceSummaryForAWeek();
             adherenceSummaryForAWeek.setWeekStartDate(log.getWeekStartDate().toDateTime(new LocalTime(0, 0, 0)));
-            adherenceSummaryForAWeek.setTaken(fourDayRecallDateService.DAYS_TO_RECALL - log.getNumberOfDaysMissed());
-            adherenceSummaryForAWeek.setTotal(fourDayRecallDateService.DAYS_TO_RECALL);
+            adherenceSummaryForAWeek.setTaken(TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL - log.getNumberOfDaysMissed());
+            adherenceSummaryForAWeek.setTotal(TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL);
             adherenceSummaryForAWeek.setPercentage(adherencePercentageFor(log.getNumberOfDaysMissed()));
             weeklyAdherenceSummariesForAWeek.add(adherenceSummaryForAWeek);
         }
         return weeklyAdherenceSummariesForAWeek;
     }
 
+    public boolean isAdherenceCapturedForCurrentWeek(Patient patient) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        LocalDate startDateForWeek = fourDayRecallDateService.treatmentWeekStartDate(DateUtil.today(), patient, treatmentAdvice);
+        WeeklyAdherenceLog log = allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, startDateForWeek);
+        return log != null && !log.getNotResponded();
+    }
 
     public int adherencePercentageFor(int numDaysMissed) {
-        return (fourDayRecallDateService.DAYS_TO_RECALL - numDaysMissed) * 100 / fourDayRecallDateService.DAYS_TO_RECALL;
+        return (TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL - numDaysMissed) * 100 / TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL;
     }
 
     protected int adherencePercentageFor(WeeklyAdherenceLog weeklyAdherenceLog) throws NoAdherenceRecordedException {

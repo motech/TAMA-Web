@@ -5,6 +5,7 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.util.DateUtil;
@@ -15,7 +16,6 @@ import static org.motechproject.tama.patient.util.CallPlanUtil.callPlanStartDate
 @Service
 public class FourDayRecallDateService {
 
-    public final int DAYS_TO_RECALL = 4;
 
     public LocalDate treatmentWeekStartDate(LocalDate date, TreatmentAdvice treatmentAdvice) {
         DayOfWeek treatmentAdviceStartDay = DayOfWeek.getDayOfWeek(DateUtil.newDate(treatmentAdvice.getStartDate()));
@@ -40,7 +40,7 @@ public class FourDayRecallDateService {
 
     public DateTime nextRecallOn(LocalDate weekStartDate, Patient patient) {
         Time bestCallTime = patient.getPatientPreferences().getBestCallTime().toTime();
-        LocalDate recallDate = weekStartDate.plusDays(DAYS_TO_RECALL);
+        LocalDate recallDate = weekStartDate.plusDays(TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL);
         while (recallDate.getDayOfWeek() != patient.getPatientPreferences().getDayOfWeeklyCall().getValue()) {
             recallDate = recallDate.plusDays(1);
         }

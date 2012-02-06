@@ -63,7 +63,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnMapOfWeekStartDateAndAdherencePercentageOverTime(){
+    public void shouldReturnMapOfWeekStartDateAndAdherencePercentageOverTime() {
         LocalDate tuesday = new LocalDate(2012, 01, 03);
         LocalDate nextTuesday = new LocalDate(2012, 01, 10);
         WeeklyAdherenceLog threeDaysMissed = new WeeklyAdherenceLog("patientId", null, tuesday, null, 3);
@@ -102,7 +102,7 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
         assertFalse(fourDayRecallAdherenceService.wasAnyDoseMissedLastWeek(patient));
     }
 
-    @Test(expected= NoAdherenceRecordedException.class)
+    @Test(expected = NoAdherenceRecordedException.class)
     public void shouldRaiseExceptionWhenAdherenceLogDoesNotExist() throws NoAdherenceRecordedException {
         when(weeklyAdherenceLogService.get("patientId", 0)).thenReturn(null);
         fourDayRecallAdherenceService.getAdherencePercentageForCurrentWeek("patientId");
@@ -179,6 +179,42 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
             }
         };
         assertTrue(fourDayRecallService.isAdherenceFalling(numberOfDaysMissed, testPatientId));
+    }
+
+    @Test
+    public void shouldReturnTrue_WhenAdherenceIsCapturedForCurrentWeek() {
+        final Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Thursday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        final TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(today.minusWeeks(2)).build();
+        final LocalDate treatmentWeekStartDate = today.minusWeeks(1);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
+        final WeeklyAdherenceLog log = new WeeklyAdherenceLog() {{
+            setNotResponded(false);
+        }};
+        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, treatmentWeekStartDate)).thenReturn(log);
+        assertTrue(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient));
+    }
+
+    @Test
+    public void shouldReturnFalse_WhenAdherenceIsNotCapturedForCurrentWeek() {
+        final Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Thursday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        final TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(today.minusWeeks(2)).build();
+        final LocalDate treatmentWeekStartDate = today.minusWeeks(1);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
+        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, treatmentWeekStartDate)).thenReturn(null);
+        assertFalse(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient));
+    }
+
+    @Test
+    public void shouldReturnFalse_WhenLogStatusIsSetAsNotResponded() {
+        final Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Thursday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
+        final TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(today.minusWeeks(2)).build();
+        final LocalDate treatmentWeekStartDate = today.minusWeeks(1);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
+        final WeeklyAdherenceLog log = new WeeklyAdherenceLog() {{
+            setNotResponded(true);
+        }};
+        when(allWeeklyAdherenceLogs.findLogsByWeekStartDate(patient, treatmentAdvice, treatmentWeekStartDate)).thenReturn(log);
+        assertFalse(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient));
     }
 
 }
