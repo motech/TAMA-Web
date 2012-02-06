@@ -22,7 +22,7 @@
     <div>
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
-                <table>
+                <table id="dailyAdherenceOverTimeChartLegend" style="display: none;">
                     <tr>
                         <td>Legend</td>
                         <td class="legendColor red"></td>
@@ -39,7 +39,7 @@
                     <div id="dailyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"/>
                 </div>
 
-                <table style="margin: 20px 0px">
+                <table id="weeklyAdherenceOverTimeChartLegend" style="margin: 20px 0px; display: none;">
                     <tr>
                         <td>Legend</td>
                         <td class="legendColor red"></td>

@@ -10,8 +10,8 @@
     <spring:url value="/resources/styles/create-patient.css" var="create_patient_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"></link>
 
-    <c:if test="${patientCreateError != null}">
-        <div class="errorBanner"> <c:out value="${patientCreateError}"/> </div>
+    <c:if test="${patientInsertError != null}">
+        <div class="errorBanner"> <c:out value="${patientInsertError}"/> </div>
     </c:if>
 
     <form:create id="fc_org_motechproject_tama_domain_patient" modelAttribute="patient" path="/patients" render="${empty dependencies}" z="HkT/39qeIawAHTgF7FpZDeoTr94=">

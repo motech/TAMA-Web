@@ -153,6 +153,7 @@ AdherenceOverTimeChartWidget.prototype = {
         this.chartRenderer.addSeries("Taken ", adherencePerWeekData.takenDoseValues(this.adherenceSummaryType));
         this.chartRenderer.addSeries("Total", adherencePerWeekData.totalDoseValues(this.adherenceSummaryType));
         this.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
+        this.displayLegend();
     },
 
     resizeAndRenderChart: function(numberOfWeeks){
@@ -160,6 +161,11 @@ AdherenceOverTimeChartWidget.prototype = {
         var width = numberOfWeeks > 20 ? numberOfWeeks * 25 : 800;
         var height = this.maxY > 10 ? 350 : 250;
         this.chartRenderer.resize(width, height);
+    },
+
+    displayLegend : function(){
+        var legend = dojo.byId(this.targetDivId + "Legend");
+        legend.style.display="";
     },
 
     xAxisOptions : function(adherencePerWeekData){

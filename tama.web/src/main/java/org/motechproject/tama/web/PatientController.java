@@ -65,8 +65,8 @@ public class PatientController extends BaseController {
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
     public static final String CLINIC_AND_PATIENT_ID_ALREADY_IN_USE = "Sorry, the entered patient-id already in use.";
     private static final String PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE = "Sorry, the entered combination of phone number and TAMA-PIN is already in use.";
-    public static final String PATIENT_CREATE_ERROR_KEY = "patientCreateError";
-    private static final String PATIENT_CREATE_ERROR = "Sorry, there was an error while creating the patient. Please try again.";
+    public static final String PATIENT_INSERT_ERROR_KEY = "patientInsertError";
+    private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
     private AllPatients allPatients;
     private AllClinics allClinics;
     private AllGenders allGenders;
@@ -193,27 +193,6 @@ public class PatientController extends BaseController {
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
-    private void decorateViewWithUniqueConstraintError(Patient patient, BindingResult bindingResult, Model uiModel, RuntimeException e) {
-        String message = e.getMessage();
-        if (message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)) {
-            bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
-                    new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
-        } else if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
-            bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
-                    new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
-        } else {
-            bindingResult.addError(new ObjectError("Patient", ""));
-            uiModel.addAttribute(PATIENT_CREATE_ERROR_KEY, PATIENT_CREATE_ERROR);
-        }
-        initUIModel(uiModel, patient);
-    }
-
-    private void initUIModel(Model uiModel, Patient patient) {
-        uiModel.addAttribute(PATIENT, patient);
-        populateModel(uiModel);
-        addDateTimeFormat(uiModel);
-    }
-
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
@@ -233,12 +212,7 @@ public class PatientController extends BaseController {
             patientService.update(patient);
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
-            String message = e.getMessage();
-            if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
-                bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
-                        new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
-            }
-            initUIModel(uiModel, patient);
+            decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
             return UPDATE_VIEW;
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
@@ -253,6 +227,27 @@ public class PatientController extends BaseController {
             return redirectToListPatientsPage(request);
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
+    }
+
+    private void decorateViewWithUniqueConstraintError(Patient patient, BindingResult bindingResult, Model uiModel, RuntimeException e) {
+        String message = e.getMessage();
+        if (message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)) {
+            bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
+                    new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
+        } else if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
+            bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
+                    new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
+        } else {
+            bindingResult.addError(new ObjectError("Patient", ""));
+            uiModel.addAttribute(PATIENT_INSERT_ERROR_KEY, PATIENT_INSERT_ERROR);
+        }
+        initUIModel(uiModel, patient);
+    }
+
+    private void initUIModel(Model uiModel, Patient patient) {
+        uiModel.addAttribute(PATIENT, patient);
+        populateModel(uiModel);
+        addDateTimeFormat(uiModel);
     }
 
     private String redirectToListPatientsPage(HttpServletRequest request) {
