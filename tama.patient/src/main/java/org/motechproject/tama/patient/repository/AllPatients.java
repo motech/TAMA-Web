@@ -81,11 +81,8 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         return patients;
     }
 
-    @View(name = "find_by_mobile_number_and_passcode", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber && doc.patientPreferences.passcode) {emit([doc.mobilePhoneNumber, doc.patientPreferences.passcode], doc._id);}}")
     public Patient findByMobileNumberAndPasscode(String phoneNumber, String passcode) {
-        ComplexKey key = ComplexKey.of(phoneNumber, passcode);
-        ViewQuery q = createQuery("find_by_mobile_number_and_passcode").key(key).includeDocs(true);
-        List<Patient> patients = db.queryView(q, Patient.class);
+        List<Patient> patients = findAllByMobileNumberAndPasscode(phoneNumber, passcode);
         Patient patient = singleResult(patients);
         loadPatientDependencies(patient);
         return patient;
@@ -123,7 +120,19 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
 
     public void addToClinic(Patient patient, String clinicId) {
         patient.setClinic_id(clinicId);
-        addOrReplace(patient, "patientId", patient.getPatientId());
+        addOrReplace(patient);
+    }
+
+    public void addOrReplace(Patient patient){
+        List<Patient> patientsInDb = findAllByMobileNumberAndPasscode(patient.getMobilePhoneNumber(), patient.getPatientPreferences().getPasscode());
+        Patient patientInDb = singleResult(patientsInDb);
+        if (patientInDb == null){
+            add(patient);
+        } else {
+            patient.setId(patientInDb.getId());
+            patient.setRevision(patientInDb.getRevision());
+            update(patient);
+        }
     }
 
     @Override
@@ -150,6 +159,13 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         Patient patient = super.get(id);
         loadPatientDependencies(patient);
         return patient;
+    }
+
+    @View(name = "find_by_mobile_number_and_passcode", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber && doc.patientPreferences.passcode) {emit([doc.mobilePhoneNumber, doc.patientPreferences.passcode], doc._id);}}")
+    private List<Patient> findAllByMobileNumberAndPasscode(String phoneNumber, String passcode) {
+        ComplexKey key = ComplexKey.of(phoneNumber, passcode);
+        ViewQuery q = createQuery("find_by_mobile_number_and_passcode").key(key).includeDocs(true);
+        return db.queryView(q, Patient.class);
     }
 
     private void loadPatientDependencies(Patient patient) {

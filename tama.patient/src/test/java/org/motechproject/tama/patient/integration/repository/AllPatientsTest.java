@@ -4,9 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.common.util.UniqueMobileNumber;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
@@ -26,17 +24,16 @@ import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.ExpectedException;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
@@ -101,7 +98,36 @@ public class AllPatientsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void addToClinicShouldUpdatePatientWhenPatientWithPatientIdAndClinicIdAlreadyExists() {
+    public void addToClinicShouldAddPatient_WhenPatientWithSamePhoneNumberAndPasscode_DoesNotExists() {
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        allClinics.add(clinic);
+        markForDeletion(clinic);
+
+        Patient patient_1 = PatientBuilder.startRecording().withDefaults().
+                withGender(gender).
+                withIVRLanguage(ivrLanguage).
+                withPatientId("12345678").
+                withMobileNumber("1111111111").
+                withPasscode("2222").
+                withClinic(clinic).build();
+        allPatients.addToClinic(patient_1, clinic.getId());
+
+        Patient patient_2 = PatientBuilder.startRecording().withDefaults().
+                withGender(gender).
+                withIVRLanguage(ivrLanguage).
+                withPatientId("87654321").
+                withMobileNumber("3333333333").
+                withPasscode("2222").
+                withClinic(clinic).build();
+        allPatients.addToClinic(patient_2, clinic.getId());
+
+        assertEquals(2, allPatients.getAll().size());
+        assertNotNull(allPatients.get(patient_1.getId()));
+        assertNotNull(allPatients.get(patient_2.getId()));
+    }
+
+    @Test
+    public void addToClinicShouldUpdatePatient_WhenPatientWithSamePhoneNumberAndPasscode_Exists() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         allClinics.add(clinic);
         markForDeletion(clinic);
@@ -110,20 +136,23 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withGender(gender).
                 withIVRLanguage(ivrLanguage).
                 withPatientId("12345678").
+                withMobileNumber("1111111111").
+                withPasscode("2222").
                 withClinic(clinic).build();
         allPatients.addToClinic(patient, clinic.getId());
         List<Patient> patients = allPatients.getAll();
 
-        Patient similarPatient = PatientBuilder.startRecording().withDefaults().
+        Patient updatedPatient = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
                 withIVRLanguage(ivrLanguage).
-                withPatientId("12345678").
-                withId(patient.getId()).
-                withRevision(patient.getRevision()).
+                withPatientId("87654321").
+                withMobileNumber("1111111111").
+                withPasscode("2222").
                 withClinic(clinic).build();
-        allPatients.addToClinic(similarPatient, clinic.getId());
+        allPatients.addToClinic(updatedPatient, clinic.getId());
 
         assertEquals(patients.size(), allPatients.getAll().size());
+        assertEquals("87654321", allPatients.get(patient.getId()).getPatientId());
     }
 
     @Test
@@ -153,35 +182,6 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
         Patient patientFromDb = allPatients.get(patient.getId());
         assertEquals("clinic2", patientFromDb.getClinic().getName());
-    }
-
-    @Test
-    @ExpectedException(TamaException.class)
-    public void shouldNotAddPatientWithNonUniqueCombinationOfPhoneNumberAndPasscode() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
-        allClinics.add(clinic);
-        markForDeletion(clinic);
-
-        long mobileNumber = UniqueMobileNumber.generate();
-        Patient patient = PatientBuilder.startRecording().withDefaults().
-                withGender(gender).
-                withIVRLanguage(ivrLanguage).
-                withPatientId("rsa").
-                withClinic(clinic).
-                withMobileNumber(String.valueOf(mobileNumber)).
-                withPasscode("1703").
-                build();
-        allPatients.addToClinic(patient, clinic.getId());
-
-        Patient similarPatient = PatientBuilder.startRecording().withDefaults().
-                withGender(gender).
-                withIVRLanguage(ivrLanguage).
-                withPatientId("md5").
-                withClinic(clinic).
-                withMobileNumber(String.valueOf(mobileNumber)).
-                withPasscode("1703").
-                build();
-        allPatients.addToClinic(similarPatient, clinic.getId());
     }
 
     @Test
