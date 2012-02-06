@@ -105,7 +105,7 @@ public class TAMACallFlowControllerInboundCallTest {
 
     @Test
     public void whenSymptomReportingTreeIsComplete() {
-        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(true);
+        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.REGIMEN_1_TO_6);
         tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
         assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));

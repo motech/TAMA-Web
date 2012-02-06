@@ -109,7 +109,7 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.REGIMEN_1_TO_6);
 
         treeComplete(TAMATreeRegistry.REGIMEN_1_TO_6);
-        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(true);
+        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PRE_OUTBOX_URL);
     }
 
@@ -126,7 +126,7 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
 
         treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
-        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(true);
+        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PRE_OUTBOX_URL);
     }
 
@@ -147,7 +147,7 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER);
 
         treeComplete(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER);
-        when(outboxModuleStrategy.hasPendingOutboxMessages(any(String.class))).thenReturn(true);
+        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PRE_OUTBOX_URL);
     }
 

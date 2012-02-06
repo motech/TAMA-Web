@@ -66,12 +66,8 @@ public class TAMACallFlowController implements CallFlowController {
         if (callState.equals(CallState.OUTBOX)) return ControllerURLs.OUTBOX_URL;
         if (callState.equals(CallState.END_OF_FLOW)) return ControllerURLs.MENU_REPEAT;
         if (callState.equals(CallState.ALL_TREES_COMPLETED))
-            return hasPendingOutboxMessages(tamaivrContext) ? ControllerURLs.PRE_OUTBOX_URL : ControllerURLs.MENU_REPEAT;
+            return outboxModuleStrategy.shouldContinueToOutbox(tamaivrContext.patientDocumentId()) ? ControllerURLs.PRE_OUTBOX_URL : ControllerURLs.MENU_REPEAT;
         throw new TamaException("No URL found");
-    }
-
-    private boolean hasPendingOutboxMessages(TAMAIVRContext tamaivrContext) {
-        return outboxModuleStrategy.hasPendingOutboxMessages(tamaivrContext.patientDocumentId());
     }
 
     @Override

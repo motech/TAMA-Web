@@ -58,6 +58,10 @@ public class OutboxService implements Outbox {
         enroll(patient);
     }
 
+    public boolean hasPendingOutboxMessages(String patientDocumentId) {
+        return voiceOutboxService.getNumberPendingMessages(patientDocumentId) != 0;
+    }
+
     public void addMessage(String patientId) {
         OutboundVoiceMessage voiceMessage = new OutboundVoiceMessage();
         voiceMessage.setPartyId(patientId);

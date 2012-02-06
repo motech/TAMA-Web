@@ -1,26 +1,22 @@
 package org.motechproject.tama.outbox.context;
 
-import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.outbox.service.OutboxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OutboxStrategy extends OutboxModuleStrategy {
 
-    private AllPatients allPatients;
-    private VoiceOutboxService voiceOutboxService;
+    private OutboxService outboxService;
 
     @Autowired
-    public OutboxStrategy(AllPatients allPatients, TAMACallFlowController tamaCallFlowController, SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand, VoiceOutboxService voiceOutboxService) {
+    public OutboxStrategy(TAMACallFlowController tamaCallFlowController, SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand, OutboxService outboxService) {
         super(tamaCallFlowController, symptomAndOutboxMenuCommand);
-        this.allPatients = allPatients;
-        this.voiceOutboxService = voiceOutboxService;
+        this.outboxService = outboxService;
     }
 
     @Override
@@ -30,7 +26,7 @@ public class OutboxStrategy extends OutboxModuleStrategy {
     }
 
     @Override
-    public boolean hasPendingOutboxMessages(String patientId) {
-        return voiceOutboxService.getNumberPendingMessages(patientId) != 0;
+    public boolean shouldContinueToOutbox(String patientDocumentId) {
+        return outboxService.hasPendingOutboxMessages(patientDocumentId);
     }
 }

@@ -22,6 +22,7 @@ import org.motechproject.tama.patient.service.PatientService;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.Assert.assertFalse;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
@@ -108,6 +109,13 @@ public class OutboxServiceTest {
         final String patientId = "patientId";
         outboxService.addMessage(patientId);
         verify(voiceOutboxService).addMessage(Matchers.<OutboundVoiceMessage>any());
+    }
+
+    @Test
+    public void hasPendingOutboxMessages() {
+        final String patientDocId = "patientId";
+        when(voiceOutboxService.getNumberPendingMessages(patientDocId)).thenReturn(0);
+        assertFalse(outboxService.hasPendingOutboxMessages(patientDocId));
     }
 
     @Test
