@@ -38,7 +38,7 @@ public class AllUniquePatientFields extends AbstractCouchRepository<UniquePatien
         }
     }
 
-    public void addOrReplace(Patient patient) {
+    public void update(Patient patient) {
         List<UniquePatientField> oldUniquePatientFields = get(patient);
         remove(patient);
         try {

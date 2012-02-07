@@ -113,31 +113,19 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
 
     public void addToClinic(Patient patient, String clinicId) {
         patient.setClinic_id(clinicId);
-        addOrReplace(patient);
-    }
-
-    public void addOrReplace(Patient patient){
-        List<Patient> patientsInDb = findAllByMobileNumberAndPasscode(patient.getMobilePhoneNumber(), patient.getPatientPreferences().getPasscode());
-        Patient patientInDb = singleResult(patientsInDb);
-        if (patientInDb == null){
-            add(patient);
-        } else {
-            patient.setId(patientInDb.getId());
-            patient.setRevision(patientInDb.getRevision());
-            update(patient);
-        }
+        add(patient);
     }
 
     @Override
     public void add(Patient entity) {
         entity.setId(UUIDUtil.newUUID());
-        allUniquePatientFields.addOrReplace(entity);
+        allUniquePatientFields.add(entity);
         super.add(entity);
     }
 
     @Override
     public void update(Patient entity) {
-        allUniquePatientFields.addOrReplace(entity);
+        allUniquePatientFields.update(entity);
         super.update(entity);
     }
 

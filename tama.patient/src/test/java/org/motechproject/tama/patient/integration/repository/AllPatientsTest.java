@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
@@ -126,8 +127,8 @@ public class AllPatientsTest extends SpringIntegrationTest {
         assertNotNull(allPatients.get(patient_2.getId()));
     }
 
-    @Test
-    public void addToClinicShouldUpdatePatient_WhenPatientWithSamePhoneNumberAndPasscode_Exists() {
+    @Test(expected = TamaException.class)
+    public void addToClinicShouldThrowException_WhenPatientWithSamePhoneNumberAndPasscode_Exists() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         allClinics.add(clinic);
         markForDeletion(clinic);
@@ -150,9 +151,6 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withPasscode("2222").
                 withClinic(clinic).build();
         allPatients.addToClinic(updatedPatient, clinic.getId());
-
-        assertEquals(patients.size(), allPatients.getAll().size());
-        assertEquals("87654321", allPatients.get(patient.getId()).getPatientId());
     }
 
     @Test
