@@ -59,4 +59,8 @@ public class ClinicVisitService {
         clinicVisit.setVitalStatisticsId(vitalStatisticsId);
         allClinicVisits.update(clinicVisit);
     }
+
+    public List<ClinicVisit> getClinicVisits(String patientId) {
+        return allClinicVisits.find_by_patient_id(patientId);
+    }
 }

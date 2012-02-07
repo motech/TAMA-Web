@@ -10,11 +10,13 @@ import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.repository.AllClinicVisits;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,5 +91,14 @@ public class ClinicVisitServiceTest {
 
         verify(allClinicVisits).update(clinicVisit);
         assertEquals(newTreatmentAdviceId, clinicVisit.getTreatmentAdviceId());
+    }
+
+    @Test
+    public void shouldGetListOfClinicVisitsForPatient() throws Exception {
+        final String patientId = "patientId";
+        List<ClinicVisit> visitsInDb = Arrays.asList(ClinicVisit.createExpectedVisit(DateUtil.now(), patientId));
+        when(allClinicVisits.find_by_patient_id(patientId)).thenReturn(visitsInDb);
+        List<ClinicVisit> visits = clinicVisitService.getClinicVisits(patientId);
+        assertEquals(visitsInDb, visits);
     }
 }

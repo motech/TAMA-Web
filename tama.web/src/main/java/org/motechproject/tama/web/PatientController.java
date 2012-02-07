@@ -114,6 +114,7 @@ public class PatientController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
     public String activate(@PathVariable String id) {
         patientService.activate(id);
+        tamaAppointmentsService.scheduleAppointments(id, allPatients.get(id).getActivationDate());
         return REDIRECT_TO_LIST_VIEW;
     }
 
