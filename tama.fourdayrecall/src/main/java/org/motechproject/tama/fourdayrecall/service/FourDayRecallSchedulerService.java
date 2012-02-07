@@ -90,7 +90,7 @@ public class FourDayRecallSchedulerService {
             builder = (count == 0) ? builder.withFirstCall(true) : builder.withFirstCall(false);
 
             HashMap<String, Object> eventParams = builder.payload();
-            scheduleWeeklyEvent(getJobStartDate(startDate, patient, treatmentAdvice).plusDays(count).toDate(), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
+            scheduleWeeklyJob(getJobStartDate(startDate, patient, treatmentAdvice).plusDays(count).toDate(), getJobEndDate(treatmentAdvice), day, callTime, eventParams, TAMAConstants.FOUR_DAY_RECALL_SUBJECT);
         }
     }
 
@@ -109,16 +109,16 @@ public class FourDayRecallSchedulerService {
 
             if (count == daysToRetry) paramsBuilder.withLastRetryDayFlagSet();
 
-            scheduleWeeklyEvent(getJobStartDate(startDate, patient, treatmentAdvice).plusDays(count).toDate(), getJobEndDate(treatmentAdvice), eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT);
+            scheduleWeeklyJob(getJobStartDate(startDate, patient, treatmentAdvice).plusDays(count).toDate(), getJobEndDate(treatmentAdvice), eventDay, eventTime, paramsBuilder.payload(), TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT);
         }
     }
 
-    private void scheduleWeeklyEvent(Date jobStartDate, Date jobEndDate, DayOfWeek day, Time time, Map<String, Object> params, String eventName) {
+    private void scheduleWeeklyJob(Date jobStartDate, Date jobEndDate, DayOfWeek day, Time time, Map<String, Object> params, String eventName) {
         MotechEvent eventToFire = new MotechEvent(eventName, params);
         String cronExpression = new WeeklyCronJobExpressionBuilder(day).withTime(time).build();
 
         CronSchedulableJob cronJobForFourDayRecall = new CronSchedulableJob(eventToFire, cronExpression, jobStartDate, jobEndDate);
-        motechSchedulerService.scheduleJob(cronJobForFourDayRecall);
+        motechSchedulerService.safeScheduleJob(cronJobForFourDayRecall);
     }
 
     private DayOfWeek dayOfWeek(DayOfWeek dayOfWeek, int count) {

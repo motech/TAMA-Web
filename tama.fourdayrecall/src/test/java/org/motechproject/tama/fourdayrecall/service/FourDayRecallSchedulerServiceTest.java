@@ -63,7 +63,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 13);
@@ -83,7 +83,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 20);
@@ -103,7 +103,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 20);
@@ -123,7 +123,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 27);
@@ -143,7 +143,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 13);
@@ -163,7 +163,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 16);
@@ -183,7 +183,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 7);
@@ -203,7 +203,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 10);
@@ -223,7 +223,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> cronSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronSchedulableJobArgumentCaptor.capture());
         List<CronSchedulableJob> cronSchedulableJobList = cronSchedulableJobArgumentCaptor.getAllValues();
 
         LocalDate expectedFirstCallDate = new LocalDate(2012, 1, 17);
@@ -282,7 +282,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> cronJobForFourDayRecallArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronJobForFourDayRecallArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronJobForFourDayRecallArgumentCaptor.capture());
         CronSchedulableJob cronSchedulableJob = cronJobForFourDayRecallArgumentCaptor.getAllValues().get(0);
 
         assertTrue((Boolean) cronSchedulableJob.getMotechEvent().getParameters().get(FourDayRecallListener.FIRST_CALL));
@@ -296,7 +296,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
         schedulerService.scheduleFourDayRecallJobs(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> cronJobForFourDayRecallArgumentCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(6)).scheduleJob(cronJobForFourDayRecallArgumentCaptor.capture());
+        verify(motechSchedulerService, times(6)).safeScheduleJob(cronJobForFourDayRecallArgumentCaptor.capture());
         List<CronSchedulableJob> allValues = cronJobForFourDayRecallArgumentCaptor.getAllValues();
         System.out.println(Arrays.toString(allValues.toArray()));
         CronSchedulableJob cronSchedulableRepeatJob_1 = allValues.get(1);
