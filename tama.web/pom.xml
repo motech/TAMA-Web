@@ -360,6 +360,7 @@
                         <exclude>**/*_Roo_*</exclude>
                         <exclude>**/tamafunctional/**/*.java</exclude>
                         <exclude>**/tamaperformance/**/*.java</exclude>
+                        <exclude>**/tamaregression/**/*.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
