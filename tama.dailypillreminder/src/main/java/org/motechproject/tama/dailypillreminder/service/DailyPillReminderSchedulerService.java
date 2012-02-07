@@ -70,11 +70,11 @@ public class DailyPillReminderSchedulerService {
     }
 
     void unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(Patient patient) {
-        motechSchedulerService.unscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, patient.getId());
+        motechSchedulerService.safeUnscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, patient.getId());
     }
 
     void unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient) {
-        motechSchedulerService.unscheduleJob(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patient.getId());
+        motechSchedulerService.safeUnscheduleJob(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patient.getId());
     }
 
     private Date getJobStartDate(LocalDate startDate) {

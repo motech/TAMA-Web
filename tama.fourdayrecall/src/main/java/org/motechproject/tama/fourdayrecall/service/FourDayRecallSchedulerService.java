@@ -45,13 +45,13 @@ public class FourDayRecallSchedulerService {
     public void unscheduleFourDayRecallJobs(Patient patient) {
         Integer daysToRetry = Integer.valueOf(fourDayRecallProperties.getProperty(TAMAConstants.FOUR_DAY_RECALL_DAYS_TO_RETRY));
         for (int count = 0; count <= daysToRetry; count++) {
-            motechSchedulerService.unscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, count + patient.getId());
+            motechSchedulerService.safeUnscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, count + patient.getId());
         }
         motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, patient.getId());
 
         //The number of WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT jobs is not configurable. Three are scheduled one 3 successive days.
         for (int count = 0; count <= 2; count++) {
-            motechSchedulerService.unscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, count + patient.getId());
+            motechSchedulerService.safeUnscheduleJob(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, count + patient.getId());
         }
     }
 

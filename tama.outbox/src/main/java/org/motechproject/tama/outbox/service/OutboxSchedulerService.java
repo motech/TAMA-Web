@@ -62,6 +62,6 @@ public class OutboxSchedulerService {
     }
 
     private void unscheduleJobForOutboxCall(Patient patient) {
-        motechSchedulerService.unscheduleJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
+        motechSchedulerService.safeUnscheduleJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, patient.getId());
     }
 }

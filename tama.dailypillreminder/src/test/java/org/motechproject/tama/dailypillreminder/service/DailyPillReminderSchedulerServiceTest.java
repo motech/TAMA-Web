@@ -130,11 +130,19 @@ public class DailyPillReminderSchedulerServiceTest {
     }
 
     @Test
+    public void shouldUnscheduleJobForAdherenceTrendFeedbackForDailyPillReminder() {
+        final String patientId = "123456";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
+        schedulerService.unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient);
+        verify(motechSchedulerService).safeUnscheduleJob(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, patientId);
+    }
+
+    @Test
     public void shouldUnScheduleJobForDeterminingAdherenceQualityInDailyPillReminder() {
         final String patientId = "123456";
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
         schedulerService.unscheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient);
-        verify(motechSchedulerService).unscheduleJob(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patientId);
+        verify(motechSchedulerService).safeUnscheduleJob(TAMAConstants.DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT, patientId);
     }
 
     private void assertCronSchedulableJob(CronSchedulableJob cronSchedulableJob, String cronExpression, Date startTime, Date endTime) {
