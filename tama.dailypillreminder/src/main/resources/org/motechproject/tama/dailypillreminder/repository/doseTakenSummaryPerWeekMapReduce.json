@@ -1,5 +1,5 @@
 {
-"map" : "function getMonday(dateString) { var dateString = dateString.replace(/-/g, '/'); var date = new Date(dateString); var day = date.getDay(), diff = date.getDate() - day + (day == 0 ? -6:1); return new Date(date.setDate(diff)).toLocaleDateString(); }; function(doc) { if(doc.documentType == 'DosageAdherenceLog') { emit([doc.patientId, getMonday(doc.dosageDate)], {\"taken\":doc.dosageStatus==\"TAKEN\"?1:0, \"date\": getMonday(doc.dosageDate)}) } }",
+"map" : "function zeroPad(n) { return n>=10 ? n : '0'+n; }; function getMonday(dateString) { var dateString = dateString.replace(/-/g, '/'); var date = new Date(dateString); var day = date.getDay(), diff = date.getDate() - day + (day == 0 ? -6:1); var weekStartDate = new Date(date.setDate(diff)); return weekStartDate.getFullYear() + '-' + zeroPad(weekStartDate.getMonth()+1) + '-' + zeroPad(weekStartDate.getDate()); }; function(doc) { if(doc.documentType == 'DosageAdherenceLog') { emit([doc.patientId, getMonday(doc.dosageDate)], {\"taken\":doc.dosageStatus==\"TAKEN\"?1:0, \"date\": getMonday(doc.dosageDate)}) } }",
 "reduce" : "function (key, values) {var taken_array = values.map(function(elt) {return elt.taken}); return {\"weekStartDate\" : values[0].date, \"taken\":sum(taken_array), \"total\":values.length};}"
 }
 
