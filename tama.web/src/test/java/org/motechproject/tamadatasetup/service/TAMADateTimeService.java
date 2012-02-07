@@ -3,9 +3,9 @@ package org.motechproject.tamadatasetup.service;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import org.joda.time.DateTime;
 import org.motechproject.deliverytools.kookoo.QueryParams;
-import org.motechproject.tamafunctional.framework.FunctionalTestObject;
-import org.motechproject.tamafunctional.framework.MyWebClient;
-import org.motechproject.tamafunctional.framework.TamaUrl;
+import org.motechproject.tamafunctionalframework.framework.FunctionalTestObject;
+import org.motechproject.tamafunctionalframework.framework.MyWebClient;
+import org.motechproject.tamafunctionalframework.framework.TamaUrl;
 
 import static junit.framework.Assert.assertEquals;
 

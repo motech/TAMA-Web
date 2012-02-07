@@ -3,18 +3,18 @@ package org.motechproject.tamaperformance;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tamafunctional.framework.MyWebClient;
-import org.motechproject.tamafunctional.ivr.Caller;
-import org.motechproject.tamafunctional.test.ivr.BaseIVRTest;
-import org.motechproject.tamafunctional.testdata.OutboxCallInfo;
-import org.motechproject.tamafunctional.testdata.TestClinic;
-import org.motechproject.tamafunctional.testdata.TestClinician;
-import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.motechproject.tamafunctional.testdata.ivrreponse.IVRResponse;
-import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
-import org.motechproject.tamafunctional.testdataservice.ClinicDataService;
-import org.motechproject.tamafunctional.testdataservice.ClinicianDataService;
-import org.motechproject.tamafunctional.testdataservice.PatientDataService;
+import org.motechproject.tamafunctionalframework.framework.MyWebClient;
+import org.motechproject.tamafunctionalframework.ivr.BaseIVRTest;
+import org.motechproject.tamafunctionalframework.ivr.Caller;
+import org.motechproject.tamafunctionalframework.testdata.OutboxCallInfo;
+import org.motechproject.tamafunctionalframework.testdata.TestClinic;
+import org.motechproject.tamafunctionalframework.testdata.TestClinician;
+import org.motechproject.tamafunctionalframework.testdata.TestPatient;
+import org.motechproject.tamafunctionalframework.testdata.ivrreponse.IVRResponse;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
+import org.motechproject.tamafunctionalframework.testdataservice.ClinicDataService;
+import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
+import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
 
 import java.io.IOException;
@@ -27,8 +27,8 @@ import java.util.concurrent.Future;
 
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.equalTo;
-import static org.motechproject.tamafunctional.test.ivr.IVRAssert.asksForCollectDtmfWith;
-import static org.motechproject.tamafunctional.test.ivr.IVRAssert.assertAudioFilesPresent;
+import static org.motechproject.tamafunctionalframework.ivr.IVRAssert.asksForCollectDtmfWith;
+import static org.motechproject.tamafunctionalframework.ivr.IVRAssert.assertAudioFilesPresent;
 
 /**
  * How to Run : <pre> mvn -Dtest=org.motechproject.tamaperformance.IVRCallTest test </pre>

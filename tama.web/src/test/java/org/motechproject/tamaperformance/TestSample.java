@@ -1,10 +1,10 @@
 package org.motechproject.tamaperformance;
 
-import org.motechproject.tamafunctional.testdata.TestClinic;
-import org.motechproject.tamafunctional.testdata.TestClinician;
-import org.motechproject.tamafunctional.testdata.TestPatient;
-import org.motechproject.tamafunctional.testdata.treatmentadvice.TestDrugDosage;
-import org.motechproject.tamafunctional.testdata.treatmentadvice.TestTreatmentAdvice;
+import org.motechproject.tamafunctionalframework.testdata.TestClinic;
+import org.motechproject.tamafunctionalframework.testdata.TestClinician;
+import org.motechproject.tamafunctionalframework.testdata.TestPatient;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 
 import java.util.ArrayList;
 import java.util.List;

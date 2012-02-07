@@ -449,7 +449,7 @@
     </build>
     <profiles>
         <profile>
-            <id>functional-tests</id>
+            <id>smoke</id>
             <build>
                 <plugins>
                     <plugin>
@@ -458,33 +458,10 @@
                         <version>2.9</version>
                         <executions>
                             <execution>
-                                <id>serial-func-tests</id>
+                                <id>smoke</id>
                                 <goals>
                                     <goal>integration-test</goal>
-                                </goals>
-                                <configuration>
-                                    <argLine>-XX:MaxPermSize=1024M</argLine>
-                                    <systemProperties>
-                                        <property>
-                                            <name>jetty.port</name>
-                                            <value>${jetty.port}</value>
-                                        </property>
-                                        <property>
-                                            <name>test.driver</name>
-                                            <value>${test.driver}</value>
-                                        </property>
-                                    </systemProperties>
-                                    <runOrder>reversealphabetical</runOrder>
-                                    <includes>
-                                        <include>**/tamafunctional/**/serial/*Test.java</include>
-                                    </includes>
-                                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>parallel-func-tests</id>
-                                <goals>
-                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
                                 </goals>
                                 <configuration>
                                     <argLine>-XX:MaxPermSize=1024M</argLine>
@@ -503,10 +480,11 @@
                                     <threadCount>4</threadCount>
                                     <perCoreThreadCount>false</perCoreThreadCount>
                                     <includes>
-                                        <include>**/tamafunctional/**/*Test.java</include>
+                                        <include>**/tamasmoke/**/*.java</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>**/tamafunctional/**/serial/*Test.java</exclude>
+                                        <exclude>**/tamaregression/**/*.java</exclude>
+                                        <exclude>**/tamaperformance/**/*.java</exclude>
                                     </excludes>
                                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                                 </configuration>
@@ -517,7 +495,7 @@
             </build>
         </profile>
         <profile>
-            <id>regression-tests</id>
+            <id>regression</id>
             <build>
                 <plugins>
                     <plugin>
@@ -526,7 +504,7 @@
                         <version>2.9</version>
                         <executions>
                             <execution>
-                                <id>regression-tests</id>
+                                <id>serial-regression-tests</id>
                                 <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
@@ -545,13 +523,43 @@
                                     </systemProperties>
                                     <runOrder>reversealphabetical</runOrder>
                                     <includes>
-                                        <include>**/tamaregression/**/*Scenario.java</include>
+                                        <include>**/tamaregression/**/serial/*Test.java</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>**/**/*Test.java</exclude>
-                                        <exclude>**/**/*IT.java</exclude>
-                                        <exclude>**/tama/**/*.java</exclude>
-                                        <exclude>**/tamafunctional/**/*.java</exclude>
+                                        <exclude>**/tamasmoke/**/*Test.java</exclude>
+                                        <exclude>**/tamaperformance/**/*.java</exclude>
+                                    </excludes>
+                                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>parallel-regression-tests</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <argLine>-XX:MaxPermSize=1024M</argLine>
+                                    <systemProperties>
+                                        <property>
+                                            <name>jetty.port</name>
+                                            <value>${jetty.port}</value>
+                                        </property>
+                                        <property>
+                                            <name>test.driver</name>
+                                            <value>${test.driver}</value>
+                                        </property>
+                                    </systemProperties>
+                                    <runOrder>reversealphabetical</runOrder>
+                                    <parallel>classes</parallel>
+                                    <threadCount>4</threadCount>
+                                    <perCoreThreadCount>false</perCoreThreadCount>
+                                    <includes>
+                                        <include>**/tamaregression/**/*Test.java</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>**/tamaregression/**/serial/*Test.java</exclude>
+                                        <exclude>**/tamasmoke/**/*Test.java</exclude>
                                         <exclude>**/tamaperformance/**/*.java</exclude>
                                     </excludes>
                                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
