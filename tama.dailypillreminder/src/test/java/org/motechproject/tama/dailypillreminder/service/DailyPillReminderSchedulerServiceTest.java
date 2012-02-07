@@ -55,7 +55,7 @@ public class DailyPillReminderSchedulerServiceTest {
         schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient, treatmentAdvice);
 
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
+        verify(motechSchedulerService).safeScheduleJob(jobCaptor.capture());
         Assert.assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
     }
 
@@ -68,7 +68,7 @@ public class DailyPillReminderSchedulerServiceTest {
 
         schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient , treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService).scheduleJob(jobCaptor.capture());
+        verify(motechSchedulerService).safeScheduleJob(jobCaptor.capture());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class DailyPillReminderSchedulerServiceTest {
         schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
 
         final ArgumentCaptor<CronSchedulableJob> cronArgCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(1)).scheduleJob(cronArgCaptor.capture());
+        verify(motechSchedulerService, times(1)).safeScheduleJob(cronArgCaptor.capture());
 
         CronSchedulableJob jobScheduledWithParams = cronArgCaptor.getValue();
         final MotechEvent motechEventInScheduledJob = jobScheduledWithParams.getMotechEvent();
@@ -110,7 +110,7 @@ public class DailyPillReminderSchedulerServiceTest {
         schedulerService.scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(patient, advice);
 
         final ArgumentCaptor<CronSchedulableJob> cronArgCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
-        verify(motechSchedulerService, times(1)).scheduleJob(cronArgCaptor.capture());
+        verify(motechSchedulerService).safeScheduleJob(cronArgCaptor.capture());
 
         CronSchedulableJob jobScheduledWithParams = cronArgCaptor.getValue();
         final MotechEvent motechEventInScheduledJob = jobScheduledWithParams.getMotechEvent();

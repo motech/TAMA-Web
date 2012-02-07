@@ -49,7 +49,7 @@ public class DailyPillReminderSchedulerService {
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
         Date jobStartDate = startDate.toDate();
         CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, jobStartDate, treatmentAdvice.getEndDate());
-        motechSchedulerService.scheduleJob(adherenceJob);
+        motechSchedulerService.safeScheduleJob(adherenceJob);
     }
 
     void scheduleJobForDeterminingAdherenceQualityInDailyPillReminder(Patient patient, TreatmentAdvice treatmentAdvice) {
@@ -66,7 +66,7 @@ public class DailyPillReminderSchedulerService {
         CronJobSimpleExpressionBuilder cronJobSimpleExpressionBuilder = new CronJobSimpleExpressionBuilder(eventTime);
         CronSchedulableJob jobToDetermineAdherenceQuality = new CronSchedulableJob(eventToDetermineAdherenceInRed, cronJobSimpleExpressionBuilder.build(), jobStartDate, jobEndDate);
 
-        motechSchedulerService.scheduleJob(jobToDetermineAdherenceQuality);
+        motechSchedulerService.safeScheduleJob(jobToDetermineAdherenceQuality);
     }
 
     void unscheduleJobForAdherenceTrendFeedbackForDailyPillReminder(Patient patient) {
