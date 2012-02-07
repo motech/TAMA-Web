@@ -151,6 +151,7 @@ public class PatientController extends BaseController {
     public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         addDateTimeFormat(uiModel);
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
+        if (patient == null) return "authorizationFailure";
         String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
         uiModel.addAttribute(PATIENT, patient);
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
@@ -196,6 +197,7 @@ public class PatientController extends BaseController {
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
+        if (patient == null) return "authorizationFailure";
         initUIModel(uiModel, patient);
         uiModel.addAttribute("systemCategories", patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories());
         uiModel.addAttribute("canTransitionToWeekly", patient.canTransitionToWeekly(minNumberOfDaysOnDailyBeforeTransitioningToWeekly));

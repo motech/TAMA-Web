@@ -102,16 +102,9 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
     }
 
     public Patient findByIdAndClinicId(final String id, String clinicId) {
-        List<Patient> patients = findByClinic(clinicId);
-        if (patients == null) return null;
-        CollectionUtils.filter(patients, new Predicate() {
-            @Override
-            public boolean evaluate(Object o) {
-                Patient patient = (Patient) o;
-                return id.equals(patient.getId());
-            }
-        });
-        return singleResult(patients);
+        Patient patient = get(id);
+        if (!patient.getClinic_id().equals(clinicId)) return null;
+        return patient;
     }
 
     public String findClinicFor(Patient patient) {

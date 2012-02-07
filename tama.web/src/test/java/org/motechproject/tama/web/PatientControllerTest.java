@@ -113,6 +113,16 @@ public class PatientControllerTest {
     }
 
     @Test
+    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForShowAction(){
+        when(request.getSession()).thenReturn(session);
+        when(user.getClinicId()).thenReturn(CLINIC_ID);
+        when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
+
+        assertEquals("authorizationFailure", controller.show(PATIENT_ID, uiModel, request));
+        verify(allPatients).findByIdAndClinicId(PATIENT_ID, CLINIC_ID);
+    }
+
+    @Test
     public void shouldActivatePatientsAndRedirectToPatientViewPage() {
         String nextPage = controller.activate(PATIENT_ID, request);
 
@@ -260,6 +270,17 @@ public class PatientControllerTest {
         ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
         verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(PATIENT_ID), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(false));
         assertTimeIsNow(dateTimeArgumentCaptor.getValue());
+    }
+
+
+    @Test
+    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForUpdateFormAction(){
+        when(request.getSession()).thenReturn(session);
+        when(user.getClinicId()).thenReturn(CLINIC_ID);
+        when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
+
+        assertEquals("authorizationFailure", controller.updateForm(PATIENT_ID, uiModel, request));
+        verify(allPatients).findByIdAndClinicId(PATIENT_ID, CLINIC_ID);
     }
 
     private void assertTimeIsNow(DateTime endTime) {
