@@ -108,13 +108,14 @@ public class FourDayRecallListenerTest {
     }
 
     @Test
-    public void shouldNotMakeCallIfPatientIsSuspended_AndAdherenceIsNotCaptured() {
+    public void shouldMakeOutboxCallIfPatientIsSuspended() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
         fourDayRecallListener.handle(motechEvent);
-        Mockito.verifyZeroInteractions(ivrCall, outboxService, fourDayRecallAlertService);
+        verify(outboxService).call(patient, false);
+        Mockito.verifyZeroInteractions(ivrCall, fourDayRecallAlertService);
     }
 
     @Test

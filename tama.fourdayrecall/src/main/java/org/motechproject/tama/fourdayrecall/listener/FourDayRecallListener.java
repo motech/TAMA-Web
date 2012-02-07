@@ -53,11 +53,11 @@ public class FourDayRecallListener {
         if (patient != null) {
             try {
                 handleFirstCallOfDay(motechEvent, patient);
-                boolean adherenceCapturedForCurrentWeek = fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient);
-                if (adherenceCapturedForCurrentWeek) {
-                    outboxService.call(patient, false);
-                } else {
+                boolean adherenceNotCapturedForCurrentWeek = !fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient);
+                if (patient.allowAdherenceCalls() && adherenceNotCapturedForCurrentWeek) {
                     makeFourDayRecallCall(motechEvent, patient);
+                } else {
+                    outboxService.call(patient, false);
                 }
             } catch (Exception e) {
                 logger.error("Failed to handle FourDayRecall event, this event would not be retried but the subsequent repeats would happen.", e);
@@ -87,12 +87,10 @@ public class FourDayRecallListener {
     }
 
     private void makeFourDayRecallCall(MotechEvent motechEvent, Patient patient) {
-        if (patient.allowAdherenceCalls()) {
-            Boolean isVeryFirstCall = (Boolean) motechEvent.getParameters().get(FIRST_CALL);
-            if (isVeryFirstCall != null && isVeryFirstCall)
-                weeklyAdherenceLogService.createNotRespondedLog(patient.getId());
-            ivrCall.makeCall(patient);
-        }
+        Boolean isVeryFirstCall = (Boolean) motechEvent.getParameters().get(FIRST_CALL);
+        if (isVeryFirstCall != null && isVeryFirstCall)
+            weeklyAdherenceLogService.createNotRespondedLog(patient.getId());
+        ivrCall.makeCall(patient);
     }
 
     private boolean isLastRetryDay(MotechEvent motechEvent) {
