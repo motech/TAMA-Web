@@ -40,11 +40,6 @@ public class OutboxSchedulerService {
         motechSchedulerService.safeScheduleJob(outboxCallJob);
     }
 
-    public void unscheduleOutboxJobs(Patient patient) {
-        unscheduleJobForOutboxCall(patient);
-        unscheduleRepeatingJobForOutboxCall(patient.getId());
-    }
-
     public void scheduleRepeatingJobForOutBoxCall(Patient patient) {
         Map<String, Object> eventParams = new HashMap<String, Object>();
         eventParams.put(EventKeys.SCHEDULE_JOB_ID_KEY, patient.getId());
@@ -54,7 +49,12 @@ public class OutboxSchedulerService {
         Integer maxOutboundRetries = Integer.valueOf(properties.getProperty(TAMAConstants.RETRIES_PER_DAY)) - 1;
         int repeatIntervalInMinutes = Integer.valueOf(properties.getProperty(TAMAConstants.OUT_BOX_CALL_RETRY_INTERVAL));
         RepeatingSchedulableJob outboxCallJob = new RepeatingSchedulableJob(outboxCallEvent, DateUtil.now().plusMinutes(repeatIntervalInMinutes).toDate(), DateUtil.today().plusDays(1).toDate(), maxOutboundRetries, repeatIntervalInMinutes * 60 * 1000);
-        motechSchedulerService.scheduleRepeatingJob(outboxCallJob);
+        motechSchedulerService.safeScheduleRepeatingJob(outboxCallJob);
+    }
+
+    public void unscheduleOutboxJobs(Patient patient) {
+        unscheduleJobForOutboxCall(patient);
+        unscheduleRepeatingJobForOutboxCall(patient.getId());
     }
 
     public void unscheduleRepeatingJobForOutboxCall(String externalId) {

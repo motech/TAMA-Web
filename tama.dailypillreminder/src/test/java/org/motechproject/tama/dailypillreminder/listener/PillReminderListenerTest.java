@@ -38,6 +38,6 @@ public class PillReminderListenerTest {
 
         listener.handlePillReminderEvent(motechEvent);
 
-        verify(pillReminderCall).execute("patientId", "dosageId", 2, 4, 5);
+        verify(pillReminderCall).execute("patientId", 2, 4, 5);
     }
 }

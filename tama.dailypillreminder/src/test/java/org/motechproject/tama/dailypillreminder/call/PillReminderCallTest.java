@@ -52,7 +52,7 @@ public class PillReminderCallTest {
     @Test
     public void shouldNotMakeACallForANonExistentPatient() {
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(null);
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
         verify(callService, never()).initiateCall(any(CallRequest.class));
     }
 
@@ -62,7 +62,7 @@ public class PillReminderCallTest {
         when(patient.allowAdherenceCalls()).thenReturn(false);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
 
         verify(callService, never()).initiateCall(any(CallRequest.class));
     }
@@ -84,7 +84,7 @@ public class PillReminderCallTest {
         when(pillRegimen.getId()).thenReturn("pillRegimenId");
         when(dose.getDoseTime()).thenReturn(now);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
 
         ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
         verify(callService).initiateCall(callRequestArgumentCaptor.capture());
@@ -108,7 +108,7 @@ public class PillReminderCallTest {
         when(patient.getMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, DOSAGE_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
 
         ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
         verify(callService).initiateCall(callRequestArgumentCaptor.capture());

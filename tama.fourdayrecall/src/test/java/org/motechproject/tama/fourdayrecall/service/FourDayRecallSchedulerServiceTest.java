@@ -245,7 +245,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
         schedulerService.scheduleRetryJobsForFourDayRecall(patient);
 
         ArgumentCaptor<RepeatingSchedulableJob> repeatingSchedulableJobArgumentCaptor = ArgumentCaptor.forClass(RepeatingSchedulableJob.class);
-        verify(motechSchedulerService).scheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
+        verify(motechSchedulerService).safeScheduleRepeatingJob(repeatingSchedulableJobArgumentCaptor.capture());
         RepeatingSchedulableJob repeatingSchedulableJob = repeatingSchedulableJobArgumentCaptor.getValue();
 
         // 4 because repeatingSchedulableJobs are intern scheduled 1 + repeatCount number of times

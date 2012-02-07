@@ -71,7 +71,7 @@ public class FourDayRecallSchedulerService {
                 .payload();
         MotechEvent fourDayRecallRepeatingEvent = new MotechEvent(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, eventParams);
         RepeatingSchedulableJob repeatingSchedulableJob = new RepeatingSchedulableJob(fourDayRecallRepeatingEvent, jobStartTime.toDate(), jobEndTime.toDate(), maxOutboundRetries - 1, repeatIntervalInMinutes * 60 * 1000);
-        motechSchedulerService.scheduleRepeatingJob(repeatingSchedulableJob);
+        motechSchedulerService.safeScheduleRepeatingJob(repeatingSchedulableJob);
     }
 
     private void scheduleFourDayRecallCalls(Patient patient, TreatmentAdvice treatmentAdvice) {

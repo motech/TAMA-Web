@@ -36,7 +36,7 @@ public class PillReminderCall extends IVRCall {
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
     }
 
-    public void execute(String patientDocId, final String dosageId, final int timesSent, final int totalTimesToSend, final int retryInterval) {
+    public void execute(String patientDocId, final int timesSent, final int totalTimesToSend, final int retryInterval) {
         final Patient patient = allPatients.get(patientDocId);
         if (patient != null && patient.allowAdherenceCalls()) {
             Map<String, String> params = new HashMap<String, String>() {{
