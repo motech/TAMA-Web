@@ -58,7 +58,7 @@ public class OutboxSchedulerService {
     }
 
     public void unscheduleRepeatingJobForOutboxCall(String externalId) {
-        motechSchedulerService.unscheduleRepeatingJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, externalId);
+        motechSchedulerService.safeUnscheduleRepeatingJob(TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT, externalId);
     }
 
     private void unscheduleJobForOutboxCall(Patient patient) {

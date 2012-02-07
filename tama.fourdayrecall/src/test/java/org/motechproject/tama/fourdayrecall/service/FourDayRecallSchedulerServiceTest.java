@@ -265,7 +265,7 @@ public class FourDayRecallSchedulerServiceTest extends BaseUnitTest {
 
         schedulerService.unscheduleFourDayRecallJobs(patient);
 
-        verify(motechSchedulerService).unscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, PATIENT_ID);
+        verify(motechSchedulerService).safeUnscheduleRepeatingJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, PATIENT_ID);
         for (int i = 0; i < 3; i++) {
             verify(motechSchedulerService).safeUnscheduleJob(TAMAConstants.FOUR_DAY_RECALL_SUBJECT, i + PATIENT_ID);
         }
