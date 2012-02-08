@@ -1,5 +1,5 @@
 dojo.require("dojox.charting.Chart2D");
-dojo.require("dojox.charting.widget.Legend");
+dojo.require("dojox.charting.action2d.Tooltip");
 
 // This method is copied from http://www.reigndropsfall.net/2010/08/12/dojox-charting-axis-titles/
 dojo.declare("tama.Chart2D", dojox.charting.Chart2D, {
@@ -59,8 +59,8 @@ dojo.declare("tama.Chart2D", dojox.charting.Chart2D, {
 	}
 });
 
-var DAILY_ADHERENCE_TYPE = "Daily Adherence Trend"
-var WEEKLY_ADHERENCE_TYPE = "Weekly Adherence Trend"
+var DAILY_ADHERENCE_TYPE = "dailyAdherenceSummary"
+var WEEKLY_ADHERENCE_TYPE = "weeklyAdherenceSummary"
 
 var AdherencePerWeekData = function(data){
     this.mergeAndSortData(data);
@@ -82,17 +82,25 @@ AdherencePerWeekData.prototype = {
         return this.sortedList.map(function(elt, index) { return {value: index + 1, text: dateFormatter(elt.date)}});
     },
 
-    takenDoseValues: function(adherenceSummaryType){
+    doseValue : function(summary, adherenceSummaryType, tooltipPrefix){
+        if (summary.type != adherenceSummaryType) return {taken: 0, total: 0, percentage: 0, tooltip: ""};
+        var tooltipValue = "" + tooltipPrefix + ":: " + summary.taken + " out of " + summary.total;
+        return {taken: summary.taken, total: summary.total, percentage: summary.percentage, tooltip: tooltipValue};
+    },
+
+    takenDoseValues: function(adherenceSummaryType, tooltipPrefix){
         var self = this;
         return this.sortedList.map(function(elt) {
-            var taken = (elt.type == adherenceSummaryType) ? elt.taken : 0;
-            return {y: taken, color: self.colorFor(elt.percentage)};
+            var doseValue = self.doseValue(elt, adherenceSummaryType, tooltipPrefix);
+            return {y: doseValue.taken, color: self.colorFor(doseValue.percentage), 'tooltip': doseValue.tooltip};
         });
     },
 
-    totalDoseValues: function(adherenceSummaryType){
+    totalDoseValues: function(adherenceSummaryType, tooltipPrefix){
+        var self = this;
         return this.sortedList.map(function(elt) {
-            return (elt.type == adherenceSummaryType) ? elt.total : 0;
+            var doseValue = self.doseValue(elt, adherenceSummaryType, tooltipPrefix);
+            return {y: doseValue.total, 'tooltip': doseValue.tooltip};
         });
     },
 
@@ -135,23 +143,28 @@ AdherenceOverTimeWidget.prototype = {
 }
 
 
-var AdherenceOverTimeChartWidget = function(targetDivId, adherenceSummaryType, maxY){
+var AdherenceOverTimeChartWidget = function(targetDivId, adherenceSummaryType, yLabel, maxY){
     this.targetDivId = targetDivId;
     this.adherenceSummaryType = adherenceSummaryType;
+    this.yLabel = yLabel;
     this.maxY = maxY;
 }
 
 AdherenceOverTimeChartWidget.prototype = {
     draw : function(adherencePerWeekData){
+        var tooltipPrefix = this.yLabel + " taken ";
+        var plotName = "default";
         this.chartRenderer = new tama.Chart2D(this.targetDivId);
         this.chartRenderer.addPlot("grid", this.gridOptions());
-        this.chartRenderer.addPlot("default", {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
 
+        this.chartRenderer.addPlot(plotName, {type: "Columns", gap: 5, minBarSize: 10, maxBarSize: 50});
         this.chartRenderer.addAxis("x", this.xAxisOptions(adherencePerWeekData));
         this.chartRenderer.addAxis("y", this.yAxisOptions());
 
-        this.chartRenderer.addSeries("Taken ", adherencePerWeekData.takenDoseValues(this.adherenceSummaryType));
-        this.chartRenderer.addSeries("Total", adherencePerWeekData.totalDoseValues(this.adherenceSummaryType));
+        this.chartRenderer.addSeries("Taken ", adherencePerWeekData.takenDoseValues(this.adherenceSummaryType, tooltipPrefix));
+        this.chartRenderer.addSeries("Total", adherencePerWeekData.totalDoseValues(this.adherenceSummaryType, tooltipPrefix));
+
+        new dojox.charting.action2d.Tooltip(this.chartRenderer, plotName);
         this.resizeAndRenderChart(adherencePerWeekData.totalNumberOfWeeks());
         this.displayLegend();
     },
@@ -183,7 +196,7 @@ AdherenceOverTimeChartWidget.prototype = {
                 majorTicks: true,
                 majorTickStep: 1,
                 minorTicks: false,
-                title: this.adherenceSummaryType + " Chart",
+                title: this.yLabel,
                 font: "20px" }
     },
 

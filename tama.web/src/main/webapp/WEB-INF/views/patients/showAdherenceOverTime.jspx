@@ -11,8 +11,8 @@
         <![CDATA[
             dojo.addOnLoad(function(){
                 var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
-                var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", DAILY_ADHERENCE_TYPE, 15);
-                var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", WEEKLY_ADHERENCE_TYPE, 5);
+                var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", DAILY_ADHERENCE_TYPE, "Number of Doses", 15);
+                var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", WEEKLY_ADHERENCE_TYPE, "Number of Days", 5);
                 adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl);
                 adherenceOverTimeWidget.draw();
             });
@@ -23,6 +23,9 @@
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
                 <table id="dailyAdherenceOverTimeChartLegend" style="display: none;">
+                    <tr>
+                        <th colspan="9">Adherence Trend Chart for Daily Pill Reminder</th>
+                    </tr>
                     <tr>
                         <td>Legend</td>
                         <td class="legendColor red"></td>
@@ -38,8 +41,12 @@
                 <div>
                     <div id="dailyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"/>
                 </div>
+                <div class="action" type="Tooltip"></div>
 
                 <table id="weeklyAdherenceOverTimeChartLegend" style="margin: 20px 0px; display: none;">
+                    <tr>
+                        <th colspan="9">Adherence Trend Chart for Four Day Recall</th>
+                    </tr>
                     <tr>
                         <td>Legend</td>
                         <td class="legendColor red"></td>

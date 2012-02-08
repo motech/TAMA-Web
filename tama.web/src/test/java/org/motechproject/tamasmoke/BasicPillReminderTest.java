@@ -52,8 +52,6 @@ public class BasicPillReminderTest extends BaseTest {
                 .goToClinicianRegistrationPage()
                 .registerClinician(clinician)
                 .logout();
-
-
     }
 
     @Test
