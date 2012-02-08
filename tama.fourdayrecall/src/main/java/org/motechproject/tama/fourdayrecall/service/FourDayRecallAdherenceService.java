@@ -1,7 +1,6 @@
 package org.motechproject.tama.fourdayrecall.service;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
@@ -53,7 +52,7 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
         List<WeeklyAdherenceLog> weeklyAdherenceLogs = allWeeklyAdherenceLogs.findAllByPatientId(patientDocId);
         for(WeeklyAdherenceLog log: weeklyAdherenceLogs){
             AdherenceSummaryForAWeek adherenceSummaryForAWeek = new AdherenceSummaryForAWeek();
-            adherenceSummaryForAWeek.setWeekStartDate(log.getWeekStartDate().toDateTime(new LocalTime(0, 0, 0)));
+            adherenceSummaryForAWeek.setWeekStartDate(log.getLogDate());
             adherenceSummaryForAWeek.setTaken(TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL - log.getNumberOfDaysMissed());
             adherenceSummaryForAWeek.setTotal(TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL);
             adherenceSummaryForAWeek.setPercentage(adherencePercentageFor(log.getNumberOfDaysMissed()));

@@ -64,18 +64,18 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldReturnMapOfWeekStartDateAndAdherencePercentageOverTime() {
-        LocalDate tuesday = new LocalDate(2012, 01, 03);
-        LocalDate nextTuesday = new LocalDate(2012, 01, 10);
-        WeeklyAdherenceLog threeDaysMissed = new WeeklyAdherenceLog("patientId", null, tuesday, null, 3);
-        WeeklyAdherenceLog twoDaysMissed = new WeeklyAdherenceLog("patientId", null, nextTuesday, null, 2);
+        DateTime tuesday = DateUtil.newDateTime(new LocalDate(2012, 01, 03), 0, 0, 0);
+        DateTime nextTuesday = tuesday.plusDays(7);
+        WeeklyAdherenceLog threeDaysMissed = new WeeklyAdherenceLog("patientId", null, null, tuesday, 3);
+        WeeklyAdherenceLog twoDaysMissed = new WeeklyAdherenceLog("patientId", null, null, nextTuesday, 2);
         when(allWeeklyAdherenceLogs.findAllByPatientId("patientId")).thenReturn(Arrays.asList(threeDaysMissed, twoDaysMissed));
 
         List<AdherenceSummaryForAWeek> adherenceForAWeek = fourDayRecallAdherenceService.getAdherenceOverTime("patientId");
 
-        assertEquals(tuesday, adherenceForAWeek.get(0).getWeekStartDate().toLocalDate());
+        assertEquals(tuesday, adherenceForAWeek.get(0).getWeekStartDate());
         assertEquals(25.0, adherenceForAWeek.get(0).getPercentage());
 
-        assertEquals(nextTuesday, adherenceForAWeek.get(1).getWeekStartDate().toLocalDate());
+        assertEquals(nextTuesday, adherenceForAWeek.get(1).getWeekStartDate());
         assertEquals(50.0, adherenceForAWeek.get(1).getPercentage());
     }
 
