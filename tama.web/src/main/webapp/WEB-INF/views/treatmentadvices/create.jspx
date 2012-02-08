@@ -52,15 +52,26 @@
                                           id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}"
                                           label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}"
                                           path="/treatmentadvices/dosageTypes"/>
-
-                            <field:input field="treatmentAdvice.drugDosages[${item.index}].morningTime"
-                                         id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0"
-                                         label="Morning Time (hh:mm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$"
-                                         required="true"/>
-                            <field:input field="treatmentAdvice.drugDosages[${item.index}].eveningTime"
-                                         id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1"
-                                         label="Evening Time (hh:mm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$"
-                                         required="true"/>
+                            <c:choose>
+                                <c:when test="${callPlan.weekly}">
+                                    <field:input field="treatmentAdvice.drugDosages[${item.index}].morningTime"
+                                                 id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0"
+                                                 label="Morning Time (hh:mm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$"
+                                                 required="true"/>
+                                    <field:input field="treatmentAdvice.drugDosages[${item.index}].eveningTime"
+                                                 id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1"
+                                                 label="Evening Time (hh:mm)" validationRegex="^([0][0-9]|[1][0-2]):([0-5][0-9])$"
+                                                 required="true"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0"
+                                                  field="treatmentAdvice.drugDosages[${item.index}].morningTime"  items="${timeSlots}"
+                                                  path="/treatmentadvices/timeSlots" label="Morning Time (hh:mm)" required="true" />
+                                    <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1"
+                                                  field="treatmentAdvice.drugDosages[${item.index}].eveningTime"  items="${timeSlots}"
+                                                  path="/treatmentadvices/timeSlots" label="Evening Time (hh:mm)" required="true" />
+                                </c:otherwise>
+                            </c:choose>
                             <field:input
                                     id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules_${item.index}_offsetDays"
                                     field="treatmentAdvice.drugDosages[${item.index}].offsetDays"

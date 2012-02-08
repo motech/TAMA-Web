@@ -1,7 +1,9 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.ClinicVisitService;
@@ -141,12 +143,26 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     private void populateModel(Model uiModel, TreatmentAdvice treatmentAdvice) {
+        final Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
-        uiModel.addAttribute("patientIdentifier", allPatients.get(treatmentAdvice.getPatientId()).getPatientId());
+        uiModel.addAttribute("patientIdentifier", patient.getPatientId());
         uiModel.addAttribute("regimens", regimens());
         uiModel.addAttribute("drugCompositions", drugCompositions());
         uiModel.addAttribute("drugCompositionGroups", drugCompositionGroups());
         uiModel.addAttribute("dosageTypes", dosageTypes());
         uiModel.addAttribute("mealAdviceTypes", mealAdviceTypes());
+        uiModel.addAttribute("callPlan", patient.getPatientPreferences().getCallPreference());
+        uiModel.addAttribute("timeSlots", availableTimeSlots());
+    }
+
+    private List<String> availableTimeSlots() {
+        DateTime startTime = DateUtil.newDateTime(DateUtil.today(), 0, 0, 0);
+        final DateTime endTime = DateUtil.newDateTime(DateUtil.today(), 12, 59, 0);
+        final List<String> allTimeSlots = new ArrayList<String>();
+        while (startTime.isBefore(endTime)) {
+            allTimeSlots.add(startTime.toString("HH:mm"));
+            startTime = startTime.plusMinutes(15);
+        }
+        return allTimeSlots;
     }
 }

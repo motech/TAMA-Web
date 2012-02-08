@@ -3,7 +3,7 @@ package org.motechproject.tama.web;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
@@ -25,9 +25,8 @@ import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,15 +39,13 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
-public class TreatmentAdviceControllerTest {
+public class TreatmentAdviceControllerTest extends BaseUnitTest {
     @Mock
     private Model uiModel;
     @Mock
@@ -94,13 +91,18 @@ public class TreatmentAdviceControllerTest {
         treatmentAdviceAttr.setPatientId(PATIENT_ID);
         treatmentAdviceAttr.setDrugCompositionGroupId("");
 
-        Patient patient = PatientBuilder.startRecording().withId(PATIENT_ID).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
         controller.createForm(PATIENT_ID, uiModel);
 
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
+        verify(uiModel).addAttribute("patientIdentifier", patient.getPatientId());
+        verify(uiModel).addAttribute("callPlan", patient.getPatientPreferences().getCallPreference());
+        final ArgumentCaptor<List> timeSlotsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(uiModel).addAttribute(eq("timeSlots"), timeSlotsCaptor.capture());
+        assertEquals(52, timeSlotsCaptor.getValue().size());
     }
 
     @Test
@@ -116,7 +118,7 @@ public class TreatmentAdviceControllerTest {
     }
 
     @Test
-    public void shouldShowTreatmentAdvice(){
+    public void shouldShowTreatmentAdvice() {
         final String treatmentAdviceId = "treatmentAdviceId";
         final TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();
         when(treatmentAdviceViewMapper.map(treatmentAdviceId)).thenReturn(treatmentAdviceView);
@@ -172,26 +174,19 @@ public class TreatmentAdviceControllerTest {
 
     @Test
     public void shouldCreateAChangeRegimenForm() {
-        String patientId = PATIENT_ID;
+        mockCurrentDate(DateUtil.newDateTime(new LocalDate(2012, 12, 12), 10, 0, 0));
         String treatmentAdviceId = "treatmentAdviceId";
         String clinicVisitId = "clinicVisitId";
-        TreatmentAdvice treatmentAdviceAttr = TreatmentAdvice.newDefault();
-        treatmentAdviceAttr.setPatientId(PATIENT_ID);
-        treatmentAdviceAttr.setDrugCompositionGroupId("");
-        Patient patient = PatientBuilder.startRecording().withPatientId(patientId).build();
+        Patient patient = PatientBuilder.startRecording().withPatientId(PATIENT_ID).build();
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
 
-        mockStatic(DateUtil.class);
-        when(DateUtil.today()).thenReturn(new LocalDate(2012, 12, 12));
-
-        when(allPatients.get(patientId)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
-        String returnURL = controller.changeRegimenForm(treatmentAdviceId, patientId, clinicVisitId, uiModel);
+        String returnURL = controller.changeRegimenForm(treatmentAdviceId, PATIENT_ID, clinicVisitId, uiModel);
 
         assertThat(returnURL, is("treatmentadvices/update"));
+        verify(uiModel).addAttribute("clinicVisitId", clinicVisitId);
         verify(uiModel).addAttribute("adviceEndDate", "12/12/2012");
         verify(uiModel).addAttribute("existingTreatmentAdviceId", treatmentAdviceId);
-        verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
-        verify(uiModel).addAttribute("clinicVisitId", clinicVisitId);
     }
 
     @Test
