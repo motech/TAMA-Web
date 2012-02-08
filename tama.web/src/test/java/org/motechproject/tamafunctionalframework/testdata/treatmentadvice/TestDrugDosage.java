@@ -27,7 +27,7 @@ public class TestDrugDosage extends TestEntity {
 
     public static TestDrugDosage[] create(String... brandNames) {
         final DateTime now = DateUtil.now();
-        return create(now.toLocalDate(), now.toLocalTime(), brandNames);
+        return create(now.toLocalDate(), now.withMinuteOfHour(0).toLocalTime(), brandNames);
     }
 
     public static TestDrugDosage[] create(LocalDate startDate, LocalTime doseTime, String... brandNames) {

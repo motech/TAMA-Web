@@ -1,7 +1,6 @@
 package org.motechproject.tamasmoke;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.dailypillreminder.listener.AdherenceQualityListener;
@@ -61,7 +60,7 @@ public class BasicPillReminderTest extends BaseTest {
 
         patientDataService.registerAndActivate(patient, clinician);
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(
-                TestDrugDosage.create(yesterday(), new LocalTime().plusMinutes(1), "Efferven", "Combivir")
+                TestDrugDosage.create(yesterday(), DateUtil.now().withMinuteOfHour(0).toLocalTime(), "Efferven", "Combivir")
             );
         patientDataService.createRegimen(patient, clinician, treatmentAdvice);
 

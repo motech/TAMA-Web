@@ -13,18 +13,15 @@ import org.motechproject.tamafunctionalframework.testdataservice.PatientDataServ
 
 import java.io.IOException;
 
-import static junit.framework.Assert.assertEquals;
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 public class OutboxCallTest extends BaseIVRTest {
-    private TestPatient patient;
-    private TestClinician clinician;
 
     @Before
     public void setUp() {
         super.setUp();
-        clinician = TestClinician.withMandatory();
-        patient = TestPatient.withMandatory();
+        TestClinician clinician = TestClinician.withMandatory();
+        TestPatient patient = TestPatient.withMandatory();
 
         new ClinicianDataService(webDriver).createWithClinic(clinician);
         PatientDataService patientDataService = new PatientDataService(webDriver);
