@@ -28,7 +28,9 @@
 		<tr>
             <td><a href="${clinicvisitEdit}"><c:if test="${visit.name}"></c:if><c:out value="${visit.name}"/></a></td>
 			<td><spring:eval expression="visit.expectedVisitTime" /></td>
-			<td><!-- adjusted date --></td>
+			<td>
+                <c:if test="${not empty visit.expectedVisitTime}"><a href="#">Schedule</a></c:if>
+            </td>
 			<td><!-- set for --></td>
 			<td><spring:eval expression="visit.visitDate" /></td>
 			<td><c:out value="${visit.typeOfVisit}"/></td>

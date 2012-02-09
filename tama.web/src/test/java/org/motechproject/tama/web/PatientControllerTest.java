@@ -166,6 +166,9 @@ public class PatientControllerTest {
 
     @Test
     public void shouldActivatePatientAndRedirectToPatientListPage() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).
+                withActivationDate(null).build();
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         String nextPage = controller.activate(PATIENT_ID);
 
         verify(patientService).activate(PATIENT_ID);

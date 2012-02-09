@@ -109,7 +109,7 @@ public class PatientController extends BaseController {
         Patient patient = allPatients.get(id);
         boolean firstActivation = patient.getActivationDate() == null;
         patientService.activate(id);
-	if(firstActivation ){
+        if (firstActivation) {
             tamaAppointmentsService.scheduleAppointments(id);
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
@@ -117,10 +117,10 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
     public String activate(@PathVariable String id) {
-	Patient patient = allPatients.get(id);
-	boolean firstActivation = patient.getActivationDate() == null;
+        Patient patient = allPatients.get(id);
+        boolean firstActivation = patient.getActivationDate() == null;
         patientService.activate(id);
-        if(patient.getActivationDate() == null ){
+        if (firstActivation) {
             tamaAppointmentsService.scheduleAppointments(id);
         }
         return REDIRECT_TO_LIST_VIEW;

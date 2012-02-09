@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:spring="http://www.springframework.org/tags" version="2.0"
-        xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+        xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core">
     <spring:url value="/resources/images/favicon.ico" var="favicon" />
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -13,6 +13,12 @@
     </util:panel>
 
     <spring:url value="/patients/${patientId}" var="patient_form_url"/>
+    <spring:url value="/clinicvisits/list" var="show_visit_url">
+        <spring:param name="form"/>
+        <spring:param name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
+    </spring:url>
     <a id="showPatient" href="${patient_form_url}">Show Patient</a>
+    <c:out value=" | "/>
+    <a id="showPatient" href="${show_visit_url}">Show Visits</a>
     <br/>
 </div>

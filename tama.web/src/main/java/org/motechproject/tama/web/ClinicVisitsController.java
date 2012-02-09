@@ -6,6 +6,7 @@ import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.web.model.LabResultsUIModel;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +51,8 @@ public class ClinicVisitsController extends BaseController {
             }
         }
         uiModel.addAttribute("patientId", patientId);
-        uiModel.addAttribute("clinicVisit", clinicVisitService.getClinicVisit(clinicVisitId));
+        if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.now());
+        uiModel.addAttribute("clinicVisit", clinicVisit);
         treatmentAdviceController.createForm(patientId, uiModel);
         labResultsController.createForm(patientId, uiModel);
         vitalStatisticsController.createForm(patientId, uiModel);
