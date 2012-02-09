@@ -8,7 +8,6 @@ import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.fourdayrecall.service.WeeklyAdherenceLogService;
 import org.motechproject.tama.ivr.call.IVRCall;
-import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.slf4j.Logger;
@@ -31,19 +30,17 @@ public class FourDayRecallListener {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private AllPatients allPatients;
     private WeeklyAdherenceLogService weeklyAdherenceLogService;
-    private OutboxService outboxService;
 
     @Autowired
     public FourDayRecallListener(@Qualifier("IVRCall") IVRCall ivrCall, FourDayRecallSchedulerService fourDayRecallSchedulerService,
                                  FourDayRecallAlertService fourDayRecallAlertService, FourDayRecallAdherenceService fourDayRecallAdherenceService,
-                                 AllPatients allPatients, WeeklyAdherenceLogService weeklyAdherenceLogService, OutboxService outboxService) {
+                                 AllPatients allPatients, WeeklyAdherenceLogService weeklyAdherenceLogService) {
         this.ivrCall = ivrCall;
         this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         this.fourDayRecallAlertService = fourDayRecallAlertService;
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
         this.allPatients = allPatients;
         this.weeklyAdherenceLogService = weeklyAdherenceLogService;
-        this.outboxService = outboxService;
     }
 
     @MotechListener(subjects = TAMAConstants.FOUR_DAY_RECALL_SUBJECT)
@@ -56,8 +53,6 @@ public class FourDayRecallListener {
                 boolean adherenceNotCapturedForCurrentWeek = !fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient);
                 if (patient.allowAdherenceCalls() && adherenceNotCapturedForCurrentWeek) {
                     makeFourDayRecallCall(motechEvent, patient);
-                } else {
-                    outboxService.call(patient, false);
                 }
             } catch (Exception e) {
                 logger.error("Failed to handle FourDayRecall event, this event would not be retried but the subsequent repeats would happen.", e);

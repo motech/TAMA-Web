@@ -79,7 +79,7 @@ public class OutboxService implements Outbox {
         call(allPatients.get(patientDocumentId), scheduleRepeatingJobs);
     }
 
-    public void call(Patient patient, boolean scheduleRepeatingJobs) {
+    void call(Patient patient, boolean scheduleRepeatingJobs) {
         try {
             if (patient != null && patient.allowOutboxCalls() && hasPendingOutboxMessages(patient.getId())) {
                 if (scheduleRepeatingJobs) {

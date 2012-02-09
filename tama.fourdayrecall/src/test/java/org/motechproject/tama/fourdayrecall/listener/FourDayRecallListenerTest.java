@@ -13,7 +13,6 @@ import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallSchedulerService;
 import org.motechproject.tama.fourdayrecall.service.WeeklyAdherenceLogService;
 import org.motechproject.tama.ivr.call.IVRCall;
-import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
@@ -41,8 +40,6 @@ public class FourDayRecallListenerTest {
     AllPatients allPatients;
     @Mock
     private WeeklyAdherenceLogService weeklyAdherenceLogService;
-    @Mock
-    private OutboxService outboxService;
 
     private FourDayRecallListener fourDayRecallListener;
     private Patient patient;
@@ -50,7 +47,7 @@ public class FourDayRecallListenerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAlertService, fourDayRecallAdherenceService, allPatients, weeklyAdherenceLogService, outboxService);
+        fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAlertService, fourDayRecallAdherenceService, allPatients, weeklyAdherenceLogService);
     }
 
     @Test
@@ -63,18 +60,6 @@ public class FourDayRecallListenerTest {
         fourDayRecallListener.handle(motechEvent);
 
         verify(ivrCall).makeCall(patient);
-    }
-
-    @Test
-    public void shouldMakeOutboxCall_WhenThereArePendingOutboxMessages_AndAdherenceIsCaptured() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
-
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(true);
-        fourDayRecallListener.handle(motechEvent);
-
-        verify(outboxService).call(patient, false);
     }
 
     @Test
@@ -108,26 +93,13 @@ public class FourDayRecallListenerTest {
     }
 
     @Test
-    public void shouldMakeOutboxCallIfPatientIsSuspended() {
+    public void shouldNotMakeCallIfPatientIsSuspended() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
         fourDayRecallListener.handle(motechEvent);
-        verify(outboxService).call(patient, false);
         Mockito.verifyZeroInteractions(ivrCall, fourDayRecallAlertService);
-    }
-
-    @Test
-    public void shouldNotMakeCallIfPatientIsSuspended_AndAdherenceIsCaptured() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).build();
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-
-        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
-        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(true);
-        fourDayRecallListener.handle(motechEvent);
-        Mockito.verifyZeroInteractions(ivrCall, fourDayRecallAlertService);
-        verify(outboxService).call(patient, false);
     }
 
     @Test

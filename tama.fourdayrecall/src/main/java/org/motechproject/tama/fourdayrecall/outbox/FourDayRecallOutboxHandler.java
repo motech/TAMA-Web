@@ -3,6 +3,7 @@ package org.motechproject.tama.fourdayrecall.outbox;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.outbox.handler.OutboxHandler;
 import org.motechproject.tama.outbox.listener.OutboxCallListener;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
@@ -23,19 +24,21 @@ public class FourDayRecallOutboxHandler implements OutboxHandler {
     private AllPatients allPatients;
     private Properties fourDayRecallProperties;
     private OutboxService outboxService;
+    private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     @Autowired
-    public FourDayRecallOutboxHandler(AllPatients allPatients, @Qualifier("fourDayRecallProperties") Properties fourDayRecallProperties, OutboxService outboxService, OutboxCallListener outboxCallListener) {
+    public FourDayRecallOutboxHandler(AllPatients allPatients, @Qualifier("fourDayRecallProperties") Properties fourDayRecallProperties, OutboxService outboxService, FourDayRecallAdherenceService fourDayRecallAdherenceService, OutboxCallListener outboxCallListener) {
         this.allPatients = allPatients;
         this.fourDayRecallProperties = fourDayRecallProperties;
         this.outboxService = outboxService;
+        this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
         outboxCallListener.register(CallPreference.FourDayRecall, this);
     }
 
     public void handle(MotechEvent motechEvent) {
         String patientDocId = (String) motechEvent.getParameters().get(OutboxSchedulerService.EXTERNAL_ID_KEY);
         Patient patient = allPatients.get(patientDocId);
-        if (!isFourDayRecallDay(patient)) {
+        if (patient.getStatus().isSuspended() || !isFourDayRecallDay(patient) || fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)) {
             outboxService.call(motechEvent);
         }
     }
