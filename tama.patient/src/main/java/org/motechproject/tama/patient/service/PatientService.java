@@ -8,6 +8,8 @@ import org.motechproject.tama.patient.strategy.CallPlan;
 import org.motechproject.tama.patient.strategy.ChangePatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.ChangePatientPreferenceStrategy;
 import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,14 +22,16 @@ public class PatientService {
 
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
+    private AllRegimens allRegimens;
     private AllPatientEventLogs allPatientEventLogs;
     private Map<CallPreference, CallPlan> callPlans;
     private Outbox outbox;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllPatientEventLogs allPatientEventLogs) {
+    public PatientService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllRegimens allRegimens, AllPatientEventLogs allPatientEventLogs) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
+        this.allRegimens = allRegimens;
         this.allPatientEventLogs = allPatientEventLogs;
         this.callPlans = new HashMap<CallPreference, CallPlan>();
     }
@@ -85,5 +89,10 @@ public class PatientService {
         if (changePatientPreferenceStrategy != null) {
             changePatientPreferenceStrategy.execute(dbPatient, patient, treatmentAdvice);
         }
+    }
+
+    public Regimen currentRegimen(Patient patient) {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        return allRegimens.get(treatmentAdvice.getRegimenId());
     }
 }

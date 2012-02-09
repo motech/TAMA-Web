@@ -16,6 +16,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.patient.strategy.CallPlan;
 import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -31,6 +32,8 @@ public class PatientServiceTest extends BaseUnitTest {
     private AllPatients allPatients;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllRegimens allRegimens;
     @Mock
     private AllUniquePatientFields allUniquePatientFields;
     @Mock
@@ -49,7 +52,7 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(allPatients, allTreatmentAdvices, allPatientEventLogs);
+        patientService = new PatientService(allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs);
         patientService.registerOutbox(outbox);
         registerKnownCallPlans();
     }

@@ -4,13 +4,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.PatientEventLog;
-import org.motechproject.tama.patient.domain.PatientEvent;
-import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.refdata.builder.RegimenBuilder;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,9 +29,15 @@ public class PatientServiceIT extends SpringIntegrationTest {
 
     @Autowired
     private AllPatients allPatients;
-    
+
     @Autowired
     private AllPatientEventLogs allPatientEventLogs;
+
+    @Autowired
+    private AllRegimens allRegimens;
+
+    @Autowired
+    private AllTreatmentAdvices allTreatmentAdvices;
 
     @Test
     public void shouldSuspendPatient() {
@@ -99,5 +107,24 @@ public class PatientServiceIT extends SpringIntegrationTest {
         assertEquals(1, patientEventLogs.size());
         markForDeletion(patientEventLogs.get(0));
         assertEquals(PatientEvent.Temporary_Deactivation, patientEventLogs.get(0).getEvent());
+    }
+
+    @Test
+    public void shouldReturnCurrentRegimen() {
+        Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
+        allRegimens.add(regimen);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        allPatients.add(patient);
+
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults()
+                .withPatientId(patient.getId()).withRegimenId(regimen.getId()).build();
+        allTreatmentAdvices.add(treatmentAdvice);
+
+        markForDeletion(regimen);
+        markForDeletion(patient);
+        markForDeletion(treatmentAdvice);
+
+        assertEquals(regimen.getId(), patientService.currentRegimen(patient).getId());
     }
 }

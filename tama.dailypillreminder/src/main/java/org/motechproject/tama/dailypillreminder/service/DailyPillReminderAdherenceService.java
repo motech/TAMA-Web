@@ -23,6 +23,7 @@ import java.util.Properties;
 
 @Service
 public class DailyPillReminderAdherenceService implements AdherenceServiceStrategy {
+
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
     private DailyPillReminderService dailyPillReminderService;
     private Properties properties;
@@ -55,12 +56,12 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
             throw new NoAdherenceRecordedException("No Adherence Log was recorded for given date range");
         }
         int dosagesTakenForLastFourWeeks = allDosageAdherenceLogs.countByDosageStatusAndDate(pillRegimenId, DosageStatus.TAKEN, fromDate, toDate.toLocalDate());
-        return  calculateAdherencePercentage(dosagesTakenForLastFourWeeks, totalLogs);
+        return calculateAdherencePercentage(dosagesTakenForLastFourWeeks, totalLogs);
     }
 
-    public List<AdherenceSummaryForAWeek> getAdherenceOverTime(String patientDocId){
+    public List<AdherenceSummaryForAWeek> getAdherenceOverTime(String patientDocId) {
         List<AdherenceSummaryForAWeek> doseTakenSummaryForWeeks = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(patientDocId);
-        for(AdherenceSummaryForAWeek summary: doseTakenSummaryForWeeks){
+        for (AdherenceSummaryForAWeek summary : doseTakenSummaryForWeeks) {
             summary.setPercentage(calculateAdherencePercentage(summary.getTaken(), summary.getTotal()));
         }
         return doseTakenSummaryForWeeks;
