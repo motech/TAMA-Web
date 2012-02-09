@@ -77,7 +77,7 @@ public class TreatmentAdviceController extends BaseController {
         fixTimeString(treatmentAdvice);
         final String newTreatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
         clinicVisitService.changeRegimen(clinicVisitId, newTreatmentAdviceId);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest);
     }
 
     public void createForm(String patientId, Model uiModel) {

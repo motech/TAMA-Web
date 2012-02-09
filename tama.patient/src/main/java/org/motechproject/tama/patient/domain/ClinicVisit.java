@@ -42,11 +42,34 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    private DateTime expectedVisitTime;
+    private DateTime appointmentDueDate;
+
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    private DateTime adjustedDueDate;
+
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    private DateTime confirmedVisitDate;
     
     private String name;
 
-    
+    public DateTime getConfirmedVisitDate() {
+        return confirmedVisitDate;
+    }
+
+    public void setConfirmedVisitDate(DateTime confirmedVisitDate) {
+        this.confirmedVisitDate = confirmedVisitDate;
+    }
+
+    public DateTime getAdjustedDueDate() {
+        return adjustedDueDate;
+    }
+
+    public void setAdjustedDueDate(DateTime adjustedDueDate) {
+        this.adjustedDueDate = adjustedDueDate;
+    }
+
     public String getName() {
         return name;
     }
@@ -104,12 +127,12 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     }
 
     @DateTimeFormat(style="S-", pattern = TAMAConstants.DATE_FORMAT)
-    public DateTime getExpectedVisitTime() {
-        return expectedVisitTime;
+    public DateTime getAppointmentDueDate() {
+        return appointmentDueDate;
     }
     
-    public void setExpectedVisitTime(DateTime expectedVisitTime) {
-        this.expectedVisitTime = expectedVisitTime;
+    public void setAppointmentDueDate(DateTime appointmentDueDate) {
+        this.appointmentDueDate = appointmentDueDate;
     }
 
     @Override
@@ -137,7 +160,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     public static ClinicVisit createExpectedVisit(DateTime expectedVisitTime, int weeks, String patientId) {
         ClinicVisit clinicVisit = new ClinicVisit();
         clinicVisit.setName(weeks + " weeks Follow-up visit");
-        clinicVisit.setExpectedVisitTime(expectedVisitTime.plusWeeks(weeks));
+        clinicVisit.setAppointmentDueDate(expectedVisitTime.plusWeeks(weeks));
         clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Scheduled);
         clinicVisit.setPatientId(patientId);
         return clinicVisit;

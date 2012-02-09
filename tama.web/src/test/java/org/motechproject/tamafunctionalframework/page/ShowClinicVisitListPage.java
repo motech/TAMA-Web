@@ -31,10 +31,16 @@ public class ShowClinicVisitListPage extends Page {
         waitForElementWithIdToLoad(PAGE_LOAD_MARKER);
     }
 
-    public CreateClinicVisitPage gotoFirstClinicVisitPage() {
+    public CreateClinicVisitPage gotoFirstCreateClinicVisitPage() {
         firstVisitLink.click();
         waitForElementWithIdToLoad(CreateTreatmentAdviceSection.DRUG_BRAND1_ID);
         return MyPageFactory.initElements(webDriver, CreateClinicVisitPage.class);
+    }
+
+    public ShowClinicVisitPage gotoFirstShowClinicVisitPage() {
+        firstVisitLink.click();
+        waitForElementWithIdToLoad(CreateTreatmentAdviceSection.DRUG_BRAND1_ID);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 
 
