@@ -12,5 +12,6 @@
         <field:display field="clinicName" label="Clinic Name" id="patientSummaryClinicName" object="${summary}"/>
         <field:display date="true" dateTimePattern="MMM d, yyyy" field="ARTStartDate" label="ART Start Date" id="patientSummaryARTStartDate" object="${summary}"/>
         <field:display field="regimenName" label="Regimen Followed" id="patientSummaryRegimenName" object="${summary}"/>
+        <jsp:include page="showDailyPillReminderReport.jspx" />
     </util:panel>
 </div>

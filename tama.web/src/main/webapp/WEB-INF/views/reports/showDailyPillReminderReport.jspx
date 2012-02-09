@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form"
+     version="2.0">
+
+    <div id="dailyPillReminderReportForm" action="reports/dailyPillReminderReport">
+    <util:panel id="dailyPillReminderReport" title="Daily PillReminder Report" openPane="true">
+        <div>
+            <label for="startDate"> Start Date</label>
+            <input type="text" name="startDate" id="dailyPillReminderReportStartDate"/>
+            <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportStartDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter start date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}})); </script>
+        </div>
+
+        <div>
+            <label for="endDate"> End Date</label>
+            <input type="text" name="endDate" id="dailyPillReminderReportEndDate"/>
+            <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportEndDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter end date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}})); </script>
+        </div>
+        <div class="submit" id="dailyPillReminderReportSubmitDiv">
+          <spring:message code="button_save" var="save_button" htmlEscape="false" />
+          <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'getDailyPillReminderReport', event:'onclick'}));</script>
+          <input id="getDailyPillReminderReport" type="submit" value="Submit"/>
+        </div>
+    </util:panel>
+    </div>
+
+    <script type="text/javascript">
+        <![CDATA[
+        var xsubmit = dojo.connect(dojo.byId("getDailyPillReminderReport"), "onclick", function(){
+            if (dijit.byId("dailyPillReminderReportEndDate").isValid() &&  dijit.byId("dailyPillReminderReportStartDate").isValid()){
+                dojo.xhrPost({
+                    form: "dailyPillReminderReportForm",
+                    timeout: 3000,
+                    load: function(data, ioArgs){
+                        alert(data);
+                    },
+                    error: function(err,ioArgs){
+                    }
+                });
+            }
+        });
+        ]]>
+    </script>
+
+</div>

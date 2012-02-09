@@ -1,8 +1,12 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.LocalDate;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -23,21 +27,25 @@ public class ReportsControllerTest {
 
     @Mock
     private AllPatients allPatients;
+
     @Mock
     private PatientService patientService;
 
+    @Mock
+    private DailyPillReminderReportService dailyPillReminderReportService;
+
     private ReportsController reportsController;
 
-    private Clinic clinic;
-
     private Patient patient;
+
+    private Clinic clinic;
 
     @Before
     public void setUp() {
         initMocks(this);
         clinic = ClinicBuilder.startRecording().withDefaults().build();
         patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
-        reportsController = new ReportsController(allPatients, patientService);
+        reportsController = new ReportsController(allPatients, patientService, dailyPillReminderReportService);
     }
 
     @Test
@@ -48,5 +56,17 @@ public class ReportsControllerTest {
 
         PatientReport patientReport = (PatientReport) reportsController.index("patientDocumentId");
         assertEquals("reports/index", patientReport.getViewName());
+    }
+
+    @Test
+    public void shouldReturnDailyPillReminderReport() throws JSONException {
+        LocalDate day1 = new LocalDate(2011,1,1);
+        LocalDate day2 = new LocalDate(2011,1,3);
+        JSONObject jsonReport = new JSONObject();
+        jsonReport.put("someKey", "someValue");
+
+        when(dailyPillReminderReportService.generateJSON("patientId", day1, day2)).thenReturn(jsonReport);
+
+        assertEquals(jsonReport.toString(), reportsController.dailyPillReminderReport("patientId", day1, day2));
     }
 }
