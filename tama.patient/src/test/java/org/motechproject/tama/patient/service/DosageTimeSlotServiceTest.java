@@ -15,6 +15,7 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllDosageTimeSlots;
 
 import java.util.List;
+import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -27,13 +28,17 @@ public class DosageTimeSlotServiceTest {
 
     @Mock
     private AllDosageTimeSlots allDosageTimeSlots;
+    @Mock
+    private Properties timeSlotProperties;
 
     private DosageTimeSlotService dosageTimeSlotService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        dosageTimeSlotService = new DosageTimeSlotService(allDosageTimeSlots);
+        when(timeSlotProperties.getProperty(DosageTimeSlotService.SLOT_DURATION_MINS)).thenReturn("15");
+        when(timeSlotProperties.getProperty(DosageTimeSlotService.MAX_PATIENTS_PER_SLOT)).thenReturn("10");
+        dosageTimeSlotService = new DosageTimeSlotService(allDosageTimeSlots, timeSlotProperties);
     }
 
     @Test

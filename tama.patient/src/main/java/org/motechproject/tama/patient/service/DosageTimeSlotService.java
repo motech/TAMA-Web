@@ -9,19 +9,29 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllDosageTimeSlots;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Component
 public class DosageTimeSlotService {
 
+    public static final String SLOT_DURATION_MINS = "slot.duration.mins";
+    public static final String MAX_PATIENTS_PER_SLOT = "max.patients.per.slot";
+
+    private int slot_duration_in_mins;
+    private int max_patients_per_slot;
+
     private AllDosageTimeSlots allDosageTimeSlots;
 
     @Autowired
-    public DosageTimeSlotService(AllDosageTimeSlots allDosageTimeSlots) {
+    public DosageTimeSlotService(AllDosageTimeSlots allDosageTimeSlots, @Qualifier("timeSlotProperties") Properties timeSlotProperties) {
         this.allDosageTimeSlots = allDosageTimeSlots;
+        slot_duration_in_mins = Integer.parseInt(timeSlotProperties.getProperty(SLOT_DURATION_MINS));
+        max_patients_per_slot = Integer.parseInt(timeSlotProperties.getProperty(MAX_PATIENTS_PER_SLOT));
     }
 
     public void allotSlots(Patient patient, TreatmentAdvice treatmentAdvice) {
@@ -56,12 +66,12 @@ public class DosageTimeSlotService {
         final List<String> allTimeSlots = new ArrayList<String>();
         while (startTime.isBefore(endTime)) {
             TimeOfDay slotStartTime = new TimeOfDay(startTime);
-            TimeOfDay slotEndTime = new TimeOfDay(startTime.plusMinutes(15).minusMinutes(1));
+            TimeOfDay slotEndTime = new TimeOfDay(startTime.plusMinutes(slot_duration_in_mins).minusMinutes(1));
             int allottedCount = allDosageTimeSlots.countOfPatientsAllottedForSlot(slotStartTime, slotEndTime);
-            if (allottedCount < 10) {
+            if (allottedCount < max_patients_per_slot) {
                 allTimeSlots.add(startTime.toString("HH:mm"));
             }
-            startTime = startTime.plusMinutes(15);
+            startTime = startTime.plusMinutes(slot_duration_in_mins);
         }
         return allTimeSlots;
     }
