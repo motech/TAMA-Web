@@ -1,7 +1,6 @@
 dojo.require("dojo.data.ItemFileWriteStore");
 
 dojo.addOnLoad(function() {
-
     var regimens_data;
     var regimens_data_hash = {};
     var groups_data_hash = {};
@@ -112,6 +111,9 @@ dojo.addOnLoad(function() {
                 var evening_label = dojo.byId('_c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules' + dosage + '1_id');
                 var evening_time = dijit.byId('_treatmentAdvice.drugDosages[' + dosage + '].eveningTime_id');
 
+                morning_time.setValue('');
+                evening_time.setValue('');
+
                 var showMorningTime = function() {
                     morning_time.set('disabled', false);
                     morning_time.set('required', true);
@@ -214,7 +216,7 @@ dojo.addOnLoad(function() {
                 }
             ];
 
-            for (var i = 0; i < conditions.length; i++){
+            for (var i = 0; i < conditions.length; i++) {
                 if (conditions[i].execute())
                     return conditions[i].message;
             }
