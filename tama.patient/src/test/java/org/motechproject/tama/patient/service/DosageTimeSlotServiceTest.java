@@ -5,14 +5,19 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.tama.common.domain.TimeMeridiem;
+import org.motechproject.tama.common.domain.TimeOfDay;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.DosageTimeSlot;
-import org.motechproject.tama.patient.domain.TimeMeridiem;
-import org.motechproject.tama.patient.domain.TimeOfDay;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllDosageTimeSlots;
 
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -31,17 +36,20 @@ public class DosageTimeSlotServiceTest {
     }
 
     @Test
-    public void shouldAllotASlotToThePatient() {
+    public void shouldAllotSlotsForTheGivenTreatmentAdvice() {
         String patientDocumentId = "patientDocumentId";
-        TimeOfDay slotTime = new TimeOfDay(10, 0, TimeMeridiem.PM);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocumentId).build();
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withDrugDosages("10:00am", "06:00pm").build();
 
-        dosageTimeSlotService.allotSlot(patientDocumentId, slotTime);
+        dosageTimeSlotService.allotSlots(patient, treatmentAdvice);
 
         ArgumentCaptor<DosageTimeSlot> dosageTimeSlotArgumentCaptor = ArgumentCaptor.forClass(DosageTimeSlot.class);
-        verify(allDosageTimeSlots).add(dosageTimeSlotArgumentCaptor.capture());
-        assertEquals(patientDocumentId, dosageTimeSlotArgumentCaptor.getValue().getPatientDocumentId());
-        assertEquals(slotTime, dosageTimeSlotArgumentCaptor.getValue().getDosageTime());
-
+        verify(allDosageTimeSlots, times(2)).add(dosageTimeSlotArgumentCaptor.capture());
+        List<DosageTimeSlot> timeSlots = dosageTimeSlotArgumentCaptor.getAllValues();
+        assertEquals(patientDocumentId, timeSlots.get(0).getPatientDocumentId());
+        assertEquals(new TimeOfDay(10, 0, TimeMeridiem.AM), timeSlots.get(0).getDosageTime());
+        assertEquals(patientDocumentId, timeSlots.get(1).getPatientDocumentId());
+        assertEquals(new TimeOfDay(6, 0, TimeMeridiem.PM), timeSlots.get(1).getDosageTime());
     }
 
     @Test

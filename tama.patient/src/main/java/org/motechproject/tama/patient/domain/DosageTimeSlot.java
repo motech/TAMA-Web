@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.tama.common.domain.TimeOfDay;
 
 import javax.validation.constraints.NotNull;
 

@@ -4,11 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.common.domain.TimeMeridiem;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TimeMeridiem;
-import org.motechproject.tama.patient.domain.TimeOfDay;
 
 import java.util.HashMap;
 import java.util.Map;

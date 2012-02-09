@@ -8,13 +8,13 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.outbox.listener.OutboxCallListener;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.testing.utils.BaseUnitTest;
 

@@ -2,11 +2,11 @@ package org.motechproject.tama.patient.repository;
 
 import org.junit.After;
 import org.junit.Test;
+import org.motechproject.tama.common.domain.TimeMeridiem;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.patient.builder.DosageTimeSlotBuilder;
 import org.motechproject.tama.patient.domain.DosageTimeSlot;
-import org.motechproject.tama.patient.domain.TimeMeridiem;
-import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 

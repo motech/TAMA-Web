@@ -11,13 +11,13 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TimeMeridiem;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
-import org.motechproject.tama.patient.domain.TimeMeridiem;
-import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientService;
 

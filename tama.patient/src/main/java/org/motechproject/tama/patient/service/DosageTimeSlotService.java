@@ -1,8 +1,12 @@
 package org.motechproject.tama.patient.service;
 
 import org.joda.time.LocalTime;
+import org.motechproject.tama.common.domain.TimeOfDay;
+import org.motechproject.tama.common.util.TimeUtil;
 import org.motechproject.tama.patient.domain.DosageTimeSlot;
-import org.motechproject.tama.patient.domain.TimeOfDay;
+import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllDosageTimeSlots;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,10 +24,19 @@ public class DosageTimeSlotService {
         this.allDosageTimeSlots = allDosageTimeSlots;
     }
 
-    public void allotSlot(String patientDocumentId, TimeOfDay timeOfDay) {
+    public void allotSlots(Patient patient, TreatmentAdvice treatmentAdvice) {
+        for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
+            String morningTime = drugDosage.getMorningTime();
+            if (morningTime != null) allotSlot(patient, morningTime);
+            String eveningTime = drugDosage.getEveningTime();
+            if (eveningTime != null) allotSlot(patient, eveningTime);
+        }
+    }
+
+    private void allotSlot(Patient patient, String timeString) {
         DosageTimeSlot timeSlot = new DosageTimeSlot();
-        timeSlot.setDosageTime(timeOfDay);
-        timeSlot.setPatientDocumentId(patientDocumentId);
+        timeSlot.setDosageTime(new TimeUtil(timeString).getTimeOfDay());
+        timeSlot.setPatientDocumentId(patient.getId());
         allDosageTimeSlots.add(timeSlot);
     }
 

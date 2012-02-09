@@ -9,6 +9,8 @@ import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.outbox.api.EventKeys;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TimeMeridiem;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.domain.*;
 
 import java.util.Map;

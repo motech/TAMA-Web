@@ -1,8 +1,8 @@
 package org.motechproject.tama.patient.builder;
 
+import org.motechproject.tama.common.domain.TimeMeridiem;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.domain.DosageTimeSlot;
-import org.motechproject.tama.patient.domain.TimeMeridiem;
-import org.motechproject.tama.patient.domain.TimeOfDay;
 
 public class DosageTimeSlotBuilder {
 

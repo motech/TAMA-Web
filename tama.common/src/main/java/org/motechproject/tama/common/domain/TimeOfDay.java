@@ -1,10 +1,9 @@
-package org.motechproject.tama.patient.domain;
+package org.motechproject.tama.common.domain;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.LocalTime;
 import org.motechproject.model.Time;
-import org.motechproject.tama.common.domain.BaseEntity;
 
 public class TimeOfDay extends BaseEntity {
 
@@ -34,7 +33,6 @@ public class TimeOfDay extends BaseEntity {
         }
         this.hour = hour;
     }
-
 
     public Integer getHour() {
         return hour;

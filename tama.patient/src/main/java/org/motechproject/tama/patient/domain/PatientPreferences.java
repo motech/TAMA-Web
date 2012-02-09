@@ -6,6 +6,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.common.domain.BaseEntity;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
 
 import javax.persistence.ManyToOne;

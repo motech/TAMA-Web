@@ -7,6 +7,8 @@ import org.mockito.Mockito;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TimeMeridiem;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.fourdayrecall.builder.FourDayRecallEventPayloadBuilder;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
@@ -16,8 +18,6 @@ import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
-import org.motechproject.tama.patient.domain.TimeMeridiem;
-import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.repository.AllPatients;
 
 import static org.mockito.Mockito.*;

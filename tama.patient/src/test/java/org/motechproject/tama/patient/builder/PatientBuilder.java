@@ -3,6 +3,7 @@ package org.motechproject.tama.patient.builder;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.common.util.UniqueMobileNumber;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.domain.*;

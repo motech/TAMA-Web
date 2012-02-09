@@ -27,12 +27,15 @@ public class TreatmentAdviceServiceTest {
     private CallPlan dailyCallPlan;
     @Mock
     private CallPlan weeklyCallPlan;
+    @Mock
+    private DosageTimeSlotService dosageTimeSlotService;
+
     private TreatmentAdviceService treatmentAdviceService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        treatmentAdviceService = new TreatmentAdviceService(allPatients, allTreatmentAdvices);
+        treatmentAdviceService = new TreatmentAdviceService(allPatients, allTreatmentAdvices, dosageTimeSlotService);
     }
 
     @Test

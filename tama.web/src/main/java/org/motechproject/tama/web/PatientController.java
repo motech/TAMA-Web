@@ -5,6 +5,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.appointment.service.TAMAAppointmentsService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;

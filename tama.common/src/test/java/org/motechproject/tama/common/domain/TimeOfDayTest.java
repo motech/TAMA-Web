@@ -1,4 +1,4 @@
-package org.motechproject.tama.patient.domain;
+package org.motechproject.tama.common.domain;
 
 import org.junit.Test;
 import org.motechproject.model.Time;

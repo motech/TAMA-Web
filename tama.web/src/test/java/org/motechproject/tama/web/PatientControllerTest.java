@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.appointment.service.TAMAAppointmentsService;
 import org.motechproject.tama.common.TamaException;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;

@@ -38,6 +38,15 @@ public class TreatmentAdviceBuilder {
         return this;
     }
 
+    public TreatmentAdviceBuilder withDrugDosages(String morningTime, String eveningTime) {
+        DrugDosage drugDosage1 = new DrugDosage();
+        drugDosage1.setMorningTime(morningTime);
+        DrugDosage drugDosage2 = new DrugDosage();
+        drugDosage2.setEveningTime(eveningTime);
+        this.treatmentAdvice.setDrugDosages(Arrays.asList(drugDosage1, drugDosage2));
+        return this;
+    }
+
     public TreatmentAdvice build() {
         return this.treatmentAdvice;
     }
