@@ -65,10 +65,10 @@
                                 </c:when>
                                 <c:otherwise>
                                     <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}0"
-                                                  field="treatmentAdvice.drugDosages[${item.index}].morningTime"  items="${timeSlots}"
+                                                  field="treatmentAdvice.drugDosages[${item.index}].morningTime"  items="${morningTimeSlots}"
                                                   path="/treatmentadvices/timeSlots" label="Morning Time (hh:mm)" required="true" />
                                     <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}1"
-                                                  field="treatmentAdvice.drugDosages[${item.index}].eveningTime"  items="${timeSlots}"
+                                                  field="treatmentAdvice.drugDosages[${item.index}].eveningTime"  items="${eveningTimeSlots}"
                                                   path="/treatmentadvices/timeSlots" label="Evening Time (hh:mm)" required="true" />
                                 </c:otherwise>
                             </c:choose>

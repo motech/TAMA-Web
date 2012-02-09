@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.repository.AllDosageTimeSlots;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,11 +54,22 @@ public class DosageTimeSlotServiceTest {
     }
 
     @Test
-    public void shouldGetAvailableTimeSlots() {
+    public void shouldGetAllAvailableMorningTimeSlots() {
         when(allDosageTimeSlots.countOfPatientsAllottedForSlot(Matchers.<TimeOfDay>any(), Matchers.<TimeOfDay>any())).thenReturn(10, 10, 10, 10, 2, 10, 10, 2, 10);
-        final List<String> timeSlots = dosageTimeSlotService.availableSlots();
+        final List<String> timeSlots = dosageTimeSlotService.availableMorningSlots();
         assertEquals(2, timeSlots.size());
         assertEquals("01:00", timeSlots.get(0));
         assertEquals("01:45", timeSlots.get(1));
+        assertFalse(timeSlots.contains("12:15"));
+    }
+
+    @Test
+    public void shouldGetAllAvailableEveningTimeSlots() {
+        when(allDosageTimeSlots.countOfPatientsAllottedForSlot(Matchers.<TimeOfDay>any(), Matchers.<TimeOfDay>any())).thenReturn(10, 10, 10, 10, 2, 10, 10, 2, 10);
+        final List<String> timeSlots = dosageTimeSlotService.availableEveningSlots();
+        assertEquals(2, timeSlots.size());
+        assertEquals("02:00", timeSlots.get(0));
+        assertEquals("02:45", timeSlots.get(1));
+        assertFalse(timeSlots.contains("00:15"));
     }
 }

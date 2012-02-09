@@ -40,9 +40,19 @@ public class DosageTimeSlotService {
         allDosageTimeSlots.add(timeSlot);
     }
 
-    public List<String> availableSlots() {
+    public List<String> availableMorningSlots() {
         LocalTime startTime = new LocalTime(0, 0, 0);
+        final LocalTime endTime = new LocalTime(11, 59, 0);
+        return timeSlots(startTime, endTime);
+    }
+
+    public List<String> availableEveningSlots() {
+        LocalTime startTime = new LocalTime(1, 0, 0);
         final LocalTime endTime = new LocalTime(12, 59, 0);
+        return timeSlots(startTime, endTime);
+    }
+
+    private List<String> timeSlots(LocalTime startTime, LocalTime endTime) {
         final List<String> allTimeSlots = new ArrayList<String>();
         while (startTime.isBefore(endTime)) {
             TimeOfDay slotStartTime = new TimeOfDay(startTime);

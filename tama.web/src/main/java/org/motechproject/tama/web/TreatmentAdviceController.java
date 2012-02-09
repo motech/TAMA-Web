@@ -154,6 +154,7 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.addAttribute("dosageTypes", dosageTypes());
         uiModel.addAttribute("mealAdviceTypes", mealAdviceTypes());
         uiModel.addAttribute("callPlan", patient.getPatientPreferences().getCallPreference());
-        uiModel.addAttribute("timeSlots", dosageTimeSlotService.availableSlots());
+        uiModel.addAttribute("morningTimeSlots", dosageTimeSlotService.availableMorningSlots());
+        uiModel.addAttribute("eveningTimeSlots", dosageTimeSlotService.availableEveningSlots());
     }
 }

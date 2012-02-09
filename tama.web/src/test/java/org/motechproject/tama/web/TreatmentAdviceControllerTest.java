@@ -96,14 +96,17 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-        final ArrayList<String> timeSlots = new ArrayList<String>();
-        when(dosageTimeSlotService.availableSlots()).thenReturn(timeSlots);
+        final ArrayList<String> morningTimeSlots = new ArrayList<String>() {{ add("10:00"); }};
+        final ArrayList<String> eveningTimeSlots = new ArrayList<String>() {{ add("09:00"); }};
+        when(dosageTimeSlotService.availableMorningSlots()).thenReturn(morningTimeSlots);
+        when(dosageTimeSlotService.availableEveningSlots()).thenReturn(eveningTimeSlots);
         controller.createForm(PATIENT_ID, uiModel);
 
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
         verify(uiModel).addAttribute("patientIdentifier", patient.getPatientId());
         verify(uiModel).addAttribute("callPlan", patient.getPatientPreferences().getCallPreference());
-        verify(uiModel).addAttribute("timeSlots", timeSlots);
+        verify(uiModel).addAttribute("morningTimeSlots", morningTimeSlots);
+        verify(uiModel).addAttribute("eveningTimeSlots", eveningTimeSlots);
     }
 
     @Test
