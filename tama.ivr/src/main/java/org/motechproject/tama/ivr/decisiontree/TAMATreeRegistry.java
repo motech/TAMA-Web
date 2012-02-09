@@ -1,7 +1,6 @@
 package org.motechproject.tama.ivr.decisiontree;
 
 import org.motechproject.decisiontree.model.Tree;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -23,6 +22,7 @@ public class TAMATreeRegistry {
     public static final String FOUR_DAY_RECALL_INCOMING_CALL = "FourDayRecallIncomingCallTree";
     public static final String OUTBOX_CALL = "OutboxCallTree";
     public static final String MENU_TREE = "MenuTree";
+
     private List<String> leafTreeNames;
 
     public TAMATreeRegistry() {

@@ -7,26 +7,32 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_org_motechproject_tama_ivr_logging_domain_CallLog" items="${callsummary}">
         <c:forEach items="${callsummary}" var="calllog" varStatus="logIndex">
-            <util:panel id="title[${logIndex.index}]" title="${calllog.title} || Type :${calllog.callLog.callType} || Date :${calllog.callDateFromCallLogDateTime} || Started At :${calllog.callStartTimeFromCallLogStartDateTime} || Ended At :${calllog.callEndTimeFromCallLogEndDateTime}" openPane="false">
-                <util:panel id="sub-title[${logIndex.index}]" title="Events" openPane="true">
-                    <c:forEach items="${calllog.callEvents}" var="callEvent" varStatus="eventIndex">
-                        <c:if test="${callEvent.userInputAvailable}">
-                            <b><c:out value="User entered : "/></b><c:out value="${callEvent.userInput}"/>
-                        </c:if>
-                        <c:if test="${not empty callEvent.responses}">
-                            <br/>
-                            <br/>
-                            <b><c:out value="Tama played"/></b>
-                            <br/>
-                            <br/>
-                            <c:forEach items="${callEvent.responses}" var="response">
-                                 <c:out value="${response}"/>
-                                 <br/>
-                                 <br/>
-                            </c:forEach>
-                        </c:if>
-                    </c:forEach>
-                </util:panel>
+            <util:panel id="title[${logIndex.index}]" title="${calllog.title} || Type : ${calllog.flows} || Date :${calllog.callDateFromCallLogDateTime} || Started At :${calllog.callStartTimeFromCallLogStartDateTime} || Ended At :${calllog.callEndTimeFromCallLogEndDateTime}" openPane="false">
+            <c:forEach items="${calllog.callFlowGroupViews}" var="callEventGroup" varStatus="groupIndex">
+                <c:if test="${not empty callEventGroup.allResponses}">
+                    <util:panel id="Flow[${logIndex.index}${groupIndex.index}]" title="${callEventGroup.flow}" openPane="false">
+                        <c:forEach items="${callEventGroup.callEventViews}" var="callEvent" varStatus="eventIndex">
+                            <c:if test="${callEvent.userInputAvailable}">
+                                <c:if test="${not empty callEvent.userInput}">
+                                    <b><c:out value="User entered : "/></b><c:out value="${callEvent.userInput}"/>
+                                    <br/>
+                                    <br/>
+                                </c:if>
+                            </c:if>
+                            <c:if test="${not empty callEvent.responses}">
+                                <b><c:out value="Tama played"/></b>
+                                <br/>
+                                <br/>
+                                <c:forEach items="${callEvent.responses}" var="response">
+                                    <c:out value="${response}"/>
+                                    <br/>
+                                    <br/>
+                                </c:forEach>
+                            </c:if>
+                        </c:forEach>
+                    </util:panel>
+                </c:if>
+            </c:forEach>
             </util:panel>
         </c:forEach>
     </page:list>

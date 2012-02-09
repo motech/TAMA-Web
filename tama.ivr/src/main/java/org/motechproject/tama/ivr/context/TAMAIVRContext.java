@@ -11,6 +11,7 @@ import org.motechproject.util.Cookies;
 import org.motechproject.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 public class TAMAIVRContext {
@@ -144,6 +145,13 @@ public class TAMAIVRContext {
 
     public void callState(CallState callState) {
         setInSession(CALL_STATE, callState.toString());
+        log(CALL_STATE, callState.toString());
+    }
+
+    private void log(String key, String value) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put(key, value);
+        setDataToLog(map);
     }
 
     public void lastCompletedTree(String treeName) {
@@ -201,5 +209,9 @@ public class TAMAIVRContext {
 
     public String getLastPlayedHealthTip() {
         return this.cookies.getValue(LAST_PLAYED_HEALTH_TIP);
+    }
+
+    public void setDataToLog(HashMap<String, String> map) {
+        kooKooIVRContext.dataToLog(map);
     }
 }

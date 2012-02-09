@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CallEventView {
     private CallEvent callEvent;
-
+    
     public CallEventView(CallEvent callEvent) {
         this.callEvent = callEvent;
     }
@@ -40,5 +40,17 @@ public class CallEventView {
         CallEventCustomData customData = callEvent.getData();
         String input = customData.getFirst(CallEventConstants.DTMF_DATA);
         return input == null ? "" : input;
+    }
+
+    public String getTree() {
+        CallEventCustomData customData = callEvent.getData();
+        String treeName = customData.getFirst(CallEventConstants.TREE_NAME);
+        return treeName == null ? "" : treeName;
+    }
+
+    public String getCallState() {
+        CallEventCustomData customData = callEvent.getData();
+        String callState = customData.getFirst(CallEventConstants.CALL_STATE);
+        return callState == null ? "" : callState;
     }
 }
