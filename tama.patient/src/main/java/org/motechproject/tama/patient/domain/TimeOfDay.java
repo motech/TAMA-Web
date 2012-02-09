@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.joda.time.LocalTime;
 import org.motechproject.model.Time;
 import org.motechproject.tama.common.domain.BaseEntity;
 
@@ -21,6 +22,19 @@ public class TimeOfDay extends BaseEntity {
         this.minute = minute;
         this.timeMeridiem = timeMeridiem;
     }
+
+    public TimeOfDay(LocalTime time) {
+        this.minute = time.getMinuteOfHour();
+        int hour = time.getHourOfDay();
+        if (hour > 12) {
+            hour = hour - 12;
+            this.timeMeridiem = TimeMeridiem.PM;
+        } else {
+            this.timeMeridiem = TimeMeridiem.AM;
+        }
+        this.hour = hour;
+    }
+
 
     public Integer getHour() {
         return hour;

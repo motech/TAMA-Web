@@ -1,12 +1,12 @@
 package org.motechproject.tama.web;
 
-import org.joda.time.DateTime;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.ClinicVisitService;
+import org.motechproject.tama.patient.service.DosageTimeSlotService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
@@ -41,9 +41,10 @@ public class TreatmentAdviceController extends BaseController {
     private TreatmentAdviceService treatmentAdviceService;
     private ClinicVisitService clinicVisitService;
     private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
+    private DosageTimeSlotService dosageTimeSlotService;
 
     @Autowired
-    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, ClinicVisitService clinicVisitService) {
+    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, ClinicVisitService clinicVisitService, DosageTimeSlotService dosageTimeSlotService) {
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
         this.allDosageTypes = allDosageTypes;
@@ -51,6 +52,7 @@ public class TreatmentAdviceController extends BaseController {
         this.treatmentAdviceService = treatmentAdviceService;
         this.treatmentAdviceViewMapper = treatmentAdviceViewMapper;
         this.clinicVisitService = clinicVisitService;
+        this.dosageTimeSlotService = dosageTimeSlotService;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
@@ -152,17 +154,6 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.addAttribute("dosageTypes", dosageTypes());
         uiModel.addAttribute("mealAdviceTypes", mealAdviceTypes());
         uiModel.addAttribute("callPlan", patient.getPatientPreferences().getCallPreference());
-        uiModel.addAttribute("timeSlots", availableTimeSlots());
-    }
-
-    private List<String> availableTimeSlots() {
-        DateTime startTime = DateUtil.newDateTime(DateUtil.today(), 0, 0, 0);
-        final DateTime endTime = DateUtil.newDateTime(DateUtil.today(), 12, 59, 0);
-        final List<String> allTimeSlots = new ArrayList<String>();
-        while (startTime.isBefore(endTime)) {
-            allTimeSlots.add(startTime.toString("HH:mm"));
-            startTime = startTime.plusMinutes(15);
-        }
-        return allTimeSlots;
+        uiModel.addAttribute("timeSlots", dosageTimeSlotService.availableSlots());
     }
 }

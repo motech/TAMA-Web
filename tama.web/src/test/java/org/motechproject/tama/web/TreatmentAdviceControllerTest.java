@@ -3,7 +3,6 @@ package org.motechproject.tama.web;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
@@ -14,6 +13,7 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.ClinicVisitService;
+import org.motechproject.tama.patient.service.DosageTimeSlotService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.DosageType;
@@ -39,7 +39,6 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -66,6 +65,8 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
     @Mock
     private ClinicVisitService clinicVisitService;
+    @Mock
+    private DosageTimeSlotService dosageTimeSlotService;
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
@@ -82,7 +83,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, clinicVisitService);
+        controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, clinicVisitService, dosageTimeSlotService);
     }
 
     @Test
@@ -95,14 +96,14 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
+        final ArrayList<String> timeSlots = new ArrayList<String>();
+        when(dosageTimeSlotService.availableSlots()).thenReturn(timeSlots);
         controller.createForm(PATIENT_ID, uiModel);
 
         verify(uiModel).addAttribute("treatmentAdvice", treatmentAdviceAttr);
         verify(uiModel).addAttribute("patientIdentifier", patient.getPatientId());
         verify(uiModel).addAttribute("callPlan", patient.getPatientPreferences().getCallPreference());
-        final ArgumentCaptor<List> timeSlotsCaptor = ArgumentCaptor.forClass(List.class);
-        verify(uiModel).addAttribute(eq("timeSlots"), timeSlotsCaptor.capture());
-        assertEquals(52, timeSlotsCaptor.getValue().size());
+        verify(uiModel).addAttribute("timeSlots", timeSlots);
     }
 
     @Test
