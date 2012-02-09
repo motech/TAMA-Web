@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooRequest;
+import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.domain.IVRAuthenticationStatus;
@@ -17,7 +18,6 @@ import java.util.List;
 public class TAMAIVRContext {
     static final String CALLER_ID = "caller_id";
     static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
-    private static final String CALL_STATE = "call_state";
     private static final String SYMPTOM_REPORTING_TREE = "symptom_reporting_tree";
     public static final String PATIENT_ID = "patient_id";
     private static final String CALL_START_TIME = "call_time";
@@ -107,7 +107,7 @@ public class TAMAIVRContext {
     }
 
     public CallState callState() {
-        String value = fromSession(CALL_STATE);
+        String value = fromSession(CallEventConstants.CALL_STATE);
         return (value == null) ? CallState.STARTED : Enum.valueOf(CallState.class, value);
     }
 
@@ -144,8 +144,8 @@ public class TAMAIVRContext {
     }
 
     public void callState(CallState callState) {
-        setInSession(CALL_STATE, callState.toString());
-        log(CALL_STATE, callState.toString());
+        setInSession(CallEventConstants.CALL_STATE, callState.toString());
+        log(CallEventConstants.CALL_STATE, callState.toString());
     }
 
     private void log(String key, String value) {

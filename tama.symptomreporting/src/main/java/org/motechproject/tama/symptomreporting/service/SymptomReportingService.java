@@ -75,7 +75,7 @@ public class SymptomReportingService {
     public void notifyCliniciansIfCallMissed(String callLogDocId, String patientDocId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callLogDocId);
         SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
-        if (symptomReport!= null && symptomReport.getDoctorContacted().equals(TAMAConstants.ReportedType.No)) {
+        if (symptomReport != null && symptomReport.getDoctorContacted().equals(TAMAConstants.ReportedType.No)) {
             notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
         }
     }

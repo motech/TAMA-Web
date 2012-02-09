@@ -38,8 +38,6 @@ public class SymptomReportingServiceTest {
     @Mock
     private AllPatients allPatients;
     @Mock
-    private AllUniquePatientFields allUniquePatientFields;
-    @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
     private AllLabResults allLabResults;
@@ -161,6 +159,25 @@ public class SymptomReportingServiceTest {
         when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
         when(callDetailRecord.getVendorCallId()).thenReturn("callId");
         when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
+        when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.Yes);
+
+        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
+
+        symptomReportingService.notifyCliniciansIfCallMissed("callDocId", patientDocId);
+
+        verify(symptomReportingService, never()).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+    }
+
+    @Test
+    public void shouldNot_NotifyClinicians_WhenNotSymptomWasReported_InTheCall(){
+        SymptomReport symptomReport = mock(SymptomReport.class);
+        String patientDocId = "patientDocId";
+        symptomReportingService = Mockito.spy(symptomReportingService);
+        KookooCallDetailRecord callDetailRecord = mock(KookooCallDetailRecord.class);
+
+        when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
+        when(callDetailRecord.getVendorCallId()).thenReturn("callId");
+        when(allSymptomReports.findByCallId("callId")).thenReturn(null);
         when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.Yes);
 
         doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);

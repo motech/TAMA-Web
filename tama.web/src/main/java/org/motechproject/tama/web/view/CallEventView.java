@@ -37,20 +37,20 @@ public class CallEventView {
     }
 
     public String getUserInput() {
-        CallEventCustomData customData = callEvent.getData();
-        String input = customData.getFirst(CallEventConstants.DTMF_DATA);
-        return input == null ? "" : input;
+        return getData(CallEventConstants.DTMF_DATA);
     }
 
     public String getTree() {
-        CallEventCustomData customData = callEvent.getData();
-        String treeName = customData.getFirst(CallEventConstants.TREE_NAME);
-        return treeName == null ? "" : treeName;
+        return getData(CallEventConstants.TREE_NAME);
     }
 
     public String getCallState() {
+        return getData(CallEventConstants.CALL_STATE);
+    }
+
+    private String getData(String key) {
         CallEventCustomData customData = callEvent.getData();
-        String callState = customData.getFirst(CallEventConstants.CALL_STATE);
-        return callState == null ? "" : callState;
+        String data = customData.getFirst(key);
+        return data == null ? "" : data;
     }
 }

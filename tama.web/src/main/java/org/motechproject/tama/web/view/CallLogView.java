@@ -11,6 +11,8 @@ import org.motechproject.tama.ivr.domain.CallState;
 
 import java.util.*;
 
+import static org.motechproject.tama.web.view.CallFlowConstants.TREE_TO_FLOW_MAP;
+
 public class CallLogView {
 
     private String patientId;
@@ -77,54 +79,12 @@ public class CallLogView {
         return likelyPatientIds;
     }
 
-    private void createNewFlow(String flow, CallEventView callEventView) {
-        CallFlowGroupView callFlowGroupView = new CallFlowGroupView(flow, callEventView);
-        callFlowGroupViews.add(callFlowGroupView);
-
-    }
-
-    private void addEventToLastFlow(CallEventView callEventView) {
-        if (!callFlowGroupViews.isEmpty()) {
-            getLastCallFlowGroupView().add(callEventView);
-        }
-    }
-
-    private CallFlowGroupView getLastCallFlowGroupView() {
-        return callFlowGroupViews.get(callFlowGroupViews.size() - 1);
-    }
-
-    public void setCallFlowGroupViews(){
-        for (CallEvent callEvent : callLog.getCallEvents()) {
-            CallEventView callEventView = new CallEventView(callEvent);
-            String flowToWhichCallEventBelongs = getFlow(callEventView);
-            if (flowToWhichCallEventBelongs.equals(getFlowOfLastCallFlowGroup())) {
-                addEventToLastFlow(callEventView);
-            } else {
-                createNewFlow(flowToWhichCallEventBelongs, callEventView);
-            }
-        }
-        Set<String> flowsInViews = new HashSet<String> ();
-        for (CallFlowGroupView callFlowGroupView : callFlowGroupViews) {
-            String callFlowGroupViewFlow = callFlowGroupView.getFlow();
-            flowsInViews.add(callFlowGroupViewFlow);
-        }
-        if(authenticated) {
-            flows = StringUtils.join(flowsInViews, ", ");
-        } else{
-            flows = "Unauthenticated";
-        }
-    }
-
     public List<CallFlowGroupView> getCallFlowGroupViews() {
         return callFlowGroupViews;
     }
 
     public String getFlows(){
         return flows;
-    }
-
-    private String getFlow(CallEventView callEventView) {
-        return getFlow(callEventView.getTree(), callEventView.getCallState());
     }
 
     public String getTitle() {
@@ -136,7 +96,43 @@ public class CallLogView {
         }
     }
 
-    private String getFlow(String tree, String callState) {
+    public void setCallFlowGroupViews(){
+        createCallFlowGroupViews();
+        constructCallFlowTitle();
+    }
+
+    private void createCallFlowGroupViews() {
+        for (CallEvent callEvent : callLog.getCallEvents()) {
+            CallEventView callEventView = new CallEventView(callEvent);
+            String flowToWhichCallEventBelongs = getFlow(callEventView);
+            if (flowToWhichCallEventBelongs.equals(getFlowOfLastCallFlowGroup())) {
+                addEventToLastFlow(callEventView);
+            } else {
+                createNewFlow(flowToWhichCallEventBelongs, callEventView);
+            }
+        }
+    }
+
+    private void constructCallFlowTitle() {
+        Set<String> flowsInViews = new HashSet<String>();
+        for (CallFlowGroupView callFlowGroupView : callFlowGroupViews) {
+            String callFlowGroupViewFlow = callFlowGroupView.getFlow();
+            flowsInViews.add(callFlowGroupViewFlow);
+        }
+        if(authenticated) {
+            flows = StringUtils.join(flowsInViews, ", ");
+        } else{
+            flows = CallFlowConstants.UNAUTHENTICATED;
+        }
+    }
+
+    private void createNewFlow(String flow, CallEventView callEventView) {
+        CallFlowGroupView callFlowGroupView = new CallFlowGroupView(flow, callEventView);
+        callFlowGroupViews.add(callFlowGroupView);
+    }
+
+    private String getFlow(CallEventView callEventView) {
+        String callState = callEventView.getCallState();
         if (callState.equals(CallState.HEALTH_TIPS.name())) {
             authenticated = true;
             return CallFlowConstants.HEALTH_TIPS;
@@ -144,22 +140,29 @@ public class CallLogView {
             authenticated = true;
             return CallFlowConstants.OUTBOX;
         } else {
-            List<String> listOfTrees;
-            Map<String, List<String>> treeToFlowMap = CallFlowConstants.treeToFlowMap;
-            for (String key : treeToFlowMap.keySet()) {
-                listOfTrees = treeToFlowMap.get(key);
-                if (listOfTrees.contains(tree)) {
+            for (String key : TREE_TO_FLOW_MAP.keySet()) {
+                if (key.equals(callEventView.getTree())) {
                     authenticated = true;
-                    return key;
+                    return TREE_TO_FLOW_MAP.get(key);
                 }
             }
         }
         return CallFlowConstants.MENU;
     }
 
+    private void addEventToLastFlow(CallEventView callEventView) {
+        if (!callFlowGroupViews.isEmpty()) {
+            getLastCallFlowGroupView().add(callEventView);
+        }
+    }
+
     private String getFlowOfLastCallFlowGroup() {
         if (callFlowGroupViews.isEmpty()) return null;
         return getLastCallFlowGroupView().getFlow();
+    }
+
+    private CallFlowGroupView getLastCallFlowGroupView() {
+        return callFlowGroupViews.get(callFlowGroupViews.size() - 1);
     }
 }
 
