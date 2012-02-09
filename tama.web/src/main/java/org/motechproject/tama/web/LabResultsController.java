@@ -101,7 +101,7 @@ public class LabResultsController extends BaseController {
         }
 
         clinicVisitService.updateLabResults(labResultsUIModel.getClinicVisitId(), allLabResultsIds);
-        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getPatientId(), httpServletRequest);
+        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getClinicVisitId(), httpServletRequest);
     }
 
     private void populateUIModel(Model uiModel, String patientId) {

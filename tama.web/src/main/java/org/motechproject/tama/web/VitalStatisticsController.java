@@ -97,6 +97,6 @@ public class VitalStatisticsController extends BaseController {
                 clinicVisitService.updateVitalStatistics(vitalStatisticsUIModel.getClinicVisitId(), null);
             }
         }
-        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(vitalStatistics.getPatientId(), httpServletRequest);
+        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(vitalStatisticsUIModel.getClinicVisitId(), httpServletRequest);
     }
 }
