@@ -29,13 +29,11 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
 public class AllPatientsTest extends SpringIntegrationTest {
@@ -66,7 +64,6 @@ public class AllPatientsTest extends SpringIntegrationTest {
     @Before
     public void before() {
         super.before();
-        initMocks(this);
         allPatients = new AllPatients(tamaDbConnector, allClinics, allGenders, allIVRLanguages, allUniquePatientFields, allHIVTestReasons, allModesOfTransmission);
         markForDeletion(allUniquePatientFields.getAll().toArray());
         markForDeletion(allPatients.getAll().toArray());
