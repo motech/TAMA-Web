@@ -8,7 +8,7 @@
     <spring:url value="/resources/images/favicon.ico" var="favicon" />
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-	<table>
+	<table id="clinicVisitList">
 	<thead>
 		<tr>
 			<th></th>
@@ -19,14 +19,14 @@
 			<th>Type of Visit</th>
 		</tr>
 	</thead>
-	<c:forEach items="${clinicVisits}" var="visit">
+	<c:forEach items="${clinicVisits}" var="visit" varStatus="status">
         <spring:url value="/clinicvisits" var="clinicvisitEdit">
             <spring:param name="form" />
             <spring:param name="patientId" value="${visit.patientId}" />
             <spring:param name="clinicVisitId" value="${visit.id}" />
         </spring:url>
 		<tr>
-            <td><a href="${clinicvisitEdit}"><c:if test="${visit.name}"></c:if><c:out value="${visit.name}"/></a></td>
+            <td><a id="visit-${status.index}" href="${clinicvisitEdit}"><c:if test="${visit.name}"></c:if><c:out value="${visit.name}"/></a></td>
 			<td><spring:eval expression="visit.expectedVisitTime" /></td>
 			<td>
                 <c:if test="${not empty visit.expectedVisitTime}"><a href="#">Schedule</a></c:if>

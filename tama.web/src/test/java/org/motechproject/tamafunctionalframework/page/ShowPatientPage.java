@@ -141,9 +141,13 @@ public class ShowPatientPage extends Page {
     }
 
     public CreateClinicVisitPage goToCreateClinicVisitPage() {
+        return goToClinicVisitListPage().
+                gotoFirstClinicVisitPage();
+    }
+
+    private ShowClinicVisitListPage goToClinicVisitListPage() {
         this.clinicVisitsLink.click();
-        waitForElementWithIdToLoad(CreateTreatmentAdviceSection.DRUG_BRAND1_ID);
-        return MyPageFactory.initElements(webDriver, CreateClinicVisitPage.class);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitListPage.class);
     }
 
     public ShowClinicVisitPage goToShowClinicVisitPage() {

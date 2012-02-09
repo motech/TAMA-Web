@@ -27,6 +27,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VitalStatisticsControllerTest {
 
+    public static final String REDIRECT_CLINICVISITS_URL = "redirect:/clinicvisits/clinicVisitId";
     private VitalStatisticsController vitalStatisticsController;
     @Mock
     private AllVitalStatistics allVitalStatistics;
@@ -163,7 +164,7 @@ public class VitalStatisticsControllerTest {
         assertEquals("patient_id", vitalStatisticsArgumentCaptor.getValue().getPatientId());
         assertEquals(100, vitalStatisticsArgumentCaptor.getValue().getPulse().intValue());
         verify(clinicVisitService, times(1)).updateVitalStatistics(eq(clinicVisit.getId()), Matchers.<String>any());
-        assertEquals("redirect:/clinicvisits/patient_id", returnUrl);
+        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
     }
 
     @Test
@@ -178,7 +179,7 @@ public class VitalStatisticsControllerTest {
 
         verifyZeroInteractions(allClinicVisits);
         verifyZeroInteractions(clinicVisitService);
-        assertEquals("redirect:/clinicvisits/patient_id", returnUrl);
+        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
     }
 
     @Test
@@ -199,7 +200,7 @@ public class VitalStatisticsControllerTest {
         assertEquals("patient_id", vitalStatisticsArgumentCaptor.getValue().getPatientId());
         assertEquals(100, vitalStatisticsArgumentCaptor.getValue().getPulse().intValue());
         verify(clinicVisitService, times(1)).updateVitalStatistics(eq(clinicVisit.getId()), Matchers.<String>any());
-        assertEquals("redirect:/clinicvisits/patient_id", returnUrl);
+        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
     }
 
     @Test
@@ -217,7 +218,7 @@ public class VitalStatisticsControllerTest {
 
         verify(allVitalStatistics, times(1)).remove(savedVitalStatistics);
         verify(clinicVisitService, times(1)).updateVitalStatistics(clinicVisit.getId(), null);
-        assertEquals("redirect:/clinicvisits/patient_id", returnUrl);
+        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
     }
 
 }

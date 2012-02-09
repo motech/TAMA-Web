@@ -267,7 +267,7 @@ public class LabResultsControllerTest {
             add("labResultId2");
         }};
         assertEquals(expectedLabResults, labResultIdsArgumentCaptor.getValue());
-        assertEquals("redirect:/clinicvisits/patientId", viewName);
+        assertEquals("redirect:/clinicvisits/clinicVisitId", viewName);
     }
 
 }
