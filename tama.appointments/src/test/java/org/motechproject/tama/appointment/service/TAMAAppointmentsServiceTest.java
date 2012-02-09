@@ -10,7 +10,6 @@ import org.motechproject.appointments.api.AppointmentService;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.tama.appointment.service.TAMAAppointmentsService;
 import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -19,6 +18,7 @@ import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -68,31 +68,34 @@ public class TAMAAppointmentsServiceTest extends BaseUnitTest {
         LocalDate activationDate = activationTime.toLocalDate();
         ArgumentCaptor<Appointment> appointmentCapture = ArgumentCaptor.forClass(Appointment.class);
 
-        tamaAppointmentsService.scheduleAppointments(PATIENT_ID, activationTime);
-        verify(appointmentService, times(2)).addAppointment(appointmentCapture.capture());
-        verifyAppointment(PATIENT_ID, activationDate, FIRST_SCHEDULE_WEEK, appointmentCapture.getAllValues().get(0));
-        verifyAppointment(PATIENT_ID, activationDate, SECOND_SCHEDULE_WEEK, appointmentCapture.getAllValues().get(1));
+        tamaAppointmentsService.scheduleAppointments(PATIENT_ID);
+        verify(appointmentService, times(3)).addAppointment(appointmentCapture.capture());
+        verifyAppointment(PATIENT_ID, activationDate, 0, appointmentCapture.getAllValues().get(0));
+        verifyAppointment(PATIENT_ID, activationDate, FIRST_SCHEDULE_WEEK, appointmentCapture.getAllValues().get(1));
+        verifyAppointment(PATIENT_ID, activationDate, SECOND_SCHEDULE_WEEK, appointmentCapture.getAllValues().get(2));
     }
 
     @Test
     public void shouldCreateExpectedClinicVisit() {
+	//DateTimeSourceUtil.SourceInstance = new FixedDateTimeSource(now);
         DateTime activationTime = now;
         ArgumentCaptor<DateTime> dateCapture = ArgumentCaptor.forClass(DateTime.class);
 
-        tamaAppointmentsService.scheduleAppointments(PATIENT_ID, activationTime);
-        verify(clinicVisitService, times(2)).createExpectedVisit(dateCapture.capture(), eq(PATIENT_ID));
-        assertEquals(activationTime.plusWeeks(FIRST_SCHEDULE_WEEK), dateCapture.getAllValues().get(0));
-        assertEquals(activationTime.plusWeeks(SECOND_SCHEDULE_WEEK), dateCapture.getAllValues().get(1));
+        tamaAppointmentsService.scheduleAppointments(PATIENT_ID);
+        verify(clinicVisitService, times(2)).createExpectedVisit(dateCapture.capture(), anyInt(), eq(PATIENT_ID));
+        verify(clinicVisitService, times(1)).createFirstVisit(now, PATIENT_ID);
+        assertEquals(activationTime, dateCapture.getAllValues().get(0));
     }
 
     @Test
     public void shouldCreateReminders() {
         ArgumentCaptor<Reminder> reminderCapture = ArgumentCaptor.forClass(Reminder.class);
 
-        tamaAppointmentsService.scheduleAppointments(PATIENT_ID, now);
-        verify(reminderService, times(2)).addReminder(reminderCapture.capture());
-        verifyReminder(PATIENT_ID, FIRST_SCHEDULE_WEEK, reminderCapture.getAllValues().get(0));
-        verifyReminder(PATIENT_ID, SECOND_SCHEDULE_WEEK, reminderCapture.getAllValues().get(1));
+        tamaAppointmentsService.scheduleAppointments(PATIENT_ID);
+        verify(reminderService, times(3)).addReminder(reminderCapture.capture());
+        verifyReminder(PATIENT_ID, 0, reminderCapture.getAllValues().get(0));
+        verifyReminder(PATIENT_ID, FIRST_SCHEDULE_WEEK, reminderCapture.getAllValues().get(1));
+        verifyReminder(PATIENT_ID, SECOND_SCHEDULE_WEEK, reminderCapture.getAllValues().get(2));
     }
 
     private void verifyAppointment(String patientId, LocalDate activationDate, int offsetWeekNumber, Appointment appointment) {

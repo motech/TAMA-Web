@@ -3,6 +3,7 @@ package org.motechproject.tama.web;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.ClinicVisitBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
@@ -20,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -27,6 +29,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClinicVisitsControllerTest {
 
+    public static final String PATIENT_ID = "patientId";
     @Mock
     private TreatmentAdviceController treatmentAdviceController;
     @Mock
@@ -41,32 +44,34 @@ public class ClinicVisitsControllerTest {
     private ClinicVisitService clinicVisitService;
 
     private Model uiModel;
-    private ClinicVisitsController controller;
+    private ClinicVisitsController clinicVisitsController;
 
     @Before
     public void setUp() {
         initMocks(this);
         uiModel = new ExtendedModelMap();
-        controller = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, clinicVisitService);
+        clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, clinicVisitService);
     }
 
     @Test
     public void shouldRedirectToShowClinicVisits_WhenPatientHasATreatmentAdvice() {
         String patientId = "patientId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").build();
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
+        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
+        when(allTreatmentAdvices.get(anyString())).thenReturn(treatmentAdvice);
+        String redirectURL = clinicVisitsController.createForm(patientId, uiModel, request);
 
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
-        String redirectURL = controller.createForm(patientId, uiModel, request);
-
-        assertEquals("redirect:/clinicvisits/" + patientId, redirectURL);
+        assertEquals("clinicvisits/create" , redirectURL);
     }
 
     @Test
     public void shouldRedirectToCreateClinicVisits_WhenPatientDoesNotHaveATreatmentAdvice() {
         String patientId = "patientId";
-
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
+        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
-        String redirectURL = controller.createForm(patientId, uiModel, request);
+        String redirectURL = clinicVisitsController.createForm(patientId, uiModel, request);
 
         assertEquals("clinicvisits/create", redirectURL);
         verify(treatmentAdviceController).createForm(patientId, uiModel);
@@ -77,9 +82,10 @@ public class ClinicVisitsControllerTest {
     @Test
     public void shouldCreateNewClinicVisitsFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = "patientId";
-
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
+        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
-        String redirectURL = controller.createForm(patientId, uiModel, request);
+        String redirectURL = clinicVisitsController.createForm(patientId, uiModel, request);
 
         assertEquals("clinicvisits/create", redirectURL);
     }
@@ -88,10 +94,10 @@ public class ClinicVisitsControllerTest {
     public void shouldShowClinicVisitForm() {
         final String patientId = "patientId";
         final String clinicVisitId = "clinicVisitId";
-        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(clinicVisitId).build();
-        when(clinicVisitService.visitZero(patientId)).thenReturn(clinicVisit);
+        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(clinicVisitId).withPatientId(patientId).build();
+        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
 
-        final String showUrl = controller.show(patientId, uiModel);
+        final String showUrl = clinicVisitsController.show(patientId, uiModel);
 
         assertEquals("clinicvisits/show", showUrl);
         verify(treatmentAdviceController).show(clinicVisit.getTreatmentAdviceId(), uiModel);
@@ -117,12 +123,29 @@ public class ClinicVisitsControllerTest {
         ClinicVisit clinicVisit = new ClinicVisit();
         final DateTime visitDate = DateUtil.now();
         clinicVisit.setVisitDate(visitDate);
-        String redirectURL = controller.create(clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+        when(clinicVisitService.createOrUpdateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId")).thenReturn("clinicVisitId");
+        String redirectURL = clinicVisitsController.create(null, clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
 
-        assertEquals("redirect:/clinicvisits/patientId", redirectURL);
+        assertEquals("redirect:/clinicvisits/clinicVisitId", redirectURL);
         verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
         verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
         verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
-        verify(clinicVisitService).createVisit(visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId");
+        verify(clinicVisitService).createOrUpdateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId");
+    }
+
+    @Test
+    public void shouldReturnAllClinicVisitsForPatient() throws Exception {
+        Model uiModel = mock(Model.class);
+        ClinicVisit visit1 = ClinicVisit.createExpectedVisit(DateUtil.now(), 0, PATIENT_ID);
+        ClinicVisit visit2 = ClinicVisit.createExpectedVisit(DateUtil.now(), 0, PATIENT_ID);
+        when(clinicVisitService.getClinicVisits(PATIENT_ID)).thenReturn(Arrays.asList(visit1, visit2));
+
+        final String listUrl = clinicVisitsController.list(PATIENT_ID, uiModel);
+
+        assertEquals("clinicvisits/list", listUrl);
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(uiModel).addAttribute(eq("clinicVisits"), listArgumentCaptor.capture());
+        assertEquals(listArgumentCaptor.getValue().get(0), visit1);
+        assertEquals(listArgumentCaptor.getValue().get(1), visit2);
     }
 }

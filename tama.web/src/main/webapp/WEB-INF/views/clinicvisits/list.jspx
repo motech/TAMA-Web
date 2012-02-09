@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:spring="http://www.springframework.org/tags" version="2.0"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <spring:url value="/resources/images/favicon.ico" var="favicon" />
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+	<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th>Appointment Due Date</th>
+			<th>Adjusted Due Date</th>
+			<th>Appointment Set for</th>
+			<th>Actual Date of Visit</th>
+			<th>Type of Visit</th>
+		</tr>
+	</thead>
+	<c:forEach items="${clinicVisits}" var="visit">
+        <spring:url value="/clinicvisits" var="clinicvisitEdit">
+            <spring:param name="form" />
+            <spring:param name="patientId" value="${visit.patientId}" />
+            <spring:param name="clinicVisitId" value="${visit.id}" />
+        </spring:url>
+		<tr>
+            <td><a href="${clinicvisitEdit}"><c:if test="${visit.name}"></c:if><c:out value="${visit.name}"/></a></td>
+			<td><spring:eval expression="visit.expectedVisitTime" /></td>
+			<td><!-- adjusted date --></td>
+			<td><!-- set for --></td>
+			<td><spring:eval expression="visit.visitDate" /></td>
+			<td><c:out value="${visit.typeOfVisit}"/></td>
+		</tr>
+	</c:forEach>
+	</table>
+</div>

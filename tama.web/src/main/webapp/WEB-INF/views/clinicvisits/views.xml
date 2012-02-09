@@ -8,4 +8,7 @@
     <definition extends="default" name="clinicvisits/create">
         <put-attribute name="body" value="/WEB-INF/views/clinicvisits/create.jspx"/>
     </definition>
+    <definition extends="default" name="clinicvisits/list">
+        <put-attribute name="body" value="/WEB-INF/views/clinicvisits/list.jspx"/>
+    </definition>
 </tiles-definitions>

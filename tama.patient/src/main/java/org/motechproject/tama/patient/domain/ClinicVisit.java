@@ -15,6 +15,13 @@ import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'ClinicVisit'")
 public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> {
+    
+    public enum TypeOfVisit {
+	    Baseline,
+	    Scheduled,
+	    Unscheduled
+    }
+
     /*
      * TODO: Verify implication on migration for each change.
      */
@@ -26,6 +33,8 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     private List<String> labResultIds;
 
     private String vitalStatisticsId;
+    
+    private TypeOfVisit typeOfVisit; 
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -34,6 +43,25 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private DateTime expectedVisitTime;
+    
+    private String name;
+
+    
+    public String getName() {
+        return name;
+    }
+    
+    private void setName(String name) {
+	this.name = name;
+    }
+    
+    public TypeOfVisit getTypeOfVisit() {
+        return typeOfVisit;
+    }
+
+    public void setTypeOfVisit(TypeOfVisit typeOfVisit) {
+        this.typeOfVisit = typeOfVisit;
+    }
 
     public String getPatientId() {
         return patientId;
@@ -75,12 +103,19 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         this.visitDate = visitDate;
     }
 
+    @DateTimeFormat(style="S-", pattern = TAMAConstants.DATE_FORMAT)
+    public DateTime getExpectedVisitTime() {
+        return expectedVisitTime;
+    }
+    
     public void setExpectedVisitTime(DateTime expectedVisitTime) {
         this.expectedVisitTime = expectedVisitTime;
     }
 
     @Override
     public int compareTo(ClinicVisit clinicVisit) {
+        if (getVisitDate() == null) return 1;
+        if (clinicVisit.getVisitDate() == null) return -1;
         return getVisitDate().compareTo(clinicVisit.getVisitDate());
     }
 
@@ -89,10 +124,21 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         clinicVisit.setVisitDate(DateUtil.now());
         return clinicVisit;
     }
+    
+    public static ClinicVisit createFirstVisit(DateTime startDate, String patientId) {
+	ClinicVisit clinicVisit = new ClinicVisit();
+	clinicVisit.setName("Rigistered with TAMA");
+        clinicVisit.setVisitDate(startDate);
+        clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Baseline);
+        clinicVisit.setPatientId(patientId);
+        return clinicVisit;
+    }
 
-    public static ClinicVisit createExpectedVisit(DateTime expectedVisitTime, String patientId) {
+    public static ClinicVisit createExpectedVisit(DateTime expectedVisitTime, int weeks, String patientId) {
         ClinicVisit clinicVisit = new ClinicVisit();
-        clinicVisit.setExpectedVisitTime(expectedVisitTime);
+        clinicVisit.setName(weeks + " weeks Follow-up visit");
+        clinicVisit.setExpectedVisitTime(expectedVisitTime.plusWeeks(weeks));
+        clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Scheduled);
         clinicVisit.setPatientId(patientId);
         return clinicVisit;
     }

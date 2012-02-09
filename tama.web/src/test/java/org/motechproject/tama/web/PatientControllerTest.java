@@ -128,21 +128,40 @@ public class PatientControllerTest {
     @Test
     public void shouldActivatePatientsAndRedirectToPatientViewPage() {
         final DateTime now = DateTime.now();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(DateUtil.now().minusDays(2)).withActivationDate(now).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).
+                withCallPreference(CallPreference.DailyPillReminder).
+                withActivationDate(null).build();
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID, now);
+        doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
         String nextPage = controller.activate(PATIENT_ID, request);
 
-        verify(tamaAppointmentsService).scheduleAppointments(PATIENT_ID, now);
+        verify(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
     }
 
     @Test
-    public void shouldActivatePatientsAndCreateAppointments() {
+    public void shouldActivatePatientAndCreateAppointments() {
+        final DateTime now = DateUtil.now();
+        doNothing().when(tamaAppointmentsService).scheduleAppointments(eq(PATIENT_ID));
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).build();
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+
         String nextPage = controller.activate(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
         assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+        verify(tamaAppointmentsService).scheduleAppointments(eq(PATIENT_ID));
+    }
+    @Test
+    public void shouldNotRecreateAppointmentsOnReactivatingPatient() {
+        final DateTime now = DateUtil.now();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withActivationDate(now).build();
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+
+        String nextPage = controller.activate(PATIENT_ID, request);
+
+        assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+        verify(tamaAppointmentsService, never()).scheduleAppointments(eq(PATIENT_ID));
     }
 
     @Test

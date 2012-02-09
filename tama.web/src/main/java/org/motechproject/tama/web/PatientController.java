@@ -106,15 +106,23 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
     public String activate(@RequestParam String id, HttpServletRequest request) {
+        Patient patient = allPatients.get(id);
+        boolean firstActivation = patient.getActivationDate() == null;
         patientService.activate(id);
-        tamaAppointmentsService.scheduleAppointments(id, allPatients.get(id).getActivationDate());
+	if(firstActivation ){
+            tamaAppointmentsService.scheduleAppointments(id);
+        }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
     public String activate(@PathVariable String id) {
+	Patient patient = allPatients.get(id);
+	boolean firstActivation = patient.getActivationDate() == null;
         patientService.activate(id);
-        tamaAppointmentsService.scheduleAppointments(id, allPatients.get(id).getActivationDate());
+        if(patient.getActivationDate() == null ){
+            tamaAppointmentsService.scheduleAppointments(id);
+        }
         return REDIRECT_TO_LIST_VIEW;
     }
 

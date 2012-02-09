@@ -39,38 +39,50 @@ public class ClinicVisitsController extends BaseController {
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
-    public String createForm(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel, HttpServletRequest httpServletRequest) {
-        TreatmentAdvice adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        if (adviceForPatient != null) {
-            return "redirect:/clinicvisits/" + encodeUrlPathSegment(patientId, httpServletRequest);
+    public String createForm(@RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
+        ClinicVisit clinicVisit = clinicVisitService.getClinicVisit(clinicVisitId);
+        String patientId = clinicVisit.getPatientId();
+        final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
+        if (treatmentAdviceId != null) {
+            TreatmentAdvice adviceForPatient = allTreatmentAdvices.get(treatmentAdviceId);// allTreatmentAdvices.currentTreatmentAdvice(patientId);
+            if (adviceForPatient != null) {
+                return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest);
+            }
         }
         uiModel.addAttribute("patientId", patientId);
-        uiModel.addAttribute("clinicVisit", ClinicVisit.createVisitForToday());
+        uiModel.addAttribute("clinicVisit", clinicVisitService.getClinicVisit(clinicVisitId));
         treatmentAdviceController.createForm(patientId, uiModel);
         labResultsController.createForm(patientId, uiModel);
         vitalStatisticsController.createForm(patientId, uiModel);
         return "clinicvisits/create";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public String create(ClinicVisit visit, TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    @RequestMapping(value = "/create/{clinicVisitId}", method = RequestMethod.POST)
+    public String create(@PathVariable("clinicVisitId") String clinicVisitId, ClinicVisit visit, TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
         }
         String treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
-        clinicVisitService.createVisit(visit.getVisitDate(), treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(treatmentAdvice.getPatientId(), httpServletRequest);
+        final String clinitVistId = clinicVisitService.createOrUpdateVisit(clinicVisitId, visit.getVisitDate(), treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinitVistId, httpServletRequest);
     }
 
-    @RequestMapping(value = "/{patientId}", method = RequestMethod.GET)
-    public String show(@PathVariable("patientId") String patientId, Model uiModel) {
-        ClinicVisit clinicVisit = clinicVisitService.visitZero(patientId);
+    @RequestMapping(value = "/{clinicVisitId}", method = RequestMethod.GET)
+    public String show(@PathVariable("clinicVisitId") String clinicVisitId, Model uiModel) {
+        ClinicVisit clinicVisit = clinicVisitService.getClinicVisit(clinicVisitId);
         treatmentAdviceController.show(clinicVisit.getTreatmentAdviceId(), uiModel);
-        labResultsController.show(patientId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
+        labResultsController.show(clinicVisit.getPatientId(), clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         uiModel.addAttribute("clinicVisit", clinicVisit);
         return "clinicvisits/show";
+    }
+
+    @RequestMapping(value="/list", method = RequestMethod.GET)
+    public String list(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
+        List<ClinicVisit> clinicVisits = clinicVisitService.getClinicVisits(patientId);
+        uiModel.addAttribute("clinicVisits", clinicVisits);
+        return "clinicvisits/list";
     }
 }

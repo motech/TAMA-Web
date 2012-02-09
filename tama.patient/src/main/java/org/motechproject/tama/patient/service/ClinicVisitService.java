@@ -1,8 +1,10 @@
 package org.motechproject.tama.patient.service;
 
 import org.joda.time.DateTime;
+import org.motechproject.tama.common.util.StringUtil;
 import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.repository.AllClinicVisits;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,19 +21,27 @@ public class ClinicVisitService {
         this.allClinicVisits = allClinicVisits;
     }
 
-    public String createVisit(DateTime visitDate, String patientId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
-        ClinicVisit clinicVisit = new ClinicVisit();
+    public String createOrUpdateVisit(String visitId, DateTime visitDate, String patientId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
+        ClinicVisit clinicVisit;
+        if (visitId != null) clinicVisit = allClinicVisits.get(visitId);
+        else clinicVisit = new ClinicVisit();
         clinicVisit.setPatientId(patientId);
         clinicVisit.setTreatmentAdviceId(treatmentAdviceId);
         clinicVisit.setLabResultIds(labResultIds);
         clinicVisit.setVitalStatisticsId(vitalStatisticsId);
         clinicVisit.setVisitDate(visitDate);
-        allClinicVisits.add(clinicVisit);
+        if (clinicVisit.getId() != null) allClinicVisits.update(clinicVisit);
+        else allClinicVisits.add(clinicVisit);
         return clinicVisit.getId();
     }
 
-    public void createExpectedVisit(DateTime expectedVisitTime, String patientId) {
-        ClinicVisit clinicVisit = ClinicVisit.createExpectedVisit(expectedVisitTime, patientId);
+    public void createExpectedVisit(DateTime expectedVisitTime, int week, String patientId) {
+        ClinicVisit clinicVisit = ClinicVisit.createExpectedVisit(expectedVisitTime, week, patientId);
+        allClinicVisits.add(clinicVisit);
+    }
+
+    public void createFirstVisit(DateTime expectedVisitTime, String patientId) {
+        ClinicVisit clinicVisit = ClinicVisit.createFirstVisit(expectedVisitTime, patientId);
         allClinicVisits.add(clinicVisit);
     }
 
@@ -62,5 +72,9 @@ public class ClinicVisitService {
 
     public List<ClinicVisit> getClinicVisits(String patientId) {
         return allClinicVisits.find_by_patient_id(patientId);
+    }
+
+    public ClinicVisit getClinicVisit(String clinicVisitId) {
+        return allClinicVisits.get(clinicVisitId);
     }
 }

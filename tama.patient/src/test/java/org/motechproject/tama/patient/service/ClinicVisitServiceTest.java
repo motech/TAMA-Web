@@ -10,7 +10,6 @@ import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.repository.AllClinicVisits;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class ClinicVisitServiceTest {
         String vitalStatisticsId = "vitalStatisticsId";
         DateTime now = DateUtil.now();
 
-        clinicVisitService.createVisit(now, patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+        clinicVisitService.createOrUpdateVisit(null, now, patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
 
         ArgumentCaptor<ClinicVisit> clinicVisitArgumentCaptor = ArgumentCaptor.forClass(ClinicVisit.class);
         verify(allClinicVisits).add(clinicVisitArgumentCaptor.capture());
@@ -76,7 +75,7 @@ public class ClinicVisitServiceTest {
 
     @Test
     public void shouldCreateExpectedVisit() {
-        clinicVisitService.createExpectedVisit(DateUtil.now(), "patientId");
+        clinicVisitService.createExpectedVisit(DateUtil.now(),0, "patientId");
         verify(allClinicVisits).add(any(ClinicVisit.class));
     }
 
@@ -96,7 +95,7 @@ public class ClinicVisitServiceTest {
     @Test
     public void shouldGetListOfClinicVisitsForPatient() throws Exception {
         final String patientId = "patientId";
-        List<ClinicVisit> visitsInDb = Arrays.asList(ClinicVisit.createExpectedVisit(DateUtil.now(), patientId));
+        List<ClinicVisit> visitsInDb = Arrays.asList(ClinicVisit.createExpectedVisit(DateUtil.now(), 0, patientId));
         when(allClinicVisits.find_by_patient_id(patientId)).thenReturn(visitsInDb);
         List<ClinicVisit> visits = clinicVisitService.getClinicVisits(patientId);
         assertEquals(visitsInDb, visits);
