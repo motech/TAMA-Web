@@ -4,7 +4,6 @@ import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'DosageTimeSlot'")
 public class DosageTimeSlot extends CouchEntity {
@@ -12,7 +11,7 @@ public class DosageTimeSlot extends CouchEntity {
     private TimeOfDay dosageTime;
 
     @NotNull
-    private List<String> patientDocumentIds;
+    private String patientDocumentId;
 
     public TimeOfDay getDosageTime() {
         return dosageTime;
@@ -22,12 +21,12 @@ public class DosageTimeSlot extends CouchEntity {
         this.dosageTime = dosageTime;
     }
 
-    public List<String> getPatientDocumentIds() {
-        return patientDocumentIds;
+    public String getPatientDocumentId() {
+        return patientDocumentId;
     }
 
-    public void setPatientDocumentIds(List<String> patientDocumentIds) {
-        this.patientDocumentIds = patientDocumentIds;
+    public void setPatientDocumentId(String patientDocumentId) {
+        this.patientDocumentId = patientDocumentId;
     }
 
 }

@@ -10,8 +10,6 @@ import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -30,12 +28,12 @@ public class AllDosageTimeSlotsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldGetSlotCount() {
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 4, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId1")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 5, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId2")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 5, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId3")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 7, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId4")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 9, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId5")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId6")).build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 4, TimeMeridiem.AM)).withPatientDocumentId("patientId1").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 5, TimeMeridiem.AM)).withPatientDocumentId("patientId2").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 5, TimeMeridiem.AM)).withPatientDocumentId("patientId3").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 7, TimeMeridiem.AM)).withPatientDocumentId("patientId4").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 9, TimeMeridiem.AM)).withPatientDocumentId("patientId5").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).withPatientDocumentId("patientId6").build());
 
         final TimeOfDay slotStartTime = new TimeOfDay(10, 5, TimeMeridiem.AM);
         final TimeOfDay slotEndTime = new TimeOfDay(10, 9, TimeMeridiem.AM);
@@ -44,15 +42,15 @@ public class AllDosageTimeSlotsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldGetSlotCount_WhenStartTimeAndEndTimeSpanAcrossMorningAndEvening() {
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 54, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId1")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 55, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId2")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 55, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId3")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 57, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId4")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 59, TimeMeridiem.AM)).withPatientIds(Arrays.asList("patientId5")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 0, TimeMeridiem.PM)).withPatientIds(Arrays.asList("patientId6")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 1, TimeMeridiem.PM)).withPatientIds(Arrays.asList("patientId6")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 2, TimeMeridiem.PM)).withPatientIds(Arrays.asList("patientId6")).build());
-        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 4, TimeMeridiem.PM)).withPatientIds(Arrays.asList("patientId6")).build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 54, TimeMeridiem.AM)).withPatientDocumentId("patientId1").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 55, TimeMeridiem.AM)).withPatientDocumentId("patientId2").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 55, TimeMeridiem.AM)).withPatientDocumentId("patientId3").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 57, TimeMeridiem.AM)).withPatientDocumentId("patientId4").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(11, 59, TimeMeridiem.AM)).withPatientDocumentId("patientId5").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 0, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 1, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 2, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(DosageTimeSlotBuilder.startRecording().withDosageTime(new TimeOfDay(12, 4, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
 
         final TimeOfDay slotStartTime = new TimeOfDay(11, 57, TimeMeridiem.AM);
         final TimeOfDay slotEndTime = new TimeOfDay(12, 2, TimeMeridiem.PM);

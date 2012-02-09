@@ -19,7 +19,7 @@ public class AllDosageTimeSlots extends AbstractCouchRepository<DosageTimeSlot> 
         super(DosageTimeSlot.class, db);
     }
 
-    @View(name = "find_by_slot_time_range", map = "function(doc) {if (doc.documentType =='DosageTimeSlot' && doc.dosageTime) {emit(doc.dosageTime, doc.patientDocumentIds.length);}}", reduce = "function(keys, values) {return sum(values)}")
+    @View(name = "find_by_slot_time_range", map = "function(doc) {if (doc.documentType =='DosageTimeSlot' && doc.dosageTime) {emit(doc.dosageTime, doc.patientDocumentId);}}", reduce = "_count")
     public int countOfPatientsAllottedForSlot(TimeOfDay slotStartTime, TimeOfDay slotEndTime) {
         ViewQuery q = createQuery("find_by_slot_time_range").startKey(slotStartTime).endKey(slotEndTime).reduce(true);
         final ViewResult viewResult = db.queryView(q);

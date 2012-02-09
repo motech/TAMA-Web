@@ -1,6 +1,7 @@
 package org.motechproject.tama.patient.service;
 
 import org.joda.time.LocalTime;
+import org.motechproject.tama.patient.domain.DosageTimeSlot;
 import org.motechproject.tama.patient.domain.TimeOfDay;
 import org.motechproject.tama.patient.repository.AllDosageTimeSlots;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,13 @@ public class DosageTimeSlotService {
     @Autowired
     public DosageTimeSlotService(AllDosageTimeSlots allDosageTimeSlots) {
         this.allDosageTimeSlots = allDosageTimeSlots;
+    }
+
+    public void allotSlot(String patientDocumentId, TimeOfDay timeOfDay) {
+        DosageTimeSlot timeSlot = new DosageTimeSlot();
+        timeSlot.setDosageTime(timeOfDay);
+        timeSlot.setPatientDocumentId(patientDocumentId);
+        allDosageTimeSlots.add(timeSlot);
     }
 
     public List<String> availableSlots() {
