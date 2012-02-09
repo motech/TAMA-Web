@@ -2,10 +2,8 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
 
     <spring:url value="/json/adherence/list" var="adherence_list_url"/>
-    <spring:url value="/resources/js/date.js" var="date_js"/>
     <spring:url value="/resources/js/adherenceChart.js" var="adherence_chart_js"/>
 
-    <script src="${date_js}" type="text/javascript"><!-- required--></script>
     <script src="${adherence_chart_js}" type="text/javascript"><!-- required--></script>
     <script type="text/javascript">
         <![CDATA[

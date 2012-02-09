@@ -77,7 +77,7 @@ AdherencePerWeekData.prototype = {
     xLabels: function(){
         var dateFormatter = function(dateString) {
             var date = new Date(dateString);
-            return date.toString("MMM d yyyy");
+            return date.toDateString().replace(/[a-z]* /i,''); //MMM dd yyyy
         };
         return this.sortedList.map(function(elt, index) { return {value: index + 1, text: dateFormatter(elt.date)}});
     },
