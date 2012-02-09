@@ -59,8 +59,10 @@ public class BasicPillReminderTest extends BaseTest {
         PatientDataService patientDataService = new PatientDataService(webDriver);
 
         patientDataService.registerAndActivate(patient, clinician);
+
+        int timeSlotDelta = DateUtil.now().getMinuteOfHour() % 15;
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(
-                TestDrugDosage.create(yesterday(), DateUtil.now().withMinuteOfHour(0).toLocalTime(), "Efferven", "Combivir")
+                TestDrugDosage.create(yesterday(), DateUtil.now().minusMinutes(timeSlotDelta).toLocalTime(), "Efferven", "Combivir")
             );
         patientDataService.createRegimen(patient, clinician, treatmentAdvice);
 
