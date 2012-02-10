@@ -85,6 +85,7 @@ public class ClinicVisitsController extends BaseController {
     public String list(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
         List<ClinicVisit> clinicVisits = clinicVisitService.getClinicVisits(patientId);
         uiModel.addAttribute("clinicVisits", clinicVisits);
+        uiModel.addAttribute("patientId", patientId);
         return "clinicvisits/list";
     }
 }

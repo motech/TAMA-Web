@@ -1,0 +1,5 @@
+.clinic-visit-list table td, table th{
+	padding: 6px;
+	border: 1px solid #CCCCCC;
+	vertical-align: top;
+}
