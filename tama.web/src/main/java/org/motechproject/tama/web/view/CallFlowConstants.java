@@ -12,9 +12,9 @@ public class CallFlowConstants {
         put(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, "Pill Reminder");
         put(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER, "Pill Reminder");
         put(TAMATreeRegistry.FOUR_DAY_RECALL, "4 Day Recall");
-        put(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, "4 Day Recall");
         put(TAMATreeRegistry.REGIMEN_1_TO_6, "Symptoms");
         put(TAMATreeRegistry.OUTBOX_CALL, "Outbox");
+        put(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, "Menu");
         put(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, "Menu");
         put(TAMATreeRegistry.MENU_TREE, "Menu");
     }};
