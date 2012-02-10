@@ -9,23 +9,26 @@ public class DosageAdherenceLogSummary {
         return id;
     }
 
-    public void setId(String id) {
+    public DosageAdherenceLogSummary setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getDosageId() {
         return dosageId;
     }
 
-    public void setDosageId(String dosageId) {
+    public DosageAdherenceLogSummary setDosageId(String dosageId) {
         this.dosageId = dosageId;
+        return this;
     }
 
     public String getDosageStatus() {
         return dosageStatus;
     }
 
-    public void setDosageStatus(String dosageStatus) {
+    public DosageAdherenceLogSummary setDosageStatus(String dosageStatus) {
         this.dosageStatus = dosageStatus;
+        return this;
     }
 }

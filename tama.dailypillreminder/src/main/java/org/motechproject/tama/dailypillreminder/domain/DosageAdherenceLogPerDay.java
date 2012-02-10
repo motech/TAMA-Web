@@ -9,16 +9,18 @@ public class DosageAdherenceLogPerDay {
         List<DosageAdherenceLogSummary> logs;
         LocalDate date;
 
-        public void setLogs(List<DosageAdherenceLogSummary> dosageAdherenceLogSummaries){
+        public DosageAdherenceLogPerDay setLogs(List<DosageAdherenceLogSummary> dosageAdherenceLogSummaries){
             this.logs = dosageAdherenceLogSummaries;
+            return this;
         }
 
         public List<DosageAdherenceLogSummary> getLogs(){
             return logs;
         }
 
-        public void setDate(LocalDate date){
+        public DosageAdherenceLogPerDay setDate(LocalDate date){
             this.date = date;
+            return this;
         }
 
         public LocalDate getDate(){
