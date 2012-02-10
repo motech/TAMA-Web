@@ -205,7 +205,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/" + PATIENT_ID));
+        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
         verify(clinicVisitService).changeRegimen(clinicVisitId, treatmentAdvice.getId());
     }
@@ -223,7 +223,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/" + PATIENT_ID));
+        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
         verify(clinicVisitService).changeRegimen(clinicVisitId, treatmentAdvice.getId());
     }
