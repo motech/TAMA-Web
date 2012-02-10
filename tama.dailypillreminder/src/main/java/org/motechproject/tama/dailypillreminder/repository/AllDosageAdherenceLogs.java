@@ -9,6 +9,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
+import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLogPerDay;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +73,13 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
         ViewQuery q = createQuery("getPillsTakenAndTotalCountPerWeek").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
         return db.queryView(q, AdherenceSummaryForAWeek.class);
+    }
+
+    @View(name="find_all_logs_by_patient_id_per_day", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.patientId && doc.dosageDate) {emit([doc.patientId, doc.dosageDate], doc);}}", reduce = "function(key, values) { return {'date': values[0].dosageDate, 'logs': values.map(function(elt) { return {id: elt._id, dosageStatus: elt.dosageStatus, dosageId: elt.dosageId}})}}")
+    public List<DosageAdherenceLogPerDay> getLogsPerDay(String patientDocId) {
+        final ComplexKey startKey = ComplexKey.of(patientDocId);
+        final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
+        ViewQuery q = createQuery("find_all_logs_by_patient_id_per_day").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
+        return db.queryView(q, DosageAdherenceLogPerDay.class);
     }
 }

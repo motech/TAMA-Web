@@ -9,6 +9,7 @@ import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
+import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLogPerDay;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.util.DateUtil;
@@ -210,6 +211,30 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         assertEquals(next_monday.plusDays(7), data.get(2).getWeekStartDate().toLocalDate());
         assertEquals(1, data.get(2).getTaken());
         assertEquals(1, data.get(2).getTotal());
+    }
+
+    @Test
+    public void shouldGetDALGroupedByDate(){
+        LocalDate day1 = DateUtil.newDate(2012, 1, 2);
+        LocalDate day2 = DateUtil.newDate(2012, 1, 9);
+        LocalDate day3 = DateUtil.newDate(2012, 1, 10);
+        DosageAdherenceLog log1_day1 = createLog(day1, DosageStatus.TAKEN);
+        DosageAdherenceLog log2_day1 = createLog(day1, DosageStatus.NOT_TAKEN);
+
+        DosageAdherenceLog log1_day2 = createLog(day2, DosageStatus.TAKEN);
+
+        DosageAdherenceLog otherPatient_log1 = new DosageAdherenceLogBuilder().withDefaults()
+                .withPatientId("OtherPatientId").withDosageDate(day3).build();
+        allDosageAdherenceLogs.add(otherPatient_log1);
+
+        List<DosageAdherenceLogPerDay> dosageAdherenceLogsPerDay = allDosageAdherenceLogs.getLogsPerDay(PATIENT_ID);
+
+        assertEquals(2, dosageAdherenceLogsPerDay.size());
+        assertEquals(day1, dosageAdherenceLogsPerDay.get(0).getDate());
+        assertEquals(day2, dosageAdherenceLogsPerDay.get(1).getDate());
+
+        assertEquals(2, dosageAdherenceLogsPerDay.get(0).getLogs().size());
+        assertEquals(1, dosageAdherenceLogsPerDay.get(1).getLogs().size());
     }
 
     private DosageAdherenceLog createLog(LocalDate date, DosageStatus status) {
