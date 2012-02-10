@@ -14,7 +14,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.web.model.PatientReport;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
@@ -54,18 +54,18 @@ public class ReportsControllerTest {
         when(allPatients.get("patientDocumentId")).thenReturn(patient);
         when(patientService.currentRegimen(patient)).thenReturn(regimen);
 
-        PatientReport patientReport = (PatientReport) reportsController.index("patientDocumentId");
+        ModelAndView patientReport = reportsController.index("patientDocumentId");
         assertEquals("reports/index", patientReport.getViewName());
     }
 
     @Test
     public void shouldReturnDailyPillReminderReport() throws JSONException {
-        LocalDate day1 = new LocalDate(2011,1,1);
-        LocalDate day2 = new LocalDate(2011,1,3);
+        LocalDate day1 = new LocalDate(2011, 1, 1);
+        LocalDate day2 = new LocalDate(2011, 1, 3);
+
         JSONObject jsonReport = new JSONObject();
         jsonReport.put("someKey", "someValue");
-
-        when(dailyPillReminderReportService.generateJSON("patientId", day1, day2)).thenReturn(jsonReport);
+        when(dailyPillReminderReportService.createReport("patientId", day1, day2)).thenReturn(jsonReport);
 
         assertEquals(jsonReport.toString(), reportsController.dailyPillReminderReport("patientId", day1, day2));
     }

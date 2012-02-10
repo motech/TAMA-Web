@@ -8,10 +8,10 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <util:panel id="report" title="Report" openPane="true">
-        <field:display field="patientId" label="PatientId" id="patientSummaryPatientId" object="${summary}"/>
-        <field:display field="clinicName" label="Clinic Name" id="patientSummaryClinicName" object="${summary}"/>
-        <field:display date="true" dateTimePattern="MMM d, yyyy" field="ARTStartDate" label="ART Start Date" id="patientSummaryARTStartDate" object="${summary}"/>
-        <field:display field="regimenName" label="Regimen Followed" id="patientSummaryRegimenName" object="${summary}"/>
+        <field:display field="patientId" label="PatientId" id="patientSummaryPatientId" object="${report}"/>
+        <field:display field="clinicName" label="Clinic Name" id="patientSummaryClinicName" object="${report}"/>
+        <field:display date="true" dateTimePattern="MMM d, yyyy" field="ARTStartDate" label="ART Start Date" id="patientSummaryARTStartDate" object="${report}"/>
+        <field:display field="regimenName" label="Regimen Followed" id="patientSummaryRegimenName" object="${report}"/>
         <jsp:include page="showDailyPillReminderReport.jspx" />
     </util:panel>
 </div>

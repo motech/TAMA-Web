@@ -36,7 +36,7 @@ public class ReportsController {
     public ModelAndView index(@PathVariable String patientDocId) {
         Patient patient = allPatients.get(patientDocId);
         Regimen regimen = patientService.currentRegimen(patient);
-        return new PatientReport(patient, regimen, "reports/index");
+        return new ModelAndView("reports/index", "report", new PatientReport(patient, regimen));
     }
 
     @RequestMapping(value = "dailyPillReminderReport", method = RequestMethod.GET)
@@ -46,6 +46,6 @@ public class ReportsController {
                                           @RequestParam LocalDate startDate,
                                           @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                           @RequestParam LocalDate endDate) throws JSONException {
-        return dailyPillReminderReportService.generateJSON(patientDocId, startDate, endDate).toString();
+        return dailyPillReminderReportService.createReport(patientDocId, startDate, endDate).toString();
     }
 }
