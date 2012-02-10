@@ -9,7 +9,7 @@
 
     <context:annotation-config/>
     <context:spring-configured/>
-    <context:component-scan base-package="org.motechproject.tama.appointment"/>
+    <context:component-scan base-package="org.motechproject.tama.appointments"/>
     <import resource="classpath:applicationAppointments.xml"/>
     <util:properties id="appointmentsTemplate" location="classpath:/appointmentsTemplate.properties"/>
 </beans>

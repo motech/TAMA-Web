@@ -1,4 +1,4 @@
-package org.motechproject.tama.appointment.service;
+package org.motechproject.tama.appointments.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -6,7 +6,7 @@ import org.motechproject.appointments.api.AppointmentService;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.tama.appointment.Factory;
+import org.motechproject.tama.appointments.Factory;
 import org.motechproject.tama.common.util.UUIDUtil;
 import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.util.DateUtil;
@@ -38,24 +38,24 @@ public class TAMAAppointmentsService {
     public void scheduleAppointments(String patientId) {
         List<Integer> weeks = ListOfWeeks.weeks(appointmentsTemplate.getProperty(APPOINTMENT_SCHEDULE));
         DateTime now = DateUtil.now();
-	scheduleAppointmentForWeek(patientId, now , 0);
+        scheduleAppointmentForWeek(patientId, now, 0);
         for (Integer week : weeks) {
             scheduleAppointmentForWeek(patientId, now, week);
         }
     }
 
     private void scheduleAppointmentForWeek(String patientId, DateTime visitDateTime, Integer weeks) {
-	LocalDate visitDate = visitDateTime.toLocalDate();
-	Appointment appointment = Factory.createAppointment(patientId, visitDate.plusWeeks(weeks));
-	appointment.setId(UUIDUtil.newUUID());
-	appointmentService.addAppointment(appointment);
+        LocalDate visitDate = visitDateTime.toLocalDate();
+        Appointment appointment = Factory.createAppointment(patientId, visitDate.plusWeeks(weeks));
+        appointment.setId(UUIDUtil.newUUID());
+        appointmentService.addAppointment(appointment);
 
-	Reminder appointmentReminder = Factory.createReminder(patientId, appointment.getId(), visitDate.plusWeeks(weeks));
+        Reminder appointmentReminder = Factory.createReminder(patientId, appointment.getId(), visitDate.plusWeeks(weeks));
 
-	reminderService.addReminder(appointmentReminder);
-	if (weeks == 0 ) 
-	    clinicVisitService.createFirstVisit(visitDateTime, patientId);
-	else 
-	    clinicVisitService.createExpectedVisit(visitDateTime, weeks, patientId);
+        reminderService.addReminder(appointmentReminder);
+        if (weeks == 0)
+            clinicVisitService.createFirstVisit(visitDateTime, patientId);
+        else
+            clinicVisitService.createExpectedVisit(visitDateTime, weeks, patientId);
     }
 }

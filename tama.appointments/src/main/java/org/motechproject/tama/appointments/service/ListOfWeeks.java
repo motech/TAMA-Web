@@ -1,4 +1,4 @@
-package org.motechproject.tama.appointment.service;
+package org.motechproject.tama.appointments.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
