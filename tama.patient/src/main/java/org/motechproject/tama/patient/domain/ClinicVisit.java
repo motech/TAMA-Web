@@ -150,7 +150,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     
     public static ClinicVisit createFirstVisit(DateTime startDate, String patientId) {
 	ClinicVisit clinicVisit = new ClinicVisit();
-	clinicVisit.setName("Rigistered with TAMA");
+	clinicVisit.setName("Registered with TAMA");
         clinicVisit.setVisitDate(startDate);
         clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Baseline);
         clinicVisit.setPatientId(patientId);
