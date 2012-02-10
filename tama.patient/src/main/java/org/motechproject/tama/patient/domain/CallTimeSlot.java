@@ -6,20 +6,20 @@ import org.motechproject.tama.common.domain.TimeOfDay;
 
 import javax.validation.constraints.NotNull;
 
-@TypeDiscriminator("doc.documentType == 'DosageTimeSlot'")
-public class DosageTimeSlot extends CouchEntity {
+@TypeDiscriminator("doc.documentType == 'CallTimeSlot'")
+public class CallTimeSlot extends CouchEntity {
 
-    private TimeOfDay dosageTime;
+    private TimeOfDay callTime;
 
     @NotNull
     private String patientDocumentId;
 
-    public TimeOfDay getDosageTime() {
-        return dosageTime;
+    public TimeOfDay getCallTime() {
+        return callTime;
     }
 
-    public void setDosageTime(TimeOfDay dosageTime) {
-        this.dosageTime = dosageTime;
+    public void setCallTime(TimeOfDay callTime) {
+        this.callTime = callTime;
     }
 
     public String getPatientDocumentId() {

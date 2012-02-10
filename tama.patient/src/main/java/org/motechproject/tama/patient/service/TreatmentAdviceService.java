@@ -17,14 +17,14 @@ public class TreatmentAdviceService {
 
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
-    private DosageTimeSlotService dosageTimeSlotService;
+    private CallTimeSlotService callTimeSlotService;
     private Map<CallPreference, CallPlan> callPlans;
 
     @Autowired
-    public TreatmentAdviceService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, DosageTimeSlotService dosageTimeSlotService) {
+    public TreatmentAdviceService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, CallTimeSlotService callTimeSlotService) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
-        this.dosageTimeSlotService = dosageTimeSlotService;
+        this.callTimeSlotService = callTimeSlotService;
         this.callPlans = new HashMap<CallPreference, CallPlan>();
     }
 
@@ -36,7 +36,7 @@ public class TreatmentAdviceService {
         allTreatmentAdvices.add(treatmentAdvice);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         if (patient.isOnDailyPillReminder()) {
-            dosageTimeSlotService.allotSlots(patient, treatmentAdvice);
+            callTimeSlotService.allotSlots(patient, treatmentAdvice);
         }
         callPlans.get(patient.callPreference()).enroll(patient, treatmentAdvice);
         return treatmentAdvice.getId();

@@ -3,11 +3,11 @@ package org.motechproject.tama.patient.service;
 import org.joda.time.LocalTime;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.common.util.TimeUtil;
-import org.motechproject.tama.patient.domain.DosageTimeSlot;
+import org.motechproject.tama.patient.domain.CallTimeSlot;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.tama.patient.repository.AllDosageTimeSlots;
+import org.motechproject.tama.patient.repository.AllCallTimeSlots;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Component
-public class DosageTimeSlotService {
+public class CallTimeSlotService {
 
     public static final String SLOT_DURATION_MINS = "slot.duration.mins";
     public static final String MAX_PATIENTS_PER_SLOT = "max.patients.per.slot";
@@ -25,11 +25,11 @@ public class DosageTimeSlotService {
     private int slot_duration_in_mins;
     private int max_patients_per_slot;
 
-    private AllDosageTimeSlots allDosageTimeSlots;
+    private AllCallTimeSlots allCallTimeSlots;
 
     @Autowired
-    public DosageTimeSlotService(AllDosageTimeSlots allDosageTimeSlots, @Qualifier("timeSlotProperties") Properties timeSlotProperties) {
-        this.allDosageTimeSlots = allDosageTimeSlots;
+    public CallTimeSlotService(AllCallTimeSlots allCallTimeSlots, @Qualifier("timeSlotProperties") Properties timeSlotProperties) {
+        this.allCallTimeSlots = allCallTimeSlots;
         slot_duration_in_mins = Integer.parseInt(timeSlotProperties.getProperty(SLOT_DURATION_MINS));
         max_patients_per_slot = Integer.parseInt(timeSlotProperties.getProperty(MAX_PATIENTS_PER_SLOT));
     }
@@ -44,10 +44,10 @@ public class DosageTimeSlotService {
     }
 
     private void allotSlot(Patient patient, String timeString) {
-        DosageTimeSlot timeSlot = new DosageTimeSlot();
-        timeSlot.setDosageTime(new TimeUtil(timeString).getTimeOfDay());
+        CallTimeSlot timeSlot = new CallTimeSlot();
+        timeSlot.setCallTime(new TimeUtil(timeString).getTimeOfDay());
         timeSlot.setPatientDocumentId(patient.getId());
-        allDosageTimeSlots.add(timeSlot);
+        allCallTimeSlots.add(timeSlot);
     }
 
     public List<String> availableMorningSlots() {
@@ -67,7 +67,7 @@ public class DosageTimeSlotService {
         while (startTime.isBefore(endTime)) {
             TimeOfDay slotStartTime = new TimeOfDay(startTime);
             TimeOfDay slotEndTime = new TimeOfDay(startTime.plusMinutes(slot_duration_in_mins).minusMinutes(1));
-            int allottedCount = allDosageTimeSlots.countOfPatientsAllottedForSlot(slotStartTime, slotEndTime);
+            int allottedCount = allCallTimeSlots.countOfPatientsAllottedForSlot(slotStartTime, slotEndTime);
             if (allottedCount < max_patients_per_slot) {
                 allTimeSlots.add(startTime.toString("HH:mm"));
             }

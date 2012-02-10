@@ -13,7 +13,7 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.ClinicVisitService;
-import org.motechproject.tama.patient.service.DosageTimeSlotService;
+import org.motechproject.tama.patient.service.CallTimeSlotService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.DosageType;
@@ -66,7 +66,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     @Mock
     private ClinicVisitService clinicVisitService;
     @Mock
-    private DosageTimeSlotService dosageTimeSlotService;
+    private CallTimeSlotService dosageTimeSlotService;
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
