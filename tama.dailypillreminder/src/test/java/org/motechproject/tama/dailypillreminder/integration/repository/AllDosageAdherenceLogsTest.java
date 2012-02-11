@@ -214,7 +214,7 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldGetDALGroupedByDate(){
+    public void shouldGetDALGroupedByDate_ScopedByGivenDateRange(){
         LocalDate day1 = DateUtil.newDate(2012, 1, 2);
         LocalDate day2 = DateUtil.newDate(2012, 1, 9);
         LocalDate day3 = DateUtil.newDate(2012, 1, 10);
@@ -222,12 +222,15 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         DosageAdherenceLog log2_day1 = createLog(day1, DosageStatus.NOT_TAKEN);
 
         DosageAdherenceLog log1_day2 = createLog(day2, DosageStatus.TAKEN);
+        DosageAdherenceLog log1_day3 = createLog(day3, DosageStatus.TAKEN);
 
         DosageAdherenceLog otherPatient_log1 = new DosageAdherenceLogBuilder().withDefaults()
                 .withPatientId("OtherPatientId").withDosageDate(day3).build();
         allDosageAdherenceLogs.add(otherPatient_log1);
 
-        List<DosageAdherenceLogPerDay> dosageAdherenceLogsPerDay = allDosageAdherenceLogs.getLogsPerDay(PATIENT_ID);
+        LocalDate startDate = day1;
+        LocalDate endDate = day2;
+        List<DosageAdherenceLogPerDay> dosageAdherenceLogsPerDay = allDosageAdherenceLogs.getLogsPerDay(PATIENT_ID, startDate, endDate);
 
         assertEquals(2, dosageAdherenceLogsPerDay.size());
         assertEquals(day1, dosageAdherenceLogsPerDay.get(0).getDate());

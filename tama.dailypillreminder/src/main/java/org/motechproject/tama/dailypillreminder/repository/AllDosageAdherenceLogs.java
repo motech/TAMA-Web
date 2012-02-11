@@ -76,9 +76,9 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
     }
 
     @View(name="find_all_logs_by_patient_id_per_day", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.patientId && doc.dosageDate) {emit([doc.patientId, doc.dosageDate], doc);}}", reduce = "function(key, values) { return {'date': values[0].dosageDate, 'logs': values.map(function(elt) { return {id: elt._id, dosageStatus: elt.dosageStatus, dosageId: elt.dosageId}})}}")
-    public List<DosageAdherenceLogPerDay> getLogsPerDay(String patientDocId) {
-        final ComplexKey startKey = ComplexKey.of(patientDocId);
-        final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
+    public List<DosageAdherenceLogPerDay> getLogsPerDay(String patientDocId, LocalDate startDate, LocalDate endDate) {
+        final ComplexKey startKey = ComplexKey.of(patientDocId, startDate);
+        final ComplexKey endKey = ComplexKey.of(patientDocId, endDate);
         ViewQuery q = createQuery("find_all_logs_by_patient_id_per_day").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
         return db.queryView(q, DosageAdherenceLogPerDay.class);
     }
