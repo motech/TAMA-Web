@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
@@ -46,27 +47,28 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    private DateTime adjustedDueDate;
+    private LocalDate adjustedDueDate;
 
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
     private DateTime confirmedVisitDate;
     
     private String name;
 
     public DateTime getConfirmedVisitDate() {
-        return confirmedVisitDate;
+        return confirmedVisitDate == null ? null : DateUtil.setTimeZone(confirmedVisitDate);
     }
 
     public void setConfirmedVisitDate(DateTime confirmedVisitDate) {
         this.confirmedVisitDate = confirmedVisitDate;
     }
 
-    public DateTime getAdjustedDueDate() {
+    public LocalDate getAdjustedDueDate() {
         return adjustedDueDate;
     }
 
-    public void setAdjustedDueDate(DateTime adjustedDueDate) {
+    @DateTimeFormat(style="S-", pattern = TAMAConstants.DATE_FORMAT)
+    public void setAdjustedDueDate(LocalDate adjustedDueDate) {
         this.adjustedDueDate = adjustedDueDate;
     }
 
@@ -128,7 +130,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
 
     @DateTimeFormat(style="S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getAppointmentDueDate() {
-        return appointmentDueDate;
+        return appointmentDueDate == null ? null : DateUtil.setTimeZone(appointmentDueDate);
     }
     
     public void setAppointmentDueDate(DateTime appointmentDueDate) {

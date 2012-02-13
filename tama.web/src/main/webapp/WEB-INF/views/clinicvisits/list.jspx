@@ -2,97 +2,123 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:spring="http://www.springframework.org/tags" version="2.0"
-     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:c="http://java.sun.com/jsp/jstl/core"
-     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" class="clinic-visit-list">
+     class="clinic-visit-list">
 
-    <spring:url value="/resources/styles/clinic-visit.css" var="clinicVisit_css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="${clinicVisit_css}"></link>
+    <spring:url value="/resources/styles/clinic-visit.css" var="clinicVisit_css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="${clinicVisit_css}"/>
 
-    <spring:url value="/resources/images/favicon.ico" var="favicon" />
+    <spring:url value="/resources/images/favicon.ico" var="favicon"/>
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <util:panel id="clinicVisitListPanel" title="Clinic Visits" openPane="true">
-        <table id="clinicVisitList">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Appointment Due Date</th>
-                    <th>Adjusted Due Date</th>
-                    <th>Appointment Set for</th>
-                    <th>Actual Date of Visit</th>
-                    <th>Type of Visit</th>
-                </tr>
-            </thead>
-            <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
-                <spring:url value="/clinicvisits" var="clinicvisitEdit">
-                    <spring:param name="form" />
-                    <spring:param name="patientId" value="${visit.patientId}" />
-                    <spring:param name="clinicVisitId" value="${visit.id}" />
-                </spring:url>
-                <tr>
-                    <td><a id="visit-${status.index}" href="${clinicvisitEdit}"><c:if test="${visit.name}"></c:if><c:out value="${visit.name}"/></a></td>
-                    <td><spring:eval expression="visit.appointmentDueDate" /></td>
-                    <td>
-                        <c:if test="${not empty visit.appointmentDueDate}"><a href="javascript:void(0);" onclick="adjustDueDate(this);">Schedule</a></c:if>
-                    </td>
-                    <td>
-                        <c:if test="${empty visit.visitDate and empty visit.confirmedVisitDate}">
-                            <a href="javascript:void(0);" onclick="confirmVisitDate(this);">Schedule</a>
-                        </c:if>
-                        <c:if test="${not empty visit.confirmedVisitDate}">
-                            <spring:eval expression="visit.confirmedVisitDate" />
-                        </c:if>
-                    </td>
-                    <td><spring:eval expression="visit.visitDate" /></td>
-                    <td><c:out value="${visit.typeOfVisit}"/></td>
-                </tr>
-            </c:forEach>
-        </table>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Appointment Due Date</th>
+            <th>Adjusted Due Date</th>
+            <th>Appointment Set for</th>
+            <th>Actual Date of Visit</th>
+            <th>Type of Visit</th>
+        </tr>
+        </thead>
+        <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
+            <spring:url value="/clinicvisits" var="clinicvisitEdit">
+                <spring:param name="form"/>
+                <spring:param name="patientId" value="${visit.patientId}"/>
+                <spring:param name="clinicVisitId" value="${visit.id}"/>
+            </spring:url>
+            <tr>
+                <td><a id="visit-${status.index}" href="${clinicvisitEdit}"><c:if test="${visit.name}"><c:out value="${visit.name}"/></c:if></a></td>
+                <td><spring:eval expression="visit.appointmentDueDate"/></td>
+                <td>
+                    <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}">
+                        <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Schedule</c:if>
+                        <c:if test="${not empty visit.adjustedDueDate}"><spring:eval
+                                expression="visit.adjustedDueDate"/></c:if>
+                    </a>
+                </td>
+                <td>
+                    <c:if test="${empty visit.visitDate and empty visit.confirmedVisitDate}">
+                        <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}">Schedule</a>
+                    </c:if>
+                    <c:if test="${not empty visit.confirmedVisitDate}">
+                        <spring:eval expression="visit.confirmedVisitDate"/>
+                    </c:if>
+                </td>
+                <td><spring:eval expression="visit.visitDate"/></td>
+                <td><c:out value="${visit.typeOfVisit}"/></td>
+            </tr>
+        </c:forEach>
         <br/>
         <spring:url value="/patients/${patientId}" var="patient_form_url"/>
         <a id="showPatient" href="${patient_form_url}">Show Patient</a>
     </util:panel>
+
     <div style="display: none;">
-        <div id="scheduleAdjustedDueDate" data-dojo-type="dijit.Dialog" title="Schedule" >
+        <div id="scheduleAdjustedDueDate" data-dojo-type="dijit.Dialog" title="Schedule">
             <div style="margin: 10px;">
-                <div style="display:none;">
+                <div class="scheduleOptions" style="display:none;">
                     <input type="radio" name="type" value="Scheduled"/> Scheduled <br/>
                     <input type="radio" name="type" value="Unscheduled"/> Unscheduled <br/>
                     <input type="radio" name="type" value="Mark as Missed"/> Mark as Missed <br/>
                     <br/>
                 </div>
                 <div>
-                    <div id="calendar"></div>
+                    <div class="calendar"></div>
+                </div>
+                <br/>
+
+                <div>
+                    <div class="timePickerDiv" style="text-align: center;display: block;">
+                        <div class="timePicker"></div>
+                    </div>
                 </div>
                 <br/><br/>
-                <input type="submit" class="submit" value="Cancel"/><div style="float: right;"><input type="submit" class="submit" value="Save"/></div>
+                <input id="cancel" type="submit" class="submit popupCancel" value="Cancel"/>
+
+                <div style="float: right;"><input type="submit" class="submit popupOk" value="Save"/></div>
             </div>
         </div>
     </div>
+    <spring:url value="/js/schedulePopup.js" var="schedulePopupUrl"/>
+    <spring:url value="/clinicvisits/adjustDueDate.json" var="adjustDatePostUrl"/>
+    <spring:url value="/clinicvisits/confirmVisitDate.json" var="confirmVisitDate"/>
+    <script src="${schedulePopupUrl}"><!--required--></script>
     <script>
-        dojo.require("dojo.parser");
-        dojo.require("dijit.TooltipDialog");
-        function confirmVisitDate(element){
-            adjustDueDate(element);
-        }
-        function adjustDueDate(element){
-            new dijit.Calendar({
-                    value: new Date(),
-                    isDisabledDate: function(d){
-                        return new Date().getTime() > d.getTime();
-                    }
-                }, "calendar");
-
-            var adjustDueDateDlg = new dijit.TooltipDialog({
-                    title: "Adjust Due Date",
-                    style: "",
-                    content: dojo.byId('scheduleAdjustedDueDate')
-                });
-            dijit.popup.open({
-                        popup: adjustDueDateDlg,
-                        around: element
+        dojo.addOnLoad(function () {
+            var popup = new SchedulePopup('scheduleAdjustedDueDate', "Adjust Due Date");
+            var adjustDueDate = function (event) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var linkElement = this;
+                popup.show(this, false, function (date) {
+                    dojo.xhrPost({
+                        url:"${adjustDatePostUrl}/" + clinicVisitId,
+                        content:{"adjustedDueDate":dojo.date.locale.format(date, {selector:"date", datePattern:'dd/MM/yyyy'})},
+                        handleAs:"json",
+                        load:function (data) {
+                            linkElement.innerHTML = data.adjustedDueDate;
+                        }
                     });
-        }
+                });
+            }
+            var confirmVisitDate = function (element) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var linkElement = this;
+                popup.show(this, true, function (confirmedDate) {
+                    dojo.xhrPost({
+                        url:"${confirmVisitDate}/" + clinicVisitId,
+                        content:{"confirmedVisitDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
+                        handleAs:"json",
+                        load:function (data) {
+                            linkElement.parentNode.innerHTML = data.confirmedVisitDate;
+                        }
+                    });
+                });
+            }
+            dojo.query('a.adjustDueDate').connect('onclick', adjustDueDate)
+            dojo.query('a.confirmVisitDate').connect('onclick', confirmVisitDate)
+
+        });
     </script>
 </div>

@@ -1,5 +1,9 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
@@ -8,13 +12,11 @@ import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -44,12 +46,16 @@ public class ClinicVisitsController extends BaseController {
         ClinicVisit clinicVisit = clinicVisitService.getClinicVisit(clinicVisitId);
         String patientId = clinicVisit.getPatientId();
         final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
-        if (treatmentAdviceId != null) {
-            TreatmentAdvice adviceForPatient = allTreatmentAdvices.get(treatmentAdviceId);// allTreatmentAdvices.currentTreatmentAdvice(patientId);
-            if (adviceForPatient != null) {
-                return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest);
-            }
+
+        TreatmentAdvice adviceForPatient = null;
+        if (treatmentAdviceId != null)
+            adviceForPatient= allTreatmentAdvices.get(treatmentAdviceId);
+        if (adviceForPatient == null)
+            adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+        if (adviceForPatient != null) {
+            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest);
         }
+
         uiModel.addAttribute("patientId", patientId);
         if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.now());
         uiModel.addAttribute("clinicVisit", clinicVisit);
@@ -87,5 +93,21 @@ public class ClinicVisitsController extends BaseController {
         uiModel.addAttribute("clinicVisits", clinicVisits);
         uiModel.addAttribute("patientId", patientId);
         return "clinicvisits/list";
+    }
+    @RequestMapping(value="/adjustDueDate.json/{clinicVisitId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String adjustDueDate(@PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                              @RequestParam(value = "adjustedDueDate") LocalDate adjustedDueDate) {
+        clinicVisitService.adjustDueDate(clinicVisitId, adjustedDueDate);
+        return "{'adjustedDueDate':'" + adjustedDueDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
+    }
+
+    @RequestMapping(value="/confirmVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String confirmVisitDate(@PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
+                                              @RequestParam(value = "confirmedVisitDate") DateTime confirmedVisitDate) {
+        System.out.println("confirmedVisitDate " + confirmedVisitDate);
+        clinicVisitService.confirmVisitDate(clinicVisitId, confirmedVisitDate);
+        return "{'confirmedVisitDate':'" + confirmedVisitDate.toString(TAMAConstants.DATETIME_FORMAT) + "'}";
     }
 }

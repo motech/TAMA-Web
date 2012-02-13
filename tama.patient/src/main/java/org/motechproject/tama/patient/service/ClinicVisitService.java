@@ -1,10 +1,9 @@
 package org.motechproject.tama.patient.service;
 
 import org.joda.time.DateTime;
-import org.motechproject.tama.common.util.StringUtil;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.repository.AllClinicVisits;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,5 +75,17 @@ public class ClinicVisitService {
 
     public ClinicVisit getClinicVisit(String clinicVisitId) {
         return allClinicVisits.get(clinicVisitId);
+    }
+
+    public void confirmVisitDate(String clinicVisitId, DateTime confirmedVisitDate) {
+        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+        clinicVisit.setConfirmedVisitDate(confirmedVisitDate);
+        allClinicVisits.update(clinicVisit);
+    }
+
+    public void adjustDueDate(String clinicVisitId, LocalDate adjustedDueDate) {
+        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+        clinicVisit.setAdjustedDueDate(adjustedDueDate);
+        allClinicVisits.update(clinicVisit);
     }
 }

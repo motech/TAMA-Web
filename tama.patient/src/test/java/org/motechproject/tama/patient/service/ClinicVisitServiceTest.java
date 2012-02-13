@@ -1,6 +1,7 @@
 package org.motechproject.tama.patient.service;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -23,6 +24,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClinicVisitServiceTest {
 
+    public static final String CLINIC_VISIT_ID = "clinicVisitId";
     @Mock
     private AllClinicVisits allClinicVisits;
     private ClinicVisitService clinicVisitService;
@@ -99,5 +101,26 @@ public class ClinicVisitServiceTest {
         when(allClinicVisits.find_by_patient_id(patientId)).thenReturn(visitsInDb);
         List<ClinicVisit> visits = clinicVisitService.getClinicVisits(patientId);
         assertEquals(visitsInDb, visits);
+    }
+
+    @Test
+    public void shouldAdjustDueDate() throws Exception {
+        final LocalDate today = DateUtil.today();
+
+        clinicVisitService.adjustDueDate(CLINIC_VISIT_ID, today);
+
+        verify(allClinicVisits).update(any(ClinicVisit.class));
+    }
+
+    @Test
+    public void shouldUpdateConfirmedDueDate() throws Exception {
+        final DateTime today = DateUtil.now();
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+        when(allClinicVisits.get(CLINIC_VISIT_ID)).thenReturn(clinicVisit);
+
+        clinicVisitService.confirmVisitDate(CLINIC_VISIT_ID, today);
+
+        verify(allClinicVisits).update(any(ClinicVisit.class));
+        assertEquals(clinicVisit.getConfirmedVisitDate(), today);
     }
 }

@@ -1,6 +1,8 @@
 package org.motechproject.tama.web;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,12 +26,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClinicVisitsControllerTest {
 
     public static final String PATIENT_ID = "patientId";
+    public static final String CLINIC_VISIT_ID = "clinicVisitId";
     @Mock
     private TreatmentAdviceController treatmentAdviceController;
     @Mock
@@ -147,5 +151,22 @@ public class ClinicVisitsControllerTest {
         verify(uiModel).addAttribute(eq("clinicVisits"), listArgumentCaptor.capture());
         assertEquals(listArgumentCaptor.getValue().get(0), visit1);
         assertEquals(listArgumentCaptor.getValue().get(1), visit2);
+    }
+
+    @Test
+    public void shouldUpdateConfirmVisitDate() throws Exception {
+        final DateTime now = DateUtil.now();
+        String jsonReturned = clinicVisitsController.confirmVisitDate(CLINIC_VISIT_ID, now);
+
+        verify(clinicVisitService).confirmVisitDate(CLINIC_VISIT_ID, now);
+        assertTrue(new JSONObject(jsonReturned).has("confirmedVisitDate"));
+    }
+
+    @Test
+    public void shouldUpdateAdjustedDueDate() throws Exception {
+        LocalDate today = DateUtil.today();
+        String jsonReturned = clinicVisitsController.adjustDueDate(CLINIC_VISIT_ID, today);
+        verify(clinicVisitService).adjustDueDate(CLINIC_VISIT_ID, today);
+        assertTrue(new JSONObject(jsonReturned).has("adjustedDueDate"));
     }
 }
