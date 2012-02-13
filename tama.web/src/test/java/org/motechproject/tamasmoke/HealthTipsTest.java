@@ -172,13 +172,14 @@ public class HealthTipsTest extends BaseIVRTest {
     }
 
     private String getHealthTipName(String audioFile) {
-        int beginIndex = audioFile.lastIndexOf(File.separator) > 0 ? audioFile.lastIndexOf(File.separator) + 1 : 0;
+        int beginIndex = audioFile.lastIndexOf("/") > 0 ? audioFile.lastIndexOf("/") + 1 : 0;
         int endIndex = audioFile.length() > 4 ? audioFile.length() - 4 : audioFile.length();
         return audioFile.substring(beginIndex, endIndex);
     }
 
     private void assertHealthTipsPlayed(List<String> expectedHealthTips, List<String> actualHealthTipsPlayed) {
         for (String expectedHealthTip : expectedHealthTips) {
+            System.out.println(actualHealthTipsPlayed);
             assertTrue("expected : " + expectedHealthTip + " but was not found ", actualHealthTipsPlayed.contains(expectedHealthTip));
         }
     }
