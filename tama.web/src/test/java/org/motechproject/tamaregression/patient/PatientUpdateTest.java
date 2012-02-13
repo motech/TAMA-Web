@@ -1,5 +1,6 @@
 package org.motechproject.tamaregression.patient;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
@@ -31,7 +32,8 @@ public class PatientUpdateTest extends BaseTest {
         TestPatient patient = TestPatient.withMandatory().callPreference(CallPreference.DAILY_CALL);
 
         ShowPatientPage showPatientPage = registerPatient(patient);
-        showPatientPage = showPatientPage.activatePatient();
+        showPatientPage.activatePatient();
+        showPatientPage = ShowPatientPage.get(webDriver, patient);
         showPatientPage = changePatientToWeeklyCallAndExpectWarning(showPatientPage);
         showPatientPage.logout();
     }

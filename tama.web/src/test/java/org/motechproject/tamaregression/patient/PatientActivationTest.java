@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
+import org.motechproject.tamafunctionalframework.framework.TamaUrl;
+import org.motechproject.tamafunctionalframework.page.CreateClinicVisitPage;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
 import org.motechproject.tamafunctionalframework.page.ShowPatientPage;
 import org.motechproject.tamafunctionalframework.testdata.TestClinic;
@@ -32,8 +34,8 @@ public class PatientActivationTest extends BaseTest {
                 registerNewPatientOnDailyPillReminder(patient);
 
         Assert.assertEquals("Inactive", showPatientPage.getStatus().trim());
-        ShowPatientPage pageAfterActivation = showPatientPage.activatePatient();
-        Assert.assertEquals("Active", pageAfterActivation.getStatus().trim());
+        CreateClinicVisitPage pageAfterActivation = showPatientPage.activatePatient();
+        Assert.assertEquals("Active", ShowPatientPage.get(webDriver, patient).getStatus().trim());
         pageAfterActivation.logout();
     }
 

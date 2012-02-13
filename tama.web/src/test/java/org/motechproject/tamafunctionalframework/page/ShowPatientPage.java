@@ -2,7 +2,10 @@ package org.motechproject.tamafunctionalframework.page;
 
 import org.motechproject.tamafunctionalframework.framework.ExtendedWebElement;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
+import org.motechproject.tamafunctionalframework.framework.TamaUrl;
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
+import org.motechproject.tamafunctionalframework.testdata.TestEntity;
+import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdata.TestPatientPreferences;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -127,10 +130,9 @@ public class ShowPatientPage extends Page {
         return status.getText();
     }
 
-    public ShowPatientPage activatePatient() {
+    public CreateClinicVisitPage activatePatient() {
         this.activationLink.click();
-        waitForElementWithIdToLoad(DEACTIVATE_PATIENT_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+        return MyPageFactory.initElements(webDriver, CreateClinicVisitPage.class);
     }
 
     public ShowPatientPage deactivatePatient(String reason) {
@@ -175,5 +177,10 @@ public class ShowPatientPage extends Page {
     public UpdatePatientPage clickOnEditTAMAPreferences() {
         this.editTAMAPreferencesLink.click();
         return MyPageFactory.initElements(webDriver, UpdatePatientPage.class);
+    }
+
+    public static ShowPatientPage get(WebDriver driver, TestPatient patient) {
+        driver.get(TamaUrl.viewPageUrlFor(patient));
+        return MyPageFactory.initElements(driver, ShowPatientPage.class);
     }
 }
