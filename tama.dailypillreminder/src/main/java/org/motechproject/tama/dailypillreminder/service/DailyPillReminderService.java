@@ -1,9 +1,6 @@
 package org.motechproject.tama.dailypillreminder.service;
 
 import org.joda.time.LocalDate;
-import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
@@ -15,10 +12,6 @@ import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.patient.strategy.CallPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class DailyPillReminderService implements CallPlan {
@@ -61,17 +54,5 @@ public class DailyPillReminderService implements CallPlan {
 
     public void setLastCapturedDate(String pillRegimenId, String dosageId, LocalDate lastCapturedDate) {
         pillReminderService.dosageStatusKnown(pillRegimenId, dosageId, lastCapturedDate);
-    }
-
-    public Map<String, Time> getDosageTimesFor(String patientDocId) {
-        PillRegimenResponse pillRegimenResponse = pillReminderService.getPillRegimen(patientDocId);
-        List<DosageResponse> dosageResponses = pillRegimenResponse.getDosages();
-
-        Map<String, Time> map = new HashMap<String, Time>();
-
-        for(DosageResponse dosageResponse : dosageResponses){
-            map.put(dosageResponse.getDosageId(), new Time(dosageResponse.getDosageHour(), dosageResponse.getDosageMinute()));
-        }
-        return map;
     }
 }

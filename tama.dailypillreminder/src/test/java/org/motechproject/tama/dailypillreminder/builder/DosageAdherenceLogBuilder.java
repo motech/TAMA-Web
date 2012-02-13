@@ -47,6 +47,11 @@ public class DosageAdherenceLogBuilder {
         return this;
     }
 
+    public DosageAdherenceLogBuilder withTreatmentAdviceId(String treatmentAdviceId) {
+        adherenceLog.setTreatmentAdviceId(treatmentAdviceId);
+        return this;
+    }
+
     public static DosageAdherenceLogBuilder startRecording() {
         return new DosageAdherenceLogBuilder();
     }

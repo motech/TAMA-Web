@@ -238,6 +238,8 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
 
         assertEquals(2, dosageAdherenceLogsPerDay.get(0).getLogs().size());
         assertEquals(1, dosageAdherenceLogsPerDay.get(1).getLogs().size());
+
+        assertNotNull(dosageAdherenceLogsPerDay.get(0).getLogs().get(0).getTreatmentAdviceId());
     }
 
     private DosageAdherenceLog createLog(LocalDate date, DosageStatus status) {
@@ -247,7 +249,8 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
                 withRegimenId("r1").
                 withDosageId("123").
                 withDosageDate(date).
-                withDosageStatus(status).build();
+                withDosageStatus(status).
+                withTreatmentAdviceId("treatmentAdviceId").build();
         allDosageAdherenceLogs.add(log0);
         return log0;
     }

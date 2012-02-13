@@ -3,10 +3,7 @@ package org.motechproject.tama.dailypillreminder.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DailyPillRegimenRequest;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.server.pillreminder.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -17,12 +14,9 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DailyPillReminderServiceTest {
@@ -94,25 +88,5 @@ public class DailyPillReminderServiceTest {
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService).unscheduleDailyPillReminderJobs(patient);
         verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
-    }
-
-    @Test
-    public void shouldCreateMapOfDosageIdsAgainstDosageTime() {
-        DosageResponse morningDosageResponse = createDosageResponse("dosage1", new Time(11, 45));
-        DosageResponse eveningDosageResponse = createDosageResponse("dosage2", new Time(17, 50));
-
-        PillRegimenResponse pillRegimenResponse = mock(PillRegimenResponse.class);
-        when(pillRegimenResponse.getDosages()).thenReturn(Arrays.asList(morningDosageResponse, eveningDosageResponse));
-
-        when(pillReminderService.getPillRegimen("patientId")).thenReturn(pillRegimenResponse);
-
-        Map<String, Time> map = dailyPillReminderService.getDosageTimesFor("patientId");
-
-        assertEquals(new Time(11, 45), map.get("dosage1"));
-        assertEquals(new Time(17, 50), map.get("dosage2"));
-    }
-
-    private DosageResponse createDosageResponse(String dosageId, Time dosageTime) {
-        return new DosageResponse(dosageId, dosageTime, null, null, null, null);
     }
 }

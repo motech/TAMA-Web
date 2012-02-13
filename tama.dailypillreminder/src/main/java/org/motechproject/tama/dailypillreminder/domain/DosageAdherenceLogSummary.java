@@ -2,7 +2,7 @@ package org.motechproject.tama.dailypillreminder.domain;
 
 public class DosageAdherenceLogSummary {
     private String id;
-    private String dosageId;
+    private String treatmentAdviceId;
     private String dosageStatus;
 
     public String getId() {
@@ -14,12 +14,12 @@ public class DosageAdherenceLogSummary {
         return this;
     }
 
-    public String getDosageId() {
-        return dosageId;
+    public String getTreatmentAdviceId() {
+        return treatmentAdviceId;
     }
 
-    public DosageAdherenceLogSummary setDosageId(String dosageId) {
-        this.dosageId = dosageId;
+    public DosageAdherenceLogSummary setTreatmentAdviceId(String treatmentAdviceId) {
+        this.treatmentAdviceId = treatmentAdviceId;
         return this;
     }
 
