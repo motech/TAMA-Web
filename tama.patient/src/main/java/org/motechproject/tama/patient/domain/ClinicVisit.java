@@ -16,11 +16,11 @@ import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'ClinicVisit'")
 public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> {
-    
+
     public enum TypeOfVisit {
-	    Baseline,
-	    Scheduled,
-	    Unscheduled
+        Baseline,
+        Scheduled,
+        Unscheduled
     }
 
     /*
@@ -34,8 +34,8 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     private List<String> labResultIds;
 
     private String vitalStatisticsId;
-    
-    private TypeOfVisit typeOfVisit; 
+
+    private TypeOfVisit typeOfVisit;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -52,7 +52,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
     private DateTime confirmedVisitDate;
-    
+
     private String name;
 
     public DateTime getConfirmedVisitDate() {
@@ -75,11 +75,11 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     public String getName() {
         return name;
     }
-    
+
     private void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
-    
+
     public TypeOfVisit getTypeOfVisit() {
         return typeOfVisit;
     }
@@ -128,11 +128,11 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         this.visitDate = visitDate;
     }
 
-    @DateTimeFormat(style="S-", pattern = TAMAConstants.DATE_FORMAT)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getAppointmentDueDate() {
         return appointmentDueDate == null ? null : DateUtil.setTimeZone(appointmentDueDate);
     }
-    
+
     public void setAppointmentDueDate(DateTime appointmentDueDate) {
         this.appointmentDueDate = appointmentDueDate;
     }
@@ -149,10 +149,10 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         clinicVisit.setVisitDate(DateUtil.now());
         return clinicVisit;
     }
-    
+
     public static ClinicVisit createFirstVisit(DateTime startDate, String patientId) {
-	ClinicVisit clinicVisit = new ClinicVisit();
-	clinicVisit.setName("Registered with TAMA");
+        ClinicVisit clinicVisit = new ClinicVisit();
+        clinicVisit.setName("Registered with TAMA");
         clinicVisit.setVisitDate(startDate);
         clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Baseline);
         clinicVisit.setPatientId(patientId);

@@ -14,10 +14,10 @@ import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
+import java.util.Date;
 import java.util.Properties;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -29,6 +29,8 @@ public class TAMAAppointmentsServiceTest extends BaseUnitTest {
     static final String PATIENT_ID = "patientId";
     static int FIRST_SCHEDULE_WEEK = 1;
     static int SECOND_SCHEDULE_WEEK = 2;
+    private static final String REMIND_FROM_DAYS = "10";
+    private static final String REMIND_TILL_DAYS = "5";
 
     @Mock
     protected ReminderService reminderService;
@@ -60,6 +62,8 @@ public class TAMAAppointmentsServiceTest extends BaseUnitTest {
     private void setUpAppointmentsTemplate() {
         appointmentsTemplate = new Properties();
         appointmentsTemplate.setProperty(TAMAAppointmentsService.APPOINTMENT_SCHEDULE, FIRST_SCHEDULE_WEEK + "," + SECOND_SCHEDULE_WEEK);
+        appointmentsTemplate.setProperty(TAMAAppointmentsService.REMIND_FROM, REMIND_FROM_DAYS);
+        appointmentsTemplate.setProperty(TAMAAppointmentsService.REMIND_TILL, REMIND_TILL_DAYS);
     }
 
     @Test
@@ -77,7 +81,6 @@ public class TAMAAppointmentsServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldCreateExpectedClinicVisit() {
-	//DateTimeSourceUtil.SourceInstance = new FixedDateTimeSource(now);
         DateTime activationTime = now;
         ArgumentCaptor<DateTime> dateCapture = ArgumentCaptor.forClass(DateTime.class);
 
@@ -106,6 +109,12 @@ public class TAMAAppointmentsServiceTest extends BaseUnitTest {
     private void verifyReminder(String patientId, int week, Reminder reminder) {
         assertEquals(patientId, reminder.getExternalId());
         assertNotNull(reminder.getAppointmentId());
-        assertEquals(today.plusWeeks(week).toDate(), reminder.getStartDate());
+        Date expectedStartDate = DateUtil.newDate(today.plusWeeks(week).toDate()).minusDays(Integer.parseInt(REMIND_FROM_DAYS)).toDate();
+        assertEquals(expectedStartDate, reminder.getStartDate());
+        Date expectedEndDate = DateUtil.newDate(today.plusWeeks(week).toDate()).minusDays(Integer.parseInt(REMIND_TILL_DAYS)).toDate();
+        assertEquals(expectedEndDate, reminder.getEndDate());
+        assertEquals(1, reminder.getIntervalCount());
+        assertEquals(Reminder.intervalUnits.DAYS, reminder.getUnits());
+        assertTrue(reminder.getEnabled());
     }
 }

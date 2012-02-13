@@ -1,7 +1,10 @@
 package org.motechproject.tama.patient.service;
 
 import org.joda.time.DateTime;
+<<<<<<< HEAD
 import org.joda.time.LocalDate;
+=======
+>>>>>>> BalajiN, Preethi | # 41 | Some minor Refactorings in Appointment module
 import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.repository.AllClinicVisits;
 import org.springframework.beans.factory.annotation.Autowired;

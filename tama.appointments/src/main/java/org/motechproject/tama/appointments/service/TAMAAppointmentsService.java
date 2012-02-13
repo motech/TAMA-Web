@@ -6,7 +6,7 @@ import org.motechproject.appointments.api.AppointmentService;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.tama.appointments.Factory;
+import org.motechproject.tama.appointments.AppointmentsFactory;
 import org.motechproject.tama.common.util.UUIDUtil;
 import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.util.DateUtil;
@@ -21,6 +21,8 @@ import java.util.Properties;
 public class TAMAAppointmentsService {
 
     public static final String APPOINTMENT_SCHEDULE = "appointment-schedule";
+    public static final String REMIND_FROM = "remindFrom";
+    public static final String REMIND_TILL = "remindTill";
 
     private AppointmentService appointmentService;
     private ReminderService reminderService;
@@ -36,26 +38,39 @@ public class TAMAAppointmentsService {
     }
 
     public void scheduleAppointments(String patientId) {
-        List<Integer> weeks = ListOfWeeks.weeks(appointmentsTemplate.getProperty(APPOINTMENT_SCHEDULE));
+        List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsTemplate.getProperty(APPOINTMENT_SCHEDULE));
         DateTime now = DateUtil.now();
-        scheduleAppointmentForWeek(patientId, now, 0);
-        for (Integer week : weeks) {
-            scheduleAppointmentForWeek(patientId, now, week);
+        createAppointmentReminderAndVisit(patientId, now, 0);
+        for (Integer week : appointmentWeeks) {
+            createAppointmentReminderAndVisit(patientId, now, week);
         }
     }
 
-    private void scheduleAppointmentForWeek(String patientId, DateTime visitDateTime, Integer weeks) {
-        LocalDate visitDate = visitDateTime.toLocalDate();
-        Appointment appointment = Factory.createAppointment(patientId, visitDate.plusWeeks(weeks));
-        appointment.setId(UUIDUtil.newUUID());
+    private void createAppointmentReminderAndVisit(String patientId, DateTime firstAppointmentTime, Integer week) {
+        LocalDate appointmentDate = firstAppointmentTime.plusWeeks(week).toLocalDate();
+        Appointment appointment = AppointmentsFactory.createAppointment(patientId, appointmentDate, UUIDUtil.newUUID());
+        scheduleAppointment(appointment);
+        createReminder(patientId, appointment);
+        createClinicVisits(patientId, firstAppointmentTime, week);
+    }
+
+    private void scheduleAppointment(Appointment appointment) {
         appointmentService.addAppointment(appointment);
+    }
 
-        Reminder appointmentReminder = Factory.createReminder(patientId, appointment.getId(), visitDate.plusWeeks(weeks));
-
+    private void createReminder(String patientId, Appointment appointment) {
+        Reminder appointmentReminder = AppointmentsFactory.createReminder(
+                patientId,
+                appointment,
+                Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM)),
+                Integer.parseInt(appointmentsTemplate.getProperty(REMIND_TILL)));
         reminderService.addReminder(appointmentReminder);
-        if (weeks == 0)
-            clinicVisitService.createFirstVisit(visitDateTime, patientId);
+    }
+
+    private void createClinicVisits(String patientId, DateTime firstAppointmentTime, Integer week) {
+        if (week == 0)
+            clinicVisitService.createFirstVisit(firstAppointmentTime, patientId);
         else
-            clinicVisitService.createExpectedVisit(visitDateTime, weeks, patientId);
+            clinicVisitService.createExpectedVisit(firstAppointmentTime, week, patientId);
     }
 }
