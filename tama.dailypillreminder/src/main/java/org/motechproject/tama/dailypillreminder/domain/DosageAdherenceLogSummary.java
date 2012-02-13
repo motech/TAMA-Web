@@ -1,9 +1,11 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
+import org.motechproject.model.Time;
+
 public class DosageAdherenceLogSummary {
     private String id;
-    private String treatmentAdviceId;
-    private String dosageStatus;
+    private DosageStatus dosageStatus;
+    private Time dosageTime;
 
     public String getId() {
         return id;
@@ -14,21 +16,21 @@ public class DosageAdherenceLogSummary {
         return this;
     }
 
-    public String getTreatmentAdviceId() {
-        return treatmentAdviceId;
-    }
-
-    public DosageAdherenceLogSummary setTreatmentAdviceId(String treatmentAdviceId) {
-        this.treatmentAdviceId = treatmentAdviceId;
-        return this;
-    }
-
-    public String getDosageStatus() {
+    public DosageStatus getDosageStatus() {
         return dosageStatus;
     }
 
-    public DosageAdherenceLogSummary setDosageStatus(String dosageStatus) {
+    public DosageAdherenceLogSummary setDosageStatus(DosageStatus dosageStatus) {
         this.dosageStatus = dosageStatus;
+        return this;
+    }
+
+    public Time getDosageTime() {
+        return dosageTime;
+    }
+
+    public DosageAdherenceLogSummary setDosageTime(Time dosageTime) {
+        this.dosageTime = dosageTime;
         return this;
     }
 }

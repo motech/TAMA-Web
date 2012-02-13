@@ -1,6 +1,7 @@
 package org.motechproject.tama.dailypillreminder.builder;
 
 import org.joda.time.LocalDate;
+import org.motechproject.model.Time;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.util.DateUtil;
@@ -29,6 +30,11 @@ public class DosageAdherenceLogBuilder {
 
     public DosageAdherenceLogBuilder withDosageDate(LocalDate dosageDate) {
         adherenceLog.setDosageDate(dosageDate);
+        return this;
+    }
+
+    public DosageAdherenceLogBuilder withDosageTime(Time dosageTime) {
+        adherenceLog.setDosageTime(dosageTime);
         return this;
     }
 

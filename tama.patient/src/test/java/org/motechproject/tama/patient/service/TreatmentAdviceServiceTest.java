@@ -12,10 +12,6 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.strategy.CallPlan;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -100,21 +96,5 @@ public class TreatmentAdviceServiceTest {
         verify(allTreatmentAdvices).add(treatmentAdvice);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(weeklyCallPlan).reEnroll(patient, treatmentAdvice);
-    }
-
-    @Test
-    public void shouldCreateMapForTreatmentAdviceIdAndDosageTime(){
-        TreatmentAdvice treatmentAdvice_1 = TreatmentAdviceBuilder.startRecording().withDrugDosages("11:45am", "05:50pm").withId("treatmentAdvice_1").build();
-        TreatmentAdvice treatmentAdvice_2 = TreatmentAdviceBuilder.startRecording().withDrugDosages("09:00am", "09:00am").withId("treatmentAdvice_2").build();
-        TreatmentAdvice treatmentAdvice_3 = TreatmentAdviceBuilder.startRecording().withDrugDosages("10:45am").withId("treatmentAdvice_3").build();
-
-        when(allTreatmentAdvices.find_by_patient_id("patientDocId")).thenReturn(Arrays.asList(treatmentAdvice_1, treatmentAdvice_2, treatmentAdvice_3));
-
-        Map<String, List<String>> result = treatmentAdviceService.getAllDrugTimeHistory("patientDocId");
-
-        assertEquals(3, result.size());
-        assertEquals(Arrays.asList("11:45am", "05:50pm"), result.get(treatmentAdvice_1.getId()));
-        assertEquals(Arrays.asList("09:00am"), result.get(treatmentAdvice_2.getId()));
-        assertEquals(Arrays.asList("10:45am"), result.get(treatmentAdvice_3.getId()));
     }
 }
