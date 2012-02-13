@@ -1,20 +1,21 @@
 package org.motechproject.tamaregression.patient;
 
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
+import org.motechproject.tamafunctionalframework.page.CreateClinicVisitPage;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
 import org.motechproject.tamafunctionalframework.page.ShowPatientPage;
 import org.motechproject.tamafunctionalframework.page.UpdatePatientPage;
 import org.motechproject.tamafunctionalframework.testdata.TestClinic;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
 
-import static org.junit.Assert.assertEquals;
-import static org.motechproject.tamafunctionalframework.testdata.TestPatientPreferences.*;
+import static org.motechproject.tamafunctionalframework.testdata.TestPatientPreferences.CallPreference;
 
 public class PatientUpdateTest extends BaseTest {
 
@@ -32,8 +33,9 @@ public class PatientUpdateTest extends BaseTest {
         TestPatient patient = TestPatient.withMandatory().callPreference(CallPreference.DAILY_CALL);
 
         ShowPatientPage showPatientPage = registerPatient(patient);
-        showPatientPage.activatePatient();
-        showPatientPage = ShowPatientPage.get(webDriver, patient);
+        CreateClinicVisitPage createClinicVisitPage = showPatientPage.activatePatient();
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        showPatientPage = createClinicVisitPage.createNewRegimen(treatmentAdvice).gotoShowPatientPage();
         showPatientPage = changePatientToWeeklyCallAndExpectWarning(showPatientPage);
         showPatientPage.logout();
     }

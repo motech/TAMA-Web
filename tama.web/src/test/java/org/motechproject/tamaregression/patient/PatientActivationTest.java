@@ -5,13 +5,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
-import org.motechproject.tamafunctionalframework.framework.TamaUrl;
 import org.motechproject.tamafunctionalframework.page.CreateClinicVisitPage;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
 import org.motechproject.tamafunctionalframework.page.ShowPatientPage;
 import org.motechproject.tamafunctionalframework.testdata.TestClinic;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
 
 public class PatientActivationTest extends BaseTest {
@@ -34,9 +35,13 @@ public class PatientActivationTest extends BaseTest {
                 registerNewPatientOnDailyPillReminder(patient);
 
         Assert.assertEquals("Inactive", showPatientPage.getStatus().trim());
-        CreateClinicVisitPage pageAfterActivation = showPatientPage.activatePatient();
-        Assert.assertEquals("Active", ShowPatientPage.get(webDriver, patient).getStatus().trim());
-        pageAfterActivation.logout();
+
+        CreateClinicVisitPage createClinicVisitPage = showPatientPage.activatePatient();
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        showPatientPage = createClinicVisitPage.createNewRegimen(treatmentAdvice).gotoShowPatientPage();
+
+        Assert.assertEquals("Active", showPatientPage.getStatus().trim());
+        showPatientPage.logout();
     }
 
     @Test
@@ -47,7 +52,10 @@ public class PatientActivationTest extends BaseTest {
                 goToPatientRegistrationPage().
                 registerNewPatientOnDailyPillReminder(patient);
 
-        showPatientPage.activatePatient();
+        CreateClinicVisitPage createClinicVisitPage = showPatientPage.activatePatient();
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        showPatientPage = createClinicVisitPage.createNewRegimen(treatmentAdvice).gotoShowPatientPage();
+
         ShowPatientPage pageAfterDeactivation = showPatientPage.deactivatePatient("Study complete");
         Assert.assertEquals("Study complete", pageAfterDeactivation.getStatus().trim());
         pageAfterDeactivation.logout();

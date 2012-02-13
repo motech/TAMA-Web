@@ -54,8 +54,7 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
-        patientDataService.createRegimen(patient, clinician, treatmentAdvice, labResult, TestVitalStatistics.withMandatory());
+        patientDataService.registerAndActivate(treatmentAdvice, labResult, TestVitalStatistics.withMandatory(), patient, clinician);
     }
 
 

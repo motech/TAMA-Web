@@ -8,6 +8,8 @@ import org.motechproject.tamafunctionalframework.ivr.IVRAssert;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdata.ivrreponse.IVRResponse;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
+import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
 
@@ -34,7 +36,8 @@ public class PatientAuthenticationTest extends BaseIVRTest {
 
         TestPatient patient = TestPatient.withMandatory();
         patient.patientPreferences().passcode("5678");
-        new PatientDataService(webDriver).registerAndActivate(patient, clinician);
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        new PatientDataService(webDriver).registerAndActivate(treatmentAdvice, patient, clinician);
 
         caller = caller(patient);
         IVRResponse ivrResponse = caller.call();

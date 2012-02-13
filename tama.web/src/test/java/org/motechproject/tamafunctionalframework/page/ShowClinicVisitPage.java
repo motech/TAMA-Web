@@ -1,10 +1,14 @@
 package org.motechproject.tamafunctionalframework.page;
 
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
+import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.motechproject.tamafunctionalframework.testdata.TestLabResult;
 import org.motechproject.tamafunctionalframework.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
 public class ShowClinicVisitPage extends Page {
@@ -13,6 +17,8 @@ public class ShowClinicVisitPage extends Page {
     private ShowVitalStatisticsSection vitalStatisticsSection;
     private ShowLabResultsSection labResultsSection;
 
+    @FindBy(how = How.ID, using = "showPatient")
+    private WebElement showPatientLink;
 
     public ShowClinicVisitPage(WebDriver webDriver) {
         super(webDriver);
@@ -24,6 +30,7 @@ public class ShowClinicVisitPage extends Page {
     @Override
     public void postInitialize() {
         super.postInitialize();
+        this.showPatientLink = WebDriverFactory.createWebElement(this.showPatientLink);
     }
 
     @Override
@@ -59,5 +66,10 @@ public class ShowClinicVisitPage extends Page {
         vitalStatisticsSection.clickEdit();
         waitForElementWithIdToLoad(UpdateVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, UpdateVitalStatisticsPage.class);
+    }
+
+    public ShowPatientPage gotoShowPatientPage() {
+        showPatientLink.click();
+        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 }

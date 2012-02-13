@@ -19,9 +19,24 @@ public class PatientDataService extends EntityDataService {
         showPatientPage.logout();
     }
 
-    public void registerAndActivate(TestPatient patient, TestClinician clinician) {
-        ShowPatientPage showPatientPage = registerWithoutLogout(patient, clinician);
-        showPatientPage.activatePatient().logout();
+    public void registerAndActivate(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
+        activatePatient(patient, clinician).createNewRegimen(treatmentAdvice).logout();
+    }
+
+    public void registerAndActivate(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestPatient patient, TestClinician clinician) {
+        activatePatient(patient, clinician).createNewRegimen(treatmentAdvice, labResult).logout();
+    }
+
+    public void registerAndActivate(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics, TestPatient patient, TestClinician clinician) {
+        activatePatient(patient, clinician).createNewRegimen(treatmentAdvice, vitalStatistics).logout();
+    }
+
+    public void registerAndActivate(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics vitalStatistics, TestPatient patient, TestClinician clinician) {
+        activatePatient(patient, clinician).createNewRegimen(treatmentAdvice, labResult, vitalStatistics).logout();
+    }
+
+    private CreateClinicVisitPage activatePatient(TestPatient patient, TestClinician clinician) {
+        return registerWithoutLogout(patient, clinician).activatePatient();
     }
 
     private ShowPatientPage registerWithoutLogout(TestPatient patient, TestClinician clinician) {
@@ -47,24 +62,7 @@ public class PatientDataService extends EntityDataService {
 
     public void setupRegimenWithDependents(TestTreatmentAdvice treatmentAdvice, TestPatient patient, TestClinician clinician) {
         new ClinicianDataService(webDriver).createWithClinic(clinician);
-        registerAndActivate(patient, clinician);
-        createRegimen(patient, clinician, treatmentAdvice);
-    }
-
-    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice) {
-        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice).logout();
-    }
-
-    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics) {
-        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, vitalStatistics).logout();
-    }
-
-    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestLabResult labResult) {
-        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, labResult).logout();
-    }
-
-    public void createRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics vitalStatistics) {
-        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice, labResult, vitalStatistics).logout();
+        registerAndActivate(treatmentAdvice, patient, clinician);
     }
 
     public TestTreatmentAdvice getSavedTreatmentAdvice(TestPatient patient, TestClinician clinician) {
@@ -89,8 +87,7 @@ public class PatientDataService extends EntityDataService {
     }
 
     public void changeRegimen(TestPatient patient, TestClinician clinician, TestTreatmentAdvice treatmentAdvice) {
-        viewPatient(patient, clinician).goToCreateClinicVisitPage().createNewRegimen(treatmentAdvice)
-                .clickChangeRegimenLink().changeRegimen(treatmentAdvice).logout();
+        activatePatient(patient, clinician).createNewRegimen(treatmentAdvice).clickChangeRegimenLink().changeRegimen(treatmentAdvice).logout();
     }
 
     public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {

@@ -55,8 +55,7 @@ public class IVRCallTest extends BaseIVRTest {
     }
 
     private void createPatientWithARTRegimen(TestPatient patient, TestTreatmentAdvice treatmentAdvice, TestClinician clinician) {
-        new PatientDataService(webDriver).registerAndActivate(patient, clinician);
-        new PatientDataService(webDriver).createRegimen(patient, clinician, treatmentAdvice);
+        new PatientDataService(webDriver).registerAndActivate(treatmentAdvice, patient, clinician);
     }
 
     @Test

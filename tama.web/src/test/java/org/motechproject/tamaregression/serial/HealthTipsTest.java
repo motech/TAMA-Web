@@ -40,9 +40,8 @@ public class HealthTipsTest extends BaseIVRTest {
 
         TestTreatmentAdvice treatmentAdvice = setUpTreatmentAdviceToStartFrom2WeeksAgo();
         new ClinicianDataService(webDriver).createWithClinic(clinician);
-        patientDataService.registerAndActivate(patient, clinician);
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
-        patientDataService.createRegimen(patient, clinician, treatmentAdvice, labResult);
+        patientDataService.registerAndActivate(treatmentAdvice, labResult, patient, clinician);
 
         tamaDateTimeService.adjustDateTime(DateUtil.now());
     }

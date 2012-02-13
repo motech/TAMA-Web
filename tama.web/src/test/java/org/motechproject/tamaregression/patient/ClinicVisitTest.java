@@ -28,10 +28,8 @@ public class ClinicVisitTest extends BaseTest {
     public void testCreateARTRegimenForPatientOnDailyCall() {
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
-
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createRegimen(patient, clinician, treatmentAdvice);
+        patientDataService.registerAndActivate(treatmentAdvice, patient, clinician);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getSavedTreatmentAdvice(patient, clinician);
         assertEquals(savedTreatmentAdvice.regimenName(), treatmentAdvice.regimenName());
@@ -45,10 +43,9 @@ public class ClinicVisitTest extends BaseTest {
         patient.patientPreferences().dayOfWeeklyCall("Monday");
         patient.patientPreferences().bestCallTime("10:20");
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
-
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createRegimen(patient, clinician, treatmentAdvice);
+
+        patientDataService.registerAndActivate(treatmentAdvice, patient, clinician);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getSavedTreatmentAdvice(patient, clinician);
         assertEquals(savedTreatmentAdvice.regimenName(), treatmentAdvice.regimenName());
@@ -59,7 +56,6 @@ public class ClinicVisitTest extends BaseTest {
     public void shouldChangeRegimenForPatientOnDailyCall() {
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
 
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
         patientDataService.changeRegimen(patient, clinician, treatmentAdvice);
@@ -73,12 +69,10 @@ public class ClinicVisitTest extends BaseTest {
     public void testCreateRegimenWithLabResults() {
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
-
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
         TestLabResult labResult = TestLabResult.withMandatory();
 
-        patientDataService.createRegimen(patient, clinician, treatmentAdvice, labResult);
+        patientDataService.registerAndActivate(treatmentAdvice, labResult, patient, clinician);
         TestLabResult savedLabResult = patientDataService.getSavedLabResult(patient, clinician);
         assertEquals(labResult, savedLabResult);
 
@@ -93,11 +87,10 @@ public class ClinicVisitTest extends BaseTest {
     public void testCreateRegimenWithVitalStatistics() {
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        patientDataService.registerAndActivate(patient, clinician);
-
         TestVitalStatistics vitalStatistics = TestVitalStatistics.withMandatory();
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-        patientDataService.createRegimen(patient, clinician, treatmentAdvice, vitalStatistics);
+
+        patientDataService.registerAndActivate(treatmentAdvice, vitalStatistics, patient, clinician);
 
         TestVitalStatistics savedVitalStatistics = patientDataService.getSavedVitalStatistics(patient, clinician);
         assertEquals(vitalStatistics, savedVitalStatistics);
