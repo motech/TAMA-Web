@@ -14,6 +14,7 @@ import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
+import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.repository.AllGenders;
 import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
@@ -80,6 +81,7 @@ public class PatientController extends BaseController {
     private AllLabResults allLabResults;
     private PatientService patientService;
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
+    private ClinicVisitService clinicVisitService;
     private ResumeFourDayRecallService resumeFourDayRecallService;
     private TAMAAppointmentsService tamaAppointmentsService;
     private Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
@@ -88,7 +90,7 @@ public class PatientController extends BaseController {
     public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
                              AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
                              TAMAAppointmentsService tamaAppointmentsService,
-                             @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly) {
+                             @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly, ClinicVisitService clinicVisitService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -103,6 +105,7 @@ public class PatientController extends BaseController {
         this.resumeFourDayRecallService = resumeFourDayRecallService;
         this.tamaAppointmentsService = tamaAppointmentsService;
         this.minNumberOfDaysOnDailyBeforeTransitioningToWeekly = minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
+        this.clinicVisitService = clinicVisitService;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -112,6 +115,8 @@ public class PatientController extends BaseController {
         patientService.activate(id);
         if (firstActivation) {
             tamaAppointmentsService.scheduleAppointments(id);
+            ClinicVisit clinicVisit = clinicVisitService.visitZero(id);
+            return "redirect:/clinicvisits?form&clinicVisitId=" + clinicVisit.getId();
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }

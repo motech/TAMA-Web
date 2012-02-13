@@ -14,12 +14,14 @@ import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
+import org.motechproject.tama.patient.builder.ClinicVisitBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
+import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.repository.AllGenders;
@@ -53,6 +55,7 @@ public class PatientControllerTest {
 
     public static final String PATIENT_ID = "patient_id";
     public static final String CLINIC_ID = "456";
+    public static final String CLINIC_VISIT_ID = "clinicVisitId";
     private PatientController controller;
     @Mock
     private Model uiModel;
@@ -88,11 +91,13 @@ public class PatientControllerTest {
     private ResumeFourDayRecallService resumeFourDayRecallService;
     @Mock
     private TAMAAppointmentsService tamaAppointmentsService;
+    @Mock
+    private ClinicVisitService clinicVisitService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, tamaAppointmentsService, 28);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, tamaAppointmentsService, 28, clinicVisitService);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 
@@ -117,7 +122,7 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForShowAction(){
+    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForShowAction() {
         when(request.getSession()).thenReturn(session);
         when(user.getClinicId()).thenReturn(CLINIC_ID);
         when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
@@ -128,41 +133,31 @@ public class PatientControllerTest {
 
     @Test
     public void shouldActivatePatientsAndRedirectToPatientViewPage() {
-        final DateTime now = DateTime.now();
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).
                 withCallPreference(CallPreference.DailyPillReminder).
-                withActivationDate(null).build();
+                withActivationDate(DateUtil.now().minusDays(3)).build();
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
         String nextPage = controller.activate(PATIENT_ID, request);
 
-        verify(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
+        verify(patientService).activate(PATIENT_ID);
+        verify(tamaAppointmentsService, never()).scheduleAppointments(eq(PATIENT_ID));
+        assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
     }
 
     @Test
-    public void shouldActivatePatientAndCreateAppointments() {
-        final DateTime now = DateUtil.now();
-        doNothing().when(tamaAppointmentsService).scheduleAppointments(eq(PATIENT_ID));
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).build();
+    public void shouldRedirectToClinicVisitPageAfterFirstActivation() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(CLINIC_VISIT_ID).build();
+        when(clinicVisitService.visitZero(PATIENT_ID)).thenReturn(clinicVisit);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-
+        doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
         String nextPage = controller.activate(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
-        assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
-        verify(tamaAppointmentsService).scheduleAppointments(eq(PATIENT_ID));
-    }
-    @Test
-    public void shouldNotRecreateAppointmentsOnReactivatingPatient() {
-        final DateTime now = DateUtil.now();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withActivationDate(now).build();
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-
-        String nextPage = controller.activate(PATIENT_ID, request);
-
-        assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
-        verify(tamaAppointmentsService, never()).scheduleAppointments(eq(PATIENT_ID));
+        verify(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
+        assertEquals("redirect:/clinicvisits?form&clinicVisitId=" + CLINIC_VISIT_ID, nextPage);
     }
 
     @Test
@@ -312,7 +307,7 @@ public class PatientControllerTest {
 
 
     @Test
-    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForUpdateFormAction(){
+    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForUpdateFormAction() {
         when(request.getSession()).thenReturn(session);
         when(user.getClinicId()).thenReturn(CLINIC_ID);
         when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
