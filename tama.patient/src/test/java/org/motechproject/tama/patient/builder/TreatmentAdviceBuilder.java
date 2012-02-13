@@ -38,11 +38,18 @@ public class TreatmentAdviceBuilder {
         return this;
     }
 
-    public TreatmentAdviceBuilder withDrugDosages(String morningTime, String eveningTime) {
+    public TreatmentAdviceBuilder withDrugDosages(String drug1Time) {
         DrugDosage drugDosage1 = new DrugDosage();
-        drugDosage1.setMorningTime(morningTime);
+        drugDosage1.setMorningTime(drug1Time);
+        this.treatmentAdvice.setDrugDosages(Arrays.asList(drugDosage1));
+        return this;
+    }
+
+    public TreatmentAdviceBuilder withDrugDosages(String drug1Time, String drug2Time) {
+        DrugDosage drugDosage1 = new DrugDosage();
+        drugDosage1.setMorningTime(drug1Time);
         DrugDosage drugDosage2 = new DrugDosage();
-        drugDosage2.setEveningTime(eveningTime);
+        drugDosage2.setEveningTime(drug2Time);
         this.treatmentAdvice.setDrugDosages(Arrays.asList(drugDosage1, drugDosage2));
         return this;
     }

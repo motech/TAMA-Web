@@ -134,11 +134,15 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
     @JsonIgnore
     public Map<String, List<DrugDosage>> groupDosagesByTime() {
         Map<String, List<DrugDosage>> drugDosagesGroupedAccordingToTime = new HashMap<String, List<DrugDosage>>();
-        Collection<String> distinctTimes = selectDistinct(Lambda.<String>flatten(extract(getDrugDosages(), on(DrugDosage.class).getNonEmptyDosageSchedules())));
-        for (String time : distinctTimes) {
+        for (String time : distinctDrugTimes()) {
             drugDosagesGroupedAccordingToTime.put(time, select(getDrugDosages(), having(on(DrugDosage.class).getNonEmptyDosageSchedules(), hasItem(time))));
         }
         return drugDosagesGroupedAccordingToTime;
+    }
+
+    @JsonIgnore
+    public List<String> distinctDrugTimes() {
+        return Arrays.asList(selectDistinct(Lambda.<String>flatten(extract(getDrugDosages(), on(DrugDosage.class).getNonEmptyDosageSchedules()))).toArray(new String[]{}));
     }
 
     @Override

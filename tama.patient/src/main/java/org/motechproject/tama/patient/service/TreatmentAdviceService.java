@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -54,5 +55,14 @@ public class TreatmentAdviceService {
         TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
         existingTreatmentAdvice.endTheRegimen(discontinuationReason);
         allTreatmentAdvices.update(existingTreatmentAdvice);
+    }
+
+    public Map<String, List<String>> getAllDrugTimeHistory(String patientDocId) {
+        List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(patientDocId);
+        Map<String, List<String>> drugHistory = new HashMap<String, List<String>>();
+        for (TreatmentAdvice treatmentAdvice : treatmentAdvices) {
+            drugHistory.put(treatmentAdvice.getId(), treatmentAdvice.distinctDrugTimes());
+        }
+        return drugHistory;
     }
 }

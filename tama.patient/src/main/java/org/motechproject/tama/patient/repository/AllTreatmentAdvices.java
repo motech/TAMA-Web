@@ -40,7 +40,7 @@ public class AllTreatmentAdvices extends AbstractCouchRepository<TreatmentAdvice
     }
 
     @View(name = "find_by_patient_id", map = "function(doc) {if (doc.documentType =='TreatmentAdvice' && doc.patientId) {emit(doc.patientId, doc._id);}}")
-    private List<TreatmentAdvice> find_by_patient_id(String patientId) {
+    public List<TreatmentAdvice> find_by_patient_id(String patientId) {
         ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
         return db.queryView(q, TreatmentAdvice.class);
     }
