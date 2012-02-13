@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
+import org.motechproject.model.Time;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
@@ -57,7 +58,7 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     private DosageAdherenceLog adherenceLog(String regimenId, DosageStatus dosageStatus) {
-        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(null, null, null, null, null, null, null);
+        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(null, null, null, null, null, null, null, null);
         adherenceLog.setRegimenId(regimenId);
         adherenceLog.setDosageStatus(dosageStatus);
         return adherenceLog;
@@ -66,15 +67,15 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     @Test
     public void shouldGetCountOfDosagesTaken() {
         LocalDate someDay = new LocalDate(2011, 10, 22);
-        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_TAKEN, someDay, DateUtil.newDateTime(someDay, 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_TAKEN, someDay, new Time(10, 5), DateUtil.newDateTime(someDay, 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog1);
-        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(1), DateUtil.newDateTime(someDay.minusDays(1), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(1), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(1), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog2);
-        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2), DateUtil.newDateTime(someDay.minusDays(2), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(2), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog3);
-        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(3), DateUtil.newDateTime(someDay.minusDays(3), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(3), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(3), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
-        DosageAdherenceLog dosageAdherenceLog5 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(4), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog5 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(4), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog5);
 
         assertEquals(3, allDosageAdherenceLogs.getDosageTakenCount("regimen_id"));
@@ -83,15 +84,15 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     @Test
     public void shouldFindByDosageStatusAndDateRange() {
         LocalDate someDay = new LocalDate(2011, 10, 22);
-        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_TAKEN, someDay, DateUtil.newDateTime(someDay, 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_TAKEN, someDay, new Time(10, 5), DateUtil.newDateTime(someDay, 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog1);
-        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(1), DateUtil.newDateTime(someDay.minusDays(1), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(1), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(1), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog2);
-        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2), DateUtil.newDateTime(someDay.minusDays(2), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(2), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog3);
-        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(3), DateUtil.newDateTime(someDay.minusDays(3), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(3), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(3), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
-        DosageAdherenceLog dosageAdherenceLog5 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(4), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog5 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(4), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog5);
 
         assertEquals(3, allDosageAdherenceLogs.countByDosageStatusAndDate("regimen_id", DosageStatus.TAKEN, someDay.minusDays(5), someDay));
@@ -102,13 +103,13 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     @Test
     public void shouldCountAllLogs_ForARegimen_ForGivenDateRange() {
         LocalDate someDay = new LocalDate(2011, 10, 22);
-        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_TAKEN, someDay, DateUtil.newDateTime(someDay, 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_TAKEN, someDay, new Time(10, 5), DateUtil.newDateTime(someDay, 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog1);
-        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen1_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(1), DateUtil.newDateTime(someDay.minusDays(1), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog2 = new DosageAdherenceLog("patient_id", "regimen1_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, someDay.minusDays(1), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(1), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog2);
-        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2), DateUtil.newDateTime(someDay.minusDays(2), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.WILL_TAKE_LATER, someDay.minusDays(2), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(2), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog3);
-        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_RECORDED, someDay.minusDays(4), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
+        DosageAdherenceLog dosageAdherenceLog4 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.NOT_RECORDED, someDay.minusDays(4), new Time(10, 5), DateUtil.newDateTime(someDay.minusDays(4), 0, 0, 0));
         allDosageAdherenceLogs.add(dosageAdherenceLog4);
 
         assertEquals(3, allDosageAdherenceLogs.countByDosageDate("regimen_id", someDay.minusDays(5), someDay));
@@ -117,15 +118,15 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     @Test
     public void shouldGetCountOfDoseTakenSinceGivenDate() {
         LocalDate today = DateUtil.today();
-        DosageAdherenceLog doseTakenLateBeforeGivenDate = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today.minusWeeks(1), DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0));
+        DosageAdherenceLog doseTakenLateBeforeGivenDate = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today.minusWeeks(1), new Time(10, 5), DateUtil.newDateTime(today.minusWeeks(1), 0, 0, 0));
         doseTakenLateBeforeGivenDate.dosageIsTakenLate();
-        DosageAdherenceLog doseTakenLate_1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today.minusDays(3), DateUtil.newDateTime(today.minusDays(3), 0, 0, 0));
+        DosageAdherenceLog doseTakenLate_1 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today.minusDays(3), new Time(10, 5), DateUtil.newDateTime(today.minusDays(3), 0, 0, 0));
         doseTakenLate_1.dosageIsTakenLate();
-        DosageAdherenceLog doseTakenLate_2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today.minusDays(1), DateUtil.newDateTime(today.minusDays(1), 0, 0, 0));
+        DosageAdherenceLog doseTakenLate_2 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today.minusDays(1), new Time(10, 5), DateUtil.newDateTime(today.minusDays(1), 0, 0, 0));
         doseTakenLate_2.dosageIsTakenLate();
-        DosageAdherenceLog doseTakenLate_3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today, DateUtil.newDateTime(today, 0, 0, 0));
+        DosageAdherenceLog doseTakenLate_3 = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today, new Time(10, 5), DateUtil.newDateTime(today, 0, 0, 0));
         doseTakenLate_3.dosageIsTakenLate();
-        DosageAdherenceLog doseTakenOnTime = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today, DateUtil.newDateTime(today, 0, 0, 0));
+        DosageAdherenceLog doseTakenOnTime = new DosageAdherenceLog("patient_id", "regimen_id", "dosage1_id", "treatment_advice_id", DosageStatus.TAKEN, today, new Time(10, 5), DateUtil.newDateTime(today, 0, 0, 0));
 
         allDosageAdherenceLogs.add(doseTakenLateBeforeGivenDate);
         allDosageAdherenceLogs.add(doseTakenLate_1);

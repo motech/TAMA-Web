@@ -3,6 +3,7 @@ package org.motechproject.tama.dailypillreminder.domain;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.model.Time;
 import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 
@@ -27,14 +28,17 @@ public class DosageAdherenceLog extends CouchEntity {
 
     private String treatmentAdviceId;
 
+    private Time dosageTime;
+
     private DosageAdherenceLog(){}
 
-    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, String treatmentAdviceId, DosageStatus dosageStatus, LocalDate dosageDate, DateTime dosageStatusUpdatedAt) {
+    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, String treatmentAdviceId, DosageStatus dosageStatus, LocalDate dosageDate, Time dosageTime, DateTime dosageStatusUpdatedAt) {
         this.patientId = patientId;
         this.regimenId = regimenId;
         this.dosageId = dosageId;
         this.treatmentAdviceId = treatmentAdviceId;
         this.dosageDate = dosageDate;
+        this.dosageTime = dosageTime;
         this.dosageStatus = dosageStatus;
         this.dosageStatusUpdatedAt = dosageStatusUpdatedAt;
     }
@@ -107,6 +111,22 @@ public class DosageAdherenceLog extends CouchEntity {
         this.dosageStatusUpdatedAt = dosageStatusUpdatedAt;
     }
 
+    public String getTreatmentAdviceId() {
+        return treatmentAdviceId;
+    }
+
+    public void setTreatmentAdviceId(String treatmentAdviceId) {
+        this.treatmentAdviceId = treatmentAdviceId;
+    }
+
+    public Time getDosageTime() {
+        return dosageTime;
+    }
+
+    public void setDosageTime(Time dosageTime) {
+        this.dosageTime = dosageTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -138,7 +158,8 @@ public class DosageAdherenceLog extends CouchEntity {
     }
 
     public static DosageAdherenceLog create(String patientId, String regimenId, String treatmentAdviceId, DosageStatus dosageStatus, Dose dose, DateTime doseTakenTime, int dosageInterval) {
-        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), treatmentAdviceId, dosageStatus, dose.getDate(), doseTakenTime);
+        Time dosageTime = new Time(dose.getDosageHour(), dose.getDosageMinute());
+        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), treatmentAdviceId, dosageStatus, dose.getDate(), dosageTime, doseTakenTime);
         if (dose.isLateToTake(doseTakenTime, dosageInterval)) adherenceLog.dosageIsTakenLate();
         return adherenceLog;
     }
@@ -147,13 +168,5 @@ public class DosageAdherenceLog extends CouchEntity {
         setDosageStatus(status);
         if (dose.isLateToTake(doseTakenTime, dosageInterval)) dosageIsTakenLate();
         setDosageStatusUpdatedAt(doseTakenTime);
-    }
-
-    public String getTreatmentAdviceId() {
-        return treatmentAdviceId;
-    }
-
-    public void setTreatmentAdviceId(String treatmentAdviceId) {
-        this.treatmentAdviceId = treatmentAdviceId;
     }
 }

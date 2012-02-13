@@ -19,7 +19,6 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdheren
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -142,6 +141,6 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     }
 
     private void addAdherenceLog(String dosageId, DosageStatus dosageStatus, LocalDate dosageDate) {
-        allDosageAdherenceLogs.add(new DosageAdherenceLog(patient.getId(), "pillRegimenId", dosageId, "treatmentAdviceId", dosageStatus, dosageDate, DateUtil.newDateTime(dosageDate, 0, 0, 0)));
+        allDosageAdherenceLogs.add(new DosageAdherenceLog(patient.getId(), "pillRegimenId", dosageId, "treatmentAdviceId", dosageStatus, dosageDate, new Time(10, 5), DateUtil.newDateTime(dosageDate, 0, 0, 0)));
     }
 }
