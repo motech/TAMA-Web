@@ -29,6 +29,7 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -64,6 +65,9 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
     @Autowired
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
 
+    @Autowired
+    private AllTreatmentAdvices allTreatmentAdvices;
+
     @Mock
     private DailyPillReminderService dailyPillReminderService;
 
@@ -90,7 +94,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
         initMocks(this);
         setUpTime();
         properties.setProperty(TAMAConstants.ACCEPTABLE_ADHERENCE_PERCENTAGE, ADHERENCE_THRESHOLD);
-        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, properties, new AdherenceService(), allPatients);
+        dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, properties, new AdherenceService(), allPatients, allTreatmentAdvices);
         adherenceQualityListener = new AdherenceQualityListener(dailyReminderAdherenceTrendService, properties, dailyReminderAdherenceService, allPatients);
         Patient patient = new PatientBuilder().withDefaults().withStatus(Status.Active).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
@@ -137,12 +141,12 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
         PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
         when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimenResponse));
         for (int dosesTaken = 0; dosesTaken < dosesToBeTaken; dosesTaken++) {
-            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.TAKEN, DateUtil.today().minusDays(dosesTaken), DateUtil.newDateTime(DateUtil.today().minusDays(dosesTaken), 0, 0, 0));
+            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", null, DosageStatus.TAKEN, DateUtil.today().minusDays(dosesTaken), DateUtil.newDateTime(DateUtil.today().minusDays(dosesTaken), 0, 0, 0));
             allDosageAdherenceLogs.add(dosageAdherenceLog);
             markForDeletion(dosageAdherenceLog);
         }
         for (int dosesNotTaken = dosesToBeTaken; dosesNotTaken < totalDoses; dosesNotTaken++) {
-            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", DosageStatus.NOT_RECORDED, DateUtil.today().minusDays(dosesNotTaken), DateUtil.newDateTime(DateUtil.today().minusDays(dosesNotTaken), 0, 0, 0));
+            DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", null, DosageStatus.NOT_RECORDED, DateUtil.today().minusDays(dosesNotTaken), DateUtil.newDateTime(DateUtil.today().minusDays(dosesNotTaken), 0, 0, 0));
             allDosageAdherenceLogs.add(dosageAdherenceLog);
             markForDeletion(dosageAdherenceLog);
         }

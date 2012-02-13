@@ -25,12 +25,15 @@ public class DosageAdherenceLog extends CouchEntity {
 
     private DateTime dosageStatusUpdatedAt;
 
+    private String treatmentAdviceId;
+
     private DosageAdherenceLog(){}
 
-    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, DosageStatus dosageStatus, LocalDate dosageDate, DateTime dosageStatusUpdatedAt) {
+    public DosageAdherenceLog(String patientId, String regimenId, String dosageId, String treatmentAdviceId, DosageStatus dosageStatus, LocalDate dosageDate, DateTime dosageStatusUpdatedAt) {
         this.patientId = patientId;
         this.regimenId = regimenId;
         this.dosageId = dosageId;
+        this.treatmentAdviceId = treatmentAdviceId;
         this.dosageDate = dosageDate;
         this.dosageStatus = dosageStatus;
         this.dosageStatusUpdatedAt = dosageStatusUpdatedAt;
@@ -134,8 +137,8 @@ public class DosageAdherenceLog extends CouchEntity {
         return result;
     }
 
-    public static DosageAdherenceLog create(String patientId, String regimenId, DosageStatus dosageStatus, Dose dose, DateTime doseTakenTime, int dosageInterval) {
-        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), dosageStatus, dose.getDate(), doseTakenTime);
+    public static DosageAdherenceLog create(String patientId, String regimenId, String treatmentAdviceId, DosageStatus dosageStatus, Dose dose, DateTime doseTakenTime, int dosageInterval) {
+        DosageAdherenceLog adherenceLog = new DosageAdherenceLog(patientId, regimenId, dose.getDosageId(), treatmentAdviceId, dosageStatus, dose.getDate(), doseTakenTime);
         if (dose.isLateToTake(doseTakenTime, dosageInterval)) adherenceLog.dosageIsTakenLate();
         return adherenceLog;
     }
@@ -144,5 +147,13 @@ public class DosageAdherenceLog extends CouchEntity {
         setDosageStatus(status);
         if (dose.isLateToTake(doseTakenTime, dosageInterval)) dosageIsTakenLate();
         setDosageStatusUpdatedAt(doseTakenTime);
+    }
+
+    public String getTreatmentAdviceId() {
+        return treatmentAdviceId;
+    }
+
+    public void setTreatmentAdviceId(String treatmentAdviceId) {
+        this.treatmentAdviceId = treatmentAdviceId;
     }
 }
