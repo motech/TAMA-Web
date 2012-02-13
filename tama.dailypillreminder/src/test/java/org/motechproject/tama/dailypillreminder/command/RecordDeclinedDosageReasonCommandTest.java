@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
@@ -41,7 +42,7 @@ public class RecordDeclinedDosageReasonCommandTest {
 
     @Test
     public void shouldUpdateTheDeclinedDosageAdherenceLogWithReason() {
-        DosageAdherenceLog log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, null, DosageStatus.NOT_TAKEN, DateUtil.today(), DateUtil.newDateTime(DateUtil.today(), 0, 0, 0));
+        DosageAdherenceLog log = new DosageAdherenceLog(patientId, pillRegimenId, dosageId, null, DosageStatus.NOT_TAKEN, DateUtil.today(), new Time(10, 5), DateUtil.newDateTime(DateUtil.today(), 0, 0, 0));
         when(logs.findByDosageIdAndDate(eq(dosageId), any(LocalDate.class))).thenReturn(log);
 
         RecordDeclinedDosageReasonCommand command = new RecordDeclinedDosageReasonCommand(logs, null);

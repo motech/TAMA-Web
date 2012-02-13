@@ -7,7 +7,7 @@ import org.motechproject.util.DateUtil;
 
 public class DosageAdherenceLogBuilder {
 
-    private DosageAdherenceLog adherenceLog = new DosageAdherenceLog(null, null, null, null, null, null, null);
+    private DosageAdherenceLog adherenceLog = new DosageAdherenceLog(null, null, null, null, null, null, null, null);
 
     public DosageAdherenceLog build() {
         return this.adherenceLog;
