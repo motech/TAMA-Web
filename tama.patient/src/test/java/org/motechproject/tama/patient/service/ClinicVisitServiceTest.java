@@ -25,8 +25,10 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ClinicVisitServiceTest {
 
     public static final String CLINIC_VISIT_ID = "clinicVisitId";
+
     @Mock
     private AllClinicVisits allClinicVisits;
+
     private ClinicVisitService clinicVisitService;
 
     @Before
@@ -83,12 +85,11 @@ public class ClinicVisitServiceTest {
 
     @Test
     public void shouldChangeRegimenForAVisit() {
-        final String clinicVisitId = "clinicVisitId";
         final String newTreatmentAdviceId = "newTreatmentAdviceId";
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
 
-        when(allClinicVisits.get(clinicVisitId)).thenReturn(clinicVisit);
-        clinicVisitService.changeRegimen(clinicVisitId, newTreatmentAdviceId);
+        when(allClinicVisits.get(CLINIC_VISIT_ID)).thenReturn(clinicVisit);
+        clinicVisitService.changeRegimen(CLINIC_VISIT_ID, newTreatmentAdviceId);
 
         verify(allClinicVisits).update(clinicVisit);
         assertEquals(newTreatmentAdviceId, clinicVisit.getTreatmentAdviceId());
@@ -106,6 +107,8 @@ public class ClinicVisitServiceTest {
     @Test
     public void shouldAdjustDueDate() throws Exception {
         final LocalDate today = DateUtil.today();
+        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+        when(allClinicVisits.get(CLINIC_VISIT_ID)).thenReturn(clinicVisit);
 
         clinicVisitService.adjustDueDate(CLINIC_VISIT_ID, today);
 

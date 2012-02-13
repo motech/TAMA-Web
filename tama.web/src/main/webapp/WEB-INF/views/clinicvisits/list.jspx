@@ -12,44 +12,46 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <util:panel id="clinicVisitListPanel" title="Clinic Visits" openPane="true">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Appointment Due Date</th>
-            <th>Adjusted Due Date</th>
-            <th>Appointment Set for</th>
-            <th>Actual Date of Visit</th>
-            <th>Type of Visit</th>
-        </tr>
-        </thead>
-        <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
-            <spring:url value="/clinicvisits" var="clinicvisitEdit">
-                <spring:param name="form"/>
-                <spring:param name="patientId" value="${visit.patientId}"/>
-                <spring:param name="clinicVisitId" value="${visit.id}"/>
-            </spring:url>
+        <table id="clinicVisitList">
+            <thead>
             <tr>
-                <td><a id="visit-${status.index}" href="${clinicvisitEdit}"><c:if test="${visit.name}"><c:out value="${visit.name}"/></c:if></a></td>
-                <td><spring:eval expression="visit.appointmentDueDate"/></td>
-                <td>
-                    <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}">
-                        <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Schedule</c:if>
-                        <c:if test="${not empty visit.adjustedDueDate}"><spring:eval
-                                expression="visit.adjustedDueDate"/></c:if>
-                    </a>
-                </td>
-                <td>
-                    <c:if test="${empty visit.visitDate and empty visit.confirmedVisitDate}">
-                        <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}">Schedule</a>
-                    </c:if>
-                    <c:if test="${not empty visit.confirmedVisitDate}">
-                        <spring:eval expression="visit.confirmedVisitDate"/>
-                    </c:if>
-                </td>
-                <td><spring:eval expression="visit.visitDate"/></td>
-                <td><c:out value="${visit.typeOfVisit}"/></td>
+                <th></th>
+                <th>Appointment Due Date</th>
+                <th>Adjusted Due Date</th>
+                <th>Appointment Set for</th>
+                <th>Actual Date of Visit</th>
+                <th>Type of Visit</th>
             </tr>
-        </c:forEach>
+            </thead>
+            <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
+                <spring:url value="/clinicvisits" var="clinicvisitEdit">
+                    <spring:param name="form"/>
+                    <spring:param name="patientId" value="${visit.patientId}"/>
+                    <spring:param name="clinicVisitId" value="${visit.id}"/>
+                </spring:url>
+                <tr>
+                    <td><a id="visit-${status.index}" href="${clinicvisitEdit}"><c:out value="${visit.name}"/></a></td>
+                    <td><spring:eval expression="visit.appointmentDueDate"/></td>
+                    <td>
+                        <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}">
+                            <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Schedule</c:if>
+                            <c:if test="${not empty visit.adjustedDueDate}"><spring:eval
+                                    expression="visit.adjustedDueDate"/></c:if>
+                        </a>
+                    </td>
+                    <td>
+                        <c:if test="${empty visit.visitDate and empty visit.confirmedVisitDate}">
+                            <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}">Schedule</a>
+                        </c:if>
+                        <c:if test="${not empty visit.confirmedVisitDate}">
+                            <spring:eval expression="visit.confirmedVisitDate"/>
+                        </c:if>
+                    </td>
+                    <td><spring:eval expression="visit.visitDate"/></td>
+                    <td><c:out value="${visit.typeOfVisit}"/></td>
+                </tr>
+            </c:forEach>
+        </table>
         <br/>
         <spring:url value="/patients/${patientId}" var="patient_form_url"/>
         <a id="showPatient" href="${patient_form_url}">Show Patient</a>
