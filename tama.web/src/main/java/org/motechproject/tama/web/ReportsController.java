@@ -46,6 +46,6 @@ public class ReportsController {
                                           @RequestParam LocalDate startDate,
                                           @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                           @RequestParam LocalDate endDate) throws JSONException {
-        return dailyPillReminderReportService.createReport(patientDocId, startDate, endDate).toString();
+        return dailyPillReminderReportService.JSONReport(patientDocId, startDate, endDate).toString();
     }
 }

@@ -22,9 +22,14 @@ public class DailyPillReminderReportService {
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
     }
 
-    public JSONObject createReport(String patientId, LocalDate startDate, LocalDate endDate) throws JSONException {
+    public JSONObject JSONReport(String patientDocId, LocalDate startDate, LocalDate endDate) throws JSONException {
         JSONObject result = new JSONObject();
-        result.put(startDate.toString(), endDate.toString());
+        List<DailyPillReminderSummary> dailyPillReminderSummaries = create(patientDocId, startDate, endDate);
+        List<JSONObject> reportLogs = new ArrayList<JSONObject>();
+        for (DailyPillReminderSummary dailyPillReminderSummary : dailyPillReminderSummaries) {
+            reportLogs.add(new JSONObject(dailyPillReminderSummary));
+        }
+        result.put("logs", reportLogs);
         return result;
     }
 

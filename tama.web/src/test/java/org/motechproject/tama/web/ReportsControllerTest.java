@@ -65,7 +65,7 @@ public class ReportsControllerTest {
 
         JSONObject jsonReport = new JSONObject();
         jsonReport.put("someKey", "someValue");
-        when(dailyPillReminderReportService.createReport("patientId", day1, day2)).thenReturn(jsonReport);
+        when(dailyPillReminderReportService.JSONReport("patientId", day1, day2)).thenReturn(jsonReport);
 
         assertEquals(jsonReport.toString(), reportsController.dailyPillReminderReport("patientId", day1, day2));
     }

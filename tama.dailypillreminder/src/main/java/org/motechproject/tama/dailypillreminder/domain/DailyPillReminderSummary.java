@@ -27,8 +27,8 @@ public class DailyPillReminderSummary {
         }
     }
 
-    public LocalDate getDate() {
-        return date;
+    public String getDate() {
+        return date.toString();
     }
 
     public String getMorningTime() {
@@ -40,8 +40,8 @@ public class DailyPillReminderSummary {
         return this;
     }
 
-    public DosageStatus getMorningStatus() {
-        return morningStatus;
+    public String getMorningStatus() {
+        return morningStatus == null ? null : morningStatus.toString();
     }
 
     public DailyPillReminderSummary setMorningStatus(DosageStatus morningStatus) {
@@ -58,8 +58,8 @@ public class DailyPillReminderSummary {
         return this;
     }
 
-    public DosageStatus getEveningStatus() {
-        return eveningStatus;
+    public String getEveningStatus() {
+        return eveningStatus == null ? null : eveningStatus.toString();
     }
 
     public DailyPillReminderSummary setEveningStatus(DosageStatus eveningStatus) {
