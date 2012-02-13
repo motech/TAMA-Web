@@ -21,9 +21,11 @@ import org.motechproject.tama.dailypillreminder.domain.*;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
 
 import java.util.*;
@@ -53,6 +55,8 @@ public class DailyPillReminderAdherenceServiceTest {
         protected DailyPillReminderService dailyPillReminderService;
         @Mock
         protected AllPatients allPatients;
+        @Mock
+        protected AllTreatmentAdvices allTreatmentAdvices;
 
         protected Properties ivrProperties;
 
@@ -79,8 +83,9 @@ public class DailyPillReminderAdherenceServiceTest {
             initMocks(this);
             setUpTime();
             initializeProperties();
-            dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, ivrProperties, new AdherenceService(), allPatients);
+            dailyReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, ivrProperties, new AdherenceService(), allPatients, allTreatmentAdvices);
             patient = PatientBuilder.startRecording().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).build();
+            when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(TreatmentAdviceBuilder.startRecording().withDefaults().build());
         }
     }
 
@@ -117,7 +122,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithSingleDosage(dosageTime, startDate.toLocalDate().minusDays(10), "dosageId");
 
             when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, DosageStatus.NOT_RECORDED, null, null));
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, DosageStatus.NOT_RECORDED, null, null));
 
             dailyReminderAdherenceService.backFillAdherence(PATIENT_ID, startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
@@ -131,7 +136,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithSingleDosage(dosageTime, startDate.toLocalDate(), "dosageId");
 
             when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, DosageStatus.NOT_RECORDED, null, null));
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, DosageStatus.NOT_RECORDED, null, null));
 
             dailyReminderAdherenceService.backFillAdherence(PATIENT_ID, startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(2)).add(Matchers.<DosageAdherenceLog>any());
@@ -221,7 +226,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithMultipleDosages(new Time(6, 0), startDate.toLocalDate(), "dosageId1", new Time(16, 0), startDate.toLocalDate(), "dosageId2");
 
             when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, DosageStatus.NOT_RECORDED, null, null));
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, DosageStatus.NOT_RECORDED, null, null));
 
             dailyReminderAdherenceService.backFillAdherence(PATIENT_ID, startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(4)).add(Matchers.<DosageAdherenceLog>any());
@@ -246,7 +251,7 @@ public class DailyPillReminderAdherenceServiceTest {
             PillRegimen pillRegimen = pillRegimenWithMultipleDosages(new Time(6, 0), startDate.toLocalDate(), "dosageId1", new Time(16, 0), startDate.toLocalDate().plusDays(2), "dosageId2");
 
             when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(pillRegimen);
-            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, DosageStatus.NOT_RECORDED, null, null));
+            when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId1", startDate.toLocalDate())).thenReturn(new DosageAdherenceLog(null, null, null, null, DosageStatus.NOT_RECORDED, null, null));
 
             dailyReminderAdherenceService.backFillAdherence(PATIENT_ID, startDate, endDate, false);
             verify(allDosageAdherenceLogs, times(3)).add(Matchers.<DosageAdherenceLog>any());
@@ -282,7 +287,7 @@ public class DailyPillReminderAdherenceServiceTest {
         @Test
         public void whenDoseIsTaken_AfterFirstCall_ButWithinDosageInterval() {
             DateTime doseDate = DateUtil.newDateTime(new LocalDate(2011, 10, 10), 10, 0, 0);
-            DosageAdherenceLog existingLog = new DosageAdherenceLog(PATIENT_ID, "regimenId", "dosageId", DosageStatus.NOT_TAKEN, doseDate.toLocalDate(), DateUtil.newDateTime(doseDate.toLocalDate(), 0, 0, 0));
+            DosageAdherenceLog existingLog = new DosageAdherenceLog(PATIENT_ID, "regimenId", "dosageId", null, DosageStatus.NOT_TAKEN, doseDate.toLocalDate(), DateUtil.newDateTime(doseDate.toLocalDate(), 0, 0, 0));
             when(allDosageAdherenceLogs.findByDosageIdAndDate("dosageId", doseDate.toLocalDate())).thenReturn(existingLog);
 
             Dose dose = mock(Dose.class);

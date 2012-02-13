@@ -14,12 +14,12 @@ public class DosageAdherenceLogTest {
 
     @Test
     public void dosageTakenLate_isFalseByDefault() {
-        assertFalse(new DosageAdherenceLog(null, null, null, null, null, null).isDosageTakenLate());
+        assertFalse(new DosageAdherenceLog(null, null, null, null, null, null, null).isDosageTakenLate());
     }
 
     @Test
     public void dosageTakenLate() {
-        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(null, null, null, null, null, null);
+        DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog(null, null, null, null, null, null, null);
         dosageAdherenceLog.setDosageStatus(DosageStatus.TAKEN);
         dosageAdherenceLog.dosageIsTakenLate();
         assertTrue(dosageAdherenceLog.isDosageTakenLate());
@@ -27,7 +27,7 @@ public class DosageAdherenceLogTest {
 
     @Test
     public void dosageTakenLateIsFalseIfDosageNotTaken() {
-        DosageAdherenceLog notTakenDose = new DosageAdherenceLog(null, null, null, null, null, null);
+        DosageAdherenceLog notTakenDose = new DosageAdherenceLog(null, null, null, null, null, null, null);
         notTakenDose.setDosageStatus(DosageStatus.NOT_TAKEN);
 
         notTakenDose.dosageIsTakenLate();
@@ -39,7 +39,7 @@ public class DosageAdherenceLogTest {
         Dose dose = mock(Dose.class);
         DateTime tenDaysBack = DateUtil.now().minusDays(10);
 
-        DosageAdherenceLog dosageAdherenceLog = DosageAdherenceLog.create(null, null, DosageStatus.TAKEN, dose, tenDaysBack, 15);
+        DosageAdherenceLog dosageAdherenceLog = DosageAdherenceLog.create(null, null, null, DosageStatus.TAKEN, dose, tenDaysBack, 15);
         assertEquals(tenDaysBack, dosageAdherenceLog.getDosageStatusUpdatedAt());
     }
 

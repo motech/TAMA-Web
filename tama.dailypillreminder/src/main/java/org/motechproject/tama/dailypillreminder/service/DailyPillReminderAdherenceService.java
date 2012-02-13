@@ -12,7 +12,9 @@ import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.ivr.service.AdherenceServiceStrategy;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,13 +30,15 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     private DailyPillReminderService dailyPillReminderService;
     private Properties properties;
     private AllPatients allPatients;
+    private AllTreatmentAdvices allTreatmentAdvices;
 
     @Autowired
-    public DailyPillReminderAdherenceService(AllDosageAdherenceLogs allDosageAdherenceLogs, DailyPillReminderService dailyPillReminderService, @Qualifier("dailyPillReminderProperties") Properties properties, AdherenceService adherenceService, AllPatients allPatients) {
+    public DailyPillReminderAdherenceService(AllDosageAdherenceLogs allDosageAdherenceLogs, DailyPillReminderService dailyPillReminderService, @Qualifier("dailyPillReminderProperties") Properties properties, AdherenceService adherenceService, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices) {
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.dailyPillReminderService = dailyPillReminderService;
         this.properties = properties;
         this.allPatients = allPatients;
+        this.allTreatmentAdvices = allTreatmentAdvices;
         adherenceService.register(CallPreference.DailyPillReminder, this);
     }
 
@@ -127,10 +131,11 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
 
     private void recordAdherence(String patientId, String regimenId, Dose dose, DosageStatus status, DateTime doseTakenTime) {
         final int dosageInterval = Integer.parseInt(properties.getProperty(TAMAConstants.DOSAGE_INTERVAL));
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
 
         DosageAdherenceLog existingLog = allDosageAdherenceLogs.findByDosageIdAndDate(dose.getDosageId(), dose.getDate());
         if (existingLog == null) {
-            allDosageAdherenceLogs.add(DosageAdherenceLog.create(patientId, regimenId, status, dose, doseTakenTime, dosageInterval));
+            allDosageAdherenceLogs.add(DosageAdherenceLog.create(patientId, regimenId, treatmentAdvice.getId(), status, dose, doseTakenTime, dosageInterval));
         } else {
             existingLog.updateStatus(status, doseTakenTime, dosageInterval, dose);
             allDosageAdherenceLogs.update(existingLog);

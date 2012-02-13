@@ -14,6 +14,7 @@ import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLog
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,6 +31,8 @@ public class DailyPillReminderAdherenceServiceIT extends SpringIntegrationTest {
     private AllDosageAdherenceLogs allDosageAdherenceLogs;
     @Autowired
     private AdherenceService adherenceService;
+    @Autowired
+    private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
     private DailyPillReminderService dailyPillReminderService;
 
@@ -39,7 +42,7 @@ public class DailyPillReminderAdherenceServiceIT extends SpringIntegrationTest {
     public void before() {
         super.before();
         initMocks(this);
-        dailyPillReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, null, adherenceService, null);
+        dailyPillReminderAdherenceService = new DailyPillReminderAdherenceService(allDosageAdherenceLogs, dailyPillReminderService, null, adherenceService, null, allTreatmentAdvices);
     }
 
     @After
