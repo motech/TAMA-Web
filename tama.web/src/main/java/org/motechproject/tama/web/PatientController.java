@@ -110,27 +110,26 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
     public String activate(@RequestParam String id, HttpServletRequest request) {
+        return activatePatient(id, REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request), request);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
+    public String activateAndRedirectToListPatient(@PathVariable String id, HttpServletRequest request) {
+        return activatePatient(id, REDIRECT_TO_LIST_VIEW, request);
+    }
+
+    private String activatePatient(String id, String showPatientView, HttpServletRequest request) {
         Patient patient = allPatients.get(id);
         boolean firstActivation = patient.getActivationDate() == null;
         patientService.activate(id);
         if (firstActivation) {
             tamaAppointmentsService.scheduleAppointments(id);
             ClinicVisit clinicVisit = clinicVisitService.visitZero(id);
-            return "redirect:/clinicvisits?form&clinicVisitId=" + clinicVisit.getId();
+            return "redirect:/clinicvisits?form&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
         }
-        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
+        return showPatientView;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
-    public String activate(@PathVariable String id) {
-        Patient patient = allPatients.get(id);
-        boolean firstActivation = patient.getActivationDate() == null;
-        patientService.activate(id);
-        if (firstActivation) {
-            tamaAppointmentsService.scheduleAppointments(id);
-        }
-        return REDIRECT_TO_LIST_VIEW;
-    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
     public String deactivate(@RequestParam String id, @RequestParam Status status, HttpServletRequest request) {
