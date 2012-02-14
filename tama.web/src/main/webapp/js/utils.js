@@ -42,3 +42,22 @@ function formHasErrors() {
     return dojo.query('.errors').length > 0;
 }
 
+var DateFormatter = function (date) {
+    this.date = date;
+}
+
+DateFormatter.prototype = {
+    zeroPad : function(n){
+        return n>=10 ? n : '0'+n;
+    },
+
+    slashFormat: function(){
+        return this.zeroPad(this.date.getDate()) + '/' + this.zeroPad(this.date.getMonth()+1) + '/' + this.date.getFullYear();
+    },
+
+    dashFormat: function(){
+        return this.zeroPad(this.date.getDate()) + '-' + this.zeroPad(this.date.getMonth()+1) + '-' + this.date.getFullYear();
+    }
+}
+
+
