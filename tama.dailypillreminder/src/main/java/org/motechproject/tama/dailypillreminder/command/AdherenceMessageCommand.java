@@ -16,15 +16,13 @@ import org.springframework.stereotype.Component;
 public class AdherenceMessageCommand extends DailyPillReminderTreeCommand {
 
     protected AllDosageAdherenceLogs allDosageAdherenceLogs;
-    protected TamaIVRMessage ivrMessage;
     protected DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
     protected DailyPillReminderAdherenceService dailyReminderAdherenceService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage tamaIVRMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, DailyPillReminderService dailyPillReminderService) {
+    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, DailyPillReminderService dailyPillReminderService) {
         super(dailyPillReminderService);
-        this.ivrMessage = tamaIVRMessage;
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
         this.dailyReminderAdherenceService = dailyReminderAdherenceService;
@@ -39,7 +37,7 @@ public class AdherenceMessageCommand extends DailyPillReminderTreeCommand {
         }
         return new String[]{
                 TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
-                ivrMessage.getNumberFilename(adherencePercentage),
+                TamaIVRMessage.getNumberFilename(adherencePercentage),
                 TamaIVRMessage.PERCENT
         };
     }

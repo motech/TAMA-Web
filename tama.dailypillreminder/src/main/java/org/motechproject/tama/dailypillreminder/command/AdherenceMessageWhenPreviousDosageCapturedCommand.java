@@ -15,7 +15,7 @@ public class AdherenceMessageWhenPreviousDosageCapturedCommand extends Adherence
     @Autowired
     public AdherenceMessageWhenPreviousDosageCapturedCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, DailyPillReminderService dailyPillReminderService,
                                                              DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService) {
-        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, dailyPillReminderService);
+        super(allDosageAdherenceLogs, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, dailyPillReminderService);
     }
 
     @Override

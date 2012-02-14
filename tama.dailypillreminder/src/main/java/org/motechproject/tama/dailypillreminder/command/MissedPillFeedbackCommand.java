@@ -20,7 +20,7 @@ public class MissedPillFeedbackCommand extends AdherenceMessageCommand {
 
     @Autowired
     public MissedPillFeedbackCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, TamaIVRMessage ivrMessage, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, DailyPillReminderService dailyPillReminderService) {
-        super(allDosageAdherenceLogs, ivrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, dailyPillReminderService);
+        super(allDosageAdherenceLogs, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, dailyPillReminderService);
     }
 
     @Override

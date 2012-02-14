@@ -22,7 +22,7 @@ public class PillsDelayWarningTest {
     @Before
     public void setup() {
         retryInterval = 15;
-        pillsDelayWarning = new PillsDelayWarning(new TamaIVRMessage(null), null);
+        pillsDelayWarning = new PillsDelayWarning(null);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest());
         LocalDate today = DateUtil.today();

@@ -14,13 +14,11 @@ import java.util.List;
 public class PillsDelayWarning extends DailyPillReminderTreeCommand {
 
     private IVRDayMessageBuilder ivrDayMessageBuilder;
-    private TamaIVRMessage ivrMessage;
 
     @Autowired
-    public PillsDelayWarning(TamaIVRMessage ivrMessage, DailyPillReminderService dailyPillReminderService) {
+    public PillsDelayWarning(DailyPillReminderService dailyPillReminderService) {
         super(dailyPillReminderService);
         this.ivrDayMessageBuilder = new IVRDayMessageBuilder();
-        this.ivrMessage = ivrMessage;
     }
 
     @Override
@@ -34,7 +32,7 @@ public class PillsDelayWarning extends DailyPillReminderTreeCommand {
         }
         return new String[]{
                 TamaIVRMessage.PLEASE_TAKE_DOSE,
-                ivrMessage.getNumberFilename(context.retryInterval()),
+                TamaIVRMessage.getNumberFilename(context.retryInterval()),
                 TamaIVRMessage.CALL_AFTER_SOME_TIME
         };
     }

@@ -17,15 +17,13 @@ import java.util.List;
 @Component
 public class WeeklyAdherencePercentage implements ITreeCommand {
 
-    private TamaIVRMessage ivrMessage;
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
     private FourDayRecallAdherenceService fourDayRecallAdherenceService;
     private FourDayRecallDateService fourDayRecallDateService;
 
     @Autowired
-    public WeeklyAdherencePercentage(TamaIVRMessage ivrMessage, AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, FourDayRecallAdherenceService fourDayRecallAdherenceService, FourDayRecallDateService fourDayRecallDateService) {
-        this.ivrMessage = ivrMessage;
+    public WeeklyAdherencePercentage(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, FourDayRecallAdherenceService fourDayRecallAdherenceService, FourDayRecallDateService fourDayRecallDateService) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
@@ -48,7 +46,7 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
         boolean falling = fourDayRecallAdherenceService.isAdherenceFalling(numDaysMissed, patientDocumentId);
 
         messages.add(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS);
-        messages.add(ivrMessage.getNumberFilename(currentWeekAdherencePercentage));
+        messages.add(TamaIVRMessage.getNumberFilename(currentWeekAdherencePercentage));
         messages.add(TamaIVRMessage.FDR_PERCENT);
 
         if (!fourDayRecallDateService.isFirstTreatmentWeek(allPatients.get(patientDocumentId), allTreatmentAdvices.currentTreatmentAdvice(patientDocumentId))) {

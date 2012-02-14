@@ -42,7 +42,7 @@ public class AdherenceMessageCommandTest {
         setupTimeToDosageTime(currentDosage);
         setupIvrContext(currentDosage);
         TamaIVRMessage tamaIvrMessage = new TamaIVRMessage(null);
-        adherenceMessageCommand = new AdherenceMessageCommand(null, tamaIvrMessage, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, null);
+        adherenceMessageCommand = new AdherenceMessageCommand(null, dailyReminderAdherenceTrendService, dailyReminderAdherenceService, null);
     }
 
     @Test

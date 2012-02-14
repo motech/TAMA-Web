@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 @Component
@@ -155,6 +157,10 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String TIME_OF_DAY_AM = "timeofDayAM";
     public static final String TIME_OF_DAY_PM = "timeofDayPM";
 
+    /* ---------- Appointment Reminders ----------*/
+    public static final String NEXT_CLINIC_VISIT_IS_DUE_PART1 = "M07a_01_yourNextClinicVisitDue1";
+    public static final String NEXT_CLINIC_VISIT_IS_DUE_PART2 = "M07a_03_yourNextClinicVisitDue2";
+
     /* ---------- Four Day Recall ----------*/
     private Properties properties;
 
@@ -179,7 +185,15 @@ public class TamaIVRMessage implements IVRMessage {
         return String.format("%s%s/%s%s", properties.get(CONTENT_LOCATION_URL), preferredLangCode, file, WAV);
     }
 
-    public String getNumberFilename(int n) {
+    public static String getNumberFilename(int n) {
         return String.format(NUMBER_WAV_FORMAT, n);
+    }
+
+    public static List<String> getAllNumberFileNames(String number) {
+        List<String> wavFiles = new ArrayList<String>();
+        for (Character dijit : number.toCharArray()) {
+            wavFiles.add(getNumberFilename(Integer.parseInt(dijit.toString())));
+        }
+        return wavFiles;
     }
 }
