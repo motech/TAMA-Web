@@ -2,11 +2,10 @@ package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.springframework.ui.ExtendedModelMap;
 
 import java.util.Date;
 
-public class PatientReport extends ExtendedModelMap {
+public class PatientReport {
 
     private Patient patient;
     private Regimen regimen;
