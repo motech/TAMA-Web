@@ -1,7 +1,7 @@
 package org.motechproject.tama.patient.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
-import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.common.util.TimeUtil;
 import org.motechproject.tama.patient.domain.CallTimeSlot;
 import org.motechproject.tama.patient.domain.DrugDosage;
@@ -45,33 +45,33 @@ public class CallTimeSlotService {
 
     private void allotSlot(Patient patient, String timeString) {
         CallTimeSlot timeSlot = new CallTimeSlot();
-        timeSlot.setCallTime(new TimeUtil(timeString).getTimeOfDay());
+        timeSlot.setCallTime(new TimeUtil(timeString).toLocalTime());
         timeSlot.setPatientDocumentId(patient.getId());
         allCallTimeSlots.add(timeSlot);
     }
 
     public List<String> availableMorningSlots() {
-        LocalTime startTime = new LocalTime(0, 0, 0);
-        final LocalTime endTime = new LocalTime(11, 59, 0);
-        return timeSlots(startTime, endTime);
+        DateTime startDate = new LocalTime(0, 0, 0).toDateTimeToday();
+        DateTime endDate = new LocalTime(11, 59, 0).toDateTimeToday();
+        return timeSlots(startDate, endDate);
     }
 
     public List<String> availableEveningSlots() {
-        LocalTime startTime = new LocalTime(1, 0, 0);
-        final LocalTime endTime = new LocalTime(12, 59, 0);
-        return timeSlots(startTime, endTime);
+        DateTime startDate = new LocalTime(12, 0, 0).toDateTimeToday();
+        DateTime endDate = new LocalTime(23, 59, 0).toDateTimeToday().plusDays(1);
+        return timeSlots(startDate, endDate);
     }
 
-    private List<String> timeSlots(LocalTime startTime, LocalTime endTime) {
+    private List<String> timeSlots(DateTime startDate, DateTime endDate) {
         final List<String> allTimeSlots = new ArrayList<String>();
-        while (startTime.isBefore(endTime)) {
-            TimeOfDay slotStartTime = new TimeOfDay(startTime);
-            TimeOfDay slotEndTime = new TimeOfDay(startTime.plusMinutes(slot_duration_in_mins).minusMinutes(1));
+        while (startDate.isBefore(endDate)) {
+            LocalTime slotStartTime = startDate.toLocalTime();
+            LocalTime slotEndTime = startDate.toLocalTime().plusMinutes(slot_duration_in_mins).minusMinutes(1);
             int allottedCount = allCallTimeSlots.countOfPatientsAllottedForSlot(slotStartTime, slotEndTime);
             if (allottedCount < max_patients_per_slot) {
-                allTimeSlots.add(startTime.toString("HH:mm"));
+                allTimeSlots.add(slotStartTime.toString("hh:mm"));
             }
-            startTime = startTime.plusMinutes(slot_duration_in_mins);
+            startDate = startDate.plusMinutes(slot_duration_in_mins);
         }
         return allTimeSlots;
     }

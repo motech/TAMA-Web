@@ -1,25 +1,33 @@
 package org.motechproject.tama.patient.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.motechproject.tama.common.domain.CouchEntity;
-import org.motechproject.tama.common.domain.TimeOfDay;
+import org.motechproject.util.DateUtil;
 
 import javax.validation.constraints.NotNull;
 
 @TypeDiscriminator("doc.documentType == 'CallTimeSlot'")
 public class CallTimeSlot extends CouchEntity {
 
-    private TimeOfDay callTime;
+    @JsonProperty
+    private DateTime callTime;
 
     @NotNull
     private String patientDocumentId;
 
-    public TimeOfDay getCallTime() {
-        return callTime;
+    @JsonIgnore
+    public LocalTime getCallTime() {
+        if (callTime == null) return null;
+        return DateUtil.setTimeZone(callTime).toLocalTime();
     }
 
-    public void setCallTime(TimeOfDay callTime) {
-        this.callTime = callTime;
+    @JsonIgnore
+    public void setCallTime(LocalTime callTime) {
+        this.callTime = new DateTime(0).withTime(callTime.getHourOfDay(), callTime.getMinuteOfHour(), callTime.getSecondOfMinute(), 0);
     }
 
     public String getPatientDocumentId() {

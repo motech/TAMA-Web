@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TimeUtilTest {
+
     @Test
     public void shouldExtractHourAndMinute() {
         String timeString = "01:23am";
@@ -22,7 +23,7 @@ public class TimeUtilTest {
     }
 
     @Test
-    public void shouldReturnHourswhenTimeIsNoon() {
+    public void shouldReturnHoursWhenTimeIsNoon() {
         String timeString = "12:03pm";
 
         TimeUtil timeUtil = new TimeUtil(timeString).withReminderLagTime(0);

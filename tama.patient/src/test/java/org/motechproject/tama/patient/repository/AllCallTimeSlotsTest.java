@@ -1,9 +1,8 @@
 package org.motechproject.tama.patient.repository;
 
+import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Test;
-import org.motechproject.tama.common.domain.TimeMeridiem;
-import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.patient.builder.CallTimeSlotBuilder;
 import org.motechproject.tama.patient.domain.CallTimeSlot;
@@ -28,33 +27,50 @@ public class AllCallTimeSlotsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldGetSlotCount() {
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(10, 4, TimeMeridiem.AM)).withPatientDocumentId("patientId1").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(10, 5, TimeMeridiem.AM)).withPatientDocumentId("patientId2").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(10, 5, TimeMeridiem.AM)).withPatientDocumentId("patientId3").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(10, 7, TimeMeridiem.AM)).withPatientDocumentId("patientId4").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(10, 9, TimeMeridiem.AM)).withPatientDocumentId("patientId5").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 4)).withPatientDocumentId("patientId1").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 5)).withPatientDocumentId("patientId2").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 5)).withPatientDocumentId("patientId3").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 7)).withPatientDocumentId("patientId4").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 9)).withPatientDocumentId("patientId5").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 10)).withPatientDocumentId("patientId6").build());
 
-        final TimeOfDay slotStartTime = new TimeOfDay(10, 5, TimeMeridiem.AM);
-        final TimeOfDay slotEndTime = new TimeOfDay(10, 9, TimeMeridiem.AM);
+        final LocalTime slotStartTime = new LocalTime(10, 5);
+        final LocalTime slotEndTime = new LocalTime(10, 9);
         assertEquals(4, allDoseTimeSlots.countOfPatientsAllottedForSlot(slotStartTime, slotEndTime));
     }
 
     @Test
     public void shouldGetSlotCount_WhenStartTimeAndEndTimeSpanAcrossMorningAndEvening() {
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(11, 54, TimeMeridiem.AM)).withPatientDocumentId("patientId1").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(11, 55, TimeMeridiem.AM)).withPatientDocumentId("patientId2").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(11, 55, TimeMeridiem.AM)).withPatientDocumentId("patientId3").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(11, 57, TimeMeridiem.AM)).withPatientDocumentId("patientId4").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(11, 59, TimeMeridiem.AM)).withPatientDocumentId("patientId5").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(12, 0, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(12, 1, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(12, 2, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
-        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new TimeOfDay(12, 4, TimeMeridiem.PM)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(11, 54)).withPatientDocumentId("patientId1").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(11, 55)).withPatientDocumentId("patientId2").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(11, 55)).withPatientDocumentId("patientId3").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(11, 57)).withPatientDocumentId("patientId4").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(11, 59)).withPatientDocumentId("patientId5").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(12, 0)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(12, 1)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(12, 2)).withPatientDocumentId("patientId6").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(12, 4)).withPatientDocumentId("patientId6").build());
 
-        final TimeOfDay slotStartTime = new TimeOfDay(11, 57, TimeMeridiem.AM);
-        final TimeOfDay slotEndTime = new TimeOfDay(12, 2, TimeMeridiem.PM);
+        final LocalTime slotStartTime = new LocalTime(11, 57);
+        final LocalTime slotEndTime = new LocalTime(12, 2);
         assertEquals(5, allDoseTimeSlots.countOfPatientsAllottedForSlot(slotStartTime, slotEndTime));
+    }
+
+    @Test
+    public void shouldNotAddTimeSlotIfAlreadyPresent() {
+        String patientDocumentId = "patientDocumentId";
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 0)).withPatientDocumentId(patientDocumentId).build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 0)).withPatientDocumentId(patientDocumentId).build());
+        assertEquals(1, allDoseTimeSlots.findBySlotTimeAndPatientId(new LocalTime(10, 0), patientDocumentId).size());
+    }
+
+    @Test
+    public void shouldFindByCallSlotTimeAndPatientDocumentId() {
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 0)).withPatientDocumentId("patientDocumentId1").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(10, 0)).withPatientDocumentId("patientDocumentId2").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(11, 0)).withPatientDocumentId("patientDocumentId1").build());
+        allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(12, 0)).withPatientDocumentId("patientDocumentId3").build());
+        assertEquals(1, allDoseTimeSlots.findBySlotTimeAndPatientId(new LocalTime(10, 0), "patientDocumentId1").size());
     }
 
     @After

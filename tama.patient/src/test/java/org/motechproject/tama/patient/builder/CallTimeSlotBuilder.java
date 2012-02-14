@@ -1,7 +1,6 @@
 package org.motechproject.tama.patient.builder;
 
-import org.motechproject.tama.common.domain.TimeMeridiem;
-import org.motechproject.tama.common.domain.TimeOfDay;
+import org.joda.time.LocalTime;
 import org.motechproject.tama.patient.domain.CallTimeSlot;
 
 public class CallTimeSlotBuilder {
@@ -18,10 +17,10 @@ public class CallTimeSlotBuilder {
     }
 
     public CallTimeSlotBuilder withDefaults() {
-        return this.withCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).withPatientDocumentId("patientId");
+        return this.withCallTime(new LocalTime(10, 0)).withPatientDocumentId("patientId");
     }
 
-    public CallTimeSlotBuilder withCallTime(TimeOfDay callTime) {
+    public CallTimeSlotBuilder withCallTime(LocalTime callTime) {
         callTimeSlot.setCallTime(callTime);
         return this;
     }
