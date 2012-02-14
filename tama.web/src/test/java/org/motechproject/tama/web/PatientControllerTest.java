@@ -153,7 +153,7 @@ public class PatientControllerTest {
         when(clinicVisitService.visitZero(PATIENT_ID)).thenReturn(clinicVisit);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
-        String nextPage = controller.activate(PATIENT_ID, request);
+        String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
         verify(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
@@ -163,9 +163,12 @@ public class PatientControllerTest {
     @Test
     public void shouldActivatePatientAndRedirectToPatientListPage() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).
-                withActivationDate(null).build();
+                withActivationDate(DateUtil.now()).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        String nextPage = controller.activate(PATIENT_ID);
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(CLINIC_VISIT_ID).build();
+        when(clinicVisitService.visitZero(PATIENT_ID)).thenReturn(clinicVisit);
+        when(request.getCharacterEncoding()).thenReturn("utf8");
+        String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
         assertEquals("redirect:/patients", nextPage);

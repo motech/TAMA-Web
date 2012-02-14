@@ -15,11 +15,14 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(locations = "classpath:META-INF/spring/application*Context.xml", inheritLocations = false)
 public class PatientControllerIT extends SpringIntegrationTest{
@@ -30,7 +33,7 @@ public class PatientControllerIT extends SpringIntegrationTest{
 
     @Autowired(required = false)
     private EventRelay eventRelay = EventContext.getInstance().getEventRelay();
-
+    
     @Test
     public void shouldActivate() throws Exception {
         final Patient patient = PatientBuilder.startRecording().withDefaults().
@@ -38,8 +41,9 @@ public class PatientControllerIT extends SpringIntegrationTest{
                 build();
         allPatients.add(patient);
         markForDeletion(patient);
-
-        patientController.activate(patient.getId());
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getCharacterEncoding()).thenReturn(null);
+        patientController.activate(patient.getId(), request);
         Patient patientFromDB = allPatients.get(patient.getId());
         assertEquals(Status.Active.toString(), patientFromDB.getStatus().toString());
         assertEquals(DateUtil.today(), patientFromDB.getActivationDate().toLocalDate());
