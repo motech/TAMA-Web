@@ -22,11 +22,19 @@ DailyPillReminderReportWidget.prototype = {
         var self = this;
         this.fetchData(startDate, endDate, function(JSONData){
             var data = { identifier: 'id', items: [] };
-            data.items = JSONData.logs.map(function(log, index) { log.id = index; return log} );
+            data.items = self.prepareLogs(JSONData.logs);
 
             self.grid.setStore(new dojo.data.ItemFileReadStore({'data': data}));
             dojo.byId(self.targetDivId).appendChild(self.grid.domNode);
             self.grid.startup();
+        });
+    },
+
+    prepareLogs: function(logs){
+        return logs.map(function(log, index) {
+            log.id = index;
+            log.date = new DateFormatter(new Date(log.date)).slashFormat();
+            return log;
         });
     },
 
