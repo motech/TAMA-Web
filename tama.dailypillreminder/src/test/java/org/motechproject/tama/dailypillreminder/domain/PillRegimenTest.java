@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class PillRegimenTest extends BaseUnitTest {
     private DailyPillReminderContextForTest ivrContext;
@@ -67,7 +66,7 @@ public class PillRegimenTest extends BaseUnitTest {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
-        Dose nextDose= pillRegimen.getNextDoseAt(ivrContext.callStartTime());
+        Dose nextDose = pillRegimen.getNextDoseAt(ivrContext.callStartTime());
         assertEquals("nextDosageId", nextDose.getDosageId());
     }
 
@@ -82,7 +81,7 @@ public class PillRegimenTest extends BaseUnitTest {
         ivrContext.callStartTime(callStartTime);
 
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
-        Dose nextDose= pillRegimen.getNextDoseAt(ivrContext.callStartTime());
+        Dose nextDose = pillRegimen.getNextDoseAt(ivrContext.callStartTime());
 
         assertEquals("dosage1Id", nextDose.getDosageId());
         assertEquals(18, nextDose.getDosageHour());

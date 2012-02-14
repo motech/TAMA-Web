@@ -3,7 +3,7 @@ package org.motechproject.tama.outbox.listener;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.outbox.handler.OutboxHandler;
+import org.motechproject.tama.outbox.handler.OutboxCallHandler;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -18,15 +18,15 @@ import java.util.Map;
 public class OutboxCallListener {
 
     private AllPatients allPatients;
-    private Map<CallPreference, OutboxHandler> outboxHandlers = new HashMap<CallPreference, OutboxHandler>();
+    private Map<CallPreference, OutboxCallHandler> outboxHandlers = new HashMap<CallPreference, OutboxCallHandler>();
 
     @Autowired
     public OutboxCallListener(AllPatients allPatients) {
         this.allPatients = allPatients;
     }
 
-    public void register(CallPreference callPreference, OutboxHandler outboxHandler) {
-        outboxHandlers.put(callPreference, outboxHandler);
+    public void register(CallPreference callPreference, OutboxCallHandler outboxCallHandler) {
+        outboxHandlers.put(callPreference, outboxCallHandler);
     }
 
     @MotechListener(subjects = TAMAConstants.OUTBOX_CALL_SCHEDULER_SUBJECT)

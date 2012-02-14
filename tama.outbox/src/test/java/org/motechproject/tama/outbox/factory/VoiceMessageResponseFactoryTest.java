@@ -2,50 +2,98 @@ package org.motechproject.tama.outbox.factory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.mockito.Mock;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.tama.outbox.OutboxContextForTest;
-import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.CallPreference;
-import org.motechproject.tama.patient.repository.AllPatients;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import static org.mockito.Mockito.*;
+
+@RunWith(value = Suite.class)
+@Suite.SuiteClasses({
+        VoiceMessageResponseFactoryTest.ThereExistsABuilderThatHandlesTheMessage.class,
+        VoiceMessageResponseFactoryTest.MoreThanOneBuilderCanHandleTheMessage.class,
+        VoiceMessageResponseFactoryTest.ThereExistsABuilderThatCannotHandleTheMessage.class
+})
 public class VoiceMessageResponseFactoryTest {
 
-    @Mock
-    private AllPatients allPatients;
-    @Mock
-    private OutboxMessageFactory dailyOutboxMessageFactory;
-    @Mock
-    private OutboxMessageFactory weeklyOutboxMessageFactory;
+    public static class Basis {
 
-    private OutboxContextForTest outboxContext;
-    private VoiceMessageResponseFactory voiceMessageResponseFactory;
+        Set<OutboxMessageBuilder> outboxMessageBuilders;
 
-    @Before
-    public void setup() {
-        initMocks(this);
-        outboxContext = new OutboxContextForTest().partyId("externalId");
-        voiceMessageResponseFactory = new VoiceMessageResponseFactory(allPatients);
-        voiceMessageResponseFactory.registerOutboxFactory(CallPreference.DailyPillReminder, dailyOutboxMessageFactory);
-        voiceMessageResponseFactory.registerOutboxFactory(CallPreference.FourDayRecall, weeklyOutboxMessageFactory);
+        @Mock
+        KooKooIVRContext kookooIVRContext;
+        @Mock
+        KookooIVRResponseBuilder ivrResponseBuilder;
+        @Mock
+        OutboundVoiceMessage outboundVoiceMessage;
+
+        OutboxContextForTest outboxContext;
+
+        VoiceMessageResponseFactory voiceMessageResponseFactory;
+
+        @Before
+        public void setUp() {
+            outboxMessageBuilders = new LinkedHashSet<OutboxMessageBuilder>();
+            voiceMessageResponseFactory = new VoiceMessageResponseFactory(outboxMessageBuilders);
+        }
     }
 
-    @Test
-    public void voiceMessageResponse_ForDailyPillReminder() {
-        when(allPatients.get("externalId")).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
+    public static class ThereExistsABuilderThatHandlesTheMessage extends Basis {
 
-        voiceMessageResponseFactory.voiceMessageResponse(null, outboxContext, null, null);
-        verify(dailyOutboxMessageFactory).buildVoiceMessageResponse(null, outboxContext, null, null);
+        @Before
+        public void setUp() {
+            super.setUp();
+            OutboxMessageBuilder validBuilder = mock(OutboxMessageBuilder.class);
+            when(validBuilder.canHandle(outboundVoiceMessage)).thenReturn(true);
+            outboxMessageBuilders.add(validBuilder);
+        }
+
+        @Test
+        public void shouldBuildVoiceMessageResponse() {
+            voiceMessageResponseFactory.voiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+            verify((OutboxMessageBuilder) outboxMessageBuilders.toArray()[0]).buildVoiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+        }
     }
 
-    @Test
-    public void voiceMessageResponse_ForFourDayRecall() {
-        when(allPatients.get("externalId")).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build());
+    public static class MoreThanOneBuilderCanHandleTheMessage extends ThereExistsABuilderThatHandlesTheMessage {
 
-        voiceMessageResponseFactory.voiceMessageResponse(null, outboxContext, null, null);
-        verify(weeklyOutboxMessageFactory).buildVoiceMessageResponse(null, outboxContext, null, null);
+        @Before
+        public void setUp() {
+            super.setUp();
+            OutboxMessageBuilder validBuilder = mock(OutboxMessageBuilder.class);
+            when(validBuilder.canHandle(outboundVoiceMessage)).thenReturn(true);
+            outboxMessageBuilders.add(validBuilder);
+        }
+
+        @Test
+        public void shouldBuildResponseUsingAllValidBuilders() {
+            voiceMessageResponseFactory.voiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+            verify((OutboxMessageBuilder) outboxMessageBuilders.toArray()[0]).buildVoiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+            verify((OutboxMessageBuilder) outboxMessageBuilders.toArray()[1]).buildVoiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+        }
+    }
+
+    public static class ThereExistsABuilderThatCannotHandleTheMessage extends Basis {
+
+        @Before
+        public void setUp() {
+            super.setUp();
+            OutboxMessageBuilder validBuilder = mock(OutboxMessageBuilder.class);
+            when(validBuilder.canHandle(outboundVoiceMessage)).thenReturn(false);
+            outboxMessageBuilders.add(validBuilder);
+        }
+
+        @Test
+        public void shouldNotBuildVoiceMessageResponseUsingTheBuilder() {
+            voiceMessageResponseFactory.voiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+            verify((OutboxMessageBuilder) outboxMessageBuilders.toArray()[0], never()).buildVoiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+        }
     }
 }

@@ -17,12 +17,12 @@ public class DailyPillReminderOutboxHandlerTest {
     @Mock
     private OutboxCallListener outboxCallListener;
 
-    private DailyPillReminderOutboxHandler dailyPillReminderOutboxHandler;
+    private DailyPillReminderOutboxCallHandler dailyPillReminderOutboxHandler;
 
     @Before
     public void setUp() {
         initMocks(this);
-        dailyPillReminderOutboxHandler = new DailyPillReminderOutboxHandler(outboxService, outboxCallListener);
+        dailyPillReminderOutboxHandler = new DailyPillReminderOutboxCallHandler(outboxService, outboxCallListener);
     }
 
     @Test

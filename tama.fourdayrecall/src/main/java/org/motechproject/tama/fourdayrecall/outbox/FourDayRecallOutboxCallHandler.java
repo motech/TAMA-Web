@@ -4,7 +4,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
-import org.motechproject.tama.outbox.handler.OutboxHandler;
+import org.motechproject.tama.outbox.handler.OutboxCallHandler;
 import org.motechproject.tama.outbox.listener.OutboxCallListener;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.outbox.service.OutboxService;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 @Component
-public class FourDayRecallOutboxHandler implements OutboxHandler {
+public class FourDayRecallOutboxCallHandler implements OutboxCallHandler {
 
     private AllPatients allPatients;
     private Properties fourDayRecallProperties;
@@ -27,7 +27,7 @@ public class FourDayRecallOutboxHandler implements OutboxHandler {
     private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
     @Autowired
-    public FourDayRecallOutboxHandler(AllPatients allPatients, @Qualifier("fourDayRecallProperties") Properties fourDayRecallProperties, OutboxService outboxService, FourDayRecallAdherenceService fourDayRecallAdherenceService, OutboxCallListener outboxCallListener) {
+    public FourDayRecallOutboxCallHandler(AllPatients allPatients, @Qualifier("fourDayRecallProperties") Properties fourDayRecallProperties, OutboxService outboxService, FourDayRecallAdherenceService fourDayRecallAdherenceService, OutboxCallListener outboxCallListener) {
         this.allPatients = allPatients;
         this.fourDayRecallProperties = fourDayRecallProperties;
         this.outboxService = outboxService;

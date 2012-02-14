@@ -37,14 +37,14 @@ public class FourDayRecallOutboxHandlerTest extends BaseUnitTest {
     @Mock
     private FourDayRecallAdherenceService fourDayRecallAdherenceService;
 
-    private FourDayRecallOutboxHandler fourDayRecallOutboxHandler;
+    private FourDayRecallOutboxCallHandler fourDayRecallOutboxHandler;
     private MotechEvent motechEvent;
     private Patient patient;
 
     @Before
     public void setUp() {
         initMocks(this);
-        fourDayRecallOutboxHandler = new FourDayRecallOutboxHandler(allPatients, fourDayRecallProperties, outboxService, fourDayRecallAdherenceService, outboxListener);
+        fourDayRecallOutboxHandler = new FourDayRecallOutboxCallHandler(allPatients, fourDayRecallProperties, outboxService, fourDayRecallAdherenceService, outboxListener);
         final String patientId = "patientId";
         motechEvent = new MotechEvent("foo", new HashMap<String, Object>() {{
             put(OutboxSchedulerService.EXTERNAL_ID_KEY, patientId);

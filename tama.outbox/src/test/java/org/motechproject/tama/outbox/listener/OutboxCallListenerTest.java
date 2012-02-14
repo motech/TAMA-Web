@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.tama.outbox.handler.OutboxHandler;
+import org.motechproject.tama.outbox.handler.OutboxCallHandler;
 import org.motechproject.tama.outbox.service.OutboxSchedulerService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
@@ -22,7 +22,7 @@ public class OutboxCallListenerTest {
     @Mock
     private AllPatients allPatients;
     @Mock
-    private OutboxHandler dailyPillReminderOutboxHandler;
+    private OutboxCallHandler dailyPillReminderOutboxCallHandler;
     private OutboxCallListener outboxCallListener;
 
     @Before
@@ -33,12 +33,12 @@ public class OutboxCallListenerTest {
 
     @Test
     public void shouldForwardToTheRespectiveHandler_BasedOnCallPreference() {
-        outboxCallListener.register(CallPreference.DailyPillReminder, dailyPillReminderOutboxHandler);
+        outboxCallListener.register(CallPreference.DailyPillReminder, dailyPillReminderOutboxCallHandler);
         final String patientId = "patientId";
         final MotechEvent motechEvent = new MotechEvent("foo", new HashMap<String, Object>() {{put(OutboxSchedulerService.EXTERNAL_ID_KEY, patientId);}});
 
         when(allPatients.get(patientId)).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
         outboxCallListener.handle(motechEvent);
-        verify(dailyPillReminderOutboxHandler).handle(motechEvent);
+        verify(dailyPillReminderOutboxCallHandler).handle(motechEvent);
     }
 }
