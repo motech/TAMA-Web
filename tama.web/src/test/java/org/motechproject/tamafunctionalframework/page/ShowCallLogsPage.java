@@ -1,6 +1,7 @@
 package org.motechproject.tamafunctionalframework.page;
 
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -22,7 +23,6 @@ public class ShowCallLogsPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad("_title_title[0]_id");
+        waitForElementToLoadWithRetry(By.id("_title_title[0]_id"));
     }
-
 }

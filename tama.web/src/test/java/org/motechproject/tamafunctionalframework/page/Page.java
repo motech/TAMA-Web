@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.TimeoutException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -17,12 +18,15 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 public abstract class Page extends FunctionalTestObject {
     protected WebDriver webDriver;
     private static final long MaxPageLoadTime = 30;
+    private static final long RetryTimes = 5;
+    private static final long RetryInterval = 5;
     protected WebDriverWait wait;
+    protected WebDriverWait waitWithRetry;
 
     public Page(WebDriver webDriver) {
         this.webDriver = webDriver;
         this.wait = new WebDriverWait(webDriver, MaxPageLoadTime);
-
+        this.waitWithRetry = new WebDriverWait(webDriver, RetryInterval);
         this.waitForPageToLoad();
     }
 
@@ -99,6 +103,26 @@ public abstract class Page extends FunctionalTestObject {
                 }
             }
         });
+    }
+
+    protected void waitForElementToLoadWithRetry(final By by) {
+        for (int i = 1; i <= RetryTimes; i++) {
+            try {
+                Boolean foundElement = waitWithRetry.until(new ExpectedCondition<Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver webDriver) {
+                        return webDriver.findElement(by) != null;
+                    }
+                });
+                if (foundElement) break;
+            }
+            catch (TimeoutException e) {
+                logInfo(String.format("Retried %s time(s) ...", i));
+                if (i == RetryTimes)
+                    throw e;
+            }
+            webDriver.get(webDriver.getCurrentUrl());
+        }
     }
 
     private void waitForElementToLoad(final By by) {
