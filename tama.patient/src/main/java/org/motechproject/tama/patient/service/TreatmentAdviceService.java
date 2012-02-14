@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -44,15 +43,19 @@ public class TreatmentAdviceService {
     }
 
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice) {
-        endCurrentRegimen(existingTreatmentAdviceId, discontinuationReason);
+        TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
+        endCurrentRegimen(discontinuationReason, existingTreatmentAdvice);
         allTreatmentAdvices.add(treatmentAdvice);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
+        callTimeSlotService.freeSlots(patient, existingTreatmentAdvice);
+        if (patient.isOnDailyPillReminder()) {
+            callTimeSlotService.allotSlots(patient, treatmentAdvice);
+        }
         callPlans.get(patient.callPreference()).reEnroll(patient, treatmentAdvice);
         return treatmentAdvice.getId();
     }
 
-    private void endCurrentRegimen(String treatmentAdviceId, String discontinuationReason) {
-        TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
+    private void endCurrentRegimen(String discontinuationReason, TreatmentAdvice existingTreatmentAdvice) {
         existingTreatmentAdvice.endTheRegimen(discontinuationReason);
         allTreatmentAdvices.update(existingTreatmentAdvice);
     }

@@ -34,6 +34,22 @@ public class CallTimeSlotService {
         max_patients_per_slot = Integer.parseInt(timeSlotProperties.getProperty(MAX_PATIENTS_PER_SLOT));
     }
 
+    public void freeSlots(Patient patient, TreatmentAdvice treatmentAdvice) {
+        for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
+            String morningTime = drugDosage.getMorningTime();
+            if (morningTime != null) freeSlot(patient, morningTime);
+            String eveningTime = drugDosage.getEveningTime();
+            if (eveningTime != null) freeSlot(patient, eveningTime);
+        }
+    }
+
+    private void freeSlot(Patient patient, String timeString) {
+        List<CallTimeSlot> slots = allCallTimeSlots.findBySlotTimeAndPatientId(new TimeUtil(timeString).toLocalTime(), patient.getId());
+        for (CallTimeSlot slot : slots) {
+            allCallTimeSlots.remove(slot);
+        }
+    }
+
     public void allotSlots(Patient patient, TreatmentAdvice treatmentAdvice) {
         for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
             String morningTime = drugDosage.getMorningTime();
