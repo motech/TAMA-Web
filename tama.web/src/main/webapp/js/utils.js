@@ -60,4 +60,26 @@ DateFormatter.prototype = {
     }
 }
 
+var Banner = function(targetDivId){
+    this.targetDivId = targetDivId;
+    this.element = dojo.byId(targetDivId);
+    this.defaultDisplay = this.element.style.display;
+}
+
+Banner.prototype = {
+    hide: function(){
+        this.element.style.display = "none";
+    },
+
+    show: function(){
+        this.element.style.display = this.defaultDisplay;
+    },
+
+    setMessage: function(msg){
+        this.element.innerHTML = msg;
+        this.show();
+    }
+}
+
+
 

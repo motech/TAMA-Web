@@ -7,9 +7,12 @@
 
     <spring:url value="/resources/js/reports.js" var="reports_js"/>
     <spring:url value="/resources/dojox/grid/resources/Grid.css" var="grid_css"/>
+    <spring:url value="/resources/styles/reports.css" var="reports_css"/>
+    <spring:url value="/resources/images/spinner.gif" var="spinner_gif"/>
 
     <script src="${reports_js}" type="text/javascript"><!-- required--></script>
     <link rel="stylesheet" type="text/css" media="screen" href="${grid_css}"></link>
+    <link rel="stylesheet" type="text/css" media="screen" href="${reports_css}"></link>
 
     <div id="dailyPillReminderReportForm" action="reports/dailyPillReminderReport">
     <util:panel id="dailyPillReminderReport" title="Daily Pill Reminder Report" openPane="true">
@@ -28,13 +31,17 @@
             </script>
         </div>
         <div class="submit" id="dailyPillReminderReportSubmitDiv">
-          <spring:message code="button_save" var="save_button" htmlEscape="false" />
-          <script type="text/javascript">
+            <spring:message code="button_save" var="save_button" htmlEscape="false" />
+            <script type="text/javascript">
               Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'getDailyPillReminderReport', event:'onclick'}));
-          </script>
-          <input id="getDailyPillReminderReport" type="submit" value="Generate Report"/>
+            </script>
+            <input id="getDailyPillReminderReport" type="submit" value="Generate Report"/>
+            <span id="getDailyPillReminderReportSpinner"><img src="${spinner_gif}"/></span>
         </div>
 
+        <div>
+            <div id="dailyPillReminderReportGridNotice"></div>
+        </div>
         <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
 
     </util:panel>
@@ -43,15 +50,19 @@
     <script type="text/javascript">
         <![CDATA[
             dojo.addOnLoad(function() {
-                var dailyPillReminderReportWidget = new DailyPillReminderReportWidget("dailyPillReminderReportGridPlaceholder");
-                dojo.connect(dojo.byId("getDailyPillReminderReport"), "onclick", function(){
+                var dailyPillReminderReportWidget = new DailyPillReminderReportWidget("dailyPillReminderReportGrid");
+                var spinnerBanner = new Banner("getDailyPillReminderReportSpinner");
+                spinnerBanner.hide();
+                dojo.connect(dojo.byId("getDailyPillReminderReport"), "onclick", function(event){
                     var startDateObj = dijit.byId("dailyPillReminderReportStartDate");
                     var endDateObj = dijit.byId("dailyPillReminderReportEndDate");
 
                     endDateObj.constraints.min = startDateObj.value;
 
                     if (startDateObj.isValid() && endDateObj.isValid()){
-                        dailyPillReminderReportWidget.create(startDateObj.value, endDateObj.value);
+                        spinnerBanner.show();
+                        var onCreateHandler = function(){ spinnerBanner.hide() }
+                        dailyPillReminderReportWidget.create(startDateObj.value, endDateObj.value, onCreateHandler);
                     }
                 });
             });

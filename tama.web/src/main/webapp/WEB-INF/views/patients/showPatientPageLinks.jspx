@@ -12,7 +12,7 @@
         <spring:url value="${patient.id}/reports" var="reports_url"><!-- required--> </spring:url>
 
             <div><a id="clinic_visits" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a></div>
-            <div><a id="reports-links" href="${reports_url}">Reports</a></div>
+            <div style="margin-top: 10px"><a id="reports-links" href="${reports_url}">Reports</a></div>
             <br/>
         </c:when>
     </c:choose>

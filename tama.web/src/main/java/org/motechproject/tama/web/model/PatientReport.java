@@ -19,6 +19,10 @@ public class PatientReport {
         return patient.getPatientId();
     }
 
+    public String getPatientDocId() {
+        return patient.getId();
+    }
+
     public String getClinicName() {
         return patient.getClinic().getName();
     }
