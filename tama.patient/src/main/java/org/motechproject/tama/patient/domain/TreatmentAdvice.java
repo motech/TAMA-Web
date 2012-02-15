@@ -44,7 +44,7 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
     }
 
     public String getRegimenId() {
-        return this.regimenId;
+        return  this.regimenId;
     }
 
     public void setRegimenId(String regimenId) {

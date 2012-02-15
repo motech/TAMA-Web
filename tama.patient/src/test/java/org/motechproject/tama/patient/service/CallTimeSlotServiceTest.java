@@ -81,6 +81,20 @@ public class CallTimeSlotServiceTest {
     }
 
     @Test
+    public void shouldGetAllMorningTimeSlots() {
+        when(allCallTimeSlots.countOfPatientsAllottedForSlot(Matchers.<LocalTime>any(), Matchers.<LocalTime>any())).thenReturn(2);
+        final List<String> morningTimeSlots = callTimeSlotService.availableMorningSlots();
+        assertEquals(48, morningTimeSlots.size());
+    }
+
+    @Test
+    public void shouldGetAllEveningTimeSlots() {
+        when(allCallTimeSlots.countOfPatientsAllottedForSlot(Matchers.<LocalTime>any(), Matchers.<LocalTime>any())).thenReturn(2);
+        final List<String> eveningTimeSlots = callTimeSlotService.availableEveningSlots();
+        assertEquals(48, eveningTimeSlots.size());
+    }
+
+    @Test
     public void shouldGetAllAvailableMorningTimeSlots() {
         when(allCallTimeSlots.countOfPatientsAllottedForSlot(Matchers.<LocalTime>any(), Matchers.<LocalTime>any())).thenReturn(2, 10, 10, 10, 10, 2, 10, 10, 2, 10);
         final List<String> timeSlots = callTimeSlotService.availableMorningSlots();

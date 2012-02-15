@@ -74,7 +74,7 @@ public class CallTimeSlotService {
 
     public List<String> availableEveningSlots() {
         DateTime startDate = new LocalTime(12, 0, 0).toDateTimeToday();
-        DateTime endDate = new LocalTime(23, 59, 0).toDateTimeToday().plusDays(1);
+        DateTime endDate = new LocalTime(23, 59, 0).toDateTimeToday();
         return timeSlots(startDate, endDate);
     }
 
