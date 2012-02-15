@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,12 +6,8 @@ import org.motechproject.appointments.api.AppointmentService;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-<<<<<<< HEAD:tama.clinicvisits/src/main/java/org/motechproject/tama/clinicvisits/service/TAMAAppointmentsService.java
 import org.motechproject.tama.clinicvisits.factory.AppointmentsFactory;
 import org.motechproject.tama.clinicvisits.domain.ListOfWeeks;
-=======
-import org.motechproject.tama.appointments.factory.AppointmentsFactory;
->>>>>>> BalajiN, Sharvani | #41 | Outbox messages are now created when appointment reminders are raised:tama.appointments/src/main/java/org/motechproject/tama/appointments/service/TAMAAppointmentsService.java
 import org.motechproject.tama.common.util.UUIDUtil;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

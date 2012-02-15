@@ -3,7 +3,7 @@ package org.motechproject.tama.clinicvisits.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.clinicvisits.integration.repository.AllClinicVisits;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

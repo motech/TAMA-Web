@@ -7,7 +7,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.clinicvisits.integration.repository.AllClinicVisits;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.builder.LabResultBuilder;

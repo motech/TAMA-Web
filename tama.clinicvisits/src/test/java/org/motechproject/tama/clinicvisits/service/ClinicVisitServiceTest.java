@@ -9,7 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
-import org.motechproject.tama.clinicvisits.integration.repository.AllClinicVisits;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;

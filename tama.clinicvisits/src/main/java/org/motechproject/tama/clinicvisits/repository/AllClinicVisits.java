@@ -1,4 +1,4 @@
-package org.motechproject.tama.clinicvisits.integration.repository;
+package org.motechproject.tama.clinicvisits.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
@@ -25,5 +25,4 @@ public class AllClinicVisits extends AbstractCouchRepository<ClinicVisit> {
         ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
         return db.queryView(q, ClinicVisit.class);
     }
-
 }

@@ -8,11 +8,11 @@ import org.motechproject.tama.patient.domain.Patient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppointmentMessageFor extends ArgumentMatcher<List<String>> {
+public class ExpectedAppointmentMessage extends ArgumentMatcher<List<String>> {
 
     private Patient patient;
 
-    public AppointmentMessageFor(Patient patient) {
+    private ExpectedAppointmentMessage(Patient patient) {
         this.patient = patient;
     }
 
@@ -29,5 +29,9 @@ public class AppointmentMessageFor extends ArgumentMatcher<List<String>> {
             return CollectionUtils.disjunction(expectedWavFiles, audios).isEmpty();
         }
         return false;
+    }
+
+    public static ExpectedAppointmentMessage For(Patient patient){
+        return new ExpectedAppointmentMessage(patient);
     }
 }
