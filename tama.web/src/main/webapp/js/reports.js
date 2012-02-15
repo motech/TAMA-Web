@@ -68,11 +68,11 @@ DailyPillReminderReportWidget.prototype = {
 
     columnDetails : function(){
         return [[
-            {name: 'Date',                  field: 'date',         width: '150px'},
-            {name: 'Morning Dose Time',     field: 'morningTime',  width: '150px'},
-            {name: 'Morning Adherence',     field: 'morningStatus',width: '150px'},
-            {name: 'Evening Dose Time',     field: 'eveningTime',  width: '150px'},
-            {name: 'Evening Adherence',     field: 'eveningStatus',width: '150px'}
+            {name: 'Date',                  field: 'date',             width: '150px'},
+            {name: 'Morning Dose Time',     field: 'morningDoseTime',  width: '150px'},
+            {name: 'Morning Adherence',     field: 'morningDoseStatus',width: '150px'},
+            {name: 'Evening Dose Time',     field: 'eveningDoseTime',  width: '150px'},
+            {name: 'Evening Adherence',     field: 'eveningDoseStatus',width: '150px'}
         ]];
     }
 }
