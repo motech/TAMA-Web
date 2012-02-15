@@ -9,7 +9,12 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
+<<<<<<< HEAD:tama.clinicvisits/src/test/java/org/motechproject/tama/clinicvisits/builder/AppointmentReminderMessageBuilderTest.java
 import org.motechproject.tama.clinicvisits.matchers.AppointmentMessageFor;
+=======
+import org.motechproject.tama.appointments.factory.AppointmentReminderMessageBuilder;
+import org.motechproject.tama.appointments.matchers.AppointmentMessageFor;
+>>>>>>> BalajiN, Sharvani | #41 | Outbox messages are now created when appointment reminders are raised:tama.appointments/src/test/java/org/motechproject/tama/appointments/AppointmentReminderMessageBuilderTest.java
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;

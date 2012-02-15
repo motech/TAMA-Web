@@ -114,6 +114,20 @@ public class OutboxServiceTest {
     }
 
     @Test
+    public void shouldCreateOutboxMessageOfSpecificType() {
+        String voiceMessageTypeName = "voiceMessageTypeName";
+        String patientId = "patientId";
+
+        outboxService.addMessage(patientId, voiceMessageTypeName);
+
+        ArgumentCaptor<OutboundVoiceMessage> messageCaptor = ArgumentCaptor.forClass(OutboundVoiceMessage.class);
+        verify(voiceOutboxService).addMessage(messageCaptor.capture());
+
+        assertEquals(patientId, messageCaptor.getValue().getPartyId());
+        assertEquals(voiceMessageTypeName, messageCaptor.getValue().getVoiceMessageType().getVoiceMessageTypeName());
+    }
+
+    @Test
     public void hasPendingOutboxMessages() {
         final String patientDocId = "patientId";
         when(voiceOutboxService.getNumberPendingMessages(patientDocId)).thenReturn(0);

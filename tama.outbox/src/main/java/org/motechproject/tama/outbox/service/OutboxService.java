@@ -63,12 +63,16 @@ public class OutboxService implements Outbox {
     }
 
     public void addMessage(String patientId) {
+        addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
+    }
+
+    public void addMessage(String patientId, String voiceMessageTypeName) {
         OutboundVoiceMessage voiceMessage = new OutboundVoiceMessage();
         voiceMessage.setPartyId(patientId);
         voiceMessage.setExpirationDate(DateUtil.today().plusWeeks(1).toDate());
         VoiceMessageType voiceMessageType = new VoiceMessageType();
         voiceMessageType.setPriority(MessagePriority.MEDIUM);
-        voiceMessageType.setVoiceMessageTypeName(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
+        voiceMessageType.setVoiceMessageTypeName(voiceMessageTypeName);
         voiceMessage.setVoiceMessageType(voiceMessageType);
         voiceOutboxService.addMessage(voiceMessage);
     }
