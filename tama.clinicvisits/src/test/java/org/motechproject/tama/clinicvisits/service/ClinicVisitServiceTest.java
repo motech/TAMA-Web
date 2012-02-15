@@ -70,7 +70,7 @@ public class ClinicVisitServiceTest {
 
         when(allClinicVisits.find_by_patient_id("pid")).thenReturn(clinicVisits);
 
-        final ClinicVisit visitZero = clinicVisitService.visitZero("pid");
+        final ClinicVisit visitZero = clinicVisitService.baselineVisit("pid");
         assertNotNull(visitZero);
         assertEquals(visit0, visitZero);
     }
