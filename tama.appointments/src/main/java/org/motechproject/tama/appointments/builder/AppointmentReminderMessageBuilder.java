@@ -1,4 +1,4 @@
-package org.motechproject.tama.appointments;
+package org.motechproject.tama.appointments.builder;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;

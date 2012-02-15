@@ -1,12 +1,10 @@
-package org.motechproject.tama.patient.integration.repository;
+package org.motechproject.tama.appointments.integration.repository;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.appointments.domain.ClinicVisit;
+import org.motechproject.tama.appointments.builder.ClinicVisitBuilder;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.patient.builder.ClinicVisitBuilder;
-import org.motechproject.tama.patient.domain.ClinicVisit;
-import org.motechproject.tama.patient.repository.AllClinicVisits;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
+@ContextConfiguration(locations = "classpath*:applicationAppointmentsContext.xml", inheritLocations = false)
 public class AllClinicVisitsTest extends SpringIntegrationTest {
 
     @Autowired
@@ -47,6 +45,7 @@ public class AllClinicVisitsTest extends SpringIntegrationTest {
         assertEquals(treatmentAdviceId, savedClinicVisit.getTreatmentAdviceId());
         assertEquals(labResultIds, savedClinicVisit.getLabResultIds());
         assertEquals(vitalStatisticsId, savedClinicVisit.getVitalStatisticsId());
+        markForDeletion(savedClinicVisit);
     }
 
     @Test

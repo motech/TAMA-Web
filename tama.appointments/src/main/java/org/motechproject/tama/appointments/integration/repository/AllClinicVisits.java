@@ -1,10 +1,10 @@
-package org.motechproject.tama.patient.repository;
+package org.motechproject.tama.appointments.integration.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
+import org.motechproject.tama.appointments.domain.ClinicVisit;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
-import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;

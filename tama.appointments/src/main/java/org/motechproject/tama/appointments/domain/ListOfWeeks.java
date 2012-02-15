@@ -1,10 +1,10 @@
-package org.motechproject.tama.appointments.service;
+package org.motechproject.tama.appointments.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class ListOfWeeks {
+public class ListOfWeeks {
 
     public static List<Integer> weeks(String weeks) {
         List<String> allWeeks = Arrays.asList(weeks.split(","));

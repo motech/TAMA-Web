@@ -77,6 +77,14 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.appointments</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.13</version>
@@ -469,7 +477,7 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <argLine>-XX:MaxPermSize=1024M</argLine>
+                                    <argLine>-XX:MaxPermSize=256M</argLine>
                                     <systemProperties>
                                         <property>
                                             <name>jetty.port</name>
@@ -515,7 +523,7 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <argLine>-XX:MaxPermSize=1024M</argLine>
+                                    <argLine>-XX:MaxPermSize=256M</argLine>
                                     <systemProperties>
                                         <property>
                                             <name>jetty.port</name>
@@ -544,7 +552,7 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <argLine>-XX:MaxPermSize=1024M</argLine>
+                                    <argLine>-XX:MaxPermSize=256M</argLine>
                                     <systemProperties>
                                         <property>
                                             <name>jetty.port</name>

@@ -6,9 +6,9 @@ import org.motechproject.appointments.api.AppointmentService;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.tama.appointments.AppointmentsFactory;
+import org.motechproject.tama.appointments.factory.AppointmentsFactory;
+import org.motechproject.tama.appointments.domain.ListOfWeeks;
 import org.motechproject.tama.common.util.UUIDUtil;
-import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,9 +68,6 @@ public class TAMAAppointmentsService {
     }
 
     private void createClinicVisits(String patientId, DateTime firstAppointmentTime, Integer week) {
-        if (week == 0)
-            clinicVisitService.createFirstVisit(firstAppointmentTime, patientId);
-        else
-            clinicVisitService.createExpectedVisit(firstAppointmentTime, week, patientId);
+       clinicVisitService.createExpectedVisit(firstAppointmentTime, week, patientId);
     }
 }

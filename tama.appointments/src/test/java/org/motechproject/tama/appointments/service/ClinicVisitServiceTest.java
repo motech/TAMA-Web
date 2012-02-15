@@ -1,25 +1,24 @@
-package org.motechproject.tama.patient.service;
+package org.motechproject.tama.appointments.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.tama.patient.builder.ClinicVisitBuilder;
-import org.motechproject.tama.patient.domain.ClinicVisit;
-import org.motechproject.tama.patient.repository.AllClinicVisits;
+import org.motechproject.tama.appointments.domain.ClinicVisit;
+import org.motechproject.tama.appointments.service.ClinicVisitService;
+import org.motechproject.tama.appointments.builder.ClinicVisitBuilder;
+import org.motechproject.tama.appointments.integration.repository.AllClinicVisits;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClinicVisitServiceTest {

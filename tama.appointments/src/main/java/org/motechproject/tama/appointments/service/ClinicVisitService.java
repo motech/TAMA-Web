@@ -1,9 +1,9 @@
-package org.motechproject.tama.patient.service;
+package org.motechproject.tama.appointments.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.tama.patient.domain.ClinicVisit;
-import org.motechproject.tama.patient.repository.AllClinicVisits;
+import org.motechproject.tama.appointments.domain.ClinicVisit;
+import org.motechproject.tama.appointments.integration.repository.AllClinicVisits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,11 +36,6 @@ public class ClinicVisitService {
 
     public void createExpectedVisit(DateTime expectedVisitTime, int week, String patientId) {
         ClinicVisit clinicVisit = ClinicVisit.createExpectedVisit(expectedVisitTime, week, patientId);
-        allClinicVisits.add(clinicVisit);
-    }
-
-    public void createFirstVisit(DateTime expectedVisitTime, String patientId) {
-        ClinicVisit clinicVisit = ClinicVisit.createFirstVisit(expectedVisitTime, patientId);
         allClinicVisits.add(clinicVisit);
     }
 

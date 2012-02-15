@@ -1,4 +1,4 @@
-package org.motechproject.tama.appointments;
+package org.motechproject.tama.appointments.factory;
 
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.model.Appointment;

@@ -1,8 +1,7 @@
-package org.motechproject.tama.patient.builder;
+package org.motechproject.tama.appointments.builder;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.tama.patient.domain.ClinicVisit;
+import org.motechproject.tama.appointments.domain.ClinicVisit;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

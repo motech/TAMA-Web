@@ -2,13 +2,12 @@ package org.motechproject.tama.web;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import org.motechproject.tama.appointments.domain.ClinicVisit;
+import org.motechproject.tama.appointments.service.ClinicVisitService;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.patient.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
-import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

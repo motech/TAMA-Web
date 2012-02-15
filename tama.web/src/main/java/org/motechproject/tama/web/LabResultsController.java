@@ -1,11 +1,11 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tama.patient.domain.ClinicVisit;
+import org.motechproject.tama.appointments.domain.ClinicVisit;
+import org.motechproject.tama.appointments.integration.repository.AllClinicVisits;
+import org.motechproject.tama.appointments.service.ClinicVisitService;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
-import org.motechproject.tama.patient.repository.AllClinicVisits;
 import org.motechproject.tama.patient.repository.AllLabResults;
-import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.repository.AllLabTests;
 import org.motechproject.tama.web.model.LabResultsUIModel;

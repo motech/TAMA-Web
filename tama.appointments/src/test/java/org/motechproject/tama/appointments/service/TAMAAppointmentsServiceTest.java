@@ -10,7 +10,6 @@ import org.motechproject.appointments.api.AppointmentService;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.tama.patient.service.ClinicVisitService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -85,8 +84,7 @@ public class TAMAAppointmentsServiceTest extends BaseUnitTest {
         ArgumentCaptor<DateTime> dateCapture = ArgumentCaptor.forClass(DateTime.class);
 
         tamaAppointmentsService.scheduleAppointments(PATIENT_ID);
-        verify(clinicVisitService, times(2)).createExpectedVisit(dateCapture.capture(), anyInt(), eq(PATIENT_ID));
-        verify(clinicVisitService, times(1)).createFirstVisit(now, PATIENT_ID);
+        verify(clinicVisitService, times(3)).createExpectedVisit(dateCapture.capture(), anyInt(), eq(PATIENT_ID));
         assertEquals(activationTime, dateCapture.getAllValues().get(0));
     }
 

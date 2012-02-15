@@ -25,13 +25,13 @@
             <version>${motech.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-platform-common</artifactId>
-            <version>${motech.version}</version>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.patient</artifactId>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.common</artifactId>
+            <artifactId>tama.outbox</artifactId>
             <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -41,11 +41,6 @@
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.patient</artifactId>
-            <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
@@ -67,14 +62,26 @@
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.outbox</artifactId>
             <version>0.5-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.outbox</artifactId>
-            <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-test-classes</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

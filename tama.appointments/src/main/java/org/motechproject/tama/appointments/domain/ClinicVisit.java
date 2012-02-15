@@ -1,4 +1,4 @@
-package org.motechproject.tama.patient.domain;
+package org.motechproject.tama.appointments.domain;
 
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
@@ -161,20 +161,16 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         return clinicVisit;
     }
 
-    public static ClinicVisit createFirstVisit(DateTime startDate, String patientId) {
-	    ClinicVisit clinicVisit = new ClinicVisit();
-	    clinicVisit.setName("Registered with TAMA");
-        clinicVisit.setVisitDate(startDate.toLocalDate());
-        clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Baseline);
-        clinicVisit.setPatientId(patientId);
-        return clinicVisit;
-    }
-
     public static ClinicVisit createExpectedVisit(DateTime expectedVisitTime, int weeks, String patientId) {
         ClinicVisit clinicVisit = new ClinicVisit();
-        clinicVisit.setName(weeks + " weeks Follow-up visit");
+        if (weeks == 0) {
+            clinicVisit.setName("Registered with TAMA");
+            clinicVisit.setTypeOfVisit(TypeOfVisit.Baseline);
+        } else {
+            clinicVisit.setName(weeks + " weeks Follow-up visit");
+            clinicVisit.setTypeOfVisit(TypeOfVisit.Scheduled);
+        }
         clinicVisit.setAppointmentDueDate(expectedVisitTime.plusWeeks(weeks));
-        clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Scheduled);
         clinicVisit.setPatientId(patientId);
         return clinicVisit;
     }
