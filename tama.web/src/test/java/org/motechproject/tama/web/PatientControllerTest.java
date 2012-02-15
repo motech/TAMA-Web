@@ -151,7 +151,7 @@ public class PatientControllerTest {
     public void shouldRedirectToClinicVisitPageAfterFirstActivation() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(CLINIC_VISIT_ID).build();
-        when(clinicVisitService.visitZero(PATIENT_ID)).thenReturn(clinicVisit);
+        when(clinicVisitService.baselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
         String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
@@ -167,7 +167,7 @@ public class PatientControllerTest {
                 withActivationDate(DateUtil.now()).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(CLINIC_VISIT_ID).build();
-        when(clinicVisitService.visitZero(PATIENT_ID)).thenReturn(clinicVisit);
+        when(clinicVisitService.baselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
         when(request.getCharacterEncoding()).thenReturn("utf8");
         String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 

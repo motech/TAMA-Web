@@ -25,4 +25,10 @@ public class AllClinicVisits extends AbstractCouchRepository<ClinicVisit> {
         ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
         return db.queryView(q, ClinicVisit.class);
     }
+
+    @View(name = "find_baseline_visit", map = "function(doc) {if (doc.documentType =='ClinicVisit' && doc.typeOfVisit == 'Baseline' && doc.patientId) {emit(doc.patientId, doc._id);}}")
+    public ClinicVisit getBaselineVisit(String patientId) {
+        ViewQuery q = createQuery("find_baseline_visit").key(patientId).includeDocs(true);
+        return singleResult(db.queryView(q, ClinicVisit.class));
+    }
 }

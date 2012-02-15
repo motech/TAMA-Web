@@ -39,11 +39,8 @@ public class ClinicVisitService {
         allClinicVisits.add(clinicVisit);
     }
 
-    //TODO: Can sorting be moved to repository layer?
-    public ClinicVisit visitZero(String patientDocumentId) {
-        List<ClinicVisit> clinicVisits = allClinicVisits.find_by_patient_id(patientDocumentId);
-        Collections.sort(clinicVisits);
-        return (clinicVisits.isEmpty()) ? null : clinicVisits.get(0);
+    public ClinicVisit baselineVisit(String patientDocumentId) {
+        return allClinicVisits.getBaselineVisit(patientDocumentId);
     }
 
     public void changeRegimen(String clinicVisitId, String newTreatmentAdviceId) {

@@ -125,7 +125,7 @@ public class PatientController extends BaseController {
         patientService.activate(id);
         if (firstActivation) {
             tamaAppointmentsService.scheduleAppointments(id);
-            ClinicVisit clinicVisit = clinicVisitService.visitZero(id);
+            ClinicVisit clinicVisit = clinicVisitService.baselineVisit(id);
             return "redirect:/clinicvisits?form&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
         }
         return showPatientView;

@@ -155,12 +155,6 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         return getVisitDate().compareTo(clinicVisit.getVisitDate());
     }
 
-    public static ClinicVisit createVisitForToday() {
-        ClinicVisit clinicVisit = new ClinicVisit();
-        clinicVisit.setVisitDate(DateUtil.today());
-        return clinicVisit;
-    }
-
     public static ClinicVisit createExpectedVisit(DateTime expectedVisitTime, int weeks, String patientId) {
         ClinicVisit clinicVisit = new ClinicVisit();
         if (weeks == 0) {
