@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.appointments</artifactId>
+            <artifactId>tama.clinicvisits</artifactId>
             <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.appointments</artifactId>
+            <artifactId>tama.clinicvisits</artifactId>
             <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>

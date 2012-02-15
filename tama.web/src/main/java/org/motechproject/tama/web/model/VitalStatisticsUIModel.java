@@ -1,7 +1,7 @@
 package org.motechproject.tama.web.model;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.tama.appointments.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 
 public class VitalStatisticsUIModel {

@@ -17,7 +17,7 @@
         <module>tama.fourdayrecall</module>
         <module>tama.symptomreporting</module>
         <module>tama.healthtips</module>
-        <module>tama.appointments</module>
+        <module>tama.clinicvisits</module>
         <module>tama.tools</module>
         <module>tama.web</module>
     </modules>

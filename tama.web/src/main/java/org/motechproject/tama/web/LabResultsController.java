@@ -1,8 +1,8 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tama.appointments.domain.ClinicVisit;
-import org.motechproject.tama.appointments.integration.repository.AllClinicVisits;
-import org.motechproject.tama.appointments.service.ClinicVisitService;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.integration.repository.AllClinicVisits;
+import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.repository.AllLabResults;

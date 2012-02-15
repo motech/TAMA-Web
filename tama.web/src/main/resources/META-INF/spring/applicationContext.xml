@@ -10,8 +10,8 @@
     <import resource="classpath:applicationFourDayRecallContext.xml"/>
     <import resource="classpath:applicationSymptomReportingContext.xml"/>
     <import resource="classpath:applicationHealthTipsContext.xml"/>
+    <import resource="classpath:applicationClinicVisitsContext.xml"/>
     <import resource="classpath:/placeholderPluginContext.xml"/>
-    <import resource="classpath:applicationAppointmentsContext.xml"/>
 
     <context:annotation-config/>
     <context:spring-configured/>

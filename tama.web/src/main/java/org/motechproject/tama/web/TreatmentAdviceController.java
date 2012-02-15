@@ -1,6 +1,6 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tama.appointments.service.ClinicVisitService;
+import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
