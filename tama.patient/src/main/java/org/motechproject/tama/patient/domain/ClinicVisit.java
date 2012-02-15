@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,7 +32,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     @NotNull
     private String treatmentAdviceId;
 
-    private List<String> labResultIds;
+    private List<String> labResultIds = new ArrayList<String>();
 
     private String vitalStatisticsId;
 
@@ -39,7 +40,7 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    private DateTime visitDate;
+    private LocalDate visitDate;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -54,6 +55,16 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
     private DateTime confirmedVisitDate;
 
     private String name;
+
+    private boolean missed;
+
+    public boolean isMissed() {
+        return missed;
+    }
+
+    public void setMissed(boolean missed) {
+        this.missed = missed;
+    }
 
     public DateTime getConfirmedVisitDate() {
         return confirmedVisitDate == null ? null : DateUtil.setTimeZone(confirmedVisitDate);
@@ -120,11 +131,11 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
         this.vitalStatisticsId = vitalStatisticsId;
     }
 
-    public DateTime getVisitDate() {
-        return visitDate == null ? null : DateUtil.setTimeZone(visitDate);
+    public LocalDate getVisitDate() {
+        return visitDate == null ? null : visitDate;
     }
 
-    public void setVisitDate(DateTime visitDate) {
+    public void setVisitDate(LocalDate visitDate) {
         this.visitDate = visitDate;
     }
 
@@ -146,14 +157,14 @@ public class ClinicVisit extends CouchEntity implements Comparable<ClinicVisit> 
 
     public static ClinicVisit createVisitForToday() {
         ClinicVisit clinicVisit = new ClinicVisit();
-        clinicVisit.setVisitDate(DateUtil.now());
+        clinicVisit.setVisitDate(DateUtil.today());
         return clinicVisit;
     }
 
     public static ClinicVisit createFirstVisit(DateTime startDate, String patientId) {
-        ClinicVisit clinicVisit = new ClinicVisit();
-        clinicVisit.setName("Registered with TAMA");
-        clinicVisit.setVisitDate(startDate);
+	    ClinicVisit clinicVisit = new ClinicVisit();
+	    clinicVisit.setName("Registered with TAMA");
+        clinicVisit.setVisitDate(startDate.toLocalDate());
         clinicVisit.setTypeOfVisit(ClinicVisit.TypeOfVisit.Baseline);
         clinicVisit.setPatientId(patientId);
         return clinicVisit;

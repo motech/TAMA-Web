@@ -21,7 +21,9 @@ var SchedulePopup = function(id, titleText){
                         content: dojo.byId(id)
                     });
     var okHandlerConnect = null;
-    var cancelHandlerConnect = null
+    var cancelHandlerConnect = null;
+
+
     this.show = function(element, showOptions /*bool*/, okHandler) {
 
         dijit.popup.open({ popup: adjustDueDateDlg,around: element });
@@ -37,13 +39,16 @@ var SchedulePopup = function(id, titleText){
             });
         }
 
+
         if (okHandlerConnect != null) dojo.disconnect(okHandlerConnect);
 
         okHandlerConnect = dojo.connect(dojo.query('.popupOk',id)[0], 'onclick',
                 function(){
                     var dateValue = calendar.value;
-                    dateValue.setHours(timebox.value.getHours());
-                    dateValue.getMinutes(timebox.value.getMinutes());
+                    if (typeof showOptions != "undefined" && showOptions){
+                        dateValue.setHours(timebox.value.getHours());
+                        dateValue.getMinutes(timebox.value.getMinutes());
+                    }
                     okHandler(dateValue);
                     dijit.popup.close(adjustDueDateDlg);
                 });

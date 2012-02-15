@@ -57,7 +57,7 @@ public class ClinicVisitsController extends BaseController {
         }
 
         uiModel.addAttribute("patientId", patientId);
-        if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.now());
+        if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.today());
         uiModel.addAttribute("clinicVisit", clinicVisit);
         treatmentAdviceController.createForm(patientId, uiModel);
         labResultsController.createForm(patientId, uiModel);
@@ -80,7 +80,9 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/{clinicVisitId}", method = RequestMethod.GET)
     public String show(@PathVariable("clinicVisitId") String clinicVisitId, Model uiModel) {
         ClinicVisit clinicVisit = clinicVisitService.getClinicVisit(clinicVisitId);
-        treatmentAdviceController.show(clinicVisit.getTreatmentAdviceId(), uiModel);
+        String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
+        if (treatmentAdviceId == null) treatmentAdviceId = allTreatmentAdvices.currentTreatmentAdvice(clinicVisit.getPatientId()).getId();
+        treatmentAdviceController.show(treatmentAdviceId, uiModel);
         labResultsController.show(clinicVisit.getPatientId(), clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         uiModel.addAttribute("clinicVisit", clinicVisit);
@@ -106,8 +108,22 @@ public class ClinicVisitsController extends BaseController {
     @ResponseBody
     public String confirmVisitDate(@PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
                                               @RequestParam(value = "confirmedVisitDate") DateTime confirmedVisitDate) {
-        System.out.println("confirmedVisitDate " + confirmedVisitDate);
         clinicVisitService.confirmVisitDate(clinicVisitId, confirmedVisitDate);
         return "{'confirmedVisitDate':'" + confirmedVisitDate.toString(TAMAConstants.DATETIME_FORMAT) + "'}";
+    }
+    
+    @RequestMapping(value = "/markAsMissed.json/{clinicVisitId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String markAsMissed(@PathVariable(value = "clinicVisitId") String clinicVisitId){
+        clinicVisitService.markAsMissed(clinicVisitId);
+        return "{'missed':true}";
+    }
+
+    @RequestMapping(value = "/setVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String setVisitDate(@PathVariable(value = "clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                                  @RequestParam(value = "visitDate") LocalDate visitDate){
+        clinicVisitService.setVisitDate(clinicVisitId, visitDate);
+        return "{'visitDate':'" + visitDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
     }
 }

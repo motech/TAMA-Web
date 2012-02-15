@@ -20,7 +20,7 @@ public class ClinicVisitService {
         this.allClinicVisits = allClinicVisits;
     }
 
-    public String createOrUpdateVisit(String visitId, DateTime visitDate, String patientId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
+    public String createOrUpdateVisit(String visitId, LocalDate visitDate, String patientId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
         ClinicVisit clinicVisit;
         if (visitId != null) clinicVisit = allClinicVisits.get(visitId);
         else clinicVisit = new ClinicVisit();
@@ -86,6 +86,18 @@ public class ClinicVisitService {
     public void adjustDueDate(String clinicVisitId, LocalDate adjustedDueDate) {
         ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
         clinicVisit.setAdjustedDueDate(adjustedDueDate);
+        allClinicVisits.update(clinicVisit);
+    }
+
+    public void markAsMissed(String clinicVisitId) {
+        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+        clinicVisit.setMissed(true);
+        allClinicVisits.update(clinicVisit);
+    }
+
+    public void setVisitDate(String clinicVisitId, LocalDate visitDate) {
+        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+        clinicVisit.setVisitDate(visitDate);
         allClinicVisits.update(clinicVisit);
     }
 }

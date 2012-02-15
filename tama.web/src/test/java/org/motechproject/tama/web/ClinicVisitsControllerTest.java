@@ -125,7 +125,7 @@ public class ClinicVisitsControllerTest {
         }});
         when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
         ClinicVisit clinicVisit = new ClinicVisit();
-        final DateTime visitDate = DateUtil.now();
+        final LocalDate visitDate = DateUtil.today();
         clinicVisit.setVisitDate(visitDate);
         when(clinicVisitService.createOrUpdateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId")).thenReturn("clinicVisitId");
         String redirectURL = clinicVisitsController.create(null, clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
@@ -168,5 +168,12 @@ public class ClinicVisitsControllerTest {
         String jsonReturned = clinicVisitsController.adjustDueDate(CLINIC_VISIT_ID, today);
         verify(clinicVisitService).adjustDueDate(CLINIC_VISIT_ID, today);
         assertTrue(new JSONObject(jsonReturned).has("adjustedDueDate"));
+    }
+
+    @Test
+    public void shouldMarkClinicVisitAsMissed() throws Exception {
+        String jsonReturned = clinicVisitsController.markAsMissed(CLINIC_VISIT_ID);
+        verify(clinicVisitService).markAsMissed(CLINIC_VISIT_ID);
+        assertTrue(new JSONObject(jsonReturned).has("missed"));
     }
 }

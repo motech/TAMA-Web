@@ -43,7 +43,7 @@ public class AllClinicVisitsTest extends SpringIntegrationTest {
 
         ClinicVisit savedClinicVisit = allClinicVisits.get(clinicVisit.getId());
         assertEquals(patientId, savedClinicVisit.getPatientId());
-        assertEquals(DateUtil.today(), savedClinicVisit.getVisitDate().toLocalDate());
+        assertEquals(DateUtil.today(), savedClinicVisit.getVisitDate());
         assertEquals(treatmentAdviceId, savedClinicVisit.getTreatmentAdviceId());
         assertEquals(labResultIds, savedClinicVisit.getLabResultIds());
         assertEquals(vitalStatisticsId, savedClinicVisit.getVitalStatisticsId());
@@ -51,9 +51,9 @@ public class AllClinicVisitsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldFindByPatientId() {
-        final ClinicVisit clinicVisit1 = ClinicVisitBuilder.startRecording().withPatientId("pid1").withVisitDate(DateTime.now()).build();
-        final ClinicVisit clinicVisit2 = ClinicVisitBuilder.startRecording().withPatientId("pid2").withVisitDate(DateTime.now()).build();
-        final ClinicVisit clinicVisit3 = ClinicVisitBuilder.startRecording().withPatientId("pid1").withVisitDate(DateTime.now().minusDays(1)).build();
+        final ClinicVisit clinicVisit1 = ClinicVisitBuilder.startRecording().withPatientId("pid1").withVisitDate(DateUtil.today()).build();
+        final ClinicVisit clinicVisit2 = ClinicVisitBuilder.startRecording().withPatientId("pid2").withVisitDate(DateUtil.today()).build();
+        final ClinicVisit clinicVisit3 = ClinicVisitBuilder.startRecording().withPatientId("pid1").withVisitDate(DateUtil.today().minusDays(1)).build();
 
         allClinicVisits.add(clinicVisit1);
         allClinicVisits.add(clinicVisit2);
@@ -67,7 +67,7 @@ public class AllClinicVisitsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldUpdateTreatmentAdviceId() {
-        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId("pid1").withVisitDate(DateTime.now()).build();
+        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId("pid1").withVisitDate(DateUtil.today()).build();
         allClinicVisits.add(clinicVisit);
 
         clinicVisit.setTreatmentAdviceId("newNew");

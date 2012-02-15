@@ -45,7 +45,7 @@ public class ClinicVisitServiceTest {
         String vitalStatisticsId = "vitalStatisticsId";
         DateTime now = DateUtil.now();
 
-        clinicVisitService.createOrUpdateVisit(null, now, patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+        clinicVisitService.createOrUpdateVisit(null, now.toLocalDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
 
         ArgumentCaptor<ClinicVisit> clinicVisitArgumentCaptor = ArgumentCaptor.forClass(ClinicVisit.class);
         verify(allClinicVisits).add(clinicVisitArgumentCaptor.capture());
@@ -55,7 +55,26 @@ public class ClinicVisitServiceTest {
         assertEquals(treatmentAdviceId, clinicVisit.getTreatmentAdviceId());
         assertEquals(labResultIds, clinicVisit.getLabResultIds());
         assertEquals(vitalStatisticsId, clinicVisit.getVitalStatisticsId());
-        assertEquals(DateUtil.today(), clinicVisit.getVisitDate().toLocalDate());
+        assertEquals(DateUtil.today(), clinicVisit.getVisitDate());
+    }
+
+    @Test
+    public void shouldReturnVisitZeroForPatient() {
+        LocalDate today = DateUtil.today();
+        LocalDate yesterday = today.minusDays(1);
+        LocalDate dayBefore = yesterday.minusDays(1);
+
+        final ClinicVisit visit0 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(dayBefore).build();
+        final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(yesterday).build();
+        final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(today).build();
+
+        final List<ClinicVisit> clinicVisits = Arrays.asList(visit0, visit1, visit2);
+
+        when(allClinicVisits.find_by_patient_id("pid")).thenReturn(clinicVisits);
+
+        final ClinicVisit visitZero = clinicVisitService.visitZero("pid");
+        assertNotNull(visitZero);
+        assertEquals(visit0, visitZero);
     }
 
     @Test
@@ -106,5 +125,15 @@ public class ClinicVisitServiceTest {
 
         verify(allClinicVisits).update(any(ClinicVisit.class));
         assertEquals(clinicVisit.getConfirmedVisitDate(), today);
+    }
+
+    @Test
+    public void shouldMarkTheClinicVisitAsMissed() throws Exception {
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+        when(allClinicVisits.get(CLINIC_VISIT_ID)).thenReturn(clinicVisit);
+        clinicVisitService.markAsMissed(CLINIC_VISIT_ID);
+        ArgumentCaptor<ClinicVisit> clinicVisitArgumentCaptor = ArgumentCaptor.forClass(ClinicVisit.class);
+        verify(allClinicVisits).update(clinicVisitArgumentCaptor.capture());
+        assertEquals(true, clinicVisitArgumentCaptor.getValue().isMissed());
     }
 }
