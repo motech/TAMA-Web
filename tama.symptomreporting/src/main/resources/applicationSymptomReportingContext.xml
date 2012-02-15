@@ -13,5 +13,6 @@
 
     <context:annotation-config/>
     <context:spring-configured/>
+    <import resource="classpath:applicationCommonContext.xml"/>
     <import resource="classpath:applicationContextSymptomReporting.xml"/>
 </beans>

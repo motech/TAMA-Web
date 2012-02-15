@@ -7,10 +7,8 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:/activemq.properties"/>
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    </bean>
+
+
     <util:properties id="ivrProperties" location="classpath:/ivr.properties"/>
     <context:property-placeholder location="classpath*:/*.properties"/>
     <context:annotation-config/>
@@ -21,6 +19,7 @@
     <context:component-scan base-package="org.motechproject.tama.ivr"/>
     <context:component-scan base-package="org.motechproject.ivr.kookoo"/>
 
+    <import resource="classpath:applicationCommonContext.xml"/>
     <import resource="classpath:applicationPillReminderAPI.xml"/>
     <import resource="classpath:inboundEventChannelAdapter.xml"/>
     <import resource="classpath:applicationDecisionTree.xml"/>

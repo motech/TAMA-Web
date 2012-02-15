@@ -33,6 +33,11 @@
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
             <version>0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.common</artifactId>
+            <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>

@@ -7,6 +7,7 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+    <import resource="classpath:applicationCommonContext.xml"/>
     <util:properties id="pillReminderDataSetup" location="classpath:/datasetup/pillReminderDataSetup.properties"/>
     <util:properties id="fourDayRecallDataSetup" location="classpath:/datasetup/fourDayRecallDataSetup.properties"/>
     <context:annotation-config/>

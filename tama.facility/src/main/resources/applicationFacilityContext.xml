@@ -9,4 +9,5 @@
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tama.facility"/>
     <import resource="classpath:applicationRefDataContext.xml"/>
+    <import resource="classpath:applicationCommonContext.xml"/>
 </beans>
