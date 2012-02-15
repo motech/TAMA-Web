@@ -4,7 +4,6 @@ import org.motechproject.tamafunctionalframework.framework.ExtendedWebElement;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.framework.TamaUrl;
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
-import org.motechproject.tamafunctionalframework.testdata.TestEntity;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdata.TestPatientPreferences;
 import org.openqa.selenium.WebDriver;
@@ -61,6 +60,9 @@ public class ShowPatientPage extends Page {
 
     @FindBy(how = How.ID, using = "clinic_visits")
     private WebElement clinicVisitsLink;
+
+    @FindBy(how = How.ID, using = "reports_link")
+    private WebElement patientReportLink;
 
     @FindBy(how = How.ID, using = "_c_org_motechproject_tama_domain_Patient_status_displayName_id")
     private WebElement status;
@@ -150,6 +152,11 @@ public class ShowPatientPage extends Page {
     private ShowClinicVisitListPage goToClinicVisitListPage() {
         this.clinicVisitsLink.click();
         return MyPageFactory.initElements(webDriver, ShowClinicVisitListPage.class);
+    }
+
+    public ShowPatientReportsPage goToPatientReportsPage() {
+        this.patientReportLink.click();
+        return MyPageFactory.initElements(webDriver, ShowPatientReportsPage.class);
     }
 
     public ShowClinicVisitPage goToShowClinicVisitPage() {
