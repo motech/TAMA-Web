@@ -57,25 +57,6 @@ public class ClinicVisitServiceTest {
     }
 
     @Test
-    public void shouldReturnVisitZeroForPatient() {
-        LocalDate today = DateUtil.today();
-        LocalDate yesterday = today.minusDays(1);
-        LocalDate dayBefore = yesterday.minusDays(1);
-
-        final ClinicVisit visit0 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(dayBefore).build();
-        final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(yesterday).build();
-        final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().withPatientId("pid").withVisitDate(today).build();
-
-        final List<ClinicVisit> clinicVisits = Arrays.asList(visit0, visit1, visit2);
-
-        when(allClinicVisits.find_by_patient_id("pid")).thenReturn(clinicVisits);
-
-        final ClinicVisit visitZero = clinicVisitService.baselineVisit("pid");
-        assertNotNull(visitZero);
-        assertEquals(visit0, visitZero);
-    }
-
-    @Test
     public void shouldCreateExpectedVisit() {
         clinicVisitService.createExpectedVisit(DateUtil.now(),0, "patientId");
         verify(allClinicVisits).add(any(ClinicVisit.class));
