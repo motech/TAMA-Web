@@ -7,10 +7,12 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+    <import resource="classpath:applicationAppointments.xml"/>
+    <import resource="classpath:applicationIVRContext.xml"/>
+    <import resource="classpath:applicationPatientContext.xml"/>
+    <import resource="classpath:applicationOutboxContext.xml"/>
+    <context:component-scan base-package="org.motechproject.tama.clinicvisits"/>
+    <util:properties id="appointmentsTemplate" location="classpath:/appointmentsTemplate.properties"/>
     <context:annotation-config/>
     <context:spring-configured/>
-    <context:component-scan base-package="org.motechproject.tama.clinicvisits"/>
-    <import resource="classpath:applicationPatientContext.xml"/>
-    <import resource="classpath:applicationAppointments.xml"/>
-    <util:properties id="appointmentsTemplate" location="classpath:/appointmentsTemplate.properties"/>
 </beans>
