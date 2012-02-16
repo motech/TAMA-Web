@@ -75,11 +75,11 @@ public class ClinicVisit {
     }
 
     public TypeOfVisit getTypeOfVisit() {
-        return (TypeOfVisit) visit.getData().get(TYPE_OF_VISIT);
+        return TypeOfVisit.valueOf((String) visit.getData().get(TYPE_OF_VISIT));
     }
 
     public void setTypeOfVisit(TypeOfVisit typeOfVisit) {
-        visit.addData(TYPE_OF_VISIT, typeOfVisit);
+        visit.addData(TYPE_OF_VISIT, typeOfVisit.toString());
     }
 
     public String getTreatmentAdviceId() {
