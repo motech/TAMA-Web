@@ -19,7 +19,6 @@ import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -129,7 +128,7 @@ public class ClinicVisitServiceTest extends BaseUnitTest {
         ClinicVisits visitsInDb = new ClinicVisits(){{
             ClinicVisit clinicVisit = AppointmentsFactory.createClinicVisit(appointment, patientId, DateUtil.now(), 0);
             add(clinicVisit);}};
-        when(allClinicVisits.find_by_patient_id(patientId)).thenReturn(visitsInDb);
+        when(allClinicVisits.findByPatientId(patientId)).thenReturn(visitsInDb);
         List<ClinicVisit> visits = clinicVisitService.getClinicVisits(patientId);
         assertEquals(visitsInDb, visits);
     }

@@ -88,7 +88,7 @@ public class ClinicVisitService {
     }
 
     public List<ClinicVisit> getClinicVisits(String patientId) {
-        return allClinicVisits.find_by_patient_id(patientId);
+        return allClinicVisits.findByPatientId(patientId);
     }
 
     public ClinicVisit getClinicVisit(String clinicVisitId) {

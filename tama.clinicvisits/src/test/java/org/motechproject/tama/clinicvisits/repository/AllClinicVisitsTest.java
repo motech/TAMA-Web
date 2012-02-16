@@ -7,10 +7,8 @@ import org.motechproject.appointments.api.dao.AllAppointments;
 import org.motechproject.appointments.api.dao.AllVisits;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Visit;
-import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
-import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -47,7 +45,7 @@ public class AllClinicVisitsTest {
         }});
         when(allAppointments.getAppointment(appointmentId)).thenReturn(appointment);
 
-        ClinicVisits clinicVisits = allClinicVisits.find_by_patient_id(patientId);
+        ClinicVisits clinicVisits = allClinicVisits.findByPatientId(patientId);
         assertEquals(1, clinicVisits.size());
     }
 

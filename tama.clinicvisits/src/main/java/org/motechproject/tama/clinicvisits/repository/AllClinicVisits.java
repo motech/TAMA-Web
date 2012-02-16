@@ -35,7 +35,7 @@ public class AllClinicVisits {
         allVisits.updateVisit(clinicVisit.getVisit());
     }
 
-    public ClinicVisits find_by_patient_id(String patientId) {
+    public ClinicVisits findByPatientId(String patientId) {
         ClinicVisits clinicVisits = new ClinicVisits();
         for (Visit visit : allVisits.findByExternalId(patientId)) {
             clinicVisits.add(get(visit));
@@ -44,7 +44,7 @@ public class AllClinicVisits {
     }
 
     public ClinicVisit getBaselineVisit(String patientId) {
-        return find_by_patient_id(patientId).getBaselineVisit();
+        return findByPatientId(patientId).getBaselineVisit();
     }
 
     private ClinicVisit get(Visit visit) {
