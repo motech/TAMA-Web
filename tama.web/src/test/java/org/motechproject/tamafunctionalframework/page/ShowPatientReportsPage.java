@@ -9,6 +9,7 @@ import org.openqa.selenium.support.How;
 
 public class ShowPatientReportsPage extends Page {
 
+    public static final String DAILY_PILL_REMINDER_REPORT_GRID = "dailyPillReminderReportGrid";
     private final String PAGE_LOAD_MARKER = "_patientSummaryPatientId_id";
 
     @FindBy(how = How.ID, using = "_patientSummaryPatientId_patientId_id")
@@ -26,7 +27,7 @@ public class ShowPatientReportsPage extends Page {
     @FindBy(how = How.ID, using = "getDailyPillReminderReport")
     private WebElement generateReportButton;
 
-    @FindBy(how = How.ID, using = "dailyPillReminderReportGrid")
+    @FindBy(how = How.ID, using = DAILY_PILL_REMINDER_REPORT_GRID)
     private WebElement dailyPillReminderReportGrid;
 
     public ShowPatientReportsPage(WebDriver webDriver) {
@@ -50,7 +51,7 @@ public class ShowPatientReportsPage extends Page {
         this.dailyPillReminderReportStartDate.sendKeys(startDate.toString(TAMAConstants.DATE_FORMAT));
         this.dailyPillReminderReportEndDate.sendKeys(endDate.toString(TAMAConstants.DATE_FORMAT));
         this.generateReportButton.click();
-        waitForElementWithIdToLoad(dailyPillReminderReportGrid.getAttribute("id"));
+        waitForElementWithIdToLoad(DAILY_PILL_REMINDER_REPORT_GRID);
     }
 
     public String getDailyPillReminderReportText(){
