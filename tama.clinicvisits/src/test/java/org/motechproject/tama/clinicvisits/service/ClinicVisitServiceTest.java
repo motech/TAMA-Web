@@ -43,7 +43,7 @@ public class ClinicVisitServiceTest {
         String vitalStatisticsId = "vitalStatisticsId";
         DateTime now = DateUtil.now();
 
-        clinicVisitService.createOrUpdateVisit(null, now.toLocalDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+        clinicVisitService.updateVisit(null, now, patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
 
         ArgumentCaptor<ClinicVisit> clinicVisitArgumentCaptor = ArgumentCaptor.forClass(ClinicVisit.class);
         verify(allClinicVisits).add(clinicVisitArgumentCaptor.capture());

@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,17 +21,14 @@ public class ClinicVisitService {
         this.allClinicVisits = allClinicVisits;
     }
 
-    public String createOrUpdateVisit(String visitId, LocalDate visitDate, String patientId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
-        ClinicVisit clinicVisit;
-        if (visitId != null) clinicVisit = allClinicVisits.get(visitId);
-        else clinicVisit = new ClinicVisit();
+    public String updateVisit(String visitId, DateTime visitDate, String patientId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
+        ClinicVisit clinicVisit = allClinicVisits.get(visitId);
         clinicVisit.setPatientId(patientId);
         clinicVisit.setTreatmentAdviceId(treatmentAdviceId);
         clinicVisit.setLabResultIds(labResultIds);
         clinicVisit.setVitalStatisticsId(vitalStatisticsId);
         clinicVisit.setVisitDate(visitDate);
-        if (clinicVisit.getId() != null) allClinicVisits.update(clinicVisit);
-        else allClinicVisits.add(clinicVisit);
+        allClinicVisits.update(clinicVisit);
         return clinicVisit.getId();
     }
 
@@ -87,7 +85,7 @@ public class ClinicVisitService {
         allClinicVisits.update(clinicVisit);
     }
 
-    public void setVisitDate(String clinicVisitId, LocalDate visitDate) {
+    public void setVisitDate(String clinicVisitId, DateTime visitDate) {
         ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
         clinicVisit.setVisitDate(visitDate);
         allClinicVisits.update(clinicVisit);

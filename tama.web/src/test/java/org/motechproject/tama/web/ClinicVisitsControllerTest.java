@@ -125,16 +125,16 @@ public class ClinicVisitsControllerTest {
         }});
         when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
         ClinicVisit clinicVisit = new ClinicVisit();
-        final LocalDate visitDate = DateUtil.today();
+        final DateTime visitDate = DateUtil.now();
         clinicVisit.setVisitDate(visitDate);
-        when(clinicVisitService.createOrUpdateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId")).thenReturn("clinicVisitId");
+        when(clinicVisitService.updateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId")).thenReturn("clinicVisitId");
         String redirectURL = clinicVisitsController.create(null, clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
 
         assertEquals("redirect:/clinicvisits/clinicVisitId", redirectURL);
         verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
         verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
         verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
-        verify(clinicVisitService).createOrUpdateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId");
+        verify(clinicVisitService).updateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId");
     }
 
     @Test

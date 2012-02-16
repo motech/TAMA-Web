@@ -1,5 +1,6 @@
 package org.motechproject.tama.clinicvisits.factory;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
@@ -11,19 +12,19 @@ public class AppointmentsFactory {
         Reminder reminder = new Reminder();
         reminder.setAppointmentId(appointment.getId());
         reminder.setExternalId(patientId);
-        reminder.setStartDate(DateUtil.newDate(appointment.getScheduledDate()).minusDays(remindFrom).toDate());
-        reminder.setEndDate(DateUtil.newDate(appointment.getScheduledDate()).minusDays(remindTill).toDate());
+        reminder.setStartDate(appointment.getScheduledDate().minusDays(remindFrom).toDate());
+        reminder.setEndDate(appointment.getScheduledDate().minusDays(remindTill).toDate());
         reminder.setIntervalCount(1);
         reminder.setUnits(Reminder.intervalUnits.DAYS);
         reminder.setEnabled(true);
         return reminder;
     }
 
-    public static Appointment createAppointment(String patientId, LocalDate scheduledDate, String appointmentId) {
+    public static Appointment createAppointment(String patientId, DateTime scheduledDate, String appointmentId) {
         Appointment appointment = new Appointment();
         appointment.setId(appointmentId);
         appointment.setExternalId(patientId);
-        appointment.setScheduledDate(scheduledDate.toDate());
+        appointment.setScheduledDate(scheduledDate);
         return appointment;
     }
 }

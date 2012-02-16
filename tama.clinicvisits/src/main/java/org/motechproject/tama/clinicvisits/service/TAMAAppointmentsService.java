@@ -1,7 +1,6 @@
 package org.motechproject.tama.clinicvisits.service;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.AppointmentService;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
@@ -47,7 +46,7 @@ public class TAMAAppointmentsService {
     }
 
     private void createAppointmentReminderAndVisit(String patientId, DateTime firstAppointmentTime, Integer week) {
-        LocalDate appointmentDate = firstAppointmentTime.plusWeeks(week).toLocalDate();
+        DateTime appointmentDate = firstAppointmentTime.plusWeeks(week);
         Appointment appointment = AppointmentsFactory.createAppointment(patientId, appointmentDate, UUIDUtil.newUUID());
         scheduleAppointment(appointment);
         createReminder(patientId, appointment);

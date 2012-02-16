@@ -56,7 +56,7 @@ public class ClinicVisitsController extends BaseController {
         }
 
         uiModel.addAttribute("patientId", patientId);
-        if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.today());
+        if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.now());
         uiModel.addAttribute("clinicVisit", clinicVisit);
         treatmentAdviceController.createForm(patientId, uiModel);
         labResultsController.createForm(patientId, uiModel);
@@ -72,7 +72,7 @@ public class ClinicVisitsController extends BaseController {
         String treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
-        final String clinitVistId = clinicVisitService.createOrUpdateVisit(clinicVisitId, visit.getVisitDate(), treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
+        final String clinitVistId = clinicVisitService.updateVisit(clinicVisitId, visit.getVisitDate(), treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinitVistId, httpServletRequest);
     }
 
@@ -121,7 +121,7 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/setVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
     public String setVisitDate(@PathVariable(value = "clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                                  @RequestParam(value = "visitDate") LocalDate visitDate){
+                                                  @RequestParam(value = "visitDate") DateTime visitDate){
         clinicVisitService.setVisitDate(clinicVisitId, visitDate);
         return "{'visitDate':'" + visitDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
     }
