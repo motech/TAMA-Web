@@ -53,7 +53,7 @@ public class AllClinicVisitsTest {
     public void shouldGetBaselineVisit() {
         final String patientId = "patientId";
         final String appointmentId = "appointmentId";
-        final Visit visitForPatient = new Visit() {{ setExternalId(patientId); addData(ClinicVisit.TYPE_OF_VISIT, ClinicVisit.TypeOfVisit.Baseline); }};
+        final Visit visitForPatient = new Visit() {{ setExternalId(patientId); addData(ClinicVisit.TYPE_OF_VISIT, ClinicVisit.TypeOfVisit.Baseline.toString()); }};
         final Appointment appointment = new Appointment();
 
         when(allVisits.findByExternalId(patientId)).thenReturn(new ArrayList<Visit>() {{
