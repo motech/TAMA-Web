@@ -9,9 +9,10 @@
         <![CDATA[
             dojo.addOnLoad(function(){
                 var adherenceListUrl = "${adherence_list_url}?id=${patient.id}";
+                var adherenceChartNoticeBanner = new Banner("adherence-over-time-notice");
                 var dailyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("dailyAdherenceOverTimeChart", DAILY_ADHERENCE_TYPE, "Number of Doses", 15);
                 var weeklyAdherenceOverTimeChart = new AdherenceOverTimeChartWidget("weeklyAdherenceOverTimeChart", WEEKLY_ADHERENCE_TYPE, "Number of Days", 5);
-                adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl);
+                adherenceOverTimeWidget = new AdherenceOverTimeWidget(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, adherenceListUrl, adherenceChartNoticeBanner);
                 adherenceOverTimeWidget.draw();
             });
         ]]>
@@ -20,6 +21,7 @@
     <div>
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
             <div style="overflow-x:auto">
+                <div id="adherence-over-time-notice" class="bold"><!-- required or JSP eats it up --></div>
                 <table id="dailyAdherenceOverTimeChartLegend" style="display: none;">
                     <tr>
                         <th colspan="9">Adherence Trend Chart for Daily Pill Reminder</th>

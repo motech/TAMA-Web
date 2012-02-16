@@ -116,10 +116,11 @@ AdherencePerWeekData.prototype = {
 }
 
 
-var AdherenceOverTimeWidget = function(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, dataUrl){
+var AdherenceOverTimeWidget = function(dailyAdherenceOverTimeChart, weeklyAdherenceOverTimeChart, dataUrl, noticeBanner){
     this.dailyAdherenceOverTimeChart = dailyAdherenceOverTimeChart;
     this.weeklyAdherenceOverTimeChart = weeklyAdherenceOverTimeChart;
     this.dataURL = dataUrl;
+    this.noticeBanner = noticeBanner;
 }
 
 AdherenceOverTimeWidget.prototype = {
@@ -138,6 +139,7 @@ AdherenceOverTimeWidget.prototype = {
             var adherencePerWeekData = new AdherencePerWeekData(jsonData);
             if(jsonData.dailyAdherenceSummary.length > 0) self.dailyAdherenceOverTimeChart.draw(adherencePerWeekData);
             if(jsonData.weeklyAdherenceSummary.length > 0) self.weeklyAdherenceOverTimeChart.draw(adherencePerWeekData);
+            if(jsonData.dailyAdherenceSummary.length == 0 && jsonData.weeklyAdherenceSummary.length == 0) self.noticeBanner.setMessage("No Adherence Recorded yet");
         });
     },
 }

@@ -11,6 +11,10 @@
     font-weight: bold;
 }
 
+.bold{
+    font-weight: bold;
+}
+
 #dailyAdherenceOverTimeChartLegend th, #weeklyAdherenceOverTimeChartLegend th{
     font-size: 15px;
     text-align: center;
