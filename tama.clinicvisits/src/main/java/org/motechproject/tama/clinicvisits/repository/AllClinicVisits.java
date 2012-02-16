@@ -1,34 +1,54 @@
 package org.motechproject.tama.clinicvisits.repository;
 
-import org.ektorp.CouchDbConnector;
-import org.ektorp.ViewQuery;
-import org.ektorp.support.View;
+import org.motechproject.appointments.api.dao.AllAppointments;
+import org.motechproject.appointments.api.dao.AllVisits;
+import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.common.repository.AbstractCouchRepository;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public class AllClinicVisits extends AbstractCouchRepository<ClinicVisit> {
+public class AllClinicVisits {
+
+    private AllVisits allVisits;
+    private AllAppointments allAppointments;
 
     @Autowired
-    public AllClinicVisits(@Qualifier("tamaDbConnector") CouchDbConnector db) {
-        super(ClinicVisit.class, db);
-        initStandardDesignDocument();
+    public AllClinicVisits(AllVisits allVisits, AllAppointments allAppointments) {
+        this.allVisits = allVisits;
+        this.allAppointments = allAppointments;
     }
 
-    @View(name = "find_by_patient_id", map = "function(doc) {if (doc.documentType =='ClinicVisit' && doc.patientId) {emit(doc.patientId, doc._id);}}")
-    public List<ClinicVisit> find_by_patient_id(String patientId) {
-        ViewQuery q = createQuery("find_by_patient_id").key(patientId).includeDocs(true);
-        return db.queryView(q, ClinicVisit.class);
+    public ClinicVisit get(String visitId) {
+        return get(allVisits.getVisit(visitId));
     }
 
-    @View(name = "find_baseline_visit", map = "function(doc) {if (doc.documentType =='ClinicVisit' && doc.typeOfVisit == 'Baseline' && doc.patientId) {emit(doc.patientId, doc._id);}}")
+    public void add(ClinicVisit clinicVisit) {
+        allAppointments.addAppointment(clinicVisit.getAppointment());
+        allVisits.addVisit(clinicVisit.getVisit());
+    }
+
+    public void update(ClinicVisit clinicVisit) {
+        allAppointments.updateAppointment(clinicVisit.getAppointment());
+        allVisits.updateVisit(clinicVisit.getVisit());
+    }
+
+    public ClinicVisits find_by_patient_id(String patientId) {
+        ClinicVisits clinicVisits = new ClinicVisits();
+        for (Visit visit : allVisits.findByExternalId(patientId)) {
+            clinicVisits.add(get(visit));
+        }
+        return clinicVisits;
+    }
+
     public ClinicVisit getBaselineVisit(String patientId) {
-        ViewQuery q = createQuery("find_baseline_visit").key(patientId).includeDocs(true);
-        return singleResult(db.queryView(q, ClinicVisit.class));
+        return find_by_patient_id(patientId).getBaselineVisit();
+    }
+
+    private ClinicVisit get(Visit visit) {
+        Appointment appointment = allAppointments.getAppointment(visit.getAppointmentId());
+        return new ClinicVisit(visit, appointment);
     }
 }

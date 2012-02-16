@@ -7,8 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.factory.AppointmentsFactory;
 import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -140,8 +142,9 @@ public class ClinicVisitsControllerTest {
     @Test
     public void shouldReturnAllClinicVisitsForPatient() throws Exception {
         Model uiModel = mock(Model.class);
-        ClinicVisit visit1 = ClinicVisit.createExpectedVisit(DateUtil.now(), 0, PATIENT_ID);
-        ClinicVisit visit2 = ClinicVisit.createExpectedVisit(DateUtil.now(), 0, PATIENT_ID);
+        Appointment appointment = new Appointment() {{ setId("appointmentId"); }};
+        ClinicVisit visit1 = AppointmentsFactory.createClinicVisit(appointment, PATIENT_ID, DateUtil.now(), 0);
+        ClinicVisit visit2 = AppointmentsFactory.createClinicVisit(appointment, PATIENT_ID, DateUtil.now(), 0);
         when(clinicVisitService.getClinicVisits(PATIENT_ID)).thenReturn(Arrays.asList(visit1, visit2));
 
         final String listUrl = clinicVisitsController.list(PATIENT_ID, uiModel);

@@ -25,6 +25,11 @@ public class ClinicVisitBuilder {
                 withLabResultIds(new ArrayList<String>() {{ add("labResultId"); }}).withVitalStatisticsId("vitalStatisticsId");
     }
 
+    public ClinicVisitBuilder withTypeOfVisit(ClinicVisit.TypeOfVisit typeOfVisit) {
+        clinicVisit.setTypeOfVisit(typeOfVisit);
+        return this;
+    }
+
     public ClinicVisitBuilder withVisitDate(DateTime visitDate) {
         clinicVisit.setVisitDate(visitDate);
         return this;
@@ -51,7 +56,7 @@ public class ClinicVisitBuilder {
     }
 
     public ClinicVisitBuilder withId(String clinicVisitId) {
-        clinicVisit.setId(clinicVisitId);
+        clinicVisit.getVisit().setId(clinicVisitId);
         return this;
     }
 }

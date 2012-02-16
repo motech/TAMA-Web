@@ -5,7 +5,6 @@ import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
@@ -13,7 +12,7 @@ import javax.persistence.TemporalType;
 import java.util.List;
 
 
-public class ClinicVisit extends Visit {
+public class ClinicVisit {
 
     public enum TypeOfVisit {
         Baseline,
@@ -27,61 +26,110 @@ public class ClinicVisit extends Visit {
     public static final String TYPE_OF_VISIT = "TypeOfVisit";
     public static final String ADJUSTED_DUE_DATE = "AdjustedDueDate";
 
-    private Appointment appointment;
+    private Visit visit = new Visit();
 
-    public String getName() {
-        return getTitle();
+    private Appointment appointment = new Appointment();
+
+    public ClinicVisit() {
     }
 
-    private void setName(String name) {
-        setTitle(name);
+    public ClinicVisit(Visit visit, Appointment appointment) {
+        this.visit = visit;
+        this.appointment = appointment;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public Visit getVisit() {
+        return visit;
+    }
+
+    public void setVisit(Visit visit) {
+        this.visit = visit;
+    }
+
+    public String getId() {
+        return visit.getId();
+    }
+
+    public String getName() {
+        return visit.getTitle();
+    }
+
+    public void setName(String name) {
+        visit.setTitle(name);
     }
 
     public String getPatientId() {
-        return getExternalId();
+        return visit.getExternalId();
     }
 
     public void setPatientId(String patientId) {
-        setExternalId(patientId);
+        visit.setExternalId(patientId);
     }
 
     public TypeOfVisit getTypeOfVisit() {
-        return (TypeOfVisit) getData().get(TYPE_OF_VISIT);
+        return (TypeOfVisit) visit.getData().get(TYPE_OF_VISIT);
     }
 
     public void setTypeOfVisit(TypeOfVisit typeOfVisit) {
-        addData(TYPE_OF_VISIT, typeOfVisit);
+        visit.addData(TYPE_OF_VISIT, typeOfVisit);
     }
 
     public String getTreatmentAdviceId() {
-        return (String) getData().get(TREATMENT_ADVICE);
+        return (String) visit.getData().get(TREATMENT_ADVICE);
     }
 
     public void setTreatmentAdviceId(String treatmentAdviceId) {
-        addData(TREATMENT_ADVICE, treatmentAdviceId);
+        visit.addData(TREATMENT_ADVICE, treatmentAdviceId);
     }
 
     public List<String> getLabResultIds() {
-        return (List<String>) getData().get(LAB_RESULTS);
+        return (List<String>) visit.getData().get(LAB_RESULTS);
     }
 
     public void setLabResultIds(List<String> labResultIds) {
-        addData(LAB_RESULTS, labResultIds);
+        visit.addData(LAB_RESULTS, labResultIds);
     }
 
     public String getVitalStatisticsId() {
-        return (String) getData().get(VITAL_STATISTICS);
+        return (String) visit.getData().get(VITAL_STATISTICS);
     }
 
     public void setVitalStatisticsId(String vitalStatisticsId) {
-        addData(VITAL_STATISTICS, vitalStatisticsId);
+        visit.addData(VITAL_STATISTICS, vitalStatisticsId);
     }
 
-    @Override
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getVisitDate() {
-        return super.getVisitDate();
+        return visit.getVisitDate();
+    }
+
+    public void setVisitDate(DateTime visitDate) {
+        visit.setVisitDate(visitDate);
+    }
+
+    public String getAppointmentId() {
+        return visit.getAppointmentId();
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        visit.setAppointmentId(appointmentId);
+    }
+
+    public boolean isMissed() {
+        return visit.isMissed();
+    }
+
+    public void setMissed(boolean missed) {
+        visit.setMissed(missed);
     }
 
     @Temporal(TemporalType.DATE)
@@ -112,19 +160,5 @@ public class ClinicVisit extends Visit {
 
     public void setConfirmedVisitDate(DateTime scheduledDate) {
         appointment.setScheduledDate(scheduledDate);
-    }
-
-    public static ClinicVisit createExpectedVisit(DateTime expectedVisitTime, int weeks, String patientId) {
-        ClinicVisit clinicVisit = new ClinicVisit();
-        if (weeks == 0) {
-            clinicVisit.setName("Registered with TAMA");
-            clinicVisit.setTypeOfVisit(TypeOfVisit.Baseline);
-        } else {
-            clinicVisit.setName(weeks + " weeks Follow-up visit");
-            clinicVisit.setTypeOfVisit(TypeOfVisit.Scheduled);
-        }
-        clinicVisit.setAppointmentDueDate(expectedVisitTime.plusWeeks(weeks));
-        clinicVisit.setPatientId(patientId);
-        return clinicVisit;
     }
 }

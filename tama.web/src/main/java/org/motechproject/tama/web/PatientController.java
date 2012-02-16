@@ -5,7 +5,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
-import org.motechproject.tama.clinicvisits.service.TAMAAppointmentsService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
@@ -84,13 +83,11 @@ public class PatientController extends BaseController {
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
     private ClinicVisitService clinicVisitService;
     private ResumeFourDayRecallService resumeFourDayRecallService;
-    private TAMAAppointmentsService tamaAppointmentsService;
     private Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
 
     @Autowired
     public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
                              AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
-                             TAMAAppointmentsService tamaAppointmentsService,
                              @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly, ClinicVisitService clinicVisitService) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
@@ -104,7 +101,6 @@ public class PatientController extends BaseController {
         this.patientService = patientService;
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
         this.resumeFourDayRecallService = resumeFourDayRecallService;
-        this.tamaAppointmentsService = tamaAppointmentsService;
         this.minNumberOfDaysOnDailyBeforeTransitioningToWeekly = minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
         this.clinicVisitService = clinicVisitService;
     }
@@ -124,7 +120,7 @@ public class PatientController extends BaseController {
         boolean firstActivation = patient.getActivationDate() == null;
         patientService.activate(id);
         if (firstActivation) {
-            tamaAppointmentsService.scheduleAppointments(id);
+            clinicVisitService.scheduleVisits(id);
             ClinicVisit clinicVisit = clinicVisitService.baselineVisit(id);
             return "redirect:/clinicvisits?form&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
         }

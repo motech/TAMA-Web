@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
-import org.motechproject.tama.clinicvisits.service.TAMAAppointmentsService;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
@@ -91,14 +90,12 @@ public class PatientControllerTest {
     @Mock
     private ResumeFourDayRecallService resumeFourDayRecallService;
     @Mock
-    private TAMAAppointmentsService tamaAppointmentsService;
-    @Mock
     private ClinicVisitService clinicVisitService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, tamaAppointmentsService, 28, clinicVisitService);
+        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, 28, clinicVisitService);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 
@@ -139,11 +136,11 @@ public class PatientControllerTest {
                 withActivationDate(DateUtil.now().minusDays(3)).build();
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
+        doNothing().when(clinicVisitService).scheduleVisits(PATIENT_ID);
         String nextPage = controller.activate(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
-        verify(tamaAppointmentsService, never()).scheduleAppointments(eq(PATIENT_ID));
+        verify(clinicVisitService, never()).scheduleVisits(eq(PATIENT_ID));
         assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
     }
 
@@ -153,11 +150,11 @@ public class PatientControllerTest {
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(CLINIC_VISIT_ID).build();
         when(clinicVisitService.baselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        doNothing().when(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
+        doNothing().when(clinicVisitService).scheduleVisits(PATIENT_ID);
         String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
-        verify(tamaAppointmentsService).scheduleAppointments(PATIENT_ID);
+        verify(clinicVisitService).scheduleVisits(PATIENT_ID);
         assertEquals("redirect:/clinicvisits?form&clinicVisitId=" + CLINIC_VISIT_ID, nextPage);
     }
 
