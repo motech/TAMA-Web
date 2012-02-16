@@ -44,6 +44,10 @@ public class ClinicianRegistrationPage extends Page {
     @Override
     public void postInitialize() {
         name = WebDriverFactory.createWebElement(name);
+        username = WebDriverFactory.createWebElement(username);
+        contactNumber = WebDriverFactory.createWebElement(contactNumber);
+        alternateContactNumber = WebDriverFactory.createWebElement(alternateContactNumber);
+        password = WebDriverFactory.createWebElement(password);
         clinicElement = WebDriverFactory.createWebElement(clinicElement);
     }
 
