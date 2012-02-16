@@ -21,6 +21,10 @@ public class AppointmentReminderHandler {
     @MotechListener(subjects = EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT)
     public void handleEvent(MotechEvent appointmentReminderEvent) {
         String patientId = appointmentReminderEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
-        outboxService.addMessage(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
+        String reminderMessageType = TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE;
+
+        if (!outboxService.hasPendingOutboxMessages(patientId, reminderMessageType))
+            outboxService.addMessage(patientId, reminderMessageType);
     }
+
 }

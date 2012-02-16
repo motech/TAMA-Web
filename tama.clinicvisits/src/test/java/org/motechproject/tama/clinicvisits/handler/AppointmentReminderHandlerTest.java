@@ -3,11 +3,8 @@ package org.motechproject.tama.clinicvisits.handler;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.service.OutboxService;
@@ -15,54 +12,56 @@ import org.motechproject.tama.outbox.service.OutboxService;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(value = Suite.class)
-@Suite.SuiteClasses({
-        AppointmentReminderHandlerTest.EventIsRaised.class
-})
 public class AppointmentReminderHandlerTest {
 
-    public static class Basis {
+    @Mock
+    OutboxService outboxService;
 
-        Appointment appointment;
+    MotechEvent event;
 
-        @Mock
-        OutboxService outboxService;
+    private AppointmentReminderHandler appointmentReminderHandler;
 
-        AppointmentReminderHandler appointmentReminderHandler;
+    public AppointmentReminderHandlerTest() {
+        initMocks(this);
 
-        Basis() {
-            initMocks(this);
-            appointment = new Appointment();
-            appointment.setExternalId("patientId");
-            appointmentReminderHandler = new AppointmentReminderHandler(outboxService);
-        }
+        Map<String, Object> eventParams = new HashMap<String, Object>();
+        eventParams.put(EventKeys.EXTERNAL_ID_KEY, "patientId");
+        event = new MotechEvent(EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, eventParams);
 
-        @Before
-        public void setup() {
-            reset(outboxService);
-        }
+        appointmentReminderHandler = new AppointmentReminderHandler(outboxService);
     }
 
-    public static class EventIsRaised extends Basis {
+    @Before
+    public void setup() {
+        reset(outboxService);
+    }
 
-        MotechEvent appointmentReminderEvent;
+    private void whenNoValidOutboxMessageExists(String patientId) {
+        when(outboxService.hasPendingOutboxMessages(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(false);
+    }
 
-        @Before
-        public void setup() {
-            super.setup();
-            Map<String, Object> eventParams = new HashMap<String, Object>();
-            eventParams.put(EventKeys.EXTERNAL_ID_KEY, appointment.getExternalId());
-            appointmentReminderEvent = new MotechEvent(EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, eventParams);
-        }
+    private void whenValidOutboxMessageExists(String patientId) {
+        when(outboxService.hasPendingOutboxMessages(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(true);
+    }
 
-        @Test
-        public void shouldCreateOutboxMessage() {
-            appointmentReminderHandler.handleEvent(appointmentReminderEvent);
-            verify(outboxService).addMessage(appointment.getExternalId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
-        }
+    @Test
+    public void shouldCreateOutboxMessageWhenNoValidOutboxMessageExists() {
+        String patientId = event.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
+
+        whenNoValidOutboxMessageExists(patientId);
+        appointmentReminderHandler.handleEvent(event);
+        verify(outboxService).addMessage(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
+    }
+
+    @Test
+    public void shouldNotCreateOutboxMessageWhenValidOutboxMessageExists() {
+        String patientId = event.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
+
+        whenValidOutboxMessageExists(patientId);
+        appointmentReminderHandler.handleEvent(event);
+        verify(outboxService, never()).addMessage(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
     }
 }

@@ -3,7 +3,6 @@ package org.motechproject.tama.clinicvisits.factory;
 import org.joda.time.DateTime;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.util.UUIDUtil;
 

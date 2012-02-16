@@ -62,6 +62,10 @@ public class OutboxService implements Outbox {
         return voiceOutboxService.getNumberPendingMessages(patientDocumentId) != 0;
     }
 
+    public boolean hasPendingOutboxMessages(String patientDocumentId, String voiceMessageTypeName) {
+        return voiceOutboxService.getNumberPendingMessages(patientDocumentId, voiceMessageTypeName) != 0;
+    }
+
     public void addMessage(String patientId) {
         addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
     }
