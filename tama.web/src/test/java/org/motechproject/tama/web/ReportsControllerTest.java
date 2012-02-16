@@ -12,14 +12,16 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.refdata.domain.Regimen;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -27,6 +29,9 @@ public class ReportsControllerTest {
 
     @Mock
     private AllPatients allPatients;
+
+    @Mock
+    private AllTreatmentAdvices allTreatmentAdvices;
 
     @Mock
     private PatientService patientService;
@@ -45,17 +50,23 @@ public class ReportsControllerTest {
         initMocks(this);
         clinic = ClinicBuilder.startRecording().withDefaults().build();
         patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
-        reportsController = new ReportsController(allPatients, patientService, dailyPillReminderReportService);
+        reportsController = new ReportsController(allPatients, allTreatmentAdvices, patientService, dailyPillReminderReportService);
     }
 
     @Test
     public void shouldReturnIndexPage() throws IOException {
-        Regimen regimen = mock(Regimen.class);
-        when(allPatients.get("patientDocumentId")).thenReturn(patient);
-        when(patientService.currentRegimen(patient)).thenReturn(regimen);
+        String patientDocumentId = "patientDocumentId";
 
-        ModelAndView patientReport = reportsController.index("patientDocumentId");
-        assertEquals("reports/index", patientReport.getViewName());
+        when(allPatients.get(patientDocumentId)).thenReturn(patient);
+
+        ModelAndView modelAndView = reportsController.index(patientDocumentId);
+        assertEquals("reports/index", modelAndView.getViewName());
+        Map<String, Object> model = modelAndView.getModel();
+        assertNotNull(model.get("report"));
+
+        verify(allPatients).get(patientDocumentId);
+        verify(patientService).currentRegimen(patient);
+        verify(allTreatmentAdvices).earliestTreatmentAdvice(patientDocumentId);
     }
 
     @Test

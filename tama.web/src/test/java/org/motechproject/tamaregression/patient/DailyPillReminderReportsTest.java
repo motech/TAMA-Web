@@ -28,6 +28,7 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
     private TestPatient patient;
     private TestClinician clinician;
     private ScheduledTaskManager scheduledTaskManager;
+    LocalDate regimenStartDate;
 
     @Before
     public void setUp() {
@@ -35,9 +36,9 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
         clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
         TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
-        LocalDate yesterday = DateUtil.today().minusDays(1);
-        drugDosages[0].startDate(yesterday);
-        drugDosages[1].startDate(yesterday);
+        regimenStartDate = DateUtil.today().minusDays(1);
+        drugDosages[0].startDate(regimenStartDate);
+        drugDosages[1].startDate(regimenStartDate);
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(drugDosages);
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
@@ -63,6 +64,7 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
     private void assertPatientSummary(ShowPatientReportsPage showPatientReportsPage) {
         assertEquals(patient.patientId(), showPatientReportsPage.getPatientId());
         assertEquals(clinician.clinic().name(), showPatientReportsPage.getClinicName());
+        assertEquals(regimenStartDate.toString("MMM d, yyyy"), showPatientReportsPage.getPatientARTStartDate());
     }
 
     private ShowPatientReportsPage goToPatientReportsPage() {

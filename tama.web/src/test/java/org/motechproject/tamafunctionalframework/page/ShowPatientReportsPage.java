@@ -18,6 +18,9 @@ public class ShowPatientReportsPage extends Page {
     @FindBy(how = How.ID, using = "_patientSummaryClinicName_clinicName_id")
     private WebElement clinicName;
 
+    @FindBy(how = How.ID, using = "_patientSummaryARTStartDate_ARTStartDate_id")
+    private WebElement patientARTStartDate;
+
     @FindBy(how = How.ID, using = "dailyPillReminderReportStartDate")
     private WebElement dailyPillReminderReportStartDate;
 
@@ -45,6 +48,10 @@ public class ShowPatientReportsPage extends Page {
 
     public String getPatientId() {
         return patientId.getText();
+    }
+
+    public String getPatientARTStartDate() {
+        return patientARTStartDate.getText();
     }
 
     public void generateDailyPillReminderReport(LocalDate startDate, LocalDate endDate){
