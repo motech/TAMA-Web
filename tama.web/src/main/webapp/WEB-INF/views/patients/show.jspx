@@ -28,9 +28,10 @@
         <jsp:include page="showMedicalHistory.jspx" />
         <jsp:include page="showPatientPreferences.jspx" />
         <jsp:include page="showTAMAStatus.jspx" />
+        <spring:url value="/patients/summary/${patient.id}" var="patient_summary_details"><!-- required--> </spring:url>
+        <div style="margin-top: 10px"><a id="patient_summary" href="${patient_summary_details}">Show Patient Summary</a></div>
         <jsp:include page="showPatientPageLinks.jspx" />
         <jsp:include page="showSymptomTimeline.jspx" />
-        <jsp:include page="showAdherenceOverTime.jspx" />
     </page:show>
 
 </div>
