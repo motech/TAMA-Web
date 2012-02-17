@@ -50,11 +50,9 @@ public class ReportsController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index(@PathVariable String patientDocId) {
-        Patient patient = allPatients.get(patientDocId);
-        Regimen regimen = patientService.currentRegimen(patient);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
-        return new ModelAndView("reports/index", "report", new PatientReport(patient, regimen, treatmentAdvice));
+        return new ModelAndView("reports/index", "report", generatePatientReportSummary(patientDocId));
     }
+
 
     @RequestMapping(value = "dailyPillReminderReport.json", method = RequestMethod.GET)
     @ResponseBody
@@ -80,7 +78,8 @@ public class ReportsController {
             ServletOutputStream outputStream = response.getOutputStream();
             List<DailyPillReminderSummary> summaryList = dailyPillReminderReportService.create(patientDocId, startDate, endDate);
 
-            HSSFWorkbook excelWorkbook = new DailyPillReminderReportBuilder(summaryList).getExcelWorkbook();
+            DailyPillReminderReportBuilder dailyPillReminderReportBuilder = new DailyPillReminderReportBuilder(summaryList, generatePatientReportSummary(patientDocId), startDate, endDate);
+            HSSFWorkbook excelWorkbook = dailyPillReminderReportBuilder.getExcelWorkbook();
             excelWorkbook.write(outputStream);
             outputStream.flush();
 
@@ -89,4 +88,10 @@ public class ReportsController {
         }
     }
 
+    private PatientReport generatePatientReportSummary(String patientDocId) {
+        Patient patient = allPatients.get(patientDocId);
+        Regimen regimen = patientService.currentRegimen(patient);
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
+        return new PatientReport(patient, regimen, treatmentAdvice);
+    }
 }

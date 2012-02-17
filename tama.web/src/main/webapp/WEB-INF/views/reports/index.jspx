@@ -14,7 +14,7 @@
     <util:panel id="report" title="Report" openPane="true">
         <field:display field="patientId" label="PatientId" id="patientSummaryPatientId" object="${report}"/>
         <field:display field="clinicName" label="Clinic Name" id="patientSummaryClinicName" object="${report}"/>
-        <field:display date="true" dateTimePattern="MMM d, yyyy" field="ARTStartDate" label="ART Start Date" id="patientSummaryARTStartDate" object="${report}"/>
+        <field:display date="true" dateTimePattern="MMM dd, yyyy" field="ARTStartDate" label="ART Start Date" id="patientSummaryARTStartDate" object="${report}"/>
         <field:display field="regimenName" label="Regimen Followed" id="patientSummaryRegimenName" object="${report}"/>
         <jsp:include page="showDailyPillReminderReport.jspx" />
 

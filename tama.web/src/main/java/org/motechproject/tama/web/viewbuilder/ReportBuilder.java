@@ -6,7 +6,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.motechproject.tama.web.viewbuilder.ExcelColumn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public abstract class ReportBuilder<T> {
     protected List<T> objects;
     protected List<ExcelColumn> columns = new ArrayList<ExcelColumn>();
 
-    private int currentRowIndex = 0;
+    protected int currentRowIndex = 0;
     private int firstColumnIndex = 0;
     private int lastColumnIndex;
 
@@ -58,8 +57,13 @@ public abstract class ReportBuilder<T> {
     private void buildReportLayout(HSSFSheet worksheet) {
         setColumnWidths(worksheet);
         buildTitle(worksheet);
+        buildSummary(worksheet);
         buildColumnHeaders(worksheet);
         worksheet.createFreezePane(lastColumnIndex, currentRowIndex);
+    }
+
+    protected void buildSummary(HSSFSheet worksheet) {
+
     }
 
     private void setColumnWidths(HSSFSheet worksheet) {
@@ -145,7 +149,7 @@ public abstract class ReportBuilder<T> {
         return cellStyles;
     }
 
-    private void buildRowData(HSSFRow row, List<Object> rowData, List<HSSFCellStyle> cellStyles)  {
+    protected void buildRowData(HSSFRow row, List<Object> rowData, List<HSSFCellStyle> cellStyles)  {
         int columnIndex = firstColumnIndex;
         for (Object columnData : rowData) {
             HSSFCell cell = row.createCell(columnIndex);

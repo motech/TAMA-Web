@@ -85,13 +85,19 @@ public class ReportsControllerTest {
 
     @Test
     public void shouldReturnDailyPillReminderExcelReport() throws JSONException {
+        String patientDocumentId = "patientId";
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
 
+        when(allPatients.get(patientDocumentId)).thenReturn(patient);
+
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-        reportsController.buildDailyPillReminderExcelReport("patientId", day1, day2, httpServletResponse);
+        reportsController.buildDailyPillReminderExcelReport(patientDocumentId, day1, day2, httpServletResponse);
         
-        verify(dailyPillReminderReportService).create("patientId", day1, day2);
-        
+        verify(dailyPillReminderReportService).create(patientDocumentId, day1, day2);
+        verify(allPatients).get(patientDocumentId);
+        verify(patientService).currentRegimen(patient);
+        verify(allTreatmentAdvices).earliestTreatmentAdvice(patientDocumentId);
+
     }
 }

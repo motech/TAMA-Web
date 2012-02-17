@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
-import org.motechproject.tamafunctionalframework.framework.ScheduledTaskManager;
 import org.motechproject.tamafunctionalframework.ivr.BaseIVRTest;
 import org.motechproject.tamafunctionalframework.page.ListPatientsPage;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
@@ -15,7 +14,6 @@ import org.motechproject.tamafunctionalframework.page.ShowPatientReportsPage;
 import org.motechproject.tamafunctionalframework.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
-import org.motechproject.tamafunctionalframework.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
@@ -27,7 +25,6 @@ import static junit.framework.Assert.assertTrue;
 public class DailyPillReminderReportsTest extends BaseIVRTest {
     private TestPatient patient;
     private TestClinician clinician;
-    private ScheduledTaskManager scheduledTaskManager;
     LocalDate regimenStartDate;
 
     @Before
@@ -43,7 +40,6 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);
-        scheduledTaskManager = new ScheduledTaskManager(webClient);
         caller = caller(patient);
     }
 
@@ -64,7 +60,7 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
     private void assertPatientSummary(ShowPatientReportsPage showPatientReportsPage) {
         assertEquals(patient.patientId(), showPatientReportsPage.getPatientId());
         assertEquals(clinician.clinic().name(), showPatientReportsPage.getClinicName());
-        assertEquals(regimenStartDate.toString("MMM d, yyyy"), showPatientReportsPage.getPatientARTStartDate());
+        assertEquals(regimenStartDate.toString("MMM dd, yyyy"), showPatientReportsPage.getPatientARTStartDate());
     }
 
     private ShowPatientReportsPage goToPatientReportsPage() {
@@ -77,8 +73,8 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
 
     private void recordDoseAsTaken() {
         caller.replyToCall(new PillReminderCallInfo(1));
-        IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
-        ivrResponse = caller.enter("1");
+        caller.enter(patient.patientPreferences().passcode());
+        caller.enter("1");
         caller.hangup();
     }
 }
