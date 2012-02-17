@@ -22,6 +22,7 @@ public class AppointmentsFactory {
         reminder.setReminderSubjectId(appointment.getId());
         reminder.setStartDate(appointment.getScheduledDate().toLocalDate().minusDays(remindFrom).toDate());
         reminder.setEndDate(appointment.getScheduledDate().toLocalDate().minusDays(remindTill).toDate());
+        reminder.setRepeatCount(remindFrom - remindTill);
         reminder.setIntervalCount(1);
         reminder.setUnits(Reminder.intervalUnits.DAYS);
         return reminder;
