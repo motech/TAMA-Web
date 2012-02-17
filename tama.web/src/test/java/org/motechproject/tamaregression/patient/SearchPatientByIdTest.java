@@ -5,10 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
-import org.motechproject.tamafunctionalframework.page.ListPatientsPage;
-import org.motechproject.tamafunctionalframework.page.LoginPage;
-import org.motechproject.tamafunctionalframework.page.Page;
-import org.motechproject.tamafunctionalframework.page.ShowPatientPage;
+import org.motechproject.tamafunctionalframework.page.*;
 import org.motechproject.tamafunctionalframework.testdata.TestClinic;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
@@ -31,7 +28,7 @@ public class SearchPatientByIdTest extends BaseTest {
     @Test
     public void testSuccessfulPatientSearch() {
         TestPatient patient = TestPatient.withMandatory().patientId("xyz1234");
-        ShowPatientPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
+        ShowPatientSummaryPage showPatientPage = MyPageFactory.initElements(webDriver, LoginPage.class).
                 loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
                 goToPatientRegistrationPage().
                 registerNewPatientOnDailyPillReminder(patient).

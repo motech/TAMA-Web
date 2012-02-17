@@ -42,10 +42,10 @@ public abstract class Page extends FunctionalTestObject {
     @FindBy(how = How.LINK_TEXT, using = "Logout")
     private WebElement logoutLink;
 
-    public ShowPatientPage searchPatientBy(String id) {
+    public ShowPatientSummaryPage searchPatientBy(String id) {
         searchById(id);
-        this.waitForElementWithIdToLoad(ShowPatientPage.PATIENT_ID_ID);
-        return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
+        this.waitForElementWithIdToLoad(ShowPatientSummaryPage.PATIENT_ID_ID);
+        return MyPageFactory.initElements(webDriver, ShowPatientSummaryPage.class);
     }
 
     public Page unsuccessfulSearchPatientBy(String id, Class<? extends Page> returnPageClass, String idOnTheReturnPage) {

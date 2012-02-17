@@ -12,12 +12,16 @@
         <jsp:include page="../vital_statistics/show.jspx" />
     </util:panel>
 
-    <spring:url value="/patients/summary/${patientId}" var="patient_form_url"/>
+
+    <spring:url value="/patients/${patientId}" var="patient_form_url"/>
+    <spring:url value="/patients/summary/${patientId}" var="patient_summary_form_url"/>
     <spring:url value="/clinicvisits/list" var="show_visit_url">
         <spring:param name="form"/>
         <spring:param name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
     </spring:url>
     <a id="showPatient" href="${patient_form_url}">Show Patient Summary</a>
+    <c:out value=" | "/>
+    <a id="showPatientSummary" href="${patient_summary_form_url}">Show Patient Summary</a>
     <c:out value=" | "/>
     <a id="showPatient" href="${show_visit_url}">Show Visits</a>
     <br/>

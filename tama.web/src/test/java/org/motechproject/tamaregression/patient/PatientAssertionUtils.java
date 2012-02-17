@@ -2,6 +2,7 @@ package org.motechproject.tamaregression.patient;
 
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamafunctionalframework.page.ShowPatientPage;
+import org.motechproject.tamafunctionalframework.page.ShowPatientSummaryPage;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 
 import java.text.SimpleDateFormat;
@@ -32,5 +33,11 @@ public class PatientAssertionUtils {
         assertEquals(patient.patientId(), showPatientPage.getPatientId());
         assertEquals(patient.mobileNumber(), showPatientPage.getMobileNumber());
         assertEquals(new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()), showPatientPage.getDateOfBirth());
+    }
+
+    public static void assertBasicInformation(TestPatient patient, ShowPatientSummaryPage showPatientSummaryPage) {
+        assertEquals(patient.patientId(), showPatientSummaryPage.getPatientId());
+        assertEquals(patient.mobileNumber(), showPatientSummaryPage.getMobileNumber());
+        assertEquals(new SimpleDateFormat("dd/MM/yyyy").format(patient.dateOfBirth().toDate()), showPatientSummaryPage.getDateOfBirth());
     }
 }
