@@ -91,10 +91,6 @@ public class ClinicVisitService {
         return allClinicVisits.findByPatientId(patientId);
     }
 
-    public ClinicVisit getClinicVisit(String clinicVisitId) {
-        return allClinicVisits.get(clinicVisitId);
-    }
-
     public void confirmVisitDate(String clinicVisitId, DateTime confirmedVisitDate) {
         ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
         clinicVisit.setConfirmedVisitDate(confirmedVisitDate);

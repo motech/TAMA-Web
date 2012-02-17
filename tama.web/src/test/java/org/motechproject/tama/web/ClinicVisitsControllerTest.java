@@ -11,6 +11,7 @@ import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.factory.AppointmentsFactory;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -47,6 +48,8 @@ public class ClinicVisitsControllerTest {
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
+    private AllClinicVisits allClinicVisits;
+    @Mock
     private ClinicVisitService clinicVisitService;
 
     private Model uiModel;
@@ -56,7 +59,7 @@ public class ClinicVisitsControllerTest {
     public void setUp() {
         initMocks(this);
         uiModel = new ExtendedModelMap();
-        clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, clinicVisitService);
+        clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, clinicVisitService, allClinicVisits);
     }
 
     @Test
@@ -64,7 +67,7 @@ public class ClinicVisitsControllerTest {
         String patientId = "patientId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").build();
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
-        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
+        when(allClinicVisits.get(anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.get(anyString())).thenReturn(treatmentAdvice);
         String redirectURL = clinicVisitsController.createForm(patientId, uiModel, request);
 
@@ -75,7 +78,7 @@ public class ClinicVisitsControllerTest {
     public void shouldRedirectToCreateClinicVisits_WhenPatientDoesNotHaveATreatmentAdvice() {
         String patientId = "patientId";
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
-        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
+        when(allClinicVisits.get(anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = clinicVisitsController.createForm(patientId, uiModel, request);
 
@@ -89,7 +92,7 @@ public class ClinicVisitsControllerTest {
     public void shouldCreateNewClinicVisitsFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = "patientId";
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
-        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
+        when(allClinicVisits.get(anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = clinicVisitsController.createForm(patientId, uiModel, request);
 
@@ -101,7 +104,7 @@ public class ClinicVisitsControllerTest {
         final String patientId = "patientId";
         final String clinicVisitId = "clinicVisitId";
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withId(clinicVisitId).withPatientId(patientId).build();
-        when(clinicVisitService.getClinicVisit(anyString())).thenReturn(clinicVisit);
+        when(allClinicVisits.get(anyString())).thenReturn(clinicVisit);
 
         final String showUrl = clinicVisitsController.show(patientId, uiModel);
 

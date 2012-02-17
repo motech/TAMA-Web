@@ -5,14 +5,13 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.factory.AppointmentsFactory;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
@@ -25,7 +24,6 @@ import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 

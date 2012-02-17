@@ -3,6 +3,7 @@ package org.motechproject.tama.web;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -28,21 +29,23 @@ public class ClinicVisitsController extends BaseController {
     private TreatmentAdviceController treatmentAdviceController;
     private LabResultsController labResultsController;
     private VitalStatisticsController vitalStatisticsController;
+    private AllClinicVisits allClinicVisits;
     private AllTreatmentAdvices allTreatmentAdvices;
     private ClinicVisitService clinicVisitService;
 
     @Autowired
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, ClinicVisitService clinicVisitService) {
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, ClinicVisitService clinicVisitService, AllClinicVisits allClinicVisits) {
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.labResultsController = labResultsController;
         this.vitalStatisticsController = vitalStatisticsController;
         this.clinicVisitService = clinicVisitService;
+        this.allClinicVisits = allClinicVisits;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
-        ClinicVisit clinicVisit = clinicVisitService.getClinicVisit(clinicVisitId);
+        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
         String patientId = clinicVisit.getPatientId();
         final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
 
@@ -78,7 +81,7 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/{clinicVisitId}", method = RequestMethod.GET)
     public String show(@PathVariable("clinicVisitId") String clinicVisitId, Model uiModel) {
-        ClinicVisit clinicVisit = clinicVisitService.getClinicVisit(clinicVisitId);
+        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
         String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
         if (treatmentAdviceId == null) treatmentAdviceId = allTreatmentAdvices.currentTreatmentAdvice(clinicVisit.getPatientId()).getId();
         treatmentAdviceController.show(treatmentAdviceId, uiModel);
