@@ -10,7 +10,7 @@
     <import resource="classpath:applicationCommonContext.xml"/>
     <import resource="classpath:applicationPatientContext.xml"/>
     <import resource="classpath:applicationOutboxContext.xml"/>
-    <import resource="classpath:applicationAppointments.xml"/>
+    <import resource="classpath:applicationAppointmentsAPI.xml"/>
     <context:component-scan base-package="org.motechproject.tama.clinicvisits"/>
     <util:properties id="appointmentsTemplate" location="classpath:/appointmentsTemplate.properties"/>
     <context:annotation-config/>

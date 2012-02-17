@@ -20,11 +20,6 @@
             <version>${motech.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-appointments</artifactId>
-            <version>${motech.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.patient</artifactId>
             <version>0.5-SNAPSHOT</version>

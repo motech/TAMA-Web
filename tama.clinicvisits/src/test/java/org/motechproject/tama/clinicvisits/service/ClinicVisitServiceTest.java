@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -178,6 +177,5 @@ public class ClinicVisitServiceTest extends BaseUnitTest {
         assertEquals(expectedEndDate, reminder.getEndDate());
         assertEquals(1, reminder.getIntervalCount());
         assertEquals(Reminder.intervalUnits.DAYS, reminder.getUnits());
-        assertTrue(reminder.getEnabled());
     }
 }
