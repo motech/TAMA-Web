@@ -167,4 +167,10 @@ public class PatientBuilder {
         preferences.setReceiveOTCAdvice(receiveOTCAdvice);
         return this;
     }
+
+    public PatientBuilder withAppointmentReminderPreference(boolean receiveAppointmentReminders) {
+        PatientPreferences preferences = patient.getPatientPreferences();
+        preferences.setActivateAppointmentReminders(receiveAppointmentReminders);
+        return this;
+    }
 }

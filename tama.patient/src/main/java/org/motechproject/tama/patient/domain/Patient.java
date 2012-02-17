@@ -7,7 +7,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
-import org.motechproject.tama.common.domain.*;
+import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.util.DateUtil;
@@ -336,5 +336,9 @@ public class Patient extends CouchEntity {
             return false;
         boolean moreThan4WeeksAfterActivation = Days.daysBetween(getActivationDate(), DateUtil.now()).getDays() >= minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
         return moreThan4WeeksAfterActivation && patientPreferences.getCallPreference().isDaily();
+    }
+
+    public boolean shouldReceiveAppointmentReminder() {
+        return getPatientPreferences().getActivateAppointmentReminders();
     }
 }
