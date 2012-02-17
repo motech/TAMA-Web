@@ -1,0 +1,15 @@
+.adherenceChartTitle {
+    text-align: center;
+    font-weight: bold;
+}
+
+#dailyAdherenceOverTimeChartLegend th, #weeklyAdherenceOverTimeChartLegend th{
+    font-size: 15px;
+    text-align: center;
+}
+
+.legendColor {
+    height : 10px;
+    width: 10px;
+}
+

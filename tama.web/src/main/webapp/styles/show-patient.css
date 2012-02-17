@@ -5,27 +5,3 @@
 #_title_fc_org_motechproject_tama_domain_patient_non_HIV_Medical_History_id_pane {
     padding-bottom : 140px;
 }
-
-.adherenceChartTitle {
-    text-align: center;
-    font-weight: bold;
-}
-
-.bold{
-    font-weight: bold;
-}
-
-#dailyAdherenceOverTimeChartLegend th, #weeklyAdherenceOverTimeChartLegend th{
-    font-size: 15px;
-    text-align: center;
-}
-
-.legendColor {
-    height : 10px;
-    width: 10px;
-}
-
-.red { background-color: RED}
-.orange { background-color: ORANGE}
-.green { background-color: GREEN}
-.grey { background-color: #848476}

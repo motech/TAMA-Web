@@ -538,3 +538,10 @@ fieldset th {
     text-align: center;
     margin-bottom: 5px;
 }
+
+.red { background-color: RED}
+.orange { background-color: ORANGE}
+.green { background-color: GREEN}
+.grey { background-color: #848476}
+
+.bold{ font-weight: bold; }
