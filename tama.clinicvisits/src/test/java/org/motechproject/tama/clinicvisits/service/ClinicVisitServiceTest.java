@@ -6,6 +6,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.ReminderService;
 import org.motechproject.appointments.api.model.Appointment;
@@ -94,10 +95,9 @@ public class ClinicVisitServiceTest extends BaseUnitTest {
         ArgumentCaptor<Reminder> reminderCapture = ArgumentCaptor.forClass(Reminder.class);
 
         clinicVisitService.scheduleVisits(PATIENT_ID);
-        verify(reminderService, times(3)).addReminder(reminderCapture.capture());
-        verifyReminder(PATIENT_ID, 0, reminderCapture.getAllValues().get(0));
-        verifyReminder(PATIENT_ID, FIRST_SCHEDULE_WEEK, reminderCapture.getAllValues().get(1));
-        verifyReminder(PATIENT_ID, SECOND_SCHEDULE_WEEK, reminderCapture.getAllValues().get(2));
+        verify(reminderService, times(2)).addReminder(reminderCapture.capture());
+        verifyReminder(PATIENT_ID, FIRST_SCHEDULE_WEEK, reminderCapture.getAllValues().get(0));
+        verifyReminder(PATIENT_ID, SECOND_SCHEDULE_WEEK, reminderCapture.getAllValues().get(1));
     }
 
     @Test
@@ -121,10 +121,13 @@ public class ClinicVisitServiceTest extends BaseUnitTest {
     @Test
     public void shouldGetListOfClinicVisitsForPatient() throws Exception {
         final String patientId = "patientId";
-        final Appointment appointment = new Appointment() {{ setId("appointmentId"); }};
-        ClinicVisits visitsInDb = new ClinicVisits(){{
+        final Appointment appointment = new Appointment() {{
+            setId("appointmentId");
+        }};
+        ClinicVisits visitsInDb = new ClinicVisits() {{
             ClinicVisit clinicVisit = AppointmentsFactory.createClinicVisit(appointment, patientId, DateUtil.now(), 0);
-            add(clinicVisit);}};
+            add(clinicVisit);
+        }};
         when(allClinicVisits.findByPatientId(patientId)).thenReturn(visitsInDb);
         List<ClinicVisit> visits = clinicVisitService.getClinicVisits(patientId);
         assertEquals(visitsInDb, visits);
@@ -163,6 +166,17 @@ public class ClinicVisitServiceTest extends BaseUnitTest {
         assertEquals(true, clinicVisitArgumentCaptor.getValue().isMissed());
     }
 
+    @Test
+    public void shouldNotScheduleAppointmentRemindersForBaselineVisit() {
+        String scheduledVisits = appointmentsTemplate.getProperty(ClinicVisitService.APPOINTMENT_SCHEDULE);
+        int numberOfSchedulesVisits = scheduledVisits.split(",").length;
+        /*One base line visit*/
+        int totalScheduledVisits = numberOfSchedulesVisits + 1;
+
+        clinicVisitService.scheduleVisits("patientId");
+        verify(reminderService, times(totalScheduledVisits - 1)).addReminder(Matchers.<Reminder>any());
+    }
+
     private void verifyAppointment(String patientId, LocalDate activationDate, int offsetWeekNumber, Appointment appointment) {
         assertEquals(patientId, appointment.getExternalId());
         assertEquals(activationDate.plusWeeks(offsetWeekNumber), appointment.getDueDate().toLocalDate());
@@ -170,7 +184,7 @@ public class ClinicVisitServiceTest extends BaseUnitTest {
 
     private void verifyReminder(String patientId, int week, Reminder reminder) {
         assertEquals(patientId, reminder.getExternalId());
-        Assert.assertNotNull(reminder.getAppointmentId());
+        Assert.assertNotNull(reminder.getReminderSubjectId());
         Date expectedStartDate = DateUtil.newDate(today.plusWeeks(week).toDate()).minusDays(Integer.parseInt(REMIND_FROM_DAYS)).toDate();
         assertEquals(expectedStartDate, reminder.getStartDate());
         Date expectedEndDate = DateUtil.newDate(today.plusWeeks(week).toDate()).minusDays(Integer.parseInt(REMIND_TILL_DAYS)).toDate();

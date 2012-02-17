@@ -29,7 +29,7 @@ public class AppointmentReminderHandlerTest {
 
         Map<String, Object> eventParams = new HashMap<String, Object>();
         eventParams.put(EventKeys.EXTERNAL_ID_KEY, "patientId");
-        event = new MotechEvent(EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, eventParams);
+        event = new MotechEvent(EventKeys.REMINDER_EVENT_SUBJECT, eventParams);
 
         appointmentReminderHandler = new AppointmentReminderHandler(outboxService);
     }

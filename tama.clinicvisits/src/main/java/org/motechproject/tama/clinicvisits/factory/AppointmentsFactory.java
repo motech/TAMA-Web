@@ -19,7 +19,7 @@ public class AppointmentsFactory {
     public static Reminder createReminder(Appointment appointment, String patientId, Integer remindFrom, Integer remindTill) {
         Reminder reminder = new Reminder();
         reminder.setExternalId(patientId);
-        reminder.setAppointmentId(appointment.getId());
+        reminder.setReminderSubjectId(appointment.getId());
         reminder.setStartDate(appointment.getScheduledDate().toLocalDate().minusDays(remindFrom).toDate());
         reminder.setEndDate(appointment.getScheduledDate().toLocalDate().minusDays(remindTill).toDate());
         reminder.setIntervalCount(1);

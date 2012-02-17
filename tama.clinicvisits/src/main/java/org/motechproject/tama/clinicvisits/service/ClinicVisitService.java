@@ -45,13 +45,27 @@ public class ClinicVisitService {
     }
 
     void createExpectedVisit(String patientId, DateTime expectedVisitTime, int weeks) {
-        Appointment appointment = AppointmentsFactory.createAppointment(patientId, expectedVisitTime);
-        int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
-        int remindTill = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_TILL));
-        Reminder reminder = AppointmentsFactory.createReminder(appointment, patientId, remindFrom, remindTill);
+        Appointment appointment = createAppointment(patientId, expectedVisitTime);
+        createClinicVisit(patientId, expectedVisitTime, weeks, appointment);
+        createReminder(patientId, weeks, appointment);
+    }
+
+    private Appointment createAppointment(String patientId, DateTime expectedVisitTime) {
+        return AppointmentsFactory.createAppointment(patientId, expectedVisitTime);
+    }
+
+    private void createClinicVisit(String patientId, DateTime expectedVisitTime, int weeks, Appointment appointment) {
         ClinicVisit clinicVisit = AppointmentsFactory.createClinicVisit(appointment, patientId, expectedVisitTime, weeks);
         allClinicVisits.add(clinicVisit);
-        reminderService.addReminder(reminder);
+    }
+
+    private void createReminder(String patientId, int weeks, Appointment appointment) {
+        if (weeks != 0) {
+            int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
+            int remindTill = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_TILL));
+            Reminder reminder = AppointmentsFactory.createReminder(appointment, patientId, remindFrom, remindTill);
+            reminderService.addReminder(reminder);
+        }
     }
 
     public String updateVisit(String visitId, DateTime visitDate, String patientId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
