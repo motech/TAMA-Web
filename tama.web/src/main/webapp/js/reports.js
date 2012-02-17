@@ -3,10 +3,14 @@ dojo.require("dojo.data.ItemFileWriteStore");
 
 
 var DailyPillReminderReportWidget = function(reportName){
-    this.targetDivId = reportName + "Placeholder";
-    this.placeholderElement = dojo.byId(this.targetDivId);
+    this.targetElement = dojo.byId(reportName);
+    this.gridElement = dojo.byId(reportName + "Placeholder");
+    this.excelLinkElement = dojo.byId(reportName + "ExcelLink");
+    this.prepareDownloadLink();
 
-    this.defaultDisplay = this.placeholderElement.style.display;
+    this.defaultDisplay = this.targetElement.style.display;
+    this.hide();
+
     this.noticeBanner = new Banner(reportName + "Notice");
     this.grid = new dojox.grid.DataGrid({id: reportName, structure: this.columnDetails(), autoHeight: 20, autoWidth: true}, document.createElement('div'));
 }
@@ -15,17 +19,18 @@ DailyPillReminderReportWidget.prototype = {
     fetchData : function(startDate, endDate, onLoadHandler, onCompleteHandler, onErrorHandler){
         var self = this;
         dojo.xhrGet({
-            url: "reports/dailyPillReminderReport",
-            content: {startDate: new DateFormatter(startDate).slashFormat(), endDate: new DateFormatter(endDate).slashFormat()},
+            url: "reports/dailyPillReminderReport.json",
+            content: {startDate: startDate, endDate: endDate},
             handleAs: "json",
             load: function(data, ioArgs) { if(typeof(onLoadHandler) == "function") onLoadHandler(data); },
             error: function(err, ioArgs) { self.noticeBanner.setMessage(err); },
-            handle: function(){ if(typeof(onCompleteHandler) == "function") onCompleteHandler(); }
+            handle: function() { if(typeof(onCompleteHandler) == "function") onCompleteHandler(); }
         });
     },
 
     create: function(startDate, endDate, onCreateHandler){
         this.noticeBanner.hide()
+        this.setDates(startDate, endDate);
         var self = this;
         var onLoadHandler = function(JSONData){
             if (JSONData.logs.length == 0 ) {
@@ -37,7 +42,7 @@ DailyPillReminderReportWidget.prototype = {
             self.render(JSONData);
         };
 
-        this.fetchData(startDate, endDate, onLoadHandler, onCreateHandler);
+        this.fetchData(this.startDate, this.endDate, onLoadHandler, onCreateHandler);
     },
 
     render: function(JSONData){
@@ -46,7 +51,7 @@ DailyPillReminderReportWidget.prototype = {
         data.items = this.prepareLogs(JSONData.logs);
 
         this.grid.setStore(new dojo.data.ItemFileReadStore({'data': data}));
-        dojo.byId(this.targetDivId).appendChild(this.grid.domNode);
+        this.gridElement.appendChild(this.grid.domNode);
         this.grid.startup();
     },
 
@@ -58,12 +63,24 @@ DailyPillReminderReportWidget.prototype = {
         });
     },
 
+    prepareDownloadLink: function(){
+        var self = this;
+        dojo.connect(this.excelLinkElement, "click", function(){
+            document.location = "reports/dailyPillReminderReport.xls?startDate=" + self.startDate + "&endDate=" + self.endDate;
+        })
+    },
+
     hide: function(){
-        this.placeholderElement.style.display = "none";
+        this.targetElement.style.display = "none";
     },
 
     show: function(){
-        this.placeholderElement.style.display = this.defaultDisplay;
+        this.targetElement.style.display = this.defaultDisplay;
+    },
+
+    setDates: function(startDate, endDate){
+        this.startDate = new DateFormatter(startDate).slashFormat();
+        this.endDate = new DateFormatter(endDate).slashFormat();
     },
 
     columnDetails : function(){

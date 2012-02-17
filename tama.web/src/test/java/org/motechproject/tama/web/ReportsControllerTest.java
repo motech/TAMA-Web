@@ -16,11 +16,13 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -70,7 +72,7 @@ public class ReportsControllerTest {
     }
 
     @Test
-    public void shouldReturnDailyPillReminderReport() throws JSONException {
+    public void shouldReturnDailyPillReminderJsonReport() throws JSONException {
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
 
@@ -79,5 +81,17 @@ public class ReportsControllerTest {
         when(dailyPillReminderReportService.JSONReport("patientId", day1, day2)).thenReturn(jsonReport);
 
         assertEquals(jsonReport.toString(), reportsController.dailyPillReminderReport("patientId", day1, day2));
+    }
+
+    @Test
+    public void shouldReturnDailyPillReminderExcelReport() throws JSONException {
+        LocalDate day1 = new LocalDate(2011, 1, 1);
+        LocalDate day2 = new LocalDate(2011, 1, 3);
+
+        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
+        reportsController.buildDailyPillReminderExcelReport("patientId", day1, day2, httpServletResponse);
+        
+        verify(dailyPillReminderReportService).create("patientId", day1, day2);
+        
     }
 }

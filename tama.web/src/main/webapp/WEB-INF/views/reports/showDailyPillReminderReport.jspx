@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="${grid_css}"></link>
     <link rel="stylesheet" type="text/css" media="screen" href="${reports_css}"></link>
 
-    <div id="dailyPillReminderReportForm" action="reports/dailyPillReminderReport">
+    <div>
     <util:panel id="dailyPillReminderReport" title="Daily Pill Reminder Report" openPane="true">
         <div>
             <label for="startDate"> Start Date</label>
@@ -39,10 +39,11 @@
             <span id="getDailyPillReminderReportSpinner"><img src="${spinner_gif}"/></span>
         </div>
 
-        <div>
-            <div id="dailyPillReminderReportGridNotice"></div>
+        <div id="dailyPillReminderReportGridNotice"><!-- required or JSP eats me --></div>
+        <div id="dailyPillReminderReportGrid">
+            <a id="dailyPillReminderReportGridExcelLink" href="#">Download as Excel</a>
+            <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
         </div>
-        <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
 
     </util:panel>
     </div>

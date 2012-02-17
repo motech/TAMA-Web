@@ -220,6 +220,11 @@
             <artifactId>motech-job-handler-invoker</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.7</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
