@@ -22,17 +22,17 @@ public class AllClinicVisits {
     }
 
     public ClinicVisit get(String visitId) {
-        return get(allVisits.getVisit(visitId));
+        return get(allVisits.get(visitId));
     }
 
     public void add(ClinicVisit clinicVisit) {
-        allAppointments.addAppointment(clinicVisit.getAppointment());
-        allVisits.addVisit(clinicVisit.getVisit());
+        allAppointments.add(clinicVisit.getAppointment());
+        allVisits.add(clinicVisit.getVisit());
     }
 
     public void update(ClinicVisit clinicVisit) {
-        allAppointments.updateAppointment(clinicVisit.getAppointment());
-        allVisits.updateVisit(clinicVisit.getVisit());
+        allAppointments.update(clinicVisit.getAppointment());
+        allVisits.update(clinicVisit.getVisit());
     }
 
     public ClinicVisits findByPatientId(String patientId) {
@@ -48,7 +48,7 @@ public class AllClinicVisits {
     }
 
     private ClinicVisit get(Visit visit) {
-        Appointment appointment = allAppointments.getAppointment(visit.getAppointmentId());
+        Appointment appointment = allAppointments.get(visit.getAppointmentId());
         return new ClinicVisit(visit, appointment);
     }
 }

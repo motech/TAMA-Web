@@ -13,7 +13,6 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -43,7 +42,7 @@ public class AllClinicVisitsTest {
         when(allVisits.findByExternalId(patientId)).thenReturn(new ArrayList<Visit>() {{
             add(visitForPatient);
         }});
-        when(allAppointments.getAppointment(appointmentId)).thenReturn(appointment);
+        when(allAppointments.get(appointmentId)).thenReturn(appointment);
 
         ClinicVisits clinicVisits = allClinicVisits.findByPatientId(patientId);
         assertEquals(1, clinicVisits.size());
@@ -59,7 +58,7 @@ public class AllClinicVisitsTest {
         when(allVisits.findByExternalId(patientId)).thenReturn(new ArrayList<Visit>() {{
             add(visitForPatient);
         }});
-        when(allAppointments.getAppointment(appointmentId)).thenReturn(appointment);
+        when(allAppointments.get(appointmentId)).thenReturn(appointment);
 
         ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientId);
         assertEquals(ClinicVisit.TypeOfVisit.Baseline, clinicVisit.getTypeOfVisit());
@@ -73,13 +72,13 @@ public class AllClinicVisitsTest {
         Visit visit = new Visit() {{setAppointmentId(appointmentId); }};
         ClinicVisit clinicVisit = new ClinicVisit(visit, appointment);
 
-        when(allVisits.getVisit("visitId")).thenReturn(visit);
-        when(allAppointments.getAppointment(appointmentId)).thenReturn(appointment);
+        when(allVisits.get("visitId")).thenReturn(visit);
+        when(allAppointments.get(appointmentId)).thenReturn(appointment);
 
         allClinicVisits.add(clinicVisit);
 
-        verify(allVisits).addVisit(visit);
-        verify(allAppointments).addAppointment(appointment);
+        verify(allVisits).add(visit);
+        verify(allAppointments).add(appointment);
     }
 
     @Test
@@ -90,12 +89,12 @@ public class AllClinicVisitsTest {
         Visit visit = new Visit() {{setAppointmentId(appointmentId); }};
         ClinicVisit clinicVisit = new ClinicVisit(visit, appointment);
 
-        when(allVisits.getVisit("visitId")).thenReturn(visit);
-        when(allAppointments.getAppointment(appointmentId)).thenReturn(appointment);
+        when(allVisits.get("visitId")).thenReturn(visit);
+        when(allAppointments.get(appointmentId)).thenReturn(appointment);
 
         allClinicVisits.update(clinicVisit);
 
-        verify(allVisits).updateVisit(visit);
-        verify(allAppointments).updateAppointment(appointment);
+        verify(allVisits).update(visit);
+        verify(allAppointments).update(appointment);
     }
 }
