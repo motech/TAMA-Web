@@ -16,13 +16,9 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.refdata.repository.AllGenders;
-import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
-import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
-import org.motechproject.tama.web.model.DoseStatus;
-import org.motechproject.tama.web.model.IncompletePatientDataWarning;
-import org.motechproject.tama.web.model.ListPatientViewModel;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.*;
+import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
@@ -40,6 +36,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -52,11 +49,13 @@ import java.util.List;
 public class PatientController extends BaseController {
     public static final String CREATE_VIEW = "patients/create";
     public static final String SHOW_VIEW = "patients/show";
+    public static final String SUMMARY_VIEW = "patients/summary";
     public static final String LIST_VIEW = "patients/list";
     public static final String UPDATE_VIEW = "patients/update";
+    private static final String REVIVE_VIEW = "patients/revive";
     public static final String REDIRECT_TO_LIST_VIEW = "redirect:/patients";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/patients/";
-    private static final String REVIVE_VIEW = "patients/revive";
+    public static final String REDIRECT_TO_SUMMARY_VIEW = "redirect:/patients/summary/";
 
     public static String DEACTIVATION_STATUSES = "deactivation_statuses";
     public static final String PATIENT = "patient";
@@ -70,6 +69,7 @@ public class PatientController extends BaseController {
     private static final String PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE = "Sorry, the entered combination of phone number and TAMA-PIN is already in use.";
     public static final String PATIENT_INSERT_ERROR_KEY = "patientInsertError";
     private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
+
     private AllPatients allPatients;
     private AllClinics allClinics;
     private AllGenders allGenders;
@@ -79,6 +79,7 @@ public class PatientController extends BaseController {
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllVitalStatistics allVitalStatistics;
     private AllLabResults allLabResults;
+    private AllRegimens allRegimens;
     private PatientService patientService;
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
     private ClinicVisitService clinicVisitService;
@@ -98,6 +99,7 @@ public class PatientController extends BaseController {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allVitalStatistics = allVitalStatistics;
         this.allLabResults = allLabResults;
+        this.allRegimens = allRegimens;
         this.patientService = patientService;
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
         this.resumeFourDayRecallService = resumeFourDayRecallService;
@@ -178,6 +180,27 @@ public class PatientController extends BaseController {
         return SHOW_VIEW;
     }
 
+    @RequestMapping(value = "/summary/{id}", method = RequestMethod.GET)
+    public ModelAndView showSummary(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
+        addDateTimeFormat(uiModel);
+        Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
+        if (patient == null) return new ModelAndView("authorizationFailure", "", null);
+        TreatmentAdvice firstTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(id);
+        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(id);
+        Regimen currentRegimen = null;
+        if(currentTreatmentAdvice != null){
+            currentRegimen = allRegimens.get(currentTreatmentAdvice.getRegimenId());
+        }
+        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        //Do not change name of form bean - currently used by graphs to get data.
+        //TODO : Change <graph>.jspx partials to accept patient form bean name as parameter/variable.
+        return new ModelAndView(SUMMARY_VIEW, "patient", new PatientSummary(patient,
+                                                                                         currentTreatmentAdvice,
+                                                                                         firstTreatmentAdvice == null ? null : firstTreatmentAdvice.getStartDate(),
+                                                                                         currentRegimen == null ? null : currentRegimen.getDisplayName(),
+                                                                                         warning));
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
         String clinicId = loggedInClinic(request);
@@ -239,12 +262,11 @@ public class PatientController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/findByPatientId")
     public String findByPatientId(@RequestParam String patientId, Model uiModel, HttpServletRequest request) {
         Patient patient = allPatients.findByPatientIdAndClinicId(patientId, loggedInClinic(request));
-
         if (patient == null) {
             uiModel.addAttribute(PATIENT_ID, patientId);
             return redirectToListPatientsPage(request);
         }
-        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
+        return REDIRECT_TO_SUMMARY_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
     private void decorateViewWithUniqueConstraintError(Patient patient, BindingResult bindingResult, Model uiModel, RuntimeException e) {

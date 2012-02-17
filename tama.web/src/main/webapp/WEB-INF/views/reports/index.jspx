@@ -7,6 +7,7 @@
      version="2.0">
 
     <spring:url value="/patients/${report.patientDocId}" var="patient_form_url"/>
+    <spring:url value="/patients/summary/${report.patientDocId}" var="patient_summary"><!-- required--> </spring:url>
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -18,5 +19,6 @@
         <jsp:include page="showDailyPillReminderReport.jspx" />
 
         <div><a id="patient_details" href="${patient_form_url}">Back to Patient Details</a></div>
+        <div style="margin-top: 10px"><a id="patient_summary" href="${patient_summary}">Back to Patient Summary.</a></div>
     </util:panel>
 </div>

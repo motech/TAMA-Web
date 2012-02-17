@@ -49,7 +49,7 @@ public class IncompletePatientDataWarning {
     public String toString(){
         findAllRequiredInfo();
         if(patient.getStatus().isInactive())
-            return null;
+            return "Patient has not been Activated";
         ArrayList<String> pendingPatientDetailsArray = new ArrayList<String>();
 
         for(RequiredPatientDetail detail : this.requiredPatientDetails){

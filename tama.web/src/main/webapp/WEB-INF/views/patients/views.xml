@@ -8,6 +8,9 @@
     <definition extends="default" name="patients/show">
         <put-attribute name="body" value="/WEB-INF/views/patients/show.jspx"/>
     </definition>
+    <definition extends="default" name="patients/summary">
+        <put-attribute name="body" value="/WEB-INF/views/patients/summary.jspx"/>
+    </definition>
     <definition extends="default" name="patients/create">
         <put-attribute name="body" value="/WEB-INF/views/patients/create.jspx"/>
     </definition>

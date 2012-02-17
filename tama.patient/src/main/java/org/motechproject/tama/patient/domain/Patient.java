@@ -259,6 +259,7 @@ public class Patient extends CouchEntity {
         return PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT + this.getMobilePhoneNumber() + "/" + this.getPatientPreferences().getPasscode();
     }
 
+    //Sets on patient creation.
     public LocalDate getRegistrationDate() {
         if (registrationDateAsDate == null) {
             this.registrationDateAsDate = toDate(DateUtil.today());

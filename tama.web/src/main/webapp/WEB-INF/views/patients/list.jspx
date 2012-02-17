@@ -10,7 +10,7 @@
 
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
 
-        <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients"
+        <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients/summary"
                      z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE=" customAction="true"
                      customActionPath="patients/activate" customActionLabel="Activate"
                      customActionCondition="item.activateEnabled"

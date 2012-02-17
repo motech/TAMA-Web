@@ -24,10 +24,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Gender;
-import org.motechproject.tama.refdata.repository.AllGenders;
-import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
-import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
+import org.motechproject.tama.refdata.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.DoseStatus;
@@ -38,6 +35,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -83,6 +81,8 @@ public class PatientControllerTest {
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
     private AllLabResults allLabResults;
+    @Mock
+    private AllRegimens allRegimens;
     @Mock
     private PatientService patientService;
     @Mock
@@ -190,10 +190,28 @@ public class PatientControllerTest {
         when(user.getClinicId()).thenReturn(CLINIC_ID);
         when(request.getSession()).thenReturn(session);
 
-
         String nextPage = controller.findByPatientId(PATIENT_ID, uiModel, request);
 
-        assertEquals("redirect:/patients/couchDbId", nextPage);
+        assertEquals("redirect:/patients/summary/couchDbId", nextPage);
+    }
+
+    @Test
+    public void shouldGoToPatientSummaryPage_WhenPatientViewedFromListPatientPage(){
+        Patient patient = mock(Patient.class);
+
+        when(request.getSession()).thenReturn(session);
+        when(user.getClinicId()).thenReturn(CLINIC_ID);
+        when(patient.getId()).thenReturn(PATIENT_ID);
+        when(patient.getStatus()).thenReturn(Status.Inactive);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
+        when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
+        when(allTreatmentAdvices.earliestTreatmentAdvice(PATIENT_ID)).thenReturn(null);
+        when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
+        when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(patient);
+
+        ModelAndView modelAndView = controller.showSummary(PATIENT_ID, uiModel, request);
+
+        assertEquals("patients/summary", modelAndView.getViewName());
     }
 
     @Test

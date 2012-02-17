@@ -10,7 +10,6 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -34,14 +33,14 @@ public class IncompletePatientDataWarningTest {
     }
 
     @Test
-    public void shouldBeNullIfPatientIsInActive() {
+    public void shouldShowWarningIfPatientIsInActive() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
         when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
 
         patient.setStatus(Status.Inactive);
 
-        assertNull(incompletePatientDataWarning.toString());
+        assertEquals("Patient has not been Activated", incompletePatientDataWarning.toString());
     }
 
     @Test
