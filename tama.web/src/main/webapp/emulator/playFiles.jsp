@@ -43,27 +43,44 @@
                 var result, decode = options.raw ? function (s) { return s; } : decodeURIComponent;
                 return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
             };
+
+            function playfile(id) {
+                if (!$('#mute').is(":checked"))
+                    document.getElementById(id).play();
+            }
+
+            function playAll(musicPlayer) {
+                var audioslist = $('.audio');
+                for (var i = 0; i<audioslist.length; i++){
+                    var ad = audioslist[i].id;
+                    musicPlayer.play(document.getElementById(ad));
+                }
+            }
         </script>
 
         <script src="js/recording.js"></script>
+        <script src="js/MusicPlayer.js"></script>
         <script type="text/javascript">
             $(document).ready(function(){
                 window.cacheControl = new window.CacheControl();
                 window.recording = new Recording(window.cacheControl);
+                window.musicPlayer = new MusicPlayer();
                 var audioDiv = $('#audios');
                 var lang = $('#languages');
                 lang.click(function(event){
                    var fileNames = recording.get(lang.val());
                    var html = "<div>";
+                   musicPlayer.reset();
                    for(var i in fileNames){
                        var filename = fileNames[i];
-                       var text = filename;//.replace(/.wav/,"");
-                       html += '<audio src="' + filename + '" autostart=false width=1 height=1 id="'+filename+'" enablejavascript="true" class="audio"/>' +
-                       '<button id="' + filename+ '" onclick="play(\'' +filename+ '\');">'+text+' </button>';
+                       var text = filename;
+                       html += '<audio src="' + filename + '" autostart=false width=1 height=1 id="'+filename+'" enablejavascript="true" class="audio"/>';
+                       html += '<button id="' + filename+ '" onclick="window.musicPlayer.fetch(\'' +filename+ '\');">&raquo;'+text+' </button>';
                        html += '<source src="' + filename+ '" type="audio/wave" />';
                    }
                    html += "</div>"
                    audioDiv.html(html);
+                   playAll(musicPlayer);
                 });
             });
         </script>
