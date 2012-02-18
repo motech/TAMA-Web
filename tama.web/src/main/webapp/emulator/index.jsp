@@ -52,9 +52,12 @@
     </script>
     <script src="<%=application.getContextPath() %>/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
     <script type="text/javascript">
+
           dojo.require("dijit.dijit"); // loads the optimized dijit layer
           dojo.require("dijit.form.DateTextBox");
           dojo.require("dijit.form.TimeTextBox");
+
+
 
           dojo.addOnLoad(function() {
                   new dijit.form.TimeTextBox({
@@ -111,6 +114,13 @@
     </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script src="js/recording.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        window.cacheControl = new CacheControl();
+        window.recording = new Recording(window.cacheControl);
+    });
+</script>
 <script type="text/javascript">
 /**
 * jQuery Cookie plugin
@@ -235,6 +245,7 @@ function call(path) {
 				collectdtmf = $(data).find('collectdtmf').attr('l');
 				$(data).find('playaudio').each(function() {
 					var filename = $(this).text();//.replace(/.*\//, "");
+					window.recording.record(filename);
 					var text = filename;//.replace(/.wav/,"");
 					html += '<audio src="' + filename + '" autostart=false width=1 height=1 id="'+filename+'" enablejavascript="true" class="audio"/>' +
 					'<button id="' + filename+ '" onclick="play(\'' +filename+ '\');">&raquo;'+text+' </button>';
@@ -344,7 +355,8 @@ function play(i){
 <br/>
 <button onclick="newCall();">New Call</button>
 <button onclick="login();">Login</button>
- <button onclick="endCall();">End Call</button> 
+<button onclick="endCall();">End Call</button>
+<a href="playFiles.jsp">Play Files</a>
 <table><tr><td>
  <table>
  <tr><td><button onclick="send(1);">1</button> </td><td><button onclick="send(2);">2</button></td><td><button onclick="send(3);">3</button></td></tr>
