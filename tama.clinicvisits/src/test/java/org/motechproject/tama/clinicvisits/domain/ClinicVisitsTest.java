@@ -1,9 +1,12 @@
 package org.motechproject.tama.clinicvisits.domain;
 
 import org.junit.Test;
+import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class ClinicVisitsTest {
 
@@ -19,5 +22,11 @@ public class ClinicVisitsTest {
         clinicVisits.add(unscheduledClinicVisit);
 
         assertEquals(baseLineClinicVisit, clinicVisits.getBaselineVisit());
+    }
+
+    @Test
+    public void shouldReturnEmptyLabResultsWhenVisitHasNoLabResults() throws Exception {
+        ClinicVisit visit = new ClinicVisit(new Visit(), new Appointment());
+        assertNotNull(visit.getLabResultIds());
     }
 }
