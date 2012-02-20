@@ -16,7 +16,7 @@ public class PillRegimenResponseBuilder {
     private String id;
 
     public PillRegimenResponse build() {
-        return new PillRegimenResponse(id, "patientId", 2, 5, dosages);
+        return new PillRegimenResponse(id, "patientId", 2, 5, 5, dosages);
     }
 
     public static PillRegimenResponseBuilder startRecording() {

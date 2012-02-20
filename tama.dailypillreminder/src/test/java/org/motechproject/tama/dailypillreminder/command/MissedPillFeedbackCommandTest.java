@@ -52,7 +52,7 @@ public class MissedPillFeedbackCommandTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         dosageResponses.add(new DosageResponse("d1", new Time(9, 5), new LocalDate(2011, 7, 1), new LocalDate(2012, 7, 1), DateUtil.today(), null));
         dosageResponses.add(new DosageResponse("d2", new Time(15, 5), new LocalDate(2011, 7, 5), new LocalDate(2012, 7, 5), DateUtil.today(), null));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, 0, dosageResponses);
 
         LocalDate callDate = DateUtil.newDate(2011, 8, 4);
         DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(new PillRegimen(pillRegimenResponse)).callStartTime(DateUtil.newDateTime(callDate, 12, 0, 0)).patientDocumentId("p1");
@@ -68,7 +68,7 @@ public class MissedPillFeedbackCommandTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         dosageResponses.add(new DosageResponse("d1", new Time(9, 5), new LocalDate(2011, 7, 1), new LocalDate(2012, 7, 1), DateUtil.today(), null));
         dosageResponses.add(new DosageResponse("d2", new Time(15, 5), new LocalDate(2011, 7, 5), new LocalDate(2012, 7, 5), DateUtil.today(), null));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, 0, dosageResponses);
 
         LocalDate callDate = DateUtil.newDate(2011, 8, 4);
         DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(DateUtil.newDateTime(callDate, 12, 0, 0)).patientDocumentId("p1");
@@ -89,7 +89,7 @@ public class MissedPillFeedbackCommandTest {
                 new DosageResponse("d1", new Time(9, 5), dosage1StartDate, dosage1EndDate, DateUtil.today(), null),
                 new DosageResponse("d2", new Time(15, 5), dosage2StartDate, dosage2EndDate, DateUtil.today(), null)
         );
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, 0, dosageResponses);
 
         DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientDocumentId("p1");
 
@@ -109,7 +109,7 @@ public class MissedPillFeedbackCommandTest {
                 new DosageResponse("d1", new Time(9, 5), dosage1StartDate, dosage1EndDate, DateUtil.today(), null),
                 new DosageResponse("d2", new Time(15, 5), dosage2StartDate, dosage2EndDate, DateUtil.today(), null)
         );
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, 0, dosageResponses);
 
         DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2012, 8, 4, 12, 0, 0, 0)).patientDocumentId("p1");
 
@@ -124,7 +124,7 @@ public class MissedPillFeedbackCommandTest {
         ArrayList<DosageResponse> dosageResponses = new ArrayList<DosageResponse>();
         dosageResponses.add(new DosageResponse("d1", new Time(9, 5), new LocalDate(2011, 7, 1), new LocalDate(2012, 7, 1), DateUtil.today(), null));
         dosageResponses.add(new DosageResponse("d2", new Time(15, 5), new LocalDate(2011, 7, 5), new LocalDate(2012, 7, 5), DateUtil.today(), null));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "p1", 0, 0, 0, dosageResponses);
 
         DailyPillReminderContextForTest context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2011, 8, 4, 12, 0)).patientDocumentId("p1");
 

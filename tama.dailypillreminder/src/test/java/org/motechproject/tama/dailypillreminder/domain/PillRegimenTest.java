@@ -108,7 +108,7 @@ public class PillRegimenTest extends BaseUnitTest {
         LocalDate lastTakenDate = null;
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today(), null, lastTakenDate, new ArrayList<MedicineResponse>()));
 
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertNull(pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()));
@@ -122,7 +122,7 @@ public class PillRegimenTest extends BaseUnitTest {
 
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, startDate, new ArrayList<MedicineResponse>()));
 
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
         assertFalse(pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).isTaken());
     }
@@ -135,7 +135,7 @@ public class PillRegimenTest extends BaseUnitTest {
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today().minusDays(3), null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today().minusDays(3), null, null, new ArrayList<MedicineResponse>()));
 
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertFalse(pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).isTaken());
@@ -152,7 +152,7 @@ public class PillRegimenTest extends BaseUnitTest {
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), DateUtil.today().minusDays(3), null, previousDosageLastTakenDate, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), DateUtil.today().minusDays(3), null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
         assertTrue(pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).isTaken());
     }
@@ -168,7 +168,7 @@ public class PillRegimenTest extends BaseUnitTest {
         dosages.add(new DosageResponse("previousDosageId", new Time(22, 5), startDate, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, currentDosageLastTakenDate, new ArrayList<MedicineResponse>()));
 
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertNotNull(pillRegimen.getDoseAt(ivrContext.callStartTime()));
@@ -186,7 +186,7 @@ public class PillRegimenTest extends BaseUnitTest {
         DateTime testCallTime = DateUtil.now().withHourOfDay(10).minusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
         ivrContext.callStartTime(testCallTime);
         ivrContext.callDirection(CallDirection.Inbound);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertEquals(dosages.get(0).getDosageHour(), pillRegimen.getDoseAt(ivrContext.callStartTime()).getDosageHour());
@@ -201,7 +201,7 @@ public class PillRegimenTest extends BaseUnitTest {
         DateTime testCallTime = DateUtil.now().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(0);
         ivrContext.callStartTime(testCallTime);
         ivrContext.callDirection(CallDirection.Inbound);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
         assertEquals(DateUtil.today().plusDays(1), pillRegimen.getDoseAt(ivrContext.callStartTime()).getDate());
     }
@@ -216,7 +216,7 @@ public class PillRegimenTest extends BaseUnitTest {
         DateTime testCallTime = DateUtil.now().withHourOfDay(10).minusHours(2).withMinuteOfHour(6).withSecondOfMinute(0);
         ivrContext.callStartTime(testCallTime);
         ivrContext.callDirection(CallDirection.Inbound);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertTrue(pillRegimen.isWithinPillWindow(ivrContext.callStartTime()));
@@ -232,7 +232,7 @@ public class PillRegimenTest extends BaseUnitTest {
         DateTime testCallTime = DateUtil.now().withHourOfDay(10).plusHours(2).withMinuteOfHour(4).withSecondOfMinute(0);
         ivrContext.callStartTime(testCallTime);
         ivrContext.callDirection(CallDirection.Inbound);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertTrue(pillRegimen.isWithinPillWindow(ivrContext.callStartTime()));
@@ -248,7 +248,7 @@ public class PillRegimenTest extends BaseUnitTest {
         DateTime testCallTime = DateUtil.now().withHourOfDay(10).plusHours(2).withMinuteOfHour(6).withSecondOfMinute(0);
         ivrContext.callStartTime(testCallTime);
         ivrContext.callDirection(CallDirection.Inbound);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertFalse(pillRegimen.isWithinPillWindow(ivrContext.callStartTime()));
@@ -262,7 +262,7 @@ public class PillRegimenTest extends BaseUnitTest {
 
         ivrContext.callStartTime(testCallTime);
         ivrContext.callDirection(CallDirection.Inbound);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
 
         assertEquals(DateUtil.today(), new LocalDate(pillRegimen.getNextDoseAt(ivrContext.callStartTime()).getDoseTime()));
@@ -271,7 +271,7 @@ public class PillRegimenTest extends BaseUnitTest {
     @Test
     public void previousDosageIsCapturedWhenDoseStarts() throws Exception {
         List<DosageResponse> dosages = Arrays.asList((new DosageResponse("currentDosageId", new Time(19, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>())));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         ivrContext.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Inbound).callStartTime(DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11), 15, 40, 0));
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
         assertNull(pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()));
@@ -280,7 +280,7 @@ public class PillRegimenTest extends BaseUnitTest {
     @Test
     public void previousDosageIsCaptured() throws Exception {
         List<DosageResponse> dosages = Arrays.asList((new DosageResponse("currentDosageId", new Time(19, 0), new LocalDate(2010, 10, 9), null, null, new ArrayList<MedicineResponse>())));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         ivrContext.pillRegimen(pillRegimenResponse).callDirection(CallDirection.Inbound).callStartTime(DateUtil.newDateTime(DateUtil.newDate(2010, 10, 11), 15, 40, 0));
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
         assertFalse(pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).isTaken());
@@ -289,7 +289,7 @@ public class PillRegimenTest extends BaseUnitTest {
     @Test
     public void shouldReturnTodaysDoseWhenPatientIsOnSingleDosage_AndTimeSpecifiedIsAfterPillTime() {
         final DateTime dosage1StartDate = new DateTime(2011, 10, 2, 10, 30, 0, 0);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", 1, 0, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", 1, 0, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
         }});
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -305,7 +305,7 @@ public class PillRegimenTest extends BaseUnitTest {
         final DateTime dosage1StartDate = new DateTime(2011, 10, 2, 10, 30, 0, 0);
         final int reminderRepeatWindowInHours = 1;
         final int reminderRepeatIntervalInMinutes = 0;
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
         }});
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -322,7 +322,7 @@ public class PillRegimenTest extends BaseUnitTest {
         final DateTime dosage1StartDate = new DateTime(2011, 10, 2, 10, 30, 0, 0);
         final int reminderRepeatWindowInHours = 1;
         final int reminderRepeatIntervalInMinutes = 0;
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
         }});
         PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -339,7 +339,7 @@ public class PillRegimenTest extends BaseUnitTest {
         final DateTime dosage2StartDate = new DateTime(2011, 10, 2, 13, 30, 0, 0);
         final int reminderRepeatWindowInHours = 1;
         final int reminderRepeatIntervalInMinutes = 0;
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
             add(new DosageResponse("dosage2_id", new Time(dosage2StartDate.getHourOfDay(), dosage2StartDate.getMinuteOfHour()), dosage2StartDate.toLocalDate(), null, null, null));
         }});
@@ -357,7 +357,7 @@ public class PillRegimenTest extends BaseUnitTest {
         final DateTime dosage2StartDate = new DateTime(2011, 10, 2, 13, 30, 0, 0);
         final int reminderRepeatWindowInHours = 1;
         final int reminderRepeatIntervalInMinutes = 0;
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage2_id", new Time(dosage2StartDate.getHourOfDay(), dosage2StartDate.getMinuteOfHour()), dosage2StartDate.toLocalDate(), null, null, null));
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
         }});
@@ -375,7 +375,7 @@ public class PillRegimenTest extends BaseUnitTest {
         final DateTime dosage2StartDate = new DateTime(2011, 10, 2, 13, 30, 0, 0);
         final int reminderRepeatWindowInHours = 1;
         final int reminderRepeatIntervalInMinutes = 0;
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage2_id", new Time(dosage2StartDate.getHourOfDay(), dosage2StartDate.getMinuteOfHour()), dosage2StartDate.toLocalDate(), null, null, null));
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
         }});
@@ -393,7 +393,7 @@ public class PillRegimenTest extends BaseUnitTest {
         final DateTime dosage2StartDate = new DateTime(2011, 10, 2, 13, 30, 0, 0);
         final int reminderRepeatWindowInHours = 1;
         final int reminderRepeatIntervalInMinutes = 0;
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage2_id", new Time(dosage2StartDate.getHourOfDay(), dosage2StartDate.getMinuteOfHour()), dosage2StartDate.toLocalDate(), null, null, null));
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
         }});
@@ -411,7 +411,7 @@ public class PillRegimenTest extends BaseUnitTest {
         final DateTime dosage2StartDate = new DateTime(2011, 10, 3, 16, 30, 0, 0);
         final int reminderRepeatWindowInHours = 1;
         final int reminderRepeatIntervalInMinutes = 0;
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimen_id", "patient_id", reminderRepeatWindowInHours, reminderRepeatIntervalInMinutes, 0, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage2_id", new Time(dosage2StartDate.getHourOfDay(), dosage2StartDate.getMinuteOfHour()), dosage2StartDate.toLocalDate(), null, null, null));
             add(new DosageResponse("dosage1_id", new Time(dosage1StartDate.getHourOfDay(), dosage1StartDate.getMinuteOfHour()), dosage1StartDate.toLocalDate(), null, null, null));
         }});

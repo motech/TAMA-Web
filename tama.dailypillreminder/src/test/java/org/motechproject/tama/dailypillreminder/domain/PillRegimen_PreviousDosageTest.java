@@ -37,7 +37,7 @@ public class PillRegimen_PreviousDosageTest {
         LocalDate startDate = new LocalDate(2010, 1, 1);
         dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("previousDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
-        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         int dayOfTheMonth = 10;
         ivrContext.callStartTime(new DateTime(2010, 1, dayOfTheMonth, 9, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -56,7 +56,7 @@ public class PillRegimen_PreviousDosageTest {
         dosages.add(new DosageResponse(currentDosageId, new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
         dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
-        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         int dayOfTheMonth = 10;
         ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 21, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);
@@ -74,7 +74,7 @@ public class PillRegimen_PreviousDosageTest {
         LocalDate startDate = new LocalDate(2010, 1, 1);
         dosages.add(new DosageResponse(currentDosageId, new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
-        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         int dayOfTheMonth = 10;
         ivrContext.callStartTime(new DateTime(2010, 10, dayOfTheMonth, 9, 0, 0));
         pillRegimen = new PillRegimen(pillRegimenResponse);

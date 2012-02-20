@@ -138,7 +138,7 @@ public class AdherenceQualityListenerIT extends SpringIntegrationTest {
     }
 
     private void setUpAdherenceLogs(int totalDoses, int dosesToBeTaken) {
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("pillRegimenId", PATIENT_ID, 2, 5, 5, Arrays.asList(new DosageResponse("dosage1Id", new Time(5, 30), DateUtil.today().minusWeeks(5), null, null, null)));
         when(dailyPillReminderService.getPillRegimen(PATIENT_ID)).thenReturn(new PillRegimen(pillRegimenResponse));
         for (int dosesTaken = 0; dosesTaken < dosesToBeTaken; dosesTaken++) {
             DosageAdherenceLog dosageAdherenceLog = new DosageAdherenceLog("patientId", "pillRegimenId", "dosage1Id", null, DosageStatus.TAKEN, DateUtil.today().minusDays(dosesTaken), new Time(10, 5), DateUtil.newDateTime(DateUtil.today().minusDays(dosesTaken), 0, 0, 0));

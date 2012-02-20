@@ -42,7 +42,7 @@ public class UpdateAdherenceAsCapturedForPreviousDosageCommandTest {
 
     @Test
     public void recordsAdherenceToCurrentDosage() {
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, Arrays.asList(
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, Arrays.asList(
                 new DosageResponse("currentDosageId", new Time(19, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()),
                 new DosageResponse("previousDosageId", new Time(9, 0), new LocalDate(2010, 10, 10), null, null, new ArrayList<MedicineResponse>()
                 )));

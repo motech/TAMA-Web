@@ -90,7 +90,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
 
     @Test
     public void adherenceWhenLessThan4WeeksIntoRegimen() throws NoAdherenceRecordedException {
-        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(1), null, null, null));
         }});
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today());
@@ -117,7 +117,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
 
     @Test
     public void adherenceWhenLessThan4WeeksIntoRegimen_WhenPatientTransitionedFromDailyPillReminderToWeeklyPillReminder_AndBackToDailyPillReminder() throws NoAdherenceRecordedException {
-        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse regimenStartingToday = new PillRegimenResponse("pillRegimenId", patient.getId(), 2, 5, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(10, 30), DateUtil.today().minusWeeks(2), null, null, null));
         }});
         addAdherenceLog("dosage1Id", DosageStatus.TAKEN, DateUtil.today());

@@ -88,7 +88,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();
 
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
         }});
         when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
@@ -117,7 +117,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();
 
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
             add(new DosageResponse("dosage2Id", new Time(16, 30), today.minusWeeks(5), null, null, null));
         }});
@@ -147,7 +147,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();
 
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
         }});
         when(dailyPillReminderService.getPillRegimen("patientId")).thenReturn(new PillRegimen(pillRegimen));
@@ -169,7 +169,7 @@ public class DailyReminderAdherenceTrendServiceIT extends SpringIntegrationTest 
         PowerMockito.stub(method(DateUtil.class, "now")).toReturn(now);
         final LocalDate today = now.toLocalDate();
 
-        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, new ArrayList<DosageResponse>() {{
+        PillRegimenResponse pillRegimen = new PillRegimenResponse("pillRegimenId", "patientId", 2, 5, 5, new ArrayList<DosageResponse>() {{
             add(new DosageResponse("dosage1Id", new Time(5, 30), today.minusWeeks(5), null, null, null));
             add(new DosageResponse("dosage2Id", new Time(16, 30), today.minusWeeks(5), null, null, null));
         }});

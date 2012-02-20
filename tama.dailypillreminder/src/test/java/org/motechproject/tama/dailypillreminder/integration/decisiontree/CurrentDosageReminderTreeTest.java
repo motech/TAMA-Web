@@ -142,7 +142,7 @@ public class CurrentDosageReminderTreeTest {
         DosageResponse previousDosage = new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 5), DateUtil.newDate(2012, 7, 5), previousDosageLastTakenDate, null);
 
         List<DosageResponse> dosageResponses = Arrays.asList(currentDosage, previousDosage);
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("r1", "p1", 0, 0, 0, dosageResponses);
 
         context.pillRegimen(new PillRegimen(pillRegimenResponse)).callStartTime(DateUtil.newDateTime(DateUtil.today(), 14, 0, 0));
     }

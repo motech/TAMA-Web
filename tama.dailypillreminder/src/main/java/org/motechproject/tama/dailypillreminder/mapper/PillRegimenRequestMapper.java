@@ -54,6 +54,7 @@ public class PillRegimenRequestMapper {
         return new DailyPillRegimenRequest(treatmentAdvice.getPatientId(),
                 pillWindow,
                 retryInterval,
+                reminderLag,
                 convert(dosageSchedule, dosageRequestFromSchedule));
     }
 
@@ -89,7 +90,7 @@ public class PillRegimenRequestMapper {
 
         @Override
         public DosageRequest convert(String dosageTime) {
-            TimeUtil timeUtil = new TimeUtil(dosageTime).withReminderLagTime(reminderLag);
+            TimeUtil timeUtil = new TimeUtil(dosageTime);
             List<DrugDosage> dosages = treatmentAdvice.groupDosagesByTime().get(dosageTime);
             Converter<DrugDosage, MedicineRequest> drugDosageToMedicineRequestConverter =
                     isEveningDosage(dosageTime) ? drugEveningDosageToMedicineRequest : drugDosageToMedicineRequest;

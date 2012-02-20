@@ -65,7 +65,7 @@ public class AdherenceMessageWhenPreviousDoseCapturedCommandTest {
         List<DosageResponse> dosageResponses = Arrays.asList(
                 new DosageResponse("previousDosageId", new Time(15, 5), DateUtil.newDate(2011, 7, 1), null, yesterday, null),
                 new DosageResponse("currentDosageId", new Time(9, 5), DateUtil.newDate(2011, 7, 1), null, yesterday, null));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 2, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 2, 0, 0, dosageResponses);
         DosageResponse currentDosage = dosageResponses.get(1);
         DateTime callStartTime = DateUtil.newDateTime(today, currentDosage.getDosageHour(), currentDosage.getDosageMinute(), 0);
         TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientDocumentId("p1").callStartTime(callStartTime).callDirection(CallDirection.Outbound);
@@ -81,7 +81,7 @@ public class AdherenceMessageWhenPreviousDoseCapturedCommandTest {
         List<DosageResponse> dosageResponses = Arrays.asList(
                 new DosageResponse("previousDosageId", new Time(8, 0), DateUtil.newDate(2011, 7, 1), null, null, null),
                 new DosageResponse("currentDosageId", new Time(16, 0), DateUtil.newDate(2011, 7, 1), null, null, null));
-        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 2, 0, dosageResponses);
+        PillRegimenResponse pillRegimenResponse = new PillRegimenResponse("regimenId", "p1", 2, 0, 0, dosageResponses);
         TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest().patientDocumentId("p1").callStartTime(now).callDirection(CallDirection.Outbound);
         ivrContext = new DailyPillReminderContextForTest(tamaivrContextForTest).pillRegimen(pillRegimenResponse);
         assertEquals(0, command.executeCommand(ivrContext).length);

@@ -37,7 +37,7 @@ public class PillRegimen_NextDosageTest {
         dosages.add(new DosageResponse("nextDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 19, 0, 0));
-        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         pillRegimen = new PillRegimen(pillRegimenResponse);
         DateTime nextDosageTime = pillRegimen.getNextDoseAt(ivrContext.callStartTime()).getDoseTime();
 
@@ -55,7 +55,7 @@ public class PillRegimen_NextDosageTest {
         dosages.add(new DosageResponse("nextDosageId", new Time(20, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 12, 0, 0));
-        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         pillRegimen = new PillRegimen(pillRegimenResponse);
 
         DateTime nextDosageTime = pillRegimen.getNextDoseAt(ivrContext.callStartTime()).getDoseTime();
@@ -73,7 +73,7 @@ public class PillRegimen_NextDosageTest {
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), startDate, null, null, new ArrayList<MedicineResponse>()));
 
         ivrContext.callStartTime(new DateTime(2010, 10, 10, 9, 0, 0));
-        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages);
+        pillRegimenResponse = new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages);
         pillRegimen = new PillRegimen(pillRegimenResponse);
 
         DateTime nextDosageTime = pillRegimen.getNextDoseAt(ivrContext.callStartTime()).getDoseTime();

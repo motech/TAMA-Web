@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -41,26 +41,9 @@ public class PillRegimenRequestMapperTest {
     }
 
     @Test
-    public void shouldAddReminderLagToDosageMinutes() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, 5);
-        Drug drug = mock(Drug.class);
-        when(allDrugs.get(Matchers.<String>any())).thenReturn(drug);
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
-            setPatientId("123");
-            setDrugDosages(new ArrayList<DrugDosage>() {{
-                add(drugDosage("Drug1Id", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10), "09:00am", "08:30pm", 0));
-                add(drugDosage("Drug2Id", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10), "09:00am", "05:45pm", 0));
-            }});
-        }};
-        DailyPillRegimenRequest request = pillRegimenRequestMapper.map(patient, treatmentAdvice);
-        DosageRequest dosageRequest = getByStartHour(9, request.getDosageRequests());
-        Assert.assertEquals(5, dosageRequest.getStartMinute());
-    }
-
-    @Test
     public void shouldMapTreatmentAdvicesToPillRegimenRequest() {
-        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, 5);
+        final int reminderLag = 5;
+        PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, reminderLag);
         when(allDrugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
         when(allDrugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
@@ -74,25 +57,23 @@ public class PillRegimenRequestMapperTest {
 
         DailyPillRegimenRequest pillRegimenRequest = pillRegimenRequestMapper.map(patient, treatmentAdvice);
 
-        Assert.assertEquals(treatmentAdvice.getPatientId(), pillRegimenRequest.getExternalId());
-        Assert.assertNotNull(pillRegimenRequest.getReminderRepeatIntervalInMinutes());
-        Assert.assertNotNull(pillRegimenRequest.getPillWindowInHours());
+        assertEquals(treatmentAdvice.getPatientId(), pillRegimenRequest.getExternalId());
+        assertNotNull(pillRegimenRequest.getReminderRepeatIntervalInMinutes());
+        assertNotNull(pillRegimenRequest.getPillWindowInHours());
+        assertEquals(reminderLag, pillRegimenRequest.getBufferOverDosageTimeInMinutes());
 
-        Assert.assertEquals(3, pillRegimenRequest.getDosageRequests().size());
+        assertEquals(3, pillRegimenRequest.getDosageRequests().size());
 
         DosageRequest dosageRequest1 = getByStartHour(17, pillRegimenRequest.getDosageRequests());
-        assertDosageRequestWithReminderTimeLag(dosageRequest1, 17, 50);
-        Assert.assertEquals(1, dosageRequest1.getMedicineRequests().size());
+        assertEquals(1, dosageRequest1.getMedicineRequests().size());
         assertMedicineRequest(dosageRequest1.getMedicineRequests().get(0), "Drug2_brandName", DateUtil.newDate(2011, 2, 25), DateUtil.newDate(2011, 6, 10));
 
         DosageRequest dosageRequest2 = getByStartHour(20, pillRegimenRequest.getDosageRequests());
-        assertDosageRequestWithReminderTimeLag(dosageRequest2, 20, 35);
-        Assert.assertEquals(1, dosageRequest2.getMedicineRequests().size());
+        assertEquals(1, dosageRequest2.getMedicineRequests().size());
         assertMedicineRequest(dosageRequest2.getMedicineRequests().get(0), "Drug1_brandName", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10));
 
         DosageRequest dosageRequest3 = getByStartHour(9, pillRegimenRequest.getDosageRequests());
-        assertDosageRequestWithReminderTimeLag(dosageRequest3, 9, 5);
-        Assert.assertEquals(2, dosageRequest3.getMedicineRequests().size());
+        assertEquals(2, dosageRequest3.getMedicineRequests().size());
         assertMedicineRequest(dosageRequest3.getMedicineRequests().get(0), "Drug1_brandName", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10));
         assertMedicineRequest(dosageRequest3.getMedicineRequests().get(1), "Drug2_brandName", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10));
     }
@@ -153,11 +134,6 @@ public class PillRegimenRequestMapperTest {
                 return dosageRequest;
         }
         return null;
-    }
-
-    private void assertDosageRequestWithReminderTimeLag(DosageRequest dosageRequest, int startHour, int startMinute) {
-        Assert.assertEquals(startHour, dosageRequest.getStartHour());
-        Assert.assertEquals(startMinute, dosageRequest.getStartMinute());
     }
 
     private void assertMedicineRequest(MedicineRequest medicineRequest, String name, LocalDate startDate, LocalDate endDate) {

@@ -40,7 +40,7 @@ public class MessageFromPreviousDosageTest {
         medicines.add(new MedicineResponse("medicine1", today.minusDays(1), null));
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), today.minusDays(2), null, dosageLastTakenDate, medicines));
 
-        context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
+        context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages));
 
         List<String> messages = Arrays.asList(messageFromPreviousDosage.executeCommand(context));
         assertTrue(messages.contains(TamaIVRMessage.YOUR));
@@ -59,7 +59,7 @@ public class MessageFromPreviousDosageTest {
         LocalDate lastTakenDate = null;
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), today, null, lastTakenDate, new ArrayList<MedicineResponse>()));
 
-        context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, dosages));
+        context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages));
 
         String[] messages = messageFromPreviousDosage.executeCommand(context);
         assertEquals(0, messages.length);
