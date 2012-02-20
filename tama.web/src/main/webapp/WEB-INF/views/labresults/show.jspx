@@ -16,6 +16,7 @@
         <div class="text_right_align">
             <spring:url value="/labresults/update" var="edit_url">
                 <spring:param name="form"/>
+                <spring:param name="patientId" value="${patientId}" />
                 <spring:param name="clinicVisitId" value="${clinicVisitId}" />
             </spring:url>
             <a id="labresults_edit_link" href="${edit_url}">[add/edit]</a>

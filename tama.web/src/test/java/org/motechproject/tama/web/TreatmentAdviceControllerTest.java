@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
@@ -64,7 +64,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     @Mock
     private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
     @Mock
-    private ClinicVisitService clinicVisitService;
+    private AllClinicVisits allClinicVisits;
     @Mock
     private CallTimeSlotService dosageTimeSlotService;
 
@@ -83,7 +83,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
-        controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, clinicVisitService, dosageTimeSlotService);
+        controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, allClinicVisits, dosageTimeSlotService);
     }
 
     @Test
@@ -205,9 +205,9 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId));
+        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId + "?patientId=" + PATIENT_ID));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
-        verify(clinicVisitService).changeRegimen(clinicVisitId, treatmentAdvice.getId());
+        verify(allClinicVisits).changeRegimen(PATIENT_ID, clinicVisitId, treatmentAdvice.getId());
     }
 
     @Test
@@ -223,9 +223,9 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId));
+        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId  + "?patientId=" + PATIENT_ID));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
-        verify(clinicVisitService).changeRegimen(clinicVisitId, treatmentAdvice.getId());
+        verify(allClinicVisits).changeRegimen(PATIENT_ID, clinicVisitId, treatmentAdvice.getId());
     }
 
     private TreatmentAdvice getTreatmentAdvice() {

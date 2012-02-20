@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.domain.LabResult;
@@ -35,6 +34,8 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class LabResultsControllerTest {
+    public static final String PATIENT_ID = "patientId";
+
     private LabResultsController labResultsController;
     @Mock
     private AllLabResults allLabResults;
@@ -42,13 +43,11 @@ public class LabResultsControllerTest {
     private AllLabTests allLabTests;
     @Mock
     private AllClinicVisits allClinicVisits;
-    @Mock
-    private ClinicVisitService clinicVisitService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        labResultsController = new LabResultsController(allLabResults, allLabTests, allClinicVisits, clinicVisitService);
+        labResultsController = new LabResultsController(allLabResults, allLabTests, allClinicVisits);
     }
 
     @Test
@@ -191,7 +190,7 @@ public class LabResultsControllerTest {
     public void updateFormShouldShowLabResultsSavedAgainstClinicVisit() {
         Model uiModel = new ExtendedModelMap();
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
-        when(allClinicVisits.get(clinicVisit.getId())).thenReturn(clinicVisit);
+        when(allClinicVisits.get(PATIENT_ID, clinicVisit.getId())).thenReturn(clinicVisit);
         final LabTest cd4Test = LabTestBuilder.startRecording().withType(TAMAConstants.LabTestType.CD4).withId("CD4").build();
         final LabTest pvlTest = LabTestBuilder.startRecording().withType(TAMAConstants.LabTestType.PVL).withId("PVL").build();
         when(allLabTests.getAll()).thenReturn(new ArrayList<LabTest>() {{
@@ -201,7 +200,7 @@ public class LabResultsControllerTest {
         LabResult labresult = LabResultBuilder.startRecording().withLabTest(cd4Test).withLabTestId("CD4").withResult("100").build();
         when(allLabResults.get("labResultId")).thenReturn(labresult);
 
-        assertEquals("labresults/update", labResultsController.updateForm(clinicVisit.getId(), uiModel));
+        assertEquals("labresults/update", labResultsController.updateForm(PATIENT_ID, clinicVisit.getId(), uiModel));
         final LabResultsUIModel labResultsUIModel = (LabResultsUIModel) uiModel.asMap().get("labResultsUIModel");
         assertEquals(2, labResultsUIModel.getLabResults().size());
         assertEquals("PVL", labResultsUIModel.getLabResults().get(0).getLabTest().getId());
@@ -215,7 +214,7 @@ public class LabResultsControllerTest {
     public void updateFormShouldShowEmptyLabResultsWhenNoLabResultsAreSavedAgainstClinicVisit() {
         Model uiModel = new ExtendedModelMap();
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withLabResultIds(new ArrayList<String>()).build();
-        when(allClinicVisits.get(clinicVisit.getId())).thenReturn(clinicVisit);
+        when(allClinicVisits.get(PATIENT_ID, clinicVisit.getId())).thenReturn(clinicVisit);
         final LabTest cd4Test = LabTestBuilder.startRecording().withType(TAMAConstants.LabTestType.CD4).withId("CD4").build();
         final LabTest pvlTest = LabTestBuilder.startRecording().withType(TAMAConstants.LabTestType.PVL).withId("PVL").build();
         when(allLabTests.getAll()).thenReturn(new ArrayList<LabTest>() {{
@@ -223,7 +222,7 @@ public class LabResultsControllerTest {
             add(pvlTest);
         }});
 
-        assertEquals("labresults/update", labResultsController.updateForm(clinicVisit.getId(), uiModel));
+        assertEquals("labresults/update", labResultsController.updateForm(PATIENT_ID, clinicVisit.getId(), uiModel));
         final LabResultsUIModel labResultsUIModel = (LabResultsUIModel) uiModel.asMap().get("labResultsUIModel");
         assertEquals(2, labResultsUIModel.getLabResults().size());
         assertEquals("PVL", labResultsUIModel.getLabResults().get(0).getLabTest().getId());
@@ -258,16 +257,16 @@ public class LabResultsControllerTest {
         labResultsUIModel.setClinicVisitId("clinicVisitId");
         when(allLabResults.upsert(Matchers.<LabResult>any())).thenReturn("labResultId1").thenReturn("labResultId2");
 
-        String viewName = labResultsController.update(labResultsUIModel, mock(BindingResult.class), new ExtendedModelMap(), mock(HttpServletRequest.class));
+        String redirectURL = labResultsController.update(labResultsUIModel, mock(BindingResult.class), new ExtendedModelMap(), mock(HttpServletRequest.class));
 
         final ArgumentCaptor<ArrayList> labResultIdsArgumentCaptor = ArgumentCaptor.forClass(ArrayList.class);
-        verify(clinicVisitService).updateLabResults(eq("clinicVisitId"), labResultIdsArgumentCaptor.capture());
+        verify(allClinicVisits).updateLabResults(eq(PATIENT_ID), eq("clinicVisitId"), labResultIdsArgumentCaptor.capture());
         final List<String> expectedLabResults = new ArrayList<String>() {{
             add("labResultId1");
             add("labResultId2");
         }};
         assertEquals(expectedLabResults, labResultIdsArgumentCaptor.getValue());
-        assertEquals("redirect:/clinicvisits/clinicVisitId", viewName);
+        assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
     }
 
 }

@@ -1,7 +1,7 @@
 package org.motechproject.tama.clinicvisits.builder;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.util.DateUtil;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ClinicVisitBuilder {
 
-    private ClinicVisit clinicVisit = new ClinicVisit();
+    private ClinicVisit clinicVisit = new ClinicVisit(null, new Visit());
 
     public ClinicVisit build() {
         return this.clinicVisit;
@@ -21,7 +21,7 @@ public class ClinicVisitBuilder {
     }
 
     public ClinicVisitBuilder withDefaults() {
-        return this.withId("clinicVisitId").withPatientId("patientId").withVisitDate(DateUtil.now()).withTreatmentAdviceId("treatmentAdviceId").
+        return this.withPatientId("patientId").withVisitDate(DateUtil.now()).withTreatmentAdviceId("treatmentAdviceId").
                 withLabResultIds(new ArrayList<String>() {{ add("labResultId"); }}).withVitalStatisticsId("vitalStatisticsId");
     }
 
@@ -52,11 +52,6 @@ public class ClinicVisitBuilder {
 
     public ClinicVisitBuilder withPatientId(String patientId) {
         clinicVisit.setPatientId(patientId);
-        return this;
-    }
-
-    public ClinicVisitBuilder withId(String clinicVisitId) {
-        clinicVisit.getVisit().setId(clinicVisitId);
         return this;
     }
 }

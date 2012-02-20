@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.patient.builder.VitalStatisticsBuilder;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
@@ -27,30 +26,29 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VitalStatisticsControllerTest {
 
-    public static final String REDIRECT_CLINICVISITS_URL = "redirect:/clinicvisits/clinicVisitId";
+    public static final String PATIENT_ID = "patientId";
+
     private VitalStatisticsController vitalStatisticsController;
     @Mock
     private AllVitalStatistics allVitalStatistics;
     @Mock
     private AllClinicVisits allClinicVisits;
-    @Mock
-    private ClinicVisitService clinicVisitService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        vitalStatisticsController = new VitalStatisticsController(allVitalStatistics, allClinicVisits, clinicVisitService);
+        vitalStatisticsController = new VitalStatisticsController(allVitalStatistics, allClinicVisits);
     }
 
     @Test
     public void shouldShowFormWhenPatientHasNoVitalStatisticsEntered() {
         Model uiModel = new ExtendedModelMap();
 
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id")).thenReturn(null);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
 
-        vitalStatisticsController.createForm("patient_id", uiModel);
+        vitalStatisticsController.createForm(PATIENT_ID, uiModel);
         assertEquals(VitalStatistics.class, uiModel.asMap().get("vitalStatistics").getClass());
-        assertEquals("patient_id", ((VitalStatistics) uiModel.asMap().get("vitalStatistics")).getPatientId());
+        assertEquals(PATIENT_ID, ((VitalStatistics) uiModel.asMap().get("vitalStatistics")).getPatientId());
     }
 
     @Test
@@ -115,16 +113,16 @@ public class VitalStatisticsControllerTest {
     public void shouldShowFormForUpdatingVitalStatistics() {
         Model uiModel = new ExtendedModelMap();
 
-        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withId("vitalStatisticsId").withPatientId("patient_id").withPulse(100).build();
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withId("vitalStatisticsId").withPatientId(PATIENT_ID).withPulse(100).build();
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
-        when(allClinicVisits.get("clinicVisitId")).thenReturn(clinicVisit);
+        when(allClinicVisits.get(PATIENT_ID, "clinicVisitId")).thenReturn(clinicVisit);
         when(allVitalStatistics.get(vitalStatistics.getId())).thenReturn(vitalStatistics);
 
-        assertEquals("vital_statistics/update", vitalStatisticsController.updateForm("clinicVisitId", uiModel));
+        assertEquals("vital_statistics/update", vitalStatisticsController.updateForm(PATIENT_ID, "clinicVisitId", uiModel));
 
         final VitalStatisticsUIModel vitalStatisticsUIModel = (VitalStatisticsUIModel) uiModel.asMap().get("vitalStatisticsUIModel");
         assertEquals(100, vitalStatisticsUIModel.getVitalStatistics().getPulse().intValue());
-        assertEquals(vitalStatisticsUIModel.getClinicVisitId(), "clinicVisitId");
+        assertEquals(vitalStatisticsUIModel.getClinicVisitId(), clinicVisit.getId());
         assertEquals(uiModel.asMap().get("_method"), "put");
     }
 
@@ -133,9 +131,9 @@ public class VitalStatisticsControllerTest {
         Model uiModel = new ExtendedModelMap();
 
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVitalStatisticsId(null).build();
-        when(allClinicVisits.get("clinicVisitId")).thenReturn(clinicVisit);
+        when(allClinicVisits.get(PATIENT_ID, "clinicVisitId")).thenReturn(clinicVisit);
 
-        assertEquals("vital_statistics/update", vitalStatisticsController.updateForm("clinicVisitId", uiModel));
+        assertEquals("vital_statistics/update", vitalStatisticsController.updateForm(PATIENT_ID, "clinicVisitId", uiModel));
 
         final VitalStatisticsUIModel vitalStatisticsUIModel = ((VitalStatisticsUIModel) uiModel.asMap().get("vitalStatisticsUIModel"));
         assertNull(vitalStatisticsUIModel.getVitalStatistics().getPulse());
@@ -144,7 +142,7 @@ public class VitalStatisticsControllerTest {
         assertNull(vitalStatisticsUIModel.getVitalStatistics().getWeightInKg());
         assertNull(vitalStatisticsUIModel.getVitalStatistics().getHeightInCm());
         assertNull(vitalStatisticsUIModel.getVitalStatistics().getTemperatureInFahrenheit());
-        assertEquals(vitalStatisticsUIModel.getClinicVisitId(), "clinicVisitId");
+        assertEquals(vitalStatisticsUIModel.getClinicVisitId(), clinicVisit.getId());
         assertEquals(uiModel.asMap().get("_method"), "put");
     }
 
@@ -152,7 +150,7 @@ public class VitalStatisticsControllerTest {
     public void shouldCreateVitalStatisticsRecord_WhenClinicVisitDoesNotHaveOne() {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
-        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withPatientId("patient_id").withPulse(100).build();
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withPatientId(PATIENT_ID).withPulse(100).build();
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVitalStatisticsId(null).build();
         final VitalStatisticsUIModel vitalStatisticsUIModel = VitalStatisticsUIModel.get(clinicVisit, vitalStatistics);
 
@@ -161,25 +159,24 @@ public class VitalStatisticsControllerTest {
         ArgumentCaptor<VitalStatistics> vitalStatisticsArgumentCaptor = ArgumentCaptor.forClass(VitalStatistics.class);
         verify(allVitalStatistics, times(1)).add(vitalStatisticsArgumentCaptor.capture());
         assertEquals(DateUtil.today(), vitalStatisticsArgumentCaptor.getValue().getCaptureDate());
-        assertEquals("patient_id", vitalStatisticsArgumentCaptor.getValue().getPatientId());
+        assertEquals(PATIENT_ID, vitalStatisticsArgumentCaptor.getValue().getPatientId());
         assertEquals(100, vitalStatisticsArgumentCaptor.getValue().getPulse().intValue());
-        verify(clinicVisitService, times(1)).updateVitalStatistics(eq(clinicVisit.getId()), Matchers.<String>any());
-        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
+        verify(allClinicVisits, times(1)).updateVitalStatistics(eq(PATIENT_ID), eq(clinicVisit.getId()), Matchers.<String>any());
+        assertEquals("redirect:/clinicvisits/" + clinicVisit.getId() + "?patientId=" + PATIENT_ID, returnUrl);
     }
 
     @Test
     public void shouldNotCreateVitalStatisticsRecord_WhenClinicVisitDoesNotHaveOne_ButVitalStatisticFieldsAreEmpty() {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
-        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withPatientId("patient_id").build();
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withPatientId(PATIENT_ID).build();
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVitalStatisticsId(null).build();
         final VitalStatisticsUIModel vitalStatisticsUIModel = VitalStatisticsUIModel.get(clinicVisit, vitalStatistics);
 
         final String returnUrl = vitalStatisticsController.update(vitalStatisticsUIModel, httpServletRequest);
 
         verifyZeroInteractions(allClinicVisits);
-        verifyZeroInteractions(clinicVisitService);
-        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
+        assertEquals("redirect:/clinicvisits/" + clinicVisit.getId() + "?patientId=" + PATIENT_ID, returnUrl);
     }
 
     @Test
@@ -187,7 +184,7 @@ public class VitalStatisticsControllerTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
         final String vitalStatisticsId = "vitalStatisticsId";
-        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withId(vitalStatisticsId).withPatientId("patient_id").withPulse(100).build();
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withId(vitalStatisticsId).withPatientId(PATIENT_ID).withPulse(100).build();
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
         final VitalStatisticsUIModel vitalStatisticsUIModel = VitalStatisticsUIModel.get(clinicVisit, vitalStatistics);
         when(allVitalStatistics.get(vitalStatisticsId)).thenReturn(new VitalStatistics());
@@ -197,10 +194,10 @@ public class VitalStatisticsControllerTest {
         ArgumentCaptor<VitalStatistics> vitalStatisticsArgumentCaptor = ArgumentCaptor.forClass(VitalStatistics.class);
         verify(allVitalStatistics, times(1)).update(vitalStatisticsArgumentCaptor.capture());
         assertEquals(DateUtil.today(), vitalStatisticsArgumentCaptor.getValue().getCaptureDate());
-        assertEquals("patient_id", vitalStatisticsArgumentCaptor.getValue().getPatientId());
+        assertEquals(PATIENT_ID, vitalStatisticsArgumentCaptor.getValue().getPatientId());
         assertEquals(100, vitalStatisticsArgumentCaptor.getValue().getPulse().intValue());
-        verify(clinicVisitService, times(1)).updateVitalStatistics(eq(clinicVisit.getId()), Matchers.<String>any());
-        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
+        verify(allClinicVisits, times(1)).updateVitalStatistics(eq(PATIENT_ID), eq(clinicVisit.getId()), eq("vitalStatisticsId"));
+        assertEquals("redirect:/clinicvisits/" + clinicVisit.getId() + "?patientId=" + PATIENT_ID, returnUrl);
     }
 
     @Test
@@ -208,8 +205,8 @@ public class VitalStatisticsControllerTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
         final String vitalStatisticsId = "vitalStatisticsId";
-        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withId(vitalStatisticsId).withPatientId("patient_id").build();
-        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withId(vitalStatisticsId).withPatientId(PATIENT_ID).build();
+        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withPatientId(PATIENT_ID).build();
         final VitalStatisticsUIModel vitalStatisticsUIModel = VitalStatisticsUIModel.get(clinicVisit, vitalStatistics);
         final VitalStatistics savedVitalStatistics = new VitalStatistics();
         when(allVitalStatistics.get(vitalStatisticsId)).thenReturn(savedVitalStatistics);
@@ -217,8 +214,8 @@ public class VitalStatisticsControllerTest {
         final String returnUrl = vitalStatisticsController.update(vitalStatisticsUIModel, httpServletRequest);
 
         verify(allVitalStatistics, times(1)).remove(savedVitalStatistics);
-        verify(clinicVisitService, times(1)).updateVitalStatistics(clinicVisit.getId(), null);
-        assertEquals(REDIRECT_CLINICVISITS_URL, returnUrl);
+        verify(allClinicVisits, times(1)).updateVitalStatistics(PATIENT_ID, clinicVisit.getId(), null);
+        assertEquals("redirect:/clinicvisits/" + clinicVisit.getId() + "?patientId=" + PATIENT_ID, returnUrl);
     }
 
 }

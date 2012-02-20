@@ -9,6 +9,7 @@
         <spring:url value="/vital_statistics/update" var="edit_url">
             <spring:param name="form"/>
             <spring:param name="clinicVisitId" value="${clinicVisitId}" />
+            <spring:param name="patientId" value="${patientId}" />
         </spring:url>
         <a id="edit_link" href="${edit_url}" style="float:right">[edit]</a>
         <field:display label="Weight (kg)" field="weightInKg" id="weight" object="${vitalStatistics}" />

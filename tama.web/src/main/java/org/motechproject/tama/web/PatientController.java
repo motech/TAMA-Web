@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
@@ -82,14 +82,14 @@ public class PatientController extends BaseController {
     private AllRegimens allRegimens;
     private PatientService patientService;
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
-    private ClinicVisitService clinicVisitService;
+    private AllClinicVisits allClinicVisits;
     private ResumeFourDayRecallService resumeFourDayRecallService;
     private Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
 
     @Autowired
     public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
                              AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, AllRegimens allRegimens, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
-                             @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly, ClinicVisitService clinicVisitService) {
+                             @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly, AllClinicVisits allClinicVisits) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.allGenders = allGenders;
@@ -104,7 +104,7 @@ public class PatientController extends BaseController {
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
         this.resumeFourDayRecallService = resumeFourDayRecallService;
         this.minNumberOfDaysOnDailyBeforeTransitioningToWeekly = minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
-        this.clinicVisitService = clinicVisitService;
+        this.allClinicVisits = allClinicVisits;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
@@ -117,14 +117,14 @@ public class PatientController extends BaseController {
         return activatePatient(id, REDIRECT_TO_LIST_VIEW, request);
     }
 
-    private String activatePatient(String id, String showPatientView, HttpServletRequest request) {
-        Patient patient = allPatients.get(id);
+    private String activatePatient(String patientDocId, String showPatientView, HttpServletRequest request) {
+        Patient patient = allPatients.get(patientDocId);
         boolean firstActivation = patient.getActivationDate() == null;
-        patientService.activate(id);
+        patientService.activate(patientDocId);
         if (firstActivation) {
-            clinicVisitService.scheduleVisits(id);
-            ClinicVisit clinicVisit = clinicVisitService.baselineVisit(id);
-            return "redirect:/clinicvisits?form&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
+            allClinicVisits.scheduleVisits(patientDocId);
+            ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
+            return "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
         }
         return showPatientView;
     }

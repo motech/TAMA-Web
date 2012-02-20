@@ -1,6 +1,6 @@
 package org.motechproject.tama.web;
 
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
@@ -39,19 +39,19 @@ public class TreatmentAdviceController extends BaseController {
     private AllRegimens allRegimens;
     private AllPatients allPatients;
     private TreatmentAdviceService treatmentAdviceService;
-    private ClinicVisitService clinicVisitService;
+    private AllClinicVisits allClinicVisits;
     private TreatmentAdviceViewMapper treatmentAdviceViewMapper;
     private CallTimeSlotService callTimeSlotService;
 
     @Autowired
-    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, ClinicVisitService clinicVisitService, CallTimeSlotService callTimeSlotService) {
+    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, AllClinicVisits allClinicVisits, CallTimeSlotService callTimeSlotService) {
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
         this.allDosageTypes = allDosageTypes;
         this.allMealAdviceTypes = allMealAdviceTypes;
         this.treatmentAdviceService = treatmentAdviceService;
         this.treatmentAdviceViewMapper = treatmentAdviceViewMapper;
-        this.clinicVisitService = clinicVisitService;
+        this.allClinicVisits = allClinicVisits;
         this.callTimeSlotService = callTimeSlotService;
     }
 
@@ -76,8 +76,8 @@ public class TreatmentAdviceController extends BaseController {
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
         final String newTreatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
-        clinicVisitService.changeRegimen(clinicVisitId, newTreatmentAdviceId);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest);
+        allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, newTreatmentAdviceId);
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + treatmentAdvice.getPatientId();
     }
 
     public void createForm(String patientId, Model uiModel) {

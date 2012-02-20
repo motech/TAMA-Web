@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -26,52 +27,43 @@ public class ClinicVisit {
     public static final String TYPE_OF_VISIT = "TypeOfVisit";
     public static final String ADJUSTED_DUE_DATE = "AdjustedDueDate";
 
+    private String patientDocId;
     private Visit visit = new Visit();
-
-    private Appointment appointment = new Appointment();
 
     public ClinicVisit() {
     }
 
-    public ClinicVisit(Visit visit, Appointment appointment) {
+    public ClinicVisit(String patientDocId, Visit visit) {
+        this.patientDocId = patientDocId;
         this.visit = visit;
-        this.appointment = appointment;
     }
 
     public Appointment getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
+        return visit.appointment();
     }
 
     public Visit getVisit() {
         return visit;
     }
 
-    public void setVisit(Visit visit) {
-        this.visit = visit;
-    }
-
     public String getId() {
-        return visit.getId();
+        return visit.id();
     }
 
     public String getName() {
-        return visit.getTitle();
+        return visit.title();
     }
 
     public void setName(String name) {
-        visit.setTitle(name);
+        visit.title(name);
     }
 
     public String getPatientId() {
-        return visit.getExternalId();
+        return patientDocId;
     }
 
-    public void setPatientId(String patientId) {
-        visit.setExternalId(patientId);
+    public void setPatientId(String patientDocId) {
+        this.patientDocId = patientDocId;
     }
 
     public TypeOfVisit getTypeOfVisit() {
@@ -91,7 +83,8 @@ public class ClinicVisit {
     }
 
     public List<String> getLabResultIds() {
-        return (List<String>) visit.getData().get(LAB_RESULTS);
+        List<String> labResultIds = (List<String>) visit.getData().get(LAB_RESULTS);
+        return labResultIds == null ? Collections.<String>emptyList() :labResultIds;
     }
 
     public void setLabResultIds(List<String> labResultIds) {
@@ -109,56 +102,48 @@ public class ClinicVisit {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getVisitDate() {
-        return visit.getVisitDate();
+        return visit.visitDate();
     }
 
     public void setVisitDate(DateTime visitDate) {
-        visit.setVisitDate(visitDate);
-    }
-
-    public String getAppointmentId() {
-        return visit.getAppointmentId();
-    }
-
-    public void setAppointmentId(String appointmentId) {
-        visit.setAppointmentId(appointmentId);
+        visit.visitDate(visitDate);
     }
 
     public boolean isMissed() {
-        return visit.isMissed();
+        return visit.missed();
     }
 
     public void setMissed(boolean missed) {
-        visit.setMissed(missed);
+        visit.missed(missed);
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getAppointmentDueDate() {
-        return appointment.getDueDate();
+        return visit.appointment().dueDate();
     }
 
     public void setAppointmentDueDate(DateTime appointmentDueDate) {
-        appointment.setDueDate(appointmentDueDate);
+        visit.appointment().dueDate(appointmentDueDate);
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public LocalDate getAdjustedDueDate() {
-        return (LocalDate) appointment.getData().get(ADJUSTED_DUE_DATE);
+        return (LocalDate) visit.appointment().getData().get(ADJUSTED_DUE_DATE);
     }
 
     public void setAdjustedDueDate(LocalDate adjustedDueDate) {
-        appointment.addData(ADJUSTED_DUE_DATE, adjustedDueDate);
+        visit.appointment().addData(ADJUSTED_DUE_DATE, adjustedDueDate);
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
     public DateTime getConfirmedVisitDate() {
-        return appointment.getScheduledDate();
+        return visit.appointment().scheduledDate();
     }
 
     public void setConfirmedVisitDate(DateTime scheduledDate) {
-        appointment.setScheduledDate(scheduledDate);
+        visit.appointment().scheduledDate(scheduledDate);
     }
 }

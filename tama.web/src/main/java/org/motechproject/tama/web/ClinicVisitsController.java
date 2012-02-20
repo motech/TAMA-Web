@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
@@ -31,31 +30,29 @@ public class ClinicVisitsController extends BaseController {
     private VitalStatisticsController vitalStatisticsController;
     private AllClinicVisits allClinicVisits;
     private AllTreatmentAdvices allTreatmentAdvices;
-    private ClinicVisitService clinicVisitService;
 
     @Autowired
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, ClinicVisitService clinicVisitService, AllClinicVisits allClinicVisits) {
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, AllClinicVisits allClinicVisits) {
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.labResultsController = labResultsController;
         this.vitalStatisticsController = vitalStatisticsController;
-        this.clinicVisitService = clinicVisitService;
         this.allClinicVisits = allClinicVisits;
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
-    public String createForm(@RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
-        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+    public String createForm(@RequestParam(value = "patientId", required = true) String patientDocId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
+        ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         String patientId = clinicVisit.getPatientId();
         final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
 
         TreatmentAdvice adviceForPatient = null;
         if (treatmentAdviceId != null)
-            adviceForPatient= allTreatmentAdvices.get(treatmentAdviceId);
+            adviceForPatient = allTreatmentAdvices.get(treatmentAdviceId);
         if (adviceForPatient == null)
             adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         if (adviceForPatient != null) {
-            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest);
+            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientId;
         }
 
         uiModel.addAttribute("patientId", patientId);
@@ -75,15 +72,17 @@ public class ClinicVisitsController extends BaseController {
         String treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
-        final String clinitVistId = clinicVisitService.updateVisit(clinicVisitId, visit.getVisitDate(), treatmentAdvice.getPatientId(), treatmentAdviceId, labResultIds, vitalStatisticsId);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinitVistId, httpServletRequest);
+        String patientId = treatmentAdvice.getPatientId();
+        final String clinitVistId = allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinitVistId, httpServletRequest) + "?patientId=" + patientId;
     }
 
     @RequestMapping(value = "/{clinicVisitId}", method = RequestMethod.GET)
-    public String show(@PathVariable("clinicVisitId") String clinicVisitId, Model uiModel) {
-        ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+    public String show(@PathVariable("clinicVisitId") String clinicVisitId, @RequestParam(value = "patientId", required = true) String patientDocId, Model uiModel) {
+        ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
-        if (treatmentAdviceId == null) treatmentAdviceId = allTreatmentAdvices.currentTreatmentAdvice(clinicVisit.getPatientId()).getId();
+        if (treatmentAdviceId == null)
+            treatmentAdviceId = allTreatmentAdvices.currentTreatmentAdvice(clinicVisit.getPatientId()).getId();
         treatmentAdviceController.show(treatmentAdviceId, uiModel);
         labResultsController.show(clinicVisit.getPatientId(), clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
@@ -91,41 +90,42 @@ public class ClinicVisitsController extends BaseController {
         return "clinicvisits/show";
     }
 
-    @RequestMapping(value="/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
-        List<ClinicVisit> clinicVisits = clinicVisitService.getClinicVisits(patientId);
+        List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientId);
         uiModel.addAttribute("clinicVisits", clinicVisits);
         uiModel.addAttribute("patientId", patientId);
         return "clinicvisits/list";
     }
-    @RequestMapping(value="/adjustDueDate.json/{clinicVisitId}", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/adjustDueDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
-    public String adjustDueDate(@PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                              @RequestParam(value = "adjustedDueDate") LocalDate adjustedDueDate) {
-        clinicVisitService.adjustDueDate(clinicVisitId, adjustedDueDate);
+    public String adjustDueDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    @RequestParam(value = "adjustedDueDate") LocalDate adjustedDueDate) {
+        allClinicVisits.adjustDueDate(patientDocId, clinicVisitId, adjustedDueDate);
         return "{'adjustedDueDate':'" + adjustedDueDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
     }
 
-    @RequestMapping(value="/confirmVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/confirmVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
-    public String confirmVisitDate(@PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
-                                              @RequestParam(value = "confirmedVisitDate") DateTime confirmedVisitDate) {
-        clinicVisitService.confirmVisitDate(clinicVisitId, confirmedVisitDate);
+    public String confirmVisitDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
+    @RequestParam(value = "confirmedVisitDate") DateTime confirmedVisitDate) {
+        allClinicVisits.confirmVisitDate(patientDocId, clinicVisitId, confirmedVisitDate);
         return "{'confirmedVisitDate':'" + confirmedVisitDate.toString(TAMAConstants.DATETIME_FORMAT) + "'}";
     }
-    
+
     @RequestMapping(value = "/markAsMissed.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
-    public String markAsMissed(@PathVariable(value = "clinicVisitId") String clinicVisitId){
-        clinicVisitService.markAsMissed(clinicVisitId);
+    public String markAsMissed(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable(value = "clinicVisitId") String clinicVisitId) {
+        allClinicVisits.markAsMissed(patientDocId, clinicVisitId);
         return "{'missed':true}";
     }
 
     @RequestMapping(value = "/setVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
-    public String setVisitDate(@PathVariable(value = "clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                                  @RequestParam(value = "visitDate") DateTime visitDate){
-        clinicVisitService.setVisitDate(clinicVisitId, visitDate);
+    public String setVisitDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable(value = "clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    @RequestParam(value = "visitDate") DateTime visitDate) {
+        allClinicVisits.setVisitDate(patientDocId, clinicVisitId, visitDate);
         return "{'visitDate':'" + visitDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
     }
 }

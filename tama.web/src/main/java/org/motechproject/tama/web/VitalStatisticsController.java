@@ -2,7 +2,6 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.web.model.VitalStatisticsUIModel;
@@ -13,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,13 +25,11 @@ public class VitalStatisticsController extends BaseController {
 
     private final AllVitalStatistics allVitalStatistics;
     private AllClinicVisits allClinicVisits;
-    private ClinicVisitService clinicVisitService;
 
     @Autowired
-    public VitalStatisticsController(AllVitalStatistics allVitalStatistics, AllClinicVisits allClinicVisits, ClinicVisitService clinicVisitService) {
+    public VitalStatisticsController(AllVitalStatistics allVitalStatistics, AllClinicVisits allClinicVisits) {
         this.allVitalStatistics = allVitalStatistics;
         this.allClinicVisits = allClinicVisits;
-        this.clinicVisitService = clinicVisitService;
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -65,8 +63,8 @@ public class VitalStatisticsController extends BaseController {
     }
 
     @RequestMapping(value = "/update", params = "form", method = RequestMethod.GET)
-    public String updateForm(String clinicVisitId, Model uiModel) {
-        final ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+    public String updateForm(@RequestParam(value = "patientId", required = true) String patientDocId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel) {
+        final ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         if (clinicVisit.getVitalStatisticsId() == null) {
             uiModel.addAttribute("vitalStatisticsUIModel", VitalStatisticsUIModel.newDefault(clinicVisit));
         } else {
@@ -84,19 +82,19 @@ public class VitalStatisticsController extends BaseController {
         if (vitalStatistics.getId() == null || vitalStatistics.getId().isEmpty()) {
             if (isNotEmpty(vitalStatistics)) {
                 allVitalStatistics.add(vitalStatistics);
-                clinicVisitService.updateVitalStatistics(vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
+                allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
             }
         } else {
             final VitalStatistics savedVitalStatistics = allVitalStatistics.get(vitalStatistics.getId());
             vitalStatistics.setRevision(savedVitalStatistics.getRevision());
             if (isNotEmpty(vitalStatistics)) {
                 allVitalStatistics.update(vitalStatistics);
-                clinicVisitService.updateVitalStatistics(vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
+                allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
             } else {
                 allVitalStatistics.remove(savedVitalStatistics);
-                clinicVisitService.updateVitalStatistics(vitalStatisticsUIModel.getClinicVisitId(), null);
+                allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), null);
             }
         }
-        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(vitalStatisticsUIModel.getClinicVisitId(), httpServletRequest);
+        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(vitalStatisticsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + vitalStatisticsUIModel.getPatientId();
     }
 }

@@ -2,7 +2,6 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
-import org.motechproject.tama.clinicvisits.service.ClinicVisitService;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.repository.AllLabResults;
@@ -16,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -32,14 +32,12 @@ public class LabResultsController extends BaseController {
     private final AllLabResults allLabResults;
     private final AllClinicVisits allClinicVisits;
     private final AllLabTests allLabTests;
-    private ClinicVisitService clinicVisitService;
 
     @Autowired
-    public LabResultsController(AllLabResults allLabResults, AllLabTests allLabTests, AllClinicVisits allClinicVisits, ClinicVisitService clinicVisitService) {
+    public LabResultsController(AllLabResults allLabResults, AllLabTests allLabTests, AllClinicVisits allClinicVisits) {
         this.allLabResults = allLabResults;
         this.allLabTests = allLabTests;
         this.allClinicVisits = allClinicVisits;
-        this.clinicVisitService = clinicVisitService;
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -73,9 +71,9 @@ public class LabResultsController extends BaseController {
     }
 
     @RequestMapping(value = "/update", params = "form", method = RequestMethod.GET)
-    public String updateForm(String clinicVisitId, Model uiModel) {
+    public String updateForm(@RequestParam(value = "patientId", required = true) String patientId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel) {
         LabResultsUIModel labResultsUIModel = LabResultsUIModel.newDefault();
-        final ClinicVisit clinicVisit = allClinicVisits.get(clinicVisitId);
+        final ClinicVisit clinicVisit = allClinicVisits.get(patientId, clinicVisitId);
         final Map<String, LabResult> labResultsMap = emptyLabResultsForAllLabTests(clinicVisit.getPatientId());
         for (String labResultId : clinicVisit.getLabResultIds()) {
             final LabResult labResult = allLabResults.get(labResultId);
@@ -100,8 +98,8 @@ public class LabResultsController extends BaseController {
             if (labResultId != null) allLabResultsIds.add(labResultId);
         }
 
-        clinicVisitService.updateLabResults(labResultsUIModel.getClinicVisitId(), allLabResultsIds);
-        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getClinicVisitId(), httpServletRequest);
+        allClinicVisits.updateLabResults(labResultsUIModel.getPatientId(), labResultsUIModel.getClinicVisitId(), allLabResultsIds);
+        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + labResultsUIModel.getPatientId();
     }
 
     private void populateUIModel(Model uiModel, String patientId) {

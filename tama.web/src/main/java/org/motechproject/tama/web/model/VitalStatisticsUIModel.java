@@ -30,6 +30,10 @@ public class VitalStatisticsUIModel {
         return vitalStatistics.getId();
     }
 
+    public String getPatientId() {
+        return vitalStatistics.getPatientId();
+    }
+
     public void setId(String id) {
         if (StringUtils.isNotEmpty(id)) {
             vitalStatistics.setId(id);
