@@ -33,12 +33,12 @@ public class AdherenceApiController {
     @ResponseBody
     public String list(@RequestParam("id") String patientDocId) throws JSONException, NoAdherenceRecordedException {
         JSONObject result = new JSONObject();
-        result.put("dailyAdherenceSummary", jsonify(dailyPillReminderAdherenceService.getAdherenceOverTime(patientDocId)));
-        result.put("weeklyAdherenceSummary", jsonify(fourDayRecallAdherenceService.getAdherenceOverTime(patientDocId)));
+        result.put("dailyAdherenceSummary", toJson(dailyPillReminderAdherenceService.getAdherenceOverTime(patientDocId)));
+        result.put("weeklyAdherenceSummary", toJson(fourDayRecallAdherenceService.getAdherenceOverTime(patientDocId)));
         return result.toString();
     }
 
-    private JSONArray jsonify(List<AdherenceSummaryForAWeek> adherenceSummaryPerWeek) throws JSONException {
+    private JSONArray toJson(List<AdherenceSummaryForAWeek> adherenceSummaryPerWeek) throws JSONException {
         JSONArray adherencePerWeekSummaryJSON = new JSONArray();
         for(AdherenceSummaryForAWeek adherenceSummaryForAWeek: adherenceSummaryPerWeek){
             JSONObject adherenceSummaryForAWeekJSON = new JSONObject();

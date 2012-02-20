@@ -34,4 +34,8 @@ public class LabTestBuilder {
         labTest.setName(name);
         return labTest;
     }
+
+    public static LabTestBuilder defaultCD4() {
+        return startRecording().withType(TAMAConstants.LabTestType.CD4).withId("cd4LabTest");
+    }
 }

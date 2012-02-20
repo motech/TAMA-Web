@@ -1,0 +1,62 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
+    <util:panel id="cd4-over-time" title="CD4 Over Time" openPane="true">
+        <spring:url value="/json/labresults/listCD4Count" var="listCD4CountUrl">
+            <spring:param name="patientId" value="${patient.id}"/>
+        </spring:url>
+        <script type="text/javascript">
+            dojo.require("dojox.charting.Chart2D");
+            dojo.require("dojox.charting.axis2d.Default");
+            dojo.require("dojox.charting.plot2d.Lines");
+            dojo.require("dojox.charting.plot2d.Areas");
+            dojo.require("dojox.charting.widget.Legend");
+            dojo.require("dojox.charting.themes.ThreeD");
+            dojo.require("dojox.charting.plot2d.Markers");
+
+
+            dojo.ready(function () {
+
+                dojo.xhrPost({
+                    url:"${listCD4CountUrl}",
+                    handleAs:"json",
+                    load:function (dataList) {
+
+                        var theme = new dojox.charting.Theme({marker:{    symbol:"m0,-7 7,7 -7,7 -7,-7 z"}});
+                        var c = new dojox.charting.Chart2D("cd4CountOverTime");
+                        c.addPlot("default", {type:"Lines", markers:true});
+                        c.setTheme(theme);
+
+
+                        var xLabels = function () {
+                            return dataList.map(function (elt, index) {
+                                return {value:index + 1, text:elt.date}
+                            });
+                        };
+
+                        var xValues = function () {
+                            return dataList.map(function (elt, index) {
+                                return parseInt(elt.value);
+                            });
+                        }
+
+                        c.addAxis("x", { labels:xLabels(), natural:true});
+                        c.addAxis("y", {min:0, vertical:true});
+                        c.addSeries("CD4 Count", xValues(), { stroke:{ color:"blue" }, fill:"lightblue" });
+                        var tip = new dojox.charting.action2d.Tooltip(c, "default", {"text" : function(el){
+                            return 'CD4 Count ' + el.run.data[el.index];
+                        }
+                        });
+                        c.render();
+                    }
+
+                });
+
+            });
+        </script>
+
+        <div>
+            <div id="cd4CountOverTime" style="width: 99%; height: 400px; display:inline-block"><!-- required --></div>
+        </div>
+        <div id="legend"></div>
+    </util:panel>
+</div>

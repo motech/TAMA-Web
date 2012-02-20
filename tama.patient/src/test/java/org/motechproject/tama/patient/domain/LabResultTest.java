@@ -96,7 +96,7 @@ public class LabResultTest {
 
     @Test
     public void shouldReturnFalseForCD4LabResultWhenNoLabTestSet() {
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(null).withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
 
         assertFalse(labResult.isCD4());
     }

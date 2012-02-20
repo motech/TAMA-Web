@@ -45,7 +45,10 @@ public class LabResult extends CouchEntity {
     }
 
     public void setLabTest(LabTest labTest) {
-        this.labTest = labTest;
+        if (labTest != null) {
+            this.labTest_id = labTest.getId();
+            this.labTest = labTest;
+        }
     }
 
     public String getPatientId() {

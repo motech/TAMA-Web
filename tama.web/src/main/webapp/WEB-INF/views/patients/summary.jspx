@@ -28,10 +28,10 @@
             <field:display date="true" dateTimePattern="dd/MM/yyyy" field="currentRegimenStartDate" id="s_org_motechproject_tama_domain_patient_currentRegimenStartDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
             <field:display field="callPlan" id="s_org_motechproject_tama_domain_patient_callPlan" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
         </util:panel>
-        <spring:url value="/patients/${patient.id}" var="patient_details"><!-- required--> </spring:url>
-        <div style="margin-top: 10px"><a id="patient_summary" href="${patient_details}">Show Patient Details</a></div>
+
         <jsp:include page="showPatientPageLinks.jspx" />
         <jsp:include page="showSymptomTimeline.jspx" />
         <jsp:include page="showAdherenceOverTime.jspx" />
+        <jsp:include page="showCD4CountOverTime.jspx" />
     </page:show>
 </div>

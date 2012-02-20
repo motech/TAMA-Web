@@ -4,6 +4,7 @@ import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
@@ -78,5 +79,18 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
                 return savedLabResult.getId();
             }
         }
+    }
+
+    public List<LabResult> findCD4LabResultsFor(String patientId) {
+        LabTest cd4LabTest = allLabTests.findByName(TAMAConstants.LabTestType.CD4);
+
+        ViewQuery query = createQuery("find_by_patientId_and_labTest_id").key(ComplexKey.of(patientId, cd4LabTest.getId())).includeDocs(true);
+
+        List<LabResult> labResults = db.queryView(query, LabResult.class);
+        for (LabResult labResult : labResults) {
+            labResult.setLabTest(cd4LabTest);
+        }
+
+        return labResults;
     }
 }

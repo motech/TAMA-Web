@@ -2,17 +2,23 @@
      xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:springform="http://www.springframework.org/tags/form"
      xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+    <spring:url value="/patients/${patient.id}" var="patient_details"><!-- required--> </spring:url>
+    <div style="margin-top: 10px;display: inline;"><a id="patient_summary" href="${patient_details}">Show Patient Details</a></div>
+     |
     <c:choose>
+
         <c:when test="${patient.status.active || patient.status.suspended}">
             <spring:url value="/clinicvisits/list" var="clinic_visits_url">
                 <spring:param name="form"/>
                 <spring:param name="patientId" value="${patient.id}"/>
             </spring:url>
 
-        <spring:url value="/patients/${patient.id}/reports" var="reports_url"><!-- required--> </spring:url>
+            <spring:url value="/patients/${patient.id}/reports" var="reports_url"><!-- required--> </spring:url>
 
-            <div style="margin-top: 10px"><a id="clinic_visits" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a></div>
-            <div style="margin-top: 10px"><a id="reports_link" href="${reports_url}">Reports</a></div>
+            <div style="margin-top: 10px;display: inline;"><a id="clinic_visits"
+                                             href="${clinic_visits_url}">Clinic Visits / Appointment Details</a></div>
+             |
+            <div style="margin-top: 10px;display: inline;"><a id="reports_link" href="${reports_url}">Reports</a></div>
             <br/>
         </c:when>
     </c:choose>

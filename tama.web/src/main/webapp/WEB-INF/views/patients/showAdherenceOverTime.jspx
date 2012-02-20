@@ -20,6 +20,7 @@
 
     <div>
         <util:panel id="adherence-over-time" title="Adherence Captured Over Time" openPane="true">
+            <!-- required or JSP eats it up -->
             <div style="overflow-x:auto">
                 <div id="adherence-over-time-notice" class="bold"><!-- required or JSP eats it up --></div>
                 <table id="dailyAdherenceOverTimeChartLegend" style="display: none;">
@@ -39,7 +40,7 @@
                     </tr>
                 </table>
                 <div>
-                    <div id="dailyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"/>
+                    <div id="dailyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"><!-- required or JSP eats it up --></div>
                 </div>
                 <div class="action" type="Tooltip"></div>
 
@@ -60,7 +61,7 @@
                     </tr>
                 </table>
                 <div>
-                    <div id="weeklyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"/>
+                    <div id="weeklyAdherenceOverTimeChart" style="width: 400px; height: 0px; display: inline-block;"><!-- required or JSP eats it up --></div>
                 </div>
             </div>
         </util:panel>
