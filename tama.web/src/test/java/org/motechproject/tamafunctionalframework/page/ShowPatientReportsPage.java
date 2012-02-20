@@ -62,6 +62,7 @@ public class ShowPatientReportsPage extends Page {
     }
 
     public String getDailyPillReminderReportText(){
+        waitForElementWithCSSToLoad("td.dojoxGridCell"); //wait for grid cell to load
         return this.dailyPillReminderReportGrid.getText();
     }
 }

@@ -91,6 +91,10 @@ public abstract class Page extends FunctionalTestObject {
         waitForElementToLoad(By.xpath(path));
     }
 
+    protected void waitForElementWithCSSToLoad(final String path) {
+        waitForElementToLoad(By.cssSelector(path));
+    }
+
     protected void waitForDojoElementToLoad(final String id, final String dojoClass) {
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
