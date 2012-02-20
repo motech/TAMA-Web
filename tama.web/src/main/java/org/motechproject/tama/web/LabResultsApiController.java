@@ -24,7 +24,7 @@ public class LabResultsApiController {
     }
     @RequestMapping(value = "/listCD4Count", method = RequestMethod.POST)
     @ResponseBody
-    String listCD4Count(@RequestParam(value = "patientId") String patientId) throws JSONException {
-        return new CD4Json(labResultsService.listCD4Counts(patientId)).toString();
+    String listCD4Count(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths")int rangeInMonths) throws JSONException {
+        return new CD4Json(labResultsService.listCD4Counts(patientId, rangeInMonths)).toString();
     }
 }

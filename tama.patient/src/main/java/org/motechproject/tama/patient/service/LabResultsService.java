@@ -17,7 +17,7 @@ public class LabResultsService {
         this.allLabResults = allLabResults;
     }
 
-    public List<LabResult> listCD4Counts(String patientId) {
-        return allLabResults.findCD4LabResultsFor(patientId);
+    public List<LabResult> listCD4Counts(String patientId, int rangeInMonths) {
+        return allLabResults.findCD4LabResultsFor(patientId, rangeInMonths);
     }
 }

@@ -4,12 +4,14 @@ import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.repository.AllLabTests;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -81,10 +83,18 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
         }
     }
 
-    public List<LabResult> findCD4LabResultsFor(String patientId) {
+    @View(name = "find_by_patientId_and_labTest_id_and_testDate", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId && doc.labTest_id) {emit([doc.patientId, doc.labTest_id, doc.testDate], doc._id);}}")
+    public List<LabResult> findCD4LabResultsFor(String patientId, int rangeInMonths) {
+
+        LocalDate today = DateUtil.today();
+        LocalDate startDate = today.minusMonths(rangeInMonths);
         LabTest cd4LabTest = allLabTests.findByName(TAMAConstants.LabTestType.CD4);
 
-        ViewQuery query = createQuery("find_by_patientId_and_labTest_id").key(ComplexKey.of(patientId, cd4LabTest.getId())).includeDocs(true);
+        ViewQuery query = createQuery("find_by_patientId_and_labTest_id_and_testDate").
+                startKey(ComplexKey.of(patientId, cd4LabTest.getId(), startDate)).
+                endKey(ComplexKey.of(patientId, cd4LabTest.getId(), today)).
+                inclusiveEnd(true).
+                includeDocs(true);
 
         List<LabResult> labResults = db.queryView(query, LabResult.class);
         for (LabResult labResult : labResults) {

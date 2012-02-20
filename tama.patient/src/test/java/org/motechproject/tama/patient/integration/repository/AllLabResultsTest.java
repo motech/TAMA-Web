@@ -2,6 +2,8 @@ package org.motechproject.tama.patient.integration.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.common.TAMAConstants;
@@ -14,7 +16,6 @@ import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.repository.AllLabTests;
 import org.motechproject.util.DateUtil;
-import org.omg.CORBA.TCKind;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -170,8 +171,25 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         String patientId = "patientId";
         String resultId = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(labTest).build());
         markForDeletion(allLabResults.get(resultId));
-        List<LabResult> labResults = allLabResults.findCD4LabResultsFor(patientId);
+        int rangeInMonths = 3;
+        List<LabResult> labResults = allLabResults.findCD4LabResultsFor(patientId, rangeInMonths);
         assertCD4LabResult(labResults.get(0));
+    }
+
+    @Test
+    public void shouldNotReturnLabResultsOlderThanSpecifiedPeriod() throws Exception {
+        String patientId = "patientId";
+        final LocalDate today = DateUtil.today();
+        String resultId = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(labTest).
+                withTestDate(today.minusMonths(4)).build());
+        String resultId2 = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(labTest).
+                withTestDate(today.minusMonths(1)).build());
+        markForDeletion(allLabResults.get(resultId));
+        markForDeletion(allLabResults.get(resultId2));
+        int rangeInMonths = 3;
+        List<LabResult> labResults = allLabResults.findCD4LabResultsFor(patientId, rangeInMonths);
+        assertEquals(1, labResults.size());
+        assertEquals(resultId2, labResults.get(0).getId());
     }
 
     private void assertCD4LabResult(LabResult labResult) {

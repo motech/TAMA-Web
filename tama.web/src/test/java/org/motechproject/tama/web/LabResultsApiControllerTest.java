@@ -41,9 +41,9 @@ public class LabResultsApiControllerTest {
     public void shouldReturnCD4CountListAsJson() throws Exception {
         List<LabResult> defaultCD4Results = defaultCD4LabResults();
 
-        when(labResultsService.listCD4Counts(PATIENT_ID)).thenReturn(defaultCD4Results);
+        when(labResultsService.listCD4Counts(PATIENT_ID, 3)).thenReturn(defaultCD4Results);
 
-        String cd4list = controller.listCD4Count(PATIENT_ID);
+        String cd4list = controller.listCD4Count(PATIENT_ID, 3);
 
         assertThat(cd4list, is(ExpectedCD4Json.For(defaultCD4Results)));
     }

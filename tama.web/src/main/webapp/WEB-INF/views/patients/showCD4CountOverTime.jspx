@@ -1,7 +1,7 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
     <util:panel id="cd4-over-time" title="CD4 Over Time" openPane="true">
-        <spring:url value="/json/labresults/listCD4Count" var="listCD4CountUrl">
+        <spring:url value="/json/labresults/listCD4Count" var="listCD4CountUrl" htmlEscape="false">
             <spring:param name="patientId" value="${patient.id}"/>
         </spring:url>
         <script type="text/javascript">
@@ -13,16 +13,14 @@
             dojo.require("dojox.charting.themes.ThreeD");
             dojo.require("dojox.charting.plot2d.Markers");
 
-
-            dojo.ready(function () {
-
+            var loadCD4CountChart = function (c, rangeInMonths) {
                 dojo.xhrPost({
-                    url:"${listCD4CountUrl}",
+                    url:"${listCD4CountUrl}&amp;rangeInMonths=" + rangeInMonths,
                     handleAs:"json",
                     load:function (dataList) {
 
                         var theme = new dojox.charting.Theme({marker:{    symbol:"m0,-7 7,7 -7,7 -7,-7 z"}});
-                        var c = new dojox.charting.Chart2D("cd4CountOverTime");
+
                         c.addPlot("default", {type:"Lines", markers:true});
                         c.setTheme(theme);
 
@@ -39,10 +37,10 @@
                             });
                         }
 
-                        c.addAxis("x", { labels:xLabels(), natural:true});
+                        c.addAxis("x", { labels:xLabels(), natural:true, min:0.98, max:dataList.length + 1});
                         c.addAxis("y", {min:0, vertical:true});
                         c.addSeries("CD4 Count", xValues(), { stroke:{ color:"blue" }, fill:"lightblue" });
-                        var tip = new dojox.charting.action2d.Tooltip(c, "default", {"text" : function(el){
+                        var tip = new dojox.charting.action2d.Tooltip(c, "default", {"text":function (el) {
                             return 'CD4 Count ' + el.run.data[el.index];
                         }
                         });
@@ -50,12 +48,26 @@
                     }
 
                 });
+            }
 
+            dojo.ready(function () {
+                var c = new dojox.charting.Chart2D("cd4CountOverTime");
+                loadCD4CountChart(c, 3);
+                dojo.query(".loadCD4CountChart").connect('onclick', function(el) {
+                    var rangeInMonths = dojo.attr(this, 'data');
+                    loadCD4CountChart(c, rangeInMonths)
+                });
             });
         </script>
 
         <div>
             <div id="cd4CountOverTime" style="width: 99%; height: 400px; display:inline-block"><!-- required --></div>
+            <div><input class="loadCD4CountChart submit" type="submit" value="3 Months" data="3"/>
+                <input class="loadCD4CountChart submit" type="submit" value="6 Months" data="6"/>
+                <input class="loadCD4CountChart submit" type="submit" value="1 Year" data="12"/>
+                <input class="loadCD4CountChart submit" type="submit" value="2 Years" data="24"/>
+                <input class="loadCD4CountChart submit" type="submit" value="3 Years" data="36"/>
+            </div>
         </div>
         <div id="legend"></div>
     </util:panel>
