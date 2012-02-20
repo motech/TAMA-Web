@@ -114,7 +114,7 @@
     </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-<script src="js/recording.js"></script>
+<script src="js/Recording.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         window.cacheControl = new CacheControl();
@@ -245,7 +245,9 @@ function call(path) {
 				collectdtmf = $(data).find('collectdtmf').attr('l');
 				$(data).find('playaudio').each(function() {
 					var filename = $(this).text();//.replace(/.*\//, "");
-					window.recording.record(filename);
+					if(filename.indexOf("signature_music") === -1){
+					    window.recording.record(filename);
+					}
 					var text = filename;//.replace(/.wav/,"");
 					html += '<audio src="' + filename + '" autostart=false width=1 height=1 id="'+filename+'" enablejavascript="true" class="audio"/>' +
 					'<button id="' + filename+ '" onclick="play(\'' +filename+ '\');">&raquo;'+text+' </button>';

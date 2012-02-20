@@ -58,7 +58,7 @@
             }
         </script>
 
-        <script src="js/recording.js"></script>
+        <script src="js/Recording.js"></script>
         <script src="js/MusicPlayer.js"></script>
         <script type="text/javascript">
             $(document).ready(function(){
@@ -92,6 +92,7 @@
             <option value="hi">Hindi</option>
             <option value="ta">Tamil</option>
         </select>
+        <a href="/tama/emulator">Back</a>
         <div id="audios"></div>
     </body>
 </html>
