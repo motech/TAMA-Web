@@ -26,7 +26,7 @@ public class ClinicVisitsTest {
 
     @Test
     public void shouldReturnEmptyLabResultsWhenVisitHasNoLabResults() throws Exception {
-        ClinicVisit visit = new ClinicVisit(new Visit(), new Appointment());
+        ClinicVisit visit = new ClinicVisit("patientId", new Visit());
         assertNotNull(visit.getLabResultIds());
     }
 }
