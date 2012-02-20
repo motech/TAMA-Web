@@ -2,6 +2,8 @@ package org.motechproject.tamaregression.patient;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.appointments.api.model.Visit;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.testdata.*;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
@@ -102,4 +104,9 @@ public class ClinicVisitTest extends BaseTest {
         assertEquals(vitalStatistics, savedVitalStatistics);
     }
 
+    @Test
+    public void shouldReturnEmptyLabResultsWhenVisitHasNoLabResults() {
+        ClinicVisit visit = new ClinicVisit("patientId", new Visit());
+        assertEquals(0, visit.getLabResultIds().size());
+    }
 }

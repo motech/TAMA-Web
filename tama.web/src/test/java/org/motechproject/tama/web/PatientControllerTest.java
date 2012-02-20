@@ -135,11 +135,11 @@ public class PatientControllerTest {
                 withActivationDate(DateUtil.now().minusDays(3)).build();
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        doNothing().when(allClinicVisits).scheduleVisits(PATIENT_ID);
+        doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
         String nextPage = controller.activate(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
-        verify(allClinicVisits, never()).scheduleVisits(eq(PATIENT_ID));
+        verify(allClinicVisits, never()).addAppointmentCalendar(eq(PATIENT_ID));
         assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
     }
 
@@ -149,11 +149,11 @@ public class PatientControllerTest {
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
         when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        doNothing().when(allClinicVisits).scheduleVisits(PATIENT_ID);
+        doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
         String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
         verify(patientService).activate(PATIENT_ID);
-        verify(allClinicVisits).scheduleVisits(PATIENT_ID);
+        verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
         assertEquals("redirect:/clinicvisits?form&patientId=patient_id&clinicVisitId=" + clinicVisit.getId(), nextPage);
     }
 

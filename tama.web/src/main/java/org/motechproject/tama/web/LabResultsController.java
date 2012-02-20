@@ -71,10 +71,10 @@ public class LabResultsController extends BaseController {
     }
 
     @RequestMapping(value = "/update", params = "form", method = RequestMethod.GET)
-    public String updateForm(@RequestParam(value = "patientId", required = true) String patientId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel) {
+    public String updateForm(@RequestParam(value = "patientId", required = true) String patientDocId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel) {
         LabResultsUIModel labResultsUIModel = LabResultsUIModel.newDefault();
-        final ClinicVisit clinicVisit = allClinicVisits.get(patientId, clinicVisitId);
-        final Map<String, LabResult> labResultsMap = emptyLabResultsForAllLabTests(clinicVisit.getPatientId());
+        final ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
+        final Map<String, LabResult> labResultsMap = emptyLabResultsForAllLabTests(patientDocId);
         for (String labResultId : clinicVisit.getLabResultIds()) {
             final LabResult labResult = allLabResults.get(labResultId);
             labResultsMap.put(labResult.getLabTest_id(), labResult);

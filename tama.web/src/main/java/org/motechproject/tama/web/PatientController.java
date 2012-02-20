@@ -122,7 +122,7 @@ public class PatientController extends BaseController {
         boolean firstActivation = patient.getActivationDate() == null;
         patientService.activate(patientDocId);
         if (firstActivation) {
-            allClinicVisits.scheduleVisits(patientDocId);
+            allClinicVisits.addAppointmentCalendar(patientDocId);
             ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
             return "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
         }

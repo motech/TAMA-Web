@@ -42,12 +42,6 @@ public class ShowLabResultsSection {
         return Arrays.asList(resultForCD4.getText(), resultForPVL.getText());
     }
 
-//    public ListPatientsPage gotoHomePage() {
-//        homePageLink.click();
-//        waitForElementWithIdToLoad(ListPatientsPage.LIST_PATIENT_PANE_ID);
-//        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
-//    }
-
     public TestLabResult getLabResult() {
         TestLabResult labResult = new TestLabResult();
         labResult.results(getResults());

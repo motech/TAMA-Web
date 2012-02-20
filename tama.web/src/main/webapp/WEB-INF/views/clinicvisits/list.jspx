@@ -30,12 +30,12 @@
                     <spring:param name="clinicVisitId" value="${visit.id}"/>
                 </spring:url>
                 <tr>
-                    <td><a id="visit-${status.index}" href="${clinicvisitEdit}"><c:out value="${visit.name}"/></a></td>
+                    <td><a id="visit-${status.index}" href="${clinicvisitEdit}"><c:out value="${visit.title}"/></a></td>
                     <td><spring:eval expression="visit.appointmentDueDate"/></td>
                     <td>
                         <c:choose>
                             <c:when test="${empty visit.confirmedVisitDate}">
-                                <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}">
+                                <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientId}">
                                     <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Schedule</c:if>
                                     <c:if test="${not empty visit.adjustedDueDate}"><spring:eval
                                             expression="visit.adjustedDueDate"/></c:if>
@@ -48,7 +48,7 @@
                         </c:choose>
                     </td>
                     <td>
-                        <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}">
+                        <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}" patientid="${visit.patientId}">
                             <c:if test="${empty visit.visitDate and empty visit.confirmedVisitDate}">
                                 Schedule
                             </c:if>
@@ -66,12 +66,12 @@
                                     </c:when>
                                     <c:otherwise>
                                         <a href="javascript:void(0);" class="markAsMissed"
-                                           visitid="${visit.id}">Mark as missed</a>
+                                           visitid="${visit.id}" patientid="${visit.patientId}">Mark as missed</a>
                                     </c:otherwise>
                                 </c:choose>
                             </c:when>
                             <c:otherwise>
-                                <a class="setVisitDate" href="javascript:void(0);" visitid="${visit.id}"><spring:eval
+                                <a class="setVisitDate" href="javascript:void(0);" visitid="${visit.id}" patientid="${visit.patientId}"><spring:eval
                                         expression="visit.visitDate"/></a>
                             </c:otherwise>
                         </c:choose>
@@ -121,10 +121,11 @@
             var popup = new SchedulePopup('scheduleAdjustedDueDate', "Adjust Due Date");
             var adjustDueDate = function (event) {
                 var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
                 var linkElement = this;
                 popup.show(this, false, function (date) {
                     dojo.xhrPost({
-                        url:"${adjustDatePostUrl}/" + clinicVisitId,
+                        url:"${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
                         content:{"adjustedDueDate":dojo.date.locale.format(date, {selector:"date", datePattern:'dd/MM/yyyy'})},
                         handleAs:"json",
                         load:function (data) {
@@ -135,10 +136,11 @@
             }
             var confirmVisitDate = function (element) {
                 var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
                 var linkElement = this;
                 popup.show(this, true, function (confirmedDate) {
                     dojo.xhrPost({
-                        url:"${confirmVisitDateUrl}/" + clinicVisitId,
+                        url:"${confirmVisitDateUrl}/" + clinicVisitId + "?patientId=" + patientId,
                         content:{"confirmedVisitDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
                         handleAs:"json",
                         load:function (data) {
@@ -153,12 +155,12 @@
             }
             var setVisitDate = function (element) {
                 var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
                 var linkElement = this;
-
 
                 var okHandler = function (visitDate) {
                     dojo.xhrPost({
-                        url:"${setVisitDate}/" + clinicVisitId,
+                        url:"${setVisitDate}/" + clinicVisitId + "?patientId=" + patientId,
                         content:{"visitDate":dojo.date.locale.format(visitDate, {selector:"date", datePattern:'dd/MM/yyyy'})},
                         handleAs:"json",
                         load:function (data) {
@@ -172,10 +174,11 @@
 
             var markAsMissed = function (element) {
                 var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
                 var linkElement = this;
                 if (window.confirm("Confirm visit as missed?")) {
                     dojo.xhrPost({
-                        url:"${markAsMissedUrl}/" + clinicVisitId,
+                        url:"${markAsMissedUrl}/" + clinicVisitId + "?patientId=" + patientId,
                         content:{},
                         handleAs:"json",
                         load:function (data) {

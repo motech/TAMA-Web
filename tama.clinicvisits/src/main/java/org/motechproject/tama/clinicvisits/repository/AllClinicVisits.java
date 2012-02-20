@@ -2,20 +2,18 @@ package org.motechproject.tama.clinicvisits.repository;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
+import org.motechproject.appointments.api.contract.ReminderConfiguration;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
-import org.motechproject.appointments.api.model.Reminder;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.ListOfWeeks;
-import org.motechproject.tama.clinicvisits.factory.AppointmentsFactory;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,18 +38,18 @@ public class AllClinicVisits {
         return new ClinicVisit(patientDocId, appointmentCalendar.getVisit(visitId));
     }
 
-    public void scheduleVisits(String patientDocId) {
+    public void addAppointmentCalendar(String patientDocId) {
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsTemplate.getProperty(APPOINTMENT_SCHEDULE));
-        DateTime now = DateUtil.now();
-        addVisit(patientDocId, now, 0);
-        for (Integer week : appointmentWeeks) {
-            addVisit(patientDocId, now.plusWeeks(week), week);
-        }
+        int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
+        int remindTill = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_TILL));
+        ReminderConfiguration reminderConfiguration = new ReminderConfiguration().setRemindFrom(remindFrom).setRemindTill(remindTill).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom - remindTill);
+        AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId).setWeekOffsets(appointmentWeeks).setReminderConfiguration(reminderConfiguration);
+        appointmentService.addCalendar(appointmentCalendarRequest);
     }
 
-    public ClinicVisits clinicVisits(String patientDocId) {
+    public List<ClinicVisit> clinicVisits(String patientDocId) {
         AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
-        ClinicVisits clinicVisits = new ClinicVisits();
+        List<ClinicVisit> clinicVisits = new ArrayList<ClinicVisit>();
         for (Visit visit : appointmentCalendar.visits()) {
             clinicVisits.add(new ClinicVisit(patientDocId, visit));
         }
@@ -59,16 +57,8 @@ public class AllClinicVisits {
     }
 
     public ClinicVisit getBaselineVisit(String patientDocId) {
-        return clinicVisits(patientDocId).getBaselineVisit();
-    }
-
-    void addVisit(String patientDocId, DateTime expectedVisitTime, int weeks) {
-        int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
-        int remindTill = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_TILL));
-        Reminder reminder = weeks == 0 ? null : AppointmentsFactory.createReminder(expectedVisitTime, remindFrom, remindTill);
-        Appointment appointment = AppointmentsFactory.createAppointment(expectedVisitTime, reminder);
-        Visit visit = AppointmentsFactory.createVisit(appointment, weeks);
-        appointmentService.addVisit(visit, patientDocId);
+        AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
+        return new ClinicVisit(patientDocId, appointmentCalendar.baselineVisit());
     }
 
     public String updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {

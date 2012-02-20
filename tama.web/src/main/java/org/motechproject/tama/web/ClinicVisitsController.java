@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 @RequestMapping("/clinicvisits")
@@ -43,24 +44,23 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(@RequestParam(value = "patientId", required = true) String patientDocId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
-        String patientId = clinicVisit.getPatientId();
         final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
 
         TreatmentAdvice adviceForPatient = null;
         if (treatmentAdviceId != null)
             adviceForPatient = allTreatmentAdvices.get(treatmentAdviceId);
         if (adviceForPatient == null)
-            adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientId);
+            adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
         if (adviceForPatient != null) {
-            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientId;
+            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientDocId;
         }
 
-        uiModel.addAttribute("patientId", patientId);
+        uiModel.addAttribute("patientId", patientDocId);
         if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.now());
         uiModel.addAttribute("clinicVisit", clinicVisit);
-        treatmentAdviceController.createForm(patientId, uiModel);
-        labResultsController.createForm(patientId, uiModel);
-        vitalStatisticsController.createForm(patientId, uiModel);
+        treatmentAdviceController.createForm(patientDocId, uiModel);
+        labResultsController.createForm(patientDocId, uiModel);
+        vitalStatisticsController.createForm(patientDocId, uiModel);
         return "clinicvisits/create";
     }
 
@@ -82,9 +82,9 @@ public class ClinicVisitsController extends BaseController {
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
         if (treatmentAdviceId == null)
-            treatmentAdviceId = allTreatmentAdvices.currentTreatmentAdvice(clinicVisit.getPatientId()).getId();
+            treatmentAdviceId = allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getId();
         treatmentAdviceController.show(treatmentAdviceId, uiModel);
-        labResultsController.show(clinicVisit.getPatientId(), clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
+        labResultsController.show(patientDocId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         uiModel.addAttribute("clinicVisit", clinicVisit);
         return "clinicvisits/show";
@@ -93,6 +93,7 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
         List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientId);
+        Collections.sort(clinicVisits);
         uiModel.addAttribute("clinicVisits", clinicVisits);
         uiModel.addAttribute("patientId", patientId);
         return "clinicvisits/list";

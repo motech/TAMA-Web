@@ -9,7 +9,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -98,7 +97,6 @@ public class ClinicVisitsControllerTest {
     @Test
     public void shouldShowClinicVisitForm() {
         final String patientId = "patientId";
-        final String clinicVisitId = "clinicVisitId";
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withPatientId(patientId).build();
         when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
 
@@ -142,15 +140,15 @@ public class ClinicVisitsControllerTest {
         Model uiModel = mock(Model.class);
         final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().build();
         final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().build();
-        when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(new ClinicVisits() {{ add(visit1); add(visit2); }});
+        when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(new ArrayList<ClinicVisit>() {{ add(visit1); add(visit2); }});
 
         final String listUrl = clinicVisitsController.list(PATIENT_ID, uiModel);
 
         assertEquals("clinicvisits/list", listUrl);
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(uiModel).addAttribute(eq("clinicVisits"), listArgumentCaptor.capture());
-        assertEquals(listArgumentCaptor.getValue().get(0), visit1);
-        assertEquals(listArgumentCaptor.getValue().get(1), visit2);
+        assertEquals(visit1, listArgumentCaptor.getValue().get(0));
+        assertEquals(visit2, listArgumentCaptor.getValue().get(1));
     }
 
     @Test

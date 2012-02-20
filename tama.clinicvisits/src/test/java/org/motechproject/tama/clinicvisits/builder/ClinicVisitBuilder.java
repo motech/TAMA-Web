@@ -21,13 +21,8 @@ public class ClinicVisitBuilder {
     }
 
     public ClinicVisitBuilder withDefaults() {
-        return this.withPatientId("patientId").withVisitDate(DateUtil.now()).withTreatmentAdviceId("treatmentAdviceId").
+        return this.withId("visit").withPatientId("patientId").withVisitDate(DateUtil.now()).withTreatmentAdviceId("treatmentAdviceId").
                 withLabResultIds(new ArrayList<String>() {{ add("labResultId"); }}).withVitalStatisticsId("vitalStatisticsId");
-    }
-
-    public ClinicVisitBuilder withTypeOfVisit(ClinicVisit.TypeOfVisit typeOfVisit) {
-        clinicVisit.setTypeOfVisit(typeOfVisit);
-        return this;
     }
 
     public ClinicVisitBuilder withVisitDate(DateTime visitDate) {
@@ -52,6 +47,11 @@ public class ClinicVisitBuilder {
 
     public ClinicVisitBuilder withPatientId(String patientId) {
         clinicVisit.setPatientId(patientId);
+        return this;
+    }
+
+    public ClinicVisitBuilder withId(String id) {
+        clinicVisit.setId(id);
         return this;
     }
 }
