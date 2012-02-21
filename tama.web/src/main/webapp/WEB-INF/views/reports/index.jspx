@@ -19,6 +19,6 @@
         <jsp:include page="showDailyPillReminderReport.jspx" />
 
         <div><a id="patient_details" href="${patient_form_url}">Back to Patient Details</a></div>
-        <div style="margin-top: 10px"><a id="patient_summary" href="${patient_summary}">Back to Patient Summary.</a></div>
+        <div style="margin-top: 10px"><a id="patient_summary" href="${patient_summary}">Back to Patient Summary</a></div>
     </util:panel>
 </div>

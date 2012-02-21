@@ -48,7 +48,7 @@ public class UpdateVitalStatisticsPage extends Page {
         pulseElement = WebDriverFactory.createWebElement(pulseElement);
     }
 
-    public ShowClinicVisitPage enterVitalStatistics(TestVitalStatistics testVitalStatistics, WebDriver webDriver) {
+    public ShowClinicVisitPage enterVitalStatistics(TestVitalStatistics testVitalStatistics) {
         weightElement.clear();
         heightElement.clear();
         systolicBpElement.clear();

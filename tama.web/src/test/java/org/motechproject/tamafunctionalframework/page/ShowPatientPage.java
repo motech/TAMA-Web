@@ -144,12 +144,7 @@ public class ShowPatientPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 
-    public CreateClinicVisitPage goToCreateClinicVisitPage() {
-        return goToClinicVisitListPage().
-                gotoFirstCreateClinicVisitPage();
-    }
-
-    private ShowClinicVisitListPage goToClinicVisitListPage() {
+    public ShowClinicVisitListPage goToClinicVisitListPage() {
         this.clinicVisitsLink.click();
         return MyPageFactory.initElements(webDriver, ShowClinicVisitListPage.class);
     }
@@ -159,7 +154,7 @@ public class ShowPatientPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowPatientReportsPage.class);
     }
 
-    public ShowClinicVisitPage goToShowClinicVisitPage() {
+    public ShowClinicVisitPage goToShowFirstClinicVisitPage() {
         return goToClinicVisitListPage().
                 gotoFirstShowClinicVisitPage();
     }

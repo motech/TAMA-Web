@@ -1,14 +1,10 @@
 package org.motechproject.tamafunctionalframework.page;
 
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
-import org.motechproject.tamafunctionalframework.testdata.TestLabResult;
-import org.motechproject.tamafunctionalframework.testdata.TestVitalStatistics;
-import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
 
 public class ShowClinicVisitListPage extends Page {
 
@@ -43,5 +39,7 @@ public class ShowClinicVisitListPage extends Page {
         return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
     }
 
-
+    public String getFirstVisitDescription() {
+        return firstVisitLink.getText();
+    }
 }

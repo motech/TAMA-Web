@@ -1,4 +1,4 @@
-package org.motechproject.tamaregression.patient;
+package org.motechproject.tamasmoke;
 
 
 import org.joda.time.LocalDate;

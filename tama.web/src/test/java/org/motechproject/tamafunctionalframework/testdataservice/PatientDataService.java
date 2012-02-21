@@ -66,21 +66,21 @@ public class PatientDataService extends EntityDataService {
     }
 
     public TestTreatmentAdvice getSavedTreatmentAdvice(TestPatient patient, TestClinician clinician) {
-        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowClinicVisitPage();
+        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowFirstClinicVisitPage();
         TestTreatmentAdvice treatmentAdvice = clinicVisitPage.getTreatmentAdvice();
         clinicVisitPage.logout();
         return treatmentAdvice;
     }
 
     public TestVitalStatistics getSavedVitalStatistics(TestPatient patient, TestClinician clinician) {
-        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowClinicVisitPage();
+        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowFirstClinicVisitPage();
         TestVitalStatistics vitalStatistics = clinicVisitPage.getVitalStatistics();
         clinicVisitPage.logout();
         return vitalStatistics;
     }
 
     public TestLabResult getSavedLabResult(TestPatient patient, TestClinician clinician) {
-        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowClinicVisitPage();
+        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowFirstClinicVisitPage();
         TestLabResult labResult = clinicVisitPage.getLabResult();
         clinicVisitPage.logout();
         return labResult;
@@ -90,11 +90,11 @@ public class PatientDataService extends EntityDataService {
         activatePatient(patient, clinician).createNewRegimen(treatmentAdvice).clickChangeRegimenLink().changeRegimen(treatmentAdvice).logout();
     }
 
-    public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {
-        viewPatient(patient, clinician).goToShowClinicVisitPage().clickEditVitalStatisticsLink().enterVitalStatistics(vitalStatistics, webDriver).logout();
+    public void updateLabResults(TestPatient patient, TestClinician clinician, TestLabResult labResults) {
+        viewPatient(patient, clinician).goToShowFirstClinicVisitPage().clickEditLabResultLink().update(labResults).gotoShowPatientPage().logout();
     }
 
-    public void updateLabResults(TestPatient patient, TestClinician clinician, TestLabResult labResults) {
-        viewPatient(patient, clinician).goToShowClinicVisitPage().clickEditLabResultLink().update(labResults).logout();
+    public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {
+        viewPatient(patient, clinician).goToShowFirstClinicVisitPage().clickEditVitalStatisticsLink().enterVitalStatistics(vitalStatistics).logout();
     }
 }
