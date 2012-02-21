@@ -16,7 +16,7 @@
     <c:if test="${patient.warning != null}">
         <div class="warning"> <c:out value="${patient.warning}"/> </div>
     </c:if>
-    <page:show id="ps_org_motechproject_tama_domain_patientSummary" object="${patient}" path="/patients" delete="false" update="false">
+    <page:show id="ps_org_motechproject_tama_domain_patientSummary" object="${patient}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Overview">
         <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Summary" title="Patient Summary" openPane="true" update="false">
             <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
             <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
@@ -28,8 +28,11 @@
             <field:display date="true" dateTimePattern="dd/MM/yyyy" field="currentRegimenStartDate" id="s_org_motechproject_tama_domain_patient_currentRegimenStartDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
             <field:display field="callPlan" id="s_org_motechproject_tama_domain_patient_callPlan" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
         </util:panel>
-
-        <jsp:include page="showPatientPageLinks.jspx" />
+        <jsp:include page="showPatientPageLinks.jspx">
+            <jsp:param name="patientId" value="${patient.id}" />
+            <jsp:param name="patientActive" value="${patient.status.active}" />
+            <jsp:param name="patientSuspended" value="${patient.status.suspended}" />
+        </jsp:include>
         <jsp:include page="showSymptomTimeline.jspx" />
         <jsp:include page="showAdherenceOverTime.jspx" />
         <jsp:include page="showCD4CountOverTime.jspx" />

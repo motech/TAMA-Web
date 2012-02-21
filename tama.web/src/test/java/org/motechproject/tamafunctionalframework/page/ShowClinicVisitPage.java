@@ -17,7 +17,7 @@ public class ShowClinicVisitPage extends Page {
     private ShowVitalStatisticsSection vitalStatisticsSection;
     private ShowLabResultsSection labResultsSection;
 
-    @FindBy(how = How.ID, using = "showPatient")
+    @FindBy(how = How.ID, using = "patient_registration_details")
     private WebElement showPatientLink;
 
     public ShowClinicVisitPage(WebDriver webDriver) {

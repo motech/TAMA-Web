@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class ClinicVisitBuilder {
 
-    private ClinicVisit clinicVisit = new ClinicVisit(null, new Visit().typeOfVisit(TypeOfVisit.Baseline));
+    private ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().withId("patientId").build(), new Visit().typeOfVisit(TypeOfVisit.Baseline));
 
     public ClinicVisit build() {
         return this.clinicVisit;
@@ -22,7 +23,7 @@ public class ClinicVisitBuilder {
     }
 
     public ClinicVisitBuilder withDefaults() {
-        return this.withId("baseline").withPatientId("patientId").withVisitDate(DateUtil.now()).withTreatmentAdviceId("treatmentAdviceId").
+        return this.withId("baseline").withVisitDate(DateUtil.now()).withTreatmentAdviceId("treatmentAdviceId").
                 withLabResultIds(new ArrayList<String>() {{ add("labResultId"); }}).withVitalStatisticsId("vitalStatisticsId");
     }
 
@@ -43,11 +44,6 @@ public class ClinicVisitBuilder {
 
     public ClinicVisitBuilder withTreatmentAdviceId(String treatmentAdviceId) {
         clinicVisit.setTreatmentAdviceId(treatmentAdviceId);
-        return this;
-    }
-
-    public ClinicVisitBuilder withPatientId(String patientId) {
-        clinicVisit.setPatientId(patientId);
         return this;
     }
 

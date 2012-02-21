@@ -61,7 +61,7 @@ public class ClinicVisitsControllerTest {
     public void shouldRedirectToShowClinicVisits_WhenPatientHasATreatmentAdvice() {
         String patientId = "patientId";
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").build();
-        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().build();
         when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.get(anyString())).thenReturn(treatmentAdvice);
         String redirectURL = clinicVisitsController.createForm(patientId, "", uiModel, request);
@@ -72,7 +72,7 @@ public class ClinicVisitsControllerTest {
     @Test
     public void shouldRedirectToCreateClinicVisits_WhenPatientDoesNotHaveATreatmentAdvice() {
         String patientId = "patientId";
-        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().build();
         when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = clinicVisitsController.createForm(patientId, "", uiModel, request);
@@ -86,7 +86,7 @@ public class ClinicVisitsControllerTest {
     @Test
     public void shouldCreateNewClinicVisitsFormGivenAPatientWithNoTreatmentAdvice() {
         String patientId = "patientId";
-        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withPatientId(patientId).build();
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().build();
         when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(null);
         String redirectURL = clinicVisitsController.createForm(patientId, "", uiModel, request);
@@ -97,7 +97,7 @@ public class ClinicVisitsControllerTest {
     @Test
     public void shouldShowClinicVisitForm() {
         final String patientId = "patientId";
-        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withPatientId(patientId).build();
+        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
         when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
 
         final String showUrl = clinicVisitsController.show(clinicVisit.getId(), patientId, uiModel);

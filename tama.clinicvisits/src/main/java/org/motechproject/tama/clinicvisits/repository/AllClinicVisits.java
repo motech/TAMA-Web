@@ -9,6 +9,8 @@ import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ListOfWeeks;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -23,18 +25,21 @@ public class AllClinicVisits {
     public static final String REMIND_FROM = "remindFrom";
     public static final String APPOINTMENT_SCHEDULE = "appointment-schedule";
 
+    private AllPatients allPatients;
     private AppointmentService appointmentService;
     private Properties appointmentsTemplate;
 
     @Autowired
-    public AllClinicVisits(AppointmentService appointmentService, @Qualifier("appointments") Properties appointmentsTemplate) {
+    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, @Qualifier("appointments") Properties appointmentsTemplate) {
+        this.allPatients = allPatients;
         this.appointmentService = appointmentService;
         this.appointmentsTemplate = appointmentsTemplate;
     }
 
     public ClinicVisit get(String patientDocId, String visitId) {
+        Patient patient = allPatients.get(patientDocId);
         AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
-        return new ClinicVisit(patientDocId, appointmentCalendar.getVisit(visitId));
+        return new ClinicVisit(patient, appointmentCalendar.getVisit(visitId));
     }
 
     public void addAppointmentCalendar(String patientDocId) {
@@ -48,16 +53,18 @@ public class AllClinicVisits {
 
     public List<ClinicVisit> clinicVisits(String patientDocId) {
         AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
+        Patient patient = allPatients.get(patientDocId);
         List<ClinicVisit> clinicVisits = new ArrayList<ClinicVisit>();
         for (Visit visit : appointmentCalendar.visits()) {
-            clinicVisits.add(new ClinicVisit(patientDocId, visit));
+            clinicVisits.add(new ClinicVisit(patient, visit));
         }
         return clinicVisits;
     }
 
     public ClinicVisit getBaselineVisit(String patientDocId) {
         AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
-        return new ClinicVisit(patientDocId, appointmentCalendar.baselineVisit());
+        Patient patient = allPatients.get(patientDocId);
+        return new ClinicVisit(patient, appointmentCalendar.baselineVisit());
     }
 
     public String updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {

@@ -17,14 +17,14 @@
     <div>
     <util:panel id="dailyPillReminderReport" title="Daily Pill Reminder Report" openPane="true">
         <div>
-            <label for="startDate"> Start Date</label>
+            <label for="startDate"> Start Date *</label>
             <input type="text" name="startDate" id="dailyPillReminderReportStartDate"/>
             <script type="text/javascript">
                 Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportStartDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter start date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}}));
             </script>
         </div>
         <div>
-            <label for="endDate"> End Date</label>
+            <label for="endDate"> End Date *</label>
             <input type="text" name="endDate" id="dailyPillReminderReportEndDate"/>
             <script type="text/javascript">
                 Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportEndDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter end date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}}));

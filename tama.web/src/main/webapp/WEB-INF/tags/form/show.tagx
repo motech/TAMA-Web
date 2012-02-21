@@ -15,7 +15,8 @@
 
   <c:if test="${empty render or render}">
     <c:if test="${empty label}">
-      <spring:message code="label_${fn:toLowerCase(fn:substringAfter(id,'_'))}" var="label" htmlEscape="false" />
+      <spring:message code="label_${fn:toLowerCase(fn:substringAfter(id,'_'))}" var="title_msg" htmlEscape="false" />
+      <spring:message arguments="${title_msg}" code="entity_show" var="label" htmlEscape="false" />
     </c:if>
 
     <c:if test="${empty list}">
@@ -37,8 +38,7 @@
     <spring:message var="typeName" code="menu_item_${fn:toLowerCase(fn:split(id,'_')[fn:length(fn:split(id,'_')) - 1])}_new_label" htmlEscape="false" />
     <spring:message var="typeNamePlural" code="menu_item_${fn:toLowerCase(fn:split(id,'_')[fn:length(fn:split(id,'_')) - 1])}_list_label" htmlEscape="false" />
 
-    <spring:message arguments="${label}" code="entity_show" var="title_msg" htmlEscape="false" />
-    <util:panel id="${id}" title="${title_msg}" openPane="${openPane}">
+    <util:panel id="${id}" title="${label}" openPane="${openPane}">
       <c:choose>
         <c:when test="${not empty object}">
           <jsp:doBody />

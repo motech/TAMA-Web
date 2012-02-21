@@ -49,7 +49,6 @@ public class ShowPatientSummaryPage extends Page {
         return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
     }
 
-
     public static ShowPatientSummaryPage get(WebDriver driver, TestPatient patient) {
         driver.get(TamaUrl.viewPageUrlFor(patient));
         return MyPageFactory.initElements(driver, ShowPatientSummaryPage.class);

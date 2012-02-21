@@ -13,6 +13,8 @@ import org.motechproject.appointments.api.model.AppointmentCalendar;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -37,6 +39,8 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     protected LocalDate today;
 
     @Mock
+    private AllPatients allPatients;
+    @Mock
     private AppointmentService appointmentService;
 
     private AllClinicVisits allClinicVisits;
@@ -46,7 +50,8 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         initMocks(this);
         setUpTime();
         setUpAppointmentsTemplate();
-        allClinicVisits = new AllClinicVisits(appointmentService, appointmentsTemplate);
+        when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build());
+        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentsTemplate);
     }
 
     private void setUpTime() {

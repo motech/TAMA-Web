@@ -81,10 +81,11 @@
             </c:forEach>
         </table>
         <br/>
-        <spring:url value="/patients/${patientId}" var="patient_form_url"/>
-        <spring:url value="/patients/summary/${patientId}" var="patient_summary_url"/>
-        <a id="showPatient" href="${patient_form_url}">Show Patient</a>
-        <div style="margin-top: 10px"><a id="showPatientSummary" href="${patient_summary_url}">Show Patient Summary</a></div>
+        <jsp:include page="../patients/showPatientPageLinks.jspx">
+            <jsp:param name="patientId" value="${patient.id}" />
+            <jsp:param name="patientActive" value="${patient.status.active}" />
+            <jsp:param name="patientSuspended" value="${patient.status.suspended}" />
+        </jsp:include>
     </util:panel>
 
     <div style="display: none;">

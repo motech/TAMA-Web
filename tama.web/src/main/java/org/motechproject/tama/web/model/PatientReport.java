@@ -18,6 +18,10 @@ public class PatientReport {
         this.earliestTreatmentAdvice = earliestTreatmentAdvice;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
     public String getPatientId() {
         return patient.getPatientId();
     }

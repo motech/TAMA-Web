@@ -206,7 +206,7 @@ public class VitalStatisticsControllerTest {
 
         final String vitalStatisticsId = "vitalStatisticsId";
         VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withId(vitalStatisticsId).withPatientId(PATIENT_ID).build();
-        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withPatientId(PATIENT_ID).build();
+        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
         final VitalStatisticsUIModel vitalStatisticsUIModel = VitalStatisticsUIModel.get(clinicVisit, vitalStatistics);
         final VitalStatistics savedVitalStatistics = new VitalStatistics();
         when(allVitalStatistics.get(vitalStatisticsId)).thenReturn(savedVitalStatistics);

@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.domain.Patient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
@@ -19,14 +20,14 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     public static final String LAB_RESULTS = "LabResultIds";
     public static final String ADJUSTED_DUE_DATE = "AdjustedDueDate";
 
-    private String patientDocId;
+    private Patient patient;
     private Visit visit = new Visit();
 
     public ClinicVisit() {
     }
 
-    public ClinicVisit(String patientDocId, Visit visit) {
-        this.patientDocId = patientDocId;
+    public ClinicVisit(Patient patient, Visit visit) {
+        this.patient = patient;
         this.visit = visit;
     }
 
@@ -51,12 +52,12 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
             return "";
     }
 
-    public String getPatientId() {
-        return patientDocId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientId(String patientDocId) {
-        this.patientDocId = patientDocId;
+    public String getPatientId() {
+        return patient.getId();
     }
 
     public String getTypeOfVisit() {

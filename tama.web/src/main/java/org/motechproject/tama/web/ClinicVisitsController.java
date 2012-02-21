@@ -95,7 +95,7 @@ public class ClinicVisitsController extends BaseController {
         List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientId);
         Collections.sort(clinicVisits);
         uiModel.addAttribute("clinicVisits", clinicVisits);
-        uiModel.addAttribute("patientId", patientId);
+        uiModel.addAttribute("patient", clinicVisits.get(0).getPatient());
         return "clinicvisits/list";
     }
 
