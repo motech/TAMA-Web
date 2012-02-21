@@ -119,7 +119,7 @@ public abstract class ReportBuilder<T> {
 
         HSSFCellStyle headerCellStyle = worksheet.getWorkbook().createCellStyle();
         headerCellStyle.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
-        headerCellStyle.setFillPattern(CellStyle.FINE_DOTS);
+        headerCellStyle.setFillPattern(CellStyle.NO_FILL);
         headerCellStyle.setAlignment(CellStyle.ALIGN_CENTER);
         headerCellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
         headerCellStyle.setWrapText(true);

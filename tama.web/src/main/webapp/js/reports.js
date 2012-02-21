@@ -58,7 +58,6 @@ DailyPillReminderReportWidget.prototype = {
     prepareLogs: function(logs){
         return logs.map(function(log, index) {
             log.id = index;
-            log.date = new DateFormatter(new Date(log.date)).slashFormat();
             return log;
         });
     },

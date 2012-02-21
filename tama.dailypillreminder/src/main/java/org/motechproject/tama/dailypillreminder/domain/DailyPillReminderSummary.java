@@ -3,6 +3,7 @@ package org.motechproject.tama.dailypillreminder.domain;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.motechproject.model.Time;
+import org.motechproject.tama.common.TAMAConstants;
 
 public class DailyPillReminderSummary {
 
@@ -28,7 +29,7 @@ public class DailyPillReminderSummary {
     }
 
     public String getDate() {
-        return date.toString();
+        return date.toString(TAMAConstants.DATE_FORMAT);
     }
 
     public String getMorningDoseTime() {

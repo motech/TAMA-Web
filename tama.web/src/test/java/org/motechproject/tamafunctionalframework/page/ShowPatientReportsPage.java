@@ -18,7 +18,7 @@ public class ShowPatientReportsPage extends Page {
     @FindBy(how = How.ID, using = "_patientSummaryClinicName_clinicName_id")
     private WebElement clinicName;
 
-    @FindBy(how = How.ID, using = "_patientSummaryARTStartDate_ARTStartDate_id")
+    @FindBy(how = How.ID, using = "_patientSummaryARTStartDate_ARTStartedOn_id")
     private WebElement patientARTStartDate;
 
     @FindBy(how = How.ID, using = "dailyPillReminderReportStartDate")

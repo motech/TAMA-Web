@@ -2,6 +2,7 @@ package org.motechproject.tama.dailypillreminder.domain;
 
 import org.junit.Test;
 import org.motechproject.model.Time;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -14,9 +15,10 @@ public class DailyPillReminderSummaryTest {
     public void shouldSetMorningTimeAndMorningStatus_whenDosageAdherenceLogSummaryTimeIsLessThan_12_Noon(){
         ArrayList<DosageAdherenceLogSummary> dosageAdherenceLogSummaries = new ArrayList<DosageAdherenceLogSummary>();
         dosageAdherenceLogSummaries.add(new DosageAdherenceLogSummary().setDosageStatus(DosageStatus.TAKEN).setDosageTime(new Time(11, 45)));
-        DosageAdherenceLogPerDay dosageAdherenceLogPerDay = new DosageAdherenceLogPerDay().setLogs(dosageAdherenceLogSummaries);
+        DosageAdherenceLogPerDay dosageAdherenceLogPerDay = new DosageAdherenceLogPerDay().setLogs(dosageAdherenceLogSummaries).setDate(DateUtil.newDate(2010, 9, 23));
         DailyPillReminderSummary dailyPillReminderSummary = new DailyPillReminderSummary(dosageAdherenceLogPerDay);
 
+        assertEquals("23/09/2010", dailyPillReminderSummary.getDate());
         assertEquals("TAKEN", dailyPillReminderSummary.getMorningDoseStatus());
         assertEquals("11:45", dailyPillReminderSummary.getMorningDoseTime());
         assertNull(dailyPillReminderSummary.getEveningDoseTime());
