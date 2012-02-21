@@ -37,7 +37,7 @@
                             });
                         }
 
-                        c.addAxis("x", { labels:xLabels(), majorTickStep:1,  min:0.99, max:dataList.length + 0.01});
+                        c.addAxis("x", { labels:xLabels(), majorTickStep:1, minorTicks:false, minorLabels:false,  min:0.99, max:dataList.length + 0.01});
                         c.addAxis("y", {min:0, vertical:true});
                         c.addSeries("CD4 Count", xValues(), { stroke:{ color:"blue" }, fill:"lightblue" });
                         var tip = new dojox.charting.action2d.Tooltip(c, "default", {"text":function (el) {
