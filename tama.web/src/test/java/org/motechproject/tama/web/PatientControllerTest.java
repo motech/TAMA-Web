@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
@@ -28,9 +29,9 @@ import org.motechproject.tama.refdata.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.DoseStatus;
+import org.motechproject.tama.web.model.PatientSummary;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,300 +43,372 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(PowerMockRunner.class)
 @PrepareForTest({Patient.class, Gender.class})
+@RunWith(value = Suite.class)
+@Suite.SuiteClasses({
+        PatientControllerTest.Activate.class,
+        PatientControllerTest.ActivateAndRedirectToListPatient.class,
+        PatientControllerTest.Deactivate.class,
+        PatientControllerTest.ReactivatePatient.class,
+        PatientControllerTest.Show.class,
+        PatientControllerTest.ShowSummary.class,
+        PatientControllerTest.Create.class,
+        PatientControllerTest.FindByPatientId.class,
+        PatientControllerTest.Update.class,
+        PatientControllerTest.UpdateForm.class
+})
 public class PatientControllerTest {
 
-    public static final String PATIENT_ID = "patient_id";
-    public static final String CLINIC_ID = "456";
-    private PatientController controller;
-    @Mock
-    private Model uiModel;
-    @Mock
-    private AuthenticatedUser user;
-    @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpSession session;
-    @Mock
-    private AllPatients allPatients;
-    @Mock
-    private AllClinics allClinics;
-    @Mock
-    private AllGenders allGenders;
-    @Mock
-    private AllIVRLanguages allIVRLanguages;
-    @Mock
-    private AllHIVTestReasons allTestReasons;
-    @Mock
-    private AllModesOfTransmission allModesOfTransmission;
-    @Mock
-    private AllVitalStatistics allVitalStatistics;
-    @Mock
-    private AllTreatmentAdvices allTreatmentAdvices;
-    @Mock
-    private AllLabResults allLabResults;
-    @Mock
-    private AllRegimens allRegimens;
-    @Mock
-    private PatientService patientService;
-    @Mock
-    private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
-    @Mock
-    private ResumeFourDayRecallService resumeFourDayRecallService;
-    @Mock
-    private AllClinicVisits allClinicVisits;
+    public static class SubjectUnderTest {
+        static final String PATIENT_ID = "patient_id";
+        static final String CLINIC_ID = "456";
+        PatientController controller;
+        @Mock
+        Model uiModel;
+        @Mock
+        AuthenticatedUser user;
+        @Mock
+        HttpServletRequest request;
+        @Mock
+        HttpSession session;
+        @Mock
+        AllPatients allPatients;
+        @Mock
+        AllClinics allClinics;
+        @Mock
+        AllGenders allGenders;
+        @Mock
+        AllIVRLanguages allIVRLanguages;
+        @Mock
+        AllHIVTestReasons allTestReasons;
+        @Mock
+        AllModesOfTransmission allModesOfTransmission;
+        @Mock
+        AllVitalStatistics allVitalStatistics;
+        @Mock
+        AllTreatmentAdvices allTreatmentAdvices;
+        @Mock
+        AllLabResults allLabResults;
+        @Mock
+        AllRegimens allRegimens;
+        @Mock
+        PatientService patientService;
+        @Mock
+        DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
+        @Mock
+        ResumeFourDayRecallService resumeFourDayRecallService;
+        @Mock
+        AllClinicVisits allClinicVisits;
 
-    @Before
-    public void setUp() {
-        initMocks(this);
-        controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, allRegimens, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, 28, allClinicVisits);
-        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+        @Before
+        public void setUp() {
+            initMocks(this);
+            controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, allRegimens, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, 28, allClinicVisits);
+            when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+        }
     }
 
-    @Test
-    public void shouldRenderShowPage() {
-        when(request.getSession()).thenReturn(session);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
-        when(allPatients.findByIdAndClinicId(PATIENT_ID, patient.getClinic_id())).thenReturn(patient);
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
-        when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-        when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
+    public static class Activate extends SubjectUnderTest {
+        @Test
+        public void shouldActivateAndRedirectToClinicVisitPage_whenActivatedForFirstTime() {
+            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+            when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
+            when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+            doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            String nextPage = controller.activate(PATIENT_ID, request);
 
-        String returnPage = controller.show(PATIENT_ID, uiModel, request);
+            verify(patientService).activate(PATIENT_ID);
+            verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            assertEquals("redirect:/clinicvisits?form&patientId=patient_id&clinicVisitId=" + clinicVisit.getId(), nextPage);
+        }
 
-        assertEquals("patients/show", returnPage);
+        @Test
+        public void shouldActivatePatientsAndRedirectToPatientViewPage_whenHadBeenActivatedPreviouslyAtLeastOnce() {
+            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).
+                    withCallPreference(CallPreference.DailyPillReminder).
+                    withActivationDate(DateUtil.now().minusDays(3)).build();
 
-        verify(uiModel).addAttribute(PatientController.DATE_OF_BIRTH_FORMAT, DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
-        verify(uiModel).addAttribute(PatientController.PATIENT, patient);
-        verify(uiModel).addAttribute(PatientController.ITEM_ID, PATIENT_ID);
-        verify(uiModel).addAttribute(PatientController.DEACTIVATION_STATUSES, Status.deactivationStatuses());
-        verify(uiModel).addAttribute(PatientController.WARNING, "The Vital Statistics, Regimen details, Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips");
+            when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+            doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            String nextPage = controller.activate(PATIENT_ID, request);
+
+            verify(patientService).activate(PATIENT_ID);
+            verify(allClinicVisits, never()).addAppointmentCalendar(eq(PATIENT_ID));
+            assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+        }
     }
 
-    @Test
-    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForShowAction() {
-        when(request.getSession()).thenReturn(session);
-        when(user.getClinicId()).thenReturn(CLINIC_ID);
-        when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
+    public static class ActivateAndRedirectToListPatient extends SubjectUnderTest {
+        @Test
+        public void shouldActivateAndRedirectToClinicVisitPage_whenActivatedForFirstTime() {
+            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+            when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
+            when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+            doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
-        assertEquals("authorizationFailure", controller.show(PATIENT_ID, uiModel, request));
-        verify(allPatients).findByIdAndClinicId(PATIENT_ID, CLINIC_ID);
+            verify(patientService).activate(PATIENT_ID);
+            verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            assertEquals("redirect:/clinicvisits?form&patientId=patient_id&clinicVisitId=" + clinicVisit.getId(), nextPage);
+        }
+
+        @Test
+        public void shouldActivatePatientAndRedirectToPatientListPage_whenHadBeenActivatedPreviouslyAtLeastOnce() {
+            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).
+                    withActivationDate(DateUtil.now()).build();
+            when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+            when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
+            when(request.getCharacterEncoding()).thenReturn("utf8");
+            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
+
+            verify(patientService).activate(PATIENT_ID);
+            assertEquals("redirect:/patients", nextPage);
+        }
     }
 
-    @Test
-    public void shouldActivatePatientsAndRedirectToPatientViewPage() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).
-                withCallPreference(CallPreference.DailyPillReminder).
-                withActivationDate(DateUtil.now().minusDays(3)).build();
+    public static class Deactivate extends SubjectUnderTest {
+        @Test
+        public void shouldDeactivatePatientAndRedirectToPatientViewPage() {
+            String id = PATIENT_ID;
+            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, request);
 
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-        String nextPage = controller.activate(PATIENT_ID, request);
-
-        verify(patientService).activate(PATIENT_ID);
-        verify(allClinicVisits, never()).addAppointmentCalendar(eq(PATIENT_ID));
-        assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+            verify(patientService).deactivate(id, Status.Patient_Withdraws_Consent);
+            assertEquals("redirect:/patients/patient_id", nextPage);
+        }
     }
 
-    @Test
-    public void shouldRedirectToClinicVisitPageAfterFirstActivation() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
-        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
-        when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-        String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
+    public static class ReactivatePatient extends SubjectUnderTest {
+        @Test
+        public void shouldBackFill_whenPatientIsOnDailyPillReminder() {
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
+            when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
-        verify(patientService).activate(PATIENT_ID);
-        verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-        assertEquals("redirect:/clinicvisits?form&patientId=patient_id&clinicVisitId=" + clinicVisit.getId(), nextPage);
+            controller.reactivatePatient(PATIENT_ID, DoseStatus.NOT_TAKEN, request);
+
+            ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
+            verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(PATIENT_ID), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(false));
+            assertTimeIsNow(dateTimeArgumentCaptor.getValue());
+        }
+
+        @Test
+        public void shouldBackFill_whenPatientIsOnFourDayRecall() {
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
+            when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
+
+            controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
+
+            ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
+            verify(resumeFourDayRecallService, times(1)).backFillAdherence(eq(patientFromUI), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(true));
+            assertTimeIsNow(dateTimeArgumentCaptor.getValue());
+        }
+
+        @Test
+        public void shouldActivatePatientAndRedirectToShowPage(){
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
+            when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
+
+            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
+
+            verify(patientService).activate(PATIENT_ID);
+            assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+        }
+
+        private void assertTimeIsNow(DateTime endTime) {
+            assertTrue(DateUtil.now().isAfter(endTime));
+            assertTrue(DateUtil.now().minusSeconds(1).isBefore(endTime));
+        }
     }
 
-    @Test
-    public void shouldActivatePatientAndRedirectToPatientListPage() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).
-                withActivationDate(DateUtil.now()).build();
-        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
-        when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
-        when(request.getCharacterEncoding()).thenReturn("utf8");
-        String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
+    public static class Show extends SubjectUnderTest {
+        @Test
+        public void shouldRenderShowPage_WhenPatientBelongsToClinic() {
+            when(request.getSession()).thenReturn(session);
+            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
+            when(allPatients.findByIdAndClinicId(PATIENT_ID, patient.getClinic_id())).thenReturn(patient);
+            when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
+            when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
+            when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
 
-        verify(patientService).activate(PATIENT_ID);
-        assertEquals("redirect:/patients", nextPage);
+            String returnPage = controller.show(PATIENT_ID, uiModel, request);
+
+            assertEquals("patients/show", returnPage);
+
+            verify(uiModel).addAttribute(PatientController.DATE_OF_BIRTH_FORMAT, DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
+            verify(uiModel).addAttribute(PatientController.PATIENT, patient);
+            verify(uiModel).addAttribute(PatientController.ITEM_ID, PATIENT_ID);
+            verify(uiModel).addAttribute(PatientController.DEACTIVATION_STATUSES, Status.deactivationStatuses());
+            verify(uiModel).addAttribute(PatientController.WARNING, "The Vital Statistics, Regimen details, Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips");
+        }
+
+        @Test
+        public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic() {
+            when(request.getSession()).thenReturn(session);
+            when(user.getClinicId()).thenReturn(CLINIC_ID);
+            when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
+
+            assertEquals("authorizationFailure", controller.show(PATIENT_ID, uiModel, request));
+            verify(allPatients).findByIdAndClinicId(PATIENT_ID, CLINIC_ID);
+        }
     }
 
-    @Test
-    public void shouldDeactivatePatientAndRedirectToPatientViewPage() {
-        String id = PATIENT_ID;
-        String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, request);
+    public static class ShowSummary extends SubjectUnderTest {
+        @Test
+        public void shouldGoToPatientSummaryPage_WhenPatientViewedFromListPatientPage(){
+            Patient patient = mock(Patient.class);
 
-        verify(patientService).deactivate(id, Status.Patient_Withdraws_Consent);
-        assertEquals("redirect:/patients/patient_id", nextPage);
+            when(request.getSession()).thenReturn(session);
+            when(user.getClinicId()).thenReturn(CLINIC_ID);
+            when(patient.getId()).thenReturn(PATIENT_ID);
+            when(patient.getStatus()).thenReturn(Status.Inactive);
+            when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
+            when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
+            when(allTreatmentAdvices.earliestTreatmentAdvice(PATIENT_ID)).thenReturn(null);
+            when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
+            when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(patient);
+
+            ModelAndView modelAndView = controller.showSummary(PATIENT_ID, uiModel, request);
+
+            PatientSummary patientSummary = (PatientSummary) modelAndView.getModel().get("patient");
+            assertEquals("patients/summary", modelAndView.getViewName());
+            assertNotNull(patientSummary);
+        }
     }
 
-    @Test
-    public void shouldReturnToTheShowPatientPageIfPatientIsFound() {
-        Patient patientFromDb = mock(Patient.class);
+    public static class Create extends SubjectUnderTest {
+        @Test
+        public void shouldCreateAPatient_WhenThereAreNoErrors() {
+            Patient patientFromUI = mock(Patient.class);
+            when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
+                setCallPreference(CallPreference.DailyPillReminder);
+            }});
+            BindingResult bindingResult = mock(BindingResult.class);
+            Map<String, Object> modelMap = new HashMap<String, Object>();
+            modelMap.put("dummyKey", "dummyValue");
 
-        when(allPatients.findByPatientIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(patientFromDb);
-        when(patientFromDb.getId()).thenReturn("couchDbId");
-        when(user.getClinicId()).thenReturn(CLINIC_ID);
-        when(request.getSession()).thenReturn(session);
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(patientFromUI.getId()).thenReturn(PATIENT_ID);
+            when(uiModel.asMap()).thenReturn(modelMap);
+            when(user.getClinicId()).thenReturn(CLINIC_ID);
+            when(request.getSession()).thenReturn(session);
 
-        String nextPage = controller.findByPatientId(PATIENT_ID, uiModel, request);
+            String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-        assertEquals("redirect:/patients/summary/couchDbId", nextPage);
+            assertTrue(modelMap.isEmpty());
+            assertEquals("redirect:/patients/" + PATIENT_ID, createPage);
+        }
+
+        @Test
+        public void shouldNotCreateAPatient_WhenThePatientIdIsNotUniqueWithTheClinic_AndRedirectToCreatePage() {
+            Patient patientFromUI = mock(Patient.class);
+            BindingResult bindingResult = mock(BindingResult.class);
+            Map<String, Object> modelMap = new HashMap<String, Object>();
+            modelMap.put("dummyKey", "dummyValue");
+
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(patientFromUI.getId()).thenReturn(PATIENT_ID);
+            when(uiModel.asMap()).thenReturn(modelMap);
+            when(request.getSession()).thenReturn(session);
+
+            when(user.getClinicId()).thenThrow(new TamaException(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "some STUFF", new UpdateConflictException()));
+
+            String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
+
+            verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
+                    new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
+            assertEquals("patients/create", createPage);
+        }
     }
 
-    @Test
-    public void shouldGoToPatientSummaryPage_WhenPatientViewedFromListPatientPage(){
-        Patient patient = mock(Patient.class);
+    public static class FindByPatientId extends SubjectUnderTest {
+        @Test
+        public void shouldReturnToTheShowPatientPage_whenPatientIsFound() {
+            Patient patientFromDb = mock(Patient.class);
 
-        when(request.getSession()).thenReturn(session);
-        when(user.getClinicId()).thenReturn(CLINIC_ID);
-        when(patient.getId()).thenReturn(PATIENT_ID);
-        when(patient.getStatus()).thenReturn(Status.Inactive);
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
-        when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-        when(allTreatmentAdvices.earliestTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-        when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
-        when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(patient);
+            when(allPatients.findByPatientIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(patientFromDb);
+            when(patientFromDb.getId()).thenReturn("couchDbId");
+            when(user.getClinicId()).thenReturn(CLINIC_ID);
+            when(request.getSession()).thenReturn(session);
 
-        ModelAndView modelAndView = controller.showSummary(PATIENT_ID, uiModel, request);
+            String nextPage = controller.findByPatientId(PATIENT_ID, uiModel, request);
 
-        assertEquals("patients/summary", modelAndView.getViewName());
+            assertEquals("redirect:/patients/summary/couchDbId", nextPage);
+        }
+
+        @Test
+        public void shouldReturnToTheSamePage_whenPatientIsNotFound_WithOnlyOneQueryParameter() {
+            String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
+            String previousPage = expectedPreviousPageUrl + "?patientIdNotFound=1_abcd";
+
+            when(allPatients.findByPatientIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
+            when(request.getHeader("Referer")).thenReturn(previousPage);
+            when(user.getClinicId()).thenReturn(CLINIC_ID);
+            when(request.getSession()).thenReturn(session);
+
+
+            String nextPage = controller.findByPatientId(PATIENT_ID, uiModel, request);
+
+            verify(uiModel).addAttribute(PatientController.PATIENT_ID, PATIENT_ID);
+            assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
+        }
+
+        @Test
+        public void shouldReturnToTheSamePage_whenPatientIsNotFound_WithMultipleQueryParameters() {
+            String expectedPreviousPageUrl = "http://localhost:8080/tama/patients?page=1";
+            String previousPage = expectedPreviousPageUrl + "&patientIdNotFound=abc_8";
+
+            when(allPatients.findByPatientIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
+            when(request.getHeader("Referer")).thenReturn(previousPage);
+            when(user.getClinicId()).thenReturn(CLINIC_ID);
+            when(request.getSession()).thenReturn(session);
+
+
+            String nextPage = controller.findByPatientId(PATIENT_ID, uiModel, request);
+
+            verify(uiModel).addAttribute(PatientController.PATIENT_ID, PATIENT_ID);
+            assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
+        }
     }
 
-    @Test
-    public void shouldReturnToTheSamePageIfPatientIsNotFound_WithOnlyOneQueryParameter() {
-        String expectedPreviousPageUrl = "http://localhost:8080/tama/patients";
-        String previousPage = expectedPreviousPageUrl + "?patientIdNotFound=1_abcd";
+    public static class Update extends SubjectUnderTest {
+        @Test
+        public void shouldUpdatePatient() {
+            Patient patientFromUI = mock(Patient.class);
+            when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
+                setCallPreference(CallPreference.DailyPillReminder);
+                setBestCallTime(new TimeOfDay());
+            }});
+            when(patientFromUI.getId()).thenReturn(PATIENT_ID);
+            BindingResult bindingResult = mock(BindingResult.class);
+            Map<String, Object> modelMap = new HashMap<String, Object>();
+            modelMap.put("dummyKey", "dummyValue");
 
-        when(allPatients.findByPatientIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
-        when(request.getHeader("Referer")).thenReturn(previousPage);
-        when(user.getClinicId()).thenReturn(CLINIC_ID);
-        when(request.getSession()).thenReturn(session);
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(uiModel.asMap()).thenReturn(modelMap);
+            when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
+            String updatePage = controller.update(patientFromUI, bindingResult, uiModel, request);
 
-        String nextPage = controller.findByPatientId(PATIENT_ID, uiModel, request);
-
-        verify(uiModel).addAttribute(PatientController.PATIENT_ID, PATIENT_ID);
-        assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
+            assertEquals("redirect:/patients/" + PATIENT_ID, updatePage);
+            verify(patientService).update(patientFromUI);
+        }
     }
 
-    @Test
-    public void shouldReturnToTheSamePageIfPatientIsNotFound_WithMultipleQueryParameters() {
-        String expectedPreviousPageUrl = "http://localhost:8080/tama/patients?page=1";
-        String previousPage = expectedPreviousPageUrl + "&patientIdNotFound=abc_8";
+    public static class UpdateForm extends SubjectUnderTest {
+        @Test
+        public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForUpdateFormAction() {
+            when(request.getSession()).thenReturn(session);
+            when(user.getClinicId()).thenReturn(CLINIC_ID);
+            when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
 
-        when(allPatients.findByPatientIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
-        when(request.getHeader("Referer")).thenReturn(previousPage);
-        when(user.getClinicId()).thenReturn(CLINIC_ID);
-        when(request.getSession()).thenReturn(session);
-
-
-        String nextPage = controller.findByPatientId(PATIENT_ID, uiModel, request);
-
-        verify(uiModel).addAttribute(PatientController.PATIENT_ID, PATIENT_ID);
-        assertEquals("redirect:" + expectedPreviousPageUrl, nextPage);
-    }
-
-    @Test
-    public void shouldCreateAPatientIfThereAreNoErrors() {
-        Patient patientFromUI = mock(Patient.class);
-        when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
-            setCallPreference(CallPreference.DailyPillReminder);
-        }});
-        BindingResult bindingResult = mock(BindingResult.class);
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        modelMap.put("dummyKey", "dummyValue");
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(patientFromUI.getId()).thenReturn(PATIENT_ID);
-        when(uiModel.asMap()).thenReturn(modelMap);
-        when(user.getClinicId()).thenReturn(CLINIC_ID);
-        when(request.getSession()).thenReturn(session);
-
-        String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
-
-        assertTrue(modelMap.isEmpty());
-        assertEquals("redirect:/patients/" + PATIENT_ID, createPage);
-    }
-
-    @Test
-    public void shouldNotCreateAPatientIfThePatientIdIsNotUniqueWithTheClinic() {
-        Patient patientFromUI = mock(Patient.class);
-        BindingResult bindingResult = mock(BindingResult.class);
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        modelMap.put("dummyKey", "dummyValue");
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(patientFromUI.getId()).thenReturn(PATIENT_ID);
-        when(uiModel.asMap()).thenReturn(modelMap);
-        when(request.getSession()).thenReturn(session);
-
-        when(user.getClinicId()).thenThrow(new TamaException(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "some STUFF", new UpdateConflictException()));
-
-        String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
-
-        verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
-                new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
-        assertEquals("patients/create", createPage);
-    }
-
-    @Test
-    public void shouldUpdatePatient() {
-        Patient patientFromUI = mock(Patient.class);
-        when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
-            setCallPreference(CallPreference.DailyPillReminder);
-            setBestCallTime(new TimeOfDay());
-        }});
-        when(patientFromUI.getId()).thenReturn(PATIENT_ID);
-        BindingResult bindingResult = mock(BindingResult.class);
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        modelMap.put("dummyKey", "dummyValue");
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(uiModel.asMap()).thenReturn(modelMap);
-        when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
-
-        String updatePage = controller.update(patientFromUI, bindingResult, uiModel, request);
-
-        assertEquals("redirect:/patients/" + PATIENT_ID, updatePage);
-        verify(patientService).update(patientFromUI);
-    }
-
-    @Test
-    public void shouldReactivatePatient_AndDoseNotTaken() {
-        Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
-
-        when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
-        controller.reactivatePatient(PATIENT_ID, DoseStatus.NOT_TAKEN, request);
-        ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
-        verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(PATIENT_ID), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(false));
-        assertTimeIsNow(dateTimeArgumentCaptor.getValue());
-    }
-
-
-    @Test
-    public void shouldReturnAuthorizationFailureView_WhenPatientDoesNotBelongToClinic_ForUpdateFormAction() {
-        when(request.getSession()).thenReturn(session);
-        when(user.getClinicId()).thenReturn(CLINIC_ID);
-        when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(null);
-
-        assertEquals("authorizationFailure", controller.updateForm(PATIENT_ID, uiModel, request));
-        verify(allPatients).findByIdAndClinicId(PATIENT_ID, CLINIC_ID);
-    }
-
-    private void assertTimeIsNow(DateTime endTime) {
-        assertTrue(DateUtil.now().isAfter(endTime));
-        assertTrue(DateUtil.now().minusSeconds(1).isBefore(endTime));
+            assertEquals("authorizationFailure", controller.updateForm(PATIENT_ID, uiModel, request));
+            verify(allPatients).findByIdAndClinicId(PATIENT_ID, CLINIC_ID);
+        }
     }
 }
