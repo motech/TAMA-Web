@@ -15,7 +15,6 @@ import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTr
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicDataService;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
-import org.motechproject.util.DateUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,7 +96,7 @@ public class IVRCallTest extends BaseIVRTest {
                 OutboxCallInfo callInfo = new OutboxCallInfo();
                 for (int i = 1; i < 20; i++) {
                     System.out.println("OutBox call " + i);
-                    Caller caller = new Caller("sid" + DateUtil.now().toInstant().getMillis(), patient.mobileNumber(), webClient);
+                    Caller caller = new Caller(unique("sid"), patient.mobileNumber(), webClient);
                     IVRResponse ivrResponse = caller.replyToCall(callInfo);
                     assertAudioFilesPresent(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
                     ivrResponse = caller.enter("1234");
@@ -129,7 +128,7 @@ public class IVRCallTest extends BaseIVRTest {
 
     private void callTama(TestPatient patient, TestClinic clinic, MyWebClient webClient) throws IOException {
 
-        Caller caller = new Caller("sid" + DateUtil.now().toInstant().getMillis(), patient.mobileNumber(), webClient);
+        Caller caller = new Caller(unique("sid"), patient.mobileNumber(), webClient);
         IVRResponse ivrResponse = caller.call();
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 

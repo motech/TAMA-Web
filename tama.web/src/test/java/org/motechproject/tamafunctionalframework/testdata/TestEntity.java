@@ -6,7 +6,7 @@ public abstract class TestEntity {
     private String documentId;
 
     protected static String unique(String string) {
-        return string + DateUtil.now().getMillis();
+        return string + DateUtil.now().toInstant().getMillis() + Math.random();
     }
 
     public String id() {

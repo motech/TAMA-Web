@@ -40,7 +40,7 @@ public abstract class BaseTest extends FunctionalTestObject {
     }
 
     protected String unique(String name) {
-        return name + DateUtil.now().toInstant().getMillis();
+        return name + DateUtil.now().toInstant().getMillis() + Math.random();
     }
 
     @After
