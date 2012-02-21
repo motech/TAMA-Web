@@ -93,6 +93,6 @@ public class PatientService {
 
     public Regimen currentRegimen(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        return allRegimens.get(treatmentAdvice.getRegimenId());
+        return treatmentAdvice == null ? null : allRegimens.get(treatmentAdvice.getRegimenId());
     }
 }

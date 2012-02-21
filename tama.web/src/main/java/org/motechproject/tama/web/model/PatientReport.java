@@ -9,13 +9,19 @@ import java.util.Date;
 public class PatientReport {
 
     private Patient patient;
-    private Regimen regimen;
     private TreatmentAdvice earliestTreatmentAdvice;
+    private TreatmentAdvice currentTreatmentAdvice;
+    private Regimen currentRegimen;
 
-    public PatientReport(Patient patient, Regimen regimen, TreatmentAdvice earliestTreatmentAdvice) {
+    public PatientReport(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice, Regimen currentRegimen) {
         this.patient = patient;
-        this.regimen = regimen;
         this.earliestTreatmentAdvice = earliestTreatmentAdvice;
+        this.currentTreatmentAdvice = currentTreatmentAdvice;
+        this.currentRegimen = currentRegimen;
+    }
+
+    public boolean getCanBeGenerated() {
+        return earliestTreatmentAdvice != null;
     }
 
     public Patient getPatient() {
@@ -34,11 +40,15 @@ public class PatientReport {
         return patient.getClinic().getName();
     }
 
-    public Date getARTStartDate() {
+    public Date getARTStartedOn() {
         return earliestTreatmentAdvice.getStartDate();
     }
 
-    public String getRegimenName() {
-        return regimen.getDisplayName();
+    public String getCurrentRegimenName() {
+        return currentRegimen.getDisplayName();
+    }
+
+    public Date getCurrentRegimenStartDate() {
+        return currentTreatmentAdvice.getStartDate();
     }
 }

@@ -15,37 +15,36 @@
     <link rel="stylesheet" type="text/css" media="screen" href="${reports_css}"></link>
 
     <div>
-    <util:panel id="dailyPillReminderReport" title="Daily Pill Reminder Report" openPane="true">
-        <div>
-            <label for="startDate"> Start Date *</label>
-            <input type="text" name="startDate" id="dailyPillReminderReportStartDate"/>
-            <script type="text/javascript">
-                Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportStartDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter start date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}}));
-            </script>
-        </div>
-        <div>
-            <label for="endDate"> End Date *</label>
-            <input type="text" name="endDate" id="dailyPillReminderReportEndDate"/>
-            <script type="text/javascript">
-                Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportEndDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter end date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}}));
-            </script>
-        </div>
-        <div class="submit" id="dailyPillReminderReportSubmitDiv">
-            <spring:message code="button_save" var="save_button" htmlEscape="false" />
-            <script type="text/javascript">
-              Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'getDailyPillReminderReport', event:'onclick'}));
-            </script>
-            <input id="getDailyPillReminderReport" type="submit" value="Generate Report"/>
-            <span id="getDailyPillReminderReportSpinner"><img src="${spinner_gif}"/></span>
-        </div>
+        <util:panel id="dailyPillReminderReport" title="Daily Pill Reminder Report" openPane="true">
+            <div>
+                <label for="startDate"> Start Date *</label>
+                <input type="text" name="startDate" id="dailyPillReminderReportStartDate"/>
+                <script type="text/javascript">
+                    Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportStartDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter start date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}}));
+                </script>
+            </div>
+            <div>
+                <label for="endDate"> End Date *</label>
+                <input type="text" name="endDate" id="dailyPillReminderReportEndDate"/>
+                <script type="text/javascript">
+                    Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dailyPillReminderReportEndDate', widgetType : 'dijit.form.DateTextBox', widgetAttrs : {promptMessage: 'Please enter end date',  required: 'true', constraints: {datePattern : 'dd/MM/yyyy', required : 'true'}, datePattern : 'dd/MM/yyyy'}}));
+                </script>
+            </div>
+            <div class="submit" id="dailyPillReminderReportSubmitDiv">
+                <spring:message code="button_save" var="save_button" htmlEscape="false" />
+                <script type="text/javascript">
+                  Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'getDailyPillReminderReport', event:'onclick'}));
+                </script>
+                <input id="getDailyPillReminderReport" type="submit" value="Generate Report"/>
+                <span id="getDailyPillReminderReportSpinner"><img src="${spinner_gif}"/></span>
+            </div>
 
-        <div id="dailyPillReminderReportGridNotice"><!-- required or JSP eats me --></div>
-        <div id="dailyPillReminderReportGrid">
-            <a id="dailyPillReminderReportGridExcelLink" href="#">Download as Excel</a>
-            <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
-        </div>
-
-    </util:panel>
+            <div id="dailyPillReminderReportGridNotice"><!-- required or JSP eats me --></div>
+            <div id="dailyPillReminderReportGrid">
+                <a id="dailyPillReminderReportGridExcelLink" href="#">Download as Excel</a>
+                <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
+            </div>
+        </util:panel>
     </div>
 
     <script type="text/javascript">

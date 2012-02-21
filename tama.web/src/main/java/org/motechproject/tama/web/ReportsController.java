@@ -90,8 +90,9 @@ public class ReportsController {
 
     private PatientReport generatePatientReportSummary(String patientDocId) {
         Patient patient = allPatients.get(patientDocId);
-        Regimen regimen = patientService.currentRegimen(patient);
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
-        return new PatientReport(patient, regimen, treatmentAdvice);
+        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
+        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
+        Regimen currentRegimen = patientService.currentRegimen(patient);
+        return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen);
     }
 }

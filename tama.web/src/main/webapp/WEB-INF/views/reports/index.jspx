@@ -4,6 +4,7 @@
      xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
      version="2.0">
 
     <spring:url value="/patients/${report.patientDocId}" var="patient_form_url"/>
@@ -14,9 +15,19 @@
     <util:panel id="report" title="Reports" openPane="true">
         <field:display field="patientId" label="Patient Id" id="patientSummaryPatientId" object="${report}"/>
         <field:display field="clinicName" label="Clinic Name" id="patientSummaryClinicName" object="${report}"/>
-        <field:display date="true" dateTimePattern="MMM dd, yyyy" field="ARTStartDate" label="ART Start Date" id="patientSummaryARTStartDate" object="${report}"/>
-        <field:display field="regimenName" label="Regimen Followed" id="patientSummaryRegimenName" object="${report}"/>
-        <jsp:include page="showDailyPillReminderReport.jspx" />
+        <c:choose>
+            <c:when test="${report.canBeGenerated}">
+                <field:display date="true" dateTimePattern="MMM dd, yyyy" field="ARTStartedOn" label="ART Started On" id="patientSummaryARTStartDate" object="${report}"/>
+                <field:display field="currentRegimenName" label="Current Regimen" id="patientSummaryRegimenName" object="${report}"/>
+                <field:display date="true" dateTimePattern="MMM dd, yyyy" field="currentRegimenStartDate" label="Start Date of Current Regimen" id="currentRegimenStartDate" object="${report}"/>
+                <br />
+                <jsp:include page="showDailyPillReminderReport.jspx" />
+            </c:when>
+            <c:otherwise>
+                <div class="bold"><br/>No Reports to generate.<br/><br/></div>
+            </c:otherwise>
+        </c:choose>
+        <br />
         <jsp:include page="../patients/showPatientPageLinks.jspx">
             <jsp:param name="patientId" value="${report.patient.id}" />
             <jsp:param name="patientActive" value="${report.patient.status.active}" />
