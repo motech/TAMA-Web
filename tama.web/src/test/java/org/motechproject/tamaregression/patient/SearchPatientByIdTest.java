@@ -5,8 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
-import org.motechproject.tamafunctionalframework.page.*;
-import org.motechproject.tamafunctionalframework.testdata.TestClinic;
+import org.motechproject.tamafunctionalframework.page.ListPatientsPage;
+import org.motechproject.tamafunctionalframework.page.LoginPage;
+import org.motechproject.tamafunctionalframework.page.Page;
+import org.motechproject.tamafunctionalframework.page.ShowPatientSummaryPage;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
@@ -21,7 +23,7 @@ public class SearchPatientByIdTest extends BaseTest {
     @Before
     public void setUp() {
         super.setUp();
-        clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
+        clinician = TestClinician.withMandatory();
         new ClinicianDataService(webDriver).createWithClinic(clinician);
     }
 

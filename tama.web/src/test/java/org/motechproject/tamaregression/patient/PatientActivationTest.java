@@ -8,7 +8,6 @@ import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.page.CreateClinicVisitPage;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
 import org.motechproject.tamafunctionalframework.page.ShowPatientPage;
-import org.motechproject.tamafunctionalframework.testdata.TestClinic;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
@@ -22,7 +21,7 @@ public class PatientActivationTest extends BaseTest {
     @Before
     public void setUp() {
         super.setUp();
-        clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
+        clinician = TestClinician.withMandatory();
         new ClinicianDataService(webDriver).createWithClinic(clinician);
     }
 

@@ -13,13 +13,13 @@ import org.motechproject.tamafunctionalframework.ivr.Caller;
 import org.motechproject.tamafunctionalframework.page.AlertsPage;
 import org.motechproject.tamafunctionalframework.page.ListPatientsPage;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
-import org.motechproject.tamafunctionalframework.testdata.TestClinic;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdata.ivrreponse.IVRResponse;
 import org.motechproject.tamafunctionalframework.testdata.ivrrequest.OutgoingCallInfo;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
+import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
 
@@ -40,17 +40,11 @@ public class BasicPillReminderTest extends BaseTest {
     private ScheduledTaskManager scheduledTaskManager;
 
     @Before
-    public void setUpScenario() {
-        final TestClinic clinic = TestClinic.withMandatory();
-        clinician = TestClinician.withMandatory().clinic(clinic);
+    public void setUp() {
+        super.setUp();
+        clinician = TestClinician.withMandatory();
         scheduledTaskManager = new ScheduledTaskManager(webClient);
-        MyPageFactory.initElements(webDriver, LoginPage.class)
-                .loginWithCorrectAdminUserNamePassword()
-                .goToClinicRegistrationPage()
-                .registerClinic(clinic)
-                .goToClinicianRegistrationPage()
-                .registerClinician(clinician)
-                .logout();
+        new ClinicianDataService(webDriver).createWithClinic(clinician);
     }
 
     @Test
