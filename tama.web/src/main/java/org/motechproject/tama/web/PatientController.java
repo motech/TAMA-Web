@@ -120,12 +120,12 @@ public class PatientController extends BaseController {
     private String activatePatient(String patientDocId, String showPatientView, HttpServletRequest request) {
         Patient patient = allPatients.get(patientDocId);
         boolean firstActivation = patient.getActivationDate() == null;
-        patientService.activate(patientDocId);
         if (firstActivation) {
             allClinicVisits.addAppointmentCalendar(patientDocId);
             ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
-            return "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
+            showPatientView = "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
         }
+        patientService.activate(patientDocId);
         return showPatientView;
     }
 

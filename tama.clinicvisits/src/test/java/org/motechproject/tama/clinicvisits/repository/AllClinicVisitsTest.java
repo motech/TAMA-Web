@@ -78,6 +78,13 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldFirstRemoveAppointmentCalenderForPatient(){
+        allClinicVisits.addAppointmentCalendar(PATIENT_ID);
+
+        verify(appointmentService).removeCalendar(PATIENT_ID);
+    }
+
+    @Test
     public void shouldFindByPatientId() {
         final String patientId = "patientId";
         final Visit visitForPatient = new Visit().name("visit2");

@@ -42,6 +42,7 @@ public class AllClinicVisits {
         int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
         ReminderConfiguration reminderConfiguration = new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
         AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId).setWeekOffsets(appointmentWeeks).setReminderConfiguration(reminderConfiguration);
+        appointmentService.removeCalendar(patientDocId);
         appointmentService.addCalendar(appointmentCalendarRequest);
     }
 
