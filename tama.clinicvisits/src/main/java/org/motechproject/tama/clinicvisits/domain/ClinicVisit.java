@@ -129,11 +129,11 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
     public DateTime getConfirmedVisitDate() {
-        return visit.appointment() == null ? null : visit.appointment().scheduledDate();
+        return visit.appointment() == null ? null : visit.appointment().firmDate();
     }
 
-    public void setConfirmedVisitDate(DateTime scheduledDate) {
-        visit.appointment().scheduledDate(scheduledDate);
+    public void setConfirmedVisitDate(DateTime firmDate) {
+        visit.appointment().firmDate(firmDate);
     }
 
     private Integer weekNumber() {

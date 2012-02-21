@@ -21,7 +21,6 @@ import java.util.Properties;
 public class AllClinicVisits {
 
     public static final String REMIND_FROM = "remindFrom";
-    public static final String REMIND_TILL = "remindTill";
     public static final String APPOINTMENT_SCHEDULE = "appointment-schedule";
 
     private AppointmentService appointmentService;
@@ -41,8 +40,7 @@ public class AllClinicVisits {
     public void addAppointmentCalendar(String patientDocId) {
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsTemplate.getProperty(APPOINTMENT_SCHEDULE));
         int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
-        int remindTill = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_TILL));
-        ReminderConfiguration reminderConfiguration = new ReminderConfiguration().setRemindFrom(remindFrom).setRemindTill(remindTill).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom - remindTill);
+        ReminderConfiguration reminderConfiguration = new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
         AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId).setWeekOffsets(appointmentWeeks).setReminderConfiguration(reminderConfiguration);
         appointmentService.addCalendar(appointmentCalendarRequest);
     }

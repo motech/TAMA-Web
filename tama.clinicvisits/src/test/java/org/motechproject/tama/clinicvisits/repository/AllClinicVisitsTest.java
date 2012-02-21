@@ -32,7 +32,6 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     static int FIRST_SCHEDULE_WEEK = 1;
     static int SECOND_SCHEDULE_WEEK = 2;
     private static final String REMIND_FROM_DAYS = "10";
-    private static final String REMIND_TILL_DAYS = "5";
     protected Properties appointmentsTemplate;
     protected DateTime now;
     protected LocalDate today;
@@ -60,7 +59,6 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         appointmentsTemplate = new Properties();
         appointmentsTemplate.setProperty(AllClinicVisits.APPOINTMENT_SCHEDULE, FIRST_SCHEDULE_WEEK + "," + SECOND_SCHEDULE_WEEK);
         appointmentsTemplate.setProperty(AllClinicVisits.REMIND_FROM, REMIND_FROM_DAYS);
-        appointmentsTemplate.setProperty(AllClinicVisits.REMIND_TILL, REMIND_TILL_DAYS);
     }
 
     @Test
@@ -74,10 +72,9 @@ public class AllClinicVisitsTest extends BaseUnitTest {
 
         ReminderConfiguration reminderConfiguration = requestArgumentCaptor.getValue().getReminderConfiguration();
         assertEquals(10, reminderConfiguration.getRemindFrom());
-        assertEquals(5, reminderConfiguration.getRemindTill());
         assertEquals(1, reminderConfiguration.getIntervalCount());
         assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
-        assertEquals(5, reminderConfiguration.getRepeatCount());
+        assertEquals(10, reminderConfiguration.getRepeatCount());
     }
 
     @Test
