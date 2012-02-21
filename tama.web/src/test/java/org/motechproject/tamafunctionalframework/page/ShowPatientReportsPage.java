@@ -2,6 +2,7 @@ package org.motechproject.tamafunctionalframework.page;
 
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -35,6 +36,13 @@ public class ShowPatientReportsPage extends Page {
 
     public ShowPatientReportsPage(WebDriver webDriver) {
         super(webDriver);
+    }
+
+    @Override
+    public void postInitialize() {
+        dailyPillReminderReportStartDate = WebDriverFactory.createWebElement(dailyPillReminderReportStartDate);
+        dailyPillReminderReportEndDate = WebDriverFactory.createWebElement(dailyPillReminderReportEndDate);
+        generateReportButton = WebDriverFactory.createWebElement(generateReportButton);
     }
 
     @Override

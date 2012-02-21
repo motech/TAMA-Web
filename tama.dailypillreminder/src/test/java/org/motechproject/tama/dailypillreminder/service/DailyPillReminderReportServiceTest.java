@@ -68,8 +68,8 @@ public class DailyPillReminderReportServiceTest {
         assertEquals(2, logs.length());
         JSONObject report_1 = (JSONObject) logs.get(0);
         JSONObject report_2 = (JSONObject) logs.get(1);
-        assertEquals("{\"eveningDoseStatus\":\"NOT_TAKEN\",\"eveningDoseTime\":\"05:50\",\"morningDoseStatus\":\"TAKEN\",\"morningDoseTime\":\"11:45\",\"date\":\"2012-01-02\"}", report_1.toString());
-        assertEquals("{\"eveningDoseStatus\":null,\"eveningDoseTime\":null,\"morningDoseStatus\":\"TAKEN\",\"morningDoseTime\":\"10:45\",\"date\":\"2012-01-10\"}", report_2.toString());
+        assertEquals("{\"eveningDoseStatus\":\"NOT_TAKEN\",\"eveningDoseTime\":\"05:50\",\"morningDoseStatus\":\"TAKEN\",\"morningDoseTime\":\"11:45\",\"date\":\"02/01/2012\"}", report_1.toString());
+        assertEquals("{\"eveningDoseStatus\":null,\"eveningDoseTime\":null,\"morningDoseStatus\":\"TAKEN\",\"morningDoseTime\":\"10:45\",\"date\":\"10/01/2012\"}", report_2.toString());
     }
 
     private void assertReportSummary(DailyPillReminderSummary day1_report, String morningTime, String morningDosageStatus, String eveningTime, String eveningDosageStatus) {
