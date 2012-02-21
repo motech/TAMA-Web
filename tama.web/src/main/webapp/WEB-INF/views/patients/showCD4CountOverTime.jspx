@@ -9,7 +9,6 @@
             dojo.require("dojox.charting.axis2d.Default");
             dojo.require("dojox.charting.plot2d.Lines");
             dojo.require("dojox.charting.plot2d.Areas");
-            dojo.require("dojox.charting.widget.Legend");
             dojo.require("dojox.charting.themes.ThreeD");
             dojo.require("dojox.charting.plot2d.Markers");
 
@@ -18,7 +17,8 @@
                     url:"${listCD4CountUrl}&amp;rangeInMonths=" + rangeInMonths,
                     handleAs:"json",
                     load:function (dataList) {
-
+                        dojo.byId('cd4CountOverTime').style.display=(dataList.length == 0?'none':'');
+                        dojo.byId('noCd4CountOverTimePane').style.display=(dataList.length != 0?'none':'');
                         var theme = new dojox.charting.Theme({marker:{    symbol:"m0,-7 7,7 -7,7 -7,-7 z"}});
 
                         c.addPlot("default", {type:"Lines", markers:true});
@@ -37,7 +37,7 @@
                             });
                         }
 
-                        c.addAxis("x", { labels:xLabels(), natural:true, min:0.98, max:dataList.length + 1});
+                        c.addAxis("x", { labels:xLabels(), majorTickStep:1,  min:0.99, max:dataList.length + 0.01});
                         c.addAxis("y", {min:0, vertical:true});
                         c.addSeries("CD4 Count", xValues(), { stroke:{ color:"blue" }, fill:"lightblue" });
                         var tip = new dojox.charting.action2d.Tooltip(c, "default", {"text":function (el) {
@@ -60,8 +60,9 @@
             });
         </script>
 
-        <div>
+        <div id="cd4CountOverTimePane">
             <div id="cd4CountOverTime" style="width: 99%; height: 400px; display:inline-block"><!-- required --></div>
+            <div id="noCd4CountOverTimePane" style="font-weight: bold;height: 400px;">No CD4 Count history for specified date range.<br/></div>
             <div><input class="loadCD4CountChart submit" type="submit" value="3 Months" data="3"/>
                 <input class="loadCD4CountChart submit" type="submit" value="6 Months" data="6"/>
                 <input class="loadCD4CountChart submit" type="submit" value="1 Year" data="12"/>
@@ -69,6 +70,5 @@
                 <input class="loadCD4CountChart submit" type="submit" value="3 Years" data="36"/>
             </div>
         </div>
-        <div id="legend"></div>
     </util:panel>
 </div>
