@@ -27,7 +27,7 @@ public class AllClinicVisits {
     private Properties appointmentsTemplate;
 
     @Autowired
-    public AllClinicVisits(AppointmentService appointmentService, @Qualifier("appointmentsTemplate") Properties appointmentsTemplate) {
+    public AllClinicVisits(AppointmentService appointmentService, @Qualifier("appointments") Properties appointmentsTemplate) {
         this.appointmentService = appointmentService;
         this.appointmentsTemplate = appointmentsTemplate;
     }

@@ -28,6 +28,8 @@ public class AppointmentReminderHandler {
         String reminderMessageType = TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE;
         Patient patient = allPatients.get(patientId);
 
+
+
         boolean shouldCreateOutboxMessage = patient.shouldReceiveAppointmentReminder() && noPendingReminderMessage(patientId, reminderMessageType);
         if (shouldCreateOutboxMessage) {
             outboxService.addMessage(patientId, reminderMessageType);

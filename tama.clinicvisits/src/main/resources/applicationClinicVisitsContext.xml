@@ -12,7 +12,7 @@
     <import resource="classpath:applicationOutboxContext.xml"/>
     <import resource="classpath:applicationAppointmentsAPI.xml"/>
     <context:component-scan base-package="org.motechproject.tama.clinicvisits"/>
-    <util:properties id="appointmentsTemplate" location="classpath:/appointmentsTemplate.properties"/>
+    <util:properties id="appointments" location="classpath:/appointments.properties"/>
     <context:annotation-config/>
     <context:spring-configured/>
 </beans>
