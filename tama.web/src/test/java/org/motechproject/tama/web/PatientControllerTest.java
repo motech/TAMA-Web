@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -187,26 +188,28 @@ public class PatientControllerTest {
     public static class ReactivatePatient extends SubjectUnderTest {
         @Test
         public void shouldBackFill_whenPatientIsOnDailyPillReminder() {
-            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
+            DateTime now = DateUtil.now();
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(now.minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
             controller.reactivatePatient(PATIENT_ID, DoseStatus.NOT_TAKEN, request);
 
             ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
             verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(PATIENT_ID), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(false));
-            assertTimeIsNow(dateTimeArgumentCaptor.getValue());
+            assertEquals(now.toLocalDate(), dateTimeArgumentCaptor.getValue().toLocalDate());
         }
 
         @Test
         public void shouldBackFill_whenPatientIsOnFourDayRecall() {
-            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
+            DateTime now = DateUtil.now();
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(now.minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
             controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
 
             ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
             verify(resumeFourDayRecallService, times(1)).backFillAdherence(eq(patientFromUI), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(true));
-            assertTimeIsNow(dateTimeArgumentCaptor.getValue());
+            assertEquals(now.toLocalDate(), dateTimeArgumentCaptor.getValue().toLocalDate());
         }
 
         @Test
@@ -218,11 +221,6 @@ public class PatientControllerTest {
 
             verify(patientService).activate(PATIENT_ID);
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
-        }
-
-        private void assertTimeIsNow(DateTime endTime) {
-            assertTrue(DateUtil.now().isAfter(endTime));
-            assertTrue(DateUtil.now().minusSeconds(5).isBefore(endTime));
         }
     }
 
