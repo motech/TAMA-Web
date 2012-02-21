@@ -545,3 +545,16 @@ fieldset th {
 .grey { background-color: #848476}
 
 .bold{ font-weight: bold; }
+
+.pageNavigation {
+    margin: 10px 0px;
+    text-align: right;
+}
+
+.pageNavigation #pageNo, input.pageButton {
+    width: 40px;
+    margin-left:5px;
+    height: 20px;
+}
+
+

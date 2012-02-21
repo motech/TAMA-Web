@@ -12,6 +12,7 @@
         <form:form action="${form_url}" method="GET" modelAttribute="logPreferences" enctype="application/x-www-form-urlencoded" onsubmit="encodePk()">
             <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogStartDate" id="c_org_motechproject_tama_ivr_logging_domain_CallLog_startDate" label="Starting From" required="true" />
             <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogEndDate" id="c_org_motechproject_tama_ivr_logging_domain_CallLog_endDate" label="Till" required="true" />
+            <form:hidden path="pageNumber" ></form:hidden>
             <span class="submit" id="showLogs">
                 <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'nextToShowLogs', event:'onclick'}));</script>
                 <input id="nextToShowLogs" type="submit" value="Get Logs"/>

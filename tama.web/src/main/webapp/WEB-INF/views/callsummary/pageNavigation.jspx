@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div
+        version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <div class="pageNavigation">
+
+        <c:if test="${not empty pageNavigator.firstPageLink}">
+            <a style="margin-right:10px" id="first_link" href="${pageNavigator.firstPageLink}">First</a>
+        </c:if>
+
+        <c:if test="${not empty pageNavigator.previousPageLink}">
+            <a style="margin-right:10px" id="previous_link" href="${pageNavigator.previousPageLink}">Previous</a>
+        </c:if>
+
+        <span style="margin-right:10px">Page ${pageNavigator.currentPageNumber} of ${pageNavigator.totalNumberOfPages}</span>
+
+        <c:if test="${not empty pageNavigator.nextPageLink}">
+            <a style="margin-right:10px" id="next_link" href="${pageNavigator.nextPageLink}">Next</a>
+        </c:if>
+
+        <c:if test="${not empty pageNavigator.lastPageLink}">
+            <a style="margin-right:10px" id="last_link" href="${pageNavigator.lastPageLink}">Last</a>
+        </c:if>
+
+        Go to page:
+        <input type="text" id="pageNo"/>
+        <input style="margin-left:5px" class="pageButton" id="gotoPageButton" type="button" value="Go"
+               onClick="goToPage();"/>
+
+    </div>
+
+    <script type="text/javascript">
+        <![CDATA[
+        function goToPage() {
+            pageNumber = dojo.byId("pageNo").value;
+            document.location = "${pageNavigator.goToPageLink}" + pageNumber;
+        }
+        ]]>
+    </script>
+
+
+</div>

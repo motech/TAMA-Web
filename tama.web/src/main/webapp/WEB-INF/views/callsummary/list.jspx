@@ -5,8 +5,10 @@
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:list id="pl_org_motechproject_tama_ivr_logging_domain_CallLog" items="${callsummary}">
-        <c:forEach items="${callsummary}" var="calllog" varStatus="logIndex">
+    <page:list id="pl_org_motechproject_tama_ivr_logging_domain_CallLog" items="${callSummary}">
+        <jsp:include page="pageNavigation.jspx" />
+
+        <c:forEach items="${callSummary}" var="calllog" varStatus="logIndex">
             <util:panel id="title[${logIndex.index}]" title="${calllog.title} || Type : ${calllog.flows} || Date :${calllog.callDateFromCallLogDateTime} || Started At :${calllog.callStartTimeFromCallLogStartDateTime} || Ended At :${calllog.callEndTimeFromCallLogEndDateTime}" openPane="false">
             <c:forEach items="${calllog.callFlowGroupViews}" var="callEventGroup" varStatus="groupIndex">
                 <c:if test="${not empty callEventGroup.allResponses}">
@@ -35,5 +37,8 @@
             </c:forEach>
             </util:panel>
         </c:forEach>
+
+        <jsp:include page="pageNavigation.jspx" />
+
     </page:list>
 </div>

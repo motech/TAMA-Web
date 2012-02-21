@@ -9,25 +9,30 @@ import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Component
 public class CallLogService {
+    public static final String MAX_NUMBER_OF_CALL_LOGS_PER_PAGE = "max.number.of.call.logs.per.page";
     private final AllCallLogs allCallLogs;
     private final KookooCallDetailRecordsService kookooCallDetailRecordsService;
     private final CallLogMapper callDetailRecordMapper;
     private final AllPatients allPatients;
+    private Properties properties;
 
     @Autowired
     public CallLogService(AllCallLogs allCallDetails, KookooCallDetailRecordsService kookooCallDetailRecordsService,
-                          CallLogMapper callDetailRecordMapper, AllPatients allPatients) {
+                          CallLogMapper callDetailRecordMapper, AllPatients allPatients, @Qualifier("ivrProperties") Properties properties) {
         this.allCallLogs = allCallDetails;
         this.kookooCallDetailRecordsService = kookooCallDetailRecordsService;
         this.callDetailRecordMapper = callDetailRecordMapper;
         this.allPatients = allPatients;
+        this.properties = properties;
     }
 
     public void log(String callId, String patientDocumentId) {
@@ -49,12 +54,22 @@ public class CallLogService {
         return allCallLogs.getAll();
     }
 
-    public List<CallLog> getByClinicId(DateTime fromDate, DateTime toDate, String clinicId) {
-        return allCallLogs.findByClinic(fromDate, toDate, clinicId);
+    public Integer getTotalNumberOfLogs(DateTime fromDate, DateTime toDate) {
+        return allCallLogs.findTotalNumberOfCallLogsForDateRange(fromDate, toDate);
     }
 
-    public List<CallLog> getLogsBetweenDates(DateTime fromDate, DateTime toDate) {
-        return allCallLogs.findCallLogsBetweenGivenDates(fromDate, toDate);
+    public Integer getTotalNumberOfLogs(DateTime fromDate, DateTime toDate, String clinicId) {
+        return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId);
+    }
+
+    public List<CallLog> getLogsForDateRangeAndClinic(DateTime fromDate, DateTime toDate, String clinicId, int startIndex) {
+        String maxNumberOfCallLogsPerPage = properties.getProperty(MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20");
+        return allCallLogs.findCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId, startIndex, Integer.parseInt(maxNumberOfCallLogsPerPage));
+    }
+
+    public List<CallLog> getLogsForDateRange(DateTime fromDate, DateTime toDate, int startIndex) {
+        String maxNumberOfCallLogsPerPage = properties.getProperty(MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20");
+        return allCallLogs.findCallLogsForDateRange(fromDate, toDate, startIndex, Integer.parseInt(maxNumberOfCallLogsPerPage));
     }
 
     private List<String> getAllLikelyPatientIds(KookooCallDetailRecord kookooCallDetailRecord) {

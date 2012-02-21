@@ -17,6 +17,8 @@ public class CallLogPreferencesFilter {
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date callLogEndDate;
 
+    private Integer pageNumber;
+
     public Date getCallLogStartDate() {
         return callLogStartDate;
     }
@@ -33,4 +35,11 @@ public class CallLogPreferencesFilter {
         this.callLogEndDate = callLogEndDate;
     }
 
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
 }
