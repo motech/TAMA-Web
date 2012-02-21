@@ -222,7 +222,7 @@ public class PatientControllerTest {
 
         private void assertTimeIsNow(DateTime endTime) {
             assertTrue(DateUtil.now().isAfter(endTime));
-            assertTrue(DateUtil.now().minusSeconds(1).isBefore(endTime));
+            assertTrue(DateUtil.now().minusSeconds(5).isBefore(endTime));
         }
     }
 
