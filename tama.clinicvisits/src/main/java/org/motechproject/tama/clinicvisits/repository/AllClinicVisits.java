@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
 import org.motechproject.appointments.api.contract.ReminderConfiguration;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
+import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
@@ -44,8 +45,7 @@ public class AllClinicVisits {
 
     public void addAppointmentCalendar(String patientDocId) {
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsTemplate.getProperty(APPOINTMENT_SCHEDULE));
-        int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
-        ReminderConfiguration reminderConfiguration = new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
+        ReminderConfiguration reminderConfiguration = getReminderConfiguration();
         AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId).setWeekOffsets(appointmentWeeks).setReminderConfiguration(reminderConfiguration);
         appointmentService.removeCalendar(patientDocId);
         appointmentService.addCalendar(appointmentCalendarRequest);
@@ -75,6 +75,11 @@ public class AllClinicVisits {
         clinicVisit.setVisitDate(visitDate);
         updateVisit(clinicVisit);
         return clinicVisit.getId();
+    }
+
+    public String createAppointment(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
+        ReminderConfiguration reminderConfiguration = getReminderConfiguration();
+        return appointmentService.addVisit(patientDocId, appointmentDueDate, reminderConfiguration, typeOfVisit);
     }
 
     public void changeRegimen(String patientDocId, String clinicVisitId, String newTreatmentAdviceId) {
@@ -117,6 +122,11 @@ public class AllClinicVisits {
         ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
         clinicVisit.setVisitDate(visitDate);
         updateVisit(clinicVisit);
+    }
+
+    private ReminderConfiguration getReminderConfiguration() {
+        int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
+        return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
     }
 
     private void updateVisit(ClinicVisit clinicVisit) {

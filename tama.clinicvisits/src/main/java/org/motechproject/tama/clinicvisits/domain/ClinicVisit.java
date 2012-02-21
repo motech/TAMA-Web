@@ -2,6 +2,7 @@ package org.motechproject.tama.clinicvisits.domain;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
@@ -46,10 +47,10 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     public String getTitle() {
         if (visit.typeOfVisit().isBaselineVisit())
             return "Registered with TAMA";
-        else if (visit.typeOfVisit().isScheduledVisit())
+        else if (visit.weekNumber() != null)
             return weekNumber() + " weeks Follow-up visit";
         else
-            return "";
+            return "Unscheduled Visit";
     }
 
     public Patient getPatient() {
@@ -120,7 +121,11 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public LocalDate getAdjustedDueDate() {
-        return visit.appointment() == null ? null : new LocalDate(visit.appointment().getData().get(ADJUSTED_DUE_DATE));
+        Appointment appointment = visit.appointment();
+        if (appointment == null) return null;
+        if (appointment.getData() == null) return null;
+        final String adjustedDueDateAsString = (String) appointment.getData().get(ADJUSTED_DUE_DATE);
+        return adjustedDueDateAsString == null ? null : new LocalDate(adjustedDueDateAsString);
     }
 
     public void setAdjustedDueDate(LocalDate adjustedDueDate) {
@@ -138,11 +143,13 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     }
 
     private Integer weekNumber() {
-        return visit.typeOfVisit().isBaselineVisit() ? 0 : Integer.parseInt(getId().replace("week", ""));
+        return visit.weekNumber();
     }
 
     @Override
     public int compareTo(ClinicVisit clinicVisit) {
-        return weekNumber().compareTo(clinicVisit.weekNumber());
+        if (this.visit.appointment() == null || this.visit.appointment().dueDate() == null ) return -1;
+        if (clinicVisit.visit.appointment() == null || clinicVisit.visit.appointment().dueDate() == null) return 1;
+        return this.visit.appointment().dueDate().compareTo(clinicVisit.visit.appointment().dueDate());
     }
 }

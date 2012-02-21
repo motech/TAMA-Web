@@ -86,6 +86,14 @@
             <jsp:param name="patientActive" value="${patient.status.active}" />
             <jsp:param name="patientSuspended" value="${patient.status.suspended}" />
         </jsp:include>
+        <spring:url value="/clinicvisits/newVisit" var="create_visit_url">
+            <spring:param name="patientDocId" value="${patientId}"/>
+        </spring:url>
+        <div style="margin-top: 10px">
+            <a id="createVisit" href="${create_visit_url}">Create Visit</a> |
+            <a id="createAppointment" href="javascript:void(0);" class="createAppointment">Create Appointment</a> |
+            <a id="showPatientSummary" href="${patient_summary_url}">Show Patient Summary</a>
+        </div>
     </util:panel>
 
     <div style="display: none;">
@@ -116,6 +124,7 @@
     <spring:url value="/clinicvisits/confirmVisitDate.json" var="confirmVisitDateUrl"/>
     <spring:url value="/clinicvisits/markAsMissed.json" var="markAsMissedUrl"/>
     <spring:url value="/clinicvisits/setVisitDate.json" var="setVisitDate"/>
+    <spring:url value="/clinicvisits/createAppointment.json" var="createAppointmentUrl"/>
     <script src="${schedulePopupUrl}"><!--required--></script>
     <script>
         dojo.addOnLoad(function () {
@@ -196,10 +205,25 @@
 
             }
 
+            var createAppointment = function(element) {
+                popup.show(this, false, function (appointmentDueDate) {
+                    dojo.xhrPost({
+                        url:"${createAppointmentUrl}" + "?patientId=${patientId}",
+                        content:{"appointmentDueDate":dojo.date.locale.format(appointmentDueDate, {selector:"date", datePattern:'dd/MM/yyyy'}), "typeOfVisit": "Scheduled"},
+                        handleAs:"json",
+                        load:function (data) {
+                            if (data.result === "success")
+                                window.location.reload();
+                        }
+                    });
+                });
+            };
+
             dojo.query('a.adjustDueDate').connect('onclick', adjustDueDate);
             dojo.query('a.confirmVisitDate').connect('onclick', confirmVisitDate);
             dojo.query('a.setVisitDate').connect('onclick', setVisitDate);
             dojo.query('a.markAsMissed').connect('onclick', markAsMissed);
+            dojo.query('a.createAppointment').connect('onclick', createAppointment);
         });
     </script>
 </div>

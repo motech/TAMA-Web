@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
@@ -39,6 +40,13 @@ public class ClinicVisitsController extends BaseController {
         this.labResultsController = labResultsController;
         this.vitalStatisticsController = vitalStatisticsController;
         this.allClinicVisits = allClinicVisits;
+    }
+
+    @RequestMapping(value = "/newVisit")
+    public String newVisit(@RequestParam(value = "patientDocId") String patientDocId, Model uiModel, HttpServletRequest httpServletRequest) {
+        String clinicVisitId = allClinicVisits.createAppointment(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled);
+        allClinicVisits.setVisitDate(patientDocId, clinicVisitId,  DateUtil.now());
+        return createForm(patientDocId, clinicVisitId, uiModel, httpServletRequest);
     }
 
     @RequestMapping(params = "form", method = RequestMethod.GET)
@@ -128,5 +136,13 @@ public class ClinicVisitsController extends BaseController {
     @RequestParam(value = "visitDate") DateTime visitDate) {
         allClinicVisits.setVisitDate(patientDocId, clinicVisitId, visitDate);
         return "{'visitDate':'" + visitDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
+    }
+
+    @RequestMapping(value = "/createAppointment.json", method = RequestMethod.POST)
+    @ResponseBody
+    public String createAppointment(@RequestParam(value = "patientId", required = true) String patientDocId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    @RequestParam(value = "appointmentDueDate") DateTime appointmentDueDate, @RequestParam(value = "typeOfVisit") String typeOfVisit) {
+        allClinicVisits.createAppointment(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit));
+        return "{'result':'success'}";
     }
 }

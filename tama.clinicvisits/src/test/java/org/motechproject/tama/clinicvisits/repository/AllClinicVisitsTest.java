@@ -6,10 +6,12 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
 import org.motechproject.appointments.api.contract.ReminderConfiguration;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
+import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
@@ -152,5 +154,14 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         ArgumentCaptor<Visit> visitArgumentCaptor = ArgumentCaptor.forClass(Visit.class);
         verify(appointmentService).updateVisit(visitArgumentCaptor.capture(), eq(PATIENT_ID));
         Assert.assertEquals(true, visitArgumentCaptor.getValue().missed());
+    }
+
+    @Test
+    public void shouldCreateAdhocAppointment() throws Exception {
+        final String patientId = "patientId";
+
+        allClinicVisits.createAppointment(patientId, now, TypeOfVisit.Unscheduled);
+
+        verify(appointmentService).addVisit(eq(patientId), eq(now), Matchers.<ReminderConfiguration>any(), eq(TypeOfVisit.Unscheduled));
     }
 }
