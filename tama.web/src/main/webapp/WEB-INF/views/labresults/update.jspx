@@ -38,7 +38,9 @@
             </thead>
             <tbody>
             <c:forEach items="${labResultsUIModel.labResults}" varStatus="labResultIndex" var="labResult">
-                <input type="hidden" name="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_id" value="${labResult.id}"/>
+                <c:if test="${not empty labResult.id}">
+                    <field:hidden  path="labResults[${labResultIndex.index}].id"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_id" value="${labResult.id}"/>
+                </c:if>
                 <field:hidden  path="labResults[${labResultIndex.index}].patientId"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_patient_id" value="${labResult.patientId}"/>
                 <field:hidden  path="labResults[${labResultIndex.index}].labTest_id"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_id" value="${labResult.labTest_id}"/>
                 <field:hidden  path="labResults[${labResultIndex.index}].labTest.normalRange"  id="c_org_motechproject_tama_domain_LabResult[${labResultIndex.index}]_labtest_normalRange" value="${labResult.labTest.normalRange}"/>
