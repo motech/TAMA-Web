@@ -45,7 +45,7 @@ public class DailyPillReminderReportBuilder extends ReportBuilder<DailyPillRemin
     @Override
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
-        columns.add(new ExcelColumn("Date", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Date (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Morning Dose Time", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Adherence", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Dose Time", Cell.CELL_TYPE_STRING));

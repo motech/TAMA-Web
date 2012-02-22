@@ -84,7 +84,7 @@ DailyPillReminderReportWidget.prototype = {
 
     columnDetails : function(){
         return [[
-            {name: 'Date',                  field: 'date',             width: '150px'},
+            {name: 'Date (yyyy-mm-dd)',     field: 'date',             width: '150px'},
             {name: 'Morning Dose Time',     field: 'morningDoseTime',  width: '150px'},
             {name: 'Morning Adherence',     field: 'morningDoseStatus',width: '150px'},
             {name: 'Evening Dose Time',     field: 'eveningDoseTime',  width: '150px'},
