@@ -39,7 +39,13 @@
                                     <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Schedule</c:if>
                                     <c:if test="${not empty visit.adjustedDueDate}"><spring:eval
                                             expression="visit.adjustedDueDate"/></c:if>
-                                </a>
+                                </a><![CDATA[ &nbsp; ]]>
+                                <c:if test="${not empty visit.appointmentDueDate}">
+                                    <![CDATA[ | &nbsp; ]]>
+                                    <a href="javascript:void(0);" class="adjustDueDateAsToday" visitid="${visit.id}" patientid="${visit.patientId}">
+                                    Today
+                                    </a>
+                                </c:if>
                             </c:when>
                             <c:otherwise>
                                 <c:if test="${not empty visit.adjustedDueDate}"><spring:eval
@@ -144,6 +150,22 @@
                     });
                 });
             }
+            var adjustDueDateAsToday = function (event) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
+                var linkElement = this;
+                dojo.xhrPost({
+                    url:"${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
+                    content:{"adjustedDueDate":dojo.date.locale.format(new Date(), {selector:"date", datePattern:'dd/MM/yyyy'})},
+                    handleAs:"json",
+                    load:function (data) {
+                            var parent = linkElement.parentNode;
+                            dojo.query('.adjustDueDate', parent).forEach(function (el) {
+                                el.innerHTML = data.adjustedDueDate;
+                            });
+                    }
+                });
+            }
             var confirmVisitDate = function (element) {
                 var clinicVisitId = dojo.attr(this, 'visitid');
                 var patientId = dojo.attr(this, 'patientid');
@@ -220,6 +242,7 @@
             };
 
             dojo.query('a.adjustDueDate').connect('onclick', adjustDueDate);
+            dojo.query('a.adjustDueDateAsToday').connect('onclick', adjustDueDateAsToday);
             dojo.query('a.confirmVisitDate').connect('onclick', confirmVisitDate);
             dojo.query('a.setVisitDate').connect('onclick', setVisitDate);
             dojo.query('a.markAsMissed').connect('onclick', markAsMissed);

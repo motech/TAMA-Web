@@ -7,7 +7,9 @@ var SchedulePopup = function(id, titleText){
     var calendar = new dijit.Calendar({
                         value: new Date(),
                         isDisabledDate: function(d){
-                           return new Date().getTime() > d.getTime();
+                            var startDate = new Date();
+                            startDate.setDate(startDate.getDate() - 1);
+                           return startDate.getTime() > d.getTime();
                         }
                     }, dojo.query(".calendar", id)[0]);
 

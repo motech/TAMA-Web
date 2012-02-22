@@ -121,11 +121,11 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public LocalDate getAdjustedDueDate() {
-        Appointment appointment = visit.appointment();
-        if (appointment == null) return null;
-        if (appointment.getData() == null) return null;
-        final String adjustedDueDateAsString = (String) appointment.getData().get(ADJUSTED_DUE_DATE);
-        return adjustedDueDateAsString == null ? null : new LocalDate(adjustedDueDateAsString);
+        if (visit.appointment() == null) {
+            return null;
+        }
+        String adjustedDueDate = (String) visit.appointment().getData().get(ADJUSTED_DUE_DATE);
+        return adjustedDueDate == null ? null : new LocalDate(adjustedDueDate);
     }
 
     public void setAdjustedDueDate(LocalDate adjustedDueDate) {
