@@ -16,19 +16,19 @@
     <c:if test="${patient.warning != null}">
         <div class="warning"> <c:out value="${patient.warning}"/> </div>
     </c:if>
-    <page:show id="ps_org_motechproject_tama_domain_patientSummary" object="${patientSummary}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Overview">
+    <page:show id="ps_org_motechproject_tama_domain_patientSummary" object="${patient}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Overview">
         <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Summary" title="Patient Summary" openPane="true" update="false">
-            <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patientSummary}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
-            <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patientSummary}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
-            <field:display field="gender" id="s_org_motechproject_tama_domain_patient_gender" object="${patientSummary}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
-            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="s_org_motechproject_tama_domain_patient_dateOfBirth" object="${patientSummary}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
-            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patientSummary}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
-            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="artStartDate" id="s_org_motechproject_tama_domain_patient_ARTStartDate" object="${patientSummary}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
-            <field:display field="currentARTRegimen" id="s_org_motechproject_tama_domain_patient_currentARTRegimen" object="${patientSummary}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
-            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="currentRegimenStartDate" id="s_org_motechproject_tama_domain_patient_currentRegimenStartDate" object="${patientSummary}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
-            <field:display field="callPlan" id="s_org_motechproject_tama_domain_patient_callPlan" object="${patientSummary}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
-            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="nextAppointmentDueDateDate" id="s_org_motechproject_tama_domain_patient_nextAppointmentDueDate" object="${patientSummary}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
-            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="nextConfirmedAppointmentDate" id="s_org_motechproject_tama_domain_patient_nextConfirmedAppointmentDate" object="${patientSummary}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
+            <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
+            <field:display field="gender" id="s_org_motechproject_tama_domain_patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
+            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirth" id="s_org_motechproject_tama_domain_patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="registrationDate" id="s_org_motechproject_tama_domain_patient_registrationDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="artStartDate" id="s_org_motechproject_tama_domain_patient_ARTStartDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display field="currentARTRegimen" id="s_org_motechproject_tama_domain_patient_currentARTRegimen" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
+            <field:display date="true" dateTimePattern="dd/MM/yyyy" field="currentRegimenStartDate" id="s_org_motechproject_tama_domain_patient_currentRegimenStartDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display field="callPlan" id="s_org_motechproject_tama_domain_patient_callPlan" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
+            <field:display dateTimePattern="dd/MM/yyyy" field="nextAppointmentDueDate" id="s_org_motechproject_tama_domain_patient_nextAppointmentDueDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
+            <field:display dateTimePattern="dd/MM/yyyy" field="nextConfirmedAppointmentDate" id="s_org_motechproject_tama_domain_patient_nextConfirmedAppointmentDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
         </util:panel>
         <jsp:include page="showPatientPageLinks.jspx">
             <jsp:param name="patientId" value="${patient.id}" />

@@ -53,6 +53,7 @@ public class AllClinicVisits {
 
     public ClinicVisits clinicVisits(String patientDocId) {
         AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
+        if (appointmentCalendar == null) return new ClinicVisits();
         Patient patient = allPatients.get(patientDocId);
         ClinicVisits clinicVisits = new ClinicVisits();
         for (Visit visit : appointmentCalendar.visits()) {
