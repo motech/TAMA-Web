@@ -92,7 +92,7 @@ AdherencePerWeekData.prototype = {
         var self = this;
         return this.sortedList.map(function(elt) {
             var doseValue = self.doseValue(elt, adherenceSummaryType, tooltipPrefix);
-            return {y: doseValue.taken, color: self.colorFor(doseValue.percentage), 'tooltip': doseValue.tooltip};
+            return {y: doseValue.taken, color: "green", tooltip: doseValue.tooltip};
         });
     },
 
@@ -100,14 +100,8 @@ AdherencePerWeekData.prototype = {
         var self = this;
         return this.sortedList.map(function(elt) {
             var doseValue = self.doseValue(elt, adherenceSummaryType, tooltipPrefix);
-            return {y: doseValue.total, 'tooltip': doseValue.tooltip};
+            return {y: doseValue.total, color: "red", tooltip: doseValue.tooltip};
         });
-    },
-
-    colorFor: function(percentage){
-        if(percentage >= 90 ) return "green";
-        if(percentage >= 70 ) return "orange";
-        return "red";
     },
 
     totalNumberOfWeeks: function(){

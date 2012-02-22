@@ -30,13 +30,9 @@
                     <tr>
                         <td>Legend</td>
                         <td class="legendColor red"></td>
-                        <td class="legendLabel">Less Than 70%</td>
-                        <td class="legendColor orange"></td>
-                        <td class="legendLabel"> Between 70% and 90%</td>
+                        <td class="legendLabel">Number of Doses Not Taken</td>
                         <td class="legendColor green"></td>
-                        <td class="legendLabel">More than 90%</td>
-                        <td class="legendColor grey"></td>
-                        <td class="legendLabel">Missed Dose</td>
+                        <td class="legendLabel">Number of Doses Taken</td>
                     </tr>
                 </table>
                 <div>
@@ -51,13 +47,9 @@
                     <tr>
                         <td>Legend</td>
                         <td class="legendColor red"></td>
-                        <td class="legendLabel"> Less Than 70%</td>
-                        <td class="legendColor orange"></td>
-                        <td class="legendLabel"> Between 70% and 90%</td>
+                        <td class="legendLabel">Number of Days Missed</td>
                         <td class="legendColor green"></td>
-                        <td class="legendLabel">More than 90%</td>
-                        <td class="legendColor grey"></td>
-                        <td class="legendLabel">Missed Days</td>
+                        <td class="legendLabel">Number of Days Taken</td>
                     </tr>
                 </table>
                 <div>
