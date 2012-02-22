@@ -215,7 +215,7 @@
                 var clinicVisitId = dojo.attr(this, 'visitid');
                 var patientId = dojo.attr(this, 'patientid');
                 var linkElement = this;
-                if (window.confirm("Confirm visit as missed?")) {
+                new tama.ConfirmBox("Confirm", "Confirm visit as missed?", function() {
                     dojo.xhrPost({
                         url:"${markAsMissedUrl}/" + clinicVisitId + "?patientId=" + patientId,
                         content:{},
@@ -230,7 +230,7 @@
                             }
                         }
                     });
-                }
+                }).show();
             }
 
             var createAppointment = function(element) {
