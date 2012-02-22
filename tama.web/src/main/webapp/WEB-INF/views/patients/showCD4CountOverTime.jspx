@@ -55,23 +55,13 @@
 
             dojo.ready(function () {
                 var c = new dojox.charting.Chart2D("cd4CountOverTime");
-                loadCD4CountChart(c, 3);
-                dojo.query(".loadCD4CountChart").connect('onclick', function(el) {
-                    var rangeInMonths = dojo.attr(this, 'data');
-                    loadCD4CountChart(c, rangeInMonths)
-                });
+                loadCD4CountChart(c, 36);
             });
         </script>
 
         <div id="cd4CountOverTimePane">
             <div id="cd4CountOverTime" style="width: 99%; height: 400px; display:inline-block"><!-- required --></div>
-            <div id="noCd4CountOverTimePane" style="font-weight: bold;height: 400px;">No CD4 Count history for specified date range.<br/></div>
-            <div><input class="loadCD4CountChart submit" type="submit" value="3 Months" data="3"/>
-                <input class="loadCD4CountChart submit" type="submit" value="6 Months" data="6"/>
-                <input class="loadCD4CountChart submit" type="submit" value="1 Year" data="12"/>
-                <input class="loadCD4CountChart submit" type="submit" value="2 Years" data="24"/>
-                <input class="loadCD4CountChart submit" type="submit" value="3 Years" data="36"/>
-            </div>
+            <div id="noCd4CountOverTimePane" style="font-weight: bold;height: 50px;">No CD4 Count history for specified date range.<br/></div>
         </div>
     </util:panel>
 </div>
