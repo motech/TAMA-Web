@@ -18,7 +18,6 @@
         <div style="margin-bottom: 10px">
             <a id="createVisit" href="${create_visit_url}">Create Visit</a> |
             <a id="createAppointment" href="javascript:void(0);" class="createAppointment">Create Appointment</a> |
-            <a id="showPatientSummary" href="${patient_summary_url}">Show Patient Summary</a>
         </div>
         <table id="clinicVisitList">
             <thead>
