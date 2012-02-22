@@ -6,6 +6,7 @@
     <jsp:output omit-xml-declaration="yes"/>
 
     <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Clinic Visits / Appointment Details" openPane="true">
+        <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${clinicVisit.patient}"/>
         <field:display date="false" dateTimePattern="dd/MM/yyyy" field="visitDate" object="${clinicVisit}" label="Visit Date" id="clinicVisitDate"/>
         <jsp:include page="../treatmentadvices/show.jspx" />
         <jsp:include page="../labresults/show.jspx" />

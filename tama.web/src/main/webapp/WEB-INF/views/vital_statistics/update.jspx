@@ -18,26 +18,27 @@
 
     <util:panel id="vital_statistics_panel" title="Vital Statistics" openPane="true">
 
+        <formfield:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
         <spring:url value="/vital_statistics/update" var="form_url"/>
         <springform:form action="${form_url}" modelAttribute="vitalStatisticsUIModel" method="${_method}" id="vital_statistics_form">
 
-            <input type="hidden" name="clinicVisitId" value="${vitalStatisticsUIModel.clinicVisitId}"/>
-            <input type="hidden" name="id" value="${vitalStatisticsUIModel.id}"/>
-            <field:hidden path="vitalStatistics.patientId" value="${vitalStatistics.patientId}"/>
+        <input type="hidden" name="clinicVisitId" value="${vitalStatisticsUIModel.clinicVisitId}"/>
+        <input type="hidden" name="id" value="${vitalStatisticsUIModel.id}"/>
+        <field:hidden path="vitalStatistics.patientId" value="${vitalStatistics.patientId}"/>
 
-            <formfield:input field="vitalStatistics.weightInKg" label="Weight (in kg)" id="weight" validationRegex="^[0-9]*(\.[0-9]+)?$" />
-            <formfield:input field="vitalStatistics.heightInCm" label="Height (in cm)" id="height" validationRegex="^[0-9]*(\.[0-9]+)?$" />
-            <formfield:input field="vitalStatistics.systolicBp" label="Systolic Blood Pressure" id="systolic_bp" validationRegex="^[0-9]*" />
-            <formfield:input field="vitalStatistics.diastolicBp" label="Diastolic Blood Pressure" id="diastolic_bp" validationRegex="^[0-9]*" />
-            <formfield:input field="vitalStatistics.temperatureInFahrenheit" label="Temperature (in F)" id="temperature" validationRegex="^[0-9]*(\.[0-9]+)?$" />
-            <formfield:input field="vitalStatistics.pulse" label="Pulse" id="body_pulse" validationRegex="^[0-9]*" />
+        <formfield:input field="vitalStatistics.weightInKg" label="Weight (in kg)" id="weight" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+        <formfield:input field="vitalStatistics.heightInCm" label="Height (in cm)" id="height" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+        <formfield:input field="vitalStatistics.systolicBp" label="Systolic Blood Pressure" id="systolic_bp" validationRegex="^[0-9]*" />
+        <formfield:input field="vitalStatistics.diastolicBp" label="Diastolic Blood Pressure" id="diastolic_bp" validationRegex="^[0-9]*" />
+        <formfield:input field="vitalStatistics.temperatureInFahrenheit" label="Temperature (in F)" id="temperature" validationRegex="^[0-9]*(\.[0-9]+)?$" />
+        <formfield:input field="vitalStatistics.pulse" label="Pulse" id="body_pulse" validationRegex="^[0-9]*" />
 
-            <br/>
-            <div class="submit" id="${fn:escapeXml(id)}_submit">
-              <spring:message code="button_save" var="save_button" htmlEscape="false" />
-              <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
-              <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}"/>
-            </div>
+        <br/>
+        <div class="submit" id="${fn:escapeXml(id)}_submit">
+          <spring:message code="button_save" var="save_button" htmlEscape="false" />
+          <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+          <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}"/>
+        </div>
         </springform:form>
     </util:panel>
     <div id="page_load_marker"></div>

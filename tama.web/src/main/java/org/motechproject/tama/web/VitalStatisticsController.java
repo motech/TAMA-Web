@@ -70,6 +70,7 @@ public class VitalStatisticsController extends BaseController {
         } else {
             uiModel.addAttribute("vitalStatisticsUIModel", VitalStatisticsUIModel.get(clinicVisit, allVitalStatistics.get(clinicVisit.getVitalStatisticsId())));
         }
+        uiModel.addAttribute("patient", clinicVisit.getPatient());
         uiModel.addAttribute("_method", "put");
         return UPDATE_FORM;
     }

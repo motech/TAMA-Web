@@ -19,6 +19,7 @@
         <div>
             <div id="lab_results_error" class="error"/>
         </div>
+        <formfield:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
         <table>
             <thead>
             <tr>

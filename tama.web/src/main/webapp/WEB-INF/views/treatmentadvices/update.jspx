@@ -10,6 +10,7 @@
         <spring:url value="/treatmentadvices/changeRegimen" var="form_url"/>
 
         <form action="${form_url}" method="POST" id="treatmentAdvice">
+            <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
             <util:panel id="fc_org_motechproject_tama_domain_patient_Existing_Treatment_Advice"
                         title="Reason for Change" openPane="true">
                 <field:display object="${adviceEndDate}" field="" label="End Date"

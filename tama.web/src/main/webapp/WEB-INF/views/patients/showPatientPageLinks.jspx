@@ -15,8 +15,8 @@
     <spring:url value="/patients/${param.patientId}/reports" var="reports_url"><!-- required--> </spring:url>
     <div style="margin-top: 10px;display: inline;"><a id="reports_link" href="${reports_url}">Reports</a></div>
      |
-    <spring:url value="/patients/summary/${param.patientId}" var="patient_overview"><!-- required--> </spring:url>
-    <div style="margin-top: 10px;display: inline;"><a id="patient_overview" href="${patient_overview}">Patient Overview</a></div>
+    <spring:url value="/patients/summary/${param.patientId}" var="patient_dashboard"><!-- required--> </spring:url>
+    <div style="margin-top: 10px;display: inline;"><a id="patient_dashboard" href="${patient_dashboard}">Patient Dashboard</a></div>
      |
     <spring:url value="/patients/${param.patientId}" var="patient_registration_details"><!-- required--> </spring:url>
     <div style="margin-top: 10px;display: inline;"><a id="patient_registration_details" href="${patient_registration_details}">Patient Registration Details</a></div>

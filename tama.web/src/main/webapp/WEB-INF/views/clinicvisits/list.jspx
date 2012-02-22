@@ -2,6 +2,7 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:spring="http://www.springframework.org/tags" version="2.0"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:c="http://java.sun.com/jsp/jstl/core"
      class="clinic-visit-list">
 
@@ -12,6 +13,9 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <util:panel id="clinicVisitListPanel" title="Clinic Visits" openPane="true">
+        <br />
+        <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
+        <br />
         <spring:url value="/clinicvisits/newVisit" var="create_visit_url">
             <spring:param name="patientDocId" value="${patient.id}"/>
         </spring:url>

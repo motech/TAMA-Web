@@ -18,6 +18,7 @@
         <spring:url value="/clinicvisits/create/${clinicVisit.id}" var="form_url"/>
 
         <form id="clinicvisit" action="${form_url}" method="POST">
+            <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${clinicVisit.patient}"/>
             <field:datetime dateTimePattern="dd/MM/yyyy" field="clinicVisit.visitDate" future="false" required="true" id="clinicVisitDate" label="Visit Date"/>
             <input type="hidden" name="patientId" value="${patientId}"/>
             <input type="hidden" name="clinicVisit.id" value="${clinicVisit.id}"/>

@@ -20,7 +20,7 @@
                      customActionCondition="item.activateEnabled"
                      customActionPath2="patients/revive" customActionLabel2="Reactivate"
                      customActionCondition2="item.reviveEnabled"
-                     create="false" update="false" delete="false" show_label="Patient Overview">
+                     create="false" update="false" delete="false" show_label="Patient Dashboard">
             <table:column id="c_org_motechproject_tama_domain_patient_patientId" property="patientId"
                           z="4I1LBMUNYSxNw1zomaU2BkBlauc="/>
             <table:column id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" property="mobilePhoneNumber"

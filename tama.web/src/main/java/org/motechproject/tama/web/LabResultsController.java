@@ -82,6 +82,7 @@ public class LabResultsController extends BaseController {
 
         labResultsUIModel.setLabResults(new LabResults(labResultsMap.values()));
         uiModel.addAttribute("labResultsUIModel", labResultsUIModel);
+        uiModel.addAttribute("patient", clinicVisit.getPatient());
         uiModel.addAttribute("clinicVisitId", clinicVisitId);
         return "labresults/update";
     }

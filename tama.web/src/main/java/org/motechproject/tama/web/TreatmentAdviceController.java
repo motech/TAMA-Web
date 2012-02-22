@@ -63,6 +63,8 @@ public class TreatmentAdviceController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/changeRegimen")
     public String changeRegimenForm(@RequestParam String id, @RequestParam String patientId, @RequestParam String clinicVisitId, Model uiModel) {
+        Patient patient = allPatients.get(patientId);
+        uiModel.addAttribute("patient", patient);
         uiModel.addAttribute("clinicVisitId", clinicVisitId);
         uiModel.addAttribute("adviceEndDate", DateUtil.today().toString(TAMAConstants.DATE_FORMAT));
         uiModel.addAttribute("existingTreatmentAdviceId", id);
