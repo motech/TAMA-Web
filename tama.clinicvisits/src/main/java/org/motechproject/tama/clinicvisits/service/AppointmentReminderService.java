@@ -40,7 +40,8 @@ public class AppointmentReminderService {
         String adjustedDateString = (String) appointment.getData().get(ClinicVisit.ADJUSTED_DUE_DATE);
         LocalDate adjustedDueDate = adjustedDateString == null ? null : new LocalDate(adjustedDateString);
         LocalDate dueDate = adjustedDueDate == null ? appointment.dueDate().toLocalDate() : adjustedDueDate;
-        if (DateUtil.today().equals(dueDate.minusDays(DAYS_FOR_REMINDER_ALERT))) {
+        boolean isDayOfReminderAlert = DateUtil.today().equals(dueDate.minusDays(DAYS_FOR_REMINDER_ALERT));
+        if (appointment.firmDate() == null && isDayOfReminderAlert) {
             patientAlertService.createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.APPOINTMENT_REMINDER, "", PatientAlertType.AppointmentReminder, null);
         }
     }

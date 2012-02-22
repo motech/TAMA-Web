@@ -114,6 +114,19 @@ public class AppointmentReminderServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldNotRaiseAppointmentReminderAlertWhenAppointmentHasConfirmedDate() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientId").build();
+
+        Appointment appointment = new Appointment()
+                .dueDate(DateUtil.now().plusDays(daysBeforeReminderAlert))
+                .firmDate(DateUtil.now());
+
+        when(appointmentService.getAppointment(appointment.id())).thenReturn(appointment);
+        appointmentReminderService.raiseReminderAlert(patient, appointment);
+        verifyZeroInteractions(patientAlertService);
+    }
+
+    @Test
     public void shouldNotRaiseAppointmentReminderAlertWhenTodayIsAfterReminderAlertDay() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientId").build();
         Appointment appointment = new Appointment().dueDate(DateUtil.now().plusDays(daysBeforeReminderAlert - 1));
