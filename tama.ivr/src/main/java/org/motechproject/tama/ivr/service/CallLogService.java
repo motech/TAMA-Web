@@ -18,7 +18,9 @@ import java.util.Properties;
 
 @Component
 public class CallLogService {
+
     public static final String MAX_NUMBER_OF_CALL_LOGS_PER_PAGE = "max.number.of.call.logs.per.page";
+
     private final AllCallLogs allCallLogs;
     private final KookooCallDetailRecordsService kookooCallDetailRecordsService;
     private final CallLogMapper callDetailRecordMapper;
@@ -63,13 +65,15 @@ public class CallLogService {
     }
 
     public List<CallLog> getLogsForDateRangeAndClinic(DateTime fromDate, DateTime toDate, String clinicId, int startIndex) {
-        String maxNumberOfCallLogsPerPage = properties.getProperty(MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20");
-        return allCallLogs.findCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId, startIndex, Integer.parseInt(maxNumberOfCallLogsPerPage));
+        return allCallLogs.findCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId, startIndex, getMaxNumberOfCallLogsPerPage());
+    }
+
+    private Integer getMaxNumberOfCallLogsPerPage() {
+        return Integer.parseInt(properties.getProperty(MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20"));
     }
 
     public List<CallLog> getLogsForDateRange(DateTime fromDate, DateTime toDate, int startIndex) {
-        String maxNumberOfCallLogsPerPage = properties.getProperty(MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20");
-        return allCallLogs.findCallLogsForDateRange(fromDate, toDate, startIndex, Integer.parseInt(maxNumberOfCallLogsPerPage));
+        return allCallLogs.findCallLogsForDateRange(fromDate, toDate, startIndex, getMaxNumberOfCallLogsPerPage());
     }
 
     private List<String> getAllLikelyPatientIds(KookooCallDetailRecord kookooCallDetailRecord) {

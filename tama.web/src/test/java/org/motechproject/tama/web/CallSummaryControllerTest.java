@@ -94,10 +94,11 @@ public class CallSummaryControllerTest {
     public void shouldShowCallLogsForSecondPageBetweenEnteredDates() {
         setUpCallLog();
         CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
-        callLogPreferencesFilter.setPageNumber(2);
+        callLogPreferencesFilter.setPageNumber("2");
 
         when(user.isAdministrator()).thenReturn(true);
         when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
+        when(callLogService.getTotalNumberOfLogs(Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(30);
 
         callSummaryController.list(callLogPreferencesFilter, bindingResult, request, uiModel);
 
@@ -131,12 +132,20 @@ public class CallSummaryControllerTest {
         assertEquals((Integer) 2, callSummaryController.calculateTotalNumberOfPages(10, 11));
         assertEquals((Integer) 1, callSummaryController.calculateTotalNumberOfPages(10, 9));
     }
+    
+    @Test
+    public void shouldReturnValidPageNumber() {
+        assertEquals((Integer) 1, callSummaryController.getValidPageNumber("20", 10));
+        assertEquals((Integer) 1, callSummaryController.getValidPageNumber("-20", 10));
+        assertEquals((Integer) 1, callSummaryController.getValidPageNumber("c", 10));
+        assertEquals((Integer) 3, callSummaryController.getValidPageNumber("3", 10));
+    }
 
     private CallLogPreferencesFilter setUpCallLogPreferencesFilter() {
         CallLogPreferencesFilter callLogPreferencesFilter = new CallLogPreferencesFilter();
         callLogPreferencesFilter.setCallLogStartDate(DateUtil.today().toDate());
         callLogPreferencesFilter.setCallLogEndDate(DateUtil.tomorrow().toDate());
-        callLogPreferencesFilter.setPageNumber(1);
+        callLogPreferencesFilter.setPageNumber("1");
         return callLogPreferencesFilter;
     }
 

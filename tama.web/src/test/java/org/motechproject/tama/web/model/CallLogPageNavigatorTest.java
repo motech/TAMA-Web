@@ -6,7 +6,6 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.util.DateUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
@@ -75,17 +74,11 @@ public class CallLogPageNavigatorTest {
         assertNull(callLogPageNavigator.getLastPageLink());
     }
 
-    @Test
-    public void shouldReturnGoToPageLink() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, 3);
-        assertEquals(buildExpectedLink(""), callLogPageNavigator.getGoToPageLink());
-    }
-
     private String buildExpectedLink(String pageNumber) throws UnsupportedEncodingException {
         return "callsummary?callLogStartDate=" + getFormattedDate(startDate) + "&callLogEndDate=" + getFormattedDate(endDate) + "&pageNumber=" + pageNumber;
     }
 
-    private String getFormattedDate(Date startDate) {
-        return new SimpleDateFormat(TAMAConstants.DATE_FORMAT).format(startDate);
+    private String getFormattedDate(Date date) {
+        return DateUtil.newDate(date).toString(TAMAConstants.DATE_FORMAT);
     }
 }

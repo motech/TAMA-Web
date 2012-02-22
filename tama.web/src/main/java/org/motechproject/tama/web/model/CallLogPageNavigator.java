@@ -1,9 +1,9 @@
 package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.util.DateUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CallLogPageNavigator {
@@ -29,16 +29,6 @@ public class CallLogPageNavigator {
         return getFormattedLink(nextPageNumber.toString());
     }
     
-    public String getGoToPageLink() throws UnsupportedEncodingException {
-        return getFormattedLink("");
-    }
-
-    private String getFormattedLink(String pageNumber) throws UnsupportedEncodingException {
-        String startDateString = new SimpleDateFormat(TAMAConstants.DATE_FORMAT).format(callLogStartDate);
-        String endDateString = new SimpleDateFormat(TAMAConstants.DATE_FORMAT).format(callLogEndDate);
-        return "callsummary?callLogStartDate=" + startDateString + "&callLogEndDate=" + endDateString + "&pageNumber=" + pageNumber;
-    }
-
     public String getPreviousPageLink() throws UnsupportedEncodingException {
         Integer previousPageNumber = currentPageNumber - 1;
         if(previousPageNumber <= 0) return null;
@@ -55,35 +45,26 @@ public class CallLogPageNavigator {
         return getFormattedLink(totalNumberOfPages.toString());
     }
 
+    private String getFormattedLink(String pageNumber) throws UnsupportedEncodingException {
+        String startDateString = DateUtil.newDate(callLogStartDate).toString(TAMAConstants.DATE_FORMAT);
+        String endDateString = DateUtil.newDate(callLogEndDate).toString(TAMAConstants.DATE_FORMAT);
+        return "callsummary?callLogStartDate=" + startDateString + "&callLogEndDate=" + endDateString + "&pageNumber=" + pageNumber;
+    }
+
     public Integer getCurrentPageNumber() {
         return currentPageNumber;
     }
 
-    public void setCurrentPageNumber(Integer currentPageNumber) {
-        this.currentPageNumber = currentPageNumber;
+    public String getCallLogStartDate() {
+        return DateUtil.newDate(callLogStartDate).toString(TAMAConstants.DATE_FORMAT);
     }
 
-    public Date getCallLogStartDate() {
-        return callLogStartDate;
-    }
-
-    public void setCallLogStartDate(Date callLogStartDate) {
-        this.callLogStartDate = callLogStartDate;
-    }
-
-    public Date getCallLogEndDate() {
-        return callLogEndDate;
-    }
-
-    public void setCallLogEndDate(Date callLogEndDate) {
-        this.callLogEndDate = callLogEndDate;
+    public String getCallLogEndDate() {
+        return DateUtil.newDate(callLogEndDate).toString(TAMAConstants.DATE_FORMAT);
     }
 
     public Integer getTotalNumberOfPages() {
         return totalNumberOfPages;
     }
 
-    public void setTotalNumberOfPages(Integer totalNumberOfPages) {
-        this.totalNumberOfPages = totalNumberOfPages;
-    }
 }

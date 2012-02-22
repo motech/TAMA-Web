@@ -52,22 +52,36 @@ public class CallSummaryController {
             return CREATE_VIEW;
         }
 
-        uiModel.asMap().clear();
         DateTime startDate = DateUtil.newDateTime(callLogPreferencesFilter.getCallLogStartDate());
         DateTime endDate = DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY)
                 .plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY);
-        Integer pageNumber = callLogPreferencesFilter.getPageNumber();
 
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
+        Integer totalNumberOfPages = getTotalNumberOfPages(startDate, endDate, user);
+        Integer pageNumber = getValidPageNumber(callLogPreferencesFilter.getPageNumber(), totalNumberOfPages);
+        
         List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(getCallLogsForPage(user, startDate, endDate, pageNumber));
-        Integer totalNumberOfCallLogs = getTotalNumberOfCallLogs(user, startDate, endDate);
 
-        CallLogPageNavigator callLogPageNavigator = new CallLogPageNavigator(pageNumber, startDate.toDate(), endDate.toDate(),
-                calculateTotalNumberOfPages(getMaxNumberOfCallLogsPerPage(), totalNumberOfCallLogs));
+        CallLogPageNavigator callLogPageNavigator = new CallLogPageNavigator(pageNumber, callLogPreferencesFilter.getCallLogStartDate(),
+                callLogPreferencesFilter.getCallLogEndDate(), totalNumberOfPages);
 
+        uiModel.asMap().clear();
         uiModel.addAttribute("callSummary", callLogViews);
         uiModel.addAttribute("pageNavigator", callLogPageNavigator);
         return LIST_VIEW;
+    }
+
+    private Integer getTotalNumberOfPages(DateTime startDate, DateTime endDate, AuthenticatedUser user) {
+        return calculateTotalNumberOfPages(getMaxNumberOfCallLogsPerPage(), getTotalNumberOfCallLogs(user, startDate, endDate));
+    }
+
+    Integer getValidPageNumber(String pageNumber, Integer totalNumberOfPages) {
+        try{
+            Integer pageNo = Integer.parseInt(pageNumber);
+            return (pageNo > totalNumberOfPages || pageNo < 1) ? 1 : pageNo;
+        } catch(NumberFormatException e) {
+            return 1;
+        }
     }
 
     private List<CallLog> getCallLogsForPage(AuthenticatedUser user, DateTime startDate, DateTime endDate, Integer pageNumber) {
@@ -111,7 +125,7 @@ public class CallSummaryController {
         callLogPreferencesFilter = new CallLogPreferencesFilter();
         callLogPreferencesFilter.setCallLogStartDate(DateUtil.today().toDate());
         callLogPreferencesFilter.setCallLogEndDate(DateUtil.today().toDate());
-        callLogPreferencesFilter.setPageNumber(1);
+        callLogPreferencesFilter.setPageNumber("1");
         uiModel.addAttribute("logPreferences", callLogPreferencesFilter);
     }
 

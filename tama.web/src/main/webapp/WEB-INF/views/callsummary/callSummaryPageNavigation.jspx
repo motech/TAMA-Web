@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div
-        version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<div version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <div class="pageNavigation">
+        <form action="callsummary" method="GET" >
 
         <c:if test="${not empty pageNavigator.firstPageLink}">
             <a style="margin-right:10px" id="first_link" href="${pageNavigator.firstPageLink}">First</a>
@@ -23,20 +24,12 @@
         </c:if>
 
         Go to page:
-        <input type="text" id="pageNo"/>
-        <input style="margin-left:5px" class="pageButton" id="gotoPageButton" type="button" value="Go"
-               onClick="goToPage();"/>
+        <input type="hidden" name="callLogStartDate" value="${pageNavigator.callLogStartDate}" ></input>
+        <input type="hidden" name="callLogEndDate" value="${pageNavigator.callLogEndDate}" ></input>
+        <input type="text" name="pageNumber" class="pageNumber" />
 
+        <input class="goToPageButton" type="submit" value="Go" />
+        </form>
     </div>
-
-    <script type="text/javascript">
-        <![CDATA[
-        function goToPage() {
-            pageNumber = dojo.byId("pageNo").value;
-            document.location = "${pageNavigator.goToPageLink}" + pageNumber;
-        }
-        ]]>
-    </script>
-
 
 </div>
