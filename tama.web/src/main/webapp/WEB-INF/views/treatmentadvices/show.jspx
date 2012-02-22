@@ -1,82 +1,103 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_org_motechproject_tama_domain_TreatmentAdvice" object="${treatmentAdvice}" path="/treatmentadvices" list="false" create="false" update="false" delete="false">
+    <page:show id="ps_org_motechproject_tama_domain_TreatmentAdvice" object="${treatmentAdvice}" path="/treatmentadvices" list="false" create="false"
+               update="false" delete="false">
         <field:display object="${treatmentAdvice}" field="patientId" id="s_org_motechproject_tama_domain_TreatmentAdvice_patientId"/>
         <field:display object="${treatmentAdvice}" field="regimenName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens"/>
-        <field:display object="${treatmentAdvice}" field="drugCompositionName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"/>
+        <field:display object="${treatmentAdvice}" field="drugCompositionName"
+                       id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"/>
         <table>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
-                        <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName" id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name" />
-                        </td>
+                    <td>
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName"
+                                       id="c_org_motechproject_tama_domain_TreatmentAdvice_drugName${item.index}" label="Drug Name"/>
+                    </td>
                 </c:forEach>
             </tr>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
-                        <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="brandName" id="c_org_motechproject_tama_domain_TreatmentAdvice_brandName${item.index}" label="Brand Name" />
-                        </td>
+                    <td>
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="brandName"
+                                       id="c_org_motechproject_tama_domain_TreatmentAdvice_brandName${item.index}" label="Brand Name"/>
+                    </td>
                 </c:forEach>
             </tr>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
-                        <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="dosageType" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage" />
-                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].morningTime}">
-                                <field:display object="${treatmentAdvice.drugDosages[item.index].morningTime}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{0}" label="Morning Time" />
-                            </c:if>
-                            <c:if test="${not empty treatmentAdvice.drugDosages[item.index].eveningTime}">
-                                <field:display object="${treatmentAdvice.drugDosages[item.index].eveningTime}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{1}" label="Evening Time" />
-                            </c:if>
-                            <c:if test="${drugDosage.dosageType == 'Variable Dosage'}">
-                                      <field:display object="${drugDosage.offsetDays}" field="" id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageOffset${item.index}{1}" label="Start evening dose after (days)" />
-                            </c:if>
-                        </td>
+                    <td>
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="dosageType"
+                                       id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}" label="Dosage"/>
+                        <c:if test="${not empty treatmentAdvice.drugDosages[item.index].morningTime}">
+                            <field:display object="${treatmentAdvice.drugDosages[item.index].morningTime}" field=""
+                                           id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{0}" label="Morning Time"/>
+                        </c:if>
+                        <c:if test="${not empty treatmentAdvice.drugDosages[item.index].eveningTime}">
+                            <field:display object="${treatmentAdvice.drugDosages[item.index].eveningTime}" field=""
+                                           id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageSchedules${item.index}{1}" label="Evening Time"/>
+                        </c:if>
+                        <c:if test="${drugDosage.dosageType == 'Variable Dosage'}">
+                            <field:display object="${drugDosage.offsetDays}" field=""
+                                           id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageOffset${item.index}{1}"
+                                           label="Start evening dose after (days)"/>
+                        </c:if>
+                    </td>
                 </c:forEach>
             </tr>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
-                        <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="startDateAsDate" date="true" dateTimePattern="dd/MM/yyyy" label="Start Date" id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}"/>
-                        </td>
+                    <td>
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="startDateAsDate" date="true"
+                                       dateTimePattern="dd/MM/yyyy" label="Start Date"
+                                       id="c_org_motechproject_tama_domain_TreatmentAdvice_startDate${item.index}"/>
+                    </td>
                 </c:forEach>
             </tr>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
-                        <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="advice" id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice" />
-                        </td>
+                    <td>
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="advice"
+                                       id="c_org_motechproject_tama_domain_TreatmentAdvice_advice${item.index}" label="Advice"/>
+                    </td>
                 </c:forEach>
             </tr>
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
-                        <td>
-                            <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="mealAdviceType" id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}" label="Meal Advice" />
-                        </td>
+                    <td>
+                        <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="mealAdviceType"
+                                       id="c_org_motechproject_tama_domain_TreatmentAdvice_mealAdviceType${item.index}" label="Meal Advice"/>
+                    </td>
                 </c:forEach>
             </tr>
         </table>
-        <br />
+        <br/>
+
         <div>
-            <spring:url value="/treatmentadvices/changeRegimen" var="form_url"/>
-            <form action="${form_url}" method="GET">
-               <div class='submit'>
-                  <input type="hidden" name="id" value="${treatmentAdvice.treatmentAdviceId}"/>
-                  <input type="hidden" name="clinicVisitId" value="${clinicVisitId}"/>
-                  <input type="hidden" name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
-                   <c:choose>
-                       <c:when test="${treatmentAdvice.showChangeRegimenButton}">
-                           <input type="submit" id="changeRegimen" value="Change Regimen"/>
-                       </c:when>
-                       <c:otherwise>
-                           <I>Adherence calls for the patient are currently suspended. Please reactivate the patient to be able to change regimen.</I>
-                       </c:otherwise>
-                   </c:choose>
-               </div>
-            </form>
+            <spring:url value="/treatmentadvices/changeRegimen" var="form_url" htmlEscape="false">
+                <spring:param name="id" value="${treatmentAdvice.treatmentAdviceId}"/>
+                <spring:param name="clinicVisitId" value="${clinicVisit.id}"/>
+                <spring:param name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
+            </spring:url>
+            <c:choose>
+                <c:when test="${treatmentAdvice.showChangeRegimenButton}">
+                    <button id="changeRegimen">Change Regimen</button>
+                </c:when>
+                <c:otherwise>
+                    <I>Adherence calls for the patient are currently suspended. Please reactivate the patient to be able to change regimen.</I>
+                </c:otherwise>
+            </c:choose>
+            <script>
+                dojo.addOnLoad(function () {
+                    dojo.connect(dojo.byId('changeRegimen'), 'onclick',function (event) {
+                        event.preventDefault();
+                        window.location.href = "${form_url}";
+                    });
+                });
+
+            </script>
         </div>
     </page:show>
 </div>

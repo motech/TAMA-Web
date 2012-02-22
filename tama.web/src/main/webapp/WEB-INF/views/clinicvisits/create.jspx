@@ -21,7 +21,14 @@
             <field:datetime dateTimePattern="dd/MM/yyyy" field="clinicVisit.visitDate" future="false" required="true" id="clinicVisitDate" label="Visit Date"/>
             <input type="hidden" name="patientId" value="${patientId}"/>
             <input type="hidden" name="clinicVisit.id" value="${clinicVisit.id}"/>
-            <jsp:include page="../treatmentadvices/create.jspx" />
+            <c:choose>
+                <c:when test="${not empty itemId}">
+                    <jsp:include page="../treatmentadvices/show.jspx" />
+                </c:when>
+                <c:otherwise>
+                    <jsp:include page="../treatmentadvices/create.jspx" />
+                </c:otherwise>
+            </c:choose>
             <jsp:include page="../labresults/create.jspx" />
             <jsp:include page="../vital_statistics/form.jspx" />
 

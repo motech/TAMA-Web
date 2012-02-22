@@ -113,6 +113,7 @@ public class ClinicVisitsControllerTest {
     public void shouldCreateClinicVisit() {
         BindingResult bindingResult = mock(BindingResult.class);
         final TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
+            setRegimenId("regimenId");
             setPatientId("patientId");
         }};
         final LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
@@ -126,14 +127,15 @@ public class ClinicVisitsControllerTest {
         when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
         final DateTime visitDate = DateUtil.now();
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVisitDate(visitDate).build();
-        when(allClinicVisits.updateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId")).thenReturn("clinicVisitId");
-        String redirectURL = clinicVisitsController.create(null, clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+        final String clinicVisitId = "clinicVisitId";
+        when(allClinicVisits.updateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId")).thenReturn(clinicVisitId);
+        String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
 
         assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
         verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
         verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
         verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
-        verify(allClinicVisits).updateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId");
+        verify(allClinicVisits).updateVisit(clinicVisitId, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId");
     }
 
     @Test

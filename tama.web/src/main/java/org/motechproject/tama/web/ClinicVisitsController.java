@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.model.TypeOfVisit;
@@ -23,6 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @RequestMapping("/clinicvisits")
 @Controller
@@ -61,13 +65,19 @@ public class ClinicVisitsController extends BaseController {
         if (adviceForPatient == null)
             adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
         if (adviceForPatient != null) {
-            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientDocId;
+            treatmentAdviceController.show(adviceForPatient.getId(), uiModel);
+            final boolean wasVisitDetailsEdited = (clinicVisit.getTreatmentAdviceId() != null ||
+                    !clinicVisit.getLabResultIds().isEmpty() ||
+                    clinicVisit.getVitalStatisticsId() != null);
+            if (wasVisitDetailsEdited)
+                return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientDocId;
+        } else {
+            treatmentAdviceController.createForm(patientDocId, uiModel);
         }
 
         uiModel.addAttribute("patientId", patientDocId);
         if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.now());
         uiModel.addAttribute("clinicVisit", clinicVisit);
-        treatmentAdviceController.createForm(patientDocId, uiModel);
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
         return "clinicvisits/create";
@@ -78,12 +88,14 @@ public class ClinicVisitsController extends BaseController {
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
         }
-        String treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
+        String treatmentAdviceId = null;
+        if (isNotBlank(treatmentAdvice.getRegimenId()))
+            treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
         String patientId = treatmentAdvice.getPatientId();
-        final String clinitVistId = allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinitVistId, httpServletRequest) + "?patientId=" + patientId;
+        allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientId;
     }
 
     @RequestMapping(value = "/{clinicVisitId}", method = RequestMethod.GET)
