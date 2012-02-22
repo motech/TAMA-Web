@@ -208,7 +208,7 @@
                     });
                 };
 
-                popup.show(this, {showTimeOption : false}, okHandler);
+                popup.show(this, {showTimeOption : false, disablePastDates :  false}, okHandler);
             }
 
             var markAsMissed = function (element) {
