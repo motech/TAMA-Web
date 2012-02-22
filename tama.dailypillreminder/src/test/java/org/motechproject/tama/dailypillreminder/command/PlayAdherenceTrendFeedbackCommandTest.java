@@ -30,7 +30,7 @@ public class PlayAdherenceTrendFeedbackCommandTest {
     @Mock
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
-    private DateTime dateTime = DateTime.now();
+    private DateTime dateTime = DateUtil.now();
 
     @Before
     public void setUp() throws NoSuchFieldException {

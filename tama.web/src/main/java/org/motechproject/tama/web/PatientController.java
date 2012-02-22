@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
@@ -185,20 +186,15 @@ public class PatientController extends BaseController {
         addDateTimeFormat(uiModel);
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return new ModelAndView("authorizationFailure", "", null);
-        TreatmentAdvice firstTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(id);
+        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(id);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(id);
-        Regimen currentRegimen = null;
-        if(currentTreatmentAdvice != null){
-            currentRegimen = allRegimens.get(currentTreatmentAdvice.getRegimenId());
-        }
+        Regimen currentRegimen = patientService.currentRegimen(patient);
+        ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
         String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen, clinicVisits, warning);
         //Do not change name of form bean - currently used by graphs to get data.
         //TODO : Change <graph>.jspx partials to accept patient form bean name as parameter/variable.
-        return new ModelAndView(SUMMARY_VIEW, "patient", new PatientSummary(patient,
-                                                                                         currentTreatmentAdvice,
-                                                                                         firstTreatmentAdvice == null ? null : firstTreatmentAdvice.getStartDate(),
-                                                                                         currentRegimen == null ? null : currentRegimen.getDisplayName(),
-                                                                                         warning));
+        return new ModelAndView(SUMMARY_VIEW, "patient", patientSummary);
     }
 
     @RequestMapping(method = RequestMethod.GET)

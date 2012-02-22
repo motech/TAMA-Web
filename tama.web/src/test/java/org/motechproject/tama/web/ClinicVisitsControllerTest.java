@@ -9,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -140,7 +141,7 @@ public class ClinicVisitsControllerTest {
         Model uiModel = mock(Model.class);
         final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().build();
         final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().build();
-        when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(new ArrayList<ClinicVisit>() {{ add(visit1); add(visit2); }});
+        when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(new ClinicVisits() {{ add(visit1); add(visit2); }});
 
         final String listUrl = clinicVisitsController.list(PATIENT_ID, uiModel);
 

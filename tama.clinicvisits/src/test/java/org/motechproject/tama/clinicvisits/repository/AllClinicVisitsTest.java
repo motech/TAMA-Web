@@ -15,13 +15,13 @@ import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -99,7 +99,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
 
         when(appointmentService.getAppointmentCalendar(patientId)).thenReturn(appointmentCalendar);
 
-        List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientId);
+        ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientId);
         assertEquals(2, clinicVisits.size());
     }
 

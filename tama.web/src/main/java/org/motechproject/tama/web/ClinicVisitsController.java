@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -100,7 +101,7 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
-        List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientId);
+        ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientId);
         Collections.sort(clinicVisits);
         uiModel.addAttribute("clinicVisits", clinicVisits);
         uiModel.addAttribute("patient", clinicVisits.get(0).getPatient());

@@ -1,24 +1,32 @@
 package org.motechproject.tama.web.model;
 
+import org.joda.time.DateTime;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 public class PatientSummary {
 
     private Patient patient;
-    private TreatmentAdvice treatmentAdvice;
-    private Date artStartDate;
-    private String regimenName;
+    private TreatmentAdvice earliestTreatmentAdvice, currentTreatmentAdvice;
+    private Regimen currentRegimen;
+    private ClinicVisits clinicVisits;
     private String warning;
 
-    public PatientSummary(Patient patient, TreatmentAdvice treatmentAdvice, Date artStartDate, String regimenName, String warning) {
+    public PatientSummary(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice, Regimen currentRegimen, ClinicVisits clinicVisits, String warning) {
         this.patient = patient;
-        this.treatmentAdvice = treatmentAdvice;
-        this.artStartDate = artStartDate;
-        this.regimenName = regimenName;
+        this.earliestTreatmentAdvice = earliestTreatmentAdvice;
+        this.currentTreatmentAdvice = currentTreatmentAdvice;
+        this.currentRegimen = currentRegimen;
+        this.clinicVisits = clinicVisits;
         this.warning = warning;
     }
 
@@ -43,19 +51,31 @@ public class PatientSummary {
     }
 
     public Date getArtStartDate() {
-        return artStartDate;
+        return earliestTreatmentAdvice == null ? null : earliestTreatmentAdvice.getStartDate();
     }
 
     public Date getCurrentRegimenStartDate() {
-        return treatmentAdvice == null ? null : treatmentAdvice.getStartDate();
+        return currentTreatmentAdvice == null ? null : currentTreatmentAdvice.getStartDate();
     }
 
     public String getCurrentARTRegimen() {
-        return regimenName;
+        return currentRegimen == null ? null : currentRegimen.getDisplayName();
     }
 
     public String getCallPlan() {
         return patient.getPatientPreferences().getDisplayCallPreference();
+    }
+
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    public DateTime getNextAppointmentDueDate() {
+        return clinicVisits.nextAppointmentDueDate();
+    }
+
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    public DateTime getNextConfirmedAppointmentDate() {
+        return clinicVisits.nextConfirmedAppointmentDate();
     }
 
     public String getWarning() {

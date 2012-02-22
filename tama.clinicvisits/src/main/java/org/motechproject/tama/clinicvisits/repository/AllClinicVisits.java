@@ -9,6 +9,7 @@ import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.ListOfWeeks;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -51,10 +51,10 @@ public class AllClinicVisits {
         appointmentService.addCalendar(appointmentCalendarRequest);
     }
 
-    public List<ClinicVisit> clinicVisits(String patientDocId) {
+    public ClinicVisits clinicVisits(String patientDocId) {
         AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
         Patient patient = allPatients.get(patientDocId);
-        List<ClinicVisit> clinicVisits = new ArrayList<ClinicVisit>();
+        ClinicVisits clinicVisits = new ClinicVisits();
         for (Visit visit : appointmentCalendar.visits()) {
             clinicVisits.add(new ClinicVisit(patient, visit));
         }

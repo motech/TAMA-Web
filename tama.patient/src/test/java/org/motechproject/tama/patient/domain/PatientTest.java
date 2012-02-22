@@ -147,7 +147,7 @@ public class PatientTest extends BaseUnitTest {
 
     @Test
     public void canTransitionToWeeklyAfterFourWeeksAfterActivation() {
-        final DateTime now = DateTime.now();
+        final DateTime now = DateUtil.now();
         Patient patient = PatientBuilder.startRecording().withDefaults().withActivationDate(now.minusDays(1)).withCallPreference(CallPreference.DailyPillReminder).build();
         assertFalse(patient.canTransitionToWeekly(28));
 
