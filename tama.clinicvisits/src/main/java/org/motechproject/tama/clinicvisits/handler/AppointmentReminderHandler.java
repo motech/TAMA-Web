@@ -1,10 +1,12 @@
 package org.motechproject.tama.clinicvisits.handler;
 
 import org.motechproject.appointments.api.EventKeys;
+import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.server.event.annotations.MotechListener;
-import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.outbox.service.OutboxService;
+import org.motechproject.tama.clinicvisits.repository.AllAppointments;
+import org.motechproject.tama.clinicvisits.service.AppointmentReminderService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,30 +15,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppointmentReminderHandler {
 
-    OutboxService outboxService;
     private AllPatients allPatients;
+    private AppointmentReminderService appointmentReminderService;
+    private AllAppointments allAppointments;
 
     @Autowired
-    public AppointmentReminderHandler(OutboxService outboxService, AllPatients allPatients) {
-        this.outboxService = outboxService;
+    public AppointmentReminderHandler(AllPatients allPatients, AppointmentReminderService appointmentReminderService, AllAppointments allAppointments) {
         this.allPatients = allPatients;
+        this.appointmentReminderService = appointmentReminderService;
+        this.allAppointments = allAppointments;
     }
 
     @MotechListener(subjects = EventKeys.REMINDER_EVENT_SUBJECT)
     public void handleEvent(MotechEvent appointmentReminderEvent) {
         String patientId = appointmentReminderEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
-        String reminderMessageType = TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE;
+        String appointmentId = appointmentReminderEvent.getParameters().get(EventKeys.APPOINTMENT_ID).toString();
+
         Patient patient = allPatients.get(patientId);
+        Appointment appointment = allAppointments.get(appointmentId);
 
-
-
-        boolean shouldCreateOutboxMessage = patient.shouldReceiveAppointmentReminder() && noPendingReminderMessage(patientId, reminderMessageType);
-        if (shouldCreateOutboxMessage) {
-            outboxService.addMessage(patientId, reminderMessageType);
-        }
-    }
-
-    private boolean noPendingReminderMessage(String patientId, String reminderMessageType) {
-        return (!outboxService.hasPendingOutboxMessages(patientId, reminderMessageType));
+        appointmentReminderService.raiseOutboxMessage(patient);
+        appointmentReminderService.raiseReminderAlert(patient, appointment);
     }
 }

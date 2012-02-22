@@ -1,88 +1,47 @@
 package org.motechproject.tama.clinicvisits.handler;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.model.MotechEvent;
-import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.outbox.service.OutboxService;
+import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.tama.clinicvisits.builder.ReminderEventBuilder;
+import org.motechproject.tama.clinicvisits.repository.AllAppointments;
+import org.motechproject.tama.clinicvisits.service.AppointmentReminderService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AppointmentReminderHandlerTest {
 
     @Mock
-    OutboxService outboxService;
-
+    private AppointmentReminderService appointmentReminderService;
     @Mock
-    AllPatients allPatients;
+    private AllPatients allPatients;
+    @Mock
+    private AllAppointments allAppointments;
 
-    MotechEvent event;
-
-    private AppointmentReminderHandler appointmentReminderHandler;
-
-    public AppointmentReminderHandlerTest() {
-        initMocks(this);
-
-        Map<String, Object> eventParams = new HashMap<String, Object>();
-        eventParams.put(EventKeys.EXTERNAL_ID_KEY, "patientId");
-        event = new MotechEvent(EventKeys.REMINDER_EVENT_SUBJECT, eventParams);
-
-        appointmentReminderHandler = new AppointmentReminderHandler(outboxService, allPatients);
-    }
+    protected AppointmentReminderHandler appointmentReminderHandler;
 
     @Before
     public void setup() {
-        reset(outboxService);
-    }
-
-    private void whenNoValidOutboxMessageExists(String patientId) {
-        when(outboxService.hasPendingOutboxMessages(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(false);
-    }
-
-    private void whenValidOutboxMessageExists(String patientId) {
-        when(outboxService.hasPendingOutboxMessages(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(true);
+        initMocks(this);
+        appointmentReminderHandler = new AppointmentReminderHandler(allPatients, appointmentReminderService, allAppointments);
     }
 
     @Test
-    public void shouldCreateOutboxMessageWhenNoValidOutboxMessageExists() {
-        String patientId = event.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
+    public void shouldCallAppointmentReminderServiceWhenAnEventIsRaised() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientDocId").build();
+        Appointment appointment = new Appointment();
+        when(allPatients.get(patient.getId())).thenReturn(patient);
+        when(allAppointments.get(appointment.id())).thenReturn(appointment);
 
-        whenNoValidOutboxMessageExists(patientId);
-        when(allPatients.get(patientId)).thenReturn(patient);
-        appointmentReminderHandler.handleEvent(event);
-        verify(outboxService).addMessage(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
-    }
+        appointmentReminderHandler.handleEvent(ReminderEventBuilder.startRecording().withPatient(patient).withAppointment(appointment).build());
 
-    @Test
-    public void shouldNotCreateOutboxMessageIfPatientHasNotOptedToReceiveAppointmentReminders() {
-        String patientId = event.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(false).build();
-
-        whenNoValidOutboxMessageExists(patientId);
-        when(allPatients.get(patientId)).thenReturn(patient);
-        appointmentReminderHandler.handleEvent(event);
-        verify(outboxService, never()).addMessage(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
-    }
-
-    @Test
-    public void shouldNotCreateOutboxMessageWhenValidOutboxMessageExists() {
-        String patientId = event.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
-
-        whenValidOutboxMessageExists(patientId);
-        when(allPatients.get(patientId)).thenReturn(patient);
-        appointmentReminderHandler.handleEvent(event);
-        verify(outboxService, never()).addMessage(patientId, TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
+        verify(appointmentReminderService).raiseOutboxMessage(patient);
+        verify(appointmentReminderService).raiseReminderAlert(patient, appointment);
     }
 }

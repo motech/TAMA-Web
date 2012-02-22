@@ -28,13 +28,13 @@ public class AllClinicVisits {
 
     private AllPatients allPatients;
     private AppointmentService appointmentService;
-    private Properties appointmentsTemplate;
+    private Properties appointmentsProperties;
 
     @Autowired
-    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, @Qualifier("appointments") Properties appointmentsTemplate) {
+    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, @Qualifier("appointments") Properties appointmentsProperties) {
         this.allPatients = allPatients;
         this.appointmentService = appointmentService;
-        this.appointmentsTemplate = appointmentsTemplate;
+        this.appointmentsProperties = appointmentsProperties;
     }
 
     public ClinicVisit get(String patientDocId, String visitId) {
@@ -44,8 +44,9 @@ public class AllClinicVisits {
     }
 
     public void addAppointmentCalendar(String patientDocId) {
-        List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsTemplate.getProperty(APPOINTMENT_SCHEDULE));
+        List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsProperties.getProperty(APPOINTMENT_SCHEDULE));
         ReminderConfiguration reminderConfiguration = getReminderConfiguration();
+
         AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId).setWeekOffsets(appointmentWeeks).setReminderConfiguration(reminderConfiguration);
         appointmentService.removeCalendar(patientDocId);
         appointmentService.addCalendar(appointmentCalendarRequest);
@@ -126,7 +127,7 @@ public class AllClinicVisits {
     }
 
     private ReminderConfiguration getReminderConfiguration() {
-        int remindFrom = Integer.parseInt(appointmentsTemplate.getProperty(REMIND_FROM));
+        int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FROM));
         return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
     }
 

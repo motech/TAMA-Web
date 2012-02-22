@@ -36,7 +36,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     static int FIRST_SCHEDULE_WEEK = 1;
     static int SECOND_SCHEDULE_WEEK = 2;
     private static final String REMIND_FROM_DAYS = "10";
-    protected Properties appointmentsTemplate;
+    protected Properties appointmentsProperties;
     protected DateTime now;
     protected LocalDate today;
 
@@ -51,9 +51,9 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     public void setUp() {
         initMocks(this);
         setUpTime();
-        setUpAppointmentsTemplate();
+        setUpAppointmentsProperties();
         when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build());
-        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentsTemplate);
+        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentsProperties);
     }
 
     private void setUpTime() {
@@ -62,10 +62,10 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         mockCurrentDate(now);
     }
 
-    private void setUpAppointmentsTemplate() {
-        appointmentsTemplate = new Properties();
-        appointmentsTemplate.setProperty(AllClinicVisits.APPOINTMENT_SCHEDULE, FIRST_SCHEDULE_WEEK + "," + SECOND_SCHEDULE_WEEK);
-        appointmentsTemplate.setProperty(AllClinicVisits.REMIND_FROM, REMIND_FROM_DAYS);
+    private void setUpAppointmentsProperties() {
+        appointmentsProperties = new Properties();
+        appointmentsProperties.setProperty(AllClinicVisits.APPOINTMENT_SCHEDULE, FIRST_SCHEDULE_WEEK + "," + SECOND_SCHEDULE_WEEK);
+        appointmentsProperties.setProperty(AllClinicVisits.REMIND_FROM, REMIND_FROM_DAYS);
     }
 
     @Test

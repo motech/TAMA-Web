@@ -10,6 +10,7 @@ public class TAMAConstants {
     public static final String RETRIES_PER_DAY = "retries.per.day";
     public static final String FOUR_DAY_RECALL_DAYS_TO_RETRY = "four.day.recall.days.to.retry";
     public static final String ACCEPTABLE_ADHERENCE_PERCENTAGE = "acceptable.adherence.percentage";
+    public static final String DAYS_BEFORE_DUE_DATE_WHEN_ALERT_SHOULD_BE_RAISED = "days.before.due.date.when.alert.should.be.raised";
     public static final String MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY = "min.number.of.days.on.daily.before.transitioning.to.weekly";
     public static final String PILL_WINDOW = "pill.window.hrs";
     public static final String DOSAGE_INTERVAL = "dosage.interval";
@@ -24,6 +25,7 @@ public class TAMAConstants {
     public static final String OUT_BOX_CALL_RETRY_INTERVAL = "retry.interval.mins";
     public static final String DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT = BASE_SUBJECT + ".daily.adherenceInRed.alert";
     public static final String ADHERENCE_IN_RED_ALERT = "Adherence in Red";
+    public static final String APPOINTMENT_REMINDER = "Appointment reminder";
     public static final String FALLING_ADHERENCE = "Falling Adherence";
     public static final String VOICE_MESSAGE_COMMAND_AUDIO = "AudioCommand";
     public static final int NO_ALERT_PRIORITY = 0;

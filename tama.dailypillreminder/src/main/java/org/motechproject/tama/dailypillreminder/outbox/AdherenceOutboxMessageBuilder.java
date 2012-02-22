@@ -1,4 +1,4 @@
-package org.motechproject.tama.dailypillreminder.factory;
+package org.motechproject.tama.dailypillreminder.outbox;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
