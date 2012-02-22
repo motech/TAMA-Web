@@ -4,7 +4,6 @@ package org.motechproject.tamasmoke;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.ivr.BaseIVRTest;
 import org.motechproject.tamafunctionalframework.page.ListPatientsPage;
@@ -54,7 +53,7 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
 
         String dailyPillReminderReportText = showPatientReportsPage.getDailyPillReminderReportText();
         assertTrue(dailyPillReminderReportText.contains("TAKEN"));
-        assertTrue(dailyPillReminderReportText.contains(DateUtil.today().toString(TAMAConstants.DATE_FORMAT)));
+        assertTrue(dailyPillReminderReportText.contains(DateUtil.today().toString()));
     }
 
     private void assertPatientSummary(ShowPatientReportsPage showPatientReportsPage) {
