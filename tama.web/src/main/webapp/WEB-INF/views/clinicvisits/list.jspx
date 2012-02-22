@@ -36,7 +36,7 @@
                         <c:choose>
                             <c:when test="${empty visit.confirmedVisitDate}">
                                 <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientId}">
-                                    <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Schedule</c:if>
+                                    <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Adjust</c:if>
                                     <c:if test="${not empty visit.adjustedDueDate}"><spring:eval
                                             expression="visit.adjustedDueDate"/></c:if>
                                 </a><![CDATA[ &nbsp; ]]>
