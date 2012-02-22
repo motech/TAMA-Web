@@ -16,7 +16,7 @@
             <spring:param name="patientDocId" value="${patient.id}"/>
         </spring:url>
         <div style="margin-bottom: 10px">
-            <a id="createVisit" href="${create_visit_url}">Create Visit</a> |
+            <a id="createVisit" href="javascript:void(0);" class="newVisitLink">Create Visit</a> |
             <a id="createAppointment" href="javascript:void(0);" class="createAppointment">Create Appointment</a>
         </div>
         <table id="clinicVisitList">
@@ -128,13 +128,17 @@
         </div>
     </div>
     <spring:url value="/js/schedulePopup.js" var="schedulePopupUrl"/>
+    <spring:url value="/js/tamaConfirmBox.js" var="tamaConfirmBoxUrl"/>
+    <script src="${schedulePopupUrl}"><!--required--></script>
+    <script src="${tamaConfirmBoxUrl}"><!--required--></script>
+
     <spring:url value="/clinicvisits/adjustDueDate.json" var="adjustDatePostUrl"/>
     <spring:url value="/clinicvisits/confirmVisitDate.json" var="confirmVisitDateUrl"/>
     <spring:url value="/clinicvisits/markAsMissed.json" var="markAsMissedUrl"/>
     <spring:url value="/clinicvisits/setVisitDate.json" var="setVisitDate"/>
     <spring:url value="/clinicvisits/createAppointment.json" var="createAppointmentUrl"/>
-    <script src="${schedulePopupUrl}"><!--required--></script>
     <script>
+
         dojo.addOnLoad(function () {
             var popup = new SchedulePopup('scheduleAdjustedDueDate', "Adjust Due Date");
             var adjustDueDate = function (event) {
@@ -187,6 +191,7 @@
                     });
                 });
             }
+
             var setVisitDate = function (element) {
                 var clinicVisitId = dojo.attr(this, 'visitid');
                 var patientId = dojo.attr(this, 'patientid');
@@ -226,7 +231,6 @@
                         }
                     });
                 }
-
             }
 
             var createAppointment = function(element) {
@@ -250,6 +254,11 @@
             dojo.query('a.setVisitDate').connect('onclick', setVisitDate);
             dojo.query('a.markAsMissed').connect('onclick', markAsMissed);
             dojo.query('a.createAppointment').connect('onclick', createAppointment);
+            dojo.query('a.newVisitLink').connect('onclick', function() {
+                new tama.ConfirmBox("Confirm", "Do you want to create new Visit for Today?", function() {
+                    window.location.href="${create_visit_url}";
+                    }).show();
+            });
         });
     </script>
 </div>
