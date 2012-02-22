@@ -12,6 +12,14 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <util:panel id="clinicVisitListPanel" title="Clinic Visits" openPane="true">
+        <spring:url value="/clinicvisits/newVisit" var="create_visit_url">
+            <spring:param name="patientDocId" value="${patient.id}"/>
+        </spring:url>
+        <div style="margin-bottom: 10px">
+            <a id="createVisit" href="${create_visit_url}">Create Visit</a> |
+            <a id="createAppointment" href="javascript:void(0);" class="createAppointment">Create Appointment</a> |
+            <a id="showPatientSummary" href="${patient_summary_url}">Show Patient Summary</a>
+        </div>
         <table id="clinicVisitList">
             <thead>
             <tr>
@@ -92,14 +100,6 @@
             <jsp:param name="patientActive" value="${patient.status.active}" />
             <jsp:param name="patientSuspended" value="${patient.status.suspended}" />
         </jsp:include>
-        <spring:url value="/clinicvisits/newVisit" var="create_visit_url">
-            <spring:param name="patientDocId" value="${patientId}"/>
-        </spring:url>
-        <div style="margin-top: 10px">
-            <a id="createVisit" href="${create_visit_url}">Create Visit</a> |
-            <a id="createAppointment" href="javascript:void(0);" class="createAppointment">Create Appointment</a> |
-            <a id="showPatientSummary" href="${patient_summary_url}">Show Patient Summary</a>
-        </div>
     </util:panel>
 
     <div style="display: none;">
@@ -107,12 +107,15 @@
             <div style="margin: 10px;">
                 <div>Visit Date:</div>
                 <br/>
-
+                <div class="visitTypeOptions">
+                    <input style="height:1em;" type="radio" name="type" value="Scheduled" class="optionScheduled"/> Scheduled <br/>
+                    <input style="height:1em;" type="radio" name="type" value="Unscheduled" checked="true"/> Unscheduled <br/>
+                </div>
+                <br/>
                 <div>
                     <div class="calendar"></div>
                 </div>
                 <br/>
-
                 <div>
                     <div class="timePickerDiv" style="text-align: center;display: block;">
                         <div class="timePicker"></div>
@@ -139,7 +142,7 @@
                 var clinicVisitId = dojo.attr(this, 'visitid');
                 var patientId = dojo.attr(this, 'patientid');
                 var linkElement = this;
-                popup.show(this, false, function (date) {
+                popup.show(this, {showTimeOption : false}, function (date) {
                     dojo.xhrPost({
                         url:"${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
                         content:{"adjustedDueDate":dojo.date.locale.format(date, {selector:"date", datePattern:'dd/MM/yyyy'})},
@@ -170,7 +173,7 @@
                 var clinicVisitId = dojo.attr(this, 'visitid');
                 var patientId = dojo.attr(this, 'patientid');
                 var linkElement = this;
-                popup.show(this, true, function (confirmedDate) {
+                popup.show(this, {showTimeOption : true}, function (confirmedDate) {
                     dojo.xhrPost({
                         url:"${confirmVisitDateUrl}/" + clinicVisitId + "?patientId=" + patientId,
                         content:{"confirmedVisitDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
@@ -201,7 +204,7 @@
                     });
                 };
 
-                popup.show(this, false, okHandler);
+                popup.show(this, {showTimeOption : false}, okHandler);
             }
 
             var markAsMissed = function (element) {
@@ -228,10 +231,11 @@
             }
 
             var createAppointment = function(element) {
-                popup.show(this, false, function (appointmentDueDate) {
+                popup.show(this, {showTimeOption : false, showVisitOptions : true}, function (appointmentDueDate, options) {
+                    var typeOfVisit = options.visitOptions["optionScheduled"]?"Scheduled":"Unscheduled";
                     dojo.xhrPost({
-                        url:"${createAppointmentUrl}" + "?patientId=${patientId}",
-                        content:{"appointmentDueDate":dojo.date.locale.format(appointmentDueDate, {selector:"date", datePattern:'dd/MM/yyyy'}), "typeOfVisit": "Scheduled"},
+                        url:"${createAppointmentUrl}",
+                        content:{"appointmentDueDate":dojo.date.locale.format(appointmentDueDate, {selector:"date", datePattern:'dd/MM/yyyy'}), "typeOfVisit": typeOfVisit, "patientId" : "${patient.id}"},
                         handleAs:"json",
                         load:function (data) {
                             if (data.result === "success")

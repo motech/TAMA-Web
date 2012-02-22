@@ -27,13 +27,14 @@ var SchedulePopup = function(id, titleText){
 
 
     this.show = function(element, showOptions /*bool*/, okHandler) {
-
+        var showTimeOption =  showOptions && showOptions['showTimeOption'];
+        var showVisitOptions =  showOptions && showOptions['showVisitOptions'];
         dijit.popup.open({ popup: adjustDueDateDlg,around: element });
-        dojo.query('.scheduleOptions', id)
-            .style('display', typeof showOptions != "undefined" && showOptions ?'':'none');
 
-        dojo.query('.timePickerDiv', id)
-            .style('display', typeof showOptions != "undefined" && showOptions ?'':'none');
+        dojo.query('.timePickerDiv', id).style('display', showTimeOption ?'':'none');
+        dojo.query('.visitTypeOptions', id).style('display', showVisitOptions ?'':'none');
+
+
 
         if (cancelHandlerConnect == null) {
             cancelHandlerConnect  = dojo.query('.popupCancel',id).connect('onclick', function(){
@@ -47,11 +48,15 @@ var SchedulePopup = function(id, titleText){
         okHandlerConnect = dojo.connect(dojo.query('.popupOk',id)[0], 'onclick',
                 function(){
                     var dateValue = calendar.value;
-                    if (typeof showOptions != "undefined" && showOptions){
+                    if (showTimeOption){
                         dateValue.setHours(timebox.value.getHours());
                         dateValue.getMinutes(timebox.value.getMinutes());
                     }
-                    okHandler(dateValue);
+                    var optionScheduled;
+                    if (showVisitOptions) {
+                        optionScheduled = {"visitOptions" : {"optionScheduled" :  dojo.query(".optionScheduled")[0].checked }};
+                    }
+                    okHandler(dateValue, optionScheduled);
                     dijit.popup.close(adjustDueDateDlg);
                 });
     }
