@@ -2,7 +2,8 @@
 
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
-     xmlns:spring="http://www.springframework.org/tags" xmlns:c="http://java.sun.com/jsp/jstl/core">
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -21,6 +22,10 @@
 
     <c:if test="${warning != null}">
         <div class="warning"> <c:out value="${warning}"/> </div>
+    </c:if>
+
+    <c:if test="${param.error != null}">
+        <div class="error"> <c:out value="${param.error}"/> </div>
     </c:if>
 
     <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Registration Details">

@@ -19,7 +19,10 @@ import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.*;
-import org.motechproject.tama.web.model.*;
+import org.motechproject.tama.web.model.DoseStatus;
+import org.motechproject.tama.web.model.IncompletePatientDataWarning;
+import org.motechproject.tama.web.model.ListPatientViewModel;
+import org.motechproject.tama.web.model.PatientSummary;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
@@ -109,8 +112,14 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
-    public String activate(@RequestParam String id, HttpServletRequest request) {
-        return activatePatient(id, REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request), request);
+    public String activate(@RequestParam String id, Model uiModel, HttpServletRequest request) {
+        String redirectPage = REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
+        try{
+            redirectPage =  activatePatient(id, redirectPage, request);
+        }catch (RuntimeException e){
+            uiModel.addAttribute("error", "Error occurred while activating patient with ID : " + id + " : "+ e.getMessage());
+        }
+        return redirectPage;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")

@@ -121,7 +121,7 @@ public class PatientControllerTest {
             when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
             when(allPatients.get(PATIENT_ID)).thenReturn(patient);
             doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-            String nextPage = controller.activate(PATIENT_ID, request);
+            String nextPage = controller.activate(PATIENT_ID, uiModel, request);
 
             verify(patientService).activate(PATIENT_ID);
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
@@ -136,10 +136,25 @@ public class PatientControllerTest {
 
             when(allPatients.get(PATIENT_ID)).thenReturn(patient);
             doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-            String nextPage = controller.activate(PATIENT_ID, request);
+            String nextPage = controller.activate(PATIENT_ID, uiModel, request);
 
             verify(patientService).activate(PATIENT_ID);
             verify(allClinicVisits, never()).addAppointmentCalendar(eq(PATIENT_ID));
+            assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+        }
+
+        @Test
+        public void shouldRedirectToPatientViewPage_AddErrorMessageToUiModel_onError(){
+            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
+            when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
+            when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+            doThrow(new RuntimeException("Some Exception")).when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            String nextPage = controller.activate(PATIENT_ID, uiModel, request);
+
+            verify(patientService, never()).activate(PATIENT_ID);
+            verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            verify(uiModel).addAttribute("error", "Error occurred while activating patient with ID : patient_id : Some Exception");
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
         }
     }
