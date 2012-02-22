@@ -81,7 +81,9 @@
             </spring:url>
             <c:choose>
                 <c:when test="${treatmentAdvice.showChangeRegimenButton}">
-                    <button id="changeRegimen">Change Regimen</button>
+                    <div class="submit">
+                        <input type="button" id="changeRegimen" value="Change Regimen"/>
+                    </div>
                 </c:when>
                 <c:otherwise>
                     <I>Adherence calls for the patient are currently suspended. Please reactivate the patient to be able to change regimen.</I>
