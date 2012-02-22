@@ -39,9 +39,9 @@
 
                         var maxY = Math.max.apply(Math, dataList.map(function(elt) { return elt.value} ));
 
-                        <!-- Adding some buffer value on minY, maxY, minX, maxX to show diamonds properly -->
+                        <!-- Adding some buffer value on maxY, minX, maxX to show diamonds properly -->
                         c.addAxis("x", { labels:xLabels(), majorTickStep:1, minorTicks:false, minorLabels:false,  min:0.98, max:dataList.length + 0.10});
-                        c.addAxis("y", {min:-5, max: maxY + 7, vertical:true});
+                        c.addAxis("y", {min:0, max: maxY + 7, vertical:true});
                         c.addSeries("CD4 Count", xValues(), { stroke:{ color:"blue" }, fill:"lightblue" });
                         var tip = new dojox.charting.action2d.Tooltip(c, "default", {"text":function (el) {
                             return 'CD4 Count ' + el.run.data[el.index];

@@ -5,11 +5,9 @@ import org.motechproject.tama.patient.domain.LabResults;
 public class LabResultsUIModel {
 
     private String id;
-
     private String Version;
-
     private String z;
-
+    private String clinicVisitId;
     private LabResults labResults = new LabResults();
 
     public String getClinicVisitId() {
@@ -19,8 +17,6 @@ public class LabResultsUIModel {
     public void setClinicVisitId(String clinicVisitId) {
         this.clinicVisitId = clinicVisitId;
     }
-
-    private String clinicVisitId;
 
     public String getId() {
         return id;
