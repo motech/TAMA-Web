@@ -13,3 +13,6 @@
     width: 10px;
 }
 
+.show_patient_summary label {
+    width: 250px;
+}

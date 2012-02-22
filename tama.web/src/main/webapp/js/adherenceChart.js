@@ -139,7 +139,7 @@ AdherenceOverTimeWidget.prototype = {
             var adherencePerWeekData = new AdherencePerWeekData(jsonData);
             if(jsonData.dailyAdherenceSummary.length > 0) self.dailyAdherenceOverTimeChart.draw(adherencePerWeekData);
             if(jsonData.weeklyAdherenceSummary.length > 0) self.weeklyAdherenceOverTimeChart.draw(adherencePerWeekData);
-            if(jsonData.dailyAdherenceSummary.length == 0 && jsonData.weeklyAdherenceSummary.length == 0) self.noticeBanner.setMessage("No Adherence Recorded yet");
+            if(jsonData.dailyAdherenceSummary.length == 0 && jsonData.weeklyAdherenceSummary.length == 0) self.noticeBanner.setMessage("No Adherence Recorded yet.");
         });
     },
 }

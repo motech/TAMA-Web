@@ -61,7 +61,7 @@
 
         <div id="cd4CountOverTimePane">
             <div id="cd4CountOverTime" style="width: 99%; height: 400px; display:inline-block"><!-- required --></div>
-            <div id="noCd4CountOverTimePane" style="font-weight: bold;height: 50px;">No CD4 Count history for specified date range.<br/></div>
+            <div id="noCd4CountOverTimePane" style="font-weight: bold;height: 50px;">No CD4 Count history.<br/></div>
         </div>
     </util:panel>
 </div>

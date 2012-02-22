@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core"
+<div class='show_patient_summary'
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:form="urn:jsptagdir:/WEB-INF/tags/form"
      xmlns:springform="http://www.springframework.org/tags/form"

@@ -3,9 +3,10 @@ var timelineDAY = 4;
 var timelineWEEK = 5;
 var timelineMONTH = 6;  //from date-time.js of simile timeline widget.
 
-var SymptomsReportingWidget = function(targetDivId, timelineGraphDivId, dataURL){
+var SymptomsReportingWidget = function(targetDivId, timelineGraphDivId, noDataDivId, dataURL){
     this.targetDivId = targetDivId;
     this.timelineGraphDivId = timelineGraphDivId;
+    this.noDataDivId = noDataDivId;
     this.dataURL = dataURL;
     this.setupButtons();
 };
@@ -38,6 +39,7 @@ SymptomsReportingWidget.prototype = {
         this.fetchData(function(){
             if(self.data.events.length > 0) {
                 dojo.byId(self.targetDivId).style.display = '';
+                dojo.byId(self.noDataDivId).style.display = 'none';
                 self.drawTimelineChart(interval);
             }
         });

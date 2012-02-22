@@ -36,8 +36,9 @@
     <script src="${timeline_js_root}/timeline.js" type="text/javascript" ><!-- required for FF3 and Opera --></script>
     <script src="${symptomTimeline_js}" type="text/javascript" ><!-- required for FF3 and Opera --></script>
     
-    <div id="symptoms-reporting-widget-placeholder" style="display: none;">
-        <util:panel id="symptom_reporting_timeline" title="Symptoms Reported Over Time" openPane="true">
+    <util:panel id="symptom_reporting_timeline" title="Symptoms Reported Over Time" openPane="true">
+        <div id="no-symptoms" class="bold">No Symptoms Reported yet.<br/><br/></div>
+        <div id="symptoms-reporting-widget-placeholder" style="display: none;">
             <noscript>This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.</noscript>
             <div>
                 <div id="reported-symptoms"></div>
@@ -47,14 +48,14 @@
                 <button id="timeline-chart-in-weeks">Week</button>
                 <button id="timeline-chart-in-months">Month</button>
             </div>
-        </util:panel>
-    </div>
+        </div>
+    </util:panel>
 
     <script type="text/javascript">
         <![CDATA[
             dojo.addOnLoad(function(){
                 var dataURL = "${symptoms_list_url}?id=${patient.id}&rangeInMonths=36&" + (new Date().getTime())
-                var symptomsReportingWidget = new SymptomsReportingWidget("symptoms-reporting-widget-placeholder", "reported-symptoms", dataURL);
+                var symptomsReportingWidget = new SymptomsReportingWidget("symptoms-reporting-widget-placeholder", "reported-symptoms", "no-symptoms", dataURL);
                 symptomsReportingWidget.draw(timelineWEEK);
             });
         ]]>
