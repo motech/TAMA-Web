@@ -40,4 +40,24 @@ public class ClinicVisitTest {
         ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
         assertEquals(today, clinicVisit.getAdjustedDueDate());
     }
+
+    @Test
+    public void shouldReturnEffectiveDueDateForAnAppointment_WhenDueDateIsNotAdjusted() {
+        LocalDate appointmentDueDate = new LocalDate(2010, 10, 10);
+
+        Visit visit = new Visit().addAppointment(DateUtil.newDateTime(appointmentDueDate, 0, 0, 0), null);
+        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
+        assertEquals(clinicVisit.getAppointmentDueDate().toLocalDate(), clinicVisit.getEffectiveDueDate());
+    }
+
+    @Test
+    public void shouldReturnEffectiveDueDateForAnAppointment_WhenDueDateIsAdjusted() {
+        LocalDate appointmentDueDate = new LocalDate(2010, 10, 10);
+        LocalDate adjustedDueDate = new LocalDate(2010, 10, 20);
+
+        Visit visit = new Visit().addAppointment(DateUtil.newDateTime(appointmentDueDate, 0, 0, 0), null);
+        visit.appointment().addData(ClinicVisit.ADJUSTED_DUE_DATE, adjustedDueDate.toString());
+        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
+        assertEquals(clinicVisit.getAdjustedDueDate(), clinicVisit.getEffectiveDueDate());
+    }
 }

@@ -1,6 +1,6 @@
 package org.motechproject.tama.clinicvisits.domain;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.appointments.api.model.Reminder;
@@ -16,25 +16,25 @@ import static junit.framework.Assert.assertNull;
 public class ClinicVisitsTest extends BaseUnitTest {
 
     private ClinicVisits clinicVisits = new ClinicVisits();
-    private DateTime today = DateUtil.now();
-    private DateTime yesterday = today.minusDays(1);
-    private DateTime dayBeforeYesterday = yesterday.minusDays(1);
-    private DateTime tomorrow = today.plusDays(1);
-    private DateTime dayAfterTomorrow = tomorrow.plusDays(1);
+    private LocalDate today = DateUtil.today();
+    private LocalDate yesterday = today.minusDays(1);
+    private LocalDate dayBeforeYesterday = yesterday.minusDays(1);
+    private LocalDate tomorrow = today.plusDays(1);
+    private LocalDate dayAfterTomorrow = tomorrow.plusDays(1);
 
     @Before
     public void setUp() {
-        Visit yesterdaysVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week1").addAppointment(yesterday, new Reminder());
-        yesterdaysVisit.appointment().firmDate(yesterday);
+        Visit yesterdaysVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week1").addAppointment(DateUtil.newDateTime(yesterday, 0, 0, 0), new Reminder());
+        yesterdaysVisit.appointment().firmDate(DateUtil.newDateTime(yesterday, 0, 0, 0));
         clinicVisits.add(new ClinicVisit(new Patient(), yesterdaysVisit));
 
-        Visit tomorrowsVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week2").addAppointment(tomorrow, new Reminder());
-        tomorrowsVisit.appointment().firmDate(tomorrow);
-        clinicVisits.add(new ClinicVisit(new Patient(), tomorrowsVisit));
+        Visit todaysVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week2").addAppointment(DateUtil.newDateTime(today, 0, 0, 0), new Reminder());
+        todaysVisit.appointment().firmDate(DateUtil.newDateTime(today, 0, 0, 0));
+        clinicVisits.add(new ClinicVisit(new Patient(), todaysVisit));
 
-        Visit dayAfterTomorrowVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week3").addAppointment(dayAfterTomorrow, new Reminder());
-        dayAfterTomorrowVisit.appointment().firmDate(null);
-        clinicVisits.add(new ClinicVisit(new Patient(), dayAfterTomorrowVisit));
+        Visit dayAfterTomorrowsVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week3").addAppointment(DateUtil.newDateTime(dayAfterTomorrow, 0, 0, 0), new Reminder());
+        dayAfterTomorrowsVisit.appointment().firmDate(null);
+        clinicVisits.add(new ClinicVisit(new Patient(), dayAfterTomorrowsVisit));
     }
 
     @Test
@@ -42,10 +42,16 @@ public class ClinicVisitsTest extends BaseUnitTest {
         mockCurrentDate(dayBeforeYesterday);
         assertEquals(yesterday, clinicVisits.nextAppointmentDueDate());
 
-        mockCurrentDate(today);
-        assertEquals(tomorrow, clinicVisits.nextAppointmentDueDate());
+        mockCurrentDate(yesterday);
+        assertEquals(yesterday, clinicVisits.nextAppointmentDueDate());
 
-        mockCurrentDate(tomorrow.plusMinutes(1));
+        mockCurrentDate(today);
+        assertEquals(today, clinicVisits.nextAppointmentDueDate());
+
+        mockCurrentDate(tomorrow);
+        assertEquals(dayAfterTomorrow, clinicVisits.nextAppointmentDueDate());
+
+        mockCurrentDate(dayAfterTomorrow);
         assertEquals(dayAfterTomorrow, clinicVisits.nextAppointmentDueDate());
     }
 
@@ -60,10 +66,16 @@ public class ClinicVisitsTest extends BaseUnitTest {
         mockCurrentDate(dayBeforeYesterday);
         assertEquals(yesterday, clinicVisits.nextConfirmedAppointmentDate());
 
-        mockCurrentDate(today);
-        assertEquals(tomorrow, clinicVisits.nextConfirmedAppointmentDate());
+        mockCurrentDate(yesterday);
+        assertEquals(yesterday, clinicVisits.nextConfirmedAppointmentDate());
 
-        mockCurrentDate(tomorrow.plusMinutes(1));
+        mockCurrentDate(today);
+        assertEquals(today, clinicVisits.nextConfirmedAppointmentDate());
+
+        mockCurrentDate(tomorrow);
+        assertNull(clinicVisits.nextConfirmedAppointmentDate());
+
+        mockCurrentDate(dayAfterTomorrow);
         assertNull(clinicVisits.nextConfirmedAppointmentDate());
     }
 

@@ -1,6 +1,6 @@
 package org.motechproject.tama.web.model;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
@@ -68,13 +68,13 @@ public class PatientSummary {
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    public DateTime getNextAppointmentDueDate() {
+    public LocalDate getNextAppointmentDueDate() {
         return clinicVisits.nextAppointmentDueDate();
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    public DateTime getNextConfirmedAppointmentDate() {
+    public LocalDate getNextConfirmedAppointmentDate() {
         return clinicVisits.nextConfirmedAppointmentDate();
     }
 

@@ -2,7 +2,6 @@ package org.motechproject.tama.clinicvisits.domain;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
@@ -142,14 +141,19 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         visit.appointment().firmDate(firmDate);
     }
 
+    public LocalDate getEffectiveDueDate() {
+        LocalDate appointmentDueDate = getAppointmentDueDate() ==  null ? null : getAppointmentDueDate().toLocalDate();
+        return getAdjustedDueDate() == null ? appointmentDueDate : getAdjustedDueDate();
+    }
+
     private Integer weekNumber() {
         return visit.weekNumber();
     }
 
     @Override
     public int compareTo(ClinicVisit clinicVisit) {
-        if (this.visit.appointment() == null || this.visit.appointment().dueDate() == null ) return -1;
+        if (this.visit.appointment() == null || this.visit.appointment().dueDate() == null) return -1;
         if (clinicVisit.visit.appointment() == null || clinicVisit.visit.appointment().dueDate() == null) return 1;
-        return this.visit.appointment().dueDate().compareTo(clinicVisit.visit.appointment().dueDate());
+        return this.getEffectiveDueDate().compareTo(clinicVisit.getEffectiveDueDate());
     }
 }

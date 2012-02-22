@@ -1,33 +1,33 @@
 package org.motechproject.tama.clinicvisits.domain;
 
 import org.joda.time.DateTime;
-import org.motechproject.tama.common.TAMAConstants;
+import org.joda.time.LocalDate;
 import org.motechproject.util.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.ArrayList;
 import java.util.Collections;
 
 
 public class ClinicVisits extends ArrayList<ClinicVisit> {
 
-    public DateTime nextAppointmentDueDate() {
+    public LocalDate nextAppointmentDueDate() {
         ClinicVisits allPendingVisits = pendingVisits();
-        return allPendingVisits.hasVisits() ? allPendingVisits.get(0).getAppointmentDueDate() : null;
+        if (!allPendingVisits.hasVisits()) return null;
+        return allPendingVisits.get(0).getEffectiveDueDate();
     }
 
-    public DateTime nextConfirmedAppointmentDate() {
+    public LocalDate nextConfirmedAppointmentDate() {
         ClinicVisits allPendingVisits = pendingVisits();
-        return allPendingVisits.hasVisits() ? allPendingVisits.get(0).getConfirmedVisitDate() : null;
+        if (!allPendingVisits.hasVisits()) return null;
+        DateTime confirmedVisitDate = allPendingVisits.get(0).getConfirmedVisitDate();
+        return confirmedVisitDate == null ? null : confirmedVisitDate.toLocalDate();
     }
 
     private ClinicVisits pendingVisits() {
         ClinicVisits pendingVisits = new ClinicVisits();
         for (ClinicVisit clinicVisit : this) {
-            DateTime appointmentDueDate = clinicVisit.getAppointmentDueDate();
-            if (appointmentDueDate == null || appointmentDueDate.isBefore(DateUtil.now())) continue;
+            LocalDate effectiveDueDate = clinicVisit.getEffectiveDueDate();
+            if (effectiveDueDate == null || effectiveDueDate.isBefore(DateUtil.today())) continue;
             pendingVisits.add(clinicVisit);
         }
         Collections.sort(pendingVisits);
