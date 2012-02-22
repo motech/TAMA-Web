@@ -113,30 +113,28 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
     public String activate(@RequestParam String id, Model uiModel, HttpServletRequest request) {
-        String redirectPage = REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
-        try{
-            redirectPage =  activatePatient(id, redirectPage, request);
-        }catch (RuntimeException e){
-            uiModel.addAttribute("error", "Error occurred while activating patient with ID : " + id + " : "+ e.getMessage());
-        }
-        return redirectPage;
+        return activatePatient(id, REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request), uiModel, request);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
-    public String activateAndRedirectToListPatient(@PathVariable String id, HttpServletRequest request) {
-        return activatePatient(id, REDIRECT_TO_LIST_VIEW, request);
+    public String activateAndRedirectToListPatient(@PathVariable String id, Model uiModel, HttpServletRequest request) {
+        return activatePatient(id, REDIRECT_TO_LIST_VIEW, uiModel, request);
     }
 
-    private String activatePatient(String patientDocId, String showPatientView, HttpServletRequest request) {
-        Patient patient = allPatients.get(patientDocId);
-        boolean firstActivation = patient.getActivationDate() == null;
-        if (firstActivation) {
-            allClinicVisits.addAppointmentCalendar(patientDocId);
-            ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
-            showPatientView = "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
+    private String activatePatient(String patientDocId, String redirectPage, Model uiModel, HttpServletRequest request) {
+        try {
+            Patient patient = allPatients.get(patientDocId);
+            boolean firstActivation = patient.getActivationDate() == null;
+            if (firstActivation) {
+                allClinicVisits.addAppointmentCalendar(patientDocId);
+                ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
+                redirectPage = "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
+            }
+            patientService.activate(patientDocId);
+        } catch (RuntimeException e) {
+            uiModel.addAttribute("error", "Error occurred while activating patient: "+ e.getMessage());
         }
-        patientService.activate(patientDocId);
-        return showPatientView;
+        return redirectPage;
     }
 
 
