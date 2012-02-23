@@ -149,10 +149,11 @@ public class PatientControllerTest {
             ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
             when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
             when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-            doThrow(new RuntimeException("Some Exception")).when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
+            doThrow(new RuntimeException("Some Exception")).when(patientService).activate(PATIENT_ID);
+
             String nextPage = controller.activate(PATIENT_ID, uiModel, request);
 
-            verify(patientService, never()).activate(PATIENT_ID);
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
             verify(uiModel).addAttribute("error", "Error occurred while activating patient: Some Exception");
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));

@@ -121,23 +121,6 @@ public class PatientController extends BaseController {
         return activatePatient(id, REDIRECT_TO_LIST_VIEW, uiModel, request);
     }
 
-    private String activatePatient(String patientDocId, String redirectPage, Model uiModel, HttpServletRequest request) {
-        try {
-            Patient patient = allPatients.get(patientDocId);
-            boolean firstActivation = patient.getActivationDate() == null;
-            if (firstActivation) {
-                allClinicVisits.addAppointmentCalendar(patientDocId);
-                ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
-                redirectPage = "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
-            }
-            patientService.activate(patientDocId);
-        } catch (RuntimeException e) {
-            uiModel.addAttribute("error", "Error occurred while activating patient: "+ e.getMessage());
-        }
-        return redirectPage;
-    }
-
-
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
     public String deactivate(@RequestParam String id, @RequestParam Status status, HttpServletRequest request) {
         patientService.deactivate(id, status);
@@ -270,6 +253,27 @@ public class PatientController extends BaseController {
             return redirectToListPatientsPage(request);
         }
         return REDIRECT_TO_SUMMARY_VIEW + encodeUrlPathSegment(patient.getId(), request);
+    }
+
+    private String activatePatient(String patientDocId, String redirectPage, Model uiModel, HttpServletRequest request) {
+        try {
+            Patient patient = allPatients.get(patientDocId);
+            boolean firstActivation = patient.getActivationDate() == null;
+            if (firstActivation) {
+                return activatePatientForFirstTime(patientDocId, request);
+            }
+            patientService.activate(patientDocId);
+        } catch (RuntimeException e) {
+            uiModel.addAttribute("error", "Error occurred while activating patient: "+ e.getMessage());
+        }
+        return redirectPage;
+    }
+
+    private String activatePatientForFirstTime(String patientDocId, HttpServletRequest request) {
+        allClinicVisits.addAppointmentCalendar(patientDocId);
+        ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
+        patientService.activate(patientDocId);
+        return "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
     }
 
     private void decorateViewWithUniqueConstraintError(Patient patient, BindingResult bindingResult, Model uiModel, RuntimeException e) {
