@@ -4,8 +4,8 @@ import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
-import org.motechproject.tama.clinicvisits.domain.CreateAppointmentReminderCriteria;
-import org.motechproject.tama.clinicvisits.domain.RaiseAppointmentConfirmationCriteria;
+import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
+import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.clinicvisits.repository.AllAppointments;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.service.OutboxService;
@@ -23,16 +23,16 @@ public class AppointmentReminderHandler {
     private PatientAlertService patientAlertService;
     private AllAppointments allAppointments;
     private OutboxService outboxService;
-    private CreateAppointmentReminderCriteria appointmentReminderCriteria;
-    private RaiseAppointmentConfirmationCriteria appointmentConfirmationCriteria;
+    private ReminderOutboxCriteria appointmentReminderCriteria;
+    private ReminderAlertCriteria appointmentConfirmationCriteria;
 
     @Autowired
     public AppointmentReminderHandler(AllPatients allPatients,
                                       PatientAlertService patientAlertService,
                                       AllAppointments allAppointments,
                                       OutboxService outboxService,
-                                      CreateAppointmentReminderCriteria appointmentReminderCriteria,
-                                      RaiseAppointmentConfirmationCriteria appointmentConfirmationCriteria) {
+                                      ReminderOutboxCriteria appointmentReminderCriteria,
+                                      ReminderAlertCriteria appointmentConfirmationCriteria) {
         this.allPatients = allPatients;
         this.patientAlertService = patientAlertService;
         this.allAppointments = allAppointments;
@@ -49,7 +49,7 @@ public class AppointmentReminderHandler {
         Patient patient = allPatients.get(patientId);
         Appointment appointment = allAppointments.get(appointmentId);
 
-        if (appointmentReminderCriteria.shouldRaiseReminder(patient)) {
+        if (appointmentReminderCriteria.shouldAddOutboxMessage(patient)) {
             outboxService.addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
         }
 

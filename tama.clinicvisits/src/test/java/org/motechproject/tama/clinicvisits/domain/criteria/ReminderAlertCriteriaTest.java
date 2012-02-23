@@ -1,10 +1,11 @@
-package org.motechproject.tama.clinicvisits.domain;
+package org.motechproject.tama.clinicvisits.domain.criteria;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.testing.utils.BaseUnitTest;
 
@@ -15,9 +16,9 @@ import static junit.framework.Assert.assertTrue;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        RaiseAppointmentConfirmationCriteriaTest.WhenAppointmentIsConfirmed.class,
-        RaiseAppointmentConfirmationCriteriaTest.WhenAppointmentIsNotConfirmed.class})
-public class RaiseAppointmentConfirmationCriteriaTest {
+        ReminderAlertCriteriaTest.WhenAppointmentIsConfirmed.class,
+        ReminderAlertCriteriaTest.WhenAppointmentIsNotConfirmed.class})
+public class ReminderAlertCriteriaTest {
 
     public static class WhenAppointmentIsNotConfirmed extends BaseUnitTest {
 
@@ -26,7 +27,7 @@ public class RaiseAppointmentConfirmationCriteriaTest {
         Integer days = 2;
         DateTime now = DateTime.now();
 
-        private RaiseAppointmentConfirmationCriteria raiseAppointmentConfirmationCriteria;
+        private ReminderAlertCriteria raiseAppointmentConfirmationCriteria;
 
 
         public WhenAppointmentIsNotConfirmed() {
@@ -34,7 +35,7 @@ public class RaiseAppointmentConfirmationCriteriaTest {
             appointmentsConfiguration = new Properties();
             appointmentsConfiguration.setProperty(TAMAConstants.DAYS_BEFORE_DUE_DATE_WHEN_ALERT_SHOULD_BE_RAISED, days.toString());
 
-            raiseAppointmentConfirmationCriteria = new RaiseAppointmentConfirmationCriteria(appointmentsConfiguration);
+            raiseAppointmentConfirmationCriteria = new ReminderAlertCriteria(appointmentsConfiguration);
         }
 
         @Test
@@ -63,7 +64,7 @@ public class RaiseAppointmentConfirmationCriteriaTest {
         Integer days = 2;
         DateTime now = DateTime.now();
 
-        private RaiseAppointmentConfirmationCriteria raiseAppointmentConfirmationCriteria;
+        private ReminderAlertCriteria raiseAppointmentConfirmationCriteria;
 
         public WhenAppointmentIsConfirmed() {
             appointment = new Appointment().dueDate(now.minusDays(2)).firmDate(now);
@@ -71,7 +72,7 @@ public class RaiseAppointmentConfirmationCriteriaTest {
             appointmentsConfiguration = new Properties();
             appointmentsConfiguration.setProperty(TAMAConstants.DAYS_BEFORE_DUE_DATE_WHEN_ALERT_SHOULD_BE_RAISED, days.toString());
 
-            raiseAppointmentConfirmationCriteria = new RaiseAppointmentConfirmationCriteria(appointmentsConfiguration);
+            raiseAppointmentConfirmationCriteria = new ReminderAlertCriteria(appointmentsConfiguration);
         }
 
         @Test
@@ -100,7 +101,7 @@ public class RaiseAppointmentConfirmationCriteriaTest {
         Integer days = 2;
         DateTime now = DateTime.now();
 
-        private RaiseAppointmentConfirmationCriteria raiseAppointmentConfirmationCriteria;
+        private ReminderAlertCriteria raiseAppointmentConfirmationCriteria;
 
         public WhenAppointmentIsAdjusted() {
             appointment = new Appointment().dueDate(now.minusDays(2));
@@ -109,7 +110,7 @@ public class RaiseAppointmentConfirmationCriteriaTest {
             appointmentsConfiguration = new Properties();
             appointmentsConfiguration.setProperty(TAMAConstants.DAYS_BEFORE_DUE_DATE_WHEN_ALERT_SHOULD_BE_RAISED, days.toString());
 
-            raiseAppointmentConfirmationCriteria = new RaiseAppointmentConfirmationCriteria(appointmentsConfiguration);
+            raiseAppointmentConfirmationCriteria = new ReminderAlertCriteria(appointmentsConfiguration);
         }
 
         @Test

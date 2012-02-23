@@ -6,8 +6,8 @@ import org.mockito.Mock;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.clinicvisits.builder.ReminderEventBuilder;
-import org.motechproject.tama.clinicvisits.domain.CreateAppointmentReminderCriteria;
-import org.motechproject.tama.clinicvisits.domain.RaiseAppointmentConfirmationCriteria;
+import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
+import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.clinicvisits.repository.AllAppointments;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.service.OutboxService;
@@ -31,9 +31,9 @@ public class AppointmentReminderHandlerTest {
     @Mock
     private AllAppointments allAppointments;
     @Mock
-    private CreateAppointmentReminderCriteria appointmentReminderCriteria;
+    private ReminderOutboxCriteria appointmentReminderCriteria;
     @Mock
-    private RaiseAppointmentConfirmationCriteria appointmentConfirmationCriteria;
+    private ReminderAlertCriteria appointmentConfirmationCriteria;
 
     private Patient patient;
     private Appointment appointment;
@@ -70,7 +70,7 @@ public class AppointmentReminderHandlerTest {
 
     @Test
     public void shouldOutboxMessageWhenCreateAppointmentReminderCriteriaIsTrue() {
-        when(appointmentReminderCriteria.shouldRaiseReminder(patient)).thenReturn(true);
+        when(appointmentReminderCriteria.shouldAddOutboxMessage(patient)).thenReturn(true);
 
         appointmentReminderHandler.handleEvent(event);
 
@@ -79,7 +79,7 @@ public class AppointmentReminderHandlerTest {
 
     @Test
     public void shouldNotOutboxMessageWhenCreateAppointmentReminderCriteriaIsFalse() {
-        when(appointmentReminderCriteria.shouldRaiseReminder(patient)).thenReturn(false);
+        when(appointmentReminderCriteria.shouldAddOutboxMessage(patient)).thenReturn(false);
 
         appointmentReminderHandler.handleEvent(event);
 

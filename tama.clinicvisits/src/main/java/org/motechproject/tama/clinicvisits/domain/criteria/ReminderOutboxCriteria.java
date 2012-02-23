@@ -1,4 +1,4 @@
-package org.motechproject.tama.clinicvisits.domain;
+package org.motechproject.tama.clinicvisits.domain.criteria;
 
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.service.OutboxService;
@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CreateAppointmentReminderCriteria {
+public class ReminderOutboxCriteria {
 
     private OutboxService outboxService;
 
     @Autowired
-    public CreateAppointmentReminderCriteria(OutboxService outboxService) {
+    public ReminderOutboxCriteria(OutboxService outboxService) {
         this.outboxService = outboxService;
+
     }
 
-    public boolean shouldRaiseReminder(Patient patient) {
+    public boolean shouldAddOutboxMessage(Patient patient) {
         return patient.getPatientPreferences().getActivateAppointmentReminders()
                 && !outboxService.hasPendingOutboxMessages(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
     }
-
 
 }
