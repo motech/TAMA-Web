@@ -87,8 +87,14 @@ public class ClinicVisitsController extends BaseController {
             return "clinicvisits/create";
         }
         String treatmentAdviceId = null;
-        if (isNotBlank(treatmentAdvice.getRegimenId()))
-            treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
+        if (isNotBlank(treatmentAdvice.getRegimenId())) {
+            try {
+                treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
+            } catch(RuntimeException e) {
+                uiModel.addAttribute("error", "Error occurred while creating treatment advice" + e.getMessage());
+                return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
+            }
+        }
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
         String patientId = treatmentAdvice.getPatientId();
@@ -160,4 +166,10 @@ public class ClinicVisitsController extends BaseController {
     private String redirectToShowClinicVisitUrl(String clinicVisitId, String patientId, HttpServletRequest httpServletRequest) {
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientId;
     }
+
+    private String redirectToCreateFormUrl(String clinicVisitId, String patientId, HttpServletRequest httpServletRequest) {
+        String queryParameters = "form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId;
+        return "redirect:/clinicvisits?" + encodeUrlPathSegment(queryParameters, httpServletRequest);
+    }
+
 }
