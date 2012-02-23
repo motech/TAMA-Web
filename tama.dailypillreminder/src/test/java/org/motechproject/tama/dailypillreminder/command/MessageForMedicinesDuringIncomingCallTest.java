@@ -36,15 +36,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 
 public class MessageForMedicinesDuringIncomingCallTest {
-    @Mock
-    private AllPatients allPatients;
-
-    @Mock
-    private AllClinics allClinics;
-
-    @Mock
-    private ClinicNameMessageBuilder clinicNameMessageBuilder;
-
     private MessageForMedicinesDuringIncomingCall messageForMedicinesDuringIncomingCall;
 
     private LocalDate today;
@@ -52,10 +43,6 @@ public class MessageForMedicinesDuringIncomingCallTest {
     private DateTime now;
 
     private DailyPillReminderContextForTest context;
-
-    private Patient patient;
-
-    private Clinic clinic;
 
     private void setUpTime() {
         today = DateUtil.today();
@@ -70,13 +57,8 @@ public class MessageForMedicinesDuringIncomingCallTest {
     @Before
     public void setup() {
         initMocks(this);
-        clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicName").withId("clinicId").build();
-        patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).build();
-        when(allPatients.get("patientId")).thenReturn(patient);
-        when(allClinics.get("clinicId")).thenReturn(clinic);
-        when(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("welcome_to_someClinicName");
 
-        messageForMedicinesDuringIncomingCall = new MessageForMedicinesDuringIncomingCall(allPatients, allClinics, null, clinicNameMessageBuilder);
+        messageForMedicinesDuringIncomingCall = new MessageForMedicinesDuringIncomingCall(null);
         setUpContexts();
         setUpTime();
     }
@@ -87,7 +69,7 @@ public class MessageForMedicinesDuringIncomingCallTest {
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
         context.callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{"welcome_to_someClinicName", TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillmedicine1", "pillmedicine2", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
+        assertArrayEquals(new String[]{TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillmedicine1", "pillmedicine2", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
     }
 
     @Test
@@ -103,20 +85,6 @@ public class MessageForMedicinesDuringIncomingCallTest {
         context.pillRegimen(new PillRegimen(pillRegimenResponse)).callDirection(CallDirection.Outbound);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{"welcome_to_someClinicName", TamaIVRMessage.NOT_REPORTED_IF_TAKEN, "pillmedicine3", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW}, messages);
-    }
-
-    @Test
-    public void shouldNotPlayWelcomeMessageDuringMenuRepeat() {
-        int dosageHour = 16;
-        DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
-        context.callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
-        context.addLastCompletedTreeToListOfCompletedTrees(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
-
-        String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-
-        assertArrayEquals(new String[]{TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillmedicine1", "pillmedicine2", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
-        assertFalse(Arrays.asList(messages).contains("welcome_to_someClinicName"));
-        assertFalse(Arrays.asList(messages).contains("welcome_to_clinicName"));
+        assertArrayEquals(new String[]{TamaIVRMessage.NOT_REPORTED_IF_TAKEN, "pillmedicine3", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW}, messages);
     }
 }

@@ -21,8 +21,6 @@ public class TAMACallFlowControllerFourDayRecallTest {
     @Mock
     private AllPatients allPatients;
 
-    private Patient patient;
-
     private TAMACallFlowController tamaCallFlowController;
 
     private TAMAIVRContextForTest tamaIVRContext;
@@ -31,12 +29,12 @@ public class TAMACallFlowControllerFourDayRecallTest {
     private TAMAIVRContextFactory factory;
 
     private void setUpPatient() {
-        patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
     }
 
     private void setUpOutgoingCall() {
-        tamaIVRContext.callDirection(CallDirection.Outbound).patient(patient);
+        tamaIVRContext.callDirection(CallDirection.Outbound);
     }
 
     @Before

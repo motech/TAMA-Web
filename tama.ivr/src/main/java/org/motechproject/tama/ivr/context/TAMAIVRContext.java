@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr.context;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
@@ -75,6 +76,10 @@ public class TAMAIVRContext {
 
     public boolean hasTraversedTree(String treeName) {
         return getListOfCompletedTrees() != null && getListOfCompletedTrees().contains(treeName);
+    }
+
+    public boolean hasTraversedAnyTree() {
+        return CollectionUtils.isNotEmpty(getListOfCompletedTrees());
     }
 
     protected void callerId(String callerId) {

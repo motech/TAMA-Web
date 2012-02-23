@@ -12,10 +12,14 @@ import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -76,7 +80,25 @@ public class TAMAIVRContextTest {
 
         verify(kooKooIVRContext).addToListOfCompletedTrees(lastTreeName);
     }
-    
+
+    @Test
+    public void verifyIfNotTraversedThroughAnyTree() {
+        tamaivrContext = new TAMAIVRContext(kooKooIVRContext);
+        when(kooKooIVRContext.getListOfCompletedTrees()).thenReturn(new ArrayList<String>());
+
+        assertFalse(tamaivrContext.hasTraversedAnyTree());
+    }
+
+    @Test
+    public void verifyIfTraversedThroughATree() {
+        String treeName = "completedTree";
+
+        tamaivrContext = new TAMAIVRContext(kooKooIVRContext);
+        when(kooKooIVRContext.getListOfCompletedTrees()).thenReturn(Arrays.asList(treeName));
+
+        assertTrue(tamaivrContext.hasTraversedAnyTree());
+    }
+
     @Test
     public void shouldAddCallState_ToDataBucket(){
         tamaivrContext = new TAMAIVRContext(kooKooIVRContext);

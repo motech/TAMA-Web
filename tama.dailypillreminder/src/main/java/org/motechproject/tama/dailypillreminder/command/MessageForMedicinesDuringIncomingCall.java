@@ -17,27 +17,16 @@ import java.util.ArrayList;
 
 @Component
 public class MessageForMedicinesDuringIncomingCall extends DailyPillReminderTreeCommand {
-    private AllPatients allPatients;
-    private AllClinics allClinics;
-    private ClinicNameMessageBuilder clinicNameMessageBuilder;
 
     @Autowired
-    public MessageForMedicinesDuringIncomingCall(AllPatients allPatients, AllClinics allClinics, DailyPillReminderService dailyPillReminderService, ClinicNameMessageBuilder clinicNameMessageBuilder) {
+    public MessageForMedicinesDuringIncomingCall(DailyPillReminderService dailyPillReminderService) {
         super(dailyPillReminderService);
-        this.allPatients = allPatients;
-        this.allClinics = allClinics;
-        this.clinicNameMessageBuilder = clinicNameMessageBuilder;
     }
 
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
         ArrayList<String> messages = new ArrayList<String>();
-        Patient patient = allPatients.get(context.patientDocumentId());
-        Clinic clinic = allClinics.get(patient.getClinic_id());
 
-        if (!context.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM)) {
-            messages.add(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage()));
-        }
         PillRegimen pillRegimen = context.pillRegimen();
         if (pillRegimen.isWithinPillWindow(context.callStartTime())) {
             messages.add(TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW);

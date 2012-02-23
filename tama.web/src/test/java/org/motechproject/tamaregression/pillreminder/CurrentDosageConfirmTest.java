@@ -33,10 +33,13 @@ public class CurrentDosageConfirmTest extends BaseIVRTest {
     public void outboxFlow_WhenPatient_CallsTAMA() throws IOException {
         caller.call();
         IVRResponse ivrResponse = caller.enter("1234");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, DEFAULT_INBOUND_CLINIC_MESSAGE, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
         ivrResponse = caller.enter("3");
         IVRAssert.assertAudioFilesPresent(ivrResponse, NO_MESSAGES);
         ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
+        ivrResponse = caller.listenMore();
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.assertAudioFileNotPresent(ivrResponse, DEFAULT_INBOUND_CLINIC_MESSAGE);
     }
 }

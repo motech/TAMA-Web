@@ -45,7 +45,7 @@ public class SendSMSCommandTest {
         messageDescription = new Properties();
         messageDescription.setProperty("adv_crocin01", "Take one tablet of crocin");
         messageDescription.setProperty("adv_halfhourcro01", "Take a paracetamol tablet thrice a day for 5 days after eating something.");
-        tamaivrContextForTest = new TAMAIVRContextForTest().patient(patient);
+        tamaivrContextForTest = new TAMAIVRContextForTest();
     }
 
     @Test

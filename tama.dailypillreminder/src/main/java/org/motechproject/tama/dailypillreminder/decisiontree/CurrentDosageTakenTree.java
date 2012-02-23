@@ -3,6 +3,7 @@ package org.motechproject.tama.dailypillreminder.decisiontree;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
+import org.motechproject.tama.dailypillreminder.command.IncomingWelcomeMessage;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CurrentDosageTakenTree extends TamaDecisionTree {
+    @Autowired
+    private IncomingWelcomeMessage incomingWelcomeMessage;
+
     @Autowired
     private NextCallDetails nextCallDetails;
 
@@ -30,6 +34,7 @@ public class CurrentDosageTakenTree extends TamaDecisionTree {
     protected Node createRootNode() {
         return new Node()
                 .setPrompts(
+                        new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(nextCallDetails),
                         new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand),
                         new MenuAudioPrompt().setName(TamaIVRMessage.HEALTH_TIPS_MENU_OPTION))

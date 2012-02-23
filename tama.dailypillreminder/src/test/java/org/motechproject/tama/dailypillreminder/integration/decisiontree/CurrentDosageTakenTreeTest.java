@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.tama.dailypillreminder.command.IncomingWelcomeMessage;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
 import org.motechproject.tama.dailypillreminder.decisiontree.CurrentDosageTakenTree;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
@@ -41,9 +42,10 @@ public class CurrentDosageTakenTreeTest {
     public void shouldGetPillTakenCommand() {
         Node nextNode = testConfirmTree.getTree().nextNode("", "");
         List<Prompt> prompts = nextNode.getPrompts();
-        assertEquals(3, prompts.size());
-        assertTrue(prompts.get(0).getCommand() instanceof NextCallDetails);
-        assertTrue(prompts.get(1).getCommand() instanceof SymptomAndOutboxMenuCommand);
+        assertEquals(4, prompts.size());
+        assertTrue(prompts.get(0).getCommand() instanceof IncomingWelcomeMessage);
+        assertTrue(prompts.get(1).getCommand() instanceof NextCallDetails);
+        assertTrue(prompts.get(2).getCommand() instanceof SymptomAndOutboxMenuCommand);
     }
 }
 

@@ -70,7 +70,7 @@ public class DialControllerTest {
 
         kookooRequest = new KookooRequest("", "", "Dial", "", IVRStatus.NotAnswered.toString());
         kooKooIVRContext = new KooKooIVRContext(kookooRequest, httpRequest, response);
-        tamaIvrContext = new TAMAIVRContextForTest().patient(patient).patientDocumentId(patient.getId());
+        tamaIvrContext = new TAMAIVRContextForTest().patientDocumentId(patient.getId());
         when(allPatients.get("patientId")).thenReturn(patient);
         dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService, symptomRecordingService);
 
