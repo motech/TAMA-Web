@@ -28,10 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -85,7 +82,7 @@ public class FourDayRecallAlertServiceTest extends BaseUnitTest {
 
         verify(patientAlertService).createAlert(eq(patientId), eq(TAMAConstants.NO_ALERT_PRIORITY),
                 eq(TAMAConstants.FALLING_ADHERENCE), eq("Adherence fell by 100.00%, from 10.00% to 0.00%"),
-                eq(PatientAlertType.FallingAdherence), Matchers.<Map<String, String>>any());
+                eq(PatientAlertType.FallingAdherence));
     }
 
     @Test

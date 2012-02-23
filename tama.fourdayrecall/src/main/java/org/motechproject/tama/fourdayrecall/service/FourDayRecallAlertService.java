@@ -69,10 +69,9 @@ public class FourDayRecallAlertService {
 
         if (fourDayRecallDateService.isFirstTreatmentWeek(patient, treatmentAdvice)) return;
 
-        final Map<String, String> data = new HashMap<String, String>();
         final double fall = ((adherencePercentageForPreviousWeek - adherencePercentageForCurrentWeek) / (double) adherencePercentageForPreviousWeek) * 100.0;
         final String description = String.format(TAMAMessages.ADHERENCE_FALLING_FROM_TO, fall, (double) adherencePercentageForPreviousWeek, (double) adherencePercentageForCurrentWeek);
-        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence, data);
+        patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.FALLING_ADHERENCE, description, PatientAlertType.FallingAdherence);
     }
 
     public boolean hasAdherenceFallingAlertBeenRaisedForCurrentWeek(String patientDocId) {
@@ -100,7 +99,6 @@ public class FourDayRecallAlertService {
             data.put(PatientAlert.ADHERENCE, Double.toString(adherencePercentage));
             patientAlertService.createAlert(patientId, TAMAConstants.NO_ALERT_PRIORITY, TAMAConstants.ADHERENCE_IN_RED_ALERT, description, PatientAlertType.AdherenceInRed, data);
         } catch (NoAdherenceRecordedException ignored) {
-            return;
         }
     }
 

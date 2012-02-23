@@ -36,12 +36,8 @@ public class AppointmentReminderService {
 
     public void raiseAlert(Patient patient, Appointment appointment) {
         if (reminderAlertCriteria.shouldRaiseAlert(appointment)) {
-            patientAlertService.createAlert(patient.getId(),
-                    TAMAConstants.NO_ALERT_PRIORITY,
-                    TAMAConstants.APPOINTMENT_REMINDER,
-                    "",
-                    PatientAlertType.AppointmentReminder,
-                    null);
+            patientAlertService.createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
+                    TAMAConstants.APPOINTMENT_REMINDER, "", PatientAlertType.AppointmentReminder);
         }
     }
 }

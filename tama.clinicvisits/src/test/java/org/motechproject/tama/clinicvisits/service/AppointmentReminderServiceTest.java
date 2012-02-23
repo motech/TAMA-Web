@@ -63,7 +63,7 @@ public class AppointmentReminderServiceTest {
         when(reminderAlertCriteria.shouldRaiseAlert(appointment)).thenReturn(true);
         appointmentReminderService.raiseAlert(patient, appointment);
         verify(patientAlertService).createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
-                TAMAConstants.APPOINTMENT_REMINDER, "", PatientAlertType.AppointmentReminder, null);
+                TAMAConstants.APPOINTMENT_REMINDER, "", PatientAlertType.AppointmentReminder);
     }
 
     @Test

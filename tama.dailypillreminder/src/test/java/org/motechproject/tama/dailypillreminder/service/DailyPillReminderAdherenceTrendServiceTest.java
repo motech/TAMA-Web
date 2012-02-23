@@ -54,7 +54,7 @@ public class DailyPillReminderAdherenceTrendServiceTest {
         when(dailyReminderAdherenceService.getAdherencePercentage("patientId", now.minusWeeks(1))).thenReturn(30.0);
         when(dailyReminderAdherenceService.getAdherencePercentage("patientId", now)).thenReturn(20.0);
         dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(patientId, now);
-        verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), eq("Adherence fell by 33.33%, from 30.00% to 20.00%"), eq(PatientAlertType.FallingAdherence), argThat(emptyMapMatcher));
+        verify(patientAlertService).createAlert(eq(patientId), eq(0), eq("Falling Adherence"), eq("Adherence fell by 33.33%, from 30.00% to 20.00%"), eq(PatientAlertType.FallingAdherence));
     }
 
     @Test

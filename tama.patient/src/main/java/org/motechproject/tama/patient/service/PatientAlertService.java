@@ -13,6 +13,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -30,6 +31,10 @@ public class PatientAlertService {
         this.allPatients = allPatients;
         this.alertService = alertService;
         this.patientAlertSearchService = patientAlertSearchService;
+    }
+
+    public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType) {
+        createAlert(externalId, priority, name, description, patientAlertType, new HashMap<String, String>());
     }
 
     public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
