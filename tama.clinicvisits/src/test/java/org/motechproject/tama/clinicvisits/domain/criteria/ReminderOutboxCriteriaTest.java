@@ -49,7 +49,7 @@ public class ReminderOutboxCriteriaTest {
     @Test
     public void shouldReturnFalseIfAppointmentIsAlreadyConfirmed() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
-        Appointment appointment = new Appointment().firmDate(DateUtil.now());
+        Appointment appointment = new Appointment().confirmedDate(DateUtil.now());
         assertFalse(reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment));
     }
 

@@ -23,7 +23,7 @@ public class ReminderAlertCriteria {
     }
 
     public boolean shouldRaiseAlert(Appointment appointment) {
-        if (appointment.firmDate() != null) {
+        if (appointment.confirmedDate() != null) {
             return false;
         } else {
             LocalDate referenceDate = effectiveDueDate(appointment);

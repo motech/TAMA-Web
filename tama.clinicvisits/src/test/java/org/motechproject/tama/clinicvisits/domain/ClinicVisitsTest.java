@@ -25,15 +25,15 @@ public class ClinicVisitsTest extends BaseUnitTest {
     @Before
     public void setUp() {
         Visit yesterdaysVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week1").addAppointment(DateUtil.newDateTime(yesterday, 0, 0, 0), new Reminder());
-        yesterdaysVisit.appointment().firmDate(DateUtil.newDateTime(yesterday, 0, 0, 0));
+        yesterdaysVisit.appointment().confirmedDate(DateUtil.newDateTime(yesterday, 0, 0, 0));
         clinicVisits.add(new ClinicVisit(new Patient(), yesterdaysVisit));
 
         Visit todaysVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week2").addAppointment(DateUtil.newDateTime(today, 0, 0, 0), new Reminder());
-        todaysVisit.appointment().firmDate(DateUtil.newDateTime(today, 0, 0, 0));
+        todaysVisit.appointment().confirmedDate(DateUtil.newDateTime(today, 0, 0, 0));
         clinicVisits.add(new ClinicVisit(new Patient(), todaysVisit));
 
         Visit dayAfterTomorrowsVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week3").addAppointment(DateUtil.newDateTime(dayAfterTomorrow, 0, 0, 0), new Reminder());
-        dayAfterTomorrowsVisit.appointment().firmDate(null);
+        dayAfterTomorrowsVisit.appointment().confirmedDate(null);
         clinicVisits.add(new ClinicVisit(new Patient(), dayAfterTomorrowsVisit));
     }
 
