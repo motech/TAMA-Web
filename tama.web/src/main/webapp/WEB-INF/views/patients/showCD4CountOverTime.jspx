@@ -43,7 +43,7 @@
                         var dangerZone = dataList.map(function (elt, index) {return 500;});;
 
                         <!-- Adding some buffer value on maxY, minX, maxX to show diamonds properly -->
-                        c.addAxis("x", { labels:xLabels(), majorTickStep:1, minorTicks:false, minorLabels:false,  min:0.98, max:dataList.length + 0.10});
+                        c.addAxis("x", { labels:xLabels(), majorTickStep:1, minorTicks:false, minorLabels:false,  min:0.98, max:dataList.length + 0.10,rotation: -50 });
                         c.addAxis("y", {min:0, max: maxY + 7, vertical:true});
                         c.addSeries("CD4 Count", xValues(), { stroke:{ color:"blue" }, fill:"lightblue" });
                         c.addSeries("Normal Range", dangerZone, {plot: "other", stroke: {color:"white"}, fill: "rgba(255,0,0,0.7)"});
