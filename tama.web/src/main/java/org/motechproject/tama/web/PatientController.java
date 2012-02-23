@@ -122,8 +122,12 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
-    public String deactivate(@RequestParam String id, @RequestParam Status status, HttpServletRequest request) {
-        patientService.deactivate(id, status);
+    public String deactivate(@RequestParam String id, @RequestParam Status status, Model uiModel, HttpServletRequest request) {
+        try {
+            patientService.deactivate(id, status);
+        } catch (RuntimeException e) {
+            uiModel.addAttribute("error", "Error occured while deactivating patient: " + e.getMessage());
+        }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
@@ -143,16 +147,21 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/reactivatePatient")
-    public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, HttpServletRequest request) {
+    public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, Model uiModel, HttpServletRequest request) {
         Patient patient = allPatients.get(id);
 
         final DateTime startDate = patient.getStatus().isTemporarilyDeactivated() ? patient.getLastDeactivationDate() : patient.getLastSuspendedDate();
-        if (patient.isOnDailyPillReminder()) {
-            dailyPillReminderAdherenceService.backFillAdherence(id, startDate, DateUtil.now(), doseStatus.isTaken());
-        } else {
-            resumeFourDayRecallService.backFillAdherence(patient, startDate, DateUtil.now(), doseStatus.isTaken());
+        try {
+            if (patient.isOnDailyPillReminder()) {
+                dailyPillReminderAdherenceService.backFillAdherence(id, startDate, DateUtil.now(), doseStatus.isTaken());
+            } else {
+                resumeFourDayRecallService.backFillAdherence(patient, startDate, DateUtil.now(), doseStatus.isTaken());
+            }
+            patientService.activate(id);
+        } catch (RuntimeException e) {
+            uiModel.addAttribute("error", "Error occurred while reactivating patient: " + e.getMessage());
         }
-        patientService.activate(id);
+
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
@@ -264,7 +273,7 @@ public class PatientController extends BaseController {
             }
             patientService.activate(patientDocId);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("error", "Error occurred while activating patient: "+ e.getMessage());
+            uiModel.addAttribute("error", "Error occurred while activating patient: " + e.getMessage());
         }
         return redirectPage;
     }

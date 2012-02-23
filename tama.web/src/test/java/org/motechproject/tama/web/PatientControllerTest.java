@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
@@ -212,10 +213,21 @@ public class PatientControllerTest {
         @Test
         public void shouldDeactivatePatientAndRedirectToPatientViewPage() {
             String id = PATIENT_ID;
-            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, request);
+            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, uiModel, request);
 
             verify(patientService).deactivate(id, Status.Patient_Withdraws_Consent);
             assertEquals("redirect:/patients/patient_id", nextPage);
+        }
+
+        @Test
+        public void shouldRedirectToPatientViewPage_AddErrorMessage_onError() {
+            String id = PATIENT_ID;
+            doThrow(new RuntimeException("Some exception")).when(patientService).deactivate(id, Status.Patient_Withdraws_Consent);
+
+            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, uiModel, request);
+
+            assertEquals("redirect:/patients/patient_id", nextPage);
+            verify(uiModel).addAttribute("error", "Error occured while deactivating patient: Some exception");
         }
     }
 
@@ -226,7 +238,7 @@ public class PatientControllerTest {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(now.minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
-            controller.reactivatePatient(PATIENT_ID, DoseStatus.NOT_TAKEN, request);
+            controller.reactivatePatient(PATIENT_ID, DoseStatus.NOT_TAKEN, uiModel, request);
 
             ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
             verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(PATIENT_ID), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(false));
@@ -239,7 +251,7 @@ public class PatientControllerTest {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(now.minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
-            controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
+            controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
 
             ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
             verify(resumeFourDayRecallService, times(1)).backFillAdherence(eq(patientFromUI), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(true));
@@ -251,10 +263,35 @@ public class PatientControllerTest {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
-            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
+            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
 
             verify(patientService).activate(PATIENT_ID);
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+        }
+
+        @Test
+        public void shouldRedirectToShowPage_addErrorMessage_onErrorWhileActivating() {
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
+            when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
+            doThrow(new RuntimeException("Some error")).when(patientService).activate(PATIENT_ID);
+
+            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
+
+            assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+            verify(uiModel).addAttribute("error", "Error occurred while reactivating patient: Some error");
+        }
+
+        @Test
+        public void shouldRedirectToShowPage_addErrorMessage_onErrorWhileBackFillingAdherence() {
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
+            when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
+            doThrow(new RuntimeException("Some error")).when(resumeFourDayRecallService).backFillAdherence(eq(patientFromUI), eq(patientFromUI.getLastSuspendedDate()), Matchers.any(DateTime.class), eq(true));
+
+            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
+
+            assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
+            verify(patientService, never()).activate(PATIENT_ID);
+            verify(uiModel).addAttribute("error", "Error occurred while reactivating patient: Some error");
         }
     }
 
