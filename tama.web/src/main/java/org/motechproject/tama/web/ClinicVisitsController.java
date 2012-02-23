@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.model.TypeOfVisit;
@@ -25,7 +24,6 @@ import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @RequestMapping("/clinicvisits")
@@ -50,7 +48,7 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/newVisit")
     public String newVisit(@RequestParam(value = "patientDocId") String patientDocId, Model uiModel, HttpServletRequest httpServletRequest) {
         String clinicVisitId = allClinicVisits.createAppointment(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled);
-        allClinicVisits.setVisitDate(patientDocId, clinicVisitId,  DateUtil.now());
+        allClinicVisits.setVisitDate(patientDocId, clinicVisitId, DateUtil.now());
         return createForm(patientDocId, clinicVisitId, uiModel, httpServletRequest);
     }
 
@@ -70,7 +68,7 @@ public class ClinicVisitsController extends BaseController {
                     !clinicVisit.getLabResultIds().isEmpty() ||
                     clinicVisit.getVitalStatisticsId() != null);
             if (wasVisitDetailsEdited)
-                return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientDocId;
+                return redirectToShowClinicVisitUrl(clinicVisitId, patientDocId, httpServletRequest);
         } else {
             treatmentAdviceController.createForm(patientDocId, uiModel);
         }
@@ -95,7 +93,7 @@ public class ClinicVisitsController extends BaseController {
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
         String patientId = treatmentAdvice.getPatientId();
         allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientId;
+        return redirectToShowClinicVisitUrl(clinicVisitId, patientId, httpServletRequest);
     }
 
     @RequestMapping(value = "/{clinicVisitId}", method = RequestMethod.GET)
@@ -157,5 +155,9 @@ public class ClinicVisitsController extends BaseController {
     @RequestParam(value = "appointmentDueDate") DateTime appointmentDueDate, @RequestParam(value = "typeOfVisit") String typeOfVisit) {
         allClinicVisits.createAppointment(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit));
         return "{'result':'success'}";
+    }
+
+    private String redirectToShowClinicVisitUrl(String clinicVisitId, String patientId, HttpServletRequest httpServletRequest) {
+        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientId;
     }
 }

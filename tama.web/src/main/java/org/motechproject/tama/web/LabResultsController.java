@@ -28,6 +28,7 @@ import java.util.Map;
 public class LabResultsController extends BaseController {
 
     public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
+    public static final String REDIRECT_UPDATE_FORM = "redirect:/labresults/update";
 
     private final AllLabResults allLabResults;
     private final AllClinicVisits allClinicVisits;
