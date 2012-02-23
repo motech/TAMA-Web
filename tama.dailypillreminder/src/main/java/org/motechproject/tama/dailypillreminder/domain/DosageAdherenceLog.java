@@ -104,7 +104,7 @@ public class DosageAdherenceLog extends CouchEntity {
     }
 
     public DateTime getDosageStatusUpdatedAt() {
-        return dosageStatusUpdatedAt == null ? null : DateUtil.setTimeZone(dosageStatusUpdatedAt);
+        return DateUtil.setTimeZone(dosageStatusUpdatedAt);
     }
 
     public void setDosageStatusUpdatedAt(DateTime dosageStatusUpdatedAt) {

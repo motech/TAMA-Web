@@ -192,7 +192,7 @@ public class Patient extends CouchEntity {
     }
 
     public DateTime getActivationDate() {
-        return activationDate == null ? null : DateUtil.setTimeZone(activationDate);
+        return DateUtil.setTimeZone(activationDate);
     }
 
     public void setActivationDate(DateTime activationDate) {
@@ -202,7 +202,7 @@ public class Patient extends CouchEntity {
     }
 
     public DateTime getLastDeactivationDate() {
-        return lastDeactivationDate == null ? null : DateUtil.setTimeZone(lastDeactivationDate);
+        return DateUtil.setTimeZone(lastDeactivationDate);
     }
 
     public void setLastDeactivationDate(DateTime lastDeactivationDate) {
@@ -210,7 +210,7 @@ public class Patient extends CouchEntity {
     }
 
     public DateTime getLastSuspendedDate() {
-        return lastSuspendedDate == null ? null : DateUtil.setTimeZone(lastSuspendedDate);
+        return DateUtil.setTimeZone(lastSuspendedDate);
     }
 
     public void setLastSuspendedDate(DateTime lastSuspendedDate) {

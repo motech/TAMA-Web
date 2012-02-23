@@ -45,7 +45,7 @@ public class PatientEventLog extends CouchEntity {
     }
 
     public DateTime getDate() {
-        return date == null ? null : DateUtil.setTimeZone(date);
+        return DateUtil.setTimeZone(date);
     }
 
     public void setDate(DateTime date) {
