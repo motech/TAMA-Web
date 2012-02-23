@@ -12,7 +12,7 @@
 <spring:url value="/resources/images/favicon.ico" var="favicon"/>
 <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 <jsp:output omit-xml-declaration="yes"/>
-<util:panel id="clinicVisitListPanel" title="Clinic Visits" openPane="true">
+<util:panel id="clinicVisitListPanel" title="Clinic Visits / Appointment Details" openPane="true">
     <br/>
     <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
     <br/>

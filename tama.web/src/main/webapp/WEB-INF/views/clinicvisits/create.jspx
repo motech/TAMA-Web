@@ -14,7 +14,7 @@
         <div class="error"> <c:out value="${param.error}"/> </div>
     </c:if>
 
-    <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Clinic Visits / Appointment Details" openPane="true">
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Visit Details" openPane="true">
         <spring:url value="/clinicvisits/create/${clinicVisit.id}" var="form_url"/>
 
         <form id="clinicvisit" action="${form_url}" method="POST">
