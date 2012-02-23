@@ -48,9 +48,8 @@ public class AppointmentReminderHandlerTest {
     @Test
     public void shouldAddOutboxMessage() {
         appointmentReminderHandler.handleEvent(event);
-        verify(appointmentReminderService).addOutboxMessage(patient);
+        verify(appointmentReminderService).addOutboxMessage(patient, appointment);
     }
-
 
     @Test
     public void shouldRaiseAlert() {

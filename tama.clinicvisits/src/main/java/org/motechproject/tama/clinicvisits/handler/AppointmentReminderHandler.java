@@ -35,7 +35,7 @@ public class AppointmentReminderHandler {
         Patient patient = allPatients.get(patientId);
         Appointment appointment = allAppointments.get(appointmentId);
 
-        appointmentReminderService.addOutboxMessage(patient);
+        appointmentReminderService.addOutboxMessage(patient, appointment);
         appointmentReminderService.raiseAlert(patient, appointment);
     }
 }
