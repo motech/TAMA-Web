@@ -134,8 +134,6 @@
 <div style="display: none;">
     <div id="scheduleAdjustedDueDate" data-dojo-type="dijit.Dialog" title="Schedule">
         <div style="margin: 10px;">
-            <div>Visit Date:</div>
-            <br/>
 
             <div class="visitTypeOptions">
                 <input style="height:1em;" type="radio" name="type" value="Scheduled" class="optionScheduled"/> Scheduled <br/>
@@ -154,9 +152,9 @@
                 </div>
             </div>
             <br/><br/>
-            <input id="cancel" type="submit" class="submit popupCancel" value="Cancel"/>
+            <input id="cancel" type="submit" class="submit popupCancel" value="CANCEL"/>
 
-            <div style="float: right;"><input type="submit" class="submit popupOk" value="Save"/></div>
+            <div style="float: right;"><input type="submit" class="submit popupOk" value="SAVE"/></div>
         </div>
     </div>
 </div>

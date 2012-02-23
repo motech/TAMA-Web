@@ -64,7 +64,7 @@ var SchedulePopup = function(id, titleText) {
                 var dateValue = calendar.value;
                 if (showTimeOption) {
                     dateValue.setHours(timebox.value.getHours());
-                    dateValue.getMinutes(timebox.value.getMinutes());
+                    dateValue.setMinutes(timebox.value.getMinutes());
                 }
                 var optionScheduled;
                 if (showVisitOptions) {
