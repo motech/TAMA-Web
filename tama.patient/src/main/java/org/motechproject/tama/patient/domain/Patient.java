@@ -1,5 +1,7 @@
 package org.motechproject.tama.patient.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.*;
@@ -29,32 +31,36 @@ public class Patient extends CouchEntity {
     public static final String CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT = "Constraint:Unique:Clinic/PatientId::";
     public static final String PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT = "Constraint:Unique:PhoneNumber/Passcode::";
 
-    protected String patientId;
+    @Getter @Setter protected String patientId;
+
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
-    protected String mobilePhoneNumber;
+    @Getter @Setter protected String mobilePhoneNumber;
+
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     @Past(message = TAMAMessages.DATE_OF_BIRTH_MUST_BE_IN_PAST)
     @NotNull
     protected Date dateOfBirthAsDate;
+
     @ManyToOne
     private Gender gender;
+
     @ManyToOne
     private Clinic clinic;
 
-    private String genderId;
-    private String clinic_id;
+    @Getter @Setter private String genderId;
+    @Getter @Setter private String clinic_id;
 
     @Valid
-    private PatientPreferences patientPreferences = new PatientPreferences();
-    private MedicalHistory medicalHistory;
-    private Status status = Status.Inactive;
-    private String notes;
+    @Getter @Setter private PatientPreferences patientPreferences = new PatientPreferences();
+    @Getter @Setter private MedicalHistory medicalHistory;
+    @Getter @Setter private Status status = Status.Inactive;
+    @Getter @Setter private String notes;
 
-    private int travelTimeToClinicInDays;
-    private int travelTimeToClinicInHours;
-    private int travelTimeToClinicInMinutes;
+    @Getter @Setter private int travelTimeToClinicInDays;
+    @Getter @Setter private int travelTimeToClinicInHours;
+    @Getter @Setter private int travelTimeToClinicInMinutes;
 
     private Date registrationDateAsDate;
     private DateTime lastSuspendedDate;
@@ -111,30 +117,6 @@ public class Patient extends CouchEntity {
         return this.patientPreferences.getDayOfWeeklyCall();
     }
 
-    public String getPatientId() {
-        return this.patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
-    public Status getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public String getMobilePhoneNumber() {
-        return this.mobilePhoneNumber;
-    }
-
-    public void setMobilePhoneNumber(String mobilePhoneNumber) {
-        this.mobilePhoneNumber = mobilePhoneNumber;
-    }
-
     public LocalDate getDateOfBirth() {
         return DateUtil.newDate(dateOfBirthAsDate);
     }
@@ -150,54 +132,6 @@ public class Patient extends CouchEntity {
 
     public void setDateOfBirthAsDate(Date dateOfBirth) {
         this.dateOfBirthAsDate = dateOfBirth;
-    }
-
-    public int getTravelTimeToClinicInDays() {
-        return this.travelTimeToClinicInDays;
-    }
-
-    public void setTravelTimeToClinicInDays(int travelTimeToClinicInDays) {
-        this.travelTimeToClinicInDays = travelTimeToClinicInDays;
-    }
-
-    public int getTravelTimeToClinicInHours() {
-        return this.travelTimeToClinicInHours;
-    }
-
-    public void setTravelTimeToClinicInHours(int travelTimeToClinicInHours) {
-        this.travelTimeToClinicInHours = travelTimeToClinicInHours;
-    }
-
-    public int getTravelTimeToClinicInMinutes() {
-        return this.travelTimeToClinicInMinutes;
-    }
-
-    public void setTravelTimeToClinicInMinutes(int travelTimeToClinicInMinutes) {
-        this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public MedicalHistory getMedicalHistory() {
-        return medicalHistory;
-    }
-
-    public void setMedicalHistory(MedicalHistory medicalHistory) {
-        this.medicalHistory = medicalHistory;
-    }
-
-    public PatientPreferences getPatientPreferences() {
-        return patientPreferences;
-    }
-
-    public void setPatientPreferences(PatientPreferences patientPreferences) {
-        this.patientPreferences = patientPreferences;
     }
 
     @JsonIgnore
@@ -229,22 +163,6 @@ public class Patient extends CouchEntity {
     public void setClinic(Clinic clinic) {
         this.clinic = clinic;
         this.clinic_id = clinic.getId();
-    }
-
-    public String getGenderId() {
-        return genderId;
-    }
-
-    public void setGenderId(String genderId) {
-        this.genderId = genderId;
-    }
-
-    public String getClinic_id() {
-        return clinic_id;
-    }
-
-    public void setClinic_id(String clinic_id) {
-        this.clinic_id = clinic_id;
     }
 
     public List<String> uniqueFields() {
