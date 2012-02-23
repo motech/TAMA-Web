@@ -60,6 +60,10 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         return patient.getId();
     }
 
+    public boolean isBaseline() {
+        return visit.typeOfVisit() != null && visit.typeOfVisit().isBaselineVisit();
+    }
+
     public String getTypeOfVisit() {
         return visit.typeOfVisit().toString();
     }
@@ -142,7 +146,7 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     }
 
     public LocalDate getEffectiveDueDate() {
-        LocalDate appointmentDueDate = getAppointmentDueDate() ==  null ? null : getAppointmentDueDate().toLocalDate();
+        LocalDate appointmentDueDate = getAppointmentDueDate() == null ? null : getAppointmentDueDate().toLocalDate();
         return getAdjustedDueDate() == null ? appointmentDueDate : getAdjustedDueDate();
     }
 
