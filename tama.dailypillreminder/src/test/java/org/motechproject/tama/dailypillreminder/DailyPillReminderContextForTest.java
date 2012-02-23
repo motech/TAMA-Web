@@ -119,4 +119,13 @@ public class DailyPillReminderContextForTest extends DailyPillReminderContext {
     public List<String> getListOfCompletedTrees() {
         return tamaIVRContext.getListOfCompletedTrees();
     }
+
+    @Override
+    public boolean hasTraversedAnyTree() {
+        return tamaIVRContext.hasTraversedAnyTree();
+    }
+
+    public void hasTraversedAnyTree(boolean hasTraversedAnyTree) {
+        tamaIVRContext.hasTraversedAnyTree(hasTraversedAnyTree);
+    }
 }

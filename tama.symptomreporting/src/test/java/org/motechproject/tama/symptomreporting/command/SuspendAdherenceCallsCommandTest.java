@@ -44,7 +44,6 @@ public class SuspendAdherenceCallsCommandTest {
     public void shouldChangeStatusToSuspended() {
         final Patient patient = new Patient();
         final TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest();
-        tamaivrContextForTest.patient(patient);
 
         when(contextFactory.create(Matchers.<KooKooIVRContext>any())).thenReturn(tamaivrContextForTest);
         DateTime suspendedDateTime = new DateTime(2011, 11, 11, 0, 0, 0);

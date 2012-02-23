@@ -35,6 +35,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private int retryInterval;
     private boolean isDialState;
     private List<String> completedTrees = new ArrayList<String>();
+    private boolean hasTraversedAnyTree;
 
     @Override
     public String dtmfInput() {
@@ -151,15 +152,6 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
         this.callState = callState;
     }
 
-    public Patient patient(AllPatients allPatients) {
-        return patient;
-    }
-
-    public TAMAIVRContextForTest patient(Patient patient) {
-        this.patient = patient;
-        return this;
-    }
-
     @Override
     public void lastCompletedTree(String treeName) {
         this.lastCompletedTree = treeName;
@@ -173,6 +165,15 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     @Override
     public String requestedCallerId() {
         return requestedCallerId;
+    }
+
+    @Override
+    public boolean hasTraversedAnyTree() {
+        return hasTraversedAnyTree;        
+    }
+
+    public void hasTraversedAnyTree(boolean hasTraversedAnyTree) {
+        this.hasTraversedAnyTree = hasTraversedAnyTree;
     }
 
     @Override

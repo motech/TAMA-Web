@@ -4,10 +4,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.tama.dailypillreminder.command.AdherenceMessageWhenPreviousDosageCapturedCommand;
-import org.motechproject.tama.dailypillreminder.command.MessageForMedicinesDuringIncomingCall;
-import org.motechproject.tama.dailypillreminder.command.MessageOnPillTakenDuringIncomingCall;
-import org.motechproject.tama.dailypillreminder.command.UpdateAdherenceAsCapturedForCurrentDosageCommand;
+import org.motechproject.tama.dailypillreminder.command.*;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
@@ -20,9 +17,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CurrentDosageConfirmTree extends TamaDecisionTree {
     @Autowired
-    private MessageOnPillTakenDuringIncomingCall messageOnPillTakenDuringIncomingCall;
+    private IncomingWelcomeMessage incomingWelcomeMessage;
     @Autowired
     private MessageForMedicinesDuringIncomingCall messageForMedicinesDuringIncomingCall;
+    @Autowired
+    private MessageOnPillTakenDuringIncomingCall messageOnPillTakenDuringIncomingCall;
     @Autowired
     private UpdateAdherenceAsCapturedForCurrentDosageCommand updateAdherenceAsCapturedCommand;
     @Autowired
@@ -38,6 +37,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     protected Node createRootNode() {
         return new Node()
                 .setPrompts(
+                        new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_TAKEN_MENU_OPTION),
                         new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand),

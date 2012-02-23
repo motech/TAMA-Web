@@ -6,12 +6,12 @@ import org.junit.Test;
 import org.motechproject.appointments.api.model.Reminder;
 import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.*;
 
 public class ClinicVisitsTest extends BaseUnitTest {
 
@@ -59,6 +59,29 @@ public class ClinicVisitsTest extends BaseUnitTest {
     public void calculateNextAppointmentDueDate_WhenNoVisitsExists() {
         clinicVisits.clear();
         assertNull(clinicVisits.nextAppointmentDueDate());
+    }
+
+    @Test
+    public void shouldReturnTrueIfTypeOfVisitIsBaseline() {
+        Visit visit = new Visit();
+        visit.typeOfVisit(TypeOfVisit.Baseline);
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
+        assertTrue(clinicVisit.isBaseline());
+    }
+
+    @Test
+    public void shouldReturnFalseIfTypeOfVisitIsNotBaseline() {
+        Visit visit = new Visit();
+        visit.typeOfVisit(TypeOfVisit.Scheduled);
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
+        assertFalse(clinicVisit.isBaseline());
+    }
+
+    @Test
+    public void shouldReturnFalseIfTypeOfVisitIsNull() {
+        Visit visit = new Visit();
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
+        assertFalse(clinicVisit.isBaseline());
     }
 
     @Test

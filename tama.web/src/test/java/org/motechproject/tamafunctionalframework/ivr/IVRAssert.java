@@ -19,4 +19,8 @@ public class IVRAssert {
             Assert.assertTrue(String.format("%s not found. %s", name, ivrResponse.audiosPlayed()), ivrResponse.wasAudioPlayed(name));
         }
     }
+
+    public static void assertAudioFileNotPresent(IVRResponse ivrResponse, String name) {
+        Assert.assertFalse(ivrResponse.wasAudioPlayed(name));
+    }
 }
