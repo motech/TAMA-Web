@@ -7,6 +7,9 @@
     <definition extends="default" name="alerts/showAdherenceInRed">
         <put-attribute name="body" value="/WEB-INF/views/alerts/showAdherenceInRed.jspx"/>
     </definition>
+    <definition extends="default" name="alerts/showAppointmentReminder">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/showAppointmentReminder.jspx"/>
+    </definition>
     <definition extends="default" name="alerts/showFallingAdherence">
         <put-attribute name="body" value="/WEB-INF/views/alerts/showFallingAdherence.jspx"/>
     </definition>
@@ -21,5 +24,8 @@
     </definition>
     <definition extends="default" name="alerts/updateSymptomReporting">
         <put-attribute name="body" value="/WEB-INF/views/alerts/updateSymptomReporting.jspx"/>
+    </definition>
+    <definition extends="default" name="alerts/updateAppointmentReminder">
+        <put-attribute name="body" value="/WEB-INF/views/alerts/updateAppointmentReminder.jspx"/>
     </definition>
 </tiles-definitions>
