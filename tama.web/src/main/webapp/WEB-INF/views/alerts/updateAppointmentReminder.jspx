@@ -1,2 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<jsp:include page="update.jspx" xmlns:jsp="http://java.sun.com/JSP/Page" />
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:spring="http://www.springframework.org/tags"  xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0" xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <spring:message code="label_org_motechproject_tama_domain_patient_alert_title" var="alert_title" htmlEscape="false" />
+    <jsp:output omit-xml-declaration="yes"/>
+        <util:panel id="ps_org_motechproject_tama_alert" title="${alert_title} " openPane="true" >
+            <field:display field="patientId" id="s_org_motechproject_tama_alert_id" object="${alertInfo}" label="Patient Id"/>
+            <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
+            <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time"/>
+            <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Alert Type"/>
+            <field:display field="appointmentDueDate" id="s_org_motechproject_tama_alert_AppointmentDueDate" object="${alertInfo}" label="Appointment due date"/>
+            <field:display field="patientCallPreference" id="s_org_motechproject_tama_alert_CallPreference" object="${alertInfo}" label="Type Of Service"/>
+            <form:form action="" method="POST" modelAttribute="alertInfo" enctype="${enctype}">
+                <form:hidden path="type" value="${alertInfo.type}"/>
+                <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
+                <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
+                <form:hidden path="alertId" value="${alertInfo.alertId}"/>
+                <div class="submit">
+                    <spring:message code="button_save" var="save_button" htmlEscape="false" />
+                    <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+                    <input id="proceed" type="submit" value="Save" />
+                </div>
+            </form:form>
+    </util:panel>
+</div>

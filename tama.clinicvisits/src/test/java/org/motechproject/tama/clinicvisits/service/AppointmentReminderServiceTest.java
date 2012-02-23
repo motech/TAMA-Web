@@ -1,7 +1,9 @@
 package org.motechproject.tama.clinicvisits.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
@@ -10,9 +12,16 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.util.DateUtil;
 
+import java.util.HashMap;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -60,10 +69,17 @@ public class AppointmentReminderServiceTest {
 
     @Test
     public void shouldRaiseAlertIfReminderAlertCriteriaIsTrue() {
+        DateTime now = DateUtil.now();
+        appointment.dueDate(now);
         when(reminderAlertCriteria.shouldRaiseAlert(appointment)).thenReturn(true);
+
         appointmentReminderService.raiseAlert(patient, appointment);
-        verify(patientAlertService).createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
-                TAMAConstants.APPOINTMENT_REMINDER, "", PatientAlertType.AppointmentReminder);
+
+        ArgumentCaptor<HashMap> alertDataArgumentCaptor = ArgumentCaptor.forClass(HashMap.class);
+        verify(patientAlertService).createAlert(eq(patient.getId()), eq(TAMAConstants.NO_ALERT_PRIORITY),
+                eq(TAMAConstants.APPOINTMENT_REMINDER), eq(""), eq(PatientAlertType.AppointmentReminder), alertDataArgumentCaptor.capture());
+        assertNotNull(alertDataArgumentCaptor.getValue().containsKey(PatientAlert.APPOINTMENT_DUE_DATE));
+        assertEquals(now.toLocalDate().toString(), alertDataArgumentCaptor.getValue().get(PatientAlert.APPOINTMENT_DUE_DATE));
     }
 
     @Test

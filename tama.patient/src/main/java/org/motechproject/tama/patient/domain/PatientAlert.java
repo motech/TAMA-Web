@@ -2,9 +2,13 @@ package org.motechproject.tama.patient.domain;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.tama.common.TAMAConstants;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 public class PatientAlert {
 
@@ -16,9 +20,9 @@ public class PatientAlert {
     public static final String SYMPTOMS_ALERT_STATUS = "Symptoms Alert Status";
     public static final String PATIENT_CALL_PREFERENCE = "Patient Call Preference";
     public static final String ADHERENCE = "Adherence";
+    public static final String APPOINTMENT_DUE_DATE = "AppointmentDueDate";
 
     private Patient patient;
-
     private Alert alert;
 
     public Patient getPatient() {
@@ -102,6 +106,12 @@ public class PatientAlert {
 
     public String getSymptomsAlertStatus() {
         return this.alert.getData().get(SYMPTOMS_ALERT_STATUS);
+    }
+
+    @Temporal(TemporalType.DATE)
+    @org.springframework.format.annotation.DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+    public LocalDate getAppointmentDueDate() {
+        return new LocalDate(this.alert.getData().get(APPOINTMENT_DUE_DATE));
     }
 
     public String getConnectedToDoctor() {
