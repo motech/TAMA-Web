@@ -3,12 +3,16 @@ package org.motechproject.tama.clinicvisits.handler;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.tama.clinicvisits.domain.CreateAppointmentReminderCriteria;
+import org.motechproject.tama.clinicvisits.domain.RaiseAppointmentConfirmationCriteria;
 import org.motechproject.tama.clinicvisits.repository.AllAppointments;
-import org.motechproject.tama.clinicvisits.service.AppointmentReminderService;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.service.PatientAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +20,25 @@ import org.springframework.stereotype.Component;
 public class AppointmentReminderHandler {
 
     private AllPatients allPatients;
-    private AppointmentReminderService appointmentReminderService;
+    private PatientAlertService patientAlertService;
     private AllAppointments allAppointments;
+    private OutboxService outboxService;
+    private CreateAppointmentReminderCriteria appointmentReminderCriteria;
+    private RaiseAppointmentConfirmationCriteria appointmentConfirmationCriteria;
 
     @Autowired
-    public AppointmentReminderHandler(AllPatients allPatients, AppointmentReminderService appointmentReminderService, AllAppointments allAppointments) {
+    public AppointmentReminderHandler(AllPatients allPatients,
+                                      PatientAlertService patientAlertService,
+                                      AllAppointments allAppointments,
+                                      OutboxService outboxService,
+                                      CreateAppointmentReminderCriteria appointmentReminderCriteria,
+                                      RaiseAppointmentConfirmationCriteria appointmentConfirmationCriteria) {
         this.allPatients = allPatients;
-        this.appointmentReminderService = appointmentReminderService;
+        this.patientAlertService = patientAlertService;
         this.allAppointments = allAppointments;
+        this.outboxService = outboxService;
+        this.appointmentReminderCriteria = appointmentReminderCriteria;
+        this.appointmentConfirmationCriteria = appointmentConfirmationCriteria;
     }
 
     @MotechListener(subjects = EventKeys.REMINDER_EVENT_SUBJECT)
@@ -34,7 +49,17 @@ public class AppointmentReminderHandler {
         Patient patient = allPatients.get(patientId);
         Appointment appointment = allAppointments.get(appointmentId);
 
-        appointmentReminderService.raiseOutboxMessage(patient);
-        appointmentReminderService.raiseReminderAlert(patient, appointment);
+        if (appointmentReminderCriteria.shouldRaiseReminder(patient)) {
+            outboxService.addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
+        }
+
+        if (appointmentConfirmationCriteria.shouldRaiseAlert(appointment)) {
+            patientAlertService.createAlert(patient.getId(),
+                    TAMAConstants.NO_ALERT_PRIORITY,
+                    TAMAConstants.APPOINTMENT_REMINDER,
+                    "",
+                    PatientAlertType.AppointmentReminder,
+                    null);
+        }
     }
 }
