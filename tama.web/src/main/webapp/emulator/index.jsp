@@ -84,6 +84,9 @@
     }
     </style>
     <script>
+
+
+
     function displayMsg(data){
     	dojo.byId('timeMessage').style.display="";
         dojo.byId('timeMessage').innerHTML = data;
@@ -117,6 +120,16 @@
 <script src="js/Recording.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+        $('#missedCallButton').click(function () {
+            dojo.xhrPost({
+                url:'<%=application.getContextPath() %>/ivr/reply/callback?external_id=' + $('#missedCall').val(),
+                content:{ 'phone_no':$('#phone').val(), 'status':'ring', 'sid':callId},
+                load:function () {
+                    alert('Posted missed call');
+                }
+            })
+        });
+
         window.cacheControl = new CacheControl();
         window.recording = new Recording(window.cacheControl);
     });
@@ -380,9 +393,11 @@ function play(i){
 </form>
 <button onclick="submitTime();">Set Time</button>
 </td></tr></table>
-<br><br><br>
+<br><br>
+    <label for="missedCall">Patient Doc Id  </label><input id="missedCall" type="text"/><button id="missedCallButton">Missed Call</button>
+    <br><br>
 <div><input type="checkbox" id="mute"></input> Mute audio <span><input type="checkbox" id="symptoms_reporting"></input> Symptoms Reporting call
-<input type="checkbox" id="poll_call" checked></input> Accept incoming call
+<input type="checkbox" id="poll_call" ></input> Accept incoming call
 </span></div>
 <button onclick="$('.optional').toggle(600);">Show / Hide Params</button>
 <table id="params">
