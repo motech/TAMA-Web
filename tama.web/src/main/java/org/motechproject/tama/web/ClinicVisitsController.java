@@ -95,7 +95,7 @@ public class ClinicVisitsController extends BaseController {
             try {
                 treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
             } catch (RuntimeException e) {
-                uiModel.addAttribute("error", "Error occurred while creating treatment advice" + e.getMessage());
+                uiModel.addAttribute("error", "Error occurred while creating treatment advice: " + e.getMessage());
                 return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
             }
         }
@@ -110,7 +110,13 @@ public class ClinicVisitsController extends BaseController {
         } catch (RuntimeException e) {
             uiModel.addAttribute("errorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
         }
-        allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+
+        try{
+            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+        } catch(RuntimeException e) {
+            uiModel.addAttribute("error", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
+            return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
+        }
         return redirectToShowClinicVisitUrl(clinicVisitId, patientId, httpServletRequest);
     }
 

@@ -268,6 +268,24 @@ public class ClinicVisitsControllerTest {
 
             verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), eq(labResultIds), Matchers.<String>eq(null));
         }
+
+        @Test
+        public void shouldRedirectToCreateForm_WhenUpdatingClinicVisitErrorsOut(){
+            String patientId = treatmentAdvice.getPatientId();
+            ArrayList<String> labResultIds = new ArrayList<String>();
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(labResultIds);
+            when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
+            doThrow(new RuntimeException("Some error")).when(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId),
+                    eq(treatmentAdvice.getId()), eq(labResultIds), eq("vitalStatisticsId"));
+
+            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+
+            assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId, redirectURL);
+            verify(uiModel).addAttribute("error", "Error occurred while creating clinic visit. Please try again: Some error");
+        }
+
     }
 
     public static class Show extends SubjectUnderTest {
