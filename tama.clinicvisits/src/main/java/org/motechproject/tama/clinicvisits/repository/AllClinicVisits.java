@@ -47,12 +47,10 @@ public class AllClinicVisits {
     public void addAppointmentCalendar(String patientDocId) {
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsProperties.getProperty(APPOINTMENT_SCHEDULE));
         ReminderConfiguration appointmentReminderConfiguration = getAppointmentReminderConfiguration();
-        ReminderConfiguration visitReminderConfiguration = getVisitReminderConfiguration();
 
         AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId)
                                                                                                 .setWeekOffsets(appointmentWeeks)
-                                                                                                .setAppointmentReminderConfiguration(appointmentReminderConfiguration)
-                                                                                                .setVisitReminderConfiguration(visitReminderConfiguration);
+                                                                                                .setAppointmentReminderConfiguration(appointmentReminderConfiguration);
         appointmentService.removeCalendar(patientDocId);
         appointmentService.addCalendar(appointmentCalendarRequest);
     }
@@ -85,8 +83,8 @@ public class AllClinicVisits {
     }
 
     public String createAppointment(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
-        ReminderConfiguration reminderConfiguration = getAppointmentReminderConfiguration();
-        return appointmentService.addVisit(patientDocId, appointmentDueDate, reminderConfiguration, typeOfVisit);
+        ReminderConfiguration appointmentReminderConfiguration = getAppointmentReminderConfiguration();
+        return appointmentService.addVisit(patientDocId, appointmentDueDate, appointmentReminderConfiguration, typeOfVisit);
     }
 
     public void changeRegimen(String patientDocId, String clinicVisitId, String newTreatmentAdviceId) {
@@ -108,7 +106,8 @@ public class AllClinicVisits {
     }
 
     public void confirmVisitDate(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {
-        appointmentService.confirmVisit(patientDocId, clinicVisitId, confirmedVisitDate);
+        ReminderConfiguration visitReminderConfiguration = getVisitReminderConfiguration();
+        appointmentService.confirmVisit(patientDocId, clinicVisitId, confirmedVisitDate, visitReminderConfiguration);
     }
 
     public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate) {

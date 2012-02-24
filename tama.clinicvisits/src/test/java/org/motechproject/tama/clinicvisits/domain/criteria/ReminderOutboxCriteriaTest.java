@@ -1,5 +1,6 @@
 package org.motechproject.tama.clinicvisits.domain.criteria;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,7 +39,7 @@ public class ReminderOutboxCriteriaTest {
     }
 
     @Test
-    public void shouldReturnFalseIfPatientHasPendingOutboxMessage() {
+    public void shouldReturnFalseIfPatientHasPendingAppointmentOutboxMessage() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
         Appointment appointment = new Appointment();
         when(outboxService.hasPendingOutboxMessages(patient.getId(),
@@ -46,11 +47,42 @@ public class ReminderOutboxCriteriaTest {
         assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment));
     }
 
+
+    @Test
+    public void shouldReturnFalseIfPatientHasPendingVisitOutboxMessage() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
+        Appointment appointment = new Appointment();
+        when(outboxService.hasPendingOutboxMessages(patient.getId(),
+                TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE)).thenReturn(true);
+        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointment));
+    }
+
     @Test
     public void shouldReturnFalseIfAppointmentIsAlreadyConfirmed() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
         Appointment appointment = new Appointment().confirmedDate(DateUtil.now());
         assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment));
+    }
+
+    @Test
+    public void shouldReturnFalseIfAppointmentIsNotConfirmed() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
+        Appointment appointment = new Appointment();
+        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointment));
+    }
+
+    @Test
+    public void shouldReturnFalseIfConfirmedDateIsBeforeToday() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
+        Appointment appointment = new Appointment().confirmedDate(DateTime.now().minusHours(2));
+        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointment));
+    }
+
+    @Test
+    public void shouldReturnTrueIfAllVisitOutboxMessageCriteriaSatisfied() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
+        Appointment appointmentWithFutureConfirmDate = new Appointment().confirmedDate(DateTime.now().plusHours(2));
+        assertTrue(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointmentWithFutureConfirmDate));
     }
 
     @Test

@@ -36,15 +36,16 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     static int FIRST_SCHEDULE_WEEK = 1;
     static int SECOND_SCHEDULE_WEEK = 2;
     private static final String REMIND_FROM_DAYS = "10";
+    private static final String REMIND_FOR_VISIT_FROM_DAYS = "2";
     protected Properties appointmentsProperties;
     protected DateTime now;
-    protected LocalDate today;
 
+    protected LocalDate today;
     @Mock
     private AllPatients allPatients;
+
     @Mock
     private AppointmentService appointmentService;
-
     private AllClinicVisits allClinicVisits;
 
     @Before
@@ -66,6 +67,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         appointmentsProperties = new Properties();
         appointmentsProperties.setProperty(AllClinicVisits.APPOINTMENT_SCHEDULE, FIRST_SCHEDULE_WEEK + "," + SECOND_SCHEDULE_WEEK);
         appointmentsProperties.setProperty(AllClinicVisits.REMIND_FROM, REMIND_FROM_DAYS);
+        appointmentsProperties.setProperty(AllClinicVisits.REMIND_FOR_VISIT_FROM, REMIND_FOR_VISIT_FROM_DAYS);
     }
 
     @Test
@@ -77,7 +79,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         assertEquals(PATIENT_ID, requestArgumentCaptor.getValue().getExternalId());
         assertEquals(Arrays.asList(1, 2), requestArgumentCaptor.getValue().getWeekOffsets());
 
-        ReminderConfiguration reminderConfiguration = requestArgumentCaptor.getValue().getReminderConfiguration();
+        ReminderConfiguration reminderConfiguration = requestArgumentCaptor.getValue().getAppointmentReminderConfiguration();
         assertEquals(10, reminderConfiguration.getRemindFrom());
         assertEquals(1, reminderConfiguration.getIntervalCount());
         assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
@@ -85,7 +87,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldFirstRemoveAppointmentCalenderForPatient(){
+    public void shouldFirstRemoveAppointmentCalenderForPatient() {
         allClinicVisits.addAppointmentCalendar(PATIENT_ID);
 
         verify(appointmentService).removeCalendar(PATIENT_ID);
@@ -134,13 +136,8 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     @Test
     public void shouldUpdateConfirmedDueDate() throws Exception {
         final DateTime today = DateUtil.now();
-        Visit visit = new Visit().name("visit2").addAppointment(today, null);
-        AppointmentCalendar appointmentCalendar = new AppointmentCalendar().addVisit(visit);
-        when(appointmentService.getAppointmentCalendar(PATIENT_ID)).thenReturn(appointmentCalendar);
-
-        allClinicVisits.confirmVisitDate(PATIENT_ID, visit.name(), today);
-
-        verify(appointmentService).updateVisit(any(Visit.class), eq(PATIENT_ID));
+        allClinicVisits.confirmVisitDate(PATIENT_ID, "visit2", today);
+        verify(appointmentService).confirmVisit(eq(PATIENT_ID), eq("visit2"), eq(today), Matchers.<ReminderConfiguration>any());
     }
 
     @Test

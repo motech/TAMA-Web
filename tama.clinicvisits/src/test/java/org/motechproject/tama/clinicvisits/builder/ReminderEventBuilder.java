@@ -34,6 +34,6 @@ public class ReminderEventBuilder {
         Map<String, Object> eventParams = new HashMap<String, Object>();
         eventParams.put(EventKeys.EXTERNAL_ID_KEY, patient.getId());
         eventParams.put(EventKeys.APPOINTMENT_ID, appointment.id());
-        return new MotechEvent(EventKeys.REMINDER_EVENT_SUBJECT, eventParams);
+        return new MotechEvent(EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, eventParams);
     }
 }
