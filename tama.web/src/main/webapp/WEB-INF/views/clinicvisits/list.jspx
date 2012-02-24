@@ -152,9 +152,10 @@
                 </div>
             </div>
             <br/><br/>
-            <input id="cancel" type="submit" class="submit popupCancel" value="CANCEL"/>
-
-            <div style="float: right;"><input type="submit" class="submit popupOk" value="SAVE"/></div>
+            <div class="submit">
+                <input id="cancel" type="submit" class="popupCancel" value="Cancel"/>
+                <input id="save" type="submit" class="popupOk" style="float: right;" value="Save"/>
+            </div>
         </div>
     </div>
 </div>
