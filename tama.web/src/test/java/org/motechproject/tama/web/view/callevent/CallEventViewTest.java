@@ -23,6 +23,12 @@ public class CallEventViewTest {
     }
 
     @Test
+    public void isMissedCall() {
+        CallEventView callEventView = new CallEventView(new CallEvent(IVREvent.Missed.toString()));
+        assertTrue(callEventView.isMissedCall());
+    }
+
+    @Test
     public void shouldReturnInputDtmf_IfDtmfDataAvilable() {
         CallEvent callEvent = new CallEvent(IVREvent.GotDTMF.toString());
         callEvent.appendData(CallEventConstants.DTMF_DATA, "1");

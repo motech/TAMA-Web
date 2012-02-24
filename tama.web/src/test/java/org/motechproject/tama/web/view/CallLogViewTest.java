@@ -11,6 +11,7 @@ import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -84,6 +85,20 @@ public class CallLogViewTest {
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
         assertEquals(1, callLogView.getCallFlowGroupViews().size());
         assertEquals("Health Tips", callLogView.getFlows());
+    }
+
+    @Test
+    public void constructCallLog_ForAMissedCallEvent() {
+        CallLog callLog = setUpCallLogs();
+        final CallEvent missedCallEvent = createCallEvent("Missed", "", "", "");
+
+        callLog.setCallEvents(new ArrayList<CallEvent>() {{
+            add(missedCallEvent);
+        }});
+
+        callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
+        assertEquals(1, callLogView.getCallFlowGroupViews().size());
+        assertEquals("Missed", callLogView.getFlows());
     }
 
     @Test

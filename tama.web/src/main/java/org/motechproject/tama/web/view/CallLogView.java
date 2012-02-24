@@ -25,6 +25,7 @@ public class CallLogView {
     private List<CallFlowGroupView> callFlowGroupViews;
     private String flows;
     private boolean authenticated;
+    private boolean missed;
 
     public CallLogView(String patientId, CallLog callLog, String clinicName, List<String> likelyPatientIds) {
         this.patientId = patientId;
@@ -121,6 +122,8 @@ public class CallLogView {
         }
         if(authenticated) {
             flows = StringUtils.join(flowsInViews, ", ");
+        } else if(missed) {
+            flows = CallFlowConstants.MISSED;
         } else{
             flows = CallFlowConstants.UNAUTHENTICATED;
         }
@@ -133,7 +136,10 @@ public class CallLogView {
 
     private String getFlow(CallEventView callEventView) {
         String callState = callEventView.getCallState();
-        if (callState.equals(CallState.HEALTH_TIPS.name())) {
+        if (callEventView.isMissedCall()) {
+            missed = true;
+            return CallFlowConstants.MISSED;
+        } else if (callState.equals(CallState.HEALTH_TIPS.name())) {
             authenticated = true;
             return CallFlowConstants.HEALTH_TIPS;
         } else if (callState.equals(CallState.OUTBOX.name())) {

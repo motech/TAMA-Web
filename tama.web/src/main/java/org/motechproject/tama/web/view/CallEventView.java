@@ -36,6 +36,10 @@ public class CallEventView {
         return "gotdtmf".equalsIgnoreCase(callEvent.getName());
     }
 
+    public boolean isMissedCall() {
+        return "missed".equalsIgnoreCase(callEvent.getName());
+    }
+
     public String getUserInput() {
         return getData(CallEventConstants.DTMF_DATA);
     }

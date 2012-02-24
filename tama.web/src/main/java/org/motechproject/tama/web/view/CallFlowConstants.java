@@ -20,6 +20,7 @@ public class CallFlowConstants {
     }};
 
     public static final String MENU = "Menu";
+    public static final String MISSED = "Missed";
     public static final String HEALTH_TIPS = "Health Tips";
     public static final String OUTBOX = "Outbox";
     public static final String UNAUTHENTICATED = "Unauthenticated";
