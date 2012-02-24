@@ -202,18 +202,16 @@ public class ClinicVisitsControllerTest {
         }
 
         @Test
-        public void shouldRedirectToLabResultUpdateForm_WhenLabResultCreateErrorsOut(){
+        public void shouldRedirectToClinicVisitShowPage_WhenLabResultCreateErrorsOut(){
             String patientId = treatmentAdvice.getPatientId();
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
             doThrow(new RuntimeException("Some Error")).when(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
-            doCallRealMethod().when(labResultsController).redirectToUpdateFormUrl(clinicVisitId, patientId, request);
 
             String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
 
-            assertTrue(redirectURL.contains("redirect:/labresults/update?form"));
-            verify(uiModel).addAttribute("error", "Error occurred while creating Lab Results in ClinicVisit. Please retry: Some Error");
-            verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel);
+            assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
+            verify(uiModel).addAttribute("errorLabResults", "Error occurred while creating Lab Results: Some Error");
         }
 
         @Test
@@ -226,7 +224,49 @@ public class ClinicVisitsControllerTest {
             clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
 
             verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), anyList(), Matchers.<String>eq(null));
-            verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel);
+        }
+        
+        @Test
+        public void shouldStillPersistVitalStatistics_whenLabResultCreateErrorsOut(){
+            String patientId = treatmentAdvice.getPatientId();
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+            when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
+            doThrow(new RuntimeException("Some Error")).when(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
+
+            clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+
+            verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
+            verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), anyList(), eq("vitalStatisticsId"));
+        }
+        
+        @Test
+        public void shouldRedirectToClinicVisitShowPage_WhenVitalStatisticsCreateErrorsOut(){
+            String patientId = treatmentAdvice.getPatientId();
+            List<String> labResultIds = new ArrayList<String>();
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(labResultIds);
+            doThrow(new RuntimeException("Some Error")).when(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
+
+            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+
+            assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
+            verify(uiModel).addAttribute("errorVitalStatistics", "Error occurred while creating Vital Statistics: Some Error");
+        }
+
+        @Test
+        public void shouldStillPersistTreatmentAdviceAndLabResultsInClinicVisit_WhenVitalStatisticsCreateErrorsOut(){
+            String patientId = treatmentAdvice.getPatientId();
+            List<String> labResultIds = new ArrayList<String>();
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(labResultIds);
+            doThrow(new RuntimeException("Some Error")).when(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
+
+            clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+
+            verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), eq(labResultIds), Matchers.<String>eq(null));
         }
     }
 

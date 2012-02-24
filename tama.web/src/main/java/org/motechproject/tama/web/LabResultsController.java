@@ -28,7 +28,6 @@ import java.util.Map;
 public class LabResultsController extends BaseController {
 
     public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
-    public static final String REDIRECT_UPDATE_FORM = "redirect:/labresults/update";
 
     private final AllLabResults allLabResults;
     private final AllClinicVisits allClinicVisits;
@@ -102,11 +101,6 @@ public class LabResultsController extends BaseController {
 
         allClinicVisits.updateLabResults(labResultsUIModel.getPatientId(), labResultsUIModel.getClinicVisitId(), allLabResultsIds);
         return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + labResultsUIModel.getPatientId();
-    }
-
-    public String redirectToUpdateFormUrl(String clinicVisitId, String patientId, HttpServletRequest httpServletRequest){
-        String queryParameters = "&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId;
-        return REDIRECT_UPDATE_FORM + "?form" + encodeUrlPathSegment(queryParameters, httpServletRequest);
     }
 
     private void populateUIModel(Model uiModel, String patientId) {

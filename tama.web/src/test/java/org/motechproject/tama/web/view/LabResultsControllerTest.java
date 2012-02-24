@@ -268,10 +268,4 @@ public class LabResultsControllerTest {
         assertEquals(expectedLabResults, labResultIdsArgumentCaptor.getValue());
         assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
     }
-
-    @Test
-    public void shouldReturnUpdateFormUrl(){
-        String requiredUrl = labResultsController.redirectToUpdateFormUrl("some_clinicVisitId", "some_patientId", request);
-       assertEquals("redirect:/labresults/update?form&patientId=some_patientId&clinicVisitId=some_clinicVisitId", requiredUrl);
-    }
 }

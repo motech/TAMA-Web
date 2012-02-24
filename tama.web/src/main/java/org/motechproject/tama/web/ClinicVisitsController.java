@@ -84,7 +84,8 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/create/{clinicVisitId}", method = RequestMethod.POST)
     public String create(@PathVariable("clinicVisitId") String clinicVisitId, ClinicVisit visit, TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        List<String> labResultIds;
+        List<String> labResultIds = new ArrayList<String>();
+        String vitalStatisticsId = null;
         String patientId = treatmentAdvice.getPatientId();
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
@@ -93,19 +94,22 @@ public class ClinicVisitsController extends BaseController {
         if (isNotBlank(treatmentAdvice.getRegimenId())) {
             try {
                 treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 uiModel.addAttribute("error", "Error occurred while creating treatment advice" + e.getMessage());
                 return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
             }
         }
-        try{
+        try {
             labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
-        } catch (RuntimeException e){
-            uiModel.addAttribute("error", "Error occurred while creating Lab Results in ClinicVisit. Please retry: " + e.getMessage());
-            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, new ArrayList<String>(), null);
-            return labResultsController.redirectToUpdateFormUrl(clinicVisitId, patientId, httpServletRequest);
+        } catch (RuntimeException e) {
+            uiModel.addAttribute("errorLabResults", "Error occurred while creating Lab Results: " + e.getMessage());
         }
-        String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+
+        try {
+            vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+        } catch (RuntimeException e) {
+            uiModel.addAttribute("errorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
+        }
         allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
         return redirectToShowClinicVisitUrl(clinicVisitId, patientId, httpServletRequest);
     }

@@ -5,6 +5,14 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
+    <c:if test="${param.errorLabResults != null}">
+        <div class="error"> <c:out value="${param.errorLabResults}"/> </div>
+    </c:if>
+
+    <c:if test="${param.errorVitalStatistics != null}">
+        <div class="error"> <c:out value="${param.errorVitalStatistics}"/> </div>
+    </c:if>
+
     <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Visit Details" openPane="true">
         <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${clinicVisit.patient}"/>
         <field:display date="false" dateTimePattern="dd/MM/yyyy" field="visitDate" object="${clinicVisit}" label="Visit Date" id="clinicVisitDate"/>
