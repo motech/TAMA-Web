@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.model.CallDetailRecord;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.util.DateUtil;
 
@@ -20,7 +21,7 @@ public class CallLogMapperTest {
 
     @Test
     public void shouldConvertKookooCallDetailRecordToCallLog() {
-        CallDetailRecord callDetailRecord = CallDetailRecord.newIncomingCallRecord("phoneNumber");
+        CallDetailRecord callDetailRecord = CallDetailRecord.create("phoneNumber", CallDirection.Inbound, CallDetailRecord.Disposition.ANSWERED);
         KookooCallDetailRecord kookooCallDetailRecord = new KookooCallDetailRecord(callDetailRecord, "dfdsfsd");
         callDetailRecord.setEndDate(DateUtil.today().toDate());
         kookooCallDetailRecord.setVendorCallId("callId");
