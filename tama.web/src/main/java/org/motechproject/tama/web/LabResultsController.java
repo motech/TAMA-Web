@@ -104,6 +104,11 @@ public class LabResultsController extends BaseController {
         return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + labResultsUIModel.getPatientId();
     }
 
+    public String redirectToUpdateFormUrl(String clinicVisitId, String patientId, HttpServletRequest httpServletRequest){
+        String queryParameters = "&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId;
+        return REDIRECT_UPDATE_FORM + "?form" + encodeUrlPathSegment(queryParameters, httpServletRequest);
+    }
+
     private void populateUIModel(Model uiModel, String patientId) {
         List<LabTest> labTestsAvailable = allLabTests.getAll();
         uiModel.addAttribute("labTests", labTestsAvailable);

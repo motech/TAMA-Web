@@ -43,6 +43,8 @@ public class LabResultsControllerTest {
     private AllLabTests allLabTests;
     @Mock
     private AllClinicVisits allClinicVisits;
+    @Mock
+    private HttpServletRequest request;
 
     @Before
     public void setUp() {
@@ -80,7 +82,6 @@ public class LabResultsControllerTest {
         assertEquals("anotherLabTest", labResults.get(1).getLabTest_id());
     }
 
-
     @Test
     public void createFormShouldAddPatientIdToUIModel() {
         String patientId = "somePatientId";
@@ -97,7 +98,6 @@ public class LabResultsControllerTest {
 
         assertEquals("somePatientId", labTestCapture.getValue());
     }
-
 
     @Test
     public void createFormShouldAddAllLabTestsDefinedToUIModel() {
@@ -257,7 +257,7 @@ public class LabResultsControllerTest {
         labResultsUIModel.setClinicVisitId("clinicVisitId");
         when(allLabResults.upsert(Matchers.<LabResult>any())).thenReturn("labResultId1").thenReturn("labResultId2");
 
-        String redirectURL = labResultsController.update(labResultsUIModel, mock(BindingResult.class), new ExtendedModelMap(), mock(HttpServletRequest.class));
+        String redirectURL = labResultsController.update(labResultsUIModel, mock(BindingResult.class), new ExtendedModelMap(), request);
 
         final ArgumentCaptor<ArrayList> labResultIdsArgumentCaptor = ArgumentCaptor.forClass(ArrayList.class);
         verify(allClinicVisits).updateLabResults(eq(PATIENT_ID), eq("clinicVisitId"), labResultIdsArgumentCaptor.capture());
@@ -269,4 +269,9 @@ public class LabResultsControllerTest {
         assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
     }
 
+    @Test
+    public void shouldReturnUpdateFormUrl(){
+        String requiredUrl = labResultsController.redirectToUpdateFormUrl("some_clinicVisitId", "some_patientId", request);
+       assertEquals("redirect:/labresults/update?form&patientId=some_patientId&clinicVisitId=some_clinicVisitId", requiredUrl);
+    }
 }

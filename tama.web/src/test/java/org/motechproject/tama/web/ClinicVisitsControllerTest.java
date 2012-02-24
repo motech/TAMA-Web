@@ -23,7 +23,6 @@ import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -67,14 +66,14 @@ public class ClinicVisitsControllerTest {
         protected AllTreatmentAdvices allTreatmentAdvices;
         @Mock
         protected AllClinicVisits allClinicVisits;
-
+        @Mock
         protected Model uiModel;
+
         protected ClinicVisitsController clinicVisitsController;
 
         @Before
         public void setUp() {
             initMocks(this);
-            uiModel = new ExtendedModelMap();
             clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, allClinicVisits);
         }
     }
@@ -162,6 +161,7 @@ public class ClinicVisitsControllerTest {
             treatmentAdvice = new TreatmentAdvice() {{
                 setRegimenId("regimenId");
                 setPatientId("patientId");
+                setId("treatmentAdviceId");
             }};
             labResultsUIModel = new LabResultsUIModel();
             vitalStatistics = new VitalStatistics();
@@ -199,6 +199,34 @@ public class ClinicVisitsControllerTest {
             verify(labResultsController, never()).create(labResultsUIModel, bindingResult, uiModel);
             verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel);
             verify(allClinicVisits, never()).updateVisit(anyString(), Matchers.<DateTime>any(), anyString(), anyString(), anyList(), anyString());
+        }
+
+        @Test
+        public void shouldRedirectToLabResultUpdateForm_WhenLabResultCreateErrorsOut(){
+            String patientId = treatmentAdvice.getPatientId();
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+            doThrow(new RuntimeException("Some Error")).when(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
+            doCallRealMethod().when(labResultsController).redirectToUpdateFormUrl(clinicVisitId, patientId, request);
+
+            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+
+            assertTrue(redirectURL.contains("redirect:/labresults/update?form"));
+            verify(uiModel).addAttribute("error", "Error occurred while creating Lab Results in ClinicVisit. Please retry: Some Error");
+            verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel);
+        }
+
+        @Test
+        public void shouldStillPersistTreatmentAdviceInClinicVisit_WhenLabResultCreateErrorsOut(){
+            String patientId = treatmentAdvice.getPatientId();
+            when(bindingResult.hasErrors()).thenReturn(false);
+            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+            doThrow(new RuntimeException("Some Error")).when(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
+
+            clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, bindingResult, uiModel, request);
+
+            verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), anyList(), Matchers.<String>eq(null));
+            verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel);
         }
     }
 

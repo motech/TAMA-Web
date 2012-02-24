@@ -14,12 +14,20 @@
     <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"/>
     <spring:url value="/resources/js/update_labresult.js" var="labresultjs"/>
     <script src="${labresultjs}" type="text/javascript"></script>
+
+
+
     <form:update id="fu_org_motechproject_tama_web_model_LabResultsUIModel" modelAttribute="labResultsUIModel"
                  path="/labresults" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
         <div>
             <div id="lab_results_error" class="error"/>
         </div>
         <formfield:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
+
+        <c:if test="${param.error != null}">
+            <div class="error"> <c:out value="${param.error}"/> </div>
+        </c:if>
+
         <table>
             <thead>
             <tr>

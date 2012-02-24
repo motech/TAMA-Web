@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,6 +84,8 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/create/{clinicVisitId}", method = RequestMethod.POST)
     public String create(@PathVariable("clinicVisitId") String clinicVisitId, ClinicVisit visit, TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        List<String> labResultIds;
+        String patientId = treatmentAdvice.getPatientId();
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
         }
@@ -95,9 +98,14 @@ public class ClinicVisitsController extends BaseController {
                 return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
             }
         }
-        List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
+        try{
+            labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
+        } catch (RuntimeException e){
+            uiModel.addAttribute("error", "Error occurred while creating Lab Results in ClinicVisit. Please retry: " + e.getMessage());
+            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, new ArrayList<String>(), null);
+            return labResultsController.redirectToUpdateFormUrl(clinicVisitId, patientId, httpServletRequest);
+        }
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
-        String patientId = treatmentAdvice.getPatientId();
         allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
         return redirectToShowClinicVisitUrl(clinicVisitId, patientId, httpServletRequest);
     }
@@ -171,5 +179,4 @@ public class ClinicVisitsController extends BaseController {
         String queryParameters = "form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId;
         return "redirect:/clinicvisits?" + encodeUrlPathSegment(queryParameters, httpServletRequest);
     }
-
 }
