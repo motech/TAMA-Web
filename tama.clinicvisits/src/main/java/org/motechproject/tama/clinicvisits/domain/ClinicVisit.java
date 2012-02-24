@@ -49,7 +49,7 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         else if (visit.weekNumber() != null)
             return weekNumber() + " weeks Follow-up visit";
         else
-            return "Unscheduled Visit";
+            return "Ad-hoc Visit";
     }
 
     public Patient getPatient() {

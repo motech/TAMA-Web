@@ -55,14 +55,14 @@ public class AppointmentReminderServiceTest {
 
     @Test
     public void shouldAddOutboxMessageWhenReminderOutboxCriteriaIsTrue() {
-        when(reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment)).thenReturn(true);
+        when(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment)).thenReturn(true);
         appointmentReminderService.addOutboxMessage(patient, appointment);
         verify(outboxService).addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
     }
 
     @Test
     public void shouldNotAddOutboxMessageWhenReminderOutboxCriteriaIsFalse() {
-        when(reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment)).thenReturn(false);
+        when(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment)).thenReturn(false);
         appointmentReminderService.addOutboxMessage(patient, appointment);
         verifyZeroInteractions(outboxService);
     }

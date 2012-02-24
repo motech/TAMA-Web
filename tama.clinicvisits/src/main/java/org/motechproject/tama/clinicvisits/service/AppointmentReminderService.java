@@ -34,7 +34,7 @@ public class AppointmentReminderService {
     }
 
     public void addOutboxMessage(Patient patient, Appointment appointment) {
-        if (reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment)) {
+        if (reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment)) {
             outboxService.addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
         }
     }

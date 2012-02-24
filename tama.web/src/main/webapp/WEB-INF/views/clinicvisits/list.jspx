@@ -286,7 +286,7 @@
         dojo.query('a.markAsMissed').connect('onclick', markAsMissed);
         dojo.query('a.createAppointment').connect('onclick', createAppointment);
         dojo.query('a.newVisitLink').connect('onclick', function () {
-            new tama.ConfirmBox("Confirm", "Do you want to create new Visit for Today?", function () {
+            new tama.ConfirmBox("Confirm", "Do you want to create a new visit?", function () {
                 window.location.href = "${create_visit_url}";
             }).show();
         });

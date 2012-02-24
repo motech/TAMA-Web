@@ -34,7 +34,7 @@ public class ReminderOutboxCriteriaTest {
     public void shouldReturnFalseIfPatientHasOptedNotToReceiveAppointmentReminder() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(false).build();
         Appointment appointment = new Appointment();
-        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment));
+        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment));
     }
 
     @Test
@@ -43,14 +43,14 @@ public class ReminderOutboxCriteriaTest {
         Appointment appointment = new Appointment();
         when(outboxService.hasPendingOutboxMessages(patient.getId(),
                 TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(true);
-        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment));
+        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment));
     }
 
     @Test
     public void shouldReturnFalseIfAppointmentIsAlreadyConfirmed() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
         Appointment appointment = new Appointment().confirmedDate(DateUtil.now());
-        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment));
+        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ReminderOutboxCriteriaTest {
         Appointment appointment = new Appointment();
         when(outboxService.hasPendingOutboxMessages(patient.getId(),
                 TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(false);
-        assertTrue(reminderOutboxCriteria.shouldAddOutboxMessage(patient, appointment));
+        assertTrue(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment));
     }
 
 

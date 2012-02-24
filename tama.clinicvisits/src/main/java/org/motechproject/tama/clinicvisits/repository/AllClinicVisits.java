@@ -24,6 +24,7 @@ import java.util.Properties;
 public class AllClinicVisits {
 
     public static final String REMIND_FROM = "remindFrom";
+    public static final String REMIND_FOR_VISIT_FROM = "remindForVisitFrom";
     public static final String APPOINTMENT_SCHEDULE = "appointment-schedule";
 
     private AllPatients allPatients;
@@ -45,9 +46,13 @@ public class AllClinicVisits {
 
     public void addAppointmentCalendar(String patientDocId) {
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsProperties.getProperty(APPOINTMENT_SCHEDULE));
-        ReminderConfiguration reminderConfiguration = getReminderConfiguration();
+        ReminderConfiguration appointmentReminderConfiguration = getAppointmentReminderConfiguration();
+        ReminderConfiguration visitReminderConfiguration = getVisitReminderConfiguration();
 
-        AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId).setWeekOffsets(appointmentWeeks).setReminderConfiguration(reminderConfiguration);
+        AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId)
+                                                                                                .setWeekOffsets(appointmentWeeks)
+                                                                                                .setAppointmentReminderConfiguration(appointmentReminderConfiguration)
+                                                                                                .setVisitReminderConfiguration(visitReminderConfiguration);
         appointmentService.removeCalendar(patientDocId);
         appointmentService.addCalendar(appointmentCalendarRequest);
     }
@@ -80,7 +85,7 @@ public class AllClinicVisits {
     }
 
     public String createAppointment(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
-        ReminderConfiguration reminderConfiguration = getReminderConfiguration();
+        ReminderConfiguration reminderConfiguration = getAppointmentReminderConfiguration();
         return appointmentService.addVisit(patientDocId, appointmentDueDate, reminderConfiguration, typeOfVisit);
     }
 
@@ -103,9 +108,7 @@ public class AllClinicVisits {
     }
 
     public void confirmVisitDate(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {
-        ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setConfirmedVisitDate(confirmedVisitDate);
-        updateVisit(clinicVisit);
+        appointmentService.confirmVisit(patientDocId, clinicVisitId, confirmedVisitDate);
     }
 
     public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate) {
@@ -126,8 +129,13 @@ public class AllClinicVisits {
         updateVisit(clinicVisit);
     }
 
-    private ReminderConfiguration getReminderConfiguration() {
+    private ReminderConfiguration getAppointmentReminderConfiguration() {
         int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FROM));
+        return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
+    }
+
+    private ReminderConfiguration getVisitReminderConfiguration() {
+        int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FOR_VISIT_FROM));
         return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
     }
 
