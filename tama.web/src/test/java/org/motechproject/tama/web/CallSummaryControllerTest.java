@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -78,7 +76,7 @@ public class CallSummaryControllerTest {
 
         when(user.isAdministrator()).thenReturn(true);
         when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
-        when(callLogService.getLogsForDateRange(any(DateTime.class), any(DateTime.class), anyInt())).thenReturn(callLogs);
+        when(callLogService.getLogsForDateRange(any(DateTime.class), any(DateTime.class), eq(true), anyString(), anyInt())).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
         when(bindingResult.hasErrors()).thenReturn(false);
 
@@ -87,7 +85,7 @@ public class CallSummaryControllerTest {
         verify(uiModel).addAttribute("callSummary", callLogViews);
         assertEquals("callsummary/list", view);
 
-        verify(callLogService).getLogsForDateRange(any(DateTime.class), any(DateTime.class), eq(0));
+        verify(callLogService).getLogsForDateRange(any(DateTime.class), any(DateTime.class), eq(true), anyString(), eq(0));
     }
 
     @Test
@@ -98,11 +96,11 @@ public class CallSummaryControllerTest {
 
         when(user.isAdministrator()).thenReturn(true);
         when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
-        when(callLogService.getTotalNumberOfLogs(Matchers.<DateTime>any(), Matchers.<DateTime>any())).thenReturn(30);
+        when(callLogService.getTotalNumberOfLogs(Matchers.<DateTime>any(), Matchers.<DateTime>any(), eq(true), anyString())).thenReturn(30);
 
         callSummaryController.list(callLogPreferencesFilter, bindingResult, request, uiModel);
 
-        verify(callLogService).getLogsForDateRange(any(DateTime.class), any(DateTime.class), eq(20));
+        verify(callLogService).getLogsForDateRange(any(DateTime.class), any(DateTime.class), eq(true), anyString(), eq(20));
     }
 
     @Test
@@ -115,8 +113,9 @@ public class CallSummaryControllerTest {
         when(user.isAdministrator()).thenReturn(false);
         when(user.getClinicId()).thenReturn("clinicId");
         when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
-        when(callLogService.getLogsForDateRangeAndClinic(DateUtil.newDateTime(callLogPreferencesFilter.getCallLogStartDate()), DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).
-                plusHours(23).plusMinutes(59).plusSeconds(59), "clinicId", 0)).thenReturn(callLogs);
+        final DateTime endDate = DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).
+                plusHours(23).plusMinutes(59).plusSeconds(59);
+        when(callLogService.getLogsForDateRange(DateUtil.newDateTime(callLogPreferencesFilter.getCallLogStartDate()), endDate, false, "clinicId", 0)).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
         when(bindingResult.hasErrors()).thenReturn(false);
 

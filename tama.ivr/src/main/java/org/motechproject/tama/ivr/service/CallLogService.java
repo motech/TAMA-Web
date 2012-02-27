@@ -56,24 +56,22 @@ public class CallLogService {
         return allCallLogs.getAll();
     }
 
-    public Integer getTotalNumberOfLogs(DateTime fromDate, DateTime toDate) {
-        return allCallLogs.findTotalNumberOfCallLogsForDateRange(fromDate, toDate);
+    public Integer getTotalNumberOfLogs(DateTime fromDate, DateTime toDate, boolean isAdministrator, String clinicId) {
+        if (isAdministrator)
+            return allCallLogs.findTotalNumberOfCallLogsForDateRange(fromDate, toDate);
+        else
+            return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId);
     }
 
-    public Integer getTotalNumberOfLogs(DateTime fromDate, DateTime toDate, String clinicId) {
-        return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId);
-    }
-
-    public List<CallLog> getLogsForDateRangeAndClinic(DateTime fromDate, DateTime toDate, String clinicId, int startIndex) {
-        return allCallLogs.findCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId, startIndex, getMaxNumberOfCallLogsPerPage());
+    public List<CallLog> getLogsForDateRange(DateTime fromDate, DateTime toDate, boolean isAdministrator, String clinicId, int startIndex) {
+        if (isAdministrator)
+            return allCallLogs.findCallLogsForDateRange(fromDate, toDate, startIndex, getMaxNumberOfCallLogsPerPage());
+        else
+            return allCallLogs.findCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId, startIndex, getMaxNumberOfCallLogsPerPage());
     }
 
     private Integer getMaxNumberOfCallLogsPerPage() {
         return Integer.parseInt(properties.getProperty(MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20"));
-    }
-
-    public List<CallLog> getLogsForDateRange(DateTime fromDate, DateTime toDate, int startIndex) {
-        return allCallLogs.findCallLogsForDateRange(fromDate, toDate, startIndex, getMaxNumberOfCallLogsPerPage());
     }
 
     private List<String> getAllLikelyPatientIds(KookooCallDetailRecord kookooCallDetailRecord) {

@@ -29,6 +29,8 @@ public class CallLog extends CouchEntity {
     private List<String> likelyPatientIds = new ArrayList<String>();
     private List<CallEvent> callEvents = new ArrayList<CallEvent>();
 
+    public enum CallLogType { Answered, Missed }
+
     @JsonProperty
     private String clinicId;
 

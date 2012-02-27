@@ -49,4 +49,38 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
         ViewQuery q = createQuery("find_all_call_logs_between_a_given_date_range_and_by_clinicId").startKey(startDosageDateKey).endKey(endDosageDateKey).reduce(true);
         return rowCount(db.queryView(q));
     }
+
+    /*  ----- START : Missed Call Logs */
+    public List<CallLog> findMissedCallLogsForDateRangeAndClinic(DateTime fromDate, DateTime toDate, String clinicId, Integer startIndex, Integer limit) {
+        ComplexKey startDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), clinicId, fromDate);
+        ComplexKey endDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), clinicId, toDate);
+        ViewQuery q = createQuery("find_all_missed_call_logs_between_a_given_date_range_and_by_clinicId")
+                .startKey(startDosageDateKey).endKey(endDosageDateKey).includeDocs(true)
+                .skip(startIndex).limit(limit).reduce(false);
+        return db.queryView(q, CallLog.class);
+    }
+
+    public List<CallLog> findMissedCallLogsForDateRange(DateTime fromDate, DateTime toDate, Integer startIndex, Integer limit) {
+        ComplexKey startDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), fromDate);
+        ComplexKey endDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), toDate);
+        ViewQuery q = createQuery("find_all_missed_call_logs_between_a_given_date_range").startKey(startDosageDateKey).endKey(endDosageDateKey).includeDocs(true).skip(startIndex).limit(limit).reduce(false);
+        return db.queryView(q, CallLog.class);
+    }
+
+    @View(name = "find_all_missed_call_logs_between_a_given_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.startTime], doc._id); } }", reduce = "_count")
+    public int findTotalNumberOfMissedCallLogsForDateRange(DateTime fromDate, DateTime toDate) {
+        ComplexKey startDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), fromDate);
+        ComplexKey endDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), toDate);
+        ViewQuery q = createQuery("find_all_missed_call_logs_between_a_given_date_range").startKey(startDosageDateKey).endKey(endDosageDateKey).reduce(true);
+        return rowCount(db.queryView(q));
+    }
+
+    @View(name = "find_all_missed_call_logs_between_a_given_date_range_and_by_clinicId", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.clinicId, doc.startTime], doc._id); } }", reduce = "_count")
+    public int findTotalNumberOfMissedCallLogsForDateRangeAndClinic(DateTime fromDate, DateTime toDate, String clinicId) {
+        ComplexKey startDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), clinicId, fromDate);
+        ComplexKey endDosageDateKey = ComplexKey.of(CallLog.CallLogType.Missed.name(), clinicId, toDate);
+        ViewQuery q = createQuery("find_all_missed_call_logs_between_a_given_date_range_and_by_clinicId").startKey(startDosageDateKey).endKey(endDosageDateKey).reduce(true);
+        return rowCount(db.queryView(q));
+    }
+    /*  ----- END : Missed Call Logs */
 }

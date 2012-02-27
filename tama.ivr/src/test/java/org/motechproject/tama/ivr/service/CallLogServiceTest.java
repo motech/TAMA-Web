@@ -105,7 +105,7 @@ public class CallLogServiceTest {
 
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getLogsForDateRange(startDate, endDate, 10);
+        callLoggingService.getLogsForDateRange(startDate, endDate, true, null, 10);
 
         verify(allCallLogs).findCallLogsForDateRange(startDate, endDate, 10, 20);
     }
@@ -116,7 +116,7 @@ public class CallLogServiceTest {
 
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(startDate, endDate);
+        callLoggingService.getTotalNumberOfLogs(startDate, endDate, true, null);
 
         verify(allCallLogs).findTotalNumberOfCallLogsForDateRange(startDate, endDate);
     }
@@ -127,7 +127,7 @@ public class CallLogServiceTest {
 
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getLogsForDateRangeAndClinic(startDate, endDate, "clinicId", 10);
+        callLoggingService.getLogsForDateRange(startDate, endDate, false, "clinicId", 10);
 
         verify(allCallLogs).findCallLogsForDateRangeAndClinic(startDate, endDate, "clinicId", 10, 20);
     }
@@ -138,7 +138,7 @@ public class CallLogServiceTest {
 
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(startDate, endDate, "clinicId");
+        callLoggingService.getTotalNumberOfLogs(startDate, endDate, false, "clinicId");
 
         verify(allCallLogs).findTotalNumberOfCallLogsForDateRangeAndClinic(startDate, endDate, "clinicId");
     }
