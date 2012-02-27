@@ -122,10 +122,8 @@ public class AllClinicVisits {
         updateVisit(clinicVisit);
     }
 
-    public void setVisitDate(String patientDocId, String clinicVisitId, DateTime visitDate) {
-        ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setVisitDate(visitDate);
-        updateVisit(clinicVisit);
+    public void closeVisit(String patientDocId, String clinicVisitId, DateTime visitDate) {
+        appointmentService.setVisitDate(patientDocId, clinicVisitId, visitDate);
     }
 
     private ReminderConfiguration getAppointmentReminderConfiguration() {

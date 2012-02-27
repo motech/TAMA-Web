@@ -141,6 +141,13 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldCloseVisit() {
+        final DateTime today = DateUtil.now();
+        allClinicVisits.closeVisit(PATIENT_ID, "visit2", today);
+        verify(appointmentService).setVisitDate(eq(PATIENT_ID), eq("visit2"), eq(today));
+    }
+
+    @Test
     public void shouldMarkTheClinicVisitAsMissed() throws Exception {
         Visit visit = new Visit().name("visit2");
         AppointmentCalendar appointmentCalendar = new AppointmentCalendar().addVisit(visit);

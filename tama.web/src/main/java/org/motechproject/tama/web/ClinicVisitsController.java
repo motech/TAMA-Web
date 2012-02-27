@@ -49,7 +49,7 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/newVisit")
     public String newVisit(@RequestParam(value = "patientDocId") String patientDocId, Model uiModel, HttpServletRequest httpServletRequest) {
         String clinicVisitId = allClinicVisits.createAppointment(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled);
-        allClinicVisits.setVisitDate(patientDocId, clinicVisitId, DateUtil.now());
+        allClinicVisits.closeVisit(patientDocId, clinicVisitId, DateUtil.now());
         return createForm(patientDocId, clinicVisitId, uiModel, httpServletRequest);
     }
 
@@ -169,7 +169,7 @@ public class ClinicVisitsController extends BaseController {
     @ResponseBody
     public String setVisitDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable(value = "clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     @RequestParam(value = "visitDate") DateTime visitDate) {
-        allClinicVisits.setVisitDate(patientDocId, clinicVisitId, visitDate);
+        allClinicVisits.closeVisit(patientDocId, clinicVisitId, visitDate);
         return "{'visitDate':'" + visitDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
     }
 
