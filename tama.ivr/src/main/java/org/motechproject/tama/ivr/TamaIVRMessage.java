@@ -196,4 +196,12 @@ public class TamaIVRMessage implements IVRMessage {
         }
         return wavFiles;
     }
+
+    public static String getDayOfWeekFile(String dayOfWeek) {
+        return "dayOfWeek_" + dayOfWeek;
+    }
+
+    public static String getMonthOfYearFile(String monthOfYear) {
+        return "month_" + monthOfYear;
+    }
 }

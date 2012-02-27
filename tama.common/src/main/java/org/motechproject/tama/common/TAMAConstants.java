@@ -32,6 +32,7 @@ public class TAMAConstants {
     public static final int DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL = 4;
     public static final String APPOINTMENT_REMINDER_VOICE_MESSAGE = "appointmentReminderVoiceMessage";
     public static final String VISIT_REMINDER_VOICE_MESSAGE = "visitReminderVoiceMessage";
+    public static final String MESSAGE_PARAMETER_VISIT_NAME = "visitName";
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),

@@ -1,4 +1,4 @@
-package org.motechproject.tama.dailypillreminder.builder.timeconstruct;
+package org.motechproject.tama.ivr.builder.timeconstruct;
 
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.refdata.domain.IVRLanguage;

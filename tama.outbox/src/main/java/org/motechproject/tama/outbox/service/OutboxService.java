@@ -71,8 +71,13 @@ public class OutboxService implements Outbox {
     }
 
     public void addMessage(String patientId, String voiceMessageTypeName) {
+        addMessage(patientId, voiceMessageTypeName, new HashMap<String, Object>());
+    }
+
+    public void addMessage(String patientId, String voiceMessageTypeName, Map<String, Object> parameterMap) {
         OutboundVoiceMessage voiceMessage = new OutboundVoiceMessage();
         voiceMessage.setPartyId(patientId);
+        voiceMessage.setParameters(parameterMap);
         voiceMessage.setExpirationDate(DateUtil.today().plusWeeks(1).toDate());
         VoiceMessageType voiceMessageType = new VoiceMessageType();
         voiceMessageType.setPriority(MessagePriority.MEDIUM);

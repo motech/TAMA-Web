@@ -2,6 +2,7 @@ package org.motechproject.tama.clinicvisits.service;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
@@ -10,9 +11,10 @@ import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import java.util.HashMap;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VisitReminderServiceTest {
@@ -39,16 +41,20 @@ public class VisitReminderServiceTest {
 
     @Test
     public void shouldAddOutboxMessageWhenReminderOutboxCriteriaIsTrue() {
+        String visitName = "visitName";
+
         when(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointment)).thenReturn(true);
-        visitReminderService.addOutboxMessage(patient, appointment);
-        verify(outboxService).addMessage(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE);
+        visitReminderService.addOutboxMessage(patient, appointment, visitName);
+
+        ArgumentCaptor<HashMap> paramCaptor = ArgumentCaptor.forClass(HashMap.class);
+        verify(outboxService).addMessage(eq(patient.getId()), eq(TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE), paramCaptor.capture());
+        assertEquals(visitName, paramCaptor.getValue().get(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME));
     }
 
     @Test
     public void shouldNotAddOutboxMessageWhenReminderOutboxCriteriaIsFalse() {
         when(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointment)).thenReturn(false);
-        visitReminderService.addOutboxMessage(patient, appointment);
+        visitReminderService.addOutboxMessage(patient, appointment, "visitName");
         verifyZeroInteractions(outboxService);
     }
-
 }

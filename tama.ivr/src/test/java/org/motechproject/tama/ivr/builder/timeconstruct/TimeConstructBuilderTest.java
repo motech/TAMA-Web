@@ -1,6 +1,7 @@
-package org.motechproject.tama.dailypillreminder.builder.timeconstruct;
+package org.motechproject.tama.ivr.builder.timeconstruct;
 
 import org.junit.Test;
+import org.motechproject.tama.ivr.builder.timeconstruct.*;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
 
 import static junit.framework.Assert.assertEquals;

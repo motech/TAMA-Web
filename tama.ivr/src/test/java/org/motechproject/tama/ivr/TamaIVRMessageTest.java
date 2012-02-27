@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,5 +38,16 @@ public class TamaIVRMessageTest {
     @Test
     public void shouldReturnAListOfWavFilesForGivenMultipleDigitNumber() {
         assertArrayEquals(new String[]{"Num_006", "Num_005", "Num_004", "Num_003", "Num_002", "Num_001"}, ivrMessage.getAllNumberFileNames("654321").toArray());
+    }
+
+    @Test
+    public void shouldReturnDayOfWeekFileName() {
+        assertEquals("dayOfWeek_Monday", TamaIVRMessage.getDayOfWeekFile("Monday"));
+    }
+
+    @Test
+    public void shouldReturnMonthOfYearFileName() {
+        DateTime testDate = new DateTime(2012, 3, 17, 23, 0, 0);
+        assertEquals("month_March", TamaIVRMessage.getMonthOfYearFile(testDate.monthOfYear().getAsText()));
     }
 }

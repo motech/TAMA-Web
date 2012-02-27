@@ -8,11 +8,12 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+
 @Component
 public class VisitReminderService {
 
     private ReminderOutboxCriteria reminderOutboxCriteria;
-
     private OutboxService outboxService;
 
     @Autowired
@@ -21,9 +22,11 @@ public class VisitReminderService {
         this.outboxService = outboxService;
     }
 
-    public void addOutboxMessage(Patient patient, Appointment appointment) {
+    public void addOutboxMessage(Patient patient, Appointment appointment, String visitName) {
         if (reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointment)) {
-            outboxService.addMessage(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE);
+            final HashMap<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME, visitName);
+            outboxService.addMessage(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE, parameters);
         }
     }
 }

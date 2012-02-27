@@ -1,4 +1,4 @@
-package org.motechproject.tama.dailypillreminder.builder.timeconstruct;
+package org.motechproject.tama.ivr.builder.timeconstruct;
 
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;

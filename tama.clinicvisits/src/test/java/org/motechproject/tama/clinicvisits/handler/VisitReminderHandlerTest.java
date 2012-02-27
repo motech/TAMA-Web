@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.tama.clinicvisits.builder.AppointmentBuilder;
 import org.motechproject.tama.clinicvisits.builder.ReminderEventBuilder;
@@ -31,13 +32,15 @@ public class VisitReminderHandlerTest {
     private Patient patient;
     private Appointment appointment;
     private MotechEvent event;
+    public Visit visit;
 
     private VisitReminderHandler visitReminderHandler;
 
     public VisitReminderHandlerTest() {
         patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
         appointment = AppointmentBuilder.startRecording().build();
-        event = ReminderEventBuilder.startRecording().withAppointment(appointment).withPatient(patient).build();
+        visit = new Visit().name("visitName");
+        event = ReminderEventBuilder.startRecording().withAppointment(appointment).withPatient(patient).withVisit(visit).build();
     }
 
     @Before
@@ -53,6 +56,6 @@ public class VisitReminderHandlerTest {
     @Test
     public void shouldRaiseVisitOutboxMessage() {
         visitReminderHandler.handleEvent(event);
-        verify(visitReminderService).addOutboxMessage(patient, appointment);
+        verify(visitReminderService).addOutboxMessage(patient, appointment, visit.name());
     }
 }

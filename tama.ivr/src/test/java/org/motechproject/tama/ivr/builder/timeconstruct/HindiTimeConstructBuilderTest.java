@@ -1,8 +1,8 @@
-package org.motechproject.tama.dailypillreminder.builder;
+package org.motechproject.tama.ivr.builder.timeconstruct;
 
 import org.joda.time.LocalTime;
 import org.junit.Test;
-import org.motechproject.tama.dailypillreminder.builder.timeconstruct.HindiTimeConstructBuilder;
+import org.motechproject.tama.ivr.builder.timeconstruct.HindiTimeConstructBuilder;
 
 import java.util.List;
 

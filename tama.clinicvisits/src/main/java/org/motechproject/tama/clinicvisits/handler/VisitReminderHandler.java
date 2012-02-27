@@ -5,7 +5,6 @@ import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.tama.clinicvisits.repository.AllAppointments;
-import org.motechproject.tama.clinicvisits.service.AppointmentReminderService;
 import org.motechproject.tama.clinicvisits.service.VisitReminderService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -29,13 +28,14 @@ public class VisitReminderHandler {
     }
 
     @MotechListener(subjects = EventKeys.VISIT_REMINDER_EVENT_SUBJECT)
-    public void handleEvent(MotechEvent appointmentReminderEvent) {
-        String patientId = appointmentReminderEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
-        String appointmentId = appointmentReminderEvent.getParameters().get(EventKeys.APPOINTMENT_ID).toString();
+    public void handleEvent(MotechEvent visitReminderEvent) {
+        String patientId = visitReminderEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
+        String appointmentId = visitReminderEvent.getParameters().get(EventKeys.APPOINTMENT_ID).toString();
+        String visitName = visitReminderEvent.getParameters().get(EventKeys.VISIT_NAME).toString();
 
         Patient patient = allPatients.get(patientId);
         Appointment appointment = allAppointments.get(appointmentId);
 
-        visitReminderService.addOutboxMessage(patient, appointment);
+        visitReminderService.addOutboxMessage(patient, appointment, visitName);
     }
 }

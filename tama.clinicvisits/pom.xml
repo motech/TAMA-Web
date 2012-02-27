@@ -66,6 +66,14 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.ivr</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
