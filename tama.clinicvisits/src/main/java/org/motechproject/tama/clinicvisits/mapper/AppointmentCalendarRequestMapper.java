@@ -4,7 +4,6 @@ import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
 import org.motechproject.appointments.api.contract.VisitRequest;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ListOfWeeks;
-import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class AppointmentCalendarRequestMapper {
         visitRequests.put(ClinicVisit.BASELINE, visitRequestMapper.mapBaselineVisit());
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsProperties.getProperty(APPOINTMENT_SCHEDULE));
         for (Integer appointmentWeek : appointmentWeeks) {
-            VisitRequest visitRequest = visitRequestMapper.map(appointmentWeek, TypeOfVisit.Scheduled);
+            VisitRequest visitRequest = visitRequestMapper.mapScheduledVisit(appointmentWeek);
             visitRequests.put("week" + appointmentWeek, visitRequest);
         }
         return new AppointmentCalendarRequest()

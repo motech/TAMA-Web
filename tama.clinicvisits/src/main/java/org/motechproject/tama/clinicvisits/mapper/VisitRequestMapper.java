@@ -18,16 +18,16 @@ public class VisitRequestMapper {
         this.reminderConfigurationMapper = reminderConfigurationMapper;
     }
 
-    public VisitRequest map(Integer weekOffset, TypeOfVisit typeOfVisit) {
+    public VisitRequest map(DateTime dueDate, TypeOfVisit typeOfVisit) {
+        return new VisitRequest().setDueDate(dueDate).addData(ClinicVisit.TYPE_OF_VISIT, typeOfVisit);
+    }
+
+    public VisitRequest mapScheduledVisit(Integer weekOffset) {
         DateTime dueDate = DateUtil.now().plusWeeks(weekOffset);
         return new VisitRequest()
                 .setDueDate(dueDate)
                 .setReminderConfiguration(reminderConfigurationMapper.map())
-                .addData(ClinicVisit.WEEK_NUMBER, weekOffset).addData(ClinicVisit.TYPE_OF_VISIT, typeOfVisit);
-    }
-
-    public VisitRequest map(DateTime dueDate, TypeOfVisit typeOfVisit) {
-        return new VisitRequest().setDueDate(dueDate).addData(ClinicVisit.TYPE_OF_VISIT, typeOfVisit);
+                .addData(ClinicVisit.WEEK_NUMBER, weekOffset).addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled);
     }
 
     public VisitRequest mapBaselineVisit() {
