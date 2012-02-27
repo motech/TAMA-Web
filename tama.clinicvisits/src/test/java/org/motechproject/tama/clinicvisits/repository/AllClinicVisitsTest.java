@@ -2,7 +2,6 @@ package org.motechproject.tama.clinicvisits.repository;
 
 import junit.framework.Assert;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -10,18 +9,20 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
 import org.motechproject.appointments.api.contract.ReminderConfiguration;
+import org.motechproject.appointments.api.contract.VisitRequest;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
-import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
+import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
+import org.motechproject.tama.clinicvisits.mapper.AppointmentCalendarRequestMapper;
+import org.motechproject.tama.clinicvisits.mapper.VisitRequestMapper;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -32,58 +33,34 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class AllClinicVisitsTest extends BaseUnitTest {
 
     static final String PATIENT_ID = "patientId";
-
-    static int FIRST_SCHEDULE_WEEK = 1;
-    static int SECOND_SCHEDULE_WEEK = 2;
-    private static final String REMIND_FROM_DAYS = "10";
     private static final String REMIND_FOR_VISIT_FROM_DAYS = "2";
-    protected Properties appointmentsProperties;
-    protected DateTime now;
 
-    protected LocalDate today;
+    protected Properties appointmentsProperties = new Properties();
+
     @Mock
     private AllPatients allPatients;
-
     @Mock
     private AppointmentService appointmentService;
+    @Mock
+    private AppointmentCalendarRequestMapper appointmentCalendarRequestMapper;
+    @Mock
+    private VisitRequestMapper visitRequestMapper;
+
     private AllClinicVisits allClinicVisits;
 
     @Before
     public void setUp() {
         initMocks(this);
-        setUpTime();
-        setUpAppointmentsProperties();
         when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build());
-        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentsProperties);
-    }
-
-    private void setUpTime() {
-        now = DateUtil.now();
-        today = now.toLocalDate();
-        mockCurrentDate(now);
-    }
-
-    private void setUpAppointmentsProperties() {
-        appointmentsProperties = new Properties();
-        appointmentsProperties.setProperty(AllClinicVisits.APPOINTMENT_SCHEDULE, FIRST_SCHEDULE_WEEK + "," + SECOND_SCHEDULE_WEEK);
-        appointmentsProperties.setProperty(AllClinicVisits.REMIND_FROM, REMIND_FROM_DAYS);
         appointmentsProperties.setProperty(AllClinicVisits.REMIND_FOR_VISIT_FROM, REMIND_FOR_VISIT_FROM_DAYS);
+        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentCalendarRequestMapper, visitRequestMapper, appointmentsProperties);
     }
 
     @Test
     public void shouldAddAppointmentCalendar() {
         allClinicVisits.addAppointmentCalendar(PATIENT_ID);
-
-        ArgumentCaptor<AppointmentCalendarRequest> requestArgumentCaptor = ArgumentCaptor.forClass(AppointmentCalendarRequest.class);
-        verify(appointmentService).addCalendar(requestArgumentCaptor.capture());
-        assertEquals(PATIENT_ID, requestArgumentCaptor.getValue().getExternalId());
-        assertEquals(Arrays.asList(1, 2), requestArgumentCaptor.getValue().getWeekOffsets());
-
-        ReminderConfiguration reminderConfiguration = requestArgumentCaptor.getValue().getAppointmentReminderConfiguration();
-        assertEquals(10, reminderConfiguration.getRemindFrom());
-        assertEquals(1, reminderConfiguration.getIntervalCount());
-        assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
-        assertEquals(10, reminderConfiguration.getRepeatCount());
+        verify(appointmentCalendarRequestMapper).map(PATIENT_ID);
+        verify(appointmentService).addCalendar(Matchers.<AppointmentCalendarRequest>any());
     }
 
     @Test
@@ -95,14 +72,13 @@ public class AllClinicVisitsTest extends BaseUnitTest {
 
     @Test
     public void shouldFindByPatientId() {
-        final String patientId = "patientId";
         final Visit visitForPatient = new Visit().name("visit2");
-        final AppointmentCalendar appointmentCalendar = new AppointmentCalendar().externalId(patientId).addVisit(visitForPatient);
+        final AppointmentCalendar appointmentCalendar = new AppointmentCalendar().externalId(PATIENT_ID).addVisit(visitForPatient);
 
-        when(appointmentService.getAppointmentCalendar(patientId)).thenReturn(appointmentCalendar);
+        when(appointmentService.getAppointmentCalendar(PATIENT_ID)).thenReturn(appointmentCalendar);
 
-        ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientId);
-        assertEquals(2, clinicVisits.size());
+        ClinicVisits clinicVisits = allClinicVisits.clinicVisits(PATIENT_ID);
+        assertEquals(1, clinicVisits.size());
     }
 
     @Test
@@ -162,10 +138,9 @@ public class AllClinicVisitsTest extends BaseUnitTest {
 
     @Test
     public void shouldCreateAdhocAppointment() throws Exception {
-        final String patientId = "patientId";
-
-        allClinicVisits.createAppointment(patientId, now, TypeOfVisit.Unscheduled);
-
-        verify(appointmentService).addVisit(eq(patientId), eq(now), Matchers.<ReminderConfiguration>any(), eq(TypeOfVisit.Unscheduled));
+        DateTime dueDate = DateUtil.now();
+        allClinicVisits.createAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
+        verify(visitRequestMapper).map(dueDate, TypeOfVisit.Unscheduled);
+        verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), Matchers.<VisitRequest>any());
     }
 }

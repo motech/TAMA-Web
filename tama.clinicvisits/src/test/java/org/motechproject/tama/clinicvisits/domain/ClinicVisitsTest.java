@@ -4,14 +4,13 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
-import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 
 public class ClinicVisitsTest extends BaseUnitTest {
 
@@ -24,15 +23,18 @@ public class ClinicVisitsTest extends BaseUnitTest {
 
     @Before
     public void setUp() {
-        Visit yesterdaysVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week1").addAppointment(DateUtil.newDateTime(yesterday, 0, 0, 0), new Reminder());
+        Visit yesterdaysVisit = new Visit().name("week1").addAppointment(DateUtil.newDateTime(yesterday, 0, 0, 0), new Reminder());
+        yesterdaysVisit.addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled);
         yesterdaysVisit.appointment().confirmedDate(DateUtil.newDateTime(yesterday, 0, 0, 0));
         clinicVisits.add(new ClinicVisit(new Patient(), yesterdaysVisit));
 
-        Visit todaysVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week2").addAppointment(DateUtil.newDateTime(today, 0, 0, 0), new Reminder());
+        Visit todaysVisit = new Visit().name("week2").addAppointment(DateUtil.newDateTime(today, 0, 0, 0), new Reminder());
+        todaysVisit.addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled);
         todaysVisit.appointment().confirmedDate(DateUtil.newDateTime(today, 0, 0, 0));
         clinicVisits.add(new ClinicVisit(new Patient(), todaysVisit));
 
-        Visit dayAfterTomorrowsVisit = new Visit().typeOfVisit(TypeOfVisit.Scheduled).name("week3").addAppointment(DateUtil.newDateTime(dayAfterTomorrow, 0, 0, 0), new Reminder());
+        Visit dayAfterTomorrowsVisit = new Visit().name("week3").addAppointment(DateUtil.newDateTime(dayAfterTomorrow, 0, 0, 0), new Reminder());
+        dayAfterTomorrowsVisit.addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled);
         dayAfterTomorrowsVisit.appointment().confirmedDate(null);
         clinicVisits.add(new ClinicVisit(new Patient(), dayAfterTomorrowsVisit));
     }
@@ -59,29 +61,6 @@ public class ClinicVisitsTest extends BaseUnitTest {
     public void calculateNextAppointmentDueDate_WhenNoVisitsExists() {
         clinicVisits.clear();
         assertNull(clinicVisits.nextAppointmentDueDate());
-    }
-
-    @Test
-    public void shouldReturnTrueIfTypeOfVisitIsBaseline() {
-        Visit visit = new Visit();
-        visit.typeOfVisit(TypeOfVisit.Baseline);
-        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
-        assertTrue(clinicVisit.isBaseline());
-    }
-
-    @Test
-    public void shouldReturnFalseIfTypeOfVisitIsNotBaseline() {
-        Visit visit = new Visit();
-        visit.typeOfVisit(TypeOfVisit.Scheduled);
-        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
-        assertFalse(clinicVisit.isBaseline());
-    }
-
-    @Test
-    public void shouldReturnFalseIfTypeOfVisitIsNull() {
-        Visit visit = new Visit();
-        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
-        assertFalse(clinicVisit.isBaseline());
     }
 
     @Test

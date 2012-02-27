@@ -4,13 +4,15 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.appointments.api.model.Visit;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertFalse;
 
 public class ClinicVisitTest {
+
     @Test
     public void shouldReturnEmptyLabResultsWhenVisitHasNoLabResults() {
         ClinicVisit visit = new ClinicVisit(new Patient(), new Visit());
@@ -60,4 +62,21 @@ public class ClinicVisitTest {
         ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
         assertEquals(clinicVisit.getAdjustedDueDate(), clinicVisit.getEffectiveDueDate());
     }
+
+    @Test
+    public void shouldReturnTrueIfTypeOfVisitIsBaseline() {
+        Visit visit = new Visit();
+        visit.addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Baseline.toString());
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
+        assertTrue(clinicVisit.isBaseline());
+    }
+
+    @Test
+    public void shouldReturnFalseIfTypeOfVisitIsNotBaseline() {
+        Visit visit = new Visit();
+        visit.addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled.toString());
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
+        assertFalse(clinicVisit.isBaseline());
+    }
+
 }

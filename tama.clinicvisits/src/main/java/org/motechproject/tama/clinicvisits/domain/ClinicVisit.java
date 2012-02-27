@@ -19,6 +19,9 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     public static final String VITAL_STATISTICS = "VitalStatisticsId";
     public static final String LAB_RESULTS = "LabResultIds";
     public static final String ADJUSTED_DUE_DATE = "AdjustedDueDate";
+    public static final String TYPE_OF_VISIT = "TypeOfVisit";
+    public static final String WEEK_NUMBER = "WeekNumber";
+    public static final String BASELINE = "baseline";
 
     private Patient patient;
     private Visit visit = new Visit();
@@ -44,9 +47,9 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     }
 
     public String getTitle() {
-        if (visit.typeOfVisit().isBaselineVisit())
+        if (isBaseline())
             return "Registered with TAMA";
-        else if (visit.weekNumber() != null)
+        else if (weekNumber() != null)
             return weekNumber() + " weeks Follow-up visit";
         else
             return "Ad-hoc Visit";
@@ -61,11 +64,12 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     }
 
     public boolean isBaseline() {
-        return visit.typeOfVisit() != null && visit.typeOfVisit().isBaselineVisit();
+        TypeOfVisit typeOfVisit = TypeOfVisit.valueOf((String) visit.getData().get(TYPE_OF_VISIT));
+        return typeOfVisit.isBaselineVisit();
     }
 
     public String getTypeOfVisit() {
-        return visit.typeOfVisit().toString();
+        return visit.getData().get(TYPE_OF_VISIT).toString();
     }
 
     public String getTreatmentAdviceId() {
@@ -151,7 +155,7 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     }
 
     private Integer weekNumber() {
-        return visit.weekNumber();
+        return (Integer) visit.getData().get(WEEK_NUMBER);
     }
 
     @Override

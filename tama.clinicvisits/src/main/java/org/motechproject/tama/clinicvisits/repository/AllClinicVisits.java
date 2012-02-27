@@ -4,13 +4,15 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
 import org.motechproject.appointments.api.contract.ReminderConfiguration;
+import org.motechproject.appointments.api.contract.VisitRequest;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
-import org.motechproject.appointments.api.model.TypeOfVisit;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
-import org.motechproject.tama.clinicvisits.domain.ListOfWeeks;
+import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
+import org.motechproject.tama.clinicvisits.mapper.AppointmentCalendarRequestMapper;
+import org.motechproject.tama.clinicvisits.mapper.VisitRequestMapper;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +25,20 @@ import java.util.Properties;
 @Repository
 public class AllClinicVisits {
 
-    public static final String REMIND_FROM = "remindFrom";
     public static final String REMIND_FOR_VISIT_FROM = "remindForVisitFrom";
-    public static final String APPOINTMENT_SCHEDULE = "appointment-schedule";
 
     private AllPatients allPatients;
     private AppointmentService appointmentService;
+    private AppointmentCalendarRequestMapper appointmentCalendarRequestMapper;
+    private VisitRequestMapper visitRequestMapper;
     private Properties appointmentsProperties;
 
     @Autowired
-    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, @Qualifier("appointments") Properties appointmentsProperties) {
+    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, AppointmentCalendarRequestMapper appointmentCalendarRequestMapper, VisitRequestMapper visitRequestMapper, @Qualifier("appointments") Properties appointmentsProperties) {
         this.allPatients = allPatients;
         this.appointmentService = appointmentService;
+        this.appointmentCalendarRequestMapper = appointmentCalendarRequestMapper;
+        this.visitRequestMapper = visitRequestMapper;
         this.appointmentsProperties = appointmentsProperties;
     }
 
@@ -45,12 +49,7 @@ public class AllClinicVisits {
     }
 
     public void addAppointmentCalendar(String patientDocId) {
-        List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsProperties.getProperty(APPOINTMENT_SCHEDULE));
-        ReminderConfiguration appointmentReminderConfiguration = getAppointmentReminderConfiguration();
-
-        AppointmentCalendarRequest appointmentCalendarRequest = new AppointmentCalendarRequest().setExternalId(patientDocId)
-                                                                                                .setWeekOffsets(appointmentWeeks)
-                                                                                                .setAppointmentReminderConfiguration(appointmentReminderConfiguration);
+        AppointmentCalendarRequest appointmentCalendarRequest = appointmentCalendarRequestMapper.map(patientDocId);
         appointmentService.removeCalendar(patientDocId);
         appointmentService.addCalendar(appointmentCalendarRequest);
     }
@@ -69,7 +68,7 @@ public class AllClinicVisits {
     public ClinicVisit getBaselineVisit(String patientDocId) {
         AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
         Patient patient = allPatients.get(patientDocId);
-        return new ClinicVisit(patient, appointmentCalendar.baselineVisit());
+        return new ClinicVisit(patient, appointmentCalendar.getVisit(ClinicVisit.BASELINE));
     }
 
     public String updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
@@ -83,8 +82,9 @@ public class AllClinicVisits {
     }
 
     public String createAppointment(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
-        ReminderConfiguration appointmentReminderConfiguration = getAppointmentReminderConfiguration();
-        return appointmentService.addVisit(patientDocId, appointmentDueDate, appointmentReminderConfiguration, typeOfVisit);
+        String visitName = "visitFor-" + appointmentDueDate.getMillis();
+        VisitRequest visitRequest = visitRequestMapper.map(appointmentDueDate, typeOfVisit) ;
+        return appointmentService.addVisit(patientDocId, visitName, visitRequest);
     }
 
     public void changeRegimen(String patientDocId, String clinicVisitId, String newTreatmentAdviceId) {
@@ -124,11 +124,6 @@ public class AllClinicVisits {
 
     public void closeVisit(String patientDocId, String clinicVisitId, DateTime visitDate) {
         appointmentService.setVisitDate(patientDocId, clinicVisitId, visitDate);
-    }
-
-    private ReminderConfiguration getAppointmentReminderConfiguration() {
-        int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FROM));
-        return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
     }
 
     private ReminderConfiguration getVisitReminderConfiguration() {
