@@ -39,5 +39,6 @@
         <jsp:include page="showSymptomTimeline.jspx" />
         <jsp:include page="showAdherenceOverTime.jspx" />
         <jsp:include page="showCD4CountOverTime.jspx" />
+        <jsp:include page="showPLVCountOverTime.jspx" />
     </page:show>
 </div>

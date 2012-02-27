@@ -20,13 +20,13 @@ public class LabResultsApiController {
         this.labResultsService = labResultsService;
     }
 
-    @RequestMapping(value = "/listCD4Count", method = RequestMethod.POST)
+    @RequestMapping(value = "/listCD4Count", method = RequestMethod.GET)
     @ResponseBody
     String listCD4Count(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths")int rangeInMonths) throws JSONException {
         return new LabResultsJson(labResultsService.listCD4Counts(patientId, rangeInMonths)).toString();
     }
 
-    @RequestMapping(value = "/listPVLCount", method = RequestMethod.POST)
+    @RequestMapping(value = "/listPVLCount", method = RequestMethod.GET)
     @ResponseBody
     public String listPVLLabResults(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths")int rangeInMonths) throws JSONException {
         return new LabResultsJson(labResultsService.listPVLLabResults(patientId, rangeInMonths)).toString();

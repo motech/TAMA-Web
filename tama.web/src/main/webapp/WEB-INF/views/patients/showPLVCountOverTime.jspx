@@ -1,7 +1,7 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
-    <util:panel id="cd4-over-time" title="CD4 Over Time" openPane="true">
-        <spring:url value="/json/labresults/listCD4Count" var="listCD4CountUrl" htmlEscape="false">
+    <util:panel id="plv-over-time" title="PLV Over Time" openPane="true">
+        <spring:url value="/json/labresults/listPVLCount" var="listPVLCountUrl" htmlEscape="false">
             <spring:param name="patientId" value="${patient.id}"/>
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>
@@ -11,15 +11,15 @@
 
         <script type="text/javascript">
             dojo.ready(function () {
-                var x = new PatientDashboardChart("cd4CountOverTime", "${listCD4CountUrl}", "CD4 count");
+                var x = new PatientDashboardChart("plvCountOverTime", "${listPVLCountUrl}", "PLV count");
                 x.draw();
             });
         </script>
 
         <div style="overflow-x:auto">
-            <div id="cd4CountOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
-            <div  id="cd4CountOverTimePlaceholder">
-                <div id="cd4CountOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
+            <div id="plvCountOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
+            <div  id="plvCountOverTimePlaceholder">
+                <div id="plvCountOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
             </div>
         </div>
 
