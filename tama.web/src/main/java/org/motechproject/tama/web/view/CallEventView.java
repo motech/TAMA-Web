@@ -3,6 +3,7 @@ package org.motechproject.tama.web.view;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
+import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.web.tools.KooKooResponseParser;
 import org.motechproject.tama.web.tools.Response;
 
@@ -50,6 +51,10 @@ public class CallEventView {
 
     public String getCallState() {
         return getData(CallEventConstants.CALL_STATE);
+    }
+
+    public String getCallType() {
+        return getData(IVRService.CALL_TYPE);
     }
 
     private String getData(String key) {

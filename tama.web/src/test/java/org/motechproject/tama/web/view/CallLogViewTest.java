@@ -6,12 +6,12 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -76,7 +76,7 @@ public class CallLogViewTest {
     @Test
     public void getAListOfCallFlows_GivenAListOfCallEvents() {
         CallLog callLog = setUpCallLogs();
-        final CallEvent healthTipsCallEvent = createCallEvent("GotDTMF", CallState.HEALTH_TIPS.name(), "", "");
+        final CallEvent healthTipsCallEvent = createCallEvent("GotDTMF", CallState.HEALTH_TIPS.name(), "", "", "");
 
         callLog.setCallEvents(new ArrayList<CallEvent>() {{
             add(healthTipsCallEvent);
@@ -90,7 +90,7 @@ public class CallLogViewTest {
     @Test
     public void constructCallLog_ForAMissedCallEvent() {
         CallLog callLog = setUpCallLogs();
-        final CallEvent missedCallEvent = createCallEvent("Missed", "", "", "");
+        final CallEvent missedCallEvent = createCallEvent("Missed", "", "", "", "4 Day Recall");
 
         callLog.setCallEvents(new ArrayList<CallEvent>() {{
             add(missedCallEvent);
@@ -98,15 +98,15 @@ public class CallLogViewTest {
 
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
         assertEquals(1, callLogView.getCallFlowGroupViews().size());
-        assertEquals("Missed", callLogView.getFlows());
+        assertEquals("Missed 4 Day Recall", callLogView.getFlows());
     }
 
     @Test
     public void callFlowGroupTitle_AsUnauthenticated_WhenTheUserHungUpTheCall_BeforeAuthentication() {
         CallLog callLog = setUpCallLogs();
-        final CallEvent newCallEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music");
-        final CallEvent wrongPasscodeEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music");
-        final CallEvent hangUpEvent = createCallEvent("Hangup", "", "", "");
+        final CallEvent newCallEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music", "");
+        final CallEvent wrongPasscodeEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music", "");
+        final CallEvent hangUpEvent = createCallEvent("Hangup", "", "", "", "");
 
         callLog.setCallEvents(new ArrayList<CallEvent>() {{
             add(newCallEvent);
@@ -122,13 +122,13 @@ public class CallLogViewTest {
     @Test
     public void associateEventsToRightFlows_GivenAListOfCallEvents() {
         CallLog callLog = setUpCallLogs();
-        final CallEvent newCallEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music");
-        final CallEvent menuEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML1");
-        final CallEvent pillConfirmationEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML2");
-        final CallEvent transitioningToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "");
-        final CallEvent transitionedToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML3");
-        final CallEvent symptomReportingEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML4");
-        final CallEvent hangUpEvent = createCallEvent("Hangup", "", "", "");
+        final CallEvent newCallEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music", "");
+        final CallEvent menuEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML1", "");
+        final CallEvent pillConfirmationEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML2", "");
+        final CallEvent transitioningToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "", "");
+        final CallEvent transitionedToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML3", "");
+        final CallEvent symptomReportingEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML4", "");
+        final CallEvent hangUpEvent = createCallEvent("Hangup", "", "", "", "");
 
         callLog.setCallEvents(new ArrayList<CallEvent>() {{
             add(newCallEvent);
@@ -145,10 +145,11 @@ public class CallLogViewTest {
         assertEquals("Menu, Symptoms, Pill Reminder", callLogView.getFlows());
     }
 
-    private CallEvent createCallEvent(String name, String callState, String treeName, String responseXML) {
+    private CallEvent createCallEvent(String name, String callState, String treeName, String responseXML, String callType) {
         CallEventCustomData callEventCustomData = new CallEventCustomData();
         callEventCustomData.add(CallEventConstants.CALL_STATE, callState);
         callEventCustomData.add(CallEventConstants.TREE_NAME, treeName);
+        callEventCustomData.add(IVRService.CALL_TYPE, callType);
         callEventCustomData.add(CallEventConstants.CUSTOM_DATA_LIST, responseXML);
         CallEvent callEvent = new CallEvent(name);
         callEvent.setData(callEventCustomData);

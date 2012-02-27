@@ -124,7 +124,7 @@ public class CallLogView {
         if(authenticated) {
             flows = StringUtils.join(flowsInViews, ", ");
         } else if(missed) {
-            flows = CallTypeConstants.MISSED;
+            flows = CallTypeConstants.MISSED +  " "  + getLastCallFlowGroupView().missedCallType();
         } else{
             flows = CallTypeConstants.UNAUTHENTICATED;
         }

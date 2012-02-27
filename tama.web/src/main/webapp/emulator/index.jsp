@@ -122,7 +122,7 @@
     $(document).ready(function(){
         $('#missedCallButton').click(function () {
             dojo.xhrPost({
-                url:'<%=application.getContextPath() %>/ivr/reply/callback?external_id=' + $('#missedCall').val(),
+                url:'<%=application.getContextPath() %>/ivr/reply/callback?external_id=' + $('#missedCall').val() + "&call_type=Outbox",
                 content:{ 'phone_no':$('#phone').val(), 'status':'ring', 'sid':callId},
                 load:function () {
                     alert('Posted missed call');

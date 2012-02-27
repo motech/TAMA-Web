@@ -27,6 +27,14 @@ public class CallFlowGroupView {
         callEventViews.add(callEventView);
     }
 
+    public String missedCallType() {
+        for (CallEventView callEventView : callEventViews) {
+            if (callEventView.isMissedCall())
+                return callEventView.getCallType();
+        }
+        return null;
+    }
+
     public List<String> getAllResponses() {
         List<String> responseList = new ArrayList<String>();
         for (CallEventView callEventView : callEventViews) {
