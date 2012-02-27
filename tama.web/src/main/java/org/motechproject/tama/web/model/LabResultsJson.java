@@ -8,10 +8,10 @@ import org.motechproject.tama.patient.domain.LabResult;
 
 import java.util.List;
 
-public class CD4Json extends JSONArray {
+public class LabResultsJson extends JSONArray {
 
-    public CD4Json(List<LabResult> defaultCD4Results) throws JSONException {
-        for (LabResult labResult : defaultCD4Results) {
+    public LabResultsJson(List<LabResult> results) throws JSONException {
+        for (LabResult labResult : results) {
             put(createResult(labResult));
         }
     }

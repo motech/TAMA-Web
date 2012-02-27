@@ -35,6 +35,13 @@ public class LabResultBuilder {
                 withResult("100");
     }
 
+    public static LabResultBuilder defaultPVLResult() {
+        return startRecording().
+                withDefaults().
+                withLabTest(LabTestBuilder.defaultPVL().build()).
+                withResult("0");
+    }
+
     public LabResult build() {
         LabResult labResult = new LabResult();
         labResult.setLabTest_id(labTestId);

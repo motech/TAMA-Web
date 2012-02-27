@@ -8,17 +8,14 @@ import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.service.LabResultsService;
-import org.motechproject.tama.web.model.CD4Json;
+import org.motechproject.tama.web.model.LabResultsJson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -39,43 +36,49 @@ public class LabResultsApiControllerTest {
 
     @Test
     public void shouldReturnCD4CountListAsJson() throws Exception {
-        List<LabResult> defaultCD4Results = defaultCD4LabResults();
-
-        when(labResultsService.listCD4Counts(PATIENT_ID, 3)).thenReturn(defaultCD4Results);
+        LabResult labResult = LabResultBuilder.defaultCD4Result().build();
+        List<LabResult> CD4Results = Arrays.asList(labResult, labResult, labResult);
+        when(labResultsService.listCD4Counts(PATIENT_ID, 3)).thenReturn(CD4Results);
 
         String cd4list = controller.listCD4Count(PATIENT_ID, 3);
 
-        assertThat(cd4list, is(ExpectedCD4Json.For(defaultCD4Results)));
+        assertThat(cd4list, is(ExpectedLabResultsJson.For(CD4Results)));
     }
 
-    private List<LabResult> defaultCD4LabResults() {
-        LabResult labResult = LabResultBuilder.defaultCD4Result().build();
-        return Arrays.asList(labResult, labResult, labResult);
+    @Test
+    public void shouldReturnPVLabResultListAsJson() throws Exception {
+        LabResult pvlLabResult = LabResultBuilder.defaultPVLResult().build();
+        List<LabResult> pvlLabResults = Arrays.asList(pvlLabResult, pvlLabResult);
+        when(labResultsService.listPVLLabResults(PATIENT_ID, 3)).thenReturn(pvlLabResults);
+
+        String pvlList = controller.listPVLLabResults(PATIENT_ID, 3);
+
+        assertThat(pvlList, is(ExpectedLabResultsJson.For(pvlLabResults)));
     }
 }
 
-class ExpectedCD4Json extends ArgumentMatcher<String> {
+class ExpectedLabResultsJson extends ArgumentMatcher<String> {
 
-    private List<LabResult> defaultCD4Results;
+    private List<LabResult> results;
 
-    private ExpectedCD4Json() {
-        defaultCD4Results = new ArrayList<LabResult>();
+    private ExpectedLabResultsJson() {
+        results = new ArrayList<LabResult>();
     }
 
-    public static ExpectedCD4Json For(List<LabResult> defaultCD4Results) {
-        ExpectedCD4Json ExpectedCD4Json = new ExpectedCD4Json();
-        ExpectedCD4Json.defaultCD4Results = defaultCD4Results;
-        return ExpectedCD4Json;
+    public static ExpectedLabResultsJson For(List<LabResult> results) {
+        ExpectedLabResultsJson expectedLabResultsJson = new ExpectedLabResultsJson();
+        expectedLabResultsJson.results = results;
+        return expectedLabResultsJson;
     }
 
     @Override
     public boolean matches(Object argument) {
-        CD4Json cd4Json = null;
+        LabResultsJson labResultsJson = null;
         try {
-            cd4Json = new CD4Json(defaultCD4Results);
+            labResultsJson = new LabResultsJson(results);
         } catch (JSONException e) {
             return false;
         }
-        return cd4Json.toString().equals((String) argument);
+        return labResultsJson.toString().equals((String) argument);
     }
 }

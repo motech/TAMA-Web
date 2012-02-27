@@ -20,4 +20,8 @@ public class LabResultsService {
     public List<LabResult> listCD4Counts(String patientId, int rangeInMonths) {
         return allLabResults.findCD4LabResultsFor(patientId, rangeInMonths);
     }
+
+    public List<LabResult> listPVLLabResults(String patientId, int rangeInMonths) {
+        return allLabResults.findPVLLabResultsFor(patientId, rangeInMonths);
+    }
 }
