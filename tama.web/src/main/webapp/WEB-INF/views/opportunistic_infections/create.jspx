@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div version="2.0"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:field="http://www.springframework.org/tags/form"
+     xmlns:springform="http://www.springframework.org/tags/form"
+     xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields">
+
+    <spring:url value="/resources/images/favicon.ico" var="favicon"/>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/resources/js/opportunisticInfections.js" var="opportunisticInfectionsJs" />
+    <script src="${opportunisticInfectionsJs}" type="text/javascript"/>
+
+    <util:panel id="opportunistic_infections_panel" title="Record Opportunistic Infections" openPane="true">
+
+        <spring:url value="/opportunisticInfections/create" var="form_url"/>
+        <div class="opp_infection">
+            <field:hidden path="opportunisticInfectionsUIModel.opportunisticInfections.patientId" id="patientId"/>
+            <span><springform:checkbox id="addisonsDisease" path="opportunisticInfectionsUIModel.opportunisticInfections.addisonsDisease" label="Addison's Disease"/></span>
+            <span><springform:checkbox id="anemia" path="opportunisticInfectionsUIModel.opportunisticInfections.anemia" label="Anemia"/></span>
+            <span><springform:checkbox id="bacterialInfection" path="opportunisticInfectionsUIModel.opportunisticInfections.bacterialInfection" label="Bacterial Infection Of Skin"/></span>
+            <span><springform:checkbox id="convulsions" path="opportunisticInfectionsUIModel.opportunisticInfections.convulsions" label="Convulsions"/></span>
+            <span><springform:checkbox id="dementia" path="opportunisticInfectionsUIModel.opportunisticInfections.dementia" label="Dementia"/></span>
+            <span><springform:checkbox id="encephalitis" path="opportunisticInfectionsUIModel.opportunisticInfections.encephalitis" label="Encephalitis"/></span>
+            <span><springform:checkbox id="gastroenteropathy" path="opportunisticInfectionsUIModel.opportunisticInfections.gastroenteropathy" label="Gastroenteropathy"/></span>
+            <span><springform:checkbox id="hypertension" path="opportunisticInfectionsUIModel.opportunisticInfections.hypertension" label="Hypertension"/></span>
+            <span><springform:checkbox id="liverAbscess" path="opportunisticInfectionsUIModel.opportunisticInfections.liverAbscess" label="Liver Abscess"/></span>
+            <span><springform:checkbox id="malaria" path="opportunisticInfectionsUIModel.opportunisticInfections.malaria" label="Malaria"/></span>
+            <span><springform:checkbox id="nonHealingUlcer" path="opportunisticInfectionsUIModel.opportunisticInfections.nonHealingUlcer" label="Non Healing Ulcer"/></span>
+            <span><springform:checkbox id="oralCandidiasis" path="opportunisticInfectionsUIModel.opportunisticInfections.oralCandidiasis" label="Oral Candidiasis"/></span>
+            <span><springform:checkbox id="pancreatitis" path="opportunisticInfectionsUIModel.opportunisticInfections.pancreatitis" label="Pancreatitis"/></span>
+            <span><springform:checkbox id="scabies" path="opportunisticInfectionsUIModel.opportunisticInfections.scabies" label="Scabies"/></span>
+            <span><springform:checkbox id="TBMeningitis" path="opportunisticInfectionsUIModel.opportunisticInfections.TBMeningitis" label="TB Meningitis"/></span>
+            <span>
+                <springform:checkbox id="otherOpportunisticInfection" path="opportunisticInfectionsUIModel.opportunisticInfections.otherOpportunisticInfection" label="Other" onClick="displayDescriptionIfSelected()"/>
+                <div id="otherOpportunisticInfectionInfo">
+                    <formfield:input field="opportunisticInfectionsUIModel.opportunisticInfections.otherOpportunisticInfectionDetails" label="Details" id="otherOpportunisticInfectionDetails"/>
+                </div>
+
+            </span>
+        </div>
+    </util:panel>
+    <div id="page_load_marker"></div>
+</div>

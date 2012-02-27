@@ -443,6 +443,12 @@ fieldset th {
 .drug_allergy_view_label { display:block; font-weight:bold; }
 .drug_rash_view_label { display:block; font-weight:bold; margin-top:30px; }
 
+/* Opportunistic Infections */
+.opp_infection span { display:block; clear:both; height:25px; }
+.opp_infection span input { float:left; }
+.opp_infection span label { width:300px; margin-top: 5px; margin-left: 10px;}
+.opp_infection #otherOpportunisticInfectionInfo label { width:50px; }
+
 #dosages {
     overflow: auto;
     border-top: 1px solid grey;

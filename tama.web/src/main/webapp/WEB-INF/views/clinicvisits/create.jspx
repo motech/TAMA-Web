@@ -32,6 +32,7 @@
             </c:choose>
             <jsp:include page="../labresults/create.jspx" />
             <jsp:include page="../vital_statistics/form.jspx" />
+            <jsp:include page="../opportunistic_infections/create.jspx" />
 
             <div class="submit" id="fc_org_motechproject_tama_domain_patient_Clinic_Visit_submit">
               <spring:message code="button_save" var="save_button" htmlEscape="false" />

@@ -11,6 +11,7 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.web.model.LabResultsUIModel;
+import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,15 +35,17 @@ public class ClinicVisitsController extends BaseController {
     private TreatmentAdviceController treatmentAdviceController;
     private LabResultsController labResultsController;
     private VitalStatisticsController vitalStatisticsController;
+    private OpportunisticInfectionsController opportunisticInfectionsController;
     private AllClinicVisits allClinicVisits;
     private AllTreatmentAdvices allTreatmentAdvices;
 
     @Autowired
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, AllClinicVisits allClinicVisits) {
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, OpportunisticInfectionsController opportunisticInfectionsController, AllClinicVisits allClinicVisits) {
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.labResultsController = labResultsController;
         this.vitalStatisticsController = vitalStatisticsController;
+        this.opportunisticInfectionsController = opportunisticInfectionsController;
         this.allClinicVisits = allClinicVisits;
     }
 
@@ -79,13 +82,16 @@ public class ClinicVisitsController extends BaseController {
         uiModel.addAttribute("clinicVisit", clinicVisit);
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
+        opportunisticInfectionsController.createForm(patientDocId, uiModel);
         return "clinicvisits/create";
     }
 
     @RequestMapping(value = "/create/{clinicVisitId}", method = RequestMethod.POST)
-    public String create(@PathVariable("clinicVisitId") String clinicVisitId, ClinicVisit visit, TreatmentAdvice treatmentAdvice, LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(@PathVariable("clinicVisitId") String clinicVisitId, ClinicVisit visit, TreatmentAdvice treatmentAdvice,
+                         LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, @Valid OpportunisticInfectionsUIModel opportunisticInfections, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         List<String> labResultIds = new ArrayList<String>();
         String vitalStatisticsId = null;
+        String opportunisticInfectionsId = null;
         String patientId = treatmentAdvice.getPatientId();
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
@@ -111,8 +117,14 @@ public class ClinicVisitsController extends BaseController {
             uiModel.addAttribute("errorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
         }
 
+        try {
+            opportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel);
+        } catch (RuntimeException e) {
+            uiModel.addAttribute("errorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
+        }
+
         try{
-            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId);
+            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, opportunisticInfectionsId);
         } catch(RuntimeException e) {
             uiModel.addAttribute("error", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);

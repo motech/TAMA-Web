@@ -18,6 +18,7 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     public static final String TREATMENT_ADVICE = "TreatmentAdviceId";
     public static final String VITAL_STATISTICS = "VitalStatisticsId";
     public static final String LAB_RESULTS = "LabResultIds";
+    public static final String OPPORTUNISTIC_INFECTIONS = "OpportunisticInfectionsId";
     public static final String ADJUSTED_DUE_DATE = "AdjustedDueDate";
     public static final String TYPE_OF_VISIT = "TypeOfVisit";
     public static final String WEEK_NUMBER = "WeekNumber";
@@ -78,6 +79,14 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
 
     public void setTreatmentAdviceId(String treatmentAdviceId) {
         visit.addData(TREATMENT_ADVICE, treatmentAdviceId);
+    }
+
+    public String getOpportunisticInfectionsId() {
+        return (String) visit.getData().get(OPPORTUNISTIC_INFECTIONS);
+    }
+
+    public void setOpportunisticInfectionsId(String opportunisticInfectionsId) {
+        visit.addData(OPPORTUNISTIC_INFECTIONS, opportunisticInfectionsId);
     }
 
     public List<String> getLabResultIds() {

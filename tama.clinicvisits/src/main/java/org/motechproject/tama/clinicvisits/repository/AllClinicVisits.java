@@ -71,11 +71,12 @@ public class AllClinicVisits {
         return new ClinicVisit(patient, appointmentCalendar.getVisit(ClinicVisit.BASELINE));
     }
 
-    public String updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId) {
+    public String updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId, String opportunisticInfectionsId) {
         ClinicVisit clinicVisit = get(patientDocId, visitId);
         clinicVisit.setTreatmentAdviceId(treatmentAdviceId);
         clinicVisit.setLabResultIds(labResultIds);
         clinicVisit.setVitalStatisticsId(vitalStatisticsId);
+        clinicVisit.setOpportunisticInfectionsId(opportunisticInfectionsId);
         clinicVisit.setVisitDate(visitDate);
         updateVisit(clinicVisit);
         return clinicVisit.getId();

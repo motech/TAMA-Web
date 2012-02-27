@@ -23,6 +23,8 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -142,5 +144,26 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         allClinicVisits.createAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
         verify(visitRequestMapper).map(dueDate, TypeOfVisit.Unscheduled);
         verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), Matchers.<VisitRequest>any());
+    }
+
+    @Test
+    public void shouldUpdateVisitData() {
+        AppointmentCalendar appointmentCalendar = mock(AppointmentCalendar.class);
+        Visit visit = mock(Visit.class);
+        when(appointmentService.getAppointmentCalendar(PATIENT_ID)).thenReturn(appointmentCalendar);
+        when(appointmentCalendar.getVisit("visitId")).thenReturn(visit);
+        String oppInfectionsId = "oppInfectionsId";
+        String treatmentAdviceId = "treatmentAdviceId";
+        String vitalStatsId = "vitalStatsId";
+        DateTime visitDate = DateUtil.now();
+        List<String> labResultIds = new ArrayList<String>();
+        allClinicVisits.updateVisit("visitId", visitDate, PATIENT_ID, treatmentAdviceId, labResultIds, vitalStatsId, oppInfectionsId);
+        verify(visit).addData(ClinicVisit.OPPORTUNISTIC_INFECTIONS, oppInfectionsId);
+        verify(visit).addData(ClinicVisit.TREATMENT_ADVICE, treatmentAdviceId);
+        verify(visit).addData(ClinicVisit.VITAL_STATISTICS, vitalStatsId);
+        verify(visit).addData(ClinicVisit.LAB_RESULTS, labResultIds);
+        verify(visit).visitDate(visitDate);
+        verify(appointmentService).updateVisit(visit, PATIENT_ID);
+
     }
 }
