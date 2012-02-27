@@ -16,23 +16,22 @@ public class EndOfCallObserver {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private CallLogService callLogService;
-    private List<Subscriber> subscribers;
+    private List<Subscriber> subscribers = new ArrayList<Subscriber>();
 
     @Autowired
     public EndOfCallObserver(CallLogService callLogService) {
         this.callLogService = callLogService;
-        subscribers = new ArrayList<Subscriber>();
     }
 
     @MotechListener(subjects = "close_call")
     public void handle(MotechEvent event) {
         try {
-            String callLogDocId = (String) event.getParameters().get("call_id");
+            String callDetailRecordId = (String) event.getParameters().get("call_id");
             String patientDocId = (String) event.getParameters().get("external_id");
-            callLogService.log(callLogDocId, patientDocId);
-            notifySubscribers(callLogDocId, patientDocId);
+            callLogService.log(callDetailRecordId, patientDocId);
+            notifySubscribers(callDetailRecordId, patientDocId);
         } catch (Exception e) {
-            logger.error(e.getStackTrace().toString());
+            logger.error(e.getMessage(), e.getStackTrace());
         }
     }
 

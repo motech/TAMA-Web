@@ -2,30 +2,26 @@ package org.motechproject.tama.symptomreporting.controller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
-import org.motechproject.ivr.model.IVRStatus;
 import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.tama.symptomreporting.SymptomReportingContextForTest;
 import org.motechproject.tama.symptomreporting.context.SymptomsReportingContext;
+import org.motechproject.tama.symptomreporting.factory.SymptomReportingContextFactory;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -33,26 +29,26 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class DialControllerTest {
     @Mock
-    private HttpServletRequest httpRequest;
-    @Mock
     private KookooCallDetailRecordsService callDetailRecordService;
     @Mock
     private IVRMessage ivrMessage;
     @Mock
     private AllPatients allPatients;
     @Mock
-    private TAMAIVRContextFactory contextFactory;
-    @Mock
-    private HttpServletResponse response;
+    private SymptomReportingContextFactory contextFactory;
     @Mock
     private PatientAlertService patientAlertService;
     @Mock
     private SymptomRecordingService symptomRecordingService;
-    private Clinic clinic;
-    private KookooRequest kookooRequest;
-    private DialController dialController;
+    @Mock
+    private SymptomReportingService symptomReportingService;
+    @Mock
     private KooKooIVRContext kooKooIVRContext;
-    private TAMAIVRContextForTest tamaIvrContext;
+
+    private Clinic clinic;
+    private DialController dialController;
+    private SymptomReportingContextForTest symptomReportingContext;
+
 
     @Before
     public void setup() {
@@ -67,95 +63,75 @@ public class DialControllerTest {
             this.setClinic(clinic);
             setId("patientId");
         }};
-
-        kookooRequest = new KookooRequest("", "", "Dial", "", IVRStatus.NotAnswered.toString());
-        kooKooIVRContext = new KooKooIVRContext(kookooRequest, httpRequest, response);
-        tamaIvrContext = new TAMAIVRContextForTest().patientDocumentId(patient.getId());
         when(allPatients.get("patientId")).thenReturn(patient);
-        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService, symptomRecordingService);
 
-        when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIvrContext);
+        symptomReportingContext = new SymptomReportingContextForTest().patientDocumentId(patient.getId());
+        when(contextFactory.create(kooKooIVRContext)).thenReturn(symptomReportingContext);
+
+        when(ivrMessage.getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "en")).thenReturn("connecting-to-dr");
+        when(ivrMessage.getWav(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR, "en")).thenReturn("cannot-connect");
+
+        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService, symptomRecordingService, symptomReportingService);
     }
 
     @Test
-    public void shouldAddNumberOfCliniciansCalled_ToRepsonse() {
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
-        when(ivrMessage.getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "en")).thenReturn("connecting-to-dr");
+    public void shouldDialTheFirstClinician() {
+        final String callId = "callId";
+        symptomReportingContext.numberOfCliniciansCalled(0).callId(callId);
+
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertTrue(dialResponse.contains("<dial>0ph1</dial>"));
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));
-
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
-        verify(response, times(1)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getValue().getName());
-        assertEquals("1", cookieCaptor.getValue().getValue());
+        assertEquals(1, symptomReportingContext.numberOfCliniciansCalled());
+        verify(symptomRecordingService, times(1)).setAsNotConnectedToDoctor(callId);
+        verify(symptomReportingService, times(1)).smsOTCAdviceToClinician(symptomReportingContext, "ph1");
     }
 
     @Test
-    public void shouldSwitchedToDialledState_OnAnswered_CallStatus() {
+    public void shouldEndCallWhenConnectedToTheDoctor() {
         final String callId = "callId";
-        when(kooKooIVRContext.callId()).thenReturn(callId);
-        kookooRequest.setStatus(IVRStatus.Answered.toString());
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
+        symptomReportingContext.numberOfCliniciansCalled(1).isAnswered(true).callId(callId);
+
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertFalse(dialResponse.contains("<dial>0ph2</dial>"));
-
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
-        verify(response, times(1)).addCookie(cookieCaptor.capture());
-        assertEquals(TAMAIVRContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getValue().getName());
-        assertEquals("false", cookieCaptor.getValue().getValue());
+        assertTrue(symptomReportingContext.getEndCall());
         verify(patientAlertService).updateDoctorConnectedToDuringSymptomCall("patientId", "name1");
-        verify(symptomRecordingService).setAsNotConnectedToDoctor(callId);
         verify(symptomRecordingService).setAsConnectedToDoctor(callId);
     }
 
     @Test
-    public void shouldSwitchedToDialledState_OnSettingTheLast_ClinicianPhoneNumber() {
+    public void shouldEndCallWhenAllCliniciansHaveBeenDialled() {
         final String callId = "callId";
-        when(kooKooIVRContext.callId()).thenReturn(callId);
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("3");
-        when(ivrMessage.getWav(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR, "en")).thenReturn("cannot-connect");
+        symptomReportingContext.numberOfCliniciansCalled(3).callId(callId);
+
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertTrue(dialResponse.contains("<playaudio>cannot-connect</playaudio>"));
         assertFalse(dialResponse.contains("dial"));
-
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
-        verify(response, times(2)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getAllValues().get(0).getName());
-        assertEquals(TAMAIVRContext.SWITCH_TO_DIAL_STATE, cookieCaptor.getAllValues().get(1).getName());
-        assertEquals("4", cookieCaptor.getAllValues().get(0).getValue());
-        assertEquals("false", cookieCaptor.getAllValues().get(1).getValue());
+        assertTrue(symptomReportingContext.getEndCall());
+        assertEquals(4, symptomReportingContext.numberOfCliniciansCalled());
         verify(symptomRecordingService).setAsNotConnectedToDoctor(callId);
+        verify(symptomReportingService, times(0)).smsOTCAdviceToClinician(Matchers.<SymptomsReportingContext>any(), Matchers.<String>any());
     }
 
     @Test
-    public void shouldSwitchToNextClinicianContactIfCurrentContactPhoneNumberDoesNotExist() {
+    public void shouldCallClinicianWhosePhoneNumberIsNotNullOrEmpty() {
         clinic.getClinicianContacts().get(0).setPhoneNumber("");
         clinic.getClinicianContacts().get(1).setPhoneNumber(null);
 
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("2");
-        when(ivrMessage.getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "en")).thenReturn("connecting-to-dr");
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
         assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));
-
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
-        verify(response, times(1)).addCookie(cookieCaptor.capture());
-        assertEquals(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, cookieCaptor.getValue().getName());
-        assertEquals("3", cookieCaptor.getValue().getValue());
+        verify(symptomReportingService, times(1)).smsOTCAdviceToClinician(Matchers.<SymptomsReportingContext>any(), eq("ph3"));
+        assertEquals(3, symptomReportingContext.numberOfCliniciansCalled());
     }
 
     @Test
-    public void shouldPickUpPreferredLanguage_WhileBuilding_KookooResponse() {
-        tamaIvrContext.preferredLanguage("mr");
-        when(httpRequest.getAttribute(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("");
-
+    public void shouldBuildResponseUsingPatientsPreferredLanguage() {
+        symptomReportingContext.preferredLanguage("mr");
         dialController.dial(kooKooIVRContext).create(ivrMessage);
         verify(ivrMessage).getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "mr");
     }

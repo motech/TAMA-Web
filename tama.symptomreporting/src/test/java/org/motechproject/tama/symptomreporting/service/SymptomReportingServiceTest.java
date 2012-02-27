@@ -3,6 +3,7 @@ package org.motechproject.tama.symptomreporting.service;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
@@ -14,7 +15,10 @@ import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.repository.*;
+import org.motechproject.tama.patient.repository.AllLabResults;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Gender;
@@ -57,6 +61,8 @@ public class SymptomReportingServiceTest {
     private KookooCallDetailRecordsService kookooCallDetailRecordsService;
 
     private final String patientId = "patientId";
+    private final String patientDocId = "patientDocId";
+
     private SymptomReportingService symptomReportingService;
 
     @Before
@@ -99,23 +105,9 @@ public class SymptomReportingServiceTest {
 
     @Test
     public void shouldSendSMSToNotifyCliniciansAboutOTCAdvice() {
-        SymptomReport symptomReport = mock(SymptomReport.class);
+        Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withPatientId(patientId).build();
         Regimen regimen = mock(Regimen.class);
-        final String patientId = "patientId";
-        final String patientDocId = "patientDocId";
-        final Clinic clinic = new Clinic("id");
-        clinic.setClinicianContacts(new ArrayList<Clinic.ClinicianContact>() {{
-            this.add(new Clinic.ClinicianContact("name1", "ph1"));
-            this.add(new Clinic.ClinicianContact("name2", "ph2"));
-            this.add(new Clinic.ClinicianContact("name3", "ph3"));
-        }});
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withRegimenId("regimenId").withPatientId(patientDocId).build();
-
-        Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withClinic(clinic).withPatientId(patientId).withId(patientDocId).build();
-
-        when(allPatients.get(patientDocId)).thenReturn(patient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientDocId)).thenReturn(treatmentAdvice);
-        when(allRegimens.get("regimenId")).thenReturn(regimen);
+        SymptomReport symptomReport = mock(SymptomReport.class);
         when(regimen.getDisplayName()).thenReturn("D4T+EFV+NVP");
         when(symptomReport.getAdviceGiven()).thenReturn("adv_crocin01");
         when(symptomsReportingAdviceMap.get("adv_crocin01")).thenReturn("ADV: Some advice");
@@ -124,85 +116,68 @@ public class SymptomReportingServiceTest {
         when(symptomReportingProperties.get("nauseavomiting")).thenReturn("Nausea or Vomiting");
         when(symptomReportingProperties.get("headache")).thenReturn("Headache");
 
-        symptomReportingService.notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+        symptomReportingService.notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList("ph1", "ph2", "ph3"), symptomReport);
 
         verify(sendSMSService).send(Arrays.asList("ph1", "ph2", "ph3"), "patientId:1234567890:D4T+EFV+NVP, trying to contact. Fever,Nausea or Vomiting,Headache. ADV: Some advice");
     }
 
     @Test
-    public void shouldNotifyClinicians_WhenCallWasMissed(){
-        SymptomReport symptomReport = mock(SymptomReport.class);
-        String patientDocId = "patientDocId";
-        symptomReportingService = Mockito.spy(symptomReportingService);
-        KookooCallDetailRecord callDetailRecord = mock(KookooCallDetailRecord.class);
+    public void shouldSMS_OTCAdviceToAllCliniciansInAGivenClinic_WhenDialToAllCliniciansFails() {
+        final Clinic clinic = new Clinic("id");
+        clinic.setClinicianContacts(new ArrayList<Clinic.ClinicianContact>() {{
+            this.add(new Clinic.ClinicianContact("name1", "ph1"));
+            this.add(new Clinic.ClinicianContact("name2", "ph2"));
+        }});
 
-        when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
-        when(callDetailRecord.getVendorCallId()).thenReturn("callId");
+        Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withId(patientDocId).withPatientId(patientId).withClinic(clinic).build();
+        when(allPatients.get(patientDocId)).thenReturn(patient);
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId("regimenId").build();
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientDocId)).thenReturn(treatmentAdvice);
+        Regimen regimen = mock(Regimen.class);
+        when(allRegimens.get(Matchers.<String>any())).thenReturn(regimen);
+
+        KookooCallDetailRecord callDetailRecord = new KookooCallDetailRecord(null, "callId");
+        when(kookooCallDetailRecordsService.get("callId")).thenReturn(callDetailRecord);
+
+        SymptomReport symptomReport = mock(SymptomReport.class);
         when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
         when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.No);
 
-        doNothing().when(symptomReportingService).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
-        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
-        
-        symptomReportingService.notifyCliniciansIfCallMissed("callDocId", patientDocId);
+        symptomReportingService = Mockito.spy(symptomReportingService);
+        doNothing().when(symptomReportingService).notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList("ph1", "ph2"), symptomReport);
+        doCallRealMethod().when(symptomReportingService).smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callId");
 
-        verify(symptomReportingService).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callId");
+
+        verify(symptomReportingService).notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList("ph1", "ph2"), symptomReport);
     }
 
     @Test
-    public void shouldNot_NotifyClinicians_WhenCallWasNotMissed(){
-        SymptomReport symptomReport = mock(SymptomReport.class);
-        String patientDocId = "patientDocId";
-        symptomReportingService = Mockito.spy(symptomReportingService);
-        KookooCallDetailRecord callDetailRecord = mock(KookooCallDetailRecord.class);
-
+    public void shouldNotSMS_OTCAdviceToClinicians_WhenClinicianWasContacted() {
+        KookooCallDetailRecord callDetailRecord = new KookooCallDetailRecord(null, "callId");
         when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
-        when(callDetailRecord.getVendorCallId()).thenReturn("callId");
+
+        SymptomReport symptomReport = mock(SymptomReport.class);
         when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
         when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.Yes);
 
-        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
+        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callDocId");
 
-        symptomReportingService.notifyCliniciansIfCallMissed("callDocId", patientDocId);
-
-        verify(symptomReportingService, never()).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+        verifyZeroInteractions(sendSMSService);
     }
 
     @Test
-    public void shouldNot_NotifyClinicians_WhenNotSymptomWasReported_InTheCall(){
-        SymptomReport symptomReport = mock(SymptomReport.class);
-        String patientDocId = "patientDocId";
-        symptomReportingService = Mockito.spy(symptomReportingService);
-        KookooCallDetailRecord callDetailRecord = mock(KookooCallDetailRecord.class);
-
+    public void shouldNotSMS_OTCAdvice_WhenNoAttemptWasMadeToDialClinician() {
+        KookooCallDetailRecord callDetailRecord = new KookooCallDetailRecord(null, "callId");
         when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
-        when(callDetailRecord.getVendorCallId()).thenReturn("callId");
-        when(allSymptomReports.findByCallId("callId")).thenReturn(null);
-        when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.Yes);
 
-        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
-
-        symptomReportingService.notifyCliniciansIfCallMissed("callDocId", patientDocId);
-
-        verify(symptomReportingService, never()).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
-    }
-
-    @Test
-    public void shouldNot_NotifyClinicians_WhenDoctorDidNotHaveToBeContacted(){
         SymptomReport symptomReport = mock(SymptomReport.class);
-        String patientDocId = "patientDocId";
-        symptomReportingService = Mockito.spy(symptomReportingService);
-        KookooCallDetailRecord callDetailRecord = mock(KookooCallDetailRecord.class);
-
-        when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
-        when(callDetailRecord.getVendorCallId()).thenReturn("callId");
         when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
         when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.NA);
 
-        doCallRealMethod().when(symptomReportingService).notifyCliniciansIfCallMissed("callId", patientDocId);
+        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callDocId");
 
-        symptomReportingService.notifyCliniciansIfCallMissed("callDocId", patientDocId);
-
-        verify(symptomReportingService, never()).notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+        verifyZeroInteractions(sendSMSService);
     }
+
 }

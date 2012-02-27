@@ -6,7 +6,6 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.domain.IVRAuthenticationStatus;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.repository.AllPatients;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -253,4 +252,6 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     public int getPlayedHealthTipsCount() {
         return numberOfHealthTipsPlayed;
     }
+
+
 }

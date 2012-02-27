@@ -124,6 +124,10 @@ public class TAMAIVRContext {
         return kooKooIVRContext.callId();
     }
 
+    public String callDetailRecordId() {
+        return kooKooIVRContext.callDetailRecordId();
+    }
+
     public CallDirection callDirection() {
         return kookooRequest.getCallDirection();
     }
@@ -219,4 +223,13 @@ public class TAMAIVRContext {
     public void setDataToLog(HashMap<String, String> map) {
         kooKooIVRContext.dataToLog(map);
     }
+
+    public boolean isAnswered() {
+        return kooKooIVRContext.isAnswered();
+    }
+
+    protected Cookies cookies() {
+        return cookies;
+    }
+
 }

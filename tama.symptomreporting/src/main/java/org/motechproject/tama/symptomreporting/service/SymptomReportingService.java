@@ -16,6 +16,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.symptomreporting.context.SymptomsReportingContext;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.mapper.MedicalConditionsMapper;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -72,33 +74,36 @@ public class SymptomReportingService {
         return new MedicalConditionsMapper(patient, labResults, vitalStatistics, earliestTreatmentAdvice, currentRegimen).map();
     }
 
-    public void notifyCliniciansIfCallMissed(String callLogDocId, String patientDocId) {
+    public void smsOTCAdviceToAllClinicianWhenDialToClinicianFails(String patientDocId, String callLogDocId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callLogDocId);
         SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
         if (symptomReport != null && symptomReport.getDoctorContacted().equals(TAMAConstants.ReportedType.No)) {
-            notifyCliniciansAboutOTCAdvice(patientDocId, symptomReport);
+            Patient patient = allPatients.get(patientDocId);
+            Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
+            List<String> cliniciansMobileNumbers = new ArrayList<String>();
+            for (Clinic.ClinicianContact clinicianContact : patient.getClinic().getClinicianContacts()) {
+                cliniciansMobileNumbers.add(clinicianContact.getPhoneNumber());
+            }
+            notifyCliniciansAboutOTCAdvice(patient, regimen, cliniciansMobileNumbers, symptomReport);
         }
     }
 
-    public void notifyCliniciansAboutOTCAdvice(String patientDocId, SymptomReport symptomReport) {
-        Patient patient = allPatients.get(patientDocId);
-        Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
+    public void smsOTCAdviceToClinician(SymptomsReportingContext symptomsReportingContext, String clinicianPhoneNumber) {
+        KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(symptomsReportingContext.callDetailRecordId());
+        SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
+        Patient patient = allPatients.get(symptomsReportingContext.patientDocumentId());
+        Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(symptomsReportingContext.patientDocumentId()).getRegimenId());
+        notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList(clinicianPhoneNumber), symptomReport);
+    }
 
+    void notifyCliniciansAboutOTCAdvice(Patient patient, Regimen regimen, List<String> cliniciansMobileNumbers, SymptomReport symptomReport) {
         List<String> symptoms = new ArrayList<String>();
-        for(String symptomId : symptomReport.getSymptomIds()){
+        for (String symptomId : symptomReport.getSymptomIds()) {
             symptoms.add(((String) symptomReportingProperties.get(symptomId)));
         }
         String symptomsReported = StringUtils.join(symptoms, ",");
         String adviceGiven = fullAdviceGiven(symptomReport.getAdviceGiven());
-
-        List<Clinic.ClinicianContact> clinicianContacts = patient.getClinic().getClinicianContacts();
-        List<String> cliniciansMobileNumbers = new ArrayList<String>();
-        for (Clinic.ClinicianContact clinicianContact : clinicianContacts) {
-            cliniciansMobileNumbers.add(clinicianContact.getPhoneNumber());
-        }
-
         String message = patient.getPatientId() + ":" + patient.getMobilePhoneNumber() + ":" + regimen.getDisplayName() + ", trying to contact. " + symptomsReported + ". " + adviceGiven;
-
         sendSMSService.send(cliniciansMobileNumbers, message);
     }
 
