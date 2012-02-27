@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
 
@@ -123,9 +124,9 @@ public class CallLogView {
         if(authenticated) {
             flows = StringUtils.join(flowsInViews, ", ");
         } else if(missed) {
-            flows = CallFlowConstants.MISSED;
+            flows = CallTypeConstants.MISSED;
         } else{
-            flows = CallFlowConstants.UNAUTHENTICATED;
+            flows = CallTypeConstants.UNAUTHENTICATED;
         }
     }
 
@@ -138,13 +139,13 @@ public class CallLogView {
         String callState = callEventView.getCallState();
         if (callEventView.isMissedCall()) {
             missed = true;
-            return CallFlowConstants.MISSED;
+            return CallTypeConstants.MISSED;
         } else if (callState.equals(CallState.HEALTH_TIPS.name())) {
             authenticated = true;
-            return CallFlowConstants.HEALTH_TIPS;
+            return CallTypeConstants.HEALTH_TIPS;
         } else if (callState.equals(CallState.OUTBOX.name())) {
             authenticated = true;
-            return CallFlowConstants.OUTBOX;
+            return CallTypeConstants.OUTBOX_CALL;
         } else {
             for (String key : TREE_TO_FLOW_MAP.keySet()) {
                 if (key.equals(callEventView.getTree())) {
@@ -153,7 +154,7 @@ public class CallLogView {
                 }
             }
         }
-        return CallFlowConstants.MENU;
+        return CallTypeConstants.MENU;
     }
 
     private void addEventToLastFlow(CallEventView callEventView) {

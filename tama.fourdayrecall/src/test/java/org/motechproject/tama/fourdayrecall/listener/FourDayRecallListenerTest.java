@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
@@ -19,6 +20,8 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -59,7 +62,7 @@ public class FourDayRecallListenerTest {
         when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(false);
         fourDayRecallListener.handle(motechEvent);
 
-        verify(ivrCall).makeCall(patient);
+        verify(ivrCall).makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
     }
 
     @Test
@@ -70,7 +73,7 @@ public class FourDayRecallListenerTest {
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         fourDayRecallListener.handle(motechEvent);
 
-        verify(ivrCall).makeCall(patient);
+        verify(ivrCall).makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
     }
 
     @Test
@@ -257,7 +260,7 @@ public class FourDayRecallListenerTest {
 
         fourDayRecallListener.handle(motechEvent);
 
-        verify(ivrCall).makeCall(patient);
+        verify(ivrCall).makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
     }
 
     private void setUpPatientWithDefaults() {

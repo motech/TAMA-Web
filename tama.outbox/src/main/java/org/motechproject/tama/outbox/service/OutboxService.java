@@ -5,6 +5,7 @@ import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.MessagePriority;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
@@ -100,7 +101,7 @@ public class OutboxService implements Outbox {
                 }
                 Map<String, String> callParams = new HashMap<String, String>();
                 callParams.put(TAMAIVRContext.IS_OUTBOX_CALL, "true");
-                ivrCall.makeCall(patient, callParams);
+                ivrCall.makeCall(patient, CallTypeConstants.OUTBOX_CALL, callParams);
             }
         } catch (Exception e) {
             logger.error("Failed to handle OutboxCall event", e);

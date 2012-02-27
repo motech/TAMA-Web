@@ -2,6 +2,7 @@ package org.motechproject.tama.fourdayrecall.listener;
 
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAlertService;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Service
 public class FourDayRecallListener {
@@ -85,7 +88,7 @@ public class FourDayRecallListener {
         Boolean isVeryFirstCall = (Boolean) motechEvent.getParameters().get(FIRST_CALL);
         if (isVeryFirstCall != null && isVeryFirstCall)
             weeklyAdherenceLogService.createNotRespondedLog(patient.getId());
-        ivrCall.makeCall(patient);
+        ivrCall.makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
     }
 
     private boolean isLastRetryDay(MotechEvent motechEvent) {

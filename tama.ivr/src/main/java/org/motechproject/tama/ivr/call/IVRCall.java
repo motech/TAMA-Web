@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr.call;
 
-import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsServiceImpl;
 import org.motechproject.ivr.service.CallRequest;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.common.util.StringUtil;
@@ -25,12 +24,9 @@ public class IVRCall {
         this.properties = properties;
     }
 
-    public void makeCall(Patient patient) {
-        makeCall(patient, new HashMap<String, String>());
-    }
-
-    public void makeCall(Patient patient, Map<String, String> params) {
+    public void makeCall(Patient patient, String callType, Map<String, String> params) {
         params.put(IVRService.EXTERNAL_ID, patient.getId());
+        params.put(IVRService.CALL_TYPE, callType);
         CallRequest callRequest = new CallRequest(StringUtil.ivrMobilePhoneNumber(patient.getMobilePhoneNumber()), params, getApplicationUrl());
         ivrService.initiateCall(callRequest);
     }

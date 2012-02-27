@@ -1,27 +1,22 @@
 package org.motechproject.tama.web.view;
 
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CallFlowConstants {
-    
-    public static final Map<String, String> TREE_TO_FLOW_MAP = new HashMap<String, String>() {{
-        put(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "Pill Reminder");
-        put(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, "Pill Reminder");
-        put(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER, "Pill Reminder");
-        put(TAMATreeRegistry.FOUR_DAY_RECALL, "4 Day Recall");
-        put(TAMATreeRegistry.REGIMEN_1_TO_6, "Symptoms");
-        put(TAMATreeRegistry.OUTBOX_CALL, "Outbox");
-        put(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, "Menu");
-        put(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, "Menu");
-        put(TAMATreeRegistry.MENU_TREE, "Menu");
-    }};
 
-    public static final String MENU = "Menu";
-    public static final String MISSED = "Missed";
-    public static final String HEALTH_TIPS = "Health Tips";
-    public static final String OUTBOX = "Outbox";
-    public static final String UNAUTHENTICATED = "Unauthenticated";
+    public static final Map<String, String> TREE_TO_FLOW_MAP = new HashMap<String, String>() {{
+        put(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, CallTypeConstants.DAILY_PILL_REMINDER_CALL);
+        put(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, CallTypeConstants.DAILY_PILL_REMINDER_CALL);
+        put(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER, CallTypeConstants.DAILY_PILL_REMINDER_CALL);
+        put(TAMATreeRegistry.FOUR_DAY_RECALL, CallTypeConstants.FOUR_DAY_RECALL_CALL);
+        put(TAMATreeRegistry.REGIMEN_1_TO_6, CallTypeConstants.SYMPTOMS_CALL);
+        put(TAMATreeRegistry.OUTBOX_CALL, CallTypeConstants.OUTBOX_CALL);
+        put(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, CallTypeConstants.MENU);
+        put(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, CallTypeConstants.MENU);
+        put(TAMATreeRegistry.MENU_TREE, CallTypeConstants.MENU);
+    }};
 }

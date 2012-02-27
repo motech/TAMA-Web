@@ -1,6 +1,7 @@
 package org.motechproject.tama.dailypillreminder.call;
 
 import org.motechproject.ivr.service.IVRService;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.domain.Dose;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
@@ -47,7 +48,7 @@ public class PillReminderCall extends IVRCall {
             if (timesSent == 0) {
                 recordDosageStatusAsNotRecordedByDefault(patientDocId);
             }
-            makeCall(patient, params);
+            makeCall(patient, CallTypeConstants.DAILY_PILL_REMINDER_CALL, params);
         }
     }
 

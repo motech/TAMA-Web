@@ -9,6 +9,7 @@ import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 
+import java.util.HashMap;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
@@ -35,14 +36,15 @@ public class IVRCallTest {
         final String patientDocId = "patientDocId";
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
 
-        ivrCall.makeCall(patient);
+        ivrCall.makeCall(patient, "outbox", new HashMap<String, String>());
 
         ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
         verify(ivrService).initiateCall(callRequestArgumentCaptor.capture());
 
         final CallRequest callRequest = callRequestArgumentCaptor.getValue();
-        assertEquals(1, callRequest.getPayload().size());
+        assertEquals(2, callRequest.getPayload().size());
         assertEquals("tama", callRequest.getCallBackUrl());
         assertEquals(patientDocId, callRequest.getPayload().get(IVRService.EXTERNAL_ID));
+        assertEquals("outbox", callRequest.getPayload().get(IVRService.CALL_TYPE));
     }
 }

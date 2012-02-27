@@ -10,6 +10,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.VoiceOutboxService;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
@@ -138,7 +139,7 @@ public class OutboxServiceTest {
     public void shouldMakeACall() {
         patient.setStatus(Status.Active);
         outboxService.call(motechEvent);
-        verify(ivrCall).makeCall(same(patient), Matchers.<Map<String, String>>any());
+        verify(ivrCall).makeCall(same(patient), eq(CallTypeConstants.OUTBOX_CALL), Matchers.<Map<String, String>>any());
         verify(outboxSchedulerService).scheduleRepeatingJobForOutBoxCall(patient);
     }
 
@@ -148,7 +149,7 @@ public class OutboxServiceTest {
         Mockito.when(allPatients.get(EXTERNAL_ID_KEY)).thenReturn(patient);
 
         outboxService.call(motechEvent);
-        verify(ivrCall).makeCall(same(patient), Matchers.<Map<String, String>>any());
+        verify(ivrCall).makeCall(same(patient), eq(CallTypeConstants.OUTBOX_CALL), Matchers.<Map<String, String>>any());
         verify(outboxSchedulerService).scheduleRepeatingJobForOutBoxCall(patient);
     }
 
@@ -159,7 +160,7 @@ public class OutboxServiceTest {
 
         outboxService.call(patient, false);
         ArgumentCaptor<Map> callParamsArg = ArgumentCaptor.forClass(Map.class);
-        verify(ivrCall).makeCall(same(patient), callParamsArg.capture());
+        verify(ivrCall).makeCall(same(patient), eq(CallTypeConstants.OUTBOX_CALL), callParamsArg.capture());
         assertEquals(1, callParamsArg.getValue().size());
         assertEquals("true", callParamsArg.getValue().get(TAMAIVRContext.IS_OUTBOX_CALL));
         verify(outboxSchedulerService, times(0)).scheduleRepeatingJobForOutBoxCall(patient);
@@ -172,7 +173,7 @@ public class OutboxServiceTest {
 
         outboxService.call(patient, true);
         ArgumentCaptor<Map> callParamsArg = ArgumentCaptor.forClass(Map.class);
-        verify(ivrCall).makeCall(same(patient), callParamsArg.capture());
+        verify(ivrCall).makeCall(same(patient), eq(CallTypeConstants.OUTBOX_CALL), callParamsArg.capture());
         assertEquals(1, callParamsArg.getValue().size());
         assertEquals("true", callParamsArg.getValue().get(TAMAIVRContext.IS_OUTBOX_CALL));
         verify(outboxSchedulerService).scheduleRepeatingJobForOutBoxCall(patient);
