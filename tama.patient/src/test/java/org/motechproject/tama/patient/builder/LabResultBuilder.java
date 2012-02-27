@@ -1,7 +1,6 @@
 package org.motechproject.tama.patient.builder;
 
 import org.joda.time.LocalDate;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
@@ -30,12 +29,10 @@ public class LabResultBuilder {
     }
 
     public static LabResultBuilder defaultCD4Result() {
-        LocalDate testDate = DateUtil.today();
         return startRecording().
                 withDefaults().
                 withLabTest(LabTestBuilder.defaultCD4().build()).
-                withResult("100").
-                withTestDate(testDate);
+                withResult("100");
     }
 
     public LabResult build() {

@@ -2,8 +2,8 @@ package org.motechproject.tama.patient.integration.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.common.TAMAConstants;
@@ -38,22 +38,25 @@ public class AllLabResultsTest extends SpringIntegrationTest {
     @Autowired
     private AllLabTests allLabTests;
 
-    LabTest labTest;
+    LabTest cd4LabTest;
 
     @Before
     public void setUp() {
-        labTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId").build();
-        allLabTests.add(labTest);
+        cd4LabTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId").build();
+        allLabTests.add(cd4LabTest);
 
         allLabResults = new AllLabResults(couchDbConnector, allLabTests);
+    }
 
+    @After
+    public void tearDown(){
         markForDeletion(allLabResults.getAll().toArray());
         markForDeletion(allLabTests.getAll().toArray());
     }
 
     @Test
     public void testGetShouldLoadLabTest() {
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(labTest).build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(cd4LabTest).build();
         allLabResults.add(labResult);
         markForDeletion(labResult);
 
@@ -120,7 +123,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldAddLabResultsWhenResultIsNotEmptyForANewRecord() {
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(labTest).withResult("1").build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(cd4LabTest).withResult("1").build();
         allLabResults.upsert(labResult);
         final LabResult savedLabResult = allLabResults.get(labResult.getId());
         assertEquals("1", savedLabResult.getResult());
@@ -128,7 +131,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldUpdateLabResultsWhenResultIsNotEmptyForAnExistingRecord() {
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(labTest).withResult("1").build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(cd4LabTest).withResult("1").build();
         allLabResults.add(labResult);
         labResult.setResult("100");
         allLabResults.upsert(labResult);
@@ -138,7 +141,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
     @Test(expected = DocumentNotFoundException.class)
     public void shouldRemoveLabResultsWhenResultIsEmptyEmptyForAnExistingRecord() {
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(labTest).withResult("1").build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(cd4LabTest).withResult("1").build();
         allLabResults.add(labResult);
         labResult.setResult(null);
         allLabResults.upsert(labResult);
@@ -169,9 +172,10 @@ public class AllLabResultsTest extends SpringIntegrationTest {
     @Test
     public void shouldGetListOfCD4LabResultsForPatient() throws Exception {
         String patientId = "patientId";
-        String resultId = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(labTest).build());
+        String resultId = allLabResults.upsert(LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTest(cd4LabTest).build());
         markForDeletion(allLabResults.get(resultId));
         int rangeInMonths = 3;
+
         List<LabResult> labResults = allLabResults.findCD4LabResultsFor(patientId, rangeInMonths);
         assertCD4LabResult(labResults.get(0));
     }
@@ -180,9 +184,9 @@ public class AllLabResultsTest extends SpringIntegrationTest {
     public void shouldNotReturnLabResultsOlderThanSpecifiedPeriod() throws Exception {
         String patientId = "patientId";
         final LocalDate today = DateUtil.today();
-        String resultId = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(labTest).
+        String resultId = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(cd4LabTest).
                 withTestDate(today.minusMonths(4)).build());
-        String resultId2 = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(labTest).
+        String resultId2 = allLabResults.upsert(LabResultBuilder.defaultCD4Result().withPatientId(patientId).withLabTest(cd4LabTest).
                 withTestDate(today.minusMonths(1)).build());
         markForDeletion(allLabResults.get(resultId));
         markForDeletion(allLabResults.get(resultId2));
@@ -190,6 +194,21 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         List<LabResult> labResults = allLabResults.findCD4LabResultsFor(patientId, rangeInMonths);
         assertEquals(1, labResults.size());
         assertEquals(resultId2, labResults.get(0).getId());
+    }
+
+    @Test
+    public void shouldGetListOfPVLLabResultsForPatient() throws Exception {
+        String patientId = "patientId";
+        LabTest pvlLabTest = LabTestBuilder.startRecording().withDefaults().withType(TAMAConstants.LabTestType.PVL).withId("pvlTestId").build();
+        allLabTests.add(pvlLabTest);
+        String resultId = allLabResults.upsert(LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTest(pvlLabTest).build());
+        markForDeletion(allLabResults.get(resultId));
+        int rangeInMonths = 3;
+
+        List<LabResult> labResults = allLabResults.findPVLLabResultsFor(patientId, rangeInMonths);
+
+        assertEquals(1, labResults.size());
+        assertEquals(TAMAConstants.LabTestType.PVL.getName(), labResults.get(0).getLabTest().getName());
     }
 
     private void assertCD4LabResult(LabResult labResult) {

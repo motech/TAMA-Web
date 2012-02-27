@@ -38,4 +38,8 @@ public class LabTestBuilder {
     public static LabTestBuilder defaultCD4() {
         return startRecording().withType(TAMAConstants.LabTestType.CD4).withId("cd4LabTest");
     }
+
+    public static LabTestBuilder defaultPVL() {
+        return startRecording().withType(TAMAConstants.LabTestType.PVL).withId("pvlLabTest");
+    }
 }

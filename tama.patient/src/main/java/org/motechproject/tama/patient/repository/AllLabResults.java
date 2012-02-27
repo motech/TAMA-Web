@@ -83,22 +83,29 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
         }
     }
 
-    @View(name = "find_by_patientId_and_labTest_id_and_testDate", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId && doc.labTest_id) {emit([doc.patientId, doc.labTest_id, doc.testDate], doc._id);}}")
     public List<LabResult> findCD4LabResultsFor(String patientId, int rangeInMonths) {
+        return findAllByLabTestFor(TAMAConstants.LabTestType.CD4, patientId, rangeInMonths);
+    }
 
+    public List<LabResult> findPVLLabResultsFor(String patientId, int rangeInMonths) {
+        return findAllByLabTestFor(TAMAConstants.LabTestType.PVL, patientId, rangeInMonths);
+    }
+
+    @View(name = "find_by_patientId_and_labTest_id_and_testDate", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId && doc.labTest_id) {emit([doc.patientId, doc.labTest_id, doc.testDate], doc._id);}}")
+    private List<LabResult> findAllByLabTestFor(TAMAConstants.LabTestType labTestType, String patientId, int rangeInMonths) {
         LocalDate today = DateUtil.today();
         LocalDate startDate = today.minusMonths(rangeInMonths);
-        LabTest cd4LabTest = allLabTests.findByName(TAMAConstants.LabTestType.CD4);
+        LabTest labTest = allLabTests.findByName(labTestType);
 
         ViewQuery query = createQuery("find_by_patientId_and_labTest_id_and_testDate").
-                startKey(ComplexKey.of(patientId, cd4LabTest.getId(), startDate)).
-                endKey(ComplexKey.of(patientId, cd4LabTest.getId(), today)).
+                startKey(ComplexKey.of(patientId, labTest.getId(), startDate)).
+                endKey(ComplexKey.of(patientId, labTest.getId(), today)).
                 inclusiveEnd(true).
                 includeDocs(true);
 
         List<LabResult> labResults = db.queryView(query, LabResult.class);
         for (LabResult labResult : labResults) {
-            labResult.setLabTest(cd4LabTest);
+            labResult.setLabTest(labTest);
         }
 
         return labResults;
