@@ -26,6 +26,7 @@
         Go to page:
         <input type="hidden" name="callLogStartDate" value="${pageNavigator.callLogStartDate}" ></input>
         <input type="hidden" name="callLogEndDate" value="${pageNavigator.callLogEndDate}" ></input>
+        <input type="hidden" name="callType" value="${pageNavigator.callType}" ></input>
         <input type="text" name="pageNumber" class="pageNumber" />
 
         <input class="goToPageButton" type="submit" value="Go" />

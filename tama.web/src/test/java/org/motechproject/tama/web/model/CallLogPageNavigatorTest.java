@@ -25,57 +25,56 @@ public class CallLogPageNavigatorTest {
 
     @Test
     public void shouldReturnNextPageLinkWhenNextPageExists() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(1, startDate, endDate, 2);
+        callLogPageNavigator = new CallLogPageNavigator(1, startDate, endDate, "Answered", 2);
         String nextLink = callLogPageNavigator.getNextPageLink();
-        assertEquals(buildExpectedLink("2"), nextLink);
-
+        assertEquals(buildExpectedLink("2", "Answered"), nextLink);
     }
 
     @Test
     public void shouldReturnNullWhenNextPageDoesNotExist() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, 2);
+        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, "Answered", 2);
         assertNull(callLogPageNavigator.getNextPageLink());
     }
 
     @Test
     public void shouldReturnPreviousPageLinkWhenPreviousPageExists() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, 2);
+        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, "Answered", 2);
         String previousLink = callLogPageNavigator.getPreviousPageLink();
-        assertEquals(buildExpectedLink("1"), previousLink);
+        assertEquals(buildExpectedLink("1", "Answered"), previousLink);
     }
 
     @Test
     public void shouldReturnNullWhenPreviousPageDoesNotExist() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(1, startDate, endDate, 1);
+        callLogPageNavigator = new CallLogPageNavigator(1, startDate, endDate, "Answered", 1);
         assertNull(callLogPageNavigator.getPreviousPageLink());
     }
 
     @Test
     public void shouldReturnLinkToFirstPage() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, 3);
-        assertEquals(buildExpectedLink("1"), callLogPageNavigator.getFirstPageLink());
+        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, "Answered", 3);
+        assertEquals(buildExpectedLink("1", "Answered"), callLogPageNavigator.getFirstPageLink());
     }
 
     @Test
     public void shouldReturnNullForFirstPageLinkWhenAlreadyOnFirstPage() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(1, startDate, endDate, 3);
+        callLogPageNavigator = new CallLogPageNavigator(1, startDate, endDate, "Answered", 3);
         assertNull(callLogPageNavigator.getFirstPageLink());
     }
 
     @Test
     public void shouldReturnLinkToLastPage() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, 3);
-        assertEquals(buildExpectedLink("3"), callLogPageNavigator.getLastPageLink());
+        callLogPageNavigator = new CallLogPageNavigator(2, startDate, endDate, "Missed", 3);
+        assertEquals(buildExpectedLink("3", "Missed"), callLogPageNavigator.getLastPageLink());
     }
 
     @Test
     public void shouldReturnNullForLastPageLinkWhenAlreadyOnLastPage() throws UnsupportedEncodingException {
-        callLogPageNavigator = new CallLogPageNavigator(3, startDate, endDate, 3);
+        callLogPageNavigator = new CallLogPageNavigator(3, startDate, endDate, "Answered", 3);
         assertNull(callLogPageNavigator.getLastPageLink());
     }
 
-    private String buildExpectedLink(String pageNumber) throws UnsupportedEncodingException {
-        return "callsummary?callLogStartDate=" + getFormattedDate(startDate) + "&callLogEndDate=" + getFormattedDate(endDate) + "&pageNumber=" + pageNumber;
+    private String buildExpectedLink(String pageNumber, String callType) throws UnsupportedEncodingException {
+        return "callsummary?callLogStartDate=" + getFormattedDate(startDate) + "&callLogEndDate=" + getFormattedDate(endDate) + "&callType=" + callType + "&pageNumber=" + pageNumber;
     }
 
     private String getFormattedDate(Date date) {

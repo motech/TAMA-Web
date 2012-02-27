@@ -154,6 +154,7 @@ public class CallSummaryControllerTest {
         callLogPreferencesFilter.setCallLogStartDate(DateUtil.today().toDate());
         callLogPreferencesFilter.setCallLogEndDate(DateUtil.tomorrow().toDate());
         callLogPreferencesFilter.setPageNumber("1");
+        callLogPreferencesFilter.setCallType("Answered");
         return callLogPreferencesFilter;
     }
 

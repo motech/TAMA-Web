@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,7 +32,6 @@ public class CallSummaryController {
     private CallLogService callLogService;
 
     private CallLogViewMapper callLogViewMapper;
-    private CallLogPreferencesFilter callLogPreferencesFilter;
     private final String LIST_VIEW = "callsummary/list";
     private final String CREATE_VIEW = "callsummary/create";
     private static final int HOURS_OF_THE_DAY = 23;
@@ -46,25 +46,23 @@ public class CallSummaryController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String list(@Valid CallLogPreferencesFilter callLogPreferencesFilter, BindingResult bindingResult, HttpServletRequest request, Model uiModel) {
+    public String list(@Valid CallLogPreferencesFilter filter, BindingResult bindingResult, HttpServletRequest request, Model uiModel) {
         if (bindingResult.hasErrors()) {
-            callLogPreferencesFilter = new CallLogPreferencesFilter();
-            uiModel.addAttribute("logPreferences", callLogPreferencesFilter);
+            uiModel.addAttribute("logPreferences", new CallLogPreferencesFilter());
             return CREATE_VIEW;
         }
 
-        DateTime startDate = DateUtil.newDateTime(callLogPreferencesFilter.getCallLogStartDate());
-        DateTime endDate = DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY)
+        DateTime startDate = DateUtil.newDateTime(filter.getCallLogStartDate());
+        DateTime endDate = DateUtil.newDateTime(filter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY)
                 .plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY);
 
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
-        Integer totalNumberOfPages = getTotalNumberOfPages(startDate, endDate, user);
-        Integer pageNumber = getValidPageNumber(callLogPreferencesFilter.getPageNumber(), totalNumberOfPages);
+        Integer totalNumberOfPages = getTotalNumberOfPages(user, startDate, endDate, filter.getCallType());
+        Integer pageNumber = getValidPageNumber(filter.getPageNumber(), totalNumberOfPages);
         
-        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(getCallLogsForPage(user, startDate, endDate, pageNumber));
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(getCallLogsForPage(user, startDate, endDate, filter.getCallType(), pageNumber));
 
-        CallLogPageNavigator callLogPageNavigator = new CallLogPageNavigator(pageNumber, callLogPreferencesFilter.getCallLogStartDate(),
-                callLogPreferencesFilter.getCallLogEndDate(), totalNumberOfPages);
+        CallLogPageNavigator callLogPageNavigator = new CallLogPageNavigator(pageNumber, filter.getCallLogStartDate(), filter.getCallLogEndDate(), filter.getCallType(), totalNumberOfPages);
 
         uiModel.asMap().clear();
         uiModel.addAttribute("callSummary", callLogViews);
@@ -72,8 +70,8 @@ public class CallSummaryController {
         return LIST_VIEW;
     }
 
-    private Integer getTotalNumberOfPages(DateTime startDate, DateTime endDate, AuthenticatedUser user) {
-        return calculateTotalNumberOfPages(getMaxNumberOfCallLogsPerPage(), getTotalNumberOfCallLogs(user, startDate, endDate));
+    private Integer getTotalNumberOfPages(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType) {
+        return calculateTotalNumberOfPages(getMaxNumberOfCallLogsPerPage(), getTotalNumberOfCallLogs(user, startDate, endDate, callType));
     }
 
     Integer getValidPageNumber(String pageNumber, Integer totalNumberOfPages) {
@@ -85,16 +83,16 @@ public class CallSummaryController {
         }
     }
 
-    private List<CallLog> getCallLogsForPage(AuthenticatedUser user, DateTime startDate, DateTime endDate, Integer pageNumber) {
+    private List<CallLog> getCallLogsForPage(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType, Integer pageNumber) {
         final Integer maxNumberOfCallLogsPerPage = getMaxNumberOfCallLogsPerPage();
         final int startIndex = getStartIndex(pageNumber, maxNumberOfCallLogsPerPage);
-        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, user.isAdministrator(), user.getClinicId());
+        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), user.isAdministrator(), user.getClinicId());
         callLogSearch.setPaginationParams(startIndex, maxNumberOfCallLogsPerPage);
         return callLogService.getLogsForDateRange(callLogSearch);
     }
 
-    private Integer getTotalNumberOfCallLogs(AuthenticatedUser user, DateTime startDate, DateTime endDate) {
-        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, user.isAdministrator(), user.getClinicId());
+    private Integer getTotalNumberOfCallLogs(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType) {
+        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), user.isAdministrator(), user.getClinicId());
         return callLogService.getTotalNumberOfLogs(callLogSearch);
     }
 
@@ -120,11 +118,11 @@ public class CallSummaryController {
     }
 
     private void populateUIModel(Model uiModel) {
-        callLogPreferencesFilter = new CallLogPreferencesFilter();
+        CallLogPreferencesFilter callLogPreferencesFilter = new CallLogPreferencesFilter();
         callLogPreferencesFilter.setCallLogStartDate(DateUtil.today().toDate());
         callLogPreferencesFilter.setCallLogEndDate(DateUtil.today().toDate());
         callLogPreferencesFilter.setPageNumber("1");
+        uiModel.addAttribute("callTypes", Arrays.asList(CallLog.CallLogType.values()));
         uiModel.addAttribute("logPreferences", callLogPreferencesFilter);
     }
-
 }

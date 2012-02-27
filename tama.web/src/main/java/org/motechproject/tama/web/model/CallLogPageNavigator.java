@@ -14,12 +14,15 @@ public class CallLogPageNavigator {
 
     private Date callLogEndDate;
 
+    private String callType;
+
     private Integer totalNumberOfPages;
-    
-    public CallLogPageNavigator(Integer currentPageNumber, Date callLogStartDate, Date callLogEndDate, Integer totalNumberOfPages) {
+
+    public CallLogPageNavigator(Integer currentPageNumber, Date callLogStartDate, Date callLogEndDate, String callType, Integer totalNumberOfPages) {
         this.currentPageNumber = currentPageNumber;
         this.callLogStartDate = callLogStartDate;
         this.callLogEndDate = callLogEndDate;
+        this.callType = callType;
         this.totalNumberOfPages = totalNumberOfPages;
     }
 
@@ -48,7 +51,7 @@ public class CallLogPageNavigator {
     private String getFormattedLink(String pageNumber) throws UnsupportedEncodingException {
         String startDateString = DateUtil.newDate(callLogStartDate).toString(TAMAConstants.DATE_FORMAT);
         String endDateString = DateUtil.newDate(callLogEndDate).toString(TAMAConstants.DATE_FORMAT);
-        return "callsummary?callLogStartDate=" + startDateString + "&callLogEndDate=" + endDateString + "&pageNumber=" + pageNumber;
+        return "callsummary?callLogStartDate=" + startDateString + "&callLogEndDate=" + endDateString + "&callType=" + callType + "&pageNumber=" + pageNumber;
     }
 
     public Integer getCurrentPageNumber() {
@@ -63,8 +66,11 @@ public class CallLogPageNavigator {
         return DateUtil.newDate(callLogEndDate).toString(TAMAConstants.DATE_FORMAT);
     }
 
+    public String getCallType() {
+        return callType;
+    }
+
     public Integer getTotalNumberOfPages() {
         return totalNumberOfPages;
     }
-
 }
