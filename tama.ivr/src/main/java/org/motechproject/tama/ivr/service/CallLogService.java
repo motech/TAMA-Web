@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.mapper.CallLogMapper;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patient;
@@ -25,16 +26,14 @@ public class CallLogService {
     private final KookooCallDetailRecordsService kookooCallDetailRecordsService;
     private final CallLogMapper callDetailRecordMapper;
     private final AllPatients allPatients;
-    private Properties properties;
 
     @Autowired
     public CallLogService(AllCallLogs allCallDetails, KookooCallDetailRecordsService kookooCallDetailRecordsService,
-                          CallLogMapper callDetailRecordMapper, AllPatients allPatients, @Qualifier("ivrProperties") Properties properties) {
+                          CallLogMapper callDetailRecordMapper, AllPatients allPatients) {
         this.allCallLogs = allCallDetails;
         this.kookooCallDetailRecordsService = kookooCallDetailRecordsService;
         this.callDetailRecordMapper = callDetailRecordMapper;
         this.allPatients = allPatients;
-        this.properties = properties;
     }
 
     public void log(String callId, String patientDocumentId) {
@@ -56,22 +55,18 @@ public class CallLogService {
         return allCallLogs.getAll();
     }
 
-    public Integer getTotalNumberOfLogs(DateTime fromDate, DateTime toDate, boolean isAdministrator, String clinicId) {
-        if (isAdministrator)
-            return allCallLogs.findTotalNumberOfCallLogsForDateRange(fromDate, toDate);
+    public Integer getTotalNumberOfLogs(CallLogSearch callLogSearch) {
+        if (callLogSearch.isSearchAllClinics())
+            return allCallLogs.findTotalNumberOfCallLogsForDateRange(callLogSearch);
         else
-            return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId);
+            return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndClinic(callLogSearch);
     }
 
-    public List<CallLog> getLogsForDateRange(DateTime fromDate, DateTime toDate, boolean isAdministrator, String clinicId, int startIndex) {
-        if (isAdministrator)
-            return allCallLogs.findCallLogsForDateRange(fromDate, toDate, startIndex, getMaxNumberOfCallLogsPerPage());
+    public List<CallLog> getLogsForDateRange(CallLogSearch callLogSearch) {
+        if (callLogSearch.isSearchAllClinics())
+            return allCallLogs.findCallLogsForDateRange(callLogSearch);
         else
-            return allCallLogs.findCallLogsForDateRangeAndClinic(fromDate, toDate, clinicId, startIndex, getMaxNumberOfCallLogsPerPage());
-    }
-
-    private Integer getMaxNumberOfCallLogsPerPage() {
-        return Integer.parseInt(properties.getProperty(MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20"));
+            return allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch);
     }
 
     private List<String> getAllLikelyPatientIds(KookooCallDetailRecord kookooCallDetailRecord) {

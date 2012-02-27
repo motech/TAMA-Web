@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
@@ -11,6 +12,7 @@ import org.motechproject.ivr.model.CallDetailRecord;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.mapper.CallLogMapper;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -19,7 +21,6 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -37,14 +38,13 @@ public class CallLogServiceTest {
     @Mock
     private CallLogMapper callLogMapper;
     @Mock
-    private Properties properties;
     private Patient patient;
     private Clinic clinic;
 
     @Before
     public void setUp() {
         initMocks(this);
-        callLoggingService = new CallLogService(allCallLogs, kookooCallDetailRecordsService, callLogMapper, allPatients, properties);
+        callLoggingService = new CallLogService(allCallLogs, kookooCallDetailRecordsService, callLogMapper, allPatients);
 
         clinic = ClinicBuilder.startRecording().withDefaults().withId("clinicId").build();
         patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
@@ -101,46 +101,38 @@ public class CallLogServiceTest {
 
     @Test
     public void shouldReturnCallLogsForADateRange() {
-        when(properties.getProperty(CallLogService.MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20")).thenReturn("20");
-
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getLogsForDateRange(startDate, endDate, true, null, 10);
+        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, true, null));
 
-        verify(allCallLogs).findCallLogsForDateRange(startDate, endDate, 10, 20);
+        verify(allCallLogs).findCallLogsForDateRange(Matchers.<CallLogSearch>any());
     }
 
     @Test
     public void shouldReturnTotalNumberOfCallLogsForADateRange() {
-        when(properties.getProperty(CallLogService.MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20")).thenReturn("20");
-
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(startDate, endDate, true, null);
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, true, null));
 
-        verify(allCallLogs).findTotalNumberOfCallLogsForDateRange(startDate, endDate);
+        verify(allCallLogs).findTotalNumberOfCallLogsForDateRange(Matchers.<CallLogSearch>any());
     }
 
     @Test
     public void shouldReturnCallLogsForADateRangeAndClinic() {
-        when(properties.getProperty(CallLogService.MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20")).thenReturn("20");
-
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getLogsForDateRange(startDate, endDate, false, "clinicId", 10);
+        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, false, "clinic"));
 
-        verify(allCallLogs).findCallLogsForDateRangeAndClinic(startDate, endDate, "clinicId", 10, 20);
+        verify(allCallLogs).findCallLogsForDateRangeAndClinic(Matchers.<CallLogSearch>any());
     }
 
     @Test
     public void shouldReturnTotalNumberOfCallLogsForADateRangeAndClinic() {
-        when(properties.getProperty(CallLogService.MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20")).thenReturn("20");
-
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(startDate, endDate, false, "clinicId");
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, false, "clinic"));
 
-        verify(allCallLogs).findTotalNumberOfCallLogsForDateRangeAndClinic(startDate, endDate, "clinicId");
+        verify(allCallLogs).findTotalNumberOfCallLogsForDateRangeAndClinic(Matchers.<CallLogSearch>any());
     }
 
     private KookooCallDetailRecord callDetailRecord() {

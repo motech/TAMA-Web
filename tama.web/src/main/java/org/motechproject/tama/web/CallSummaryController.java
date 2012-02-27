@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.joda.time.DateTime;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.service.CallLogService;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -85,12 +86,16 @@ public class CallSummaryController {
     }
 
     private List<CallLog> getCallLogsForPage(AuthenticatedUser user, DateTime startDate, DateTime endDate, Integer pageNumber) {
-        final int startIndex = getStartIndex(pageNumber, getMaxNumberOfCallLogsPerPage());
-        return callLogService.getLogsForDateRange(startDate, endDate, user.isAdministrator(), user.getClinicId(), startIndex);
+        final Integer maxNumberOfCallLogsPerPage = getMaxNumberOfCallLogsPerPage();
+        final int startIndex = getStartIndex(pageNumber, maxNumberOfCallLogsPerPage);
+        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, user.isAdministrator(), user.getClinicId());
+        callLogSearch.setPaginationParams(startIndex, maxNumberOfCallLogsPerPage);
+        return callLogService.getLogsForDateRange(callLogSearch);
     }
 
     private Integer getTotalNumberOfCallLogs(AuthenticatedUser user, DateTime startDate, DateTime endDate) {
-        return callLogService.getTotalNumberOfLogs(startDate, endDate, user.isAdministrator(), user.getClinicId());
+        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, user.isAdministrator(), user.getClinicId());
+        return callLogService.getTotalNumberOfLogs(callLogSearch);
     }
 
     private Integer getMaxNumberOfCallLogsPerPage() {
