@@ -11,6 +11,8 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
@@ -54,5 +56,26 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
 
         assertEquals(new Integer(200), savedVitalStatistics.getPulse());
         assertEquals(vitalStatistics.getRevision(), savedVitalStatistics.getRevision());
+    }
+
+    @Test
+    public void shouldReturnAllVitalStatisticsForAPatientBetweenADateRange() {
+        LocalDate today = DateUtil.today();
+        VitalStatistics vitalStatistics_10DaysAgo = new VitalStatisticsBuilder().withDefaults().withPatientId("patient_id").withCaptureDate(today.minusDays(10)).build();
+        VitalStatistics vitalStatistics_Today = new VitalStatisticsBuilder().withDefaults().withPatientId("another_patient_id").withCaptureDate(today).build();
+        VitalStatistics vitalStatistics_5DaysAfter = new VitalStatisticsBuilder().withDefaults().withPatientId("patient_id").withCaptureDate(today.plusDays(5)).build();
+        VitalStatistics vitalStatistics_10DaysAfter = new VitalStatisticsBuilder().withDefaults().withPatientId("patient_id").withCaptureDate(today.plusDays(10)).build();
+
+        allVitalStatistics.add(vitalStatistics_Today);
+        allVitalStatistics.add(vitalStatistics_5DaysAfter);
+        allVitalStatistics.add(vitalStatistics_10DaysAgo);
+
+        LocalDate startDate = today.minusDays(11);
+        LocalDate endDate = today.plusDays(5);
+        List<VitalStatistics> vitalStatistics = allVitalStatistics.findAllByPatientId("patient_id", startDate, endDate);
+
+        assertEquals(2, vitalStatistics.size());
+        assertEquals(vitalStatistics_10DaysAgo.getId(), vitalStatistics.get(0).getId());
+        assertEquals(vitalStatistics_5DaysAfter.getId(), vitalStatistics.get(1).getId());
     }
 }

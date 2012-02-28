@@ -3,6 +3,7 @@ package org.motechproject.tama.patient.repository;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.View;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,13 @@ public class AllVitalStatistics extends AbstractCouchRepository<VitalStatistics>
     }
 
     @View(name = "find_by_patientId", map = "function(doc) {if (doc.documentType =='VitalStatistics' && doc.patientId) {emit([doc.patientId, doc.captureDate], doc._id);}}")
+    public List<VitalStatistics> findAllByPatientId(String patientId, LocalDate startDate, Object endDate) {
+        ComplexKey startKey = ComplexKey.of(patientId, startDate);
+        ComplexKey endKey = ComplexKey.of(patientId, endDate);
+        return db.queryView(createQuery("find_by_patientId").startKey(startKey).endKey(endKey).includeDocs(true), VitalStatistics.class);
+    }
+
     public VitalStatistics findLatestVitalStatisticByPatientId(String patientId) {
-        ComplexKey startKey = ComplexKey.of(patientId);
-        ComplexKey endKey = ComplexKey.of(patientId, ComplexKey.emptyObject());
-        List<VitalStatistics> vitalStatisticsOfPatient = db.queryView(createQuery("find_by_patientId").startKey(startKey).endKey(endKey).includeDocs(true), VitalStatistics.class);
-        return lastResult(vitalStatisticsOfPatient);
+        return lastResult(findAllByPatientId(patientId, null, ComplexKey.emptyObject()));
     }
 }
