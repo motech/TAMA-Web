@@ -53,6 +53,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ClinicVisitsControllerTest {
 
     public static class SubjectUnderTest {
+
         public static final String PATIENT_ID = "patientId";
         public static final String VISIT_ID = "clinicVisitId";
         @Mock
@@ -83,7 +84,7 @@ public class ClinicVisitsControllerTest {
 
     public static class CreateForm extends SubjectUnderTest {
 
-        public static class WhenPatientHasTreatmentAdvice extends CreateForm{
+        public static class WhenPatientHasTreatmentAdvice extends CreateForm {
             @Test
             public void shouldRedirectToShowClinicVisits_WhenVisitDetailsWasEdited() {
                 String patientId = "patientId";
@@ -98,7 +99,7 @@ public class ClinicVisitsControllerTest {
 
                 String redirectURL = clinicVisitsController.createForm(patientId, clinicVisitId, uiModel, request);
 
-                assertEquals("redirect:/clinicvisits/"+ clinicVisitId + "?patientId=" + patientId, redirectURL);
+                assertEquals("redirect:/clinicvisits/" + clinicVisitId + "?patientId=" + patientId, redirectURL);
                 verify(treatmentAdviceController).show(treatmentAdvice.getId(), uiModel);
             }
 
@@ -185,7 +186,7 @@ public class ClinicVisitsControllerTest {
             when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel)).thenReturn("opportunisticInfectionsId");
             when(allClinicVisits.updateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId")).thenReturn(clinicVisitId);
 
-            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit,treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
             verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
@@ -196,7 +197,7 @@ public class ClinicVisitsControllerTest {
         }
 
         @Test
-        public void shouldRedirectToCreateForm_WhenTreatmentAdviceCreateErrorsOut(){
+        public void shouldRedirectToCreateForm_WhenTreatmentAdviceCreateErrorsOut() {
             when(bindingResult.hasErrors()).thenReturn(false);
             doThrow(new RuntimeException("Some Error")).when(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
 
@@ -210,7 +211,7 @@ public class ClinicVisitsControllerTest {
         }
 
         @Test
-        public void shouldRedirectToClinicVisitShowPage_WhenLabResultCreateErrorsOut(){
+        public void shouldRedirectToClinicVisitShowPage_WhenLabResultCreateErrorsOut() {
             String patientId = treatmentAdvice.getPatientId();
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
@@ -223,7 +224,7 @@ public class ClinicVisitsControllerTest {
         }
 
         @Test
-        public void shouldStillPersistTreatmentAdviceInClinicVisit_WhenLabResultCreateErrorsOut(){
+        public void shouldStillPersistTreatmentAdviceInClinicVisit_WhenLabResultCreateErrorsOut() {
             String patientId = treatmentAdvice.getPatientId();
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
@@ -233,9 +234,9 @@ public class ClinicVisitsControllerTest {
 
             verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), anyList(), Matchers.<String>eq(null), Matchers.<String>eq(null));
         }
-        
+
         @Test
-        public void shouldStillPersistVitalStatistics_whenLabResultCreateErrorsOut(){
+        public void shouldStillPersistVitalStatistics_whenLabResultCreateErrorsOut() {
             String patientId = treatmentAdvice.getPatientId();
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
@@ -248,9 +249,9 @@ public class ClinicVisitsControllerTest {
             verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
             verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), anyList(), eq("vitalStatisticsId"), eq("opportunisticInfectionsId"));
         }
-        
+
         @Test
-        public void shouldRedirectToClinicVisitShowPage_WhenVitalStatisticsCreateErrorsOut(){
+        public void shouldRedirectToClinicVisitShowPage_WhenVitalStatisticsCreateErrorsOut() {
             String patientId = treatmentAdvice.getPatientId();
             List<String> labResultIds = new ArrayList<String>();
             when(bindingResult.hasErrors()).thenReturn(false);
@@ -265,7 +266,7 @@ public class ClinicVisitsControllerTest {
         }
 
         @Test
-        public void shouldStillPersistTreatmentAdviceAndLabResultsInClinicVisit_WhenVitalStatisticsCreateErrorsOut(){
+        public void shouldStillPersistTreatmentAdviceAndLabResultsInClinicVisit_WhenVitalStatisticsCreateErrorsOut() {
             String patientId = treatmentAdvice.getPatientId();
             List<String> labResultIds = new ArrayList<String>();
             when(bindingResult.hasErrors()).thenReturn(false);
@@ -280,7 +281,7 @@ public class ClinicVisitsControllerTest {
         }
 
         @Test
-        public void shouldRedirectToCreateForm_WhenUpdatingClinicVisitErrorsOut(){
+        public void shouldRedirectToCreateForm_WhenUpdatingClinicVisitErrorsOut() {
             String patientId = treatmentAdvice.getPatientId();
             ArrayList<String> labResultIds = new ArrayList<String>();
             when(bindingResult.hasErrors()).thenReturn(false);
@@ -322,7 +323,10 @@ public class ClinicVisitsControllerTest {
             Model uiModel = mock(Model.class);
             final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().build();
             final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().build();
-            when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(new ClinicVisits() {{ add(visit1); add(visit2); }});
+            when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(new ClinicVisits() {{
+                add(visit1);
+                add(visit2);
+            }});
 
             final String listUrl = clinicVisitsController.list(PATIENT_ID, uiModel);
 

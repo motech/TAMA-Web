@@ -11,8 +11,8 @@ import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
-import org.motechproject.tama.clinicvisits.mapper.AppointmentCalendarRequestMapper;
-import org.motechproject.tama.clinicvisits.mapper.VisitRequestMapper;
+import org.motechproject.tama.clinicvisits.mapper.AppointmentCalendarRequestBuilder;
+import org.motechproject.tama.clinicvisits.mapper.VisitRequestBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +29,16 @@ public class AllClinicVisits {
 
     private AllPatients allPatients;
     private AppointmentService appointmentService;
-    private AppointmentCalendarRequestMapper appointmentCalendarRequestMapper;
-    private VisitRequestMapper visitRequestMapper;
+    private AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder;
+    private VisitRequestBuilder visitRequestBuilder;
     private Properties appointmentsProperties;
 
     @Autowired
-    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, AppointmentCalendarRequestMapper appointmentCalendarRequestMapper, VisitRequestMapper visitRequestMapper, @Qualifier("appointments") Properties appointmentsProperties) {
+    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder, VisitRequestBuilder visitRequestBuilder, @Qualifier("appointments") Properties appointmentsProperties) {
         this.allPatients = allPatients;
         this.appointmentService = appointmentService;
-        this.appointmentCalendarRequestMapper = appointmentCalendarRequestMapper;
-        this.visitRequestMapper = visitRequestMapper;
+        this.appointmentCalendarRequestBuilder = appointmentCalendarRequestBuilder;
+        this.visitRequestBuilder = visitRequestBuilder;
         this.appointmentsProperties = appointmentsProperties;
     }
 
@@ -49,7 +49,7 @@ public class AllClinicVisits {
     }
 
     public void addAppointmentCalendar(String patientDocId) {
-        AppointmentCalendarRequest appointmentCalendarRequest = appointmentCalendarRequestMapper.map(patientDocId);
+        AppointmentCalendarRequest appointmentCalendarRequest = appointmentCalendarRequestBuilder.calendarForPatient(patientDocId);
         appointmentService.removeCalendar(patientDocId);
         appointmentService.addCalendar(appointmentCalendarRequest);
     }
@@ -84,7 +84,7 @@ public class AllClinicVisits {
 
     public String createAppointment(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + appointmentDueDate.getMillis();
-        VisitRequest visitRequest = visitRequestMapper.map(appointmentDueDate, typeOfVisit) ;
+        VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminder(appointmentDueDate, typeOfVisit);
         return appointmentService.addVisit(patientDocId, visitName, visitRequest);
     }
 

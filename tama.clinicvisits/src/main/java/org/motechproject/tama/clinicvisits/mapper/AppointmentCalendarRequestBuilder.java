@@ -14,26 +14,26 @@ import java.util.Map;
 import java.util.Properties;
 
 @Component
-public class AppointmentCalendarRequestMapper {
+public class AppointmentCalendarRequestBuilder {
 
     public static final String APPOINTMENT_SCHEDULE = "appointment-schedule";
 
     private Properties appointmentsProperties;
-    private VisitRequestMapper visitRequestMapper;
+    private VisitRequestBuilder visitRequestBuilder;
 
     @Autowired
-    public AppointmentCalendarRequestMapper(VisitRequestMapper visitRequestMapper, @Qualifier("appointments") Properties appointmentsProperties) {
+    public AppointmentCalendarRequestBuilder(VisitRequestBuilder visitRequestBuilder, @Qualifier("appointments") Properties appointmentsProperties) {
         this.appointmentsProperties = appointmentsProperties;
-        this.visitRequestMapper = visitRequestMapper;
+        this.visitRequestBuilder = visitRequestBuilder;
     }
 
-    public AppointmentCalendarRequest map(String patientDocId) {
+    public AppointmentCalendarRequest calendarForPatient(String patientDocId) {
         Map<String, VisitRequest> visitRequests = new HashMap<String, VisitRequest>();
 
-        visitRequests.put(ClinicVisit.BASELINE, visitRequestMapper.mapBaselineVisit());
+        visitRequests.put(ClinicVisit.BASELINE, visitRequestBuilder.baselineVisit());
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsProperties.getProperty(APPOINTMENT_SCHEDULE));
         for (Integer appointmentWeek : appointmentWeeks) {
-            VisitRequest visitRequest = visitRequestMapper.mapScheduledVisit(appointmentWeek);
+            VisitRequest visitRequest = visitRequestBuilder.visitWithReminder(appointmentWeek);
             visitRequests.put("week" + appointmentWeek, visitRequest);
         }
         return new AppointmentCalendarRequest()

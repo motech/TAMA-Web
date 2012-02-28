@@ -123,9 +123,9 @@ public class ClinicVisitsController extends BaseController {
             uiModel.addAttribute("errorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
         }
 
-        try{
+        try {
             allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, opportunisticInfectionsId);
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             uiModel.addAttribute("error", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
         }

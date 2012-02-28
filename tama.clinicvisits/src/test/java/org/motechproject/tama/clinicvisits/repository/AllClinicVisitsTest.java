@@ -16,8 +16,8 @@ import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
-import org.motechproject.tama.clinicvisits.mapper.AppointmentCalendarRequestMapper;
-import org.motechproject.tama.clinicvisits.mapper.VisitRequestMapper;
+import org.motechproject.tama.clinicvisits.mapper.AppointmentCalendarRequestBuilder;
+import org.motechproject.tama.clinicvisits.mapper.VisitRequestBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -44,9 +44,9 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     @Mock
     private AppointmentService appointmentService;
     @Mock
-    private AppointmentCalendarRequestMapper appointmentCalendarRequestMapper;
+    private AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder;
     @Mock
-    private VisitRequestMapper visitRequestMapper;
+    private VisitRequestBuilder visitRequestBuilder;
 
     private AllClinicVisits allClinicVisits;
 
@@ -55,13 +55,13 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         initMocks(this);
         when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build());
         appointmentsProperties.setProperty(AllClinicVisits.REMIND_FOR_VISIT_FROM, REMIND_FOR_VISIT_FROM_DAYS);
-        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentCalendarRequestMapper, visitRequestMapper, appointmentsProperties);
+        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentCalendarRequestBuilder, visitRequestBuilder, appointmentsProperties);
     }
 
     @Test
     public void shouldAddAppointmentCalendar() {
         allClinicVisits.addAppointmentCalendar(PATIENT_ID);
-        verify(appointmentCalendarRequestMapper).map(PATIENT_ID);
+        verify(appointmentCalendarRequestBuilder).calendarForPatient(PATIENT_ID);
         verify(appointmentService).addCalendar(Matchers.<AppointmentCalendarRequest>any());
     }
 
@@ -139,11 +139,13 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldCreateAdhocAppointment() throws Exception {
+    public void shouldCreateAdHocAppointment() throws Exception {
         DateTime dueDate = DateUtil.now();
+        VisitRequest visitRequest = mock(VisitRequest.class);
+
+        when(visitRequestBuilder.visitWithoutReminder(dueDate, TypeOfVisit.Unscheduled)).thenReturn(visitRequest);
         allClinicVisits.createAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
-        verify(visitRequestMapper).map(dueDate, TypeOfVisit.Unscheduled);
-        verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), Matchers.<VisitRequest>any());
+        verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), same(visitRequest));
     }
 
     @Test

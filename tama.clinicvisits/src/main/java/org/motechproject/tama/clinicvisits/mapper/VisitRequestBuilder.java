@@ -9,20 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VisitRequestMapper {
+public class VisitRequestBuilder {
 
     private ReminderConfigurationMapper reminderConfigurationMapper;
 
     @Autowired
-    public VisitRequestMapper(ReminderConfigurationMapper reminderConfigurationMapper) {
+    public VisitRequestBuilder(ReminderConfigurationMapper reminderConfigurationMapper) {
         this.reminderConfigurationMapper = reminderConfigurationMapper;
     }
 
-    public VisitRequest map(DateTime dueDate, TypeOfVisit typeOfVisit) {
+    public VisitRequest visitWithoutReminder(DateTime dueDate, TypeOfVisit typeOfVisit) {
         return new VisitRequest().setDueDate(dueDate).addData(ClinicVisit.TYPE_OF_VISIT, typeOfVisit);
     }
 
-    public VisitRequest mapScheduledVisit(Integer weekOffset) {
+    public VisitRequest visitWithReminder(Integer weekOffset) {
         DateTime dueDate = DateUtil.now().plusWeeks(weekOffset);
         return new VisitRequest()
                 .setDueDate(dueDate)
@@ -30,7 +30,7 @@ public class VisitRequestMapper {
                 .addData(ClinicVisit.WEEK_NUMBER, weekOffset).addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled);
     }
 
-    public VisitRequest mapBaselineVisit() {
+    public VisitRequest baselineVisit() {
         return new VisitRequest().addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Baseline);
     }
 
