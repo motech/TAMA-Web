@@ -11,8 +11,11 @@
 
         <script type="text/javascript">
             dojo.ready(function () {
-                var x = new PatientDashboardChart("cd4CountOverTime", "${listCD4CountUrl}", "CD4 count");
-                x.draw();
+                var dangerZoneRangeFunction = function(jsonData) {
+                    return jsonData.map(function (elt, index) {return 500;});
+                }
+                var cd4ChartWidget = new PatientDashboardChart("cd4CountOverTime", "${listCD4CountUrl}", "CD4 count", dangerZoneRangeFunction);
+                cd4ChartWidget.draw();
             });
         </script>
 

@@ -11,8 +11,8 @@
 
         <script type="text/javascript">
             dojo.ready(function () {
-                var x = new PatientDashboardChart("plvCountOverTime", "${listPVLCountUrl}", "PLV count");
-                x.draw();
+                var pvlChartWidget = new PatientDashboardChart("plvCountOverTime", "${listPVLCountUrl}", "PLV count");
+                pvlChartWidget.draw();
             });
         </script>
 

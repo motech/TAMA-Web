@@ -5,13 +5,13 @@ dojo.require("dojox.charting.plot2d.Areas");
 dojo.require("dojox.charting.themes.ThreeD");
 dojo.require("dojox.charting.plot2d.Markers");
 
-var PatientDashboardChart = function(chartName, dataUrl, tooltipPrefix, normalRangeFunction){
+var PatientDashboardChart = function(chartName, dataUrl, tooltipPrefix, dangerZoneRangeFunction){
     this.targetElement = dojo.byId(chartName);
     this.placeholderElement = dojo.byId(chartName + "Placeholder");
     this.noticeBanner = new Banner(chartName + "Notice");
     this.dataUrl = dataUrl;
     this.tooltipPrefix = tooltipPrefix;
-    this.normalRangeFunction = normalRangeFunction;
+    this.dangerZoneRangeFunction = dangerZoneRangeFunction;
     this.chartRenderer = new dojox.charting.Chart2D(chartName);
     this.theme = new dojox.charting.Theme({marker:{ symbol:"m0,-7 7,7 -7,7 -7,-7 z"}}); // diamond
 
@@ -66,9 +66,11 @@ PatientDashboardChart.prototype = {
     },
 
     plotDangerZone: function(jsonData){
-        this.chartRenderer.addPlot("danger", {type:"Areas"});
-        var dangerZone = jsonData.map(function (elt, index) {return 500;});;
-        this.chartRenderer.addSeries("Danger Range", dangerZone, {plot: "danger", stroke: {color:"white"}, fill: "rgba(255,0,0,0.7)"});
+        if (typeof(this.dangerZoneRangeFunction) == "function") {
+            this.chartRenderer.addPlot("danger", {type:"Areas"});
+            var dangerZone = this.dangerZoneRangeFunction(jsonData);
+            this.chartRenderer.addSeries("Danger Range", dangerZone, {plot: "danger", stroke: {color:"white"}, fill: "rgba(255,0,0,0.7)"});
+        }
     },
 
     hide: function(){
