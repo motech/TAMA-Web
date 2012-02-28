@@ -30,10 +30,10 @@ public class AppointmentCalendarRequestBuilder {
     public AppointmentCalendarRequest calendarForPatient(String patientDocId) {
         Map<String, VisitRequest> visitRequests = new HashMap<String, VisitRequest>();
 
-        visitRequests.put(ClinicVisit.BASELINE, visitRequestBuilder.baselineVisit());
+        visitRequests.put(ClinicVisit.BASELINE, visitRequestBuilder.baselineVisitRequest());
         List<Integer> appointmentWeeks = ListOfWeeks.weeks(appointmentsProperties.getProperty(APPOINTMENT_SCHEDULE));
         for (Integer appointmentWeek : appointmentWeeks) {
-            VisitRequest visitRequest = visitRequestBuilder.visitWithReminder(appointmentWeek);
+            VisitRequest visitRequest = visitRequestBuilder.scheduledVisitRequest(appointmentWeek);
             visitRequests.put("week" + appointmentWeek, visitRequest);
         }
         return new AppointmentCalendarRequest()

@@ -16,9 +16,9 @@ public class AppointmentCalendarRequestBuilderTest {
     @Before
     public void setUp() {
         Properties appointmentsProperties = new Properties();
-        appointmentsProperties.put(ReminderConfigurationMapper.REMIND_FROM, "10");
+        appointmentsProperties.put(ReminderConfigurationBuilder.REMIND_FROM, "10");
         appointmentsProperties.put(AppointmentCalendarRequestBuilder.APPOINTMENT_SCHEDULE, "4,12,24");
-        VisitRequestBuilder visitRequestBuilder = new VisitRequestBuilder(new ReminderConfigurationMapper(appointmentsProperties));
+        VisitRequestBuilder visitRequestBuilder = new VisitRequestBuilder(new ReminderConfigurationBuilder(appointmentsProperties));
         builder = new AppointmentCalendarRequestBuilder(visitRequestBuilder, appointmentsProperties);
     }
 

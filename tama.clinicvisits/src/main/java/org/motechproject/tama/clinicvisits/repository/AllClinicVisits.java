@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Properties;
 
+//TODO: Jack of All Trades smell. Probably, our Aggregate is broken
 @Repository
 public class AllClinicVisits {
 
@@ -40,6 +41,12 @@ public class AllClinicVisits {
         this.appointmentCalendarRequestBuilder = appointmentCalendarRequestBuilder;
         this.visitRequestBuilder = visitRequestBuilder;
         this.appointmentsProperties = appointmentsProperties;
+    }
+
+    public String createUnScheduledAppointment(String patientId, DateTime dueDate) {
+        String visitName = "visitFor-" + dueDate.getMillis();
+        VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, TypeOfVisit.Unscheduled);
+        return appointmentService.addVisit(patientId, visitName, visitRequest);
     }
 
     public ClinicVisit get(String patientDocId, String visitId) {
@@ -82,9 +89,9 @@ public class AllClinicVisits {
         return clinicVisit.getId();
     }
 
-    public String createVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
+    public String createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + appointmentDueDate.getMillis();
-        VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminder(appointmentDueDate, typeOfVisit);
+        VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminderRequest(appointmentDueDate, typeOfVisit);
         return appointmentService.addVisit(patientDocId, visitName, visitRequest);
     }
 

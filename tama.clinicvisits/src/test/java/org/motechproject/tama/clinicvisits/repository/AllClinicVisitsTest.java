@@ -139,13 +139,39 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldCreateAdHocAppointment() throws Exception {
+    public void shouldCreateUniqueVisitNameForUnscheduledVisit() {
+        DateTime dueDate = DateUtil.now();
+
+        allClinicVisits.createUnscheduledVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
+        verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), Matchers.<VisitRequest>any());
+    }
+
+    @Test
+    public void shouldMakeVisitRequestForUnscheduledVisit() {
         DateTime dueDate = DateUtil.now();
         VisitRequest visitRequest = mock(VisitRequest.class);
 
-        when(visitRequestBuilder.visitWithoutReminder(dueDate, TypeOfVisit.Unscheduled)).thenReturn(visitRequest);
-        allClinicVisits.createVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
-        verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), same(visitRequest));
+        when(visitRequestBuilder.visitWithoutReminderRequest(dueDate, TypeOfVisit.Unscheduled)).thenReturn(visitRequest);
+        allClinicVisits.createUnscheduledVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
+        verify(appointmentService).addVisit(eq(PATIENT_ID), anyString(), same(visitRequest));
+    }
+
+    @Test
+    public void shouldCreateUniqueVisitNameForUnscheduledAppointment() {
+        DateTime dueDate = DateUtil.now();
+
+        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate);
+        verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), Matchers.<VisitRequest>any());
+    }
+
+    @Test
+    public void shouldMakeVisitRequestForUnscheduledAppointment() {
+        DateTime dueDate = DateUtil.now();
+        VisitRequest visitRequest = mock(VisitRequest.class);
+
+        when(visitRequestBuilder.visitWithReminderRequest(dueDate, TypeOfVisit.Unscheduled)).thenReturn(visitRequest);
+        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate);
+        verify(appointmentService).addVisit(eq(PATIENT_ID), anyString(), same(visitRequest));
     }
 
     @Test

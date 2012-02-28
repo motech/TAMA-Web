@@ -51,7 +51,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
         ClinicVisitsControllerTest.ConfirmVisitDate.class,
         ClinicVisitsControllerTest.AdjustDueDate.class,
         ClinicVisitsControllerTest.MarkAsMissed.class,
-        ClinicVisitsControllerTest.NewVisit.class
+        ClinicVisitsControllerTest.NewVisit.class,
+        ClinicVisitsControllerTest.NewAppointment.class
 })
 public class ClinicVisitsControllerTest {
 
@@ -386,14 +387,14 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldCreateAppointment() {
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
-            verify(allClinicVisits).createVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled);
+            verify(allClinicVisits).createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled);
         }
 
         @Test
         public void shouldCloseVisit() {
             String clinicVisitId = "clinicVisitId";
 
-            when(allClinicVisits.createVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+            when(allClinicVisits.createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
             verify(allClinicVisits).closeVisit(PATIENT_ID, clinicVisitId, now);
         }
@@ -404,9 +405,30 @@ public class ClinicVisitsControllerTest {
             String urlToRedirectToClinicVisitCreate = "forward:/clinicvisits?form&patientId="
                     + PATIENT_ID + "&clinicVisitId=" + clinicVisitId;
 
-            when(allClinicVisits.createVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+            when(allClinicVisits.createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
             String responseURL = clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
             assertEquals(urlToRedirectToClinicVisitCreate, responseURL);
+        }
+    }
+
+    public static class NewAppointment extends SubjectUnderTest {
+
+        @Before
+        public void setup() {
+            super.setUp();
+        }
+
+        @Test
+        public void shouldSetDueDateWhenCreatingAppointment() {
+            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled.name());
+            verify(allClinicVisits).createUnScheduledAppointment(PATIENT_ID, now);
+        }
+
+        @Test
+        public void shouldReturnSuccessCodeAfterCreatingAppointment() {
+            String successCode = "{'result':'success'}";
+            assertEquals(successCode, clinicVisitsController.createAppointment(PATIENT_ID,
+                    now, TypeOfVisit.Unscheduled.name()));
         }
     }
 }

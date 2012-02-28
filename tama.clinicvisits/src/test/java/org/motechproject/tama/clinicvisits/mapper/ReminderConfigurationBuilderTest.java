@@ -8,20 +8,20 @@ import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 
-public class ReminderConfigurationMapperTest {
+public class ReminderConfigurationBuilderTest {
 
-    private ReminderConfigurationMapper mapper;
+    private ReminderConfigurationBuilder builder;
 
     @Before
     public void setUp() {
         Properties appointmentsProperties = new Properties();
-        appointmentsProperties.put(ReminderConfigurationMapper.REMIND_FROM, "10");
-        mapper = new ReminderConfigurationMapper(appointmentsProperties);
+        appointmentsProperties.put(ReminderConfigurationBuilder.REMIND_FROM, "10");
+        builder = new ReminderConfigurationBuilder(appointmentsProperties);
     }
 
     @Test
     public void shouldMapReminderConfiguration() {
-        ReminderConfiguration reminderConfiguration = mapper.map();
+        ReminderConfiguration reminderConfiguration = builder.newDefault();
         assertEquals(1, reminderConfiguration.getIntervalCount());
         assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
         assertEquals(10, reminderConfiguration.getRepeatCount());

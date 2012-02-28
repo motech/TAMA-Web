@@ -1,7 +1,6 @@
 package org.motechproject.tama.clinicvisits.mapper;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.appointments.api.contract.VisitRequest;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
@@ -16,27 +15,48 @@ import static junit.framework.Assert.assertNotNull;
 public class VisitRequestBuilderTest {
 
     private VisitRequestBuilder visitRequestBuilder;
+    private ReminderConfigurationBuilder reminderConfigurationBuilder;
 
-    @Before
-    public void setUp() {
+    public VisitRequestBuilderTest() {
         Properties appointmentsProperties = new Properties();
-        appointmentsProperties.put(ReminderConfigurationMapper.REMIND_FROM, "10");
-        ReminderConfigurationMapper reminderConfigurationMapper = new ReminderConfigurationMapper(appointmentsProperties);
-        visitRequestBuilder = new VisitRequestBuilder(reminderConfigurationMapper);
+        appointmentsProperties.put(ReminderConfigurationBuilder.REMIND_FROM, "10");
+        reminderConfigurationBuilder = new ReminderConfigurationBuilder(appointmentsProperties);
+        visitRequestBuilder = new VisitRequestBuilder(reminderConfigurationBuilder);
     }
 
     @Test
     public void shouldCreateVisitRequestGivenDueDate() {
         DateTime dueDate = DateUtil.now().plusWeeks(1);
-        VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminder(dueDate, TypeOfVisit.Unscheduled);
+        VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminderRequest(dueDate, TypeOfVisit.Unscheduled);
         assertEquals(dueDate, visitRequest.getDueDate());
         assertEquals(TypeOfVisit.Unscheduled, visitRequest.getData().get(ClinicVisit.TYPE_OF_VISIT));
     }
 
     @Test
+    public void shouldBuildVisitWithReminderRequestHavingDueDate() {
+        DateTime dueDate = DateUtil.now().plusWeeks(1);
+        VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, TypeOfVisit.Unscheduled);
+        assertEquals(dueDate, visitRequest.getDueDate());
+    }
+
+    @Test
+    public void shouldBuildVisitWithReminderRequestHavingTypeOfVisit() {
+        DateTime dueDate = DateUtil.now().plusWeeks(1);
+        VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, TypeOfVisit.Unscheduled);
+        assertEquals(TypeOfVisit.Unscheduled, visitRequest.getData().get(ClinicVisit.TYPE_OF_VISIT));
+    }
+
+    @Test
+    public void shouldBuildVisitWithReminderRequestHavingReminderConfiguration() {
+        DateTime dueDate = DateUtil.now().plusWeeks(1);
+        VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, TypeOfVisit.Unscheduled);
+        assertNotNull(visitRequest.getReminderConfiguration());
+    }
+
+    @Test
     public void shouldCreateScheduledVisitRequestGivenWeekOffSet() {
         DateTime dueDate = DateUtil.now().plusWeeks(1);
-        VisitRequest visitRequest = visitRequestBuilder.visitWithReminder(1);
+        VisitRequest visitRequest = visitRequestBuilder.scheduledVisitRequest(1);
         assertEquals(dueDate.toLocalDate(), visitRequest.getDueDate().toLocalDate());
         assertEquals(TypeOfVisit.Scheduled, visitRequest.getData().get(ClinicVisit.TYPE_OF_VISIT));
         assertEquals(1, visitRequest.getData().get(ClinicVisit.WEEK_NUMBER));
@@ -45,7 +65,7 @@ public class VisitRequestBuilderTest {
 
     @Test
     public void shouldCreateBaselineVisitRequestGivenWeekOffSet() {
-        VisitRequest visitRequest = visitRequestBuilder.baselineVisit();
+        VisitRequest visitRequest = visitRequestBuilder.baselineVisitRequest();
         assertEquals(TypeOfVisit.Baseline, visitRequest.getData().get(ClinicVisit.TYPE_OF_VISIT));
     }
 }

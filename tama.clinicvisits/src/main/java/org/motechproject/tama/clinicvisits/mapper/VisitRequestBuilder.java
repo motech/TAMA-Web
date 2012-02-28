@@ -11,27 +11,31 @@ import org.springframework.stereotype.Component;
 @Component
 public class VisitRequestBuilder {
 
-    private ReminderConfigurationMapper reminderConfigurationMapper;
+    private ReminderConfigurationBuilder reminderConfigurationBuilder;
 
     @Autowired
-    public VisitRequestBuilder(ReminderConfigurationMapper reminderConfigurationMapper) {
-        this.reminderConfigurationMapper = reminderConfigurationMapper;
+    public VisitRequestBuilder(ReminderConfigurationBuilder reminderConfigurationBuilder) {
+        this.reminderConfigurationBuilder = reminderConfigurationBuilder;
     }
 
-    public VisitRequest visitWithoutReminder(DateTime dueDate, TypeOfVisit typeOfVisit) {
+    public VisitRequest visitWithoutReminderRequest(DateTime dueDate, TypeOfVisit typeOfVisit) {
         return new VisitRequest().setDueDate(dueDate).addData(ClinicVisit.TYPE_OF_VISIT, typeOfVisit);
     }
 
-    public VisitRequest visitWithReminder(Integer weekOffset) {
-        DateTime dueDate = DateUtil.now().plusWeeks(weekOffset);
+    public VisitRequest visitWithReminderRequest(DateTime dueDate, TypeOfVisit typeOfVisit) {
         return new VisitRequest()
                 .setDueDate(dueDate)
-                .setReminderConfiguration(reminderConfigurationMapper.map())
-                .addData(ClinicVisit.WEEK_NUMBER, weekOffset).addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled);
+                .setReminderConfiguration(reminderConfigurationBuilder.newDefault())
+                .addData(ClinicVisit.TYPE_OF_VISIT, typeOfVisit);
     }
 
-    public VisitRequest baselineVisit() {
+    public VisitRequest scheduledVisitRequest(Integer weekOffset) {
+        DateTime dueDate = DateUtil.now().plusWeeks(weekOffset);
+        VisitRequest visitRequest = visitWithReminderRequest(dueDate, TypeOfVisit.Scheduled);
+        return visitRequest.addData(ClinicVisit.WEEK_NUMBER, weekOffset);
+    }
+
+    public VisitRequest baselineVisitRequest() {
         return new VisitRequest().addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Baseline);
     }
-
 }
