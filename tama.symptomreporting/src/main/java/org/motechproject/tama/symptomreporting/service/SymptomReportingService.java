@@ -16,7 +16,6 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
-import org.motechproject.tama.symptomreporting.context.SymptomsReportingContext;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.mapper.MedicalConditionsMapper;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -86,14 +84,6 @@ public class SymptomReportingService {
             }
             notifyCliniciansAboutOTCAdvice(patient, regimen, cliniciansMobileNumbers, symptomReport);
         }
-    }
-
-    public void smsOTCAdviceToClinician(SymptomsReportingContext symptomsReportingContext, String clinicianPhoneNumber) {
-        KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(symptomsReportingContext.callDetailRecordId());
-        SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
-        Patient patient = allPatients.get(symptomsReportingContext.patientDocumentId());
-        Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(symptomsReportingContext.patientDocumentId()).getRegimenId());
-        notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList(clinicianPhoneNumber), symptomReport);
     }
 
     void notifyCliniciansAboutOTCAdvice(Patient patient, Regimen regimen, List<String> cliniciansMobileNumbers, SymptomReport symptomReport) {

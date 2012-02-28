@@ -2,7 +2,6 @@ package org.motechproject.tama.symptomreporting.controller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
@@ -13,7 +12,6 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.SymptomReportingContextForTest;
-import org.motechproject.tama.symptomreporting.context.SymptomsReportingContext;
 import org.motechproject.tama.symptomreporting.factory.SymptomReportingContextFactory;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
 import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
@@ -21,7 +19,6 @@ import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.*;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -71,7 +68,7 @@ public class DialControllerTest {
         when(ivrMessage.getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "en")).thenReturn("connecting-to-dr");
         when(ivrMessage.getWav(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR, "en")).thenReturn("cannot-connect");
 
-        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService, symptomRecordingService, symptomReportingService);
+        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService, symptomRecordingService);
     }
 
     @Test
@@ -85,7 +82,6 @@ public class DialControllerTest {
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));
         assertEquals(1, symptomReportingContext.numberOfCliniciansCalled());
         verify(symptomRecordingService, times(1)).setAsNotConnectedToDoctor(callId);
-        verify(symptomReportingService, times(1)).smsOTCAdviceToClinician(symptomReportingContext, "ph1");
     }
 
     @Test
@@ -113,7 +109,6 @@ public class DialControllerTest {
         assertTrue(symptomReportingContext.getEndCall());
         assertEquals(4, symptomReportingContext.numberOfCliniciansCalled());
         verify(symptomRecordingService).setAsNotConnectedToDoctor(callId);
-        verify(symptomReportingService, times(0)).smsOTCAdviceToClinician(Matchers.<SymptomsReportingContext>any(), Matchers.<String>any());
     }
 
     @Test
@@ -125,7 +120,6 @@ public class DialControllerTest {
 
         assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));
-        verify(symptomReportingService, times(1)).smsOTCAdviceToClinician(Matchers.<SymptomsReportingContext>any(), eq("ph3"));
         assertEquals(3, symptomReportingContext.numberOfCliniciansCalled());
     }
 

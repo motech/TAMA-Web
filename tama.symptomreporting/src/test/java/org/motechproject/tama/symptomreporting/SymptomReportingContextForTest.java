@@ -10,6 +10,8 @@ public class SymptomReportingContextForTest extends SymptomsReportingContext {
     private boolean isAnswered = false;
     private boolean endCall = false;
     private String preferredLanguage;
+    private String callDetailRecordId;
+    private boolean startCall = false;
 
     public SymptomReportingContextForTest() {
     }
@@ -35,6 +37,11 @@ public class SymptomReportingContextForTest extends SymptomsReportingContext {
     }
 
     @Override
+    public void startCall() {
+        startCall = true;
+    }
+
+    @Override
     public void endCall() {
         endCall = true;
     }
@@ -47,6 +54,15 @@ public class SymptomReportingContextForTest extends SymptomsReportingContext {
     @Override
     public String preferredLanguage() {
         return preferredLanguage;
+    }
+
+    @Override
+    public String callDetailRecordId() {
+        return callDetailRecordId;
+    }
+
+    public boolean getStartCall() {
+        return startCall;
     }
 
     public boolean getEndCall() {
@@ -75,6 +91,11 @@ public class SymptomReportingContextForTest extends SymptomsReportingContext {
 
     public SymptomReportingContextForTest preferredLanguage(String language) {
         this.preferredLanguage = language;
+        return this;
+    }
+
+    public SymptomReportingContextForTest callDetailRecordId(String callLogId) {
+        this.callDetailRecordId = callLogId;
         return this;
     }
 }
