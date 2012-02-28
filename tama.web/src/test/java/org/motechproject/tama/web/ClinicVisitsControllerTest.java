@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
+import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -22,6 +23,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.ui.Model;
@@ -48,11 +50,12 @@ import static org.mockito.MockitoAnnotations.initMocks;
         ClinicVisitsControllerTest.ListAction.class,
         ClinicVisitsControllerTest.ConfirmVisitDate.class,
         ClinicVisitsControllerTest.AdjustDueDate.class,
-        ClinicVisitsControllerTest.MarkAsMissed.class
+        ClinicVisitsControllerTest.MarkAsMissed.class,
+        ClinicVisitsControllerTest.NewVisit.class
 })
 public class ClinicVisitsControllerTest {
 
-    public static class SubjectUnderTest {
+    public static class SubjectUnderTest extends BaseUnitTest {
 
         public static final String PATIENT_ID = "patientId";
         public static final String VISIT_ID = "clinicVisitId";
@@ -75,9 +78,13 @@ public class ClinicVisitsControllerTest {
 
         protected ClinicVisitsController clinicVisitsController;
 
+        protected DateTime now;
+
         @Before
         public void setUp() {
             initMocks(this);
+            now = DateUtil.now();
+            mockCurrentDate(now);
             clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits);
         }
     }
@@ -366,6 +373,40 @@ public class ClinicVisitsControllerTest {
             String jsonReturned = clinicVisitsController.markAsMissed(PATIENT_ID, VISIT_ID);
             verify(allClinicVisits).markAsMissed(PATIENT_ID, VISIT_ID);
             assertTrue(new JSONObject(jsonReturned).has("missed"));
+        }
+    }
+
+    public static class NewVisit extends SubjectUnderTest {
+
+        @Before
+        public void setup() {
+            super.setUp();
+        }
+
+        @Test
+        public void shouldCreateAppointment() {
+            clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
+            verify(allClinicVisits).createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled);
+        }
+
+        @Test
+        public void shouldCloseVisit() {
+            String clinicVisitId = "clinicVisitId";
+
+            when(allClinicVisits.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+            clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
+            verify(allClinicVisits).closeVisit(PATIENT_ID, clinicVisitId, now);
+        }
+
+        @Test
+        public void shouldRedirectToCreateForm() {
+            String clinicVisitId = "clinicVisitId";
+            String urlToRedirectToClinicVisitCreate = "forward:/clinicvisits?form&patientId="
+                    + PATIENT_ID + "&clinicVisitId=" + clinicVisitId;
+
+            when(allClinicVisits.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+            String responseURL = clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
+            assertEquals(urlToRedirectToClinicVisitCreate, responseURL);
         }
     }
 }
