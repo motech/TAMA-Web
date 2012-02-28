@@ -30,7 +30,6 @@ import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -124,10 +123,9 @@ public class SymptomReportingServiceTest {
     @Test
     public void shouldSMS_OTCAdviceToAllCliniciansInAGivenClinic_WhenDialToAllCliniciansFails() {
         final Clinic clinic = new Clinic("id");
-        clinic.setClinicianContacts(new ArrayList<Clinic.ClinicianContact>() {{
-            this.add(new Clinic.ClinicianContact("name1", "ph1"));
-            this.add(new Clinic.ClinicianContact("name2", "ph2"));
-        }});
+        clinic.setClinicianContacts(Arrays.asList(
+                new Clinic.ClinicianContact("name1", "ph1"),
+                new Clinic.ClinicianContact("name2", "ph2")));
 
         Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withId(patientDocId).withPatientId(patientId).withClinic(clinic).build();
         when(allPatients.get(patientDocId)).thenReturn(patient);
