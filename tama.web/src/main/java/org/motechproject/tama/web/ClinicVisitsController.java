@@ -189,7 +189,7 @@ public class ClinicVisitsController extends BaseController {
     @ResponseBody
     public String createAppointment(@RequestParam(value = "patientId", required = true) String patientDocId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     @RequestParam(value = "appointmentDueDate") DateTime appointmentDueDate, @RequestParam(value = "typeOfVisit") String typeOfVisit) {
-        allClinicVisits.createUnScheduledAppointment(patientDocId, appointmentDueDate);
+        allClinicVisits.createUnScheduledAppointment(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit));
         return "{'result':'success'}";
     }
 

@@ -43,9 +43,9 @@ public class AllClinicVisits {
         this.appointmentsProperties = appointmentsProperties;
     }
 
-    public String createUnScheduledAppointment(String patientId, DateTime dueDate) {
+    public String createUnScheduledAppointment(String patientId, DateTime dueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + dueDate.getMillis();
-        VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, TypeOfVisit.Unscheduled);
+        VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, typeOfVisit);
         return appointmentService.addVisit(patientId, visitName, visitRequest);
     }
 

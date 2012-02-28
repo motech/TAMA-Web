@@ -160,7 +160,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     public void shouldCreateUniqueVisitNameForUnscheduledAppointment() {
         DateTime dueDate = DateUtil.now();
 
-        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate);
+        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
         verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), Matchers.<VisitRequest>any());
     }
 
@@ -170,7 +170,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         VisitRequest visitRequest = mock(VisitRequest.class);
 
         when(visitRequestBuilder.visitWithReminderRequest(dueDate, TypeOfVisit.Unscheduled)).thenReturn(visitRequest);
-        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate);
+        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
         verify(appointmentService).addVisit(eq(PATIENT_ID), anyString(), same(visitRequest));
     }
 

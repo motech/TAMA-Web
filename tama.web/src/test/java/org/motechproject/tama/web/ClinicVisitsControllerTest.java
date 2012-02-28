@@ -34,8 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -420,8 +419,24 @@ public class ClinicVisitsControllerTest {
 
         @Test
         public void shouldSetDueDateWhenCreatingAppointment() {
+            ArgumentCaptor<DateTime> argumentCaptor = ArgumentCaptor.forClass(DateTime.class);
+
+            clinicVisitsController.createAppointment(PATIENT_ID, now.plusDays(1), TypeOfVisit.Unscheduled.name());
             clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled.name());
-            verify(allClinicVisits).createUnScheduledAppointment(PATIENT_ID, now);
+
+            verify(allClinicVisits, times(2)).createUnScheduledAppointment(eq(PATIENT_ID), argumentCaptor.capture(), same(TypeOfVisit.Unscheduled));
+            assertNotSame(argumentCaptor.getAllValues().get(0), argumentCaptor.getAllValues().get(1));
+        }
+
+        @Test
+        public void shouldSetTypeOfVisitWhenCreatingAppointment() {
+            ArgumentCaptor<TypeOfVisit> typeCaptor = ArgumentCaptor.forClass(TypeOfVisit.class);
+
+            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled.name());
+            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Scheduled.name());
+
+            verify(allClinicVisits, times(2)).createUnScheduledAppointment(eq(PATIENT_ID), eq(now), typeCaptor.capture());
+            assertNotSame(typeCaptor.getAllValues().get(0), typeCaptor.getAllValues().get(1));
         }
 
         @Test
