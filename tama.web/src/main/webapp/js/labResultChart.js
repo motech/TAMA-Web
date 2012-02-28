@@ -51,7 +51,7 @@ PatientDashboardChart.prototype = {
 
         this.addPlot(chartData, "Markers", "default");
         this.addSeries("Lab result", chartData.yValues());
-        this.addTooltip();
+        this.addTooltip(function (el) { return self.tooltipPrefix + " " + el.run.data[el.index]; });
 
         this.plotDangerZone(jsonData);
         this.chartRenderer.render();
@@ -72,12 +72,8 @@ PatientDashboardChart.prototype = {
         this.chartRenderer.addSeries(seriesName, yValues, {stroke: {'color': color}, fill: fillColor });
     },
 
-    addTooltip: function(){
-        var self = this;
-        var customText = function (el) {
-            return self.tooltipPrefix + " " + el.run.data[el.index];
-        }
-        return new dojox.charting.action2d.Tooltip(this.chartRenderer, this.plotName, {"text": customText});
+    addTooltip: function(customTextFunction){
+        return new dojox.charting.action2d.Tooltip(this.chartRenderer, this.plotName, {"text": customTextFunction});
     },
 
     plotDangerZone: function(jsonData){
