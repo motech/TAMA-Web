@@ -144,7 +144,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         VisitRequest visitRequest = mock(VisitRequest.class);
 
         when(visitRequestBuilder.visitWithoutReminder(dueDate, TypeOfVisit.Unscheduled)).thenReturn(visitRequest);
-        allClinicVisits.createAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
+        allClinicVisits.createVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
         verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), same(visitRequest));
     }
 

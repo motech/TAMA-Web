@@ -82,7 +82,7 @@ public class AllClinicVisits {
         return clinicVisit.getId();
     }
 
-    public String createAppointment(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
+    public String createVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + appointmentDueDate.getMillis();
         VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminder(appointmentDueDate, typeOfVisit);
         return appointmentService.addVisit(patientDocId, visitName, visitRequest);

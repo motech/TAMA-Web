@@ -386,14 +386,14 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldCreateAppointment() {
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
-            verify(allClinicVisits).createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled);
+            verify(allClinicVisits).createVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled);
         }
 
         @Test
         public void shouldCloseVisit() {
             String clinicVisitId = "clinicVisitId";
 
-            when(allClinicVisits.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+            when(allClinicVisits.createVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
             verify(allClinicVisits).closeVisit(PATIENT_ID, clinicVisitId, now);
         }
@@ -404,7 +404,7 @@ public class ClinicVisitsControllerTest {
             String urlToRedirectToClinicVisitCreate = "forward:/clinicvisits?form&patientId="
                     + PATIENT_ID + "&clinicVisitId=" + clinicVisitId;
 
-            when(allClinicVisits.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+            when(allClinicVisits.createVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
             String responseURL = clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
             assertEquals(urlToRedirectToClinicVisitCreate, responseURL);
         }

@@ -51,7 +51,7 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/newVisit")
     public String newVisit(@RequestParam(value = "patientDocId") String patientDocId, Model uiModel, HttpServletRequest httpServletRequest) {
-        String clinicVisitId = allClinicVisits.createAppointment(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled);
+        String clinicVisitId = allClinicVisits.createVisit(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled);
         allClinicVisits.closeVisit(patientDocId, clinicVisitId, DateUtil.now());
         return String.format("forward:/clinicvisits?%s&patientId=%s&clinicVisitId=%s", "form", patientDocId, clinicVisitId).replaceAll("//", "/");
     }
@@ -189,7 +189,7 @@ public class ClinicVisitsController extends BaseController {
     @ResponseBody
     public String createAppointment(@RequestParam(value = "patientId", required = true) String patientDocId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     @RequestParam(value = "appointmentDueDate") DateTime appointmentDueDate, @RequestParam(value = "typeOfVisit") String typeOfVisit) {
-        allClinicVisits.createAppointment(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit));
+        allClinicVisits.createVisit(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit));
         return "{'result':'success'}";
     }
 
