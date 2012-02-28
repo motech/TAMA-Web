@@ -17,6 +17,7 @@ var PatientDashboardChart = function(chartName, dataUrl, tooltipPrefix, dangerZo
 
     this.defaultDisplay = this.targetElement.style.display;
     this.hide();
+    this.noticeBanner.hide()
 }
 
 PatientDashboardChart.prototype = {
@@ -33,36 +34,50 @@ PatientDashboardChart.prototype = {
 
     draw: function(onCreateHandler){
         var self = this;
-        this.noticeBanner.hide()
         this.fetchData(function(jsonData){
-            if(jsonData.length == 0){
-                self.noticeBanner.setMessage("No Data recorded for this patient");
-                return;
-            }
             self.render(jsonData)
         });
     },
 
     render: function(jsonData){
+        if(jsonData.length == 0){
+            this.noticeBanner.setMessage("No Data recorded for this patient");
+            return;
+        }
+
         this.show();
         var self = this;
         var chartData = new ChartData(jsonData);
 
-        this.chartRenderer.addPlot("default", {type:"Lines", markers:true });
+        this.addPlot(chartData, "Markers", "default");
+        this.addSeries("Lab result", chartData.yValues());
+        this.addTooltip();
+
+        this.plotDangerZone(jsonData);
+        this.chartRenderer.render();
+    },
+
+    addPlot: function(chartData, chartType, plotName) {
+        this.plotName = plotName;
+        this.chartRenderer.addPlot(plotName, {type: chartType });
         this.chartRenderer.setTheme(this.theme);
 
         this.chartRenderer.addAxis("x", this.xAxisOptions(chartData));
         this.chartRenderer.addAxis("y", {min:0, max: chartData.maxY() + 7, vertical:true});
-        this.chartRenderer.addSeries("Lab result", chartData.yValues(), {stroke: {color: "blue"},
-                                                                         fill: "lightblue"
-                                                                        });
+    },
 
-        new dojox.charting.action2d.Tooltip(this.chartRenderer, "default", {"text":function (el) {
+    addSeries: function(seriesName, yValues, color, fillColor) {
+        color = color == undefined ? "blue" : color;
+        fillColor = fillColor == undefined ? "lightblue" : fillColor;
+        this.chartRenderer.addSeries(seriesName, yValues, {stroke: {'color': color}, fill: fillColor });
+    },
+
+    addTooltip: function(){
+        var self = this;
+        var customText = function (el) {
             return self.tooltipPrefix + " " + el.run.data[el.index];
-        }});
-
-        this.plotDangerZone(jsonData);
-        this.chartRenderer.render();
+        }
+        return new dojox.charting.action2d.Tooltip(this.chartRenderer, this.plotName, {"text": customText});
     },
 
     plotDangerZone: function(jsonData){
