@@ -4,16 +4,44 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.OpportunisticInfections;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OpportunisticInfectionsUIModel {
+
+    public static class Summary {
+
+        private List<String> infections;
+
+        public Summary() {
+            infections = new ArrayList<String>();
+        }
+
+        public void addAll(OpportunisticInfections opportunisticInfections) {
+            infections = opportunisticInfections.getChosenInfections();
+        }
+
+        public List<String> getInfections() {
+            return infections;
+        }
+
+        public boolean contains(String infection) {
+            return infections.contains(infection);
+        }
+    }
 
     private String clinicVisitId;
 
     private OpportunisticInfections opportunisticInfections = new OpportunisticInfections();
 
+    private Summary summary;
+
     public OpportunisticInfectionsUIModel() {
+        summary = new Summary();
     }
 
     public OpportunisticInfectionsUIModel(String patientId) {
+        this();
         opportunisticInfections.setPatientId(patientId);
     }
 
@@ -61,5 +89,10 @@ public class OpportunisticInfectionsUIModel {
 
     public void setOpportunisticInfections(OpportunisticInfections opportunisticInfections) {
         this.opportunisticInfections = opportunisticInfections;
+    }
+
+    public Summary getSummary() {
+        summary.addAll(opportunisticInfections);
+        return summary;
     }
 }

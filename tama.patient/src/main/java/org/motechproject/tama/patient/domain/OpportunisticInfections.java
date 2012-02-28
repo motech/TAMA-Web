@@ -5,6 +5,8 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.CouchEntity;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'OpportunisticInfections'")
 public class OpportunisticInfections extends CouchEntity {
@@ -31,7 +33,7 @@ public class OpportunisticInfections extends CouchEntity {
     @NotNull
     private String patientId;
 
-   private LocalDate captureDate;
+    private LocalDate captureDate;
 
     public OpportunisticInfections() {
     }
@@ -191,4 +193,26 @@ public class OpportunisticInfections extends CouchEntity {
     public void setOtherOpportunisticInfectionDetails(String otherOpportunisticInfectionDetails) {
         this.otherOpportunisticInfectionDetails = otherOpportunisticInfectionDetails;
     }
+
+    public List<String> getChosenInfections() {
+        List<String> chosenInfections = new ArrayList<String>();
+        if (addisonsDisease) chosenInfections.add("Addison's Disease");
+        if (anemia) chosenInfections.add("Anemia");
+        if (bacterialInfection) chosenInfections.add("Bacterial Infection");
+        if (convulsions) chosenInfections.add("Convulsions");
+        if (dementia) chosenInfections.add("Dementia");
+        if (encephalitis) chosenInfections.add("Encephalitis");
+        if (gastroenteropathy) chosenInfections.add("Gastroenteropathy");
+        if (hypertension) chosenInfections.add("Hypertension");
+        if (liverAbscess) chosenInfections.add("Liver Abscess");
+        if (malaria) chosenInfections.add("Malaria");
+        if (nonHealingUlcer) chosenInfections.add("Non Healing Ulcer");
+        if (oralCandidiasis) chosenInfections.add("Oral Candidiasis");
+        if (pancreatitis) chosenInfections.add("Pancreatitis");
+        if (scabies) chosenInfections.add("Scabies");
+        if (TBMeningitis) chosenInfections.add("TB Meningitis");
+        if (otherOpportunisticInfection) chosenInfections.add("Other : " + otherOpportunisticInfectionDetails);
+        return chosenInfections;
+    }
 }
+

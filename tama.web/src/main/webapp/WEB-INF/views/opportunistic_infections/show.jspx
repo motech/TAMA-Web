@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:spring="http://www.springframework.org/tags" version="2.0">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <util:panel id="opportunistic_infections_panel" title="Opportunistic Infections" openPane="true">
+        <spring:url value="/opportunisticInfections/update" var="edit_url">
+            <spring:param name="form"/>
+            <spring:param name="clinicVisitId" value="${clinicVisitId}" />
+            <spring:param name="patientId" value="${patientId}" />
+        </spring:url>
+        <a id="edit_link" href="${edit_url}" style="float:right">[edit]</a>
+        <c:if test="${empty opportunisticInfectionsUIModel.summary.infections}">
+            <c:out value="No Infections"/>
+        </c:if>
+        <c:forEach items="${opportunisticInfectionsUIModel.summary.infections}" var="infection">
+          <div style="margin:5px"><c:out value="${infection}" /></div>
+        </c:forEach>
+    </util:panel>
+    <div id="page_load_marker"></div>
+</div>

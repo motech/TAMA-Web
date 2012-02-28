@@ -40,7 +40,6 @@
                 <div id="otherOpportunisticInfectionInfo">
                     <formfield:input field="opportunisticInfectionsUIModel.opportunisticInfections.otherOpportunisticInfectionDetails" label="Details" id="otherOpportunisticInfectionDetails"/>
                 </div>
-
             </span>
         </div>
     </util:panel>

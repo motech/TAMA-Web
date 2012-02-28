@@ -75,7 +75,6 @@ public class VitalStatisticsController extends BaseController {
         return UPDATE_FORM;
     }
 
-    //TODO: The upsert logic can be moved to the repository layer
     @RequestMapping(method = RequestMethod.PUT)
     public String update(VitalStatisticsUIModel vitalStatisticsUIModel, HttpServletRequest httpServletRequest) {
         final VitalStatistics vitalStatistics = vitalStatisticsUIModel.getVitalStatistics();

@@ -113,6 +113,13 @@ public class AllClinicVisits {
         updateVisit(clinicVisit);
     }
 
+    public void updateOpportunisticInfections(String patientDocId, String clinicVisitId, String opportunisticInfectionId) {
+        final ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
+        clinicVisit.setOpportunisticInfectionsId(opportunisticInfectionId);
+        updateVisit(clinicVisit);
+
+    }
+
     public void confirmVisitDate(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {
         ReminderConfiguration visitReminderConfiguration = getVisitReminderConfiguration();
         appointmentService.confirmVisit(patientDocId, clinicVisitId, confirmedVisitDate, visitReminderConfiguration);

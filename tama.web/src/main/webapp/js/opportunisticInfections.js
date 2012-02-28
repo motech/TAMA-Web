@@ -3,7 +3,8 @@ dojo.addOnLoad(function() {
 
     var displayDescriptionIfSelected = function () {
         var otherDescriptionDiv = dojo.byId('otherOpportunisticInfectionInfo');
-        var otherDescriptionWidget = dijit.byId('_opportunisticInfections.otherOpportunisticInfectionDetails_id');
+        var otherDescriptionWidget = dijit.byId('_opportunisticInfectionsUIModel.opportunisticInfections.otherOpportunisticInfectionDetails_id');
+
         if (otherCheckbox.checked) {
             setRequiredForElement(otherDescriptionWidget, true);
             showElement([otherDescriptionDiv]);

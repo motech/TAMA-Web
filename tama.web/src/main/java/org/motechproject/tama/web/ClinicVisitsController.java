@@ -141,6 +141,7 @@ public class ClinicVisitsController extends BaseController {
         treatmentAdviceController.show(treatmentAdviceId, uiModel);
         labResultsController.show(patientDocId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
+        opportunisticInfectionsController.show(clinicVisit.getOpportunisticInfectionsId(), uiModel);
         uiModel.addAttribute("clinicVisit", clinicVisit);
         return "clinicvisits/show";
     }

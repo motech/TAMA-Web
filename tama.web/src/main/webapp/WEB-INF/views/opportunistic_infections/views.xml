@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="opportunisticInfections/show">
+        <put-attribute name="body" value="/WEB-INF/views/opportunistic_infections/show.jspx"/>
+    </definition>
+    <definition extends="default" name="opportunisticInfections/create">
+        <put-attribute name="body" value="/WEB-INF/views/opportunistic_infections/create.jspx"/>
+    </definition>
+    <definition extends="default" name="opportunisticInfections/update">
+        <put-attribute name="body" value="/WEB-INF/views/opportunistic_infections/update.jspx"/>
+    </definition>
+</tiles-definitions>
