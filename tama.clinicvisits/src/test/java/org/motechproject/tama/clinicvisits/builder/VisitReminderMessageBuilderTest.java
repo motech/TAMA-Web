@@ -116,7 +116,7 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
     @Test
     public void shouldAddDayOfWeekToVisitReminderMessage() {
         visitReminderMessageBuilder.buildVoiceMessageResponse(kookooIVRContext, outboxContext, visitReminderVoiceMessage, kookooIVRResponseBuilder);
-        assertEquals("dayOfWeek_Monday", kookooIVRResponseBuilder.getPlayAudios().get(1));
+        assertEquals("weekday_Monday", kookooIVRResponseBuilder.getPlayAudios().get(1));
     }
 
     @Test

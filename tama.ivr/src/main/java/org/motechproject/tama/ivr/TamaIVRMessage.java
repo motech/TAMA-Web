@@ -198,7 +198,7 @@ public class TamaIVRMessage implements IVRMessage {
     }
 
     public static String getDayOfWeekFile(String dayOfWeek) {
-        return "dayOfWeek_" + dayOfWeek;
+        return "weekday_" + dayOfWeek;
     }
 
     public static String getMonthOfYearFile(String monthOfYear) {

@@ -42,7 +42,7 @@ public class TamaIVRMessageTest {
 
     @Test
     public void shouldReturnDayOfWeekFileName() {
-        assertEquals("dayOfWeek_Monday", TamaIVRMessage.getDayOfWeekFile("Monday"));
+        assertEquals("weekday_Monday", TamaIVRMessage.getDayOfWeekFile("Monday"));
     }
 
     @Test
