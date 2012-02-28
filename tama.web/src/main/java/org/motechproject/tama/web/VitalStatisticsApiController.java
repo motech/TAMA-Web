@@ -25,7 +25,7 @@ public class VitalStatisticsApiController {
 
     @RequestMapping(value = "/listWeightOverTime", method = RequestMethod.GET)
     @ResponseBody
-    public String listWeightOverTime(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths")int rangeInMonths) throws JSONException {
+    public String listWeightOverTime(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths") int rangeInMonths) throws JSONException {
         List<VitalStatistics> vitalStatisticsList = vitalStatisticsService.getAllFor(patientId, rangeInMonths);
         return new VitalStatisticsJson(vitalStatisticsList).weightList().toString();
     }

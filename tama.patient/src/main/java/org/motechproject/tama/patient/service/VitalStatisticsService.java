@@ -20,8 +20,9 @@ public class VitalStatisticsService {
     }
 
     public List<VitalStatistics> getAllFor(String patientId, int rangeInMonths) {
-        LocalDate startDate = DateUtil.today();
-        LocalDate endDate = startDate.minusMonths(rangeInMonths);
+        LocalDate endDate = DateUtil.today();
+        LocalDate startDate= endDate.minusMonths(rangeInMonths);
+
         return allVitalStatistics.findAllByPatientId(patientId, startDate, endDate);
     }
 }

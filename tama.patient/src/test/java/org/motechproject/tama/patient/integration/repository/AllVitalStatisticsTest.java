@@ -69,6 +69,7 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
         allVitalStatistics.add(vitalStatistics_Today);
         allVitalStatistics.add(vitalStatistics_5DaysAfter);
         allVitalStatistics.add(vitalStatistics_10DaysAgo);
+        allVitalStatistics.add(vitalStatistics_10DaysAfter);
 
         LocalDate startDate = today.minusDays(11);
         LocalDate endDate = today.plusDays(5);

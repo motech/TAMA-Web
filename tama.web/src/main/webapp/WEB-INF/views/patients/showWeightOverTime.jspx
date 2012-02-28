@@ -1,7 +1,7 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
-    <util:panel id="pvl-over-time" title="PVL Over Time" openPane="true">
-        <spring:url value="/json/labresults/listPVLCount" var="listPVLCountUrl" htmlEscape="false">
+    <util:panel id="weight-over-time" title="Weight Over Time" openPane="true">
+        <spring:url value="/json/vitalstatistics/listWeightOverTime" var="weightOverTimeUrl" htmlEscape="false">
             <spring:param name="patientId" value="${patient.id}"/>
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>
@@ -11,15 +11,15 @@
 
         <script type="text/javascript">
             dojo.ready(function () {
-                var pvlChartWidget = new PatientDashboardChart("pvlCountOverTime", "${listPVLCountUrl}", "PVL count");
-                pvlChartWidget.draw();
+                var weightChartWidget = new PatientDashboardChart("weightOverTime", "${weightOverTimeUrl}", "Weight in Kg. ");
+                weightChartWidget.draw();
             });
         </script>
 
         <div style="overflow-x:auto">
-            <div id="pvlCountOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
-            <div  id="pvlCountOverTimePlaceholder">
-                <div id="pvlCountOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
+            <div id="weightOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
+            <div  id="weightOverTimePlaceholder">
+                <div id="weightOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
             </div>
         </div>
 
