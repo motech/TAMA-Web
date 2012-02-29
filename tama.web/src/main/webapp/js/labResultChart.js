@@ -4,10 +4,10 @@ dojo.require("dojox.charting.plot2d.Lines");
 dojo.require("dojox.charting.plot2d.Areas");
 dojo.require("dojox.charting.themes.ThreeD");
 dojo.require("dojox.charting.plot2d.Markers");
+dojo.require("dojox.charting.widget.Legend");
 
 var PatientDashboardChart = function(chartName, dataUrl, tooltipPrefix, dangerZoneRangeFunction){
-    this.targetElement = dojo.byId(chartName);
-    this.placeholderElement = dojo.byId(chartName + "Placeholder");
+    this.targetElement = dojo.byId(chartName + "Placeholder");
     this.noticeBanner = new Banner(chartName + "Notice");
     this.dataUrl = dataUrl;
     this.tooltipPrefix = tooltipPrefix;

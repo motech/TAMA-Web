@@ -1,0 +1,93 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
+    <util:panel id="bp-over-time" title="BP Over Time" openPane="true">
+        <spring:url value="/json/vitalstatistics/listBPOverTime" var="bpOverTimeUrl" htmlEscape="false">
+            <spring:param name="patientId" value="${patient.id}"/>
+            <spring:param name="rangeInMonths" value="36"/>
+        </spring:url>
+
+        <spring:url value="/resources/js/labResultChart.js" var="lab_result_chart_js" />
+        <script type="text/javascript" src="${lab_result_chart_js}"> <!-- required--> </script>
+
+        <script type="text/javascript">
+            var BPListData = function(jsonData) {
+                this.data = jsonData;
+            }
+
+            BPListData.prototype = {
+                xLabels : function () {
+                    return this.data.map(function (elt, index) {
+                        return {value:index + 1, text:elt.date}
+                    });
+                },
+
+                systolicValues : function () {
+                    var data = this.data.map(function (elt, index) {
+                        return {x: index + 1, y: elt.systolic, tooltip: "Systolic BP: " + elt.systolic};
+                    });
+
+                    return data.filter(function(elt) { return elt.y != null; })
+                },
+
+                diastolicValues : function () {
+                    var data = this.data.map(function (elt, index) {
+                        return {x: index + 1, y: elt.diastolic, tooltip: "Diastolic BP: " + elt.diastolic};
+                    });
+
+                   return data.filter(function(elt) { return elt.y != null; })
+                },
+
+                maxY : function() {
+                    var maxSystolic =  Math.max.apply(Math, this.data.map(function(elt) { return elt.systolic != null ? elt.systolic : 0} ));
+                    var maxDiastolic =  Math.max.apply(Math, this.data.map(function(elt) { return elt.diastolic != null ? elt.diastolic : 0} ));
+
+                    return Math.max(maxSystolic, maxDiastolic);
+                },
+
+                length: function() {
+                    return this.data.length;
+                }
+
+            }
+
+            dojo.ready(function () {
+                var bpChartWidget = new PatientDashboardChart("bpOverTime", "${bpOverTimeUrl}", "BP");
+                var onLoadHandler = function(jsonData){
+                    if(jsonData.length == 0){
+                        bpChartWidget.noticeBanner.setMessage("No Data recorded for this patient");
+                        return;
+                    }
+
+                    bpChartWidget.show();
+                    var chartData = new BPListData(jsonData);
+
+                    bpChartWidget.addPlot(chartData, "Markers", "default");
+                    bpChartWidget.addSeries("Systolic BP", chartData.systolicValues(), "blue", "lightblue");
+                    bpChartWidget.addSeries("Diastolic BP", chartData.diastolicValues(), "green", "lightgreen");
+                    bpChartWidget.addTooltip();
+
+                    bpChartWidget.chartRenderer.render();
+                }
+
+                bpChartWidget.fetchData(onLoadHandler);
+            });
+        </script>
+
+        <div style="overflow-x:auto">
+            <div id="bpOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
+            <div  id="bpOverTimePlaceholder">
+                <div id="bpOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
+                <table id="bpOverTimeLegend">
+                    <tr>
+                        <td>Legend</td>
+                        <td class="legendColor blue"></td>
+                        <td class="legendLabel">Systolic BP</td>
+                        <td class="legendColor green"></td>
+                        <td class="legendLabel">Diastolic BP</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </util:panel>
+</div>

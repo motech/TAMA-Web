@@ -29,4 +29,12 @@ public class VitalStatisticsApiController {
         List<VitalStatistics> vitalStatisticsList = vitalStatisticsService.getAllFor(patientId, rangeInMonths);
         return new VitalStatisticsJson(vitalStatisticsList).weightList().toString();
     }
+
+
+    @RequestMapping(value = "/listBPOverTime", method = RequestMethod.GET)
+    @ResponseBody
+    public String listBPOverTime(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths") int rangeInMonths) throws JSONException {
+        List<VitalStatistics> vitalStatisticsList = vitalStatisticsService.getAllFor(patientId, rangeInMonths);
+        return new VitalStatisticsJson(vitalStatisticsList).bpList().toString();
+    }
 }

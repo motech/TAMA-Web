@@ -41,5 +41,6 @@
         <jsp:include page="showCD4CountOverTime.jspx" />
         <jsp:include page="showPLVCountOverTime.jspx" />
         <jsp:include page="showWeightOverTime.jspx" />
+        <jsp:include page="showBPOverTime.jspx" />
     </page:show>
 </div>
