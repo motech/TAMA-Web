@@ -204,4 +204,29 @@ public class TamaIVRMessage implements IVRMessage {
     public static String getMonthOfYearFile(String monthOfYear) {
         return "month_" + monthOfYear;
     }
+
+    public static class DateMessage {
+
+        private int dayOfMonth;
+
+        public DateMessage(int dayOfMonth) {
+            this.dayOfMonth = dayOfMonth;
+        }
+
+        public String value() {
+            return "dates_" + dayOfMonth + suffix();
+        }
+
+        private String suffix() {
+            if (dayOfMonth % 10 == 1) {
+                return "st";
+            } else if (dayOfMonth % 10 == 2) {
+                return "nd";
+            } else if (dayOfMonth % 10 == 3) {
+                return "rd";
+            } else {
+                return "th";
+            }
+        }
+    }
 }

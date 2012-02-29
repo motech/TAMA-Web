@@ -123,7 +123,7 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
     @Test
     public void shouldAddDayToVisitReminderMessage() {
         visitReminderMessageBuilder.buildVoiceMessageResponse(kookooIVRContext, outboxContext, visitReminderVoiceMessage, kookooIVRResponseBuilder);
-        assertEquals("Num_027", kookooIVRResponseBuilder.getPlayAudios().get(3));
+        assertEquals("dates_27th", kookooIVRResponseBuilder.getPlayAudios().get(3));
     }
 
     @Test

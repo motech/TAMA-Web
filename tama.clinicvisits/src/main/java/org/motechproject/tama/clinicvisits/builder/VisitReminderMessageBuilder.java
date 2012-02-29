@@ -69,7 +69,7 @@ public class VisitReminderMessageBuilder implements OutboxMessageBuilder {
     }
 
     private String buildDayMessage(DateTime visitDate) {
-        return TamaIVRMessage.getNumberFilename(visitDate.getDayOfMonth());
+        return new TamaIVRMessage.DateMessage(visitDate.getDayOfMonth()).value();
     }
 
     private String buildDayOfWeekMessage(DateTime visitDate) {

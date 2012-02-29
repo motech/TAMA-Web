@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.util.Properties;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -49,5 +51,42 @@ public class TamaIVRMessageTest {
     public void shouldReturnMonthOfYearFileName() {
         DateTime testDate = new DateTime(2012, 3, 17, 23, 0, 0);
         assertEquals("month_March", TamaIVRMessage.getMonthOfYearFile(testDate.monthOfYear().getAsText()));
+    }
+
+    @Test
+    public void shouldPrefixDateMessage() {
+        assertTrue(new TamaIVRMessage.DateMessage(1).value().startsWith("dates_"));
+    }
+
+    @Test
+    public void shouldAppendDayToDateMessage() {
+        assertTrue(new TamaIVRMessage.DateMessage(2).value().startsWith("dates_2"));
+    }
+
+    @Test
+    public void shouldNotAppendConstantDayToDateMessage() {
+        String message = new TamaIVRMessage.DateMessage(2).value();
+        String anotherMessage = new TamaIVRMessage.DateMessage(21).value();
+        assertFalse(message.equals(anotherMessage));
+    }
+
+    @Test
+    public void shouldSuffixDateMessageForDaysEndingWith1() {
+        assertTrue(new TamaIVRMessage.DateMessage(1).value().endsWith("st"));
+    }
+
+    @Test
+    public void shouldSuffixDateMessageForDaysEndingWith2() {
+        assertTrue(new TamaIVRMessage.DateMessage(2).value().endsWith("nd"));
+    }
+
+    @Test
+    public void shouldSuffixDateMessageForDaysEndingWith3() {
+        assertTrue(new TamaIVRMessage.DateMessage(3).value().endsWith("rd"));
+    }
+
+    @Test
+    public void shouldSuffixDateMessageForDaysWithDefaultSuffix() {
+        assertTrue(new TamaIVRMessage.DateMessage(4).value().endsWith("th"));
     }
 }
