@@ -10,6 +10,8 @@ import org.junit.runners.Suite;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.appointments.api.contract.VisitResponse;
+import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
@@ -401,6 +403,7 @@ public class ClinicVisitsControllerTest {
         @Before
         public void setup() {
             super.setUp();
+            when(allClinicVisits.get(eq(PATIENT_ID), anyString())).thenReturn(new ClinicVisit());
         }
 
         @Test
@@ -411,22 +414,15 @@ public class ClinicVisitsControllerTest {
 
         @Test
         public void shouldCloseVisit() {
-            String clinicVisitId = "clinicVisitId";
-
-            when(allClinicVisits.createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+            when(allClinicVisits.createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn("clinicVisitId");
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
-            verify(allClinicVisits).closeVisit(PATIENT_ID, clinicVisitId, now);
+            verify(allClinicVisits).closeVisit(PATIENT_ID, "clinicVisitId", now);
         }
 
         @Test
-        public void shouldRedirectToCreateForm() {
-            String clinicVisitId = "clinicVisitId";
-            String urlToRedirectToClinicVisitCreate = "forward:/clinicvisits?form&patientId="
-                    + PATIENT_ID + "&clinicVisitId=" + clinicVisitId;
-
-            when(allClinicVisits.createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn(clinicVisitId);
+        public void shouldRedirectToCreate() {
             String responseURL = clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
-            assertEquals(urlToRedirectToClinicVisitCreate, responseURL);
+            assertEquals("clinicvisits/create", responseURL);
         }
     }
 

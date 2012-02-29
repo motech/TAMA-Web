@@ -90,10 +90,10 @@ public class AllClinicVisits {
         return clinicVisit.getId();
     }
 
-    public VisitResponse createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
+    public String createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + appointmentDueDate.getMillis();
         VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminderRequest(appointmentDueDate, typeOfVisit);
-        return appointmentService.addVisit(patientDocId, visitName, visitRequest);
+        return appointmentService.addVisit(patientDocId, visitName, visitRequest).name();
     }
 
     public void changeRegimen(String patientDocId, String clinicVisitId, String newTreatmentAdviceId) {
