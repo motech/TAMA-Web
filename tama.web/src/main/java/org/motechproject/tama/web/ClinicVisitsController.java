@@ -52,7 +52,7 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/newVisit")
     public String newVisit(@RequestParam(value = "patientDocId") String patientDocId, Model uiModel, HttpServletRequest httpServletRequest) {
-        String clinicVisitId = allClinicVisits.createUnscheduledVisit(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled);
+        String clinicVisitId = allClinicVisits.createUnscheduledVisit(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled).name();
         allClinicVisits.closeVisit(patientDocId, clinicVisitId, DateUtil.now());
         return String.format("forward:/clinicvisits?%s&patientId=%s&clinicVisitId=%s", "form", patientDocId, clinicVisitId).replaceAll("//", "/");
     }

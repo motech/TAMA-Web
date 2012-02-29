@@ -3,6 +3,7 @@ package org.motechproject.tama.clinicvisits.builder;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
 import org.motechproject.appointments.api.model.Reminder;
 import org.motechproject.appointments.api.model.Visit;
@@ -78,7 +79,7 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
         confirmedVisit = new Visit().name("visitName");
         confirmedVisit.addAppointment(monday.minusDays(3), new Reminder());
         confirmedVisit.appointment().confirmedDate(monday);
-        when(appointmentService.findVisit("patientId", "visitName")).thenReturn(confirmedVisit);
+        when(appointmentService.findVisit("patientId", "visitName")).thenReturn(new VisitResponse(confirmedVisit));
     }
 
     private void setupVisitReminderVoiceMessage() {

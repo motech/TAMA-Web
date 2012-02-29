@@ -1,7 +1,7 @@
 package org.motechproject.tama.clinicvisits.builder;
 
 import org.joda.time.DateTime;
-import org.motechproject.appointments.api.model.Visit;
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
@@ -76,7 +76,7 @@ public class VisitReminderMessageBuilder implements OutboxMessageBuilder {
         return TamaIVRMessage.getDayOfWeekFile(visitDate.dayOfWeek().getAsText());
     }
 
-    private Visit getVisit(OutboundVoiceMessage outboundVoiceMessage) {
+    private VisitResponse getVisit(OutboundVoiceMessage outboundVoiceMessage) {
         String externalId = outboundVoiceMessage.getPartyId();
         String visitName = (String) outboundVoiceMessage.getParameters().get(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME);
         return appointmentService.findVisit(externalId, visitName);

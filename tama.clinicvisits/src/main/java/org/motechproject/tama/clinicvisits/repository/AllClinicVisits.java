@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
 import org.motechproject.appointments.api.contract.ReminderConfiguration;
 import org.motechproject.appointments.api.contract.VisitRequest;
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
@@ -43,7 +44,7 @@ public class AllClinicVisits {
         this.appointmentsProperties = appointmentsProperties;
     }
 
-    public String createUnScheduledAppointment(String patientId, DateTime dueDate, TypeOfVisit typeOfVisit) {
+    public VisitResponse createUnScheduledAppointment(String patientId, DateTime dueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + dueDate.getMillis();
         VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, typeOfVisit);
         return appointmentService.addVisit(patientId, visitName, visitRequest);
@@ -89,7 +90,7 @@ public class AllClinicVisits {
         return clinicVisit.getId();
     }
 
-    public String createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
+    public VisitResponse createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + appointmentDueDate.getMillis();
         VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminderRequest(appointmentDueDate, typeOfVisit);
         return appointmentService.addVisit(patientDocId, visitName, visitRequest);
