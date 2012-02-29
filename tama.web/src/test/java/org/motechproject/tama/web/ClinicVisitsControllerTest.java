@@ -15,8 +15,10 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -326,10 +328,13 @@ public class ClinicVisitsControllerTest {
 
     public static class ListAction extends SubjectUnderTest {
         @Test
-        public void shouldReturnAllClinicVisitsForPatient() throws Exception {
+        public void shouldListAllClinicVisitsForPatient() {
             Model uiModel = mock(Model.class);
             final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().build();
             final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().build();
+
+            visit1.getPatient().setStatus(Status.Active);
+
             when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(new ClinicVisits() {{
                 add(visit1);
                 add(visit2);
@@ -337,11 +342,26 @@ public class ClinicVisitsControllerTest {
 
             final String listUrl = clinicVisitsController.list(PATIENT_ID, uiModel);
 
-            assertEquals("clinicvisits/list", listUrl);
+            assertEquals("clinicvisits/manage_list", listUrl);
             ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
             verify(uiModel).addAttribute(eq("clinicVisits"), listArgumentCaptor.capture());
             assertEquals(visit1, listArgumentCaptor.getValue().get(0));
             assertEquals(visit2, listArgumentCaptor.getValue().get(1));
+        }
+
+        @Test
+        public void shouldShowReadOnlyListWhenPatientIsNotActive() {
+            Patient inactivePatient = PatientBuilder
+                    .startRecording()
+                    .withDefaults()
+                    .withStatus(Status.Inactive)
+                    .build();
+
+            ClinicVisits clinicVisits = new ClinicVisits();
+            clinicVisits.add(new ClinicVisit(inactivePatient, null));
+
+            when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(clinicVisits);
+            assertEquals("clinicvisits/view_list", clinicVisitsController.list(PATIENT_ID, uiModel));
         }
     }
 

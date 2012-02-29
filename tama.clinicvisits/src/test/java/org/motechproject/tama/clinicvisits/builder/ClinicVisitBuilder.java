@@ -57,4 +57,5 @@ public class ClinicVisitBuilder {
         clinicVisit.setId(id);
         return this;
     }
+
 }

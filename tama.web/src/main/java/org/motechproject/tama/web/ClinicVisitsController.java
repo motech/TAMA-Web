@@ -7,6 +7,7 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -151,8 +152,13 @@ public class ClinicVisitsController extends BaseController {
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientId);
         Collections.sort(clinicVisits);
         uiModel.addAttribute("clinicVisits", clinicVisits);
-        uiModel.addAttribute("patient", clinicVisits.get(0).getPatient());
-        return "clinicvisits/list";
+        final Patient patient = clinicVisits.get(0).getPatient();
+        uiModel.addAttribute("patient", patient);
+
+        if (!patient.getStatus().isActive())
+            return "clinicvisits/view_list";
+
+        return "clinicvisits/manage_list";
     }
 
     @RequestMapping(value = "/adjustDueDate.json/{clinicVisitId}", method = RequestMethod.POST)

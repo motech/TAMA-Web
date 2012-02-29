@@ -39,8 +39,7 @@
         </util:panel>
         <jsp:include page="showPatientPageLinks.jspx">
             <jsp:param name="patientId" value="${patient.id}" />
-            <jsp:param name="patientActive" value="${patient.status.active}" />
-            <jsp:param name="patientSuspended" value="${patient.status.suspended}" />
+            <jsp:param name="patientInactive" value="${patient.status.inactive}" />
         </jsp:include>
         <jsp:include page="showSymptomTimeline.jspx" />
         <jsp:include page="showAdherenceOverTime.jspx" />

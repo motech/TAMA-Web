@@ -9,7 +9,7 @@
     <div style="margin-top: 10px;display: inline;"><a id="patient_registration_details" href="${patient_registration_details}">Patient Registration Details</a></div>
     |
     <c:choose>
-        <c:when test="${param.patientActive || param.patientSuspended}">
+        <c:when test="${not param.patientInactive}">
             <spring:url value="/clinicvisits/list" var="clinic_visits_url">
                 <spring:param name="patientId" value="${param.patientId}"/>
             </spring:url>

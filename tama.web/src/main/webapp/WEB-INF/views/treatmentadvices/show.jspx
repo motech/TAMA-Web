@@ -86,15 +86,17 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <I>Adherence calls for the patient are currently suspended. Please reactivate the patient to be able to change regimen.</I>
+                    <I>Patient has been suspended/deactivated.</I>
                 </c:otherwise>
             </c:choose>
             <script>
                 dojo.addOnLoad(function () {
-                    dojo.connect(dojo.byId('changeRegimen'), 'onclick',function (event) {
-                        event.preventDefault();
-                        window.location.href = "${form_url}";
-                    });
+                    if (dojo.byId('changeRegimen')) {
+                        dojo.connect(dojo.byId('changeRegimen'), 'onclick',function (event) {
+                            event.preventDefault();
+                            window.location.href = "${form_url}";
+                        });
+                    }
                 });
 
             </script>
