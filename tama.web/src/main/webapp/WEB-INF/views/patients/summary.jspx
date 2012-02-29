@@ -11,6 +11,12 @@
      version="2.0">
 
     <spring:url value="/resources/styles/patient-summary.css" var="patient_summary_css"/>
+    <spring:url value="/resources/js/labResultChart.js" var="lab_result_chart_js" />
+    <spring:url value="/resources/js/tamaChart.js" var="tama_chart_js"/>
+
+    <script src="${tama_chart_js}" type="text/javascript"><!-- required--></script>
+    <script type="text/javascript" src="${lab_result_chart_js}"> <!-- required--> </script>
+
 
     <link rel="stylesheet" type="text/css" media="screen" href="${patient_summary_css}"></link>
 

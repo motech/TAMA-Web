@@ -6,9 +6,6 @@
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>
 
-        <spring:url value="/resources/js/labResultChart.js" var="lab_result_chart_js" />
-        <script type="text/javascript" src="${lab_result_chart_js}"> <!-- required--> </script>
-
         <script type="text/javascript">
             var BPListData = function(jsonData) {
                 this.data = jsonData;
@@ -51,7 +48,7 @@
             }
 
             dojo.ready(function () {
-                var bpChartWidget = new PatientDashboardChart("bpOverTime", "${bpOverTimeUrl}", "BP");
+                var bpChartWidget = new PatientDashboardChart("bpOverTime", "${bpOverTimeUrl}", "Blood Pressure", "BP");
                 var onLoadHandler = function(jsonData){
                     if(jsonData.length == 0){
                         bpChartWidget.noticeBanner.setMessage("No Data recorded for this patient");

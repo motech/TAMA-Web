@@ -6,12 +6,9 @@
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>
 
-        <spring:url value="/resources/js/labResultChart.js" var="lab_result_chart_js" />
-        <script type="text/javascript" src="${lab_result_chart_js}"> <!-- required--> </script>
-
         <script type="text/javascript">
             dojo.ready(function () {
-                var weightChartWidget = new PatientDashboardChart("weightOverTime", "${weightOverTimeUrl}", "Weight in Kg. ");
+                var weightChartWidget = new PatientDashboardChart("weightOverTime", "${weightOverTimeUrl}", "Weight in kg.", "Weight in Kg. ");
                 weightChartWidget.draw();
             });
         </script>

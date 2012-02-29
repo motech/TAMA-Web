@@ -6,13 +6,14 @@ dojo.require("dojox.charting.themes.ThreeD");
 dojo.require("dojox.charting.plot2d.Markers");
 dojo.require("dojox.charting.widget.Legend");
 
-var PatientDashboardChart = function(chartName, dataUrl, tooltipPrefix, dangerZoneRangeFunction){
+var PatientDashboardChart = function(chartName, dataUrl, chartTitle, tooltipPrefix, dangerZoneRangeFunction){
     this.targetElement = dojo.byId(chartName + "Placeholder");
     this.noticeBanner = new Banner(chartName + "Notice");
     this.dataUrl = dataUrl;
+    this.chartTitle = chartTitle;
     this.tooltipPrefix = tooltipPrefix;
     this.dangerZoneRangeFunction = dangerZoneRangeFunction;
-    this.chartRenderer = new dojox.charting.Chart2D(chartName);
+    this.chartRenderer = new tama.Chart2D(chartName);
     this.theme = new dojox.charting.Theme({marker:{ symbol:"m0,-7 7,7 -7,7 -7,-7 z"}}); // diamond
 
     this.defaultDisplay = this.targetElement.style.display;
@@ -63,7 +64,7 @@ PatientDashboardChart.prototype = {
         this.chartRenderer.setTheme(this.theme);
 
         this.chartRenderer.addAxis("x", this.xAxisOptions(chartData));
-        this.chartRenderer.addAxis("y", {min:0, max: chartData.maxY() + 7, vertical:true});
+        this.chartRenderer.addAxis("y", this.yAxisOptions(chartData));
     },
 
     addSeries: function(seriesName, yValues, color, fillColor) {
@@ -100,6 +101,13 @@ PatientDashboardChart.prototype = {
                 max: chartData.length() + 0.10,
                 min: 0.98,
                 rotation: -50 }
+    },
+
+    yAxisOptions : function(chartData) {
+        return {min:0,
+                max: chartData.maxY() + 7,
+                title: this.chartTitle,
+                vertical:true }
     }
 
 }

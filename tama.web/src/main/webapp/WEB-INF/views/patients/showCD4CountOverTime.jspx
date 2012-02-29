@@ -6,15 +6,12 @@
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>
 
-        <spring:url value="/resources/js/labResultChart.js" var="lab_result_chart_js" />
-        <script type="text/javascript" src="${lab_result_chart_js}"> <!-- required--> </script>
-
         <script type="text/javascript">
             dojo.ready(function () {
                 var dangerZoneRangeFunction = function(jsonData) {
                     return jsonData.map(function (elt, index) {return 500;});
                 }
-                var cd4ChartWidget = new PatientDashboardChart("cd4CountOverTime", "${listCD4CountUrl}", "CD4 count", dangerZoneRangeFunction);
+                var cd4ChartWidget = new PatientDashboardChart("cd4CountOverTime", "${listCD4CountUrl}", "CD4 count", "CD4 count", dangerZoneRangeFunction);
                 cd4ChartWidget.draw();
             });
         </script>
