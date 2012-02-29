@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
 import org.motechproject.appointments.api.contract.ReminderConfiguration;
 import org.motechproject.appointments.api.contract.VisitRequest;
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.appointments.api.model.AppointmentCalendar;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.appointments.api.service.AppointmentService;
@@ -139,21 +140,15 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldCreateUniqueVisitNameForUnscheduledVisit() {
+    public void shouldCreateUnscheduledVisit() {
         DateTime dueDate = DateUtil.now();
+        VisitResponse visitResponse = new VisitResponse(new Visit().name("visitName"));
 
-        allClinicVisits.createUnscheduledVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
-        verify(appointmentService).addVisit(eq(PATIENT_ID), eq("visitFor-" + dueDate.getMillis()), Matchers.<VisitRequest>any());
-    }
+        when(appointmentService.addVisit(eq(PATIENT_ID),
+                eq("visitFor-" + dueDate.getMillis()),
+                Matchers.<VisitRequest>any())).thenReturn(visitResponse);
 
-    @Test
-    public void shouldMakeVisitRequestForUnscheduledVisit() {
-        DateTime dueDate = DateUtil.now();
-        VisitRequest visitRequest = mock(VisitRequest.class);
-
-        when(visitRequestBuilder.visitWithoutReminderRequest(dueDate, TypeOfVisit.Unscheduled)).thenReturn(visitRequest);
-        allClinicVisits.createUnscheduledVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
-        verify(appointmentService).addVisit(eq(PATIENT_ID), anyString(), same(visitRequest));
+        assertEquals("visitname", allClinicVisits.createUnscheduledVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled));
     }
 
     @Test
