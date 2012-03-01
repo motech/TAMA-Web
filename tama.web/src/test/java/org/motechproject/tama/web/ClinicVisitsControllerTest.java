@@ -182,6 +182,7 @@ public class ClinicVisitsControllerTest {
             }};
             labResultsUIModel = new LabResultsUIModel();
             opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
+            opportunisticInfectionsUIModel.setPatientId(PATIENT_ID);
             vitalStatistics = new VitalStatistics();
             clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVisitDate(visitDate).build();
         }

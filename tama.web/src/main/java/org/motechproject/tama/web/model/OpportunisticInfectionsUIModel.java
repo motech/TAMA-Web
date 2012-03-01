@@ -1,48 +1,29 @@
 package org.motechproject.tama.web.model;
 
-import org.apache.commons.lang.StringUtils;
-import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.patient.domain.OpportunisticInfections;
+import org.motechproject.tama.refdata.domain.OpportunisticInfection;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OpportunisticInfectionsUIModel {
 
-    public static class Summary {
-
-        private List<String> infections;
-
-        public Summary() {
-            infections = new ArrayList<String>();
-        }
-
-        public void addAll(OpportunisticInfections opportunisticInfections) {
-            infections = opportunisticInfections.getChosenInfections();
-        }
-
-        public List<String> getInfections() {
-            return infections;
-        }
-
-        public boolean contains(String infection) {
-            return infections.contains(infection);
-        }
-    }
-
     private String clinicVisitId;
 
-    private OpportunisticInfections opportunisticInfections = new OpportunisticInfections();
+    private String patientId;
 
-    private Summary summary;
+    private String otherDetails;
+
+    private List<OIStatus> infections = new ArrayList<OIStatus>();
 
     public OpportunisticInfectionsUIModel() {
-        summary = new Summary();
     }
 
-    public OpportunisticInfectionsUIModel(String patientId) {
-        this();
-        opportunisticInfections.setPatientId(patientId);
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getPatientId() {
+        return patientId;
     }
 
     public String getClinicVisitId() {
@@ -53,46 +34,34 @@ public class OpportunisticInfectionsUIModel {
         this.clinicVisitId = clinicVisitId;
     }
 
-    public String getId() {
-        return opportunisticInfections.getId();
+    public String getOtherDetails() {
+        return otherDetails;
     }
 
-    public String getPatientId() {
-        return opportunisticInfections.getPatientId();
+    public void setOtherDetails(String otherDetails) {
+        this.otherDetails = otherDetails;
     }
 
-    public void setId(String id) {
-        if (StringUtils.isNotEmpty(id)) {
-            opportunisticInfections.setId(id);
+    public List<OIStatus> getInfections() {
+        return infections;
+    }
+
+    public void setInfections(List<OIStatus> opportunisticInfectionUIModels) {
+        this.infections = opportunisticInfectionUIModels;
+    }
+
+    public void addNewInfection(OpportunisticInfection opportunisticInfection) {
+        OIStatus oiStatus = new OIStatus();
+        oiStatus.setOpportunisticInfection(opportunisticInfection.getName());
+        oiStatus.setReported(false);
+        infections.add(oiStatus);
+    }
+
+    public boolean infectionsReported() {
+        for(OIStatus oiStatus: infections) {
+            if(oiStatus.getReported()) return true;
         }
+        return false;
     }
 
-    public static OpportunisticInfectionsUIModel newDefault(ClinicVisit clinicVisit) {
-        final OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
-        opportunisticInfectionsUIModel.setClinicVisitId(clinicVisit.getId());
-        final OpportunisticInfections opportunisticInfections = new OpportunisticInfections();
-        opportunisticInfections.setPatientId(clinicVisit.getPatientId());
-        opportunisticInfectionsUIModel.setOpportunisticInfections(opportunisticInfections);
-        return opportunisticInfectionsUIModel;
-    }
-
-    public static OpportunisticInfectionsUIModel get(ClinicVisit clinicVisit, OpportunisticInfections opportunisticInfections) {
-        final OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
-        opportunisticInfectionsUIModel.setClinicVisitId(clinicVisit.getId());
-        opportunisticInfectionsUIModel.setOpportunisticInfections(opportunisticInfections);
-        return opportunisticInfectionsUIModel;
-    }
-
-    public OpportunisticInfections getOpportunisticInfections() {
-        return opportunisticInfections;
-    }
-
-    public void setOpportunisticInfections(OpportunisticInfections opportunisticInfections) {
-        this.opportunisticInfections = opportunisticInfections;
-    }
-
-    public Summary getSummary() {
-        summary.addAll(opportunisticInfections);
-        return summary;
-    }
 }

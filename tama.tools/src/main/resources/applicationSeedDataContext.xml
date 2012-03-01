@@ -26,6 +26,7 @@
                 <ref bean="citySeed"/>
                 <ref bean="administratorSeed"/>
                 <ref bean="labTestSeed"/>
+                <ref bean="opportunisticInfectionSeed"/>
             </list>
         </constructor-arg>
     </bean>

@@ -18,30 +18,27 @@
     <util:panel id="opportunistic_infections_panel" title="Record Opportunistic Infections" openPane="true">
 
         <spring:url value="/opportunisticInfections/create" var="form_url"/>
+        <input type="hidden" value="${opportunisticInfectionsUIModel.patientId}" id="opportunisticInfectionsPatientId" name="opportunisticInfectionsPatientId"/>
         <div class="opp_infection">
-            <field:hidden path="opportunisticInfectionsUIModel.opportunisticInfections.patientId" id="patientId"/>
-            <span><springform:checkbox id="addisonsDisease" path="opportunisticInfectionsUIModel.opportunisticInfections.addisonsDisease" label="Addison's Disease"/></span>
-            <span><springform:checkbox id="anemia" path="opportunisticInfectionsUIModel.opportunisticInfections.anemia" label="Anemia"/></span>
-            <span><springform:checkbox id="bacterialInfection" path="opportunisticInfectionsUIModel.opportunisticInfections.bacterialInfection" label="Bacterial Infection Of Skin"/></span>
-            <span><springform:checkbox id="convulsions" path="opportunisticInfectionsUIModel.opportunisticInfections.convulsions" label="Convulsions"/></span>
-            <span><springform:checkbox id="dementia" path="opportunisticInfectionsUIModel.opportunisticInfections.dementia" label="Dementia"/></span>
-            <span><springform:checkbox id="encephalitis" path="opportunisticInfectionsUIModel.opportunisticInfections.encephalitis" label="Encephalitis"/></span>
-            <span><springform:checkbox id="gastroenteropathy" path="opportunisticInfectionsUIModel.opportunisticInfections.gastroenteropathy" label="Gastroenteropathy"/></span>
-            <span><springform:checkbox id="hypertension" path="opportunisticInfectionsUIModel.opportunisticInfections.hypertension" label="Hypertension"/></span>
-            <span><springform:checkbox id="liverAbscess" path="opportunisticInfectionsUIModel.opportunisticInfections.liverAbscess" label="Liver Abscess"/></span>
-            <span><springform:checkbox id="malaria" path="opportunisticInfectionsUIModel.opportunisticInfections.malaria" label="Malaria"/></span>
-            <span><springform:checkbox id="nonHealingUlcer" path="opportunisticInfectionsUIModel.opportunisticInfections.nonHealingUlcer" label="Non Healing Ulcer"/></span>
-            <span><springform:checkbox id="oralCandidiasis" path="opportunisticInfectionsUIModel.opportunisticInfections.oralCandidiasis" label="Oral Candidiasis"/></span>
-            <span><springform:checkbox id="pancreatitis" path="opportunisticInfectionsUIModel.opportunisticInfections.pancreatitis" label="Pancreatitis"/></span>
-            <span><springform:checkbox id="scabies" path="opportunisticInfectionsUIModel.opportunisticInfections.scabies" label="Scabies"/></span>
-            <span><springform:checkbox id="TBMeningitis" path="opportunisticInfectionsUIModel.opportunisticInfections.TBMeningitis" label="TB Meningitis"/></span>
-            <span>
-                <springform:checkbox id="otherOpportunisticInfection" path="opportunisticInfectionsUIModel.opportunisticInfections.otherOpportunisticInfection" label="Other" onClick="displayDescriptionIfSelected()"/>
-                <div id="otherOpportunisticInfectionInfo">
-                    <formfield:input field="opportunisticInfectionsUIModel.opportunisticInfections.otherOpportunisticInfectionDetails" label="Details" id="otherOpportunisticInfectionDetails"/>
-                </div>
-            </span>
+            <c:forEach items="${opportunisticInfectionsUIModel.infections}" var="infection" varStatus="item" >
+                 <field:hidden path="opportunisticInfectionsUIModel.infections[${item.index}].opportunisticInfection" id="OI${item.index}"/>
+
+                <c:if test="${infection.opportunisticInfection != 'Other'}">
+                    <span><springform:checkbox id="opportunisticInfection${item.index}" path="opportunisticInfectionsUIModel.infections[${item.index}].reported" label="${infection.opportunisticInfection}"/></span>
+                 </c:if>
+
+                 <c:if test="${infection.opportunisticInfection == 'Other'}">
+                    <span>
+                        <springform:checkbox id="otherOpportunisticInfection" path="opportunisticInfectionsUIModel.infections[${item.index}].reported" label="${infection.opportunisticInfection}"/>
+                        <div id="otherOpportunisticInfectionInfo">
+                            <formfield:input field="opportunisticInfectionsUIModel.otherDetails" label="Details" id="otherOpportunisticInfectionDetails"/>
+                        </div>
+                    </span>
+                 </c:if>
+
+            </c:forEach>
         </div>
+
     </util:panel>
     <div id="page_load_marker"></div>
 </div>

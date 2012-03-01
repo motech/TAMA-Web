@@ -181,7 +181,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         DateTime visitDate = DateUtil.now();
         List<String> labResultIds = new ArrayList<String>();
         allClinicVisits.updateVisit("visitId", visitDate, PATIENT_ID, treatmentAdviceId, labResultIds, vitalStatsId, oppInfectionsId);
-        verify(visit).addData(ClinicVisit.OPPORTUNISTIC_INFECTIONS, oppInfectionsId);
+        verify(visit).addData(ClinicVisit.REPORTED_OPPORTUNISTIC_INFECTIONS, oppInfectionsId);
         verify(visit).addData(ClinicVisit.TREATMENT_ADVICE, treatmentAdviceId);
         verify(visit).addData(ClinicVisit.VITAL_STATISTICS, vitalStatsId);
         verify(visit).addData(ClinicVisit.LAB_RESULTS, labResultIds);

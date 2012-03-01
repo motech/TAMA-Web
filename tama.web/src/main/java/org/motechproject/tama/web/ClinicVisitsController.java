@@ -92,7 +92,7 @@ public class ClinicVisitsController extends BaseController {
                          LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, @Valid OpportunisticInfectionsUIModel opportunisticInfections, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         List<String> labResultIds = new ArrayList<String>();
         String vitalStatisticsId = null;
-        String opportunisticInfectionsId = null;
+        String reportedOpportunisticInfectionsId = null;
         String patientId = treatmentAdvice.getPatientId();
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
@@ -119,13 +119,13 @@ public class ClinicVisitsController extends BaseController {
         }
 
         try {
-            opportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel);
+            reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel);
         } catch (RuntimeException e) {
             uiModel.addAttribute("errorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
         }
 
         try {
-            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, opportunisticInfectionsId);
+            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
         } catch (RuntimeException e) {
             uiModel.addAttribute("error", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
@@ -142,7 +142,7 @@ public class ClinicVisitsController extends BaseController {
         treatmentAdviceController.show(treatmentAdviceId, uiModel);
         labResultsController.show(patientDocId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
-        opportunisticInfectionsController.show(clinicVisit.getOpportunisticInfectionsId(), uiModel);
+        opportunisticInfectionsController.show(clinicVisit.getReportedOpportunisticInfectionsId(), uiModel);
         uiModel.addAttribute("clinicVisit", clinicVisit);
         return "clinicvisits/show";
     }

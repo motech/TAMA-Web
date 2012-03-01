@@ -84,7 +84,7 @@ public class AllClinicVisits {
         clinicVisit.setTreatmentAdviceId(treatmentAdviceId);
         clinicVisit.setLabResultIds(labResultIds);
         clinicVisit.setVitalStatisticsId(vitalStatisticsId);
-        clinicVisit.setOpportunisticInfectionsId(opportunisticInfectionsId);
+        clinicVisit.setReportedOpportunisticInfectionsId(opportunisticInfectionsId);
         clinicVisit.setVisitDate(visitDate);
         updateVisit(clinicVisit);
         return clinicVisit.getId();
@@ -116,7 +116,7 @@ public class AllClinicVisits {
 
     public void updateOpportunisticInfections(String patientDocId, String clinicVisitId, String opportunisticInfectionId) {
         final ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setOpportunisticInfectionsId(opportunisticInfectionId);
+        clinicVisit.setReportedOpportunisticInfectionsId(opportunisticInfectionId);
         updateVisit(clinicVisit);
 
     }
