@@ -118,16 +118,21 @@ public class OpportunisticInfectionsController extends BaseController {
         if (storedOpportunisticInfections != null) {
             allReportedOpportunisticInfections.remove(storedOpportunisticInfections);
         }
-
         ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
-        allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
-        allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(), opportunisticInfectionsUIModel.getClinicVisitId(), reportedOpportunisticInfections.getId());
+        if(reportedOpportunisticInfections.getOpportunisticInfectionIds().isEmpty()) {
+            allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(),
+                    opportunisticInfectionsUIModel.getClinicVisitId(), null);
+        } else {
+            allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
+            allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(),
+                    opportunisticInfectionsUIModel.getClinicVisitId(), reportedOpportunisticInfections.getId());
+        }
 
         return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(opportunisticInfectionsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + opportunisticInfectionsUIModel.getPatientId();
     }
 
     private ReportedOpportunisticInfections getStoredOpportunisticInfections(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel) {
         ClinicVisit clinicVisit = allClinicVisits.get(opportunisticInfectionsUIModel.getPatientId(), opportunisticInfectionsUIModel.getClinicVisitId());
-        return allReportedOpportunisticInfections.get(clinicVisit.getReportedOpportunisticInfectionsId());
+        return clinicVisit.getReportedOpportunisticInfectionsId() == null ? null : allReportedOpportunisticInfections.get(clinicVisit.getReportedOpportunisticInfectionsId());
     }
 }
