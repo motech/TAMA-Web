@@ -10,8 +10,8 @@
 
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
 
-        <c:if test="${param.error != null}">
-            <div class="error"> <c:out value="${param.error}"/> </div>
+        <c:if test="${flashError != null}">
+            <div class="error"> <c:out value="${flashError}"/> </div>
         </c:if>
 
         <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients/summary"

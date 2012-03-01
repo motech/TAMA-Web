@@ -5,12 +5,16 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <c:if test="${param.errorLabResults != null}">
-        <div class="error"> <c:out value="${param.errorLabResults}"/> </div>
+    <c:if test="${flashErrorLabResults != null}">
+        <div class="error"> <c:out value="${flashErrorLabResults}"/> </div>
     </c:if>
 
-    <c:if test="${param.errorVitalStatistics != null}">
-        <div class="error"> <c:out value="${param.errorVitalStatistics}"/> </div>
+    <c:if test="${flashErrorVitalStatistics != null}">
+        <div class="error"> <c:out value="${flashErrorVitalStatistics}"/> </div>
+    </c:if>
+
+    <c:if test="${flashErrorOpportunisticInfections != null}">
+        <div class="error"> <c:out value="${flashErrorOpportunisticInfections}"/> </div>
     </c:if>
 
     <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Visit Details" openPane="true">

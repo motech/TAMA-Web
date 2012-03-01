@@ -24,8 +24,8 @@
         <div class="warning"> <c:out value="${warning}"/> </div>
     </c:if>
 
-    <c:if test="${param.error != null}">
-        <div class="error"> <c:out value="${param.error}"/> </div>
+    <c:if test="${flashError != null}">
+        <div class="error"> <c:out value="${flashError}"/> </div>
     </c:if>
 
     <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Registration Details">

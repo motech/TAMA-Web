@@ -83,7 +83,7 @@ public class TreatmentAdviceController extends BaseController {
             allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, treatmentAdviceId);
             return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + treatmentAdvice.getPatientId();
         } catch (RuntimeException e){
-            uiModel.addAttribute("error", "Error occurred while changing Regimen. Please Retry.");
+            httpServletRequest.setAttribute("flash.flashError", "Error occurred while changing Regimen. Please Retry.");
             return "redirect:/treatmentadvices/changeRegimen?id=" + treatmentAdviceId + "&clinicVisitId=" + clinicVisitId + "&patientId=" + treatmentAdvice.getPatientId();
         }
     }

@@ -10,8 +10,8 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <c:if test="${param.error != null}">
-        <div class="error"> <c:out value="${param.error}"/> </div>
+    <c:if test="${flashError != null}">
+        <div class="error"> <c:out value="${flashError}"/> </div>
     </c:if>
 
     <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Visit Details" openPane="true">

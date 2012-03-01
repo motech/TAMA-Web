@@ -102,32 +102,32 @@ public class ClinicVisitsController extends BaseController {
             try {
                 treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
             } catch (RuntimeException e) {
-                uiModel.addAttribute("error", "Error occurred while creating treatment advice: " + e.getMessage());
+                httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating treatment advice: " + e.getMessage());
                 return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
             }
         }
         try {
             labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("errorLabResults", "Error occurred while creating Lab Results: " + e.getMessage());
+            httpServletRequest.setAttribute("flash.flashErrorLabResults", "Error occurred while creating Lab Results: " + e.getMessage());
         }
 
         try {
             vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("errorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
+            httpServletRequest.setAttribute("flash.flashErrorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
         }
 
         try {
             reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("errorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
+            httpServletRequest.setAttribute("flash.flashErrorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
         }
 
         try {
             allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("error", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
+            httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
         }
         return redirectToShowClinicVisitUrl(clinicVisitId, patientId, httpServletRequest);

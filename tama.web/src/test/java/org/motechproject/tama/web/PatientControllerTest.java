@@ -156,7 +156,7 @@ public class PatientControllerTest {
             String nextPage = controller.activate(PATIENT_ID, uiModel, request);
 
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-            verify(uiModel).addAttribute("error", "Error occurred while activating patient: Some Exception");
+            verify(request).setAttribute("flash.flashError", "Error occurred while activating patient: Some Exception");
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
         }
     }
@@ -204,7 +204,7 @@ public class PatientControllerTest {
 
             verify(patientService, never()).activate(PATIENT_ID);
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-            verify(uiModel).addAttribute("error", "Error occurred while activating patient: Some Exception");
+            verify(request).setAttribute("flash.flashError", "Error occurred while activating patient: Some Exception");
             assertEquals("redirect:/patients", nextPage);
         }
     }
@@ -227,7 +227,7 @@ public class PatientControllerTest {
             String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, uiModel, request);
 
             assertEquals("redirect:/patients/patient_id", nextPage);
-            verify(uiModel).addAttribute("error", "Error occured while deactivating patient: Some exception");
+            verify(request).setAttribute("flash.flashError", "Error occured while deactivating patient: Some exception");
         }
     }
 
@@ -278,7 +278,7 @@ public class PatientControllerTest {
             String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
 
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
-            verify(uiModel).addAttribute("error", "Error occurred while reactivating patient: Some error");
+            verify(request).setAttribute("flash.flashError", "Error occurred while reactivating patient: Some error");
         }
 
         @Test
@@ -291,7 +291,7 @@ public class PatientControllerTest {
 
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
             verify(patientService, never()).activate(PATIENT_ID);
-            verify(uiModel).addAttribute("error", "Error occurred while reactivating patient: Some error");
+            verify(request).setAttribute("flash.flashError", "Error occurred while reactivating patient: Some error");
         }
     }
 

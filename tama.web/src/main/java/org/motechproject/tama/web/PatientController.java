@@ -126,7 +126,7 @@ public class PatientController extends BaseController {
         try {
             patientService.deactivate(id, status);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("error", "Error occured while deactivating patient: " + e.getMessage());
+            request.setAttribute("flash.flashError", "Error occured while deactivating patient: " + e.getMessage());
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
@@ -159,7 +159,7 @@ public class PatientController extends BaseController {
             }
             patientService.activate(id);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("error", "Error occurred while reactivating patient: " + e.getMessage());
+            request.setAttribute("flash.flashError", "Error occurred while reactivating patient: " + e.getMessage());
         }
 
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
@@ -273,7 +273,7 @@ public class PatientController extends BaseController {
             }
             patientService.activate(patientDocId);
         } catch (RuntimeException e) {
-            uiModel.addAttribute("error", "Error occurred while activating patient: " + e.getMessage());
+            request.setAttribute("flash.flashError", "Error occurred while activating patient: " + e.getMessage());
         }
         return redirectPage;
     }

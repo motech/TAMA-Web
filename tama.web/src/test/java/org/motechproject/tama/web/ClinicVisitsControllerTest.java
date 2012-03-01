@@ -230,7 +230,7 @@ public class ClinicVisitsControllerTest {
             String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
-            verify(uiModel).addAttribute("errorLabResults", "Error occurred while creating Lab Results: Some Error");
+            verify(request).setAttribute("flash.flashErrorLabResults", "Error occurred while creating Lab Results: Some Error");
         }
 
         @Test
@@ -272,7 +272,7 @@ public class ClinicVisitsControllerTest {
             String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
-            verify(uiModel).addAttribute("errorVitalStatistics", "Error occurred while creating Vital Statistics: Some Error");
+            verify(request).setAttribute("flash.flashErrorVitalStatistics", "Error occurred while creating Vital Statistics: Some Error");
         }
 
         @Test
@@ -305,7 +305,7 @@ public class ClinicVisitsControllerTest {
             String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId, redirectURL);
-            verify(uiModel).addAttribute("error", "Error occurred while creating clinic visit. Please try again: Some error");
+            verify(request).setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: Some error");
         }
 
     }
