@@ -10,8 +10,6 @@ import org.junit.runners.Suite;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.contract.VisitResponse;
-import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
@@ -134,7 +132,7 @@ public class ClinicVisitsControllerTest {
                 assertEquals("clinicvisits/create", redirectURL);
                 verify(treatmentAdviceController).show(treatmentAdvice.getId(), uiModel);
                 verify(labResultsController).createForm(patientId, uiModel);
-                verify(opportunisticInfectionsController).createForm(patientId, uiModel);
+                verify(opportunisticInfectionsController).createForm(clinicVisit, uiModel);
                 verify(vitalStatisticsController).createForm(patientId, uiModel);
             }
         }

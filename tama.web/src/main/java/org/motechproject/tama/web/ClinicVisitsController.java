@@ -83,7 +83,7 @@ public class ClinicVisitsController extends BaseController {
         uiModel.addAttribute("clinicVisit", clinicVisit);
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
-        opportunisticInfectionsController.createForm(patientDocId, uiModel);
+        opportunisticInfectionsController.createForm(clinicVisit, uiModel);
         return "clinicvisits/create";
     }
 
@@ -142,7 +142,7 @@ public class ClinicVisitsController extends BaseController {
         treatmentAdviceController.show(treatmentAdviceId, uiModel);
         labResultsController.show(patientDocId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
-        opportunisticInfectionsController.show(clinicVisit.getReportedOpportunisticInfectionsId(), uiModel);
+        opportunisticInfectionsController.show(clinicVisit, uiModel);
         uiModel.addAttribute("clinicVisit", clinicVisit);
         return "clinicvisits/show";
     }

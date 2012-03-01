@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.domain.ReportedOpportunisticInfections;
 import org.motechproject.tama.patient.repository.AllReportedOpportunisticInfections;
@@ -42,17 +43,8 @@ public class OpportunisticInfectionsController extends BaseController {
         this.allOpportunisticInfections = allOpportunisticInfections;
     }
 
-    public void createForm(String patientId, Model uiModel) {
-        populateEmptyUIModel(patientId, uiModel);
-    }
-
-    private void populateEmptyUIModel(String patientId, Model uiModel) {
-        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
-        opportunisticInfectionsUIModel.setPatientId(patientId);
-        for(OpportunisticInfection opportunisticInfection: allOpportunisticInfections.getAll()) {
-            opportunisticInfectionsUIModel.addNewInfection(opportunisticInfection);
-        }
-        uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, opportunisticInfectionsUIModel);
+    public void createForm(ClinicVisit clinicVisit, Model uiModel) {
+        uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, OpportunisticInfectionsUIModel.newDefault(clinicVisit, allOpportunisticInfections.getAll()));
     }
 
     public String create(@Valid OpportunisticInfectionsUIModel opportunisticInfectionsUIModel, BindingResult bindingResult, Model uiModel) {
@@ -60,8 +52,9 @@ public class OpportunisticInfectionsController extends BaseController {
             uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, opportunisticInfectionsUIModel);
             return null;
         }
-        if(opportunisticInfectionsUIModel.infectionsReported()) {
+        if(opportunisticInfectionsUIModel.getHasInfectionsReported()) {
             ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
+            reportedOpportunisticInfections.setPatientId(opportunisticInfectionsUIModel.getPatientId());
             reportedOpportunisticInfections.setCaptureDate(DateUtil.today());
             allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
             return reportedOpportunisticInfections.getId();
@@ -71,13 +64,11 @@ public class OpportunisticInfectionsController extends BaseController {
     }
 
     public ReportedOpportunisticInfections buildReportedOpportunisticInfections(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel) {
-        List<OpportunisticInfection> opportunisticInfectionList = allOpportunisticInfections.getAll();
-
-        ReportedOpportunisticInfections reportedOpportunisticInfections = new ReportedOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId());
-        for (OIStatus opportunisticInfectionUIModel : opportunisticInfectionsUIModel.getInfections()) {
-            if (opportunisticInfectionUIModel.getReported()) {
-                String nameOfInfection = opportunisticInfectionUIModel.getOpportunisticInfection();
-                List<OpportunisticInfection> oiList = (List<OpportunisticInfection>) CollectionUtils.select(opportunisticInfectionList, withName(nameOfInfection));
+        ReportedOpportunisticInfections reportedOpportunisticInfections = new ReportedOpportunisticInfections();
+        for (OIStatus oiStatus : opportunisticInfectionsUIModel.getInfections()) {
+            if (oiStatus.getReported()) {
+                String nameOfInfection = oiStatus.getOpportunisticInfection();
+                List<OpportunisticInfection> oiList = (List<OpportunisticInfection>) CollectionUtils.select(allOpportunisticInfections.getAll(), withName(nameOfInfection));
                 reportedOpportunisticInfections.addOpportunisticInfection(oiList.get(0));
             }
         }
@@ -96,13 +87,15 @@ public class OpportunisticInfectionsController extends BaseController {
         };
     }
 
-    public void show(String opportunisticInfectionsId, Model uiModel) {
-        /*ReportedOpportunisticInfections opportunisticInfections = null;
-        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
-        if (opportunisticInfectionsId != null)
-            opportunisticInfections = allReportedOpportunisticInfections.get(opportunisticInfectionsId);
-        *//*opportunisticInfectionsUIModel.setOpportunisticInfections(opportunisticInfections);*//*
-        uiModel.addAttribute("opportunisticInfectionsUIModel", opportunisticInfectionsUIModel);*/
+    public void show(ClinicVisit clinicVisit, Model uiModel) {
+        ReportedOpportunisticInfections reportedOpportunisticInfections = new ReportedOpportunisticInfections();
+        String reportedOpportunisticInfectionsId = clinicVisit.getReportedOpportunisticInfectionsId();
+        if (reportedOpportunisticInfectionsId != null) {
+            reportedOpportunisticInfections = allReportedOpportunisticInfections.get(reportedOpportunisticInfectionsId);
+        }
+
+        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = OpportunisticInfectionsUIModel.create(clinicVisit, reportedOpportunisticInfections, allOpportunisticInfections.getAll());
+        uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, opportunisticInfectionsUIModel);
     }
 
     @RequestMapping(value = "/update", params = "form", method = RequestMethod.GET)

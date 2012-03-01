@@ -22,12 +22,12 @@ public class ReportedOpportunisticInfections extends CouchEntity {
 
     private LocalDate captureDate;
 
-    public ReportedOpportunisticInfections(String patientId) {
-        this.patientId = patientId;
-    }
-
     public List<String> getOpportunisticInfectionIds() {
         return opportunisticInfectionIds;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public String getPatientId() {

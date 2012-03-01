@@ -16,12 +16,33 @@
             <spring:param name="patientId" value="${patientId}" />
         </spring:url>
         <a id="edit_link" href="${edit_url}" style="float:right">[edit]</a>
-        <c:if test="${empty opportunisticInfectionsUIModel.summary.infections}">
-            <c:out value="No Infections"/>
-        </c:if>
-        <c:forEach items="${opportunisticInfectionsUIModel.summary.infections}" var="infection">
-          <div style="margin:5px"><c:out value="${infection}" /></div>
-        </c:forEach>
+
+        <c:choose>
+
+            <c:when test="${opportunisticInfectionsUIModel.hasInfectionsReported == false}">
+                <c:out value="No Infections Reported"/>
+            </c:when>
+
+            <c:otherwise>
+                <c:forEach items="${opportunisticInfectionsUIModel.infections}" var="infection">
+
+                    <c:if test="${infection.reported == true}" >
+
+                        <c:choose>
+                            <c:when test="${infection.opportunisticInfection == 'Other'}">
+                                <div style="margin:5px"><c:out value="${infection.opportunisticInfection}: ${opportunisticInfectionsUIModel.otherDetails}" /></div>
+                            </c:when>
+                            <c:otherwise>
+                                <div style="margin:5px"><c:out value="${infection.opportunisticInfection}" /></div>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </c:if>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
+
     </util:panel>
+
     <div id="page_load_marker"></div>
 </div>
