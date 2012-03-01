@@ -77,9 +77,15 @@ public class TreatmentAdviceController extends BaseController {
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
-        final String newTreatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
-        allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, newTreatmentAdviceId);
-        return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + treatmentAdvice.getPatientId();
+        String treatmentAdviceId = existingTreatmentAdviceId;
+        try {
+            treatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+            allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, treatmentAdviceId);
+            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + treatmentAdvice.getPatientId();
+        } catch (RuntimeException e){
+            uiModel.addAttribute("error", "Error occurred while changing Regimen. Please Retry.");
+            return "redirect:/treatmentadvices/changeRegimen?id=" + treatmentAdviceId + "&clinicVisitId=" + clinicVisitId + "&patientId=" + treatmentAdvice.getPatientId();
+        }
     }
 
     public void createForm(String patientId, Model uiModel) {

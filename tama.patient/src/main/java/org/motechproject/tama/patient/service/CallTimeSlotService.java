@@ -36,14 +36,13 @@ public class CallTimeSlotService {
 
     public void freeSlots(Patient patient, TreatmentAdvice treatmentAdvice) {
         for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
-            String morningTime = drugDosage.getMorningTime();
-            if (morningTime != null) freeSlot(patient, morningTime);
-            String eveningTime = drugDosage.getEveningTime();
-            if (eveningTime != null) freeSlot(patient, eveningTime);
+            freeSlot(patient, drugDosage.getMorningTime());
+            freeSlot(patient, drugDosage.getEveningTime());
         }
     }
 
     private void freeSlot(Patient patient, String timeString) {
+        if (timeString == null ) return;
         List<CallTimeSlot> slots = allCallTimeSlots.findBySlotTimeAndPatientId(new TimeUtil(timeString).toLocalTime(), patient.getId());
         for (CallTimeSlot slot : slots) {
             allCallTimeSlots.remove(slot);
@@ -52,14 +51,13 @@ public class CallTimeSlotService {
 
     public void allotSlots(Patient patient, TreatmentAdvice treatmentAdvice) {
         for (DrugDosage drugDosage : treatmentAdvice.getDrugDosages()) {
-            String morningTime = drugDosage.getMorningTime();
-            if (morningTime != null) allotSlot(patient, morningTime);
-            String eveningTime = drugDosage.getEveningTime();
-            if (eveningTime != null) allotSlot(patient, eveningTime);
+            allotSlot(patient, drugDosage.getMorningTime());
+            allotSlot(patient, drugDosage.getEveningTime());
         }
     }
 
     private void allotSlot(Patient patient, String timeString) {
+        if (timeString == null ) return;
         CallTimeSlot timeSlot = new CallTimeSlot();
         timeSlot.setCallTime(new TimeUtil(timeString).toLocalTime());
         timeSlot.setPatientDocumentId(patient.getId());

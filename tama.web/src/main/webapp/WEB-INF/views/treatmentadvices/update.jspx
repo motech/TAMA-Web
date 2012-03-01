@@ -5,6 +5,11 @@
      xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
+    <c:if test="${param.error != null}">
+        <div class="error"> <c:out value="${param.error}"/> </div>
+    </c:if>
+
     <util:panel id="fc_org_motechproject_tama_domain_patient_Change_Treatment_Advice" title="Change Treatment Advice"
                 openPane="true">
         <spring:url value="/treatmentadvices/changeRegimen" var="form_url"/>

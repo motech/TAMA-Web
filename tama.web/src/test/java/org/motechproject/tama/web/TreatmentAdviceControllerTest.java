@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
@@ -42,6 +41,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TreatmentAdviceControllerTest extends BaseUnitTest {
@@ -194,15 +194,12 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     }
 
     @Test
-    public void changeRegimenShouldEndCurrentRegimenAndCreateANewRegimen_WhenPatientIsOnDailyPillReminderCalls() {
+    public void shouldEndCurrentRegimenAndCreateANewRegimen() {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
-        String regimenId = "existingTreatmentRegimenId";
         String clinicVisitId = "clinicVisitId";
-        TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
-
-        when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
         when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
         assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId + "?patientId=" + PATIENT_ID));
@@ -211,21 +208,29 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     }
 
     @Test
-    public void changeRegimenShouldEndCurrentRegimenAndCreateANewRegimen_WhenPatientIsOnFourDayRecallCalls() {
-        patient.getPatientPreferences().setCallPreference(CallPreference.FourDayRecall);
+    public void shouldRedirectToChangeRegimenForm_whenChangeRegimenErrorsOut() {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
-        String regimenId = "existingTreatmentRegimenId";
         String clinicVisitId = "clinicVisitId";
-        TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withId(existingTreatmentAdviceId).withRegimenId(regimenId).build();
+        doThrow(new RuntimeException("Some error")).when(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
 
-        when(allTreatmentAdvices.get(existingTreatmentAdviceId)).thenReturn(existingTreatmentAdvice);
-        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId  + "?patientId=" + PATIENT_ID));
-        verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
-        verify(allClinicVisits).changeRegimen(PATIENT_ID, clinicVisitId, treatmentAdvice.getId());
+        assertThat(redirectURL, is("redirect:/treatmentadvices/changeRegimen?id=" + existingTreatmentAdviceId + "&clinicVisitId=" + clinicVisitId + "&patientId=" + PATIENT_ID));
+    }
+
+    @Test
+    public void shouldRedirectToChangeRegimenFormWithNewTreatmentAdviceId_whenClinicVisitChangeRegimenErrorsOut() {
+        String existingTreatmentAdviceId = "existingTreatmentAdviceId";
+        String discontinuationReason = "bad medicine";
+        String clinicVisitId = "clinicVisitId";
+        String newTreatmentAdviceId = "newTreatmentAdviceId";
+        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(newTreatmentAdviceId);
+        doThrow(new RuntimeException("Some error")).when(allClinicVisits).changeRegimen(PATIENT_ID, clinicVisitId, newTreatmentAdviceId);
+
+        String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
+
+        assertThat(redirectURL, is("redirect:/treatmentadvices/changeRegimen?id=" + newTreatmentAdviceId + "&clinicVisitId=" + clinicVisitId + "&patientId=" + PATIENT_ID));
     }
 
     private TreatmentAdvice getTreatmentAdvice() {
