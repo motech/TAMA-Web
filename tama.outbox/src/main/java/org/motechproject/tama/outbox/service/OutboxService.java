@@ -30,15 +30,17 @@ public class OutboxService implements Outbox {
     private IVRCall ivrCall;
     private VoiceOutboxService voiceOutboxService;
     private OutboxSchedulerService outboxSchedulerService;
+    private OutboxEventHandler outboxEventHandler;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public OutboxService(AllPatients allPatients, @Qualifier("IVRCall") IVRCall ivrCall, VoiceOutboxService voiceOutboxService, OutboxSchedulerService outboxSchedulerService, PatientService patientService) {
+    public OutboxService(AllPatients allPatients, @Qualifier("IVRCall") IVRCall ivrCall, VoiceOutboxService voiceOutboxService, OutboxSchedulerService outboxSchedulerService, PatientService patientService, OutboxEventHandler outboxEventHandler) {
         this.allPatients = allPatients;
         this.ivrCall = ivrCall;
         this.voiceOutboxService = voiceOutboxService;
         this.outboxSchedulerService = outboxSchedulerService;
+        this.outboxEventHandler = outboxEventHandler;
         patientService.registerOutbox(this);
     }
 
@@ -67,15 +69,15 @@ public class OutboxService implements Outbox {
         return voiceOutboxService.getNumberPendingMessages(patientDocumentId, voiceMessageTypeName) != 0;
     }
 
-    public void addMessage(String patientId) {
-        addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
+    public String addMessage(String patientId) {
+        return addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
     }
 
-    public void addMessage(String patientId, String voiceMessageTypeName) {
-        addMessage(patientId, voiceMessageTypeName, new HashMap<String, Object>());
+    public String addMessage(String patientId, String voiceMessageTypeName) {
+        return addMessage(patientId, voiceMessageTypeName, new HashMap<String, Object>());
     }
 
-    public void addMessage(String patientId, String voiceMessageTypeName, Map<String, Object> parameterMap) {
+    public String addMessage(String patientId, String voiceMessageTypeName, Map<String, Object> parameterMap) {
         OutboundVoiceMessage voiceMessage = new OutboundVoiceMessage();
         voiceMessage.setPartyId(patientId);
         voiceMessage.setParameters(parameterMap);
@@ -85,6 +87,8 @@ public class OutboxService implements Outbox {
         voiceMessageType.setVoiceMessageTypeName(voiceMessageTypeName);
         voiceMessage.setVoiceMessageType(voiceMessageType);
         voiceOutboxService.addMessage(voiceMessage);
+        outboxEventHandler.onCreate(voiceMessage);
+        return voiceMessage.getId();
     }
 
     public void call(MotechEvent event) {

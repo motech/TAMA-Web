@@ -37,6 +37,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class OutboxServiceTest {
 
+    public static final String PATIENT_ID = "patientId";
     @Mock
     protected VoiceOutboxService voiceOutboxService;
     @Mock
@@ -47,6 +48,8 @@ public class OutboxServiceTest {
     private AllPatients allPatients;
     @Mock
     protected OutboxSchedulerService outboxSchedulerService;
+    @Mock
+    private OutboxEventHandler outboxEventHandler;
     private OutboxService outboxService;
     private Patient patient;
     private MotechEvent motechEvent;
@@ -54,7 +57,7 @@ public class OutboxServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        outboxService = new OutboxService(allPatients, ivrCall, voiceOutboxService, outboxSchedulerService, patientService);
+        outboxService = new OutboxService(allPatients, ivrCall, voiceOutboxService, outboxSchedulerService, patientService, outboxEventHandler);
         setUpEventWithExternalId();
         setUpPatientAsActive();
         setUpOutboxWithAtLeastOneUnreadMessage();
@@ -187,6 +190,15 @@ public class OutboxServiceTest {
         outboxService.call(motechEvent);
         verifyZeroInteractions(ivrCall);
         verifyZeroInteractions(outboxSchedulerService);
+    }
+
+    @Test
+    public void shouldRaiseOnCreateEventWhenAddingMessage() throws Exception {
+        outboxService.addMessage(PATIENT_ID, "VoiceMessageType");
+
+        ArgumentCaptor<OutboundVoiceMessage> messageCaptor = ArgumentCaptor.forClass(OutboundVoiceMessage.class);
+        verify(outboxEventHandler).onCreate(messageCaptor.capture());
+        assertEquals(PATIENT_ID, messageCaptor.getValue().getPartyId());
     }
 
     public void setUpEventWithExternalId() {
