@@ -28,8 +28,8 @@ import java.util.List;
 public class OpportunisticInfectionsController extends BaseController {
 
     public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
-    public static final String OPPORTUNISTIC_INFECTIONS_UIMODEL = "opportunisticInfectionsUIModel";
     private static final String UPDATE_FORM = "opportunisticInfections/update";
+    public static final String OPPORTUNISTIC_INFECTIONS_UIMODEL = "opportunisticInfectionsUIModel";
 
     private AllClinicVisits allClinicVisits;
     private AllReportedOpportunisticInfections allReportedOpportunisticInfections;
@@ -52,19 +52,21 @@ public class OpportunisticInfectionsController extends BaseController {
             uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, opportunisticInfectionsUIModel);
             return null;
         }
-        if(opportunisticInfectionsUIModel.getHasInfectionsReported()) {
-            ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
-            reportedOpportunisticInfections.setPatientId(opportunisticInfectionsUIModel.getPatientId());
-            reportedOpportunisticInfections.setCaptureDate(DateUtil.today());
+
+        ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
+        if (reportedOpportunisticInfections.getOpportunisticInfectionIds().isEmpty()) {
+            return null;
+        } else {
             allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
             return reportedOpportunisticInfections.getId();
         }
-        return null;
-
     }
 
-    public ReportedOpportunisticInfections buildReportedOpportunisticInfections(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel) {
+    private ReportedOpportunisticInfections buildReportedOpportunisticInfections(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel) {
         ReportedOpportunisticInfections reportedOpportunisticInfections = new ReportedOpportunisticInfections();
+        reportedOpportunisticInfections.setPatientId(opportunisticInfectionsUIModel.getPatientId());
+        reportedOpportunisticInfections.setCaptureDate(DateUtil.today());
+
         for (OIStatus oiStatus : opportunisticInfectionsUIModel.getInfections()) {
             if (oiStatus.getReported()) {
                 String nameOfInfection = oiStatus.getOpportunisticInfection();
@@ -72,8 +74,9 @@ public class OpportunisticInfectionsController extends BaseController {
                 reportedOpportunisticInfections.addOpportunisticInfection(oiList.get(0));
             }
         }
-        if(opportunisticInfectionsUIModel.getOtherDetails() != null && !opportunisticInfectionsUIModel.getOtherDetails().isEmpty())
+        if (opportunisticInfectionsUIModel.getOtherDetails() != null && !opportunisticInfectionsUIModel.getOtherDetails().isEmpty()) {
             reportedOpportunisticInfections.setOtherOpportunisticInfectionDetails(opportunisticInfectionsUIModel.getOtherDetails());
+        }
         return reportedOpportunisticInfections;
     }
 
@@ -88,43 +91,43 @@ public class OpportunisticInfectionsController extends BaseController {
     }
 
     public void show(ClinicVisit clinicVisit, Model uiModel) {
-        ReportedOpportunisticInfections reportedOpportunisticInfections = new ReportedOpportunisticInfections();
-        String reportedOpportunisticInfectionsId = clinicVisit.getReportedOpportunisticInfectionsId();
-        if (reportedOpportunisticInfectionsId != null) {
-            reportedOpportunisticInfections = allReportedOpportunisticInfections.get(reportedOpportunisticInfectionsId);
-        }
+        populateUIModel(clinicVisit, uiModel);
+    }
 
-        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = OpportunisticInfectionsUIModel.create(clinicVisit, reportedOpportunisticInfections, allOpportunisticInfections.getAll());
-        uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, opportunisticInfectionsUIModel);
+    private void populateUIModel(ClinicVisit clinicVisit, Model uiModel) {
+        if (clinicVisit.getReportedOpportunisticInfectionsId() == null) {
+            uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, OpportunisticInfectionsUIModel.newDefault(clinicVisit, allOpportunisticInfections.getAll()));
+        } else {
+            uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, OpportunisticInfectionsUIModel.create(clinicVisit,
+                    allReportedOpportunisticInfections.get(clinicVisit.getReportedOpportunisticInfectionsId()), allOpportunisticInfections.getAll()));
+        }
     }
 
     @RequestMapping(value = "/update", params = "form", method = RequestMethod.GET)
     public String updateForm(@RequestParam(value = "patientId", required = true) String patientDocId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel) {
-       /* final ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
-        if (clinicVisit.getOpportunisticInfectionsId() == null) {
-            uiModel.addAttribute("OpportunisticInfectionsUIModel", OpportunisticInfectionsUIModel.newDefault(clinicVisit));
-        } else {
-            uiModel.addAttribute("OpportunisticInfectionsUIModel", OpportunisticInfectionsUIModel.get(clinicVisit, allReportedOpportunisticInfections.get(clinicVisit.getOpportunisticInfectionsId())));
-        }
+        final ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
+        populateUIModel(clinicVisit, uiModel);
         uiModel.addAttribute("patient", clinicVisit.getPatient());
-        uiModel.addAttribute("_method", "put");*/
+        uiModel.addAttribute("_method", "put");
         return UPDATE_FORM;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public String update(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel, HttpServletRequest httpServletRequest) {
-       /* ReportedOpportunisticInfections opportunisticInfections = opportunisticInfectionsUIModel.getOpportunisticInfections();
-        opportunisticInfections.setCaptureDate(DateUtil.today());
-        if (opportunisticInfections.getId() == null || opportunisticInfections.getId().isEmpty()) {
-            allReportedOpportunisticInfections.add(opportunisticInfections);
-            allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(), opportunisticInfectionsUIModel.getClinicVisitId(), opportunisticInfections.getId());
-        } else {
-            ReportedOpportunisticInfections savedOpportunisticInfections = allReportedOpportunisticInfections.get(opportunisticInfections.getId());
-            opportunisticInfections.setRevision(savedOpportunisticInfections.getRevision());
-            allReportedOpportunisticInfections.update(opportunisticInfections);
-            allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(), opportunisticInfectionsUIModel.getClinicVisitId(), opportunisticInfections.getId());
+        ReportedOpportunisticInfections storedOpportunisticInfections = getStoredOpportunisticInfections(opportunisticInfectionsUIModel);
+        if (storedOpportunisticInfections != null) {
+            allReportedOpportunisticInfections.remove(storedOpportunisticInfections);
         }
-        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(opportunisticInfectionsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + opportunisticInfectionsUIModel.getPatientId();*/
-        return null;
+
+        ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
+        allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
+        allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(), opportunisticInfectionsUIModel.getClinicVisitId(), reportedOpportunisticInfections.getId());
+
+        return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(opportunisticInfectionsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + opportunisticInfectionsUIModel.getPatientId();
+    }
+
+    private ReportedOpportunisticInfections getStoredOpportunisticInfections(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel) {
+        ClinicVisit clinicVisit = allClinicVisits.get(opportunisticInfectionsUIModel.getPatientId(), opportunisticInfectionsUIModel.getClinicVisitId());
+        return allReportedOpportunisticInfections.get(clinicVisit.getReportedOpportunisticInfectionsId());
     }
 }

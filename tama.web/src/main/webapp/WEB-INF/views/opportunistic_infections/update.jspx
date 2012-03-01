@@ -18,44 +18,39 @@
 
    <util:panel id="opportunistic_infections_panel" title="Update Opportunistic Infections" openPane="true">
 
-        <formfield:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
-        <spring:url value="/opportunisticInfections/update" var="form_url"/>
-        <springform:form action="${form_url}" modelAttribute="OpportunisticInfectionsUIModel" method="${_method}" id="opportunistic_infections_form">
+       <formfield:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
+       <spring:url value="/opportunisticInfections/update" var="form_url"/>
+       <springform:form action="${form_url}" modelAttribute="opportunisticInfectionsUIModel" method="${_method}" id="opportunistic_infections_form">
 
-        <input type="hidden" name="clinicVisitId" value="${OpportunisticInfectionsUIModel.clinicVisitId}"/>
-        <input type="hidden" name="id" value="${OpportunisticInfectionsUIModel.id}"/>
-        <field:hidden path="opportunisticInfections.patientId" id="patientId}" value="${opportunisticInfections.patientId}"/>
+           <field:hidden path="clinicVisitId" />
+           <field:hidden path="patientId" />
 
-        <div class="opp_infection">
-            <span><springform:checkbox id="addisonsDisease" path="opportunisticInfections.addisonsDisease" label="Addison's Disease"/></span>
-            <span><springform:checkbox id="anemia" path="opportunisticInfections.anemia" label="Anemia"/></span>
-            <span><springform:checkbox id="bacterialInfection" path="opportunisticInfections.bacterialInfection" label="Bacterial Infection Of Skin"/></span>
-            <span><springform:checkbox id="convulsions" path="opportunisticInfections.convulsions" label="Convulsions"/></span>
-            <span><springform:checkbox id="dementia" path="opportunisticInfections.dementia" label="Dementia"/></span>
-            <span><springform:checkbox id="encephalitis" path="opportunisticInfections.encephalitis" label="Encephalitis"/></span>
-            <span><springform:checkbox id="gastroenteropathy" path="opportunisticInfections.gastroenteropathy" label="Gastroenteropathy"/></span>
-            <span><springform:checkbox id="hypertension" path="opportunisticInfections.hypertension" label="Hypertension"/></span>
-            <span><springform:checkbox id="liverAbscess" path="opportunisticInfections.liverAbscess" label="Liver Abscess"/></span>
-            <span><springform:checkbox id="malaria" path="opportunisticInfections.malaria" label="Malaria"/></span>
-            <span><springform:checkbox id="nonHealingUlcer" path="opportunisticInfections.nonHealingUlcer" label="Non Healing Ulcer"/></span>
-            <span><springform:checkbox id="oralCandidiasis" path="opportunisticInfections.oralCandidiasis" label="Oral Candidiasis"/></span>
-            <span><springform:checkbox id="pancreatitis" path="opportunisticInfections.pancreatitis" label="Pancreatitis"/></span>
-            <span><springform:checkbox id="scabies" path="opportunisticInfections.scabies" label="Scabies"/></span>
-            <span><springform:checkbox id="TBMeningitis" path="opportunisticInfections.TBMeningitis" label="TB Meningitis"/></span>
-            <span>
-                <springform:checkbox id="otherOpportunisticInfection" path="opportunisticInfections.otherOpportunisticInfection" label="Other" onClick="displayDescriptionIfSelected()"/>
-                <div id="otherOpportunisticInfectionInfo">
-                    <formfield:input field="opportunisticInfections.otherOpportunisticInfectionDetails" label="Details" id="otherOpportunisticInfectionDetails"/>
-                </div>
-            </span>
-        </div>
-        <br/>
-        <div class="submit" id="${fn:escapeXml(id)}_submit">
-          <spring:message code="button_save" var="save_button" htmlEscape="false" />
-          <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
-          <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}"/>
-        </div>
-        </springform:form>
+            <div class="opp_infection">
+                <c:forEach items="${opportunisticInfectionsUIModel.infections}" var="infection" varStatus="item" >
+                    <field:hidden path="infections[${item.index}].opportunisticInfection" id="OI${item.index}"/>
+
+                    <c:if test="${infection.opportunisticInfection != 'Other'}">
+                        <span><springform:checkbox id="opportunisticInfection${item.index}" path="infections[${item.index}].reported" label="${infection.opportunisticInfection}"/></span>
+                    </c:if>
+
+                    <c:if test="${infection.opportunisticInfection == 'Other'}">
+                        <span>
+                            <springform:checkbox id="otherOpportunisticInfection" path="infections[${item.index}].reported" label="${infection.opportunisticInfection}"/>
+                            <div id="otherOpportunisticInfectionInfo">
+                                <formfield:input field="otherDetails" label="Details" id="otherOpportunisticInfectionDetails"/>
+                            </div>
+                        </span>
+                    </c:if>
+
+                </c:forEach>
+            </div>
+
+       <div class="submit" id="${fn:escapeXml(id)}_submit">
+           <spring:message code="button_save" var="save_button" htmlEscape="false" />
+           <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+           <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}"/>
+       </div>
+   </springform:form>
     </util:panel>
     <div id="page_load_marker"></div>
 </div>

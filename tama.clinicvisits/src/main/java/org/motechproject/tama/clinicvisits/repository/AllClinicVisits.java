@@ -114,11 +114,10 @@ public class AllClinicVisits {
         updateVisit(clinicVisit);
     }
 
-    public void updateOpportunisticInfections(String patientDocId, String clinicVisitId, String opportunisticInfectionId) {
+    public void updateOpportunisticInfections(String patientDocId, String clinicVisitId, String reportedOpportunisticInfectionId) {
         final ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setReportedOpportunisticInfectionsId(opportunisticInfectionId);
+        clinicVisit.setReportedOpportunisticInfectionsId(reportedOpportunisticInfectionId);
         updateVisit(clinicVisit);
-
     }
 
     public void confirmVisitDate(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {

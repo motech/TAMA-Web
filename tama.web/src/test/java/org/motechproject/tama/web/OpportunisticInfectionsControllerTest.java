@@ -20,6 +20,7 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 import static junit.framework.Assert.*;
@@ -33,6 +34,7 @@ public class OpportunisticInfectionsControllerTest {
     public static final String INFECTION_ID = "infectionId";
     public static final String INFECTION_NAME = "Anemia";
     public static final String REPORT_OI_ID = "reportOIId";
+    public static final String CLINIC_VISIT_ID = "clinicvisitid";
     private OpportunisticInfectionsController opportunisticInfectionsController;
 
     @Mock
@@ -46,12 +48,15 @@ public class OpportunisticInfectionsControllerTest {
 
     @Mock
     private Model uiModel;
+
     @Mock
     private AllClinicVisits allClinicVisits;
 
     private OpportunisticInfection opportunisticInfection;
-    
+    private Patient patient;
+    private Visit visit;
     private ClinicVisit clinicVisit;
+    private ReportedOpportunisticInfections reportedOpportunisticInfections;
 
     @Before
     public void setUp() {
@@ -63,16 +68,18 @@ public class OpportunisticInfectionsControllerTest {
         opportunisticInfection.setId(INFECTION_ID);
         when(allOpportunisticInfections.getAll()).thenReturn(Arrays.asList(opportunisticInfection));
         
-        Patient patient = new Patient();
+        patient = new Patient();
         patient.setId(PATIENT_ID);
-        Visit visit = new Visit();
-        clinicVisit = new ClinicVisit(patient, visit);
-        clinicVisit.setReportedOpportunisticInfectionsId(REPORT_OI_ID);
+        visit = new Visit();
 
-        ReportedOpportunisticInfections reportedOpportunisticInfections = new ReportedOpportunisticInfections();
+        clinicVisit = new ClinicVisit(patient, visit);
+        clinicVisit.setId(CLINIC_VISIT_ID);
+        clinicVisit.setReportedOpportunisticInfectionsId(REPORT_OI_ID);
+        when(allClinicVisits.get(PATIENT_ID, CLINIC_VISIT_ID)).thenReturn(clinicVisit);
+
+        reportedOpportunisticInfections = new ReportedOpportunisticInfections();
         reportedOpportunisticInfections.addOpportunisticInfection(opportunisticInfection);
         when(allReportedOpportunisticInfections.get(REPORT_OI_ID)).thenReturn(reportedOpportunisticInfections);
-
     }
 
     @Test
@@ -82,12 +89,7 @@ public class OpportunisticInfectionsControllerTest {
         ArgumentCaptor<OpportunisticInfectionsUIModel> argumentCaptor = ArgumentCaptor.forClass(OpportunisticInfectionsUIModel.class);
         verify(uiModel).addAttribute(eq(OpportunisticInfectionsController.OPPORTUNISTIC_INFECTIONS_UIMODEL), argumentCaptor.capture());
 
-        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = argumentCaptor.getValue();
-        assertEquals(PATIENT_ID, opportunisticInfectionsUIModel.getPatientId());
-        assertEquals(allOpportunisticInfections.getAll().size(), opportunisticInfectionsUIModel.getInfections().size());
-        OIStatus firstOpportunisticInfection = opportunisticInfectionsUIModel.getInfections().get(0);
-        assertEquals(opportunisticInfection.getName(), firstOpportunisticInfection.getOpportunisticInfection());
-        assertFalse(firstOpportunisticInfection.getReported());
+        assertInfection(argumentCaptor.getValue(), false);
     }
 
     @Test
@@ -167,38 +169,74 @@ public class OpportunisticInfectionsControllerTest {
         
         verify(uiModel).addAttribute(eq(OpportunisticInfectionsController.OPPORTUNISTIC_INFECTIONS_UIMODEL), argumentCaptor.capture());
 
-        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = argumentCaptor.getValue();
+        assertInfection(argumentCaptor.getValue(), true);
+    }
+
+    @Test
+    public void updateFormShouldPopulateUIModel_WhenInfectionIsReported() throws Exception {
+        opportunisticInfectionsController.updateForm(PATIENT_ID, CLINIC_VISIT_ID, uiModel);
+
+        ArgumentCaptor<OpportunisticInfectionsUIModel> argumentCaptor = ArgumentCaptor.forClass(OpportunisticInfectionsUIModel.class);
+        verify(uiModel).addAttribute(eq(OpportunisticInfectionsController.OPPORTUNISTIC_INFECTIONS_UIMODEL), argumentCaptor.capture());
+
+        assertInfection(argumentCaptor.getValue(), true);
+    }
+
+    @Test
+    public void updateFormShouldPopulateUIModel_WhenNoInfectionIsReported() throws Exception {
+        ClinicVisit clinicVisitWithNoInfectionReported = new ClinicVisit(patient, visit);
+        clinicVisitWithNoInfectionReported.setId("cvId");
+        clinicVisitWithNoInfectionReported.setReportedOpportunisticInfectionsId("reportId");
+        when(allClinicVisits.get(PATIENT_ID, "cvId")).thenReturn(clinicVisitWithNoInfectionReported);
+        when(allReportedOpportunisticInfections.get("reportId")).thenReturn(new ReportedOpportunisticInfections());
+
+        opportunisticInfectionsController.updateForm(PATIENT_ID, CLINIC_VISIT_ID, uiModel);
+
+        ArgumentCaptor<OpportunisticInfectionsUIModel> argumentCaptor = ArgumentCaptor.forClass(OpportunisticInfectionsUIModel.class);
+        verify(uiModel).addAttribute(eq(OpportunisticInfectionsController.OPPORTUNISTIC_INFECTIONS_UIMODEL), argumentCaptor.capture());
+
+        assertInfection(argumentCaptor.getValue(), false);
+    }
+
+    private void assertInfection(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel, boolean isReported) {
         assertEquals(PATIENT_ID, opportunisticInfectionsUIModel.getPatientId());
         assertEquals(allOpportunisticInfections.getAll().size(), opportunisticInfectionsUIModel.getInfections().size());
         OIStatus firstOpportunisticInfection = opportunisticInfectionsUIModel.getInfections().get(0);
         assertEquals(opportunisticInfection.getName(), firstOpportunisticInfection.getOpportunisticInfection());
-        assertTrue(firstOpportunisticInfection.getReported());
+        assertEquals(isReported, firstOpportunisticInfection.getReported());
     }
 
-    /*@Test
-    public void shouldUpdateOpportunisticInfections_WhenClinicVisitHasOne() {
+    @Test
+    public void updateShouldRemoveOldData() {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = OpportunisticInfectionsUIModel.newDefault(clinicVisit, allOpportunisticInfections.getAll());
+        
+        opportunisticInfectionsController.update(opportunisticInfectionsUIModel, httpServletRequest);
+        
+        verify(allReportedOpportunisticInfections).remove(reportedOpportunisticInfections);
+    }
+    
+    @Test
+    public void updateShouldAddNewData() {
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        
+        ReportedOpportunisticInfections updatedOIData = new ReportedOpportunisticInfections();
+        updatedOIData.setPatientId(PATIENT_ID);
+        
+        OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = OpportunisticInfectionsUIModel.create(clinicVisit, updatedOIData, allOpportunisticInfections.getAll());
+        
+        opportunisticInfectionsController.update(opportunisticInfectionsUIModel, httpServletRequest);
 
-        final String opportunisticInfectionId = "opportunisticInfectionId";
-        final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
-        final OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = OpportunisticInfectionsUIModel.get(clinicVisit, opportunisticInfections);
+        ArgumentCaptor<ReportedOpportunisticInfections> argumentCaptor = ArgumentCaptor.forClass(ReportedOpportunisticInfections.class);
+        verify(allReportedOpportunisticInfections).add(argumentCaptor.capture());
 
-        opportunisticInfections.setId(opportunisticInfectionId);
-        opportunisticInfections.setAnemia(true);
-        opportunisticInfections.setAddisonsDisease(true);
+        ReportedOpportunisticInfections opportunisticInfections = argumentCaptor.getValue();
+        assertTrue(opportunisticInfections.getOpportunisticInfectionIds().isEmpty());
+        assertEquals(PATIENT_ID, opportunisticInfections.getPatientId());
+        verify(allReportedOpportunisticInfections).add(opportunisticInfections);
 
-        when(allOpportunisticInfections.get(opportunisticInfectionId)).thenReturn(new ReportedOpportunisticInfections());
-
-        final String returnUrl = opportunisticInfectionsController.update(opportunisticInfectionsUIModel, httpServletRequest);
-
-        ArgumentCaptor<ReportedOpportunisticInfections> opportunisticInfectionsArgumentCaptor = ArgumentCaptor.forClass(ReportedOpportunisticInfections.class);
-        verify(allOpportunisticInfections, times(1)).update(opportunisticInfectionsArgumentCaptor.capture());
-        assertEquals(DateUtil.today(), opportunisticInfectionsArgumentCaptor.getValue().getCaptureDate());
-        assertEquals(PATIENT_ID, opportunisticInfectionsArgumentCaptor.getValue().getPatientId());
-        assertTrue(opportunisticInfectionsArgumentCaptor.getValue().getAnemia());
-        assertTrue(opportunisticInfectionsArgumentCaptor.getValue().getAddisonsDisease());
-        verify(allClinicVisits, times(1)).updateOpportunisticInfections(eq(PATIENT_ID), eq(clinicVisit.getId()), eq("opportunisticInfectionId"));
-        assertEquals("redirect:/clinicvisits/" + clinicVisit.getId() + "?patientId=" + PATIENT_ID, returnUrl);
-    }*/
+        verify(allClinicVisits).updateOpportunisticInfections(eq(PATIENT_ID), eq(CLINIC_VISIT_ID), Matchers.<String>any());
+    }
+    
 
 }
