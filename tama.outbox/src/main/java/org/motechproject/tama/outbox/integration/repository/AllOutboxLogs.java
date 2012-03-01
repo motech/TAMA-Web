@@ -1,4 +1,4 @@
-package org.motechproject.tama.outbox.repository;
+package org.motechproject.tama.outbox.integration.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.motechproject.dao.MotechBaseRepository;
@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AllOutboxEvents extends MotechBaseRepository<OutboxMessageLog> {
+public class AllOutboxLogs extends MotechBaseRepository<OutboxMessageLog> {
 
     @Autowired
-    protected AllOutboxEvents(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+    protected AllOutboxLogs(@Qualifier("tamaDbConnector") CouchDbConnector db) {
         super(OutboxMessageLog.class, db);
     }
 }

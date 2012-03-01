@@ -15,10 +15,13 @@ import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.outbox.OutboxContextForTest;
 import org.motechproject.tama.outbox.factory.VoiceMessageResponseFactory;
+import org.motechproject.tama.outbox.service.OutboxEventLogger;
 import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -40,15 +43,18 @@ public class OutboxControllerTest {
     private KookooCallDetailRecordsService callDetailRecordsService;
     @Mock
     private StandardResponseController standardResponseController;
+    @Mock
+    private OutboxEventLogger outboxEventLogger;
 
     private OutboxController outboxController;
     private OutboxContextForTest outboxContextForTest;
+
 
     @Before
     public void setUp() {
         initMocks(this);
         outboxContextForTest = new OutboxContextForTest().partyId(patientId).preferredLanguage(preferredLanguage).callId("4543");
-        outboxController = new OutboxController(outboxService, tamaIvrMessage, messageResponseFactory, callDetailRecordsService, standardResponseController);
+        outboxController = new OutboxController(outboxService, tamaIvrMessage, messageResponseFactory, callDetailRecordsService, standardResponseController, outboxEventLogger);
         outboxController = Mockito.spy(outboxController);
         Mockito.doReturn(outboxContextForTest).when(outboxController).getOutboxContext(Matchers.<KooKooIVRContext>any());
     }
@@ -85,6 +91,19 @@ public class OutboxControllerTest {
         KookooIVRResponseBuilder ivrResponseBuilder = outboxController.gotDTMF(any(KooKooIVRContext.class));
         ivrResponseBuilder.getPlayAudios().contains(TamaIVRMessage.THESE_WERE_YOUR_MESSAGES_FOR_NOW);
         assertEquals(true, outboxContextForTest.hasOutboxCompleted());
+    }
+
+    @Test
+    public void shouldRaisePlayedEventAfterPlayingMessage() {
+        final String messageId = "messageId";
+
+        OutboundVoiceMessage outboundMessage = new OutboundVoiceMessage();
+        outboundMessage.setId(messageId);
+
+        when(outboxService.nextMessage(anyString(), anyString())).thenReturn(outboundMessage);
+
+        outboxController.gotDTMF(any(KooKooIVRContext.class));
+        verify(outboxEventLogger).onPlayed(any(KookooIVRResponseBuilder.class), eq(messageId));
     }
 
     private OutboundVoiceMessage voiceMessage(String messageId) {

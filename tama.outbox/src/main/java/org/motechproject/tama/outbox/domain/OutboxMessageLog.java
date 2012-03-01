@@ -5,23 +5,40 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.util.DateUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'OutboxMessageLog'")
 public class OutboxMessageLog extends CouchEntity {
     @JsonProperty
     @Getter
     String outboxMessageId;
-    @JsonProperty
     @Getter
     DateTime date;
     @JsonProperty
     @Getter
     OutboxEventType event;
+    @JsonProperty
+    private List<String> files;
+
+    public OutboxMessageLog() {
+    }
+
+    public OutboxMessageLog(String outboxMessageId, DateTime date, OutboxEventType event, List<String> files) {
+        this(outboxMessageId, date, event);
+        this.files = new ArrayList<String>(files);
+    }
 
     public OutboxMessageLog(String outboxMessageId, DateTime date, OutboxEventType event) {
         this.outboxMessageId = outboxMessageId;
-        this.date = date;
+        setDate(date);
         this.event = event;
+    }
+
+    public void setDate(DateTime date) {
+        this.date = DateUtil.setTimeZone(date);
     }
 
     @Override
@@ -47,4 +64,5 @@ public class OutboxMessageLog extends CouchEntity {
         result = 31 * result + (event != null ? event.hashCode() : 0);
         return result;
     }
+
 }
