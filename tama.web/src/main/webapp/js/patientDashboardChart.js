@@ -6,6 +6,7 @@ dojo.require("dojox.charting.themes.ThreeD");
 dojo.require("dojox.charting.plot2d.Markers");
 dojo.require("dojox.charting.widget.Legend");
 
+//Please include tamaChart.js before this file.
 var PatientDashboardChart = function(chartName, dataUrl, chartTitle, tooltipPrefix, dangerZoneRangeFunction){
     this.targetElement = dojo.byId(chartName + "Placeholder");
     this.noticeBanner = new Banner(chartName + "Notice");
@@ -125,7 +126,7 @@ ChartData.prototype = {
 
     yValues : function () {
         return this.data.map(function (elt, index) {
-            return parseInt(elt.value);
+            return parseFloat(elt.value);
         });
     },
 
