@@ -30,6 +30,7 @@ public class OpportunisticInfectionsController extends BaseController {
     public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
     private static final String UPDATE_FORM = "opportunisticInfections/update";
     public static final String OPPORTUNISTIC_INFECTIONS_UIMODEL = "opportunisticInfectionsUIModel";
+    public static final String OTHER = "Other";
 
     private AllClinicVisits allClinicVisits;
     private AllReportedOpportunisticInfections allReportedOpportunisticInfections;
@@ -72,14 +73,17 @@ public class OpportunisticInfectionsController extends BaseController {
         reportedOpportunisticInfections.setPatientId(opportunisticInfectionsUIModel.getPatientId());
         reportedOpportunisticInfections.setCaptureDate(DateUtil.today());
 
+        boolean otherInfectionReported = false;
+
         for (OIStatus oiStatus : opportunisticInfectionsUIModel.getInfections()) {
             if (oiStatus.getReported()) {
                 String nameOfInfection = oiStatus.getOpportunisticInfection();
+                if(OTHER.equals(nameOfInfection)) otherInfectionReported = true;
                 List<OpportunisticInfection> oiList = (List<OpportunisticInfection>) CollectionUtils.select(allOpportunisticInfections.getAll(), withName(nameOfInfection));
                 reportedOpportunisticInfections.addOpportunisticInfection(oiList.get(0));
             }
         }
-        if (opportunisticInfectionsUIModel.getOtherDetails() != null && !opportunisticInfectionsUIModel.getOtherDetails().isEmpty()) {
+        if (otherInfectionReported && opportunisticInfectionsUIModel.getOtherDetails() != null && !opportunisticInfectionsUIModel.getOtherDetails().isEmpty()) {
             reportedOpportunisticInfections.setOtherOpportunisticInfectionDetails(opportunisticInfectionsUIModel.getOtherDetails());
         }
         return reportedOpportunisticInfections;
