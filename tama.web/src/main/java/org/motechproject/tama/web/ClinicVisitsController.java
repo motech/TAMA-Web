@@ -108,12 +108,7 @@ public class ClinicVisitsController extends BaseController {
             }
         }
         labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
-
-        try {
-            vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
-        } catch (RuntimeException e) {
-            httpServletRequest.setAttribute("flash.flashErrorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
-        }
+        vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
 
         try {
             reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel);

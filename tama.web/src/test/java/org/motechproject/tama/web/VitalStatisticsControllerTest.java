@@ -33,6 +33,8 @@ public class VitalStatisticsControllerTest {
     private AllVitalStatistics allVitalStatistics;
     @Mock
     private AllClinicVisits allClinicVisits;
+    @Mock
+    HttpServletRequest httpServletRequest;
 
     @Before
     public void setUp() {
@@ -58,7 +60,7 @@ public class VitalStatisticsControllerTest {
 
         VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withDefaults().build();
         vitalStatistics.setWeightInKg(200.0);
-        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
 
         verify(allVitalStatistics, times(1)).add(vitalStatistics);
     }
@@ -71,7 +73,7 @@ public class VitalStatisticsControllerTest {
 
         VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withDefaults().build();
         vitalStatistics.setWeightInKg(200.0);
-        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
 
         assertEquals(VitalStatistics.class, uiModel.asMap().get("vitalStatistics").getClass());
         assertEquals(vitalStatistics, uiModel.asMap().get("vitalStatistics"));
@@ -85,9 +87,23 @@ public class VitalStatisticsControllerTest {
         Model uiModel = new ExtendedModelMap();
 
         VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withDefaults().build();
-        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);
+        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
 
         verifyZeroInteractions(allVitalStatistics);
+    }
+
+    @Test
+    public void shouldSetFlashError_WhenCreateErrorsOut(){
+        BindingResult bindingResult = mock(BindingResult.class);
+        Model uiModel = mock(Model.class);
+
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withDefaults().build();
+        vitalStatistics.setWeightInKg(200.0);
+        doThrow(new RuntimeException("Some error")).when(allVitalStatistics).add(vitalStatistics);
+
+        vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
+
+        verify(httpServletRequest).setAttribute("flash.flashErrorVitalStatistics", "Error occurred while creating Vital Statistics: Some error");
     }
 
     @Test

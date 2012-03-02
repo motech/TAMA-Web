@@ -36,14 +36,18 @@ public class VitalStatisticsController extends BaseController {
         uiModel.addAttribute("vitalStatistics", new VitalStatistics(patientId));
     }
 
-    public String create(VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel) {
-        vitalStatistics.setCaptureDate(DateUtil.today());
-        if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("vitalStatistics", vitalStatistics);
-            return null;
-        }
-        if (isNotEmpty(vitalStatistics)) {
-            allVitalStatistics.add(vitalStatistics);
+    public String create(VitalStatistics vitalStatistics, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        try {
+            vitalStatistics.setCaptureDate(DateUtil.today());
+            if (bindingResult.hasErrors()) {
+                uiModel.addAttribute("vitalStatistics", vitalStatistics);
+                return null;
+            }
+            if (isNotEmpty(vitalStatistics)) {
+                allVitalStatistics.add(vitalStatistics);
+            }
+        } catch (RuntimeException e) {
+            httpServletRequest.setAttribute("flash.flashErrorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
         }
         return vitalStatistics.getId();
     }
