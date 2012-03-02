@@ -57,6 +57,6 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
         outboxEventLogger.onPlayed("patientDocId", responseBuilder, "messageId");
 
         verify(outboxMessageLog).playedOn(eq(DateUtil.now()), anyList());
-        verify(allOutboxEvents).add(outboxMessageLog);
+        verify(allOutboxEvents).update(outboxMessageLog);
     }
 }

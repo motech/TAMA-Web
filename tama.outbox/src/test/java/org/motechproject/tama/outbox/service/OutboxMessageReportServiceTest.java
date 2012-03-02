@@ -16,6 +16,7 @@ import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -24,16 +25,19 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OutboxMessageReportServiceTest extends BaseUnitTest {
 
+    public static final String A_IN_ENGLISH_TEXT = "a in English text";
     @Mock
     private AllOutboxLogs allOutboxLogs;
     private OutboxMessageReportService outboxMessageReportService;
     private LocalDate today;
     private DateTime createdOnDate;
+    private Properties outboxWaveFileToTextMapping = new Properties();
 
     @Before
     public void setup() {
+        outboxWaveFileToTextMapping.put("a", A_IN_ENGLISH_TEXT);
         initMocks(this);
-        outboxMessageReportService = new OutboxMessageReportService(allOutboxLogs);
+        outboxMessageReportService = new OutboxMessageReportService(allOutboxLogs, outboxWaveFileToTextMapping);
         today = DateUtil.today();
         mockCurrentDate(today);
         createdOnDate = DateUtil.now().minusDays(1);
@@ -57,7 +61,7 @@ public class OutboxMessageReportServiceTest extends BaseUnitTest {
         assertEquals(logs.size(), jsonLogsArray.length());
         final JSONObject logJsonObject = (JSONObject) jsonLogsArray.get(0);
         final String createdOn = logJsonObject.getString("createdOn");
-        assertEquals(createdOnDate.toString(), createdOn);
+        assertEquals(createdOnDate.toLocalDate().toString(), createdOn);
     }
 
     @Test
@@ -74,7 +78,10 @@ public class OutboxMessageReportServiceTest extends BaseUnitTest {
                 DateUtil.newDateTime(today, 0, 0, 0))).thenReturn(messageLogs);
 
         JSONObject result = outboxMessageReportService.JSONReport(patientDocId, today.minusDays(3), today);
-        assertEquals(2, result.getJSONArray("logs").length());
+        final JSONArray logs = result.getJSONArray("logs");
+        assertEquals(2, logs.length());
+        final JSONObject jsonObject = (JSONObject) logs.get(0);
+        assertEquals(A_IN_ENGLISH_TEXT, jsonObject.getString("playedFiles"));
     }
 
     private OutboxMessageLog newLog(String patientDocId) {
@@ -82,6 +89,6 @@ public class OutboxMessageReportServiceTest extends BaseUnitTest {
     }
 
     private void addPlayedLog(OutboxMessageLog outboxMessageLog) {
-        outboxMessageLog.playedOn(DateUtil.now().minusDays(1), Arrays.asList("a", "b"));
+        outboxMessageLog.playedOn(DateUtil.now().minusDays(1), Arrays.asList("a"));
     }
 }

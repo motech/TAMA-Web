@@ -5,25 +5,28 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxLogs;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 @Component
 public class OutboxMessageReportService {
 
     private AllOutboxLogs allOutboxLogs;
+    @Autowired
+    Properties outboxWaveFileToTextMapping;
 
     @Autowired
-    public OutboxMessageReportService(AllOutboxLogs allOutboxLogs) {
+    public OutboxMessageReportService(AllOutboxLogs allOutboxLogs, @Qualifier("outboxWaveFileToTextMapping") Properties outboxWaveFileToTextMapping) {
         this.allOutboxLogs = allOutboxLogs;
+        this.outboxWaveFileToTextMapping = outboxWaveFileToTextMapping;
     }
 
     public JSONObject JSONReport(String patientDocId, LocalDate start, LocalDate end) throws JSONException {
@@ -59,6 +62,10 @@ public class OutboxMessageReportService {
     }
 
     private String getPlayedFilesAsString(OutboxMessageLog.PlayedLog playedLogs) {
-        return StringUtils.join(playedLogs.getFiles().toArray(), ",\n");
+        List<String> messages = new ArrayList<String>();
+        for (String file : playedLogs.getFiles()) {
+            messages.add(outboxWaveFileToTextMapping.getProperty(file));
+        }
+        return StringUtils.join(messages.toArray(), ",\n");
     }
 }
