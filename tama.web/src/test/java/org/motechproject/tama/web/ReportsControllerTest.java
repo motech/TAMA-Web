@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -41,18 +42,22 @@ public class ReportsControllerTest {
     @Mock
     private DailyPillReminderReportService dailyPillReminderReportService;
 
+    @Mock
+    private OutboxMessageReportService outboxReportService;
+
     private ReportsController reportsController;
 
     private Patient patient;
 
     private Clinic clinic;
 
+
     @Before
     public void setUp() {
         initMocks(this);
         clinic = ClinicBuilder.startRecording().withDefaults().build();
         patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
-        reportsController = new ReportsController(allPatients, allTreatmentAdvices, patientService, dailyPillReminderReportService);
+        reportsController = new ReportsController(allPatients, allTreatmentAdvices, patientService, dailyPillReminderReportService, outboxReportService);
     }
 
     @Test
@@ -84,6 +89,18 @@ public class ReportsControllerTest {
     }
 
     @Test
+    public void shouldServeOutboxMessageJsonReport() throws JSONException {
+        LocalDate day1 = new LocalDate(2011, 1, 1);
+        LocalDate day2 = new LocalDate(2011, 1, 3);
+
+        JSONObject jsonReport = new JSONObject();
+        jsonReport.put("someKey", "someValue");
+        when(outboxReportService.JSONReport("patientId", day1, day2)).thenReturn(jsonReport);
+
+        assertEquals(jsonReport.toString(), reportsController.outboxMessageReport("patientId", day1, day2));
+    }
+
+    @Test
     public void shouldReturnDailyPillReminderExcelReport() throws JSONException {
         String patientDocumentId = "patientId";
         LocalDate day1 = new LocalDate(2011, 1, 1);
@@ -93,7 +110,7 @@ public class ReportsControllerTest {
 
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         reportsController.buildDailyPillReminderExcelReport(patientDocumentId, day1, day2, httpServletResponse);
-        
+
         verify(dailyPillReminderReportService).create(patientDocumentId, day1, day2);
         verify(allPatients).get(patientDocumentId);
         verify(patientService).currentRegimen(patient);

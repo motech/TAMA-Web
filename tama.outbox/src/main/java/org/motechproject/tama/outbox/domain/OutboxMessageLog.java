@@ -12,57 +12,74 @@ import java.util.List;
 
 @TypeDiscriminator("doc.documentType == 'OutboxMessageLog'")
 public class OutboxMessageLog extends CouchEntity {
+
+    @JsonProperty
+    @Getter
+    String patientDocId;
     @JsonProperty
     @Getter
     String outboxMessageId;
-    @Getter
-    DateTime date;
+    @JsonProperty
+    DateTime createdOn;
     @JsonProperty
     @Getter
-    OutboxEventType event;
-    @JsonProperty
-    private List<String> files;
+    List<PlayedLog> playedLogs;
 
     public OutboxMessageLog() {
+        playedLogs = new ArrayList<PlayedLog>();
     }
 
-    public OutboxMessageLog(String outboxMessageId, DateTime date, OutboxEventType event, List<String> files) {
-        this(outboxMessageId, date, event);
-        this.files = new ArrayList<String>(files);
-    }
-
-    public OutboxMessageLog(String outboxMessageId, DateTime date, OutboxEventType event) {
+    public OutboxMessageLog(String patientDocId, String outboxMessageId, DateTime date) {
+        this();
+        this.patientDocId = patientDocId;
         this.outboxMessageId = outboxMessageId;
-        setDate(date);
-        this.event = event;
+        createdOn = date;
     }
 
-    public void setDate(DateTime date) {
-        this.date = DateUtil.setTimeZone(date);
+    public DateTime getCreatedOn() {
+        return DateUtil.setTimeZone(this.createdOn);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        OutboxMessageLog that = (OutboxMessageLog) o;
-
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-        if (event != that.event) return false;
-        if (outboxMessageId != null ? !outboxMessageId.equals(that.outboxMessageId) : that.outboxMessageId != null) return false;
-
-        return true;
+    public OutboxMessageLog playedOn(DateTime date, List<String> files) {
+        playedLogs.add(new PlayedLog(date, files));
+        return this;
     }
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (outboxMessageId != null ? outboxMessageId.hashCode() : 0);
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (event != null ? event.hashCode() : 0);
-        return result;
-    }
+    public static class PlayedLog {
 
+        @JsonProperty
+        @Getter
+        DateTime date;
+        @JsonProperty
+        @Getter
+        private List<String> files;
+
+        public PlayedLog() {
+        }
+
+        public PlayedLog(DateTime date, List<String> files) {
+            this.date = date;
+            this.files = files;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PlayedLog that = (PlayedLog) o;
+
+            if (date != that.date) return false;
+            if (files != null ? !files.equals(that.files) : that.files != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = date != null ? date.hashCode() : 0;
+            result = 31 * result + (files != null ? files.hashCode() : 0);
+            return result;
+        }
+    }
 }

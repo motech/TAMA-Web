@@ -103,7 +103,7 @@ public class OutboxControllerTest {
         when(outboxService.nextMessage(anyString(), anyString())).thenReturn(outboundMessage);
 
         outboxController.gotDTMF(any(KooKooIVRContext.class));
-        verify(outboxEventLogger).onPlayed(any(KookooIVRResponseBuilder.class), eq(messageId));
+        verify(outboxEventLogger).onPlayed(eq(patientId), any(KookooIVRResponseBuilder.class), eq(messageId));
     }
 
     private OutboundVoiceMessage voiceMessage(String messageId) {

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
 public interface OutboxEventHandler {
     void onCreate(OutboundVoiceMessage message);
 
-    void onPlayed(KookooIVRResponseBuilder ivrResponseBuilder, String lastMessageId);
+    void onPlayed(String patientDocId, KookooIVRResponseBuilder ivrResponseBuilder, String lastMessageId);
 }

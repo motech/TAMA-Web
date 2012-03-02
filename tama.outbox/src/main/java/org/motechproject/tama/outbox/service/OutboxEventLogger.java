@@ -21,17 +21,14 @@ public class OutboxEventLogger implements OutboxEventHandler {
 
     @Override
     public void onCreate(OutboundVoiceMessage message) {
-        OutboxMessageLog log = new OutboxMessageLog(message.getId(), DateUtil.now(), OutboxEventType.Created);
+        OutboxMessageLog log = new OutboxMessageLog(message.getPartyId(), message.getId(), DateUtil.now());
         allOutboxLogs.add(log);
     }
 
     @Override
-    public void onPlayed(KookooIVRResponseBuilder ivrResponseBuilder, String messageId) {
-        final OutboxMessageLog outboxMessageLog = new OutboxMessageLog(messageId,
-                DateUtil.now(),
-                OutboxEventType.Played,
-                ivrResponseBuilder.getPlayAudios());
-
-        allOutboxLogs.add(outboxMessageLog);
+    public void onPlayed(String patientDocId, KookooIVRResponseBuilder ivrResponseBuilder, String messageId) {
+        OutboxMessageLog messageLog = allOutboxLogs.find(patientDocId, messageId);
+        messageLog.playedOn(DateUtil.now(), ivrResponseBuilder.getPlayAudios());
+        allOutboxLogs.update(messageLog);
     }
 }

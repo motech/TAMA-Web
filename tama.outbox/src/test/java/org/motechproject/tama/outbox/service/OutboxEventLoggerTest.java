@@ -2,6 +2,7 @@ package org.motechproject.tama.outbox.service;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -14,7 +15,10 @@ import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OutboxEventLoggerTest extends BaseUnitTest {
@@ -40,20 +44,19 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
         ArgumentCaptor<OutboxMessageLog> captor = ArgumentCaptor.forClass(OutboxMessageLog.class);
         verify(allOutboxEvents).add(captor.capture());
 
-        OutboxMessageLog expectedMessage = new OutboxMessageLog("messageId", DateUtil.now(), OutboxEventType.Created);
+        OutboxMessageLog expectedMessage = new OutboxMessageLog("patientDocId", "messageId", DateUtil.now());
         assertEquals(expectedMessage, captor.getValue());
     }
 
     @Test
     public void shouldCreateOutboxEventLogOnPlayedEvent() {
         KookooIVRResponseBuilder responseBuilder = new KookooIVRResponseBuilder().withPlayAudios("audio1", "audio2");
+        OutboxMessageLog outboxMessageLog = mock(OutboxMessageLog.class);
 
-        outboxEventLogger.onPlayed(responseBuilder, "messageId");
+        when(allOutboxEvents.find("patientDocId", "messageId")).thenReturn(outboxMessageLog);
+        outboxEventLogger.onPlayed("patientDocId", responseBuilder, "messageId");
 
-        ArgumentCaptor<OutboxMessageLog> captor = ArgumentCaptor.forClass(OutboxMessageLog.class);
-        verify(allOutboxEvents).add(captor.capture());
-
-        OutboxMessageLog expectedMessage = new OutboxMessageLog("messageId", DateUtil.now(), OutboxEventType.Played);
-        assertEquals(expectedMessage, captor.getValue());
+        verify(outboxMessageLog).playedOn(eq(DateUtil.now()), anyList());
+        verify(allOutboxEvents).add(outboxMessageLog);
     }
 }

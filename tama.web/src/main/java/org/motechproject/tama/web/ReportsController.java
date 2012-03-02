@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
+import org.motechproject.tama.outbox.integration.repository.AllOutboxLogs;
+import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -34,6 +36,7 @@ public class ReportsController {
     private AllTreatmentAdvices allTreatmentAdvices;
     private PatientService patientService;
     private DailyPillReminderReportService dailyPillReminderReportService;
+    private OutboxMessageReportService outboxMessageReportService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -41,11 +44,13 @@ public class ReportsController {
     public ReportsController(AllPatients allPatients,
                              AllTreatmentAdvices allTreatmentAdvices,
                              PatientService patientService,
-                             DailyPillReminderReportService dailyPillReminderReportService) {
+                             DailyPillReminderReportService dailyPillReminderReportService,
+                             OutboxMessageReportService outboxMessageReportService) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.patientService = patientService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
+        this.outboxMessageReportService = outboxMessageReportService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -62,6 +67,16 @@ public class ReportsController {
                                           @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                           @RequestParam LocalDate endDate) throws JSONException {
         return dailyPillReminderReportService.JSONReport(patientDocId, startDate, endDate).toString();
+    }
+
+    @RequestMapping(value = "outboxMessageReport.json", method = RequestMethod.GET)
+    @ResponseBody
+    public String outboxMessageReport(@PathVariable String patientDocId,
+                                      @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                      @RequestParam LocalDate startDate,
+                                      @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                      @RequestParam LocalDate endDate) throws JSONException {
+        return outboxMessageReportService.JSONReport(patientDocId, startDate, endDate).toString();
     }
 
     @RequestMapping(value = "dailyPillReminderReport.xls", method = RequestMethod.GET)
