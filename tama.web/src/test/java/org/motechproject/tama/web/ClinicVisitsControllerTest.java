@@ -23,6 +23,7 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.refdata.domain.Gender;
+import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -186,7 +187,7 @@ public class ClinicVisitsControllerTest {
         private LabResultsUIModel labResultsUIModel;
         private OpportunisticInfectionsUIModel opportunisticInfectionsUIModel;
         private TreatmentAdvice treatmentAdvice;
-        private ClinicVisit clinicVisit;
+        private ClinicVisitUIModel clinicVisitUIModel;
         private DateTime visitDate;
 
         @Before
@@ -203,7 +204,8 @@ public class ClinicVisitsControllerTest {
             opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
             opportunisticInfectionsUIModel.setPatientId(PATIENT_ID);
             vitalStatistics = new VitalStatistics();
-            clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVisitDate(visitDate).build();
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVisitDate(visitDate).build();
+            clinicVisitUIModel = new ClinicVisitUIModel(clinicVisit);
         }
 
         @Test
@@ -217,7 +219,7 @@ public class ClinicVisitsControllerTest {
             when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel, request)).thenReturn("opportunisticInfectionsId");
             when(allClinicVisits.updateVisitDetails(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId")).thenReturn(VISIT_ID);
 
-            String redirectURL = clinicVisitsController.create(VISIT_ID, visitDate, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisitUIModel, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals("redirect:/clinicvisits/" + VISIT_ID + "?patientId=" + PATIENT_ID, redirectURL);
             verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
@@ -232,7 +234,7 @@ public class ClinicVisitsControllerTest {
             when(bindingResult.hasErrors()).thenReturn(false);
             doThrow(new RuntimeException("Some Error")).when(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
 
-            String redirectURL = clinicVisitsController.create(VISIT_ID, visitDate, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisitUIModel, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             String patientId = treatmentAdvice.getPatientId();
             assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + VISIT_ID, redirectURL);
