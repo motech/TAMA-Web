@@ -16,15 +16,25 @@ public class ReminderConfigurationBuilderTest {
     public void setUp() {
         Properties appointmentsProperties = new Properties();
         appointmentsProperties.put(ReminderConfigurationBuilder.REMIND_FROM, "10");
+        appointmentsProperties.put(ReminderConfigurationBuilder.REMIND_FOR_VISIT_FROM, "5");
         builder = new ReminderConfigurationBuilder(appointmentsProperties);
     }
 
     @Test
-    public void shouldMapReminderConfiguration() {
+    public void shouldMapAppointmentReminderConfiguration() {
         ReminderConfiguration reminderConfiguration = builder.newAppointmentReminder();
         assertEquals(1, reminderConfiguration.getIntervalCount());
         assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
         assertEquals(10, reminderConfiguration.getRepeatCount());
         assertEquals(10, reminderConfiguration.getRemindFrom());
+    }
+
+    @Test
+    public void shouldMapVisitReminderConfiguration() {
+        ReminderConfiguration reminderConfiguration = builder.newVisitReminder();
+        assertEquals(1, reminderConfiguration.getIntervalCount());
+        assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
+        assertEquals(5, reminderConfiguration.getRepeatCount());
+        assertEquals(5, reminderConfiguration.getRemindFrom());
     }
 }
