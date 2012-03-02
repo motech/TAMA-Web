@@ -79,7 +79,7 @@ public class AllClinicVisits {
         return new ClinicVisit(patient, appointmentCalendar.getVisit(ClinicVisit.BASELINE));
     }
 
-    public String updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId, String opportunisticInfectionsId) {
+    public void updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId, String opportunisticInfectionsId) {
         ClinicVisit clinicVisit = get(patientDocId, visitId);
         clinicVisit.setTreatmentAdviceId(treatmentAdviceId);
         clinicVisit.setLabResultIds(labResultIds);
@@ -87,7 +87,6 @@ public class AllClinicVisits {
         clinicVisit.setReportedOpportunisticInfectionsId(opportunisticInfectionsId);
         clinicVisit.setVisitDate(visitDate);
         updateVisit(clinicVisit);
-        return clinicVisit.getId();
     }
 
     public String createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {

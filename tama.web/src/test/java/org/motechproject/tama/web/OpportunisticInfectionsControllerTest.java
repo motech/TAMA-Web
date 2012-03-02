@@ -126,6 +126,9 @@ public class OpportunisticInfectionsControllerTest {
 
     public static class Create extends SubjectUnderTest {
 
+        @Mock
+        private HttpServletRequest request;
+
         private OpportunisticInfectionsUIModel buildModelWithInfectionReported(boolean otherDetailsPresent) {
             ReportedOpportunisticInfections reportedOpportunisticInfections = new ReportedOpportunisticInfections();
             reportedOpportunisticInfections.addOpportunisticInfection(opportunisticInfection);
@@ -146,7 +149,7 @@ public class OpportunisticInfectionsControllerTest {
         @Test
         public void shouldCreateReportedOpportunisticInfections() throws Exception {
 
-            opportunisticInfectionsController.create(buildModelWithInfectionReported(true), bindingResult, uiModel);
+            opportunisticInfectionsController.create(buildModelWithInfectionReported(true), bindingResult, uiModel, request);
 
             ArgumentCaptor<ReportedOpportunisticInfections> argumentCaptor = ArgumentCaptor.forClass(ReportedOpportunisticInfections.class);
             verify(allReportedOpportunisticInfections).add(argumentCaptor.capture());
@@ -161,7 +164,7 @@ public class OpportunisticInfectionsControllerTest {
         @Test
         public void shouldCreateReportedOpportunisticWithOutOtherDetailsIfNotPresent() throws Exception {
 
-            opportunisticInfectionsController.create(buildModelWithInfectionReported(false), bindingResult, uiModel);
+            opportunisticInfectionsController.create(buildModelWithInfectionReported(false), bindingResult, uiModel, request);
 
             ArgumentCaptor<ReportedOpportunisticInfections> argumentCaptor = ArgumentCaptor.forClass(ReportedOpportunisticInfections.class);
             verify(allReportedOpportunisticInfections).add(argumentCaptor.capture());
@@ -177,7 +180,7 @@ public class OpportunisticInfectionsControllerTest {
         public void shouldNotCreateReportedOpportunisticInfectionsIfNoneAreReported() throws Exception {
             OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = buildModelWithNoInfectionsReported();
 
-            opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel);
+            opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             verify(allReportedOpportunisticInfections, never()).add(Matchers.<ReportedOpportunisticInfections>any());
         }
@@ -189,10 +192,19 @@ public class OpportunisticInfectionsControllerTest {
             when(bindingResult.hasErrors()).thenReturn(true);
             Model uiModel = new ExtendedModelMap();
 
-            opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel);
+            opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals(opportunisticInfectionsUIModel, uiModel.asMap().get(OpportunisticInfectionsController.OPPORTUNISTIC_INFECTIONS_UIMODEL));
             verifyZeroInteractions(allOpportunisticInfections);
+        }
+
+        @Test
+        public void shouldSetFlashErrorMessage_WhenCreateFails() {
+            doThrow(new RuntimeException("Some error")).when(allReportedOpportunisticInfections).add(Matchers.<ReportedOpportunisticInfections>any());
+            String id = opportunisticInfectionsController.create(buildModelWithInfectionReported(true), bindingResult, uiModel, request);
+
+            verify(request).setAttribute("flash.flashErrorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: Some error");
+            assertNull(id);
         }
     }
 

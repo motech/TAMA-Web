@@ -47,19 +47,24 @@ public class OpportunisticInfectionsController extends BaseController {
         uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, OpportunisticInfectionsUIModel.newDefault(clinicVisit, allOpportunisticInfections.getAll()));
     }
 
-    public String create(@Valid OpportunisticInfectionsUIModel opportunisticInfectionsUIModel, BindingResult bindingResult, Model uiModel) {
-        if (bindingResult.hasErrors()) {
-            uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, opportunisticInfectionsUIModel);
-            return null;
-        }
+    public String create(@Valid OpportunisticInfectionsUIModel opportunisticInfectionsUIModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        try {
+            if (bindingResult.hasErrors()) {
+                uiModel.addAttribute(OPPORTUNISTIC_INFECTIONS_UIMODEL, opportunisticInfectionsUIModel);
+                return null;
+            }
 
-        ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
-        if (reportedOpportunisticInfections.getOpportunisticInfectionIds().isEmpty()) {
-            return null;
-        } else {
+            ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
+            if (reportedOpportunisticInfections.getOpportunisticInfectionIds().isEmpty()) {
+                return null;
+            }
+
             allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
             return reportedOpportunisticInfections.getId();
+        } catch (RuntimeException e) {
+            httpServletRequest.setAttribute("flash.flashErrorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
         }
+        return null;
     }
 
     private ReportedOpportunisticInfections buildReportedOpportunisticInfections(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel) {
@@ -119,7 +124,7 @@ public class OpportunisticInfectionsController extends BaseController {
             allReportedOpportunisticInfections.remove(storedOpportunisticInfections);
         }
         ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
-        if(reportedOpportunisticInfections.getOpportunisticInfectionIds().isEmpty()) {
+        if (reportedOpportunisticInfections.getOpportunisticInfectionIds().isEmpty()) {
             allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(),
                     opportunisticInfectionsUIModel.getClinicVisitId(), null);
         } else {

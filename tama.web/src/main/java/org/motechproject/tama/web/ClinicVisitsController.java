@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -91,9 +90,6 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/create/{clinicVisitId}", method = RequestMethod.POST)
     public String create(@PathVariable("clinicVisitId") String clinicVisitId, ClinicVisit visit, TreatmentAdvice treatmentAdvice,
                          LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, @Valid OpportunisticInfectionsUIModel opportunisticInfections, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        List<String> labResultIds = new ArrayList<String>();
-        String vitalStatisticsId = null;
-        String reportedOpportunisticInfectionsId = null;
         String patientId = treatmentAdvice.getPatientId();
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
@@ -107,14 +103,9 @@ public class ClinicVisitsController extends BaseController {
                 return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
             }
         }
-        labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
-        vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
-
-        try {
-            reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel);
-        } catch (RuntimeException e) {
-            httpServletRequest.setAttribute("flash.flashErrorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
-        }
+        List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
+        String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
+        String reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel, httpServletRequest);
 
         try {
             allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);

@@ -188,14 +188,12 @@ public class ClinicVisitsControllerTest {
         private TreatmentAdvice treatmentAdvice;
         private ClinicVisit clinicVisit;
         private DateTime visitDate;
-        private String clinicVisitId;
 
         @Before
         public void setUp() {
             super.setUp();
             bindingResult = mock(BindingResult.class);
             visitDate = DateUtil.now();
-            clinicVisitId = "clinicVisitId";
             treatmentAdvice = new TreatmentAdvice() {{
                 setRegimenId("regimenId");
                 setPatientId("patientId");
@@ -216,17 +214,16 @@ public class ClinicVisitsControllerTest {
                 add("labResultId");
             }});
             when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, request)).thenReturn("vitalStatisticsId");
-            when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel)).thenReturn("opportunisticInfectionsId");
-            when(allClinicVisits.updateVisit(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId")).thenReturn(clinicVisitId);
+            when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel, request)).thenReturn("opportunisticInfectionsId");
 
-            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
-            assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
+            assertEquals("redirect:/clinicvisits/" + VISIT_ID + "?patientId=" + PATIENT_ID, redirectURL);
             verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
             verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel, request);
-            verify(opportunisticInfectionsController).create(opportunisticInfectionsUIModel, bindingResult, uiModel);
-            verify(allClinicVisits).updateVisit(clinicVisitId, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId");
+            verify(opportunisticInfectionsController).create(opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            verify(allClinicVisits).updateVisit(VISIT_ID, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId");
         }
 
         @Test
@@ -234,31 +231,13 @@ public class ClinicVisitsControllerTest {
             when(bindingResult.hasErrors()).thenReturn(false);
             doThrow(new RuntimeException("Some Error")).when(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
 
-            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             String patientId = treatmentAdvice.getPatientId();
-            assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId, redirectURL);
+            assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + VISIT_ID, redirectURL);
             verify(labResultsController, never()).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel, request);
             verify(allClinicVisits, never()).updateVisit(anyString(), Matchers.<DateTime>any(), anyString(), anyString(), anyList(), anyString(), eq("opportunisticInfectionsId"));
-        }
-
-        @Test
-        public void shouldRedirectToCreateForm_WhenUpdatingClinicVisitErrorsOut() {
-            String patientId = treatmentAdvice.getPatientId();
-            ArrayList<String> labResultIds = new ArrayList<String>();
-            when(bindingResult.hasErrors()).thenReturn(false);
-            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
-            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel, request)).thenReturn(labResultIds);
-            when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, request)).thenReturn("vitalStatisticsId");
-            when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel)).thenReturn("opportunisticInfectionsId");
-            doThrow(new RuntimeException("Some error")).when(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId),
-                    eq(treatmentAdvice.getId()), eq(labResultIds), eq("vitalStatisticsId"), eq("opportunisticInfectionsId"));
-
-            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
-
-            assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId, redirectURL);
-            verify(request).setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: Some error");
         }
 
     }
