@@ -127,7 +127,7 @@ public class LabResultsControllerTest {
         }};
         labResultsUIModel.setLabResults(new LabResults(Arrays.asList(labResult)));
 
-        labResultsController.create(labResultsUIModel, bindingResult, uiModel);
+        labResultsController.create(labResultsUIModel, bindingResult, uiModel, request);
 
         verify(allLabResults, times(1)).upsert(labResult);
     }
@@ -140,13 +140,13 @@ public class LabResultsControllerTest {
         LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
         labResultsUIModel.setLabResults(new LabResults(Arrays.asList(new LabResult())));
 
-        labResultsController.create(labResultsUIModel, bindingResult, uiModel);
+        labResultsController.create(labResultsUIModel, bindingResult, uiModel, request);
 
         verifyZeroInteractions(allLabResults);
     }
 
     @Test
-    public void createShouldReturnCreateView_SubmittedDataHasErrors() {
+    public void createPopulateLabResultsToUIModel_WhenSubmittedDataHasErrors() {
         String patientId = "patientId";
         LabResult labResult = new LabResult();
         labResult.setPatientId(patientId);
@@ -158,10 +158,24 @@ public class LabResultsControllerTest {
         labResultsUIModel.setLabResults(new LabResults(Arrays.asList(labResult)));
 
         when(bindingResult.hasErrors()).thenReturn(true);
-        labResultsController.create(labResultsUIModel, bindingResult, uiModel);
+        labResultsController.create(labResultsUIModel, bindingResult, uiModel, request);
 
         verifyZeroInteractions(allLabResults);
         assertEquals(labResultsUIModel, uiModel.asMap().get("labResultUiModel"));
+    }
+
+    @Test
+    public void shouldAddFlashErrorMessage_WhenLabResultCreateErrorsOut() {
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().build();
+        BindingResult bindingResult = mock(BindingResult.class);
+        LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
+        labResultsUIModel.setLabResults(new LabResults(Arrays.asList(labResult)));
+
+        doThrow(new RuntimeException("Some error")).when(allLabResults).upsert(labResult);
+
+        labResultsController.create(labResultsUIModel, bindingResult, new ExtendedModelMap(), request);
+
+        verify(request).setAttribute("flash.flashErrorLabResults", "Error occurred while creating Lab Results: Some error");
     }
 
     @Test
@@ -239,7 +253,7 @@ public class LabResultsControllerTest {
         LabResultsUIModel labResultsUIModel = mock(LabResultsUIModel.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        String viewName = labResultsController.update(labResultsUIModel, bindingResult, uiModel, null);
+        String viewName = labResultsController.update(labResultsUIModel, bindingResult, uiModel, request);
 
         verifyZeroInteractions(allLabResults);
         assertEquals("labresults/update", viewName);

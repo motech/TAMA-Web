@@ -107,11 +107,7 @@ public class ClinicVisitsController extends BaseController {
                 return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
             }
         }
-        try {
-            labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel);
-        } catch (RuntimeException e) {
-            httpServletRequest.setAttribute("flash.flashErrorLabResults", "Error occurred while creating Lab Results: " + e.getMessage());
-        }
+        labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
 
         try {
             vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel);

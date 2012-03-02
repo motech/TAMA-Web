@@ -212,7 +212,7 @@ public class ClinicVisitsControllerTest {
         public void shouldCreateClinicVisit_AndRedirectToShowClinicVisitPage() {
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn("treatmentAdviceId");
-            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(new ArrayList<String>() {{
+            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel, request)).thenReturn(new ArrayList<String>() {{
                 add("labResultId");
             }});
             when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
@@ -223,7 +223,7 @@ public class ClinicVisitsControllerTest {
 
             assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
             verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
-            verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
+            verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
             verify(opportunisticInfectionsController).create(opportunisticInfectionsUIModel, bindingResult, uiModel);
             verify(allClinicVisits).updateVisit(clinicVisitId, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId");
@@ -238,49 +238,9 @@ public class ClinicVisitsControllerTest {
 
             String patientId = treatmentAdvice.getPatientId();
             assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId, redirectURL);
-            verify(labResultsController, never()).create(labResultsUIModel, bindingResult, uiModel);
+            verify(labResultsController, never()).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel);
             verify(allClinicVisits, never()).updateVisit(anyString(), Matchers.<DateTime>any(), anyString(), anyString(), anyList(), anyString(), eq("opportunisticInfectionsId"));
-        }
-
-        @Test
-        public void shouldRedirectToClinicVisitShowPage_WhenLabResultCreateErrorsOut() {
-            String patientId = treatmentAdvice.getPatientId();
-            when(bindingResult.hasErrors()).thenReturn(false);
-            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
-            doThrow(new RuntimeException("Some Error")).when(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
-
-            String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
-
-            assertEquals("redirect:/clinicvisits/clinicVisitId?patientId=patientId", redirectURL);
-            verify(request).setAttribute("flash.flashErrorLabResults", "Error occurred while creating Lab Results: Some Error");
-        }
-
-        @Test
-        public void shouldStillPersistTreatmentAdviceInClinicVisit_WhenLabResultCreateErrorsOut() {
-            String patientId = treatmentAdvice.getPatientId();
-            when(bindingResult.hasErrors()).thenReturn(false);
-            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
-            doThrow(new RuntimeException("Some Error")).when(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
-
-            clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
-
-            verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), anyList(), Matchers.<String>eq(null), Matchers.<String>eq(null));
-        }
-
-        @Test
-        public void shouldStillPersistVitalStatistics_whenLabResultCreateErrorsOut() {
-            String patientId = treatmentAdvice.getPatientId();
-            when(bindingResult.hasErrors()).thenReturn(false);
-            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
-            when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
-            when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel)).thenReturn("opportunisticInfectionsId");
-            doThrow(new RuntimeException("Some Error")).when(labResultsController).create(labResultsUIModel, bindingResult, uiModel);
-
-            clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
-
-            verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
-            verify(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId), eq(treatmentAdvice.getId()), anyList(), eq("vitalStatisticsId"), eq("opportunisticInfectionsId"));
         }
 
         @Test
@@ -289,7 +249,7 @@ public class ClinicVisitsControllerTest {
             List<String> labResultIds = new ArrayList<String>();
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
-            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(labResultIds);
+            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel, null)).thenReturn(labResultIds);
             doThrow(new RuntimeException("Some Error")).when(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
 
             String redirectURL = clinicVisitsController.create(clinicVisitId, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
@@ -304,7 +264,7 @@ public class ClinicVisitsControllerTest {
             List<String> labResultIds = new ArrayList<String>();
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
-            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(labResultIds);
+            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel, null)).thenReturn(labResultIds);
             when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel)).thenReturn("opportunisticInfectionsId");
             doThrow(new RuntimeException("Some Error")).when(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel);
 
@@ -319,7 +279,7 @@ public class ClinicVisitsControllerTest {
             ArrayList<String> labResultIds = new ArrayList<String>();
             when(bindingResult.hasErrors()).thenReturn(false);
             when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
-            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel)).thenReturn(labResultIds);
+            when(labResultsController.create(labResultsUIModel, bindingResult, uiModel, null)).thenReturn(labResultIds);
             when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel)).thenReturn("vitalStatisticsId");
             when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel)).thenReturn("opportunisticInfectionsId");
             doThrow(new RuntimeException("Some error")).when(allClinicVisits).updateVisit(eq(clinicVisitId), Matchers.<DateTime>any(), eq(patientId),

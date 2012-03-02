@@ -45,17 +45,21 @@ public class LabResultsController extends BaseController {
         populateUIModel(uiModel, patientId);
     }
 
-    public List<String> create(LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel) {
+    public List<String> create(LabResultsUIModel labResultsUiModel, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         List<String> labResultIds = new ArrayList<String>();
-        if (bindingResult.hasErrors()) {
-            populateUIModel(uiModel, labResultsUiModel.getPatientId());
-            uiModel.addAttribute("labResultUiModel", labResultsUiModel);
-            return labResultIds;
-        }
-        for (LabResult labResult : labResultsUiModel.getLabResults()) {
-            if (labResult.getResult() == null || labResult.getResult().isEmpty()) continue;
-            String labResultId = this.allLabResults.upsert(labResult);
-            labResultIds.add(labResultId);
+        try {
+            if (bindingResult.hasErrors()) {
+                populateUIModel(uiModel, labResultsUiModel.getPatientId());
+                uiModel.addAttribute("labResultUiModel", labResultsUiModel);
+                return labResultIds;
+            }
+            for (LabResult labResult : labResultsUiModel.getLabResults()) {
+                if (labResult.getResult() == null || labResult.getResult().isEmpty()) continue;
+                String labResultId = this.allLabResults.upsert(labResult);
+                labResultIds.add(labResultId);
+            }
+        } catch (RuntimeException e) {
+            httpServletRequest.setAttribute("flash.flashErrorLabResults", "Error occurred while creating Lab Results: " + e.getMessage());
         }
         return labResultIds;
     }
