@@ -334,7 +334,8 @@ public class ClinicVisitsControllerTest {
         @Before
         public void setup() {
             super.setUp();
-            when(allClinicVisits.get(eq(PATIENT_ID), anyString())).thenReturn(new ClinicVisit());
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withTreatmentAdviceId("treatmentAdviceId").build();
+            when(allClinicVisits.get(eq(PATIENT_ID), anyString())).thenReturn(clinicVisit);
         }
 
         @Test

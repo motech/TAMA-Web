@@ -7,6 +7,7 @@ import org.junit.runners.Suite;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
@@ -72,7 +73,7 @@ public class OpportunisticInfectionsControllerTest {
 
         protected OpportunisticInfection opportunisticInfection;
         protected Patient patient;
-        protected Visit visit;
+        protected VisitResponse visit;
         protected ClinicVisit clinicVisit;
         protected ReportedOpportunisticInfections reportedOpportunisticInfections;
 
@@ -88,11 +89,10 @@ public class OpportunisticInfectionsControllerTest {
 
             patient = new Patient();
             patient.setId(PATIENT_ID);
-            visit = new Visit();
+            visit = new VisitResponse();
 
+            visit.setName(CLINIC_VISIT_ID).addVisitData(ClinicVisit.REPORTED_OPPORTUNISTIC_INFECTIONS, REPORT_OI_ID);
             clinicVisit = new ClinicVisit(patient, visit);
-            clinicVisit.setId(CLINIC_VISIT_ID);
-            clinicVisit.setReportedOpportunisticInfectionsId(REPORT_OI_ID);
             when(allClinicVisits.get(PATIENT_ID, CLINIC_VISIT_ID)).thenReturn(clinicVisit);
 
             reportedOpportunisticInfections = new ReportedOpportunisticInfections();
@@ -236,9 +236,8 @@ public class OpportunisticInfectionsControllerTest {
 
         @Test
         public void shouldPopulateUIModel_WhenNoInfectionIsReported() throws Exception {
+            visit.setName("cvId").addVisitData(ClinicVisit.REPORTED_OPPORTUNISTIC_INFECTIONS, "reportId");
             ClinicVisit clinicVisitWithNoInfectionReported = new ClinicVisit(patient, visit);
-            clinicVisitWithNoInfectionReported.setId("cvId");
-            clinicVisitWithNoInfectionReported.setReportedOpportunisticInfectionsId("reportId");
             when(allClinicVisits.get(PATIENT_ID, "cvId")).thenReturn(clinicVisitWithNoInfectionReported);
             when(allReportedOpportunisticInfections.get("reportId")).thenReturn(new ReportedOpportunisticInfections());
 
