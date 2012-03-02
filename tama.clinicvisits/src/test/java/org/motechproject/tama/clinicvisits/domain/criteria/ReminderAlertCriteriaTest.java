@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -22,7 +22,7 @@ public class ReminderAlertCriteriaTest {
 
     public static class WhenAppointmentIsNotConfirmed extends BaseUnitTest {
 
-        Appointment appointment;
+        ClinicVisit clinicVisit;
         Properties appointmentsConfiguration;
         Integer days = 2;
         DateTime now = DateTime.now();
@@ -31,7 +31,7 @@ public class ReminderAlertCriteriaTest {
 
 
         public WhenAppointmentIsNotConfirmed() {
-            appointment = new Appointment().dueDate(now).confirmedDate(null);
+            clinicVisit = new ClinicVisitBuilder().withAppointmentDueDate(now).build();
             appointmentsConfiguration = new Properties();
             appointmentsConfiguration.setProperty(TAMAConstants.DAYS_BEFORE_DUE_DATE_WHEN_ALERT_SHOULD_BE_RAISED, days.toString());
 
@@ -41,25 +41,25 @@ public class ReminderAlertCriteriaTest {
         @Test
         public void shouldReturnTrueIfTodayIsConfiguredDaysBeforeDueDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days));
-            assertTrue(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertTrue(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
 
         @Test
         public void shouldReturnFalseIfTodayIsLessThanConfiguredDaysBeforeDueDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days).plusDays(1));
-            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
 
         @Test
         public void shouldReturnFalseIfTodayIsGreaterThanConfiguredDaysBeforeDueDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days).minusDays(1));
-            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
     }
 
     public static class WhenAppointmentIsConfirmed extends BaseUnitTest {
 
-        Appointment appointment;
+        ClinicVisit clinicVisit;
         Properties appointmentsConfiguration;
         Integer days = 2;
         DateTime now = DateTime.now();
@@ -67,7 +67,7 @@ public class ReminderAlertCriteriaTest {
         private ReminderAlertCriteria raiseAppointmentConfirmationCriteria;
 
         public WhenAppointmentIsConfirmed() {
-            appointment = new Appointment().dueDate(now.minusDays(2)).confirmedDate(now);
+            clinicVisit = new ClinicVisitBuilder().withAppointmentDueDate(now.minusDays(2)).withAppointmentConfirmedDate(now).build();
 
             appointmentsConfiguration = new Properties();
             appointmentsConfiguration.setProperty(TAMAConstants.DAYS_BEFORE_DUE_DATE_WHEN_ALERT_SHOULD_BE_RAISED, days.toString());
@@ -78,25 +78,25 @@ public class ReminderAlertCriteriaTest {
         @Test
         public void shouldNotReturnTrueIfTodayIsConfiguredDaysBeforeConfirmedDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days));
-            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
 
         @Test
         public void shouldReturnFalseIfTodayIsLessThanConfiguredDaysBeforeConfirmedDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days).plusDays(1));
-            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
 
         @Test
         public void shouldReturnFalseIfTodayIsGreaterThanConfiguredDaysBeforeConfirmedDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days).minusDays(1));
-            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
     }
 
     public static class WhenAppointmentIsAdjusted extends BaseUnitTest {
 
-        Appointment appointment;
+        ClinicVisit clinicVisit;
         Properties appointmentsConfiguration;
         Integer days = 2;
         DateTime now = DateTime.now();
@@ -104,8 +104,7 @@ public class ReminderAlertCriteriaTest {
         private ReminderAlertCriteria raiseAppointmentConfirmationCriteria;
 
         public WhenAppointmentIsAdjusted() {
-            appointment = new Appointment().dueDate(now.minusDays(2));
-            appointment.addData(ClinicVisit.ADJUSTED_DUE_DATE, now.toLocalDate().toString());
+            clinicVisit = new ClinicVisitBuilder().withAppointmentDueDate(now.minusDays(2)).withAppointmentAdjustedDate(now).build();
 
             appointmentsConfiguration = new Properties();
             appointmentsConfiguration.setProperty(TAMAConstants.DAYS_BEFORE_DUE_DATE_WHEN_ALERT_SHOULD_BE_RAISED, days.toString());
@@ -116,19 +115,19 @@ public class ReminderAlertCriteriaTest {
         @Test
         public void shouldReturnTrueIfTodayIsConfiguredDaysBeforeConfirmedDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days));
-            assertTrue(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertTrue(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
 
         @Test
         public void shouldReturnFalseIfTodayIsLessThanConfiguredDaysBeforeConfirmedDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days).plusDays(1));
-            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
 
         @Test
         public void shouldReturnFalseIfTodayIsGreaterThanConfiguredDaysBeforeConfirmedDate() {
             mockCurrentDate(now.toLocalDate().minusDays(days).minusDays(1));
-            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(appointment));
+            assertFalse(raiseAppointmentConfirmationCriteria.shouldRaiseAlert(clinicVisit));
         }
     }
 }

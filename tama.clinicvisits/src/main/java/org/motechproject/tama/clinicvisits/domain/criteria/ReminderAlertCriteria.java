@@ -1,7 +1,6 @@
 package org.motechproject.tama.clinicvisits.domain.criteria;
 
 import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.util.DateUtil;
@@ -22,20 +21,12 @@ public class ReminderAlertCriteria {
         this.DAYS_FOR_REMINDER_ALERT = Integer.parseInt(dayForReminderAlertProperty);
     }
 
-    public boolean shouldRaiseAlert(Appointment appointment) {
-        if (appointment.confirmedDate() != null) {
+    public boolean shouldRaiseAlert(ClinicVisit clinicVisit) {
+        if (clinicVisit.getConfirmedAppointmentDate() != null) {
             return false;
         } else {
-            LocalDate referenceDate = effectiveDueDate(appointment);
+            LocalDate referenceDate = clinicVisit.getEffectiveDueDate();
             return DateUtil.today().equals(referenceDate.minusDays(DAYS_FOR_REMINDER_ALERT));
-        }
-    }
-
-    private LocalDate effectiveDueDate(Appointment appointment) {
-        if (appointment.getData().get(ClinicVisit.ADJUSTED_DUE_DATE) != null) {
-            return new LocalDate(appointment.getData().get(ClinicVisit.ADJUSTED_DUE_DATE));
-        } else {
-            return appointment.dueDate().toLocalDate();
         }
     }
 }

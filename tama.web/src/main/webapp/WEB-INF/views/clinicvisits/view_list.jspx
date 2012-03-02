@@ -49,8 +49,8 @@
                         <c:if test="${not empty visit.adjustedDueDate}"><spring:eval expression="visit.adjustedDueDate"/></c:if>
                     </td>
                     <td>
-                        <c:if test="${not empty visit.confirmedVisitDate}">
-                            <spring:eval expression="visit.confirmedVisitDate"/>
+                        <c:if test="${not empty visit.confirmedAppointmentDate}">
+                            <spring:eval expression="visit.confirmedAppointmentDate"/>
                         </c:if>
                     </td>
                     <td>

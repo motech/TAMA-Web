@@ -1,4 +1,4 @@
-package org.motechproject.tama.clinicvisits.mapper;
+package org.motechproject.tama.clinicvisits.builder.servicecontract;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class ReminderConfigurationBuilderTest {
 
     @Test
     public void shouldMapReminderConfiguration() {
-        ReminderConfiguration reminderConfiguration = builder.newDefault();
+        ReminderConfiguration reminderConfiguration = builder.newAppointmentReminder();
         assertEquals(1, reminderConfiguration.getIntervalCount());
         assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
         assertEquals(10, reminderConfiguration.getRepeatCount());

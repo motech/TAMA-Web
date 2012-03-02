@@ -2,9 +2,10 @@ package org.motechproject.tama.clinicvisits.domain;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.model.Visit;
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
@@ -19,32 +20,21 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     public static final String VITAL_STATISTICS = "VitalStatisticsId";
     public static final String LAB_RESULTS = "LabResultIds";
     public static final String REPORTED_OPPORTUNISTIC_INFECTIONS = "ReportedOpportunisticInfectionsId";
-    public static final String ADJUSTED_DUE_DATE = "AdjustedDueDate";
-    public static final String TYPE_OF_VISIT = "TypeOfVisit";
     public static final String WEEK_NUMBER = "WeekNumber";
-    public static final String BASELINE = "baseline";
 
     private Patient patient;
-    private Visit visit = new Visit();
+    private VisitResponse visit;
 
     public ClinicVisit() {
     }
 
-    public ClinicVisit(Patient patient, Visit visit) {
+    public ClinicVisit(Patient patient, VisitResponse visitResponse) {
         this.patient = patient;
-        this.visit = visit;
-    }
-
-    public Visit getVisit() {
-        return visit;
+        this.visit = visitResponse;
     }
 
     public String getId() {
-        return visit.name();
-    }
-
-    public void setId(String id) {
-        visit.name(id);
+        return visit.getName();
     }
 
     public String getTitle() {
@@ -64,113 +54,72 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         return patient.getId();
     }
 
-    public boolean isBaseline() {
-        TypeOfVisit typeOfVisit = TypeOfVisit.valueOf((String) visit.getData().get(TYPE_OF_VISIT));
-        return typeOfVisit.isBaselineVisit();
+    public String getTypeOfVisit() {
+        return visit.getTypeOfVisit();
     }
 
-    public String getTypeOfVisit() {
-        return visit.getData().get(TYPE_OF_VISIT).toString();
+    public boolean isBaseline() {
+        return TypeOfVisit.valueOf(getTypeOfVisit()).isBaselineVisit();
     }
 
     public String getTreatmentAdviceId() {
-        return (String) visit.getData().get(TREATMENT_ADVICE);
-    }
-
-    public void setTreatmentAdviceId(String treatmentAdviceId) {
-        visit.addData(TREATMENT_ADVICE, treatmentAdviceId);
+        return (String) visit.getVisitData().get(TREATMENT_ADVICE);
     }
 
     public String getReportedOpportunisticInfectionsId() {
-        return (String) visit.getData().get(REPORTED_OPPORTUNISTIC_INFECTIONS);
-    }
-
-    public void setReportedOpportunisticInfectionsId(String opportunisticInfectionsId) {
-        visit.addData(REPORTED_OPPORTUNISTIC_INFECTIONS, opportunisticInfectionsId);
+        return (String) visit.getVisitData().get(REPORTED_OPPORTUNISTIC_INFECTIONS);
     }
 
     public List<String> getLabResultIds() {
-        List<String> labResultIds = (List<String>) visit.getData().get(LAB_RESULTS);
+        List<String> labResultIds = (List<String>) visit.getVisitData().get(LAB_RESULTS);
         return labResultIds == null ? Collections.<String>emptyList() : labResultIds;
     }
 
-    public void setLabResultIds(List<String> labResultIds) {
-        visit.addData(LAB_RESULTS, labResultIds);
-    }
-
     public String getVitalStatisticsId() {
-        return (String) visit.getData().get(VITAL_STATISTICS);
+        return (String) visit.getVisitData().get(VITAL_STATISTICS);
     }
 
-    public void setVitalStatisticsId(String vitalStatisticsId) {
-        visit.addData(VITAL_STATISTICS, vitalStatisticsId);
+    public boolean isMissed() {
+        return visit.isMissed();
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getVisitDate() {
-        return visit.visitDate();
-    }
-
-    public void setVisitDate(DateTime visitDate) {
-        visit.visitDate(visitDate);
-    }
-
-    public boolean isMissed() {
-        return visit.missed();
-    }
-
-    public void setMissed(boolean missed) {
-        visit.missed(missed);
+        return visit.getVisitDate();
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getAppointmentDueDate() {
-        return visit.appointment() == null ? null : visit.appointment().dueDate();
-    }
-
-    public void setAppointmentDueDate(DateTime appointmentDueDate) {
-        visit.appointment().dueDate(appointmentDueDate);
+        return visit.getOriginalAppointmentDueDate();
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public LocalDate getAdjustedDueDate() {
-        if (visit.appointment() == null) {
-            return null;
-        }
-        String adjustedDueDate = (String) visit.appointment().getData().get(ADJUSTED_DUE_DATE);
-        return adjustedDueDate == null ? null : new LocalDate(adjustedDueDate);
-    }
-
-    public void setAdjustedDueDate(LocalDate adjustedDueDate) {
-        visit.appointment().addData(ADJUSTED_DUE_DATE, adjustedDueDate);
+        if (visit.getOriginalAppointmentDueDate() == null) return null;
+        return visit.getOriginalAppointmentDueDate().equals(visit.getAppointmentDueDate()) ? null :  DateUtil.newDate(visit.getAppointmentDueDate());
     }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
-    public DateTime getConfirmedVisitDate() {
-        return visit.appointment() == null ? null : visit.appointment().confirmedDate();
-    }
-
-    public void setConfirmedVisitDate(DateTime confirmedDate) {
-        visit.appointment().confirmedDate(confirmedDate);
+    public DateTime getConfirmedAppointmentDate() {
+        return visit.getAppointmentConfirmDate();
     }
 
     public LocalDate getEffectiveDueDate() {
-        LocalDate appointmentDueDate = getAppointmentDueDate() == null ? null : getAppointmentDueDate().toLocalDate();
-        return getAdjustedDueDate() == null ? appointmentDueDate : getAdjustedDueDate();
-    }
-
-    private Integer weekNumber() {
-        return (Integer) visit.getData().get(WEEK_NUMBER);
+        return getAdjustedDueDate() == null ? DateUtil.newDate(getAppointmentDueDate()) : getAdjustedDueDate();
     }
 
     @Override
     public int compareTo(ClinicVisit clinicVisit) {
-        if (this.visit.appointment() == null || this.visit.appointment().dueDate() == null) return -1;
-        if (clinicVisit.visit.appointment() == null || clinicVisit.visit.appointment().dueDate() == null) return 1;
+        if (this.visit.getAppointmentDueDate() == null) return -1;
+        if (clinicVisit.visit.getAppointmentDueDate() == null) return 1;
         return this.getEffectiveDueDate().compareTo(clinicVisit.getEffectiveDueDate());
+    }
+
+    private Integer weekNumber() {
+        return (Integer) visit.getVisitData().get(WEEK_NUMBER);
     }
 }

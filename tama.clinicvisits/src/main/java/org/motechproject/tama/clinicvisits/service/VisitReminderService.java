@@ -1,6 +1,6 @@
 package org.motechproject.tama.clinicvisits.service;
 
-import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.service.OutboxService;
@@ -22,10 +22,10 @@ public class VisitReminderService {
         this.outboxService = outboxService;
     }
 
-    public void addOutboxMessage(Patient patient, Appointment appointment, String visitName) {
-        if (reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, appointment)) {
+    public void addOutboxMessage(Patient patient, ClinicVisit clinicVisit) {
+        if (reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, clinicVisit)) {
             final HashMap<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME, visitName);
+            parameters.put(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME, clinicVisit.getId());
             outboxService.addMessage(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE, parameters);
         }
     }

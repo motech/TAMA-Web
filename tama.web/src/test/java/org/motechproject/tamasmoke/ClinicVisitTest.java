@@ -2,10 +2,6 @@ package org.motechproject.tamasmoke;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.appointments.api.model.Visit;
-import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
-import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
@@ -22,7 +18,6 @@ import org.motechproject.tamafunctionalframework.testdataservice.PatientDataServ
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 
 public class ClinicVisitTest extends BaseTest {
 

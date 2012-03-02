@@ -5,7 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.common.TAMAConstants;
@@ -37,13 +38,13 @@ public class AppointmentReminderServiceTest {
     PatientAlertService patientAlertService;
 
     private Patient patient;
-    private Appointment appointment;
+    private ClinicVisit clinicVisit;
 
     private AppointmentReminderService appointmentReminderService;
 
     public AppointmentReminderServiceTest() {
         patient = PatientBuilder.startRecording().withDefaults().withId("patientDocumentId").build();
-        appointment = new Appointment();
+        clinicVisit = new ClinicVisit();
     }
 
     @Before
@@ -52,28 +53,27 @@ public class AppointmentReminderServiceTest {
         appointmentReminderService = new AppointmentReminderService(reminderOutboxCriteria, reminderAlertCriteria, patientAlertService, outboxService);
     }
 
-
     @Test
     public void shouldAddOutboxMessageWhenReminderOutboxCriteriaIsTrue() {
-        when(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment)).thenReturn(true);
-        appointmentReminderService.addOutboxMessage(patient, appointment);
+        when(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, clinicVisit)).thenReturn(true);
+        appointmentReminderService.addOutboxMessage(patient, clinicVisit);
         verify(outboxService).addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
     }
 
     @Test
     public void shouldNotAddOutboxMessageWhenReminderOutboxCriteriaIsFalse() {
-        when(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment)).thenReturn(false);
-        appointmentReminderService.addOutboxMessage(patient, appointment);
+        when(reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, clinicVisit)).thenReturn(false);
+        appointmentReminderService.addOutboxMessage(patient, clinicVisit);
         verifyZeroInteractions(outboxService);
     }
 
     @Test
     public void shouldRaiseAlertIfReminderAlertCriteriaIsTrue() {
         DateTime now = DateUtil.now();
-        appointment.dueDate(now);
-        when(reminderAlertCriteria.shouldRaiseAlert(appointment)).thenReturn(true);
+        clinicVisit = new ClinicVisitBuilder().withAppointmentDueDate(now).build();
+        when(reminderAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(true);
 
-        appointmentReminderService.raiseAlert(patient, appointment);
+        appointmentReminderService.raiseAlert(patient, clinicVisit);
 
         ArgumentCaptor<HashMap> alertDataArgumentCaptor = ArgumentCaptor.forClass(HashMap.class);
         verify(patientAlertService).createAlert(eq(patient.getId()), eq(TAMAConstants.NO_ALERT_PRIORITY),
@@ -84,8 +84,8 @@ public class AppointmentReminderServiceTest {
 
     @Test
     public void shouldNotRaiseAlertIfReminderAlertCriteriaIsFalse() {
-        when(reminderAlertCriteria.shouldRaiseAlert(appointment)).thenReturn(false);
-        appointmentReminderService.raiseAlert(patient, appointment);
+        when(reminderAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(false);
+        appointmentReminderService.raiseAlert(patient, clinicVisit);
         verifyZeroInteractions(patientAlertService);
     }
 }

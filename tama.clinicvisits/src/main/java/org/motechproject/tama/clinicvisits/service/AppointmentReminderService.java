@@ -1,7 +1,5 @@
 package org.motechproject.tama.clinicvisits.service;
 
-import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
@@ -33,26 +31,18 @@ public class AppointmentReminderService {
         this.outboxService = outboxService;
     }
 
-    public void addOutboxMessage(Patient patient, Appointment appointment) {
-        if (reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, appointment)) {
+    public void addOutboxMessage(Patient patient, ClinicVisit clinicVisit) {
+        if (reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, clinicVisit)) {
             outboxService.addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
         }
     }
 
-    public void raiseAlert(Patient patient, Appointment appointment) {
-        if (reminderAlertCriteria.shouldRaiseAlert(appointment)) {
+    public void raiseAlert(Patient patient, ClinicVisit clinicVisit) {
+        if (reminderAlertCriteria.shouldRaiseAlert(clinicVisit)) {
             HashMap<String, String> data = new HashMap<String, String>();
-            data.put(PatientAlert.APPOINTMENT_DUE_DATE, effectiveDueDate(appointment).toString());
+            data.put(PatientAlert.APPOINTMENT_DUE_DATE, clinicVisit.getEffectiveDueDate().toString());
             patientAlertService.createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
                     TAMAConstants.APPOINTMENT_REMINDER, "", PatientAlertType.AppointmentReminder, data);
-        }
-    }
-
-    private LocalDate effectiveDueDate(Appointment appointment) {
-        if (appointment.getData().get(ClinicVisit.ADJUSTED_DUE_DATE) != null) {
-            return new LocalDate(appointment.getData().get(ClinicVisit.ADJUSTED_DUE_DATE));
-        } else {
-            return appointment.dueDate().toLocalDate();
         }
     }
 }

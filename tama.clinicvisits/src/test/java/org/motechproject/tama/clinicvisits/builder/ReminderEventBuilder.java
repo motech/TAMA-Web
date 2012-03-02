@@ -1,9 +1,8 @@
 package org.motechproject.tama.clinicvisits.builder;
 
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.appointments.api.model.Appointment;
-import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.patient.domain.Patient;
 
 import java.util.HashMap;
@@ -12,8 +11,7 @@ import java.util.Map;
 public class ReminderEventBuilder {
 
     private Patient patient;
-    private Appointment appointment;
-    private Visit visit;
+    private ClinicVisit visit;
 
     private ReminderEventBuilder() {
     }
@@ -27,13 +25,8 @@ public class ReminderEventBuilder {
         return this;
     }
 
-    public ReminderEventBuilder withVisit(Visit visit) {
+    public ReminderEventBuilder withClinicVisit(ClinicVisit visit) {
         this.visit = visit;
-        return this;
-    }
-
-    public ReminderEventBuilder withAppointment(Appointment appointment) {
-        this.appointment = appointment;
         return this;
     }
 
@@ -42,10 +35,8 @@ public class ReminderEventBuilder {
 
         if (patient != null)
             eventParams.put(EventKeys.EXTERNAL_ID_KEY, patient.getId());
-        if (appointment != null)
-            eventParams.put(EventKeys.APPOINTMENT_ID, appointment.id());
         if (visit != null)
-            eventParams.put(EventKeys.VISIT_NAME, visit.name());
+            eventParams.put(EventKeys.VISIT_NAME, visit.getId());
 
         return new MotechEvent(EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, eventParams);
     }

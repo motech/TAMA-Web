@@ -1,6 +1,6 @@
 package org.motechproject.tama.clinicvisits.domain.criteria;
 
-import org.motechproject.appointments.api.model.Appointment;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.domain.Patient;
@@ -18,16 +18,16 @@ public class ReminderOutboxCriteria {
         this.outboxService = outboxService;
     }
 
-    public boolean shouldAddOutboxMessageForAppointments(Patient patient, Appointment appointment) {
+    public boolean shouldAddOutboxMessageForAppointments(Patient patient, ClinicVisit clinicVisit) {
         return (patient.getPatientPreferences().getActivateAppointmentReminders())
                 && (!outboxService.hasPendingOutboxMessages(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE))
-                && (appointment.confirmedDate() == null);
+                && (clinicVisit.getConfirmedAppointmentDate() == null);
     }
 
-    public boolean shouldAddOutboxMessageForVisits(Patient patient, Appointment appointment) {
+    public boolean shouldAddOutboxMessageForVisits(Patient patient, ClinicVisit clinicVisit) {
         return (patient.getPatientPreferences().getActivateAppointmentReminders())
                 && (!outboxService.hasPendingOutboxMessages(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE))
-                && (appointment.confirmedDate() != null)
-                && (DateUtil.now().isBefore(appointment.confirmedDate()));
+                && (clinicVisit.getConfirmedAppointmentDate() != null)
+                && (DateUtil.now().isBefore(clinicVisit.getConfirmedAppointmentDate()));
     }
 }

@@ -5,6 +5,10 @@ public enum TypeOfVisit {
     Scheduled,
     Unscheduled;
 
+    public String toLowerCase() {
+        return toString().toLowerCase();
+    }
+
     public boolean isBaselineVisit() {
         return this.equals(Baseline);
     }

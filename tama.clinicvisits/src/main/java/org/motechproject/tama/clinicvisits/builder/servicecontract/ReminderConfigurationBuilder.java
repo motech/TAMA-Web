@@ -1,4 +1,4 @@
-package org.motechproject.tama.clinicvisits.mapper;
+package org.motechproject.tama.clinicvisits.builder.servicecontract;
 
 import org.motechproject.appointments.api.contract.ReminderConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import java.util.Properties;
 public class ReminderConfigurationBuilder {
 
     public static final String REMIND_FROM = "remindFrom";
+    public static final String REMIND_FOR_VISIT_FROM = "remindForVisitFrom";
 
     private Properties appointmentsProperties;
 
@@ -19,8 +20,13 @@ public class ReminderConfigurationBuilder {
         this.appointmentsProperties = appointmentsProperties;
     }
 
-    public ReminderConfiguration newDefault() {
+    public ReminderConfiguration newAppointmentReminder() {
         int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FROM));
+        return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
+    }
+
+    public ReminderConfiguration newVisitReminder() {
+        int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FOR_VISIT_FROM));
         return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
     }
 }

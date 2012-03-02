@@ -2,58 +2,39 @@ package org.motechproject.tama.clinicvisits.repository;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
-import org.motechproject.appointments.api.contract.ReminderConfiguration;
-import org.motechproject.appointments.api.contract.VisitRequest;
-import org.motechproject.appointments.api.contract.VisitResponse;
-import org.motechproject.appointments.api.model.AppointmentCalendar;
-import org.motechproject.appointments.api.model.Visit;
-import org.motechproject.appointments.api.service.AppointmentService;
+import org.motechproject.appointments.api.contract.*;
+import org.motechproject.tama.clinicvisits.builder.servicecontract.AppointmentCalendarRequestBuilder;
+import org.motechproject.tama.clinicvisits.builder.servicecontract.ConfirmAppointmentRequestBuilder;
+import org.motechproject.tama.clinicvisits.builder.servicecontract.CreateVisitRequestBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
-import org.motechproject.tama.clinicvisits.mapper.AppointmentCalendarRequestBuilder;
-import org.motechproject.tama.clinicvisits.mapper.VisitRequestBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
-//TODO: Jack of All Trades smell. Probably, our Aggregate is broken
 @Repository
 public class AllClinicVisits {
-
-    public static final String REMIND_FOR_VISIT_FROM = "remindForVisitFrom";
 
     private AllPatients allPatients;
     private AppointmentService appointmentService;
     private AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder;
-    private VisitRequestBuilder visitRequestBuilder;
-    private Properties appointmentsProperties;
+    private CreateVisitRequestBuilder createVisitRequestBuilder;
+    private ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder;
 
     @Autowired
-    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder, VisitRequestBuilder visitRequestBuilder, @Qualifier("appointments") Properties appointmentsProperties) {
+    public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder,
+                           CreateVisitRequestBuilder createVisitRequestBuilder, ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder) {
         this.allPatients = allPatients;
         this.appointmentService = appointmentService;
         this.appointmentCalendarRequestBuilder = appointmentCalendarRequestBuilder;
-        this.visitRequestBuilder = visitRequestBuilder;
-        this.appointmentsProperties = appointmentsProperties;
-    }
-
-    public VisitResponse createUnScheduledAppointment(String patientId, DateTime dueDate, TypeOfVisit typeOfVisit) {
-        String visitName = "visitFor-" + dueDate.getMillis();
-        VisitRequest visitRequest = visitRequestBuilder.visitWithReminderRequest(dueDate, typeOfVisit);
-        return appointmentService.addVisit(patientId, visitName, visitRequest);
-    }
-
-    public ClinicVisit get(String patientDocId, String visitId) {
-        Patient patient = allPatients.get(patientDocId);
-        AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
-        return new ClinicVisit(patient, appointmentCalendar.getVisit(visitId));
+        this.createVisitRequestBuilder = createVisitRequestBuilder;
+        this.confirmAppointmentRequestBuilder = confirmAppointmentRequestBuilder;
     }
 
     public void addAppointmentCalendar(String patientDocId) {
@@ -62,90 +43,87 @@ public class AllClinicVisits {
         appointmentService.addCalendar(appointmentCalendarRequest);
     }
 
-    public ClinicVisits clinicVisits(String patientDocId) {
-        AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
-        if (appointmentCalendar == null) return new ClinicVisits();
+    public ClinicVisit get(String patientDocId, String visitId) {
         Patient patient = allPatients.get(patientDocId);
+        VisitResponse visitResponse = appointmentService.findVisit(patientDocId, visitId);
+        return new ClinicVisit(patient, visitResponse);
+    }
+
+    public ClinicVisit getBaselineVisit(String patientDocId) {
+        return get(patientDocId, TypeOfVisit.Baseline.toString());
+    }
+
+    public ClinicVisits clinicVisits(String patientDocId) {
         ClinicVisits clinicVisits = new ClinicVisits();
-        for (Visit visit : appointmentCalendar.visits()) {
-            clinicVisits.add(new ClinicVisit(patient, visit));
+        List<VisitResponse> allVisits = appointmentService.getAllVisits(patientDocId);
+        Patient patient = allPatients.get(patientDocId);
+        for (VisitResponse visitResponse : allVisits) {
+            clinicVisits.add(new ClinicVisit(patient, visitResponse));
         }
         return clinicVisits;
     }
 
-    public ClinicVisit getBaselineVisit(String patientDocId) {
-        AppointmentCalendar appointmentCalendar = appointmentService.getAppointmentCalendar(patientDocId);
-        Patient patient = allPatients.get(patientDocId);
-        return new ClinicVisit(patient, appointmentCalendar.getVisit(ClinicVisit.BASELINE));
-    }
-
-    public void updateVisit(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId, String opportunisticInfectionsId) {
-        ClinicVisit clinicVisit = get(patientDocId, visitId);
-        clinicVisit.setTreatmentAdviceId(treatmentAdviceId);
-        clinicVisit.setLabResultIds(labResultIds);
-        clinicVisit.setVitalStatisticsId(vitalStatisticsId);
-        clinicVisit.setReportedOpportunisticInfectionsId(opportunisticInfectionsId);
-        clinicVisit.setVisitDate(visitDate);
-        updateVisit(clinicVisit);
+    public void createUnScheduledAppointment(String patientDocId, DateTime dueDate, TypeOfVisit typeOfVisit) {
+        String visitName = "visitFor-" + dueDate.getMillis();
+        CreateVisitRequest createVisitRequest = createVisitRequestBuilder.adHocVisitRequest(visitName, typeOfVisit, dueDate);
+        appointmentService.addVisit(patientDocId, createVisitRequest);
     }
 
     public String createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
         String visitName = "visitFor-" + appointmentDueDate.getMillis();
-        VisitRequest visitRequest = visitRequestBuilder.visitWithoutReminderRequest(appointmentDueDate, typeOfVisit);
-        return appointmentService.addVisit(patientDocId, visitName, visitRequest).name();
+        CreateVisitRequest createVisitRequest = createVisitRequestBuilder.adHocVisitRequestForToday(visitName, typeOfVisit, appointmentDueDate);
+        return appointmentService.addVisit(patientDocId, createVisitRequest).getName();
+    }
+
+    public String updateVisitDetails(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId, String opportunisticInfectionsId) {
+        HashMap<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put(ClinicVisit.LAB_RESULTS, labResultIds);
+        dataMap.put(ClinicVisit.REPORTED_OPPORTUNISTIC_INFECTIONS, opportunisticInfectionsId);
+        dataMap.put(ClinicVisit.TREATMENT_ADVICE, treatmentAdviceId);
+        dataMap.put(ClinicVisit.VITAL_STATISTICS, vitalStatisticsId);
+        appointmentService.addCustomDataToVisit(patientDocId, visitId, dataMap);
+        appointmentService.visited(patientDocId, visitId, visitDate);
+        return visitId;
     }
 
     public void changeRegimen(String patientDocId, String clinicVisitId, String newTreatmentAdviceId) {
-        final ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setTreatmentAdviceId(newTreatmentAdviceId);
-        updateVisit(clinicVisit);
+        HashMap<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put(ClinicVisit.TREATMENT_ADVICE, newTreatmentAdviceId);
+        appointmentService.addCustomDataToVisit(patientDocId, clinicVisitId, dataMap);
     }
 
     public void updateLabResults(String patientDocId, String clinicVisitId, List<String> labResultIds) {
-        final ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setLabResultIds(labResultIds);
-        updateVisit(clinicVisit);
+        HashMap<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put(ClinicVisit.LAB_RESULTS, labResultIds);
+        appointmentService.addCustomDataToVisit(patientDocId, clinicVisitId, dataMap);
     }
 
     public void updateVitalStatistics(String patientDocId, String clinicVisitId, String vitalStatisticsId) {
-        final ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setVitalStatisticsId(vitalStatisticsId);
-        updateVisit(clinicVisit);
+        HashMap<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put(ClinicVisit.VITAL_STATISTICS, vitalStatisticsId);
+        appointmentService.addCustomDataToVisit(patientDocId, clinicVisitId, dataMap);
     }
 
     public void updateOpportunisticInfections(String patientDocId, String clinicVisitId, String reportedOpportunisticInfectionId) {
-        final ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setReportedOpportunisticInfectionsId(reportedOpportunisticInfectionId);
-        updateVisit(clinicVisit);
-    }
-
-    public void confirmVisitDate(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {
-        ReminderConfiguration visitReminderConfiguration = getVisitReminderConfiguration();
-        appointmentService.confirmVisit(patientDocId, clinicVisitId, confirmedVisitDate, visitReminderConfiguration);
+        HashMap<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put(ClinicVisit.REPORTED_OPPORTUNISTIC_INFECTIONS, reportedOpportunisticInfectionId);
+        appointmentService.addCustomDataToVisit(patientDocId, clinicVisitId, dataMap);
     }
 
     public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate) {
-        ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setAdjustedDueDate(adjustedDueDate);
-        updateVisit(clinicVisit);
+        appointmentService.rescheduleAppointment(patientDocId, clinicVisitId, DateUtil.newDateTime(adjustedDueDate, 0, 0, 0));
+    }
+
+    public void confirmVisitDate(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {
+        ConfirmAppointmentRequest request = confirmAppointmentRequestBuilder.confirmAppointmentRequest(patientDocId, clinicVisitId, confirmedVisitDate);
+        appointmentService.confirmAppointment(request);
     }
 
     public void markAsMissed(String patientDocId, String clinicVisitId) {
-        ClinicVisit clinicVisit = get(patientDocId, clinicVisitId);
-        clinicVisit.setMissed(true);
-        updateVisit(clinicVisit);
+        appointmentService.markVisitAsMissed(patientDocId, clinicVisitId);
     }
 
     public void closeVisit(String patientDocId, String clinicVisitId, DateTime visitDate) {
-        appointmentService.setVisitDate(patientDocId, clinicVisitId, visitDate);
-    }
-
-    private ReminderConfiguration getVisitReminderConfiguration() {
-        int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FOR_VISIT_FROM));
-        return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
-    }
-
-    private void updateVisit(ClinicVisit clinicVisit) {
-        appointmentService.updateVisit(clinicVisit.getVisit(), clinicVisit.getPatientId());
+        appointmentService.visited(patientDocId, clinicVisitId, visitDate);
     }
 }

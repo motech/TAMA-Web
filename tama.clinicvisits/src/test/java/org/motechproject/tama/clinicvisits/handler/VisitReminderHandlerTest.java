@@ -3,12 +3,11 @@ package org.motechproject.tama.clinicvisits.handler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.model.Appointment;
-import org.motechproject.appointments.api.model.Visit;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.tama.clinicvisits.builder.AppointmentBuilder;
+import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.builder.ReminderEventBuilder;
-import org.motechproject.tama.clinicvisits.repository.AllAppointments;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.clinicvisits.service.VisitReminderService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -25,37 +24,35 @@ public class VisitReminderHandlerTest {
     @Mock
     private VisitReminderService visitReminderService;
     @Mock
-    private AllAppointments allAppointments;
+    private AllClinicVisits allClinicVisits;
     @Mock
     private AllPatients allPatients;
 
     private Patient patient;
-    private Appointment appointment;
     private MotechEvent event;
-    public Visit visit;
+    public ClinicVisit clinicVisit;
 
     private VisitReminderHandler visitReminderHandler;
 
     public VisitReminderHandlerTest() {
         patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
-        appointment = AppointmentBuilder.startRecording().build();
-        visit = new Visit().name("visitName");
-        event = ReminderEventBuilder.startRecording().withAppointment(appointment).withPatient(patient).withVisit(visit).build();
+        clinicVisit = new ClinicVisitBuilder().withId("visitName").build();
+        event = ReminderEventBuilder.startRecording().withPatient(patient).withClinicVisit(clinicVisit).build();
     }
 
     @Before
     public void setUp() {
         initMocks(this);
 
-        visitReminderHandler = new VisitReminderHandler(allPatients, allAppointments, visitReminderService);
+        visitReminderHandler = new VisitReminderHandler(allPatients, allClinicVisits, visitReminderService);
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        when(allAppointments.get(appointment.id())).thenReturn(appointment);
+        when(allClinicVisits.get(PATIENT_ID, "visitName")).thenReturn(clinicVisit);
     }
 
     @Test
     public void shouldRaiseVisitOutboxMessage() {
         visitReminderHandler.handleEvent(event);
-        verify(visitReminderService).addOutboxMessage(patient, appointment, visit.name());
+        verify(visitReminderService).addOutboxMessage(patient, clinicVisit);
     }
 }

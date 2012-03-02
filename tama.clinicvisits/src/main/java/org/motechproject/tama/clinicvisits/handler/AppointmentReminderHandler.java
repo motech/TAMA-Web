@@ -1,10 +1,10 @@
 package org.motechproject.tama.clinicvisits.handler;
 
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.appointments.api.model.Appointment;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
-import org.motechproject.tama.clinicvisits.repository.AllAppointments;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.clinicvisits.service.AppointmentReminderService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -15,27 +15,25 @@ import org.springframework.stereotype.Component;
 public class AppointmentReminderHandler {
 
     private AllPatients allPatients;
-    private AllAppointments allAppointments;
+    private AllClinicVisits allClinicVisits;
     private AppointmentReminderService appointmentReminderService;
 
     @Autowired
-    public AppointmentReminderHandler(AllPatients allPatients,
-                                      AllAppointments allAppointments,
-                                      AppointmentReminderService appointmentReminderService) {
+    public AppointmentReminderHandler(AllPatients allPatients, AllClinicVisits allClinicVisits, AppointmentReminderService appointmentReminderService) {
         this.allPatients = allPatients;
-        this.allAppointments = allAppointments;
+        this.allClinicVisits = allClinicVisits;
         this.appointmentReminderService = appointmentReminderService;
     }
 
     @MotechListener(subjects = EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT)
     public void handleEvent(MotechEvent appointmentReminderEvent) {
-        String patientId = appointmentReminderEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
-        String appointmentId = appointmentReminderEvent.getParameters().get(EventKeys.APPOINTMENT_ID).toString();
+        String patientDocId = appointmentReminderEvent.getParameters().get(EventKeys.EXTERNAL_ID_KEY).toString();
+        String visitName = appointmentReminderEvent.getParameters().get(EventKeys.VISIT_NAME).toString();
 
-        Patient patient = allPatients.get(patientId);
-        Appointment appointment = allAppointments.get(appointmentId);
+        Patient patient = allPatients.get(patientDocId);
+        ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, visitName);
 
-        appointmentReminderService.addOutboxMessage(patient, appointment);
-        appointmentReminderService.raiseAlert(patient, appointment);
+        appointmentReminderService.addOutboxMessage(patient, clinicVisit);
+        appointmentReminderService.raiseAlert(patient, clinicVisit);
     }
 }

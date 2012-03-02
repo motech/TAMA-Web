@@ -215,6 +215,7 @@ public class ClinicVisitsControllerTest {
             }});
             when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, request)).thenReturn("vitalStatisticsId");
             when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel, request)).thenReturn("opportunisticInfectionsId");
+            when(allClinicVisits.updateVisitDetails(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId")).thenReturn(VISIT_ID);
 
             String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
@@ -223,7 +224,7 @@ public class ClinicVisitsControllerTest {
             verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel, request);
             verify(opportunisticInfectionsController).create(opportunisticInfectionsUIModel, bindingResult, uiModel, request);
-            verify(allClinicVisits).updateVisit(VISIT_ID, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId");
+            verify(allClinicVisits).updateVisitDetails(VISIT_ID, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId");
         }
 
         @Test
@@ -237,9 +238,8 @@ public class ClinicVisitsControllerTest {
             assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + VISIT_ID, redirectURL);
             verify(labResultsController, never()).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel, request);
-            verify(allClinicVisits, never()).updateVisit(anyString(), Matchers.<DateTime>any(), anyString(), anyString(), anyList(), anyString(), eq("opportunisticInfectionsId"));
+            verify(allClinicVisits, never()).updateVisitDetails(anyString(), Matchers.<DateTime>any(), anyString(), anyString(), anyList(), anyString(), eq("opportunisticInfectionsId"));
         }
-
     }
 
     public static class Show extends SubjectUnderTest {

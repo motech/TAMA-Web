@@ -1,82 +1,77 @@
 package org.motechproject.tama.clinicvisits.domain;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.junit.Test;
-import org.motechproject.appointments.api.model.Visit;
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.*;
-import static junit.framework.Assert.assertFalse;
 
 public class ClinicVisitTest {
 
     @Test
     public void shouldReturnEmptyLabResultsWhenVisitHasNoLabResults() {
-        ClinicVisit visit = new ClinicVisit(new Patient(), new Visit());
+        ClinicVisit visit = new ClinicVisit(new Patient(), new VisitResponse());
         assertEquals(0, visit.getLabResultIds().size());
     }
 
     @Test
     public void shouldReturnAdjustedDueDateAsNullWhenAppointmentIsNull() {
-        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), new Visit());
+        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), new VisitResponse());
         assertNull(clinicVisit.getAdjustedDueDate());
     }
 
     @Test
     public void shouldReturnAdjustedDueDateAsNullWhenNotSetOnAppointment() {
-        Visit visit = new Visit().addAppointment(DateUtil.now(), null);
-        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
+        DateTime now = DateUtil.now();
+        VisitResponse visitResponse = new VisitResponse().setOriginalAppointmentDueDate(now).setAppointmentDueDate(now);
+        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visitResponse);
         assertNull(clinicVisit.getAdjustedDueDate());
     }
 
     @Test
     public void shouldReturnAdjustedDueDateWhenSetOnAppointment() {
         DateTime now = DateUtil.now();
-        LocalDate today = now.toLocalDate();
+        DateTime tomorrow = now.plusDays(1);
 
-        Visit visit = new Visit().addAppointment(now, null);
-        visit.appointment().addData(ClinicVisit.ADJUSTED_DUE_DATE, today.toString());
-        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
-        assertEquals(today, clinicVisit.getAdjustedDueDate());
+        VisitResponse visitResponse = new VisitResponse().setOriginalAppointmentDueDate(now).setAppointmentDueDate(tomorrow);
+        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visitResponse);
+        assertEquals(tomorrow.toLocalDate(), clinicVisit.getAdjustedDueDate());
     }
 
     @Test
     public void shouldReturnEffectiveDueDateForAnAppointment_WhenDueDateIsNotAdjusted() {
-        LocalDate appointmentDueDate = new LocalDate(2010, 10, 10);
+        DateTime now = DateUtil.now();
 
-        Visit visit = new Visit().addAppointment(DateUtil.newDateTime(appointmentDueDate, 0, 0, 0), null);
-        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
+        VisitResponse visitResponse = new VisitResponse().setOriginalAppointmentDueDate(now).setAppointmentDueDate(now);
+
+        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visitResponse);
         assertEquals(clinicVisit.getAppointmentDueDate().toLocalDate(), clinicVisit.getEffectiveDueDate());
     }
 
     @Test
     public void shouldReturnEffectiveDueDateForAnAppointment_WhenDueDateIsAdjusted() {
-        LocalDate appointmentDueDate = new LocalDate(2010, 10, 10);
-        LocalDate adjustedDueDate = new LocalDate(2010, 10, 20);
+        DateTime now = DateUtil.now();
+        DateTime tomorrow = now.plusDays(1);
 
-        Visit visit = new Visit().addAppointment(DateUtil.newDateTime(appointmentDueDate, 0, 0, 0), null);
-        visit.appointment().addData(ClinicVisit.ADJUSTED_DUE_DATE, adjustedDueDate.toString());
-        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visit);
+        VisitResponse visitResponse = new VisitResponse().setOriginalAppointmentDueDate(now).setAppointmentDueDate(tomorrow);
+        ClinicVisit clinicVisit = new ClinicVisit(new Patient(), visitResponse);
         assertEquals(clinicVisit.getAdjustedDueDate(), clinicVisit.getEffectiveDueDate());
     }
 
     @Test
     public void shouldReturnTrueIfTypeOfVisitIsBaseline() {
-        Visit visit = new Visit();
-        visit.addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Baseline.toString());
-        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
+        VisitResponse visitResponse = new VisitResponse().setTypeOfVisit(TypeOfVisit.Baseline.toString());
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visitResponse);
         assertTrue(clinicVisit.isBaseline());
     }
 
     @Test
     public void shouldReturnFalseIfTypeOfVisitIsNotBaseline() {
-        Visit visit = new Visit();
-        visit.addData(ClinicVisit.TYPE_OF_VISIT, TypeOfVisit.Scheduled.toString());
-        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visit);
+        VisitResponse visitResponse = new VisitResponse().setTypeOfVisit(TypeOfVisit.Unscheduled.toString());
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().build(), visitResponse);
         assertFalse(clinicVisit.isBaseline());
     }
-
 }

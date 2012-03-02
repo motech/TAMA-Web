@@ -57,7 +57,7 @@
                     <c:choose>
                         <c:when test="${not visit.missed}">
                             <c:choose>
-                                <c:when test="${empty visit.confirmedVisitDate}">
+                                <c:when test="${empty visit.confirmedAppointmentDate}">
                                     <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientId}">
                                         <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Adjust</c:if>
                                         <c:if test="${not empty visit.adjustedDueDate}">
@@ -85,17 +85,17 @@
                     <c:choose>
                         <c:when test="${not visit.baseline and not visit.missed}">
                             <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}" patientid="${visit.patientId}">
-                                <c:if test="${empty visit.visitDate and empty visit.confirmedVisitDate}">
+                                <c:if test="${empty visit.visitDate and empty visit.confirmedAppointmentDate}">
                                     Schedule
                                 </c:if>
-                                <c:if test="${not empty visit.confirmedVisitDate}">
-                                    <spring:eval expression="visit.confirmedVisitDate"/>
+                                <c:if test="${not empty visit.confirmedAppointmentDate}">
+                                    <spring:eval expression="visit.confirmedAppointmentDate"/>
                                 </c:if>
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <c:if test="${not empty visit.confirmedVisitDate}">
-                                <spring:eval expression="visit.confirmedVisitDate"/>
+                            <c:if test="${not empty visit.confirmedAppointmentDate}">
+                                <spring:eval expression="visit.confirmedAppointmentDate"/>
                             </c:if>
                         </c:otherwise>
                     </c:choose>
@@ -209,10 +209,10 @@
             popup.show(this, {showTimeOption:true}, function (confirmedDate) {
                 dojo.xhrPost({
                     url:"${confirmVisitDateUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                    content:{"confirmedVisitDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
+                    content:{"confirmedAppointmentDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
                     handleAs:"json",
                     load:function (data) {
-                        linkElement.innerHTML = data.confirmedVisitDate;
+                        linkElement.innerHTML = data.confirmedAppointmentDate;
                         dojo.query(".adjustDueDate", linkElement.parentNode.parentNode).forEach(function (el) {
                             var txt = el.innerHTML;
                             el.parentNode.innerHTML = txt.replace(/[a-z ]*/i, '');

@@ -79,7 +79,7 @@ public class ClinicVisitsController extends BaseController {
         }
 
         uiModel.addAttribute("patientId", patientDocId);
-        if (clinicVisit.getVisitDate() == null) clinicVisit.setVisitDate(DateUtil.now());
+        if (clinicVisit.getVisitDate() == null) allClinicVisits.confirmVisitDate(patientDocId, clinicVisitId, DateUtil.now());
         uiModel.addAttribute("clinicVisit", clinicVisit);
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
@@ -108,7 +108,7 @@ public class ClinicVisitsController extends BaseController {
         String reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel, httpServletRequest);
 
         try {
-            allClinicVisits.updateVisit(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
+            allClinicVisits.updateVisitDetails(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);

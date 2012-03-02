@@ -4,14 +4,12 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.contract.VisitResponse;
-import org.motechproject.appointments.api.model.AppointmentCalendar;
-import org.motechproject.appointments.api.model.Reminder;
-import org.motechproject.appointments.api.model.Visit;
-import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.OutboxContextForTest;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -34,12 +32,10 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
     @Mock
     private KooKooIVRContext kookooIVRContext;
     @Mock
-    private AppointmentService appointmentService;
+    private AllClinicVisits allClinicVisits;
 
     private OutboxContextForTest outboxContext;
-    private AppointmentCalendar appointmentCalendar;
     private OutboundVoiceMessage visitReminderVoiceMessage;
-    private Visit confirmedVisit;
     private Patient patientWithLanguagePreference;
 
     private KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder();
@@ -53,7 +49,7 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
         setupPatient();
         setupAppointmentCalendar();
         setupVisitReminderVoiceMessage();
-        visitReminderMessageBuilder = new VisitReminderMessageBuilder(allPatients, appointmentService);
+        visitReminderMessageBuilder = new VisitReminderMessageBuilder(allPatients, allClinicVisits);
     }
 
     private void setupPatient() {
@@ -72,14 +68,14 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
 
     private void setupAppointmentCalendar() {
         setupVisit();
-        appointmentCalendar = new AppointmentCalendar().addVisit(confirmedVisit);
     }
 
     private void setupVisit() {
-        confirmedVisit = new Visit().name("visitName");
-        confirmedVisit.addAppointment(monday.minusDays(3), new Reminder());
-        confirmedVisit.appointment().confirmedDate(monday);
-        when(appointmentService.findVisit("patientId", "visitName")).thenReturn(new VisitResponse(confirmedVisit));
+        VisitResponse visitResponse = new VisitResponse().setName("visitName")
+                                                         .setAppointmentDueDate(monday.minusDays(3))
+                                                         .setOriginalAppointmentDueDate(monday.minusDays(3))
+                                                         .setAppointmentConfirmDate(monday);
+        when(allClinicVisits.get("patientId", "visitName")).thenReturn(new ClinicVisit(patientWithLanguagePreference, visitResponse));
     }
 
     private void setupVisitReminderVoiceMessage() {
@@ -101,7 +97,6 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
             put(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME, "visitName");
         }};
         visitReminderVoiceMessage.setParameters(map);
-        when(appointmentService.getAppointmentCalendar("patientId")).thenReturn(appointmentCalendar);
     }
 
     @Test
