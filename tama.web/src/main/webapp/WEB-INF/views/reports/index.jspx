@@ -30,7 +30,7 @@
         <br />
         <jsp:include page="../patients/showPatientPageLinks.jspx">
             <jsp:param name="patientId" value="${report.patient.id}" />
-            <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+            <jsp:param name="patientInactive" value="${report.patient.status.inactive}" />
         </jsp:include>
     </util:panel>
 </div>
