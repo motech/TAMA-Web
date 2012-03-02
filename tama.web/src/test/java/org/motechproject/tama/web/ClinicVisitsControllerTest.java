@@ -122,6 +122,7 @@ public class ClinicVisitsControllerTest {
                 when(clinicVisit.getTreatmentAdviceId()).thenReturn(null);
                 when(clinicVisit.getLabResultIds()).thenReturn(new ArrayList<String>());
                 when(clinicVisit.getVitalStatisticsId()).thenReturn(null);
+                when(clinicVisit.getReportedOpportunisticInfectionsId()).thenReturn(null);
 
                 when(allClinicVisits.get(patientId, clinicVisitId)).thenReturn(clinicVisit);
                 when(allTreatmentAdvices.get(treatmentAdvice.getId())).thenReturn(null);
@@ -134,6 +135,28 @@ public class ClinicVisitsControllerTest {
                 verify(labResultsController).createForm(patientId, uiModel);
                 verify(opportunisticInfectionsController).createForm(clinicVisit, uiModel);
                 verify(vitalStatisticsController).createForm(patientId, uiModel);
+            }
+
+            @Test
+            public void shouldRedirectToShowClinicVisits_WhenEvenOneOfTheVisitDetailsWasEdited() {
+                String patientId = "patientId";
+                TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").build();
+                String clinicVisitId = "clinicVisitId";
+
+                ClinicVisit clinicVisit = mock(ClinicVisit.class);
+                when(clinicVisit.getTreatmentAdviceId()).thenReturn(null);
+                when(clinicVisit.getLabResultIds()).thenReturn(new ArrayList<String>());
+                when(clinicVisit.getVitalStatisticsId()).thenReturn(null);
+                when(clinicVisit.getReportedOpportunisticInfectionsId()).thenReturn("oiId");
+
+                when(allClinicVisits.get(patientId, clinicVisitId)).thenReturn(clinicVisit);
+                when(allTreatmentAdvices.get(treatmentAdvice.getId())).thenReturn(null);
+                when(allTreatmentAdvices.currentTreatmentAdvice(patientId)).thenReturn(treatmentAdvice);
+
+                String redirectURL = clinicVisitsController.createForm(patientId, clinicVisitId, uiModel, request);
+
+                assertEquals("redirect:/clinicvisits/" + clinicVisitId + "?patientId=" + patientId, redirectURL);
+                verify(treatmentAdviceController).show(treatmentAdvice.getId(), uiModel);
             }
         }
 

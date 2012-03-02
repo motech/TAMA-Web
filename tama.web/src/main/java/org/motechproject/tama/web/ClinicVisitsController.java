@@ -71,7 +71,8 @@ public class ClinicVisitsController extends BaseController {
             treatmentAdviceController.show(adviceForPatient.getId(), uiModel);
             final boolean wasVisitDetailsEdited = (clinicVisit.getTreatmentAdviceId() != null ||
                     !clinicVisit.getLabResultIds().isEmpty() ||
-                    clinicVisit.getVitalStatisticsId() != null);
+                    clinicVisit.getVitalStatisticsId() != null ||
+                    clinicVisit.getReportedOpportunisticInfectionsId() != null);
             if (wasVisitDetailsEdited)
                 return redirectToShowClinicVisitUrl(clinicVisitId, patientDocId, httpServletRequest);
         } else {
