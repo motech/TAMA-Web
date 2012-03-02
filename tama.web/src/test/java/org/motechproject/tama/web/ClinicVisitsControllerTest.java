@@ -217,7 +217,7 @@ public class ClinicVisitsControllerTest {
             when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel, request)).thenReturn("opportunisticInfectionsId");
             when(allClinicVisits.updateVisitDetails(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId")).thenReturn(VISIT_ID);
 
-            String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            String redirectURL = clinicVisitsController.create(VISIT_ID, visitDate, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals("redirect:/clinicvisits/" + VISIT_ID + "?patientId=" + PATIENT_ID, redirectURL);
             verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
@@ -232,7 +232,7 @@ public class ClinicVisitsControllerTest {
             when(bindingResult.hasErrors()).thenReturn(false);
             doThrow(new RuntimeException("Some Error")).when(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
 
-            String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisit, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
+            String redirectURL = clinicVisitsController.create(VISIT_ID, visitDate, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             String patientId = treatmentAdvice.getPatientId();
             assertEquals("redirect:/clinicvisits?form&patientId=" + patientId + "&clinicVisitId=" + VISIT_ID, redirectURL);
@@ -305,8 +305,8 @@ public class ClinicVisitsControllerTest {
 
             String jsonReturned = clinicVisitsController.confirmVisitDate(PATIENT_ID, VISIT_ID, now);
 
-            verify(allClinicVisits).confirmVisitDate(PATIENT_ID, VISIT_ID, now);
-            assertTrue(new JSONObject(jsonReturned).has("confirmedVisitDate"));
+            verify(allClinicVisits).confirmAppointmentDate(PATIENT_ID, VISIT_ID, now);
+            assertTrue(new JSONObject(jsonReturned).has("confirmedAppointmentDate"));
         }
     }
 

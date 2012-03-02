@@ -79,7 +79,7 @@ public class ClinicVisitsController extends BaseController {
         }
 
         uiModel.addAttribute("patientId", patientDocId);
-        if (clinicVisit.getVisitDate() == null) allClinicVisits.confirmVisitDate(patientDocId, clinicVisitId, DateUtil.now());
+        if (clinicVisit.getVisitDate() == null) allClinicVisits.confirmAppointmentDate(patientDocId, clinicVisitId, DateUtil.now());
         uiModel.addAttribute("clinicVisit", clinicVisit);
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
@@ -88,8 +88,15 @@ public class ClinicVisitsController extends BaseController {
     }
 
     @RequestMapping(value = "/create/{clinicVisitId}", method = RequestMethod.POST)
-    public String create(@PathVariable("clinicVisitId") String clinicVisitId, ClinicVisit visit, TreatmentAdvice treatmentAdvice,
-                         LabResultsUIModel labResultsUiModel, @Valid VitalStatistics vitalStatistics, @Valid OpportunisticInfectionsUIModel opportunisticInfections, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(@PathVariable("clinicVisitId") String clinicVisitId,
+                         @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) @RequestParam DateTime visitDate,
+                         TreatmentAdvice treatmentAdvice,
+                         LabResultsUIModel labResultsUiModel,
+                         @Valid VitalStatistics vitalStatistics,
+                         @Valid OpportunisticInfectionsUIModel opportunisticInfections,
+                         BindingResult bindingResult,
+                         Model uiModel,
+                         HttpServletRequest httpServletRequest) {
         String patientId = treatmentAdvice.getPatientId();
         if (bindingResult.hasErrors()) {
             return "clinicvisits/create";
@@ -108,7 +115,7 @@ public class ClinicVisitsController extends BaseController {
         String reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel, httpServletRequest);
 
         try {
-            allClinicVisits.updateVisitDetails(clinicVisitId, visit.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
+            allClinicVisits.updateVisitDetails(clinicVisitId, visitDate, patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
@@ -155,9 +162,9 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/confirmVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
     public String confirmVisitDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
-    @RequestParam(value = "confirmedVisitDate") DateTime confirmedVisitDate) {
-        allClinicVisits.confirmVisitDate(patientDocId, clinicVisitId, confirmedVisitDate);
-        return "{'confirmedVisitDate':'" + confirmedVisitDate.toString(TAMAConstants.DATETIME_FORMAT) + "'}";
+    @RequestParam(value = "confirmedAppointmentDate") DateTime confirmedAppointmentDate) {
+        allClinicVisits.confirmAppointmentDate(patientDocId, clinicVisitId, confirmedAppointmentDate);
+        return "{'confirmedAppointmentDate':'" + confirmedAppointmentDate.toString(TAMAConstants.DATETIME_FORMAT) + "'}";
     }
 
     @RequestMapping(value = "/markAsMissed.json/{clinicVisitId}", method = RequestMethod.POST)

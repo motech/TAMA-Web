@@ -19,8 +19,8 @@ public class ClinicVisits extends ArrayList<ClinicVisit> {
     public LocalDate nextConfirmedAppointmentDate() {
         ClinicVisits allPendingVisits = pendingVisits();
         if (!allPendingVisits.hasVisits()) return null;
-        DateTime confirmedVisitDate = allPendingVisits.get(0).getConfirmedAppointmentDate();
-        return confirmedVisitDate == null ? null : confirmedVisitDate.toLocalDate();
+        DateTime confirmedAppointmentDate = allPendingVisits.get(0).getConfirmedAppointmentDate();
+        return DateUtil.newDate(confirmedAppointmentDate);
     }
 
     private ClinicVisits pendingVisits() {

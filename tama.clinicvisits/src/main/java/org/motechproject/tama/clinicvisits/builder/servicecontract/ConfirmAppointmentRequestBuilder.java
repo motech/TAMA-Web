@@ -16,9 +16,9 @@ public class ConfirmAppointmentRequestBuilder {
         this.reminderConfigurationBuilder = reminderConfigurationBuilder;
     }
 
-    public ConfirmAppointmentRequest confirmAppointmentRequest(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {
+    public ConfirmAppointmentRequest confirmAppointmentRequest(String patientDocId, String clinicVisitId, DateTime confirmedAppointmentDate) {
         ReminderConfiguration visitReminderConfiguration = reminderConfigurationBuilder.newVisitReminder();
-        return new ConfirmAppointmentRequest().setAppointmentConfirmDate(confirmedVisitDate)
+        return new ConfirmAppointmentRequest().setAppointmentConfirmDate(confirmedAppointmentDate)
                                               .setExternalId(patientDocId)
                                               .setVisitName(clinicVisitId)
                                               .setVisitReminderConfiguration(visitReminderConfiguration);

@@ -114,8 +114,8 @@ public class AllClinicVisits {
         appointmentService.rescheduleAppointment(patientDocId, clinicVisitId, DateUtil.newDateTime(adjustedDueDate, 0, 0, 0));
     }
 
-    public void confirmVisitDate(String patientDocId, String clinicVisitId, DateTime confirmedVisitDate) {
-        ConfirmAppointmentRequest request = confirmAppointmentRequestBuilder.confirmAppointmentRequest(patientDocId, clinicVisitId, confirmedVisitDate);
+    public void confirmAppointmentDate(String patientDocId, String clinicVisitId, DateTime confirmedAppointmentDate) {
+        ConfirmAppointmentRequest request = confirmAppointmentRequestBuilder.confirmAppointmentRequest(patientDocId, clinicVisitId, confirmedAppointmentDate);
         appointmentService.confirmAppointment(request);
     }
 

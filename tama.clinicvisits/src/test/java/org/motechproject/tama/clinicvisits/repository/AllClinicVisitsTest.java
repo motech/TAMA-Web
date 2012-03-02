@@ -108,7 +108,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         final ConfirmAppointmentRequest request = new ConfirmAppointmentRequest();
 
         when(confirmAppointmentRequestBuilder.confirmAppointmentRequest(PATIENT_ID, "visit2", today)).thenReturn(request);
-        allClinicVisits.confirmVisitDate(PATIENT_ID, "visit2", today);
+        allClinicVisits.confirmAppointmentDate(PATIENT_ID, "visit2", today);
         verify(appointmentService).confirmAppointment(request);
     }
 
