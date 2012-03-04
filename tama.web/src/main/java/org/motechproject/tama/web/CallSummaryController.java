@@ -86,13 +86,13 @@ public class CallSummaryController {
     private List<CallLog> getCallLogsForPage(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType, Integer pageNumber) {
         final Integer maxNumberOfCallLogsPerPage = getMaxNumberOfCallLogsPerPage();
         final int startIndex = getStartIndex(pageNumber, maxNumberOfCallLogsPerPage);
-        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), user.isAdministrator(), user.getClinicId());
+        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), null, user.isAdministrator(), user.getClinicId());
         callLogSearch.setPaginationParams(startIndex, maxNumberOfCallLogsPerPage);
         return callLogService.getLogsForDateRange(callLogSearch);
     }
 
     private Integer getTotalNumberOfCallLogs(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType) {
-        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), user.isAdministrator(), user.getClinicId());
+        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), null, user.isAdministrator(), user.getClinicId());
         return callLogService.getTotalNumberOfLogs(callLogSearch);
     }
 

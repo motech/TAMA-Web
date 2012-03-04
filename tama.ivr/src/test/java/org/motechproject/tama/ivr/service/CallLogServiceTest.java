@@ -103,7 +103,7 @@ public class CallLogServiceTest {
     public void shouldReturnCallLogsForADateRange() {
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, true, null));
+        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, null, true, null));
 
         verify(allCallLogs).findCallLogsForDateRange(Matchers.<CallLogSearch>any());
     }
@@ -112,7 +112,7 @@ public class CallLogServiceTest {
     public void shouldReturnTotalNumberOfCallLogsForADateRange() {
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, true, null));
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, null, true, null));
 
         verify(allCallLogs).findTotalNumberOfCallLogsForDateRange(Matchers.<CallLogSearch>any());
     }
@@ -121,7 +121,7 @@ public class CallLogServiceTest {
     public void shouldReturnCallLogsForADateRangeAndClinic() {
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, false, "clinic"));
+        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, null, false, "clinic"));
 
         verify(allCallLogs).findCallLogsForDateRangeAndClinic(Matchers.<CallLogSearch>any());
     }
@@ -130,7 +130,7 @@ public class CallLogServiceTest {
     public void shouldReturnTotalNumberOfCallLogsForADateRangeAndClinic() {
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, false, "clinic"));
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, null, false, "clinic"));
 
         verify(allCallLogs).findTotalNumberOfCallLogsForDateRangeAndClinic(Matchers.<CallLogSearch>any());
     }
