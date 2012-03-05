@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -9,6 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.service.CallLogService;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
@@ -27,13 +27,14 @@ import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CallSummaryControllerTest {
 
+    public static final String PATIENT_ID = "patientId";
     private CallSummaryController callSummaryController;
 
     @Mock
@@ -58,13 +59,16 @@ public class CallSummaryControllerTest {
     BindingResult bindingResult;
 
     @Mock
+    private AllPatients allPatients;
+
+    @Mock
     Properties properties;
 
 
     @Before
     public void setUp() {
         initMocks(this);
-        callSummaryController = new CallSummaryController(callLogService, callLogViewMapper, properties);
+        callSummaryController = new CallSummaryController(callLogService, callLogViewMapper, properties, allPatients);
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
@@ -89,6 +93,7 @@ public class CallSummaryControllerTest {
         assertEquals("callsummary/list", view);
 
         ArgumentCaptor<CallLogSearch> searchArgumentCaptor = ArgumentCaptor.forClass(CallLogSearch.class);
+        verify(allPatients).findByPatientId(PATIENT_ID);
         verify(callLogService).getLogsForDateRange(searchArgumentCaptor.capture());
         assertNull(searchArgumentCaptor.getValue().getClinicId());
         assertEquals(CallLog.CallLogType.Answered, searchArgumentCaptor.getValue().getCallLogType());
@@ -122,8 +127,6 @@ public class CallSummaryControllerTest {
         when(user.isAdministrator()).thenReturn(false);
         when(user.getClinicId()).thenReturn("clinicId");
         when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
-        final DateTime endDate = DateUtil.newDateTime(callLogPreferencesFilter.getCallLogEndDate()).
-                plusHours(23).plusMinutes(59).plusSeconds(59);
         when(callLogService.getLogsForDateRange(any(CallLogSearch.class))).thenReturn(callLogs);
         when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
         when(bindingResult.hasErrors()).thenReturn(false);
@@ -155,6 +158,7 @@ public class CallSummaryControllerTest {
         callLogPreferencesFilter.setCallLogEndDate(DateUtil.tomorrow().toDate());
         callLogPreferencesFilter.setPageNumber("1");
         callLogPreferencesFilter.setCallType("Answered");
+        callLogPreferencesFilter.setPatientId(PATIENT_ID);
         return callLogPreferencesFilter;
     }
 

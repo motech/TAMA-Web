@@ -1,6 +1,7 @@
 package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.util.DateUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -17,13 +18,16 @@ public class CallLogPageNavigator {
     private String callType;
 
     private Integer totalNumberOfPages;
+    
+    private String patientId;
 
-    public CallLogPageNavigator(Integer currentPageNumber, Date callLogStartDate, Date callLogEndDate, String callType, Integer totalNumberOfPages) {
+    public CallLogPageNavigator(CallLogSearch callLogSearch, Integer currentPageNumber, Integer totalNumberOfPages, String patientId) {
         this.currentPageNumber = currentPageNumber;
-        this.callLogStartDate = callLogStartDate;
-        this.callLogEndDate = callLogEndDate;
-        this.callType = callType;
+        this.callLogStartDate = callLogSearch.getFromDate().toDate();
+        this.callLogEndDate = callLogSearch.getToDate().toDate();
+        this.callType = callLogSearch.getCallLogType().name();
         this.totalNumberOfPages = totalNumberOfPages;
+        this.patientId = patientId;
     }
 
     public String getNextPageLink() throws UnsupportedEncodingException {
@@ -51,7 +55,10 @@ public class CallLogPageNavigator {
     private String getFormattedLink(String pageNumber) throws UnsupportedEncodingException {
         String startDateString = DateUtil.newDate(callLogStartDate).toString(TAMAConstants.DATE_FORMAT);
         String endDateString = DateUtil.newDate(callLogEndDate).toString(TAMAConstants.DATE_FORMAT);
-        return "callsummary?callLogStartDate=" + startDateString + "&callLogEndDate=" + endDateString + "&callType=" + callType + "&pageNumber=" + pageNumber;
+        String url = "callsummary?callLogStartDate=" + startDateString + "&callLogEndDate=" + endDateString + "&callType=" + callType + "&pageNumber=" + pageNumber;
+        if(patientId != null) 
+            url = url + "&patientId=" + patientId;
+        return url;
     }
 
     public Integer getCurrentPageNumber() {
@@ -72,5 +79,9 @@ public class CallLogPageNavigator {
 
     public Integer getTotalNumberOfPages() {
         return totalNumberOfPages;
+    }
+
+    public String getPatientId() {
+        return patientId;
     }
 }

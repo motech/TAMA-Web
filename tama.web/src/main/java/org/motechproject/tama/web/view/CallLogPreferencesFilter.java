@@ -22,4 +22,6 @@ public class CallLogPreferencesFilter {
     @Getter @Setter private String callType;
 
     @Getter @Setter private String pageNumber;
+    
+    @Getter @Setter private String patientId;
 }

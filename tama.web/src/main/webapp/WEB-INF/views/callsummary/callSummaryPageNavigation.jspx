@@ -24,6 +24,7 @@
         </c:if>
 
         Go to page:
+        <input type="hidden" name="patientId" value="${pageNavigator.patientId}" ></input>
         <input type="hidden" name="callLogStartDate" value="${pageNavigator.callLogStartDate}" ></input>
         <input type="hidden" name="callLogEndDate" value="${pageNavigator.callLogEndDate}" ></input>
         <input type="hidden" name="callType" value="${pageNavigator.callType}" ></input>

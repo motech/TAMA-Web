@@ -4,6 +4,8 @@ import org.joda.time.DateTime;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.service.CallLogService;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
@@ -30,6 +32,8 @@ import java.util.Properties;
 public class CallSummaryController {
 
     private CallLogService callLogService;
+    
+    private AllPatients allPatients;
 
     private CallLogViewMapper callLogViewMapper;
     private final String LIST_VIEW = "callsummary/list";
@@ -39,10 +43,12 @@ public class CallSummaryController {
     private Properties properties;
 
     @Autowired
-    public CallSummaryController(CallLogService callLogService, CallLogViewMapper callLogViewMapper, @Qualifier("ivrProperties") Properties properties) {
+    public CallSummaryController(CallLogService callLogService, CallLogViewMapper callLogViewMapper, 
+                                 @Qualifier("ivrProperties") Properties properties, AllPatients allPatients) {
         this.callLogService = callLogService;
         this.callLogViewMapper = callLogViewMapper;
         this.properties = properties;
+        this.allPatients = allPatients;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -51,18 +57,19 @@ public class CallSummaryController {
             uiModel.addAttribute("logPreferences", new CallLogPreferencesFilter());
             return CREATE_VIEW;
         }
-
-        DateTime startDate = DateUtil.newDateTime(filter.getCallLogStartDate());
-        DateTime endDate = DateUtil.newDateTime(filter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY)
-                .plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY);
-
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
-        Integer totalNumberOfPages = getTotalNumberOfPages(user, startDate, endDate, filter.getCallType());
-        Integer pageNumber = getValidPageNumber(filter.getPageNumber(), totalNumberOfPages);
-        
-        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(getCallLogsForPage(user, startDate, endDate, filter.getCallType(), pageNumber));
+        CallLogSearch callLogSearch = buildCallLogSearch(filter, user);
 
-        CallLogPageNavigator callLogPageNavigator = new CallLogPageNavigator(pageNumber, filter.getCallLogStartDate(), filter.getCallLogEndDate(), filter.getCallType(), totalNumberOfPages);
+        Integer maxNumberOfCallLogsPerPage = getMaxNumberOfCallLogsPerPage();
+        Integer totalNumberOfPages = calculateTotalNumberOfPages(maxNumberOfCallLogsPerPage, callLogService.getTotalNumberOfLogs(callLogSearch));
+        Integer pageNumber = getValidPageNumber(filter.getPageNumber(), totalNumberOfPages);
+        int startIndex = getStartIndex(pageNumber, maxNumberOfCallLogsPerPage);
+
+        callLogSearch.setPaginationParams(startIndex, maxNumberOfCallLogsPerPage);
+
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(callLogService.getLogsForDateRange(callLogSearch));
+
+        CallLogPageNavigator callLogPageNavigator = new CallLogPageNavigator(callLogSearch, pageNumber, totalNumberOfPages, filter.getPatientId());
 
         uiModel.asMap().clear();
         uiModel.addAttribute("callSummary", callLogViews);
@@ -70,8 +77,14 @@ public class CallSummaryController {
         return LIST_VIEW;
     }
 
-    private Integer getTotalNumberOfPages(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType) {
-        return calculateTotalNumberOfPages(getMaxNumberOfCallLogsPerPage(), getTotalNumberOfCallLogs(user, startDate, endDate, callType));
+    private CallLogSearch buildCallLogSearch(CallLogPreferencesFilter filter, AuthenticatedUser user) {
+        DateTime startDate = DateUtil.newDateTime(filter.getCallLogStartDate());
+        DateTime endDate = DateUtil.newDateTime(filter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY)
+                .plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY);
+        Patient patient = allPatients.findByPatientId(filter.getPatientId());
+        String patientDocId = patient == null ? null : patient.getId();
+        return new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(filter.getCallType()), patientDocId,
+                user.isAdministrator(), user.getClinicId());
     }
 
     Integer getValidPageNumber(String pageNumber, Integer totalNumberOfPages) {
@@ -81,19 +94,6 @@ public class CallSummaryController {
         } catch(NumberFormatException e) {
             return 1;
         }
-    }
-
-    private List<CallLog> getCallLogsForPage(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType, Integer pageNumber) {
-        final Integer maxNumberOfCallLogsPerPage = getMaxNumberOfCallLogsPerPage();
-        final int startIndex = getStartIndex(pageNumber, maxNumberOfCallLogsPerPage);
-        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), null, user.isAdministrator(), user.getClinicId());
-        callLogSearch.setPaginationParams(startIndex, maxNumberOfCallLogsPerPage);
-        return callLogService.getLogsForDateRange(callLogSearch);
-    }
-
-    private Integer getTotalNumberOfCallLogs(AuthenticatedUser user, DateTime startDate, DateTime endDate, String callType) {
-        final CallLogSearch callLogSearch = new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(callType), null, user.isAdministrator(), user.getClinicId());
-        return callLogService.getTotalNumberOfLogs(callLogSearch);
     }
 
     private Integer getMaxNumberOfCallLogsPerPage() {
