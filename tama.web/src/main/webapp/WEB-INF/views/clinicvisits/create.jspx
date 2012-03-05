@@ -15,16 +15,16 @@
     </c:if>
 
     <util:panel id="fc_org_motechproject_tama_domain_patient_Clinic_Visit" title="Visit Details" openPane="true">
-        <spring:url value="/clinicvisits/create/${clinicVisitUIModel.id}" var="form_url"/>
+        <spring:url value="/clinicvisits/create/${clinicVisit.id}" var="form_url"/>
 
         <form id="clinicvisit" action="${form_url}" method="POST">
-            <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${clinicVisitUIModel.patient}"/>
-            <field:datetime dateTimePattern="dd/MM/yyyy" field="clinicVisitUIModel.visitDate" future="false" required="true" id="clinicVisitDate" label="Visit Date"/>
+            <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${clinicVisit.patient}"/>
+            <field:datetime dateTimePattern="dd/MM/yyyy" field="clinicVisit.defaultVisitDate" future="false" required="true" id="clinicVisitDate" label="Visit Date"/>
             <input type="hidden" name="patientId" value="${patientId}"/>
             <c:choose>
                 <c:when test="${not empty itemId}">
                     <jsp:include page="../treatmentadvices/show.jspx">
-                        <jsp:param name="clinicVisitId" value="${clinicVisitUIModel.id}" />
+                        <jsp:param name="clinicVisitId" value="${clinicVisit.id}" />
                     </jsp:include>
                 </c:when>
                 <c:otherwise>

@@ -44,7 +44,7 @@ public class VitalStatisticsUIModel {
         final VitalStatisticsUIModel vitalStatisticsUIModel = new VitalStatisticsUIModel();
         vitalStatisticsUIModel.setClinicVisitId(clinicVisit.getId());
         final VitalStatistics vitalStatistics = new VitalStatistics();
-        vitalStatistics.setPatientId(clinicVisit.getPatientId());
+        vitalStatistics.setPatientId(clinicVisit.getPatientDocId());
         vitalStatisticsUIModel.setVitalStatistics(vitalStatistics);
         return vitalStatisticsUIModel;
     }

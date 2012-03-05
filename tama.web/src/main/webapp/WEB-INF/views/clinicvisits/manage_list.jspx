@@ -38,84 +38,71 @@
         <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
             <spring:url value="/clinicvisits" var="clinicvisitEdit">
                 <spring:param name="form"/>
-                <spring:param name="patientId" value="${visit.patientId}"/>
+                <spring:param name="patientId" value="${visit.patientDocId}"/>
                 <spring:param name="clinicVisitId" value="${visit.id}"/>
             </spring:url>
             <tr>
                 <td>
                     <c:choose>
-                        <c:when test="${visit.missed}">
-                            <c:out value="${visit.title}"/>
-                        </c:when>
-                        <c:otherwise>
+                        <c:when test="${visit.visitEditable}">
                             <a id="visit-${status.index}" href="${clinicvisitEdit}" class="visitTitle"><c:out value="${visit.title}"/></a>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                <td><spring:eval expression="visit.appointmentDueDate"/></td>
-                <td>
-                    <c:choose>
-                        <c:when test="${not visit.missed}">
-                            <c:choose>
-                                <c:when test="${empty visit.confirmedAppointmentDate}">
-                                    <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientId}">
-                                        <c:if test="${not empty visit.appointmentDueDate and empty visit.adjustedDueDate}">Adjust</c:if>
-                                        <c:if test="${not empty visit.adjustedDueDate}">
-                                            <spring:eval expression="visit.adjustedDueDate"/></c:if>
-                                    </a><![CDATA[ &nbsp; ]]>
-                                    <c:if test="${not empty visit.appointmentDueDate}">
-                                        <![CDATA[ | &nbsp; ]]>
-                                        <a href="javascript:void(0);" class="adjustDueDateAsToday" visitid="${visit.id}"
-                                           patientid="${visit.patientId}">
-                                            Today
-                                        </a>
-                                    </c:if>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:if test="${not empty visit.adjustedDueDate}"><spring:eval expression="visit.adjustedDueDate"/></c:if>
-                                </c:otherwise>
-                            </c:choose>
                         </c:when>
                         <c:otherwise>
-                            <c:if test="${not empty visit.adjustedDueDate}"><spring:eval expression="visit.adjustedDueDate"/></c:if>
+                            <c:out value="${visit.title}"/>
+                        </c:otherwise>
+                    </c:choose>
+                </td>
+                <td>
+                    <spring:eval expression="visit.appointmentDueDate"/>
+                </td>
+                <td>
+                    <c:choose>
+                        <c:when test="${visit.dueDateEditable}">
+                            <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
+                                <c:choose>
+                                    <c:when test="${empty visit.adjustedDueDate}">Adjust</c:when>
+                                    <c:otherwise> <spring:eval expression="visit.adjustedDueDate"/> </c:otherwise>
+                                </c:choose>
+                            </a>
+                            <![CDATA[&nbsp; | &nbsp;]]>
+                            <a href="javascript:void(0);" class="adjustDueDateAsToday" visitid="${visit.id}" patientid="${visit.patientDocId}">Today</a>
+                        </c:when>
+                        <c:otherwise>
+                            <spring:eval expression="visit.adjustedDueDate"/>
                         </c:otherwise>
                     </c:choose>
                 </td>
                 <td>
                     <c:choose>
-                        <c:when test="${not visit.baseline and not visit.missed}">
-                            <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}" patientid="${visit.patientId}">
-                                <c:if test="${empty visit.visitDate and empty visit.confirmedAppointmentDate}">
-                                    Schedule
-                                </c:if>
-                                <c:if test="${not empty visit.confirmedAppointmentDate}">
-                                    <spring:eval expression="visit.confirmedAppointmentDate"/>
-                                </c:if>
+                        <c:when test="${visit.confirmedAppointmentDateEditable}">
+                            <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
+                                <c:choose>
+                                    <c:when test="${empty visit.confirmedAppointmentDate}">Schedule</c:when>
+                                    <c:otherwise> <spring:eval expression="visit.confirmedAppointmentDate"/> </c:otherwise>
+                                </c:choose>
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <c:if test="${not empty visit.confirmedAppointmentDate}">
-                                <spring:eval expression="visit.confirmedAppointmentDate"/>
-                            </c:if>
+                            <spring:eval expression="visit.confirmedAppointmentDate"/>
                         </c:otherwise>
                     </c:choose>
                 </td>
                 <td>
                     <c:choose>
-                        <c:when test="${not visit.baseline and empty visit.visitDate}">
+                        <c:when test="${visit.visitDateEditable}">
                             <c:choose>
-                                <c:when test="${visit.missed}">
-                                    Missed
+                                <c:when test="${empty visit.visitDate}">
+                                    <a href="javascript:void(0);" class="markAsMissed" visitid="${visit.id}" patientid="${visit.patientDocId}">Mark as missed</a>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="javascript:void(0);" class="markAsMissed"
-                                       visitid="${visit.id}" patientid="${visit.patientId}">Mark as missed</a>
+                                    <a class="setVisitDate" href="javascript:void(0);" visitid="${visit.id}" patientid="${visit.patientDocId}">
+                                        <spring:eval expression="visit.visitDate"/>
+                                    </a>
                                 </c:otherwise>
                             </c:choose>
                         </c:when>
                         <c:otherwise>
-                            <a class="setVisitDate" href="javascript:void(0);" visitid="${visit.id}" patientid="${visit.patientId}"><spring:eval
-                                    expression="visit.visitDate"/></a>
+                            Missed
                         </c:otherwise>
                     </c:choose>
                 </td>

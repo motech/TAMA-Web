@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class ClinicVisitsController extends BaseController {
         }
 
         uiModel.addAttribute("patientId", patientDocId);
-        uiModel.addAttribute("clinicVisitUIModel", new ClinicVisitUIModel(clinicVisit));
+        uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
         opportunisticInfectionsController.createForm(clinicVisit, uiModel);
@@ -112,7 +113,7 @@ public class ClinicVisitsController extends BaseController {
         String reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel, httpServletRequest);
 
         try {
-            allClinicVisits.updateVisitDetails(clinicVisitId, clinicVisitUIModel.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
+            allClinicVisits.updateVisitDetails(clinicVisitId, clinicVisitUIModel.getDefaultVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
@@ -130,21 +131,19 @@ public class ClinicVisitsController extends BaseController {
         labResultsController.show(patientDocId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         opportunisticInfectionsController.show(clinicVisit, uiModel);
-        uiModel.addAttribute("clinicVisit", clinicVisit);
+        uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         return "clinicvisits/show";
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list(@RequestParam(value = "patientId", required = true) String patientId, Model uiModel) {
-        ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientId);
-        Collections.sort(clinicVisits);
-        uiModel.addAttribute("clinicVisits", clinicVisits);
-        final Patient patient = clinicVisits.get(0).getPatient();
+    public String list(@RequestParam(value = "patientId", required = true) String patientDocId, Model uiModel) {
+        List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
+        Patient patient = clinicVisitUIModels.get(0).getPatient();
+        uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", patient);
 
         if (!patient.getStatus().isActive())
             return "clinicvisits/view_list";
-
         return "clinicvisits/manage_list";
     }
 
@@ -185,6 +184,16 @@ public class ClinicVisitsController extends BaseController {
     @RequestParam(value = "appointmentDueDate") DateTime appointmentDueDate, @RequestParam(value = "typeOfVisit") String typeOfVisit) {
         allClinicVisits.createUnScheduledAppointment(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit));
         return "{'result':'success'}";
+    }
+
+    private List<ClinicVisitUIModel> allClinicVisits(String patientDocId) {
+        ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientDocId);
+        Collections.sort(clinicVisits);
+        List<ClinicVisitUIModel> clinicVisitUIModels = new ArrayList<ClinicVisitUIModel>();
+        for (ClinicVisit clinicVisit : clinicVisits) {
+            clinicVisitUIModels.add(new ClinicVisitUIModel(clinicVisit));
+        }
+        return clinicVisitUIModels;
     }
 
     private String redirectToShowClinicVisitUrl(String clinicVisitId, String patientId, HttpServletRequest httpServletRequest) {

@@ -30,33 +30,35 @@
             <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
                 <spring:url value="/clinicvisits" var="clinicvisitEdit">
                     <spring:param name="form"/>
-                    <spring:param name="patientId" value="${visit.patientId}"/>
+                    <spring:param name="patientId" value="${visit.patientDocId}"/>
                     <spring:param name="clinicVisitId" value="${visit.id}"/>
                 </spring:url>
                 <tr>
                     <td>
                         <c:choose>
-                            <c:when test="${empty visit.treatmentAdviceId and empty visit.labResultIds and  empty visit.vitalStatisticsId}">
-                                <c:out value="${visit.title}"/>
+                            <c:when test="${visit.anyVisitDetailsCaptured}">
+                                <a id="visit-${status.index}" href="${clinicvisitEdit}" class="visitTitle"><c:out value="${visit.title}"/></a>
                             </c:when>
                             <c:otherwise>
-                                <a id="visit-${status.index}" href="${clinicvisitEdit}" class="visitTitle"><c:out value="${visit.title}"/></a>
+                                <c:out value="${visit.title}"/>
                             </c:otherwise>
                         </c:choose>
                     </td>
-                    <td><spring:eval expression="visit.appointmentDueDate"/></td>
                     <td>
-                        <c:if test="${not empty visit.adjustedDueDate}"><spring:eval expression="visit.adjustedDueDate"/></c:if>
+                        <spring:eval expression="visit.appointmentDueDate"/>
                     </td>
                     <td>
-                        <c:if test="${not empty visit.confirmedAppointmentDate}">
-                            <spring:eval expression="visit.confirmedAppointmentDate"/>
-                        </c:if>
+                        <spring:eval expression="visit.adjustedDueDate"/>
+                    </td>
+                    <td>
+                        <spring:eval expression="visit.confirmedAppointmentDate"/>
                     </td>
                     <td>
                         <spring:eval expression="visit.visitDate"/>
                     </td>
-                    <td><c:out value="${visit.typeOfVisit}"/></td>
+                    <td>
+                        <c:out value="${visit.typeOfVisit}"/>
+                    </td>
                 </tr>
             </c:forEach>
         </table>

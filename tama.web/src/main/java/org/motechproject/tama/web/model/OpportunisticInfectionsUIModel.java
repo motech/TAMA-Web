@@ -84,7 +84,7 @@ public class OpportunisticInfectionsUIModel {
     public static OpportunisticInfectionsUIModel newDefault(ClinicVisit clinicVisit, List<OpportunisticInfection> opportunisticInfectionList) {
         OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
         opportunisticInfectionsUIModel.setClinicVisitId(clinicVisit.getId());
-        opportunisticInfectionsUIModel.setPatientId(clinicVisit.getPatientId());
+        opportunisticInfectionsUIModel.setPatientId(clinicVisit.getPatientDocId());
         opportunisticInfectionsUIModel.populateDefaultInfectionList(opportunisticInfectionList);
         return opportunisticInfectionsUIModel;
     }
@@ -92,7 +92,7 @@ public class OpportunisticInfectionsUIModel {
     public static OpportunisticInfectionsUIModel create(ClinicVisit clinicVisit, ReportedOpportunisticInfections reportedOpportunisticInfections, List<OpportunisticInfection> opportunisticInfectionList) {
         OpportunisticInfectionsUIModel opportunisticInfectionsUIModel = new OpportunisticInfectionsUIModel();
         opportunisticInfectionsUIModel.setClinicVisitId(clinicVisit.getId());
-        opportunisticInfectionsUIModel.setPatientId(clinicVisit.getPatientId());
+        opportunisticInfectionsUIModel.setPatientId(clinicVisit.getPatientDocId());
         opportunisticInfectionsUIModel.populateInfectionList(reportedOpportunisticInfections, opportunisticInfectionList);
         opportunisticInfectionsUIModel.setOtherDetails(reportedOpportunisticInfections.getOtherOpportunisticInfectionDetails());
         return opportunisticInfectionsUIModel;

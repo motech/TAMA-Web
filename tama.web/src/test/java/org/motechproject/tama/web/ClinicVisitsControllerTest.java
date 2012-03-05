@@ -243,8 +243,8 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldListAllClinicVisitsForPatient() {
             Model uiModel = mock(Model.class);
-            final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().build();
-            final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().build();
+            final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit1").build();
+            final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit2").build();
 
             visit1.getPatient().setStatus(Status.Active);
 
@@ -258,8 +258,8 @@ public class ClinicVisitsControllerTest {
             assertEquals("clinicvisits/manage_list", listUrl);
             ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
             verify(uiModel).addAttribute(eq("clinicVisits"), listArgumentCaptor.capture());
-            assertEquals(visit1, listArgumentCaptor.getValue().get(0));
-            assertEquals(visit2, listArgumentCaptor.getValue().get(1));
+            assertEquals(visit1.getId(), ((ClinicVisitUIModel)listArgumentCaptor.getValue().get(0)).getId());
+            assertEquals(visit2.getId(), ((ClinicVisitUIModel)listArgumentCaptor.getValue().get(1)).getId());
         }
 
         @Test

@@ -3,13 +3,9 @@ package org.motechproject.tama.clinicvisits.domain;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.appointments.api.contract.VisitResponse;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,25 +33,20 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         return visit.getName();
     }
 
-    public String getTitle() {
-        if (isBaseline())
-            return "Registered with TAMA";
-        else if (weekNumber() != null)
-            return weekNumber() + " weeks Follow-up visit";
-        else
-            return "Ad-hoc Visit";
-    }
-
     public Patient getPatient() {
         return patient;
     }
 
-    public String getPatientId() {
+    public String getPatientDocId() {
         return patient.getId();
     }
 
     public String getTypeOfVisit() {
         return visit.getTypeOfVisit();
+    }
+
+    public Integer weekNumber() {
+        return (Integer) visit.getVisitData().get(WEEK_NUMBER);
     }
 
     public boolean isBaseline() {
@@ -83,27 +74,19 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         return visit.isMissed();
     }
 
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getVisitDate() {
         return visit.getVisitDate();
     }
 
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public DateTime getAppointmentDueDate() {
         return visit.getOriginalAppointmentDueDate();
     }
 
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public LocalDate getAdjustedDueDate() {
         if (visit.getOriginalAppointmentDueDate() == null) return null;
         return visit.getOriginalAppointmentDueDate().equals(visit.getAppointmentDueDate()) ? null :  DateUtil.newDate(visit.getAppointmentDueDate());
     }
 
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
     public DateTime getConfirmedAppointmentDate() {
         return visit.getAppointmentConfirmDate();
     }
@@ -117,9 +100,5 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         if (this.visit.getAppointmentDueDate() == null) return -1;
         if (clinicVisit.visit.getAppointmentDueDate() == null) return 1;
         return this.getEffectiveDueDate().compareTo(clinicVisit.getEffectiveDueDate());
-    }
-
-    private Integer weekNumber() {
-        return (Integer) visit.getVisitData().get(WEEK_NUMBER);
     }
 }
