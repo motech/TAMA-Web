@@ -42,8 +42,12 @@ public class ClinicVisitUIModel {
         return clinicVisit.getTypeOfVisit();
     }
 
+    public boolean isMissed() {
+        return clinicVisit.isMissed();
+    }
+
     public boolean isVisitEditable() {
-        return !clinicVisit.isMissed();
+        return !isMissed();
     }
 
     public String getTitle() {
@@ -79,7 +83,7 @@ public class ClinicVisitUIModel {
     }
 
     public boolean isDueDateEditable() {
-        return !clinicVisit.isMissed() && clinicVisit.getConfirmedAppointmentDate() == null && clinicVisit.getVisitDate() == null;
+        return !clinicVisit.isBaseline() && !isMissed() && clinicVisit.getConfirmedAppointmentDate() == null && clinicVisit.getVisitDate() == null;
     }
 
     @Temporal(TemporalType.DATE)
@@ -89,7 +93,7 @@ public class ClinicVisitUIModel {
     }
 
     public boolean isConfirmedAppointmentDateEditable() {
-        return !clinicVisit.isMissed() && clinicVisit.getVisitDate() == null;
+        return !clinicVisit.isBaseline() && !isMissed() && clinicVisit.getVisitDate() == null;
     }
 
     @Temporal(TemporalType.DATE)
@@ -99,7 +103,8 @@ public class ClinicVisitUIModel {
     }
 
     public boolean isVisitDateEditable() {
-        return !clinicVisit.isMissed();
+        if (clinicVisit.isBaseline() && clinicVisit.getVisitDate() == null) return false;
+        return !isMissed();
     }
 
     @Temporal(TemporalType.DATE)
