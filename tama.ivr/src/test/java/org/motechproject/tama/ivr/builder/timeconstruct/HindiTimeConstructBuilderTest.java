@@ -2,7 +2,6 @@ package org.motechproject.tama.ivr.builder.timeconstruct;
 
 import org.joda.time.LocalTime;
 import org.junit.Test;
-import org.motechproject.tama.ivr.builder.timeconstruct.HindiTimeConstructBuilder;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayMidnight", timeConstructWAVs.get(0));
         assertEquals("Num_003", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_044", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -42,7 +41,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeofDayEarlyMorning", timeConstructWAVs.get(0));
         assertEquals("Num_003", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_045", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -55,7 +54,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeofDayEarlyMorning", timeConstructWAVs.get(0));
         assertEquals("Num_005", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_029", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -68,7 +67,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeofDayMorning", timeConstructWAVs.get(0));
         assertEquals("Num_005", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_030", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -81,7 +80,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeofDayMorning", timeConstructWAVs.get(0));
         assertEquals("Num_011", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_059", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -105,7 +104,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayAfternoon", timeConstructWAVs.get(0));
         assertEquals("Num_003", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_059", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -129,7 +128,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayEvening", timeConstructWAVs.get(0));
         assertEquals("Num_007", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_044", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -142,7 +141,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayNight", timeConstructWAVs.get(0));
         assertEquals("Num_007", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_045", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
@@ -155,7 +154,7 @@ public class HindiTimeConstructBuilderTest {
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayNight", timeConstructWAVs.get(0));
         assertEquals("Num_011", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHoursAnd", timeConstructWAVs.get(2));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
         assertEquals("Num_059", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }

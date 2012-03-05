@@ -41,7 +41,7 @@ public class SlotBasedTimeConstructBuilder {
         if (time.getMinuteOfHour() == 0) {
             messages.add(TamaIVRMessage.TIME_OF_DAY_HOURS);
         } else {
-            messages.add(TamaIVRMessage.TIME_OF_DAY_HOURS_AND);
+            messages.add(TamaIVRMessage.TIME_OF_DAY_HOURS_AFTER);
             messages.add(getNumberFilename(DateTimeFormat.forPattern(TimeConstructBuilder.MINUTE_OF_THE_HOUR).print(time)));
             messages.add(TamaIVRMessage.MINUTES);
         }

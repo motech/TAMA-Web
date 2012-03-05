@@ -147,7 +147,7 @@ public class TamaIVRMessage implements IVRMessage {
 
     /* ---------- Time Constructs ----------*/
     public static final String TIME_OF_DAY_HOURS = "timeOfDayHours";
-    public static final String TIME_OF_DAY_HOURS_AND = "timeOfDayHoursAnd";
+    public static final String TIME_OF_DAY_HOURS_AFTER = "timeOfDayHoursAfter";
     public static final String TIME_OF_DAY_MORNING = "timeofDayMorning";
     public static final String TIME_OF_DAY_AFTERNOON = "timeOfDayAfternoon";
     public static final String TIME_OF_DAY_EVENING = "timeOfDayEvening";
