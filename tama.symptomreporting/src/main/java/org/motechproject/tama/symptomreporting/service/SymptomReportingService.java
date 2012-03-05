@@ -3,7 +3,6 @@ package org.motechproject.tama.symptomreporting.service;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.domain.LabResults;
@@ -75,15 +74,13 @@ public class SymptomReportingService {
     public void smsOTCAdviceToAllClinicians(String patientDocId, String callLogDocId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callLogDocId);
         SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
-        if (symptomReport != null && symptomReport.getDoctorContacted().equals(TAMAConstants.ReportedType.No)) {
-            Patient patient = allPatients.get(patientDocId);
-            Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
-            List<String> cliniciansMobileNumbers = new ArrayList<String>();
-            for (Clinic.ClinicianContact clinicianContact : patient.getClinic().getClinicianContacts()) {
-                cliniciansMobileNumbers.add(clinicianContact.getPhoneNumber());
-            }
-            notifyCliniciansAboutOTCAdvice(patient, regimen, cliniciansMobileNumbers, symptomReport);
+        Patient patient = allPatients.get(patientDocId);
+        Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
+        List<String> cliniciansMobileNumbers = new ArrayList<String>();
+        for (Clinic.ClinicianContact clinicianContact : patient.getClinic().getClinicianContacts()) {
+            cliniciansMobileNumbers.add(clinicianContact.getPhoneNumber());
         }
+        notifyCliniciansAboutOTCAdvice(patient, regimen, cliniciansMobileNumbers, symptomReport);
     }
 
     void notifyCliniciansAboutOTCAdvice(Patient patient, Regimen regimen, List<String> cliniciansMobileNumbers, SymptomReport symptomReport) {

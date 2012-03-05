@@ -60,7 +60,6 @@ public class SymptomReportingServiceTest {
     private KookooCallDetailRecordsService kookooCallDetailRecordsService;
 
     private final String patientId = "patientId";
-    private final String patientDocId = "patientDocId";
 
     private SymptomReportingService symptomReportingService;
 
@@ -127,6 +126,7 @@ public class SymptomReportingServiceTest {
                 new Clinic.ClinicianContact("name1", "ph1"),
                 new Clinic.ClinicianContact("name2", "ph2")));
 
+        String patientDocId = "patientDocId";
         Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withId(patientDocId).withPatientId(patientId).withClinic(clinic).build();
         when(allPatients.get(patientDocId)).thenReturn(patient);
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId("regimenId").build();
@@ -148,34 +148,6 @@ public class SymptomReportingServiceTest {
         symptomReportingService.smsOTCAdviceToAllClinicians(patientDocId, "callId");
 
         verify(symptomReportingService).notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList("ph1", "ph2"), symptomReport);
-    }
-
-    @Test
-    public void shouldNotSMS_OTCAdviceToClinicians_WhenClinicianWasContacted() {
-        KookooCallDetailRecord callDetailRecord = new KookooCallDetailRecord(null, "callId");
-        when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
-
-        SymptomReport symptomReport = mock(SymptomReport.class);
-        when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
-        when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.Yes);
-
-        symptomReportingService.smsOTCAdviceToAllClinicians(patientDocId, "callDocId");
-
-        verifyZeroInteractions(sendSMSService);
-    }
-
-    @Test
-    public void shouldNotSMS_OTCAdvice_WhenNoAttemptWasMadeToDialClinician() {
-        KookooCallDetailRecord callDetailRecord = new KookooCallDetailRecord(null, "callId");
-        when(kookooCallDetailRecordsService.get("callDocId")).thenReturn(callDetailRecord);
-
-        SymptomReport symptomReport = mock(SymptomReport.class);
-        when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
-        when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.NA);
-
-        symptomReportingService.smsOTCAdviceToAllClinicians(patientDocId, "callDocId");
-
-        verifyZeroInteractions(sendSMSService);
     }
 
 }
