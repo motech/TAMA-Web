@@ -105,7 +105,7 @@ public class TamaIVRMessage implements IVRMessage {
 
     public static final String M02_08_ADHERENCE_COMMENT_LT70_RISING = "m02_08_adherencecommentlt70rising";
 
-    public static final String HANGUP_OR_MAIN_MENU = "010_08_01_HangUpOrMainMenu";
+    public static final String HANGUP_OR_MAIN_MENU = "001_06_06_mayHangUpOrMainMenu";
 
     public static final String NO_MESSAGES = "010_07_03_NoOutboxMessages";
 
