@@ -63,6 +63,7 @@ public class FlashScopeFilter implements Filter{
         }
 
         HttpSession session = request.getSession(false);
-        session.setAttribute(FLASH_SESSION_KEY, flashParams);
+        if (session != null)
+            session.setAttribute(FLASH_SESSION_KEY, flashParams);
     }
 }
