@@ -143,9 +143,9 @@ public class SymptomReportingServiceTest {
 
         symptomReportingService = Mockito.spy(symptomReportingService);
         doNothing().when(symptomReportingService).notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList("ph1", "ph2"), symptomReport);
-        doCallRealMethod().when(symptomReportingService).smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callId");
+        doCallRealMethod().when(symptomReportingService).smsOTCAdviceToAllClinicians(patientDocId, "callId");
 
-        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callId");
+        symptomReportingService.smsOTCAdviceToAllClinicians(patientDocId, "callId");
 
         verify(symptomReportingService).notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList("ph1", "ph2"), symptomReport);
     }
@@ -159,7 +159,7 @@ public class SymptomReportingServiceTest {
         when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
         when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.Yes);
 
-        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callDocId");
+        symptomReportingService.smsOTCAdviceToAllClinicians(patientDocId, "callDocId");
 
         verifyZeroInteractions(sendSMSService);
     }
@@ -173,7 +173,7 @@ public class SymptomReportingServiceTest {
         when(allSymptomReports.findByCallId("callId")).thenReturn(symptomReport);
         when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.NA);
 
-        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(patientDocId, "callDocId");
+        symptomReportingService.smsOTCAdviceToAllClinicians(patientDocId, "callDocId");
 
         verifyZeroInteractions(sendSMSService);
     }

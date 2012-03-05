@@ -72,7 +72,7 @@ public class SymptomReportingService {
         return new MedicalConditionsMapper(patient, labResults, vitalStatistics, earliestTreatmentAdvice, currentRegimen).map();
     }
 
-    public void smsOTCAdviceToAllClinicianWhenDialToClinicianFails(String patientDocId, String callLogDocId) {
+    public void smsOTCAdviceToAllClinicians(String patientDocId, String callLogDocId) {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callLogDocId);
         SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
         if (symptomReport != null && symptomReport.getDoctorContacted().equals(TAMAConstants.ReportedType.No)) {

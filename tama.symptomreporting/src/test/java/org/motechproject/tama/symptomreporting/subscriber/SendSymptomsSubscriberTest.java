@@ -37,7 +37,7 @@ public class SendSymptomsSubscriberTest {
 
         listener.handle(objects);
 
-        verify(symptomReportingService).smsOTCAdviceToAllClinicianWhenDialToClinicianFails("callId", "patientDocId");
+        verify(symptomReportingService).smsOTCAdviceToAllClinicians("callId", "patientDocId");
     }
 
 }

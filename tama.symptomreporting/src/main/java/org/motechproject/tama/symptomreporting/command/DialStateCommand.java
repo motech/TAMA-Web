@@ -28,7 +28,7 @@ public class DialStateCommand implements ITreeCommand {
     public String[] execute(Object o) {
         SymptomsReportingContext symptomsReportingContext = symptomReportingContextFactory.create((KooKooIVRContext) o);
         symptomsReportingContext.startCall();
-        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(symptomsReportingContext.patientDocumentId(), symptomsReportingContext.callDetailRecordId());
+        symptomReportingService.smsOTCAdviceToAllClinicians(symptomsReportingContext.patientDocumentId(), symptomsReportingContext.callDetailRecordId());
         return new String[0];
     }
 }

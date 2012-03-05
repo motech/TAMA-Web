@@ -42,6 +42,6 @@ public class DialStateCommandTest {
         dialStateCommand.execute(kooKooIVRContext);
 
         assertTrue(symptomReportingContext.getStartCall());
-        verify(symptomsReportingService).smsOTCAdviceToAllClinicianWhenDialToClinicianFails(PATIENT_DOC_ID, CALL_LOG_ID);
+        verify(symptomsReportingService).smsOTCAdviceToAllClinicians(PATIENT_DOC_ID, CALL_LOG_ID);
     }
 }

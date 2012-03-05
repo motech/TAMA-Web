@@ -23,6 +23,6 @@ public class SendSymptomsSubscriber implements Subscriber {
     public void handle(List<Object> objects) {
         String callDetailRecordId = (String) objects.get(0);
         String patientDocId = (String) objects.get(1);
-        symptomReportingService.smsOTCAdviceToAllClinicianWhenDialToClinicianFails(callDetailRecordId, patientDocId);
+        symptomReportingService.smsOTCAdviceToAllClinicians(callDetailRecordId, patientDocId);
     }
 }
