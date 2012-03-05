@@ -319,16 +319,9 @@ public class ClinicVisitsControllerTest {
         }
 
         @Test
-        public void shouldCreateAppointment() {
+        public void shouldCreateVisit() {
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
             verify(allClinicVisits).createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled);
-        }
-
-        @Test
-        public void shouldCloseVisit() {
-            when(allClinicVisits.createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled)).thenReturn("clinicVisitId");
-            clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
-            verify(allClinicVisits).closeVisit(PATIENT_ID, "clinicVisitId", now);
         }
 
         @Test
