@@ -21,7 +21,7 @@ public class OutboxEventLogger implements OutboxEventHandler {
 
     @Override
     public void onCreate(OutboundVoiceMessage message) {
-        OutboxMessageLog log = new OutboxMessageLog(message.getPartyId(), message.getId(), DateUtil.now());
+        OutboxMessageLog log = new OutboxMessageLog(message.getPartyId(), message.getId(), DateUtil.now(), message.getVoiceMessageType().getVoiceMessageTypeName());
         allOutboxLogs.add(log);
     }
 

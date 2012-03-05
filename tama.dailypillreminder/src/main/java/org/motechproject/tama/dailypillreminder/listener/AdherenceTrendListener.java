@@ -31,7 +31,7 @@ public class AdherenceTrendListener {
         final Patient patient = allPatients.get(externalId);
 
         if (patient != null && patient.allowAdherenceCalls()) {
-            outboxService.addMessage(externalId);
+            outboxService.addMessage(externalId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
             dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(externalId, DateUtil.now());
         }
     }

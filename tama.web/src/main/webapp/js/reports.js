@@ -111,10 +111,10 @@ dojo.declare("tama.OutboxMessagesReportWidget", tama.ReportWidget, {
     columnDetails:function () {
         return [
             [
-                {name:'Message ID',     field:'messageId',  width:'150px'},
                 {name:'Posted Date',    field:'createdOn',  width:'150px'},
                 {name:'Played On',      field:'playedOn',   width:'150px'},
-                {name:'Files',          field:'playedFiles',width:'450px'}
+                {name:'Message Type',   field:'typeName',width:'100px'},
+                {name:'Message',        field:'playedFiles',width:'500px'}
             ]
         ];
     }

@@ -113,7 +113,7 @@ public class OutboxServiceTest {
     @Test
     public void shouldCreateVoiceMessage() {
         final String patientId = "patientId";
-        outboxService.addMessage(patientId);
+        outboxService.addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
         verify(voiceOutboxService).addMessage(Matchers.<OutboundVoiceMessage>any());
     }
 

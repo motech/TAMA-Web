@@ -6,7 +6,6 @@ import org.motechproject.outbox.api.model.MessagePriority;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.common.CallTypeConstants;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.domain.Patient;
@@ -67,10 +66,6 @@ public class OutboxService implements Outbox {
 
     public boolean hasPendingOutboxMessages(String patientDocumentId, String voiceMessageTypeName) {
         return voiceOutboxService.getNumberPendingMessages(patientDocumentId, voiceMessageTypeName) != 0;
-    }
-
-    public String addMessage(String patientId) {
-        return addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
     }
 
     public String addMessage(String patientId, String voiceMessageTypeName) {

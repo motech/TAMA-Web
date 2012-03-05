@@ -8,6 +8,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
+import org.motechproject.outbox.api.model.VoiceMessageType;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.domain.OutboxEventType;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxLogs;
@@ -37,6 +39,9 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
     @Test
     public void shouldCreateOutboxEventLogOnCreateEvent() {
         OutboundVoiceMessage message = new OutboundVoiceMessage();
+        VoiceMessageType voiceMessageType = new VoiceMessageType();
+        voiceMessageType.setVoiceMessageTypeName(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
+        message.setVoiceMessageType(voiceMessageType);
         message.setId("messageId");
 
         outboxEventLogger.onCreate(message);
@@ -44,8 +49,9 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
         ArgumentCaptor<OutboxMessageLog> captor = ArgumentCaptor.forClass(OutboxMessageLog.class);
         verify(allOutboxEvents).add(captor.capture());
 
-        OutboxMessageLog expectedMessage = new OutboxMessageLog("patientDocId", "messageId", DateUtil.now());
+        OutboxMessageLog expectedMessage = new OutboxMessageLog("patientDocId", "messageId", DateUtil.now(), TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
         assertEquals(expectedMessage, captor.getValue());
+        assertEquals(expectedMessage.getTypeName(), captor.getValue().getTypeName());
     }
 
     @Test

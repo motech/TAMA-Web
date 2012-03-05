@@ -50,7 +50,7 @@ public class AdherenceTrendListenerTest {
                 .payload();
         final MotechEvent motechEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
         adherenceTrendListener.handleAdherenceTrendEvent(motechEvent);
-        verify(outboxService).addMessage(patientId);
+        verify(outboxService).addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
         verify(dailyReminderAdherenceTrendService).raiseAlertIfAdherenceTrendIsFalling(eq(patientId), Matchers.<DateTime>any());
     }
 

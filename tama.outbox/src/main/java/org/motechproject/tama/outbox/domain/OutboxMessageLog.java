@@ -23,18 +23,24 @@ public class OutboxMessageLog extends CouchEntity {
     DateTime createdOn;
     @JsonProperty
     @Getter
+    String typeName;
+
+    @JsonProperty
+    @Getter
     List<PlayedLog> playedLogs;
 
     public OutboxMessageLog() {
         playedLogs = new ArrayList<PlayedLog>();
     }
 
-    public OutboxMessageLog(String patientDocId, String outboxMessageId, DateTime date) {
+    public OutboxMessageLog(String patientDocId, String outboxMessageId, DateTime date, String typeName) {
         this();
         this.patientDocId = patientDocId;
         this.outboxMessageId = outboxMessageId;
-        createdOn = date;
+        this.createdOn = date;
+        this.typeName = typeName;
     }
+
 
     public DateTime getCreatedOn() {
         return DateUtil.setTimeZone(this.createdOn);
@@ -82,4 +88,6 @@ public class OutboxMessageLog extends CouchEntity {
             return result;
         }
     }
+
+
 }

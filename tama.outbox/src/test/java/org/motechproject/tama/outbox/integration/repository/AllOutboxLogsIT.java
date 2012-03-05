@@ -17,6 +17,7 @@ import static junit.framework.Assert.assertEquals;
 @ContextConfiguration(locations = "classpath*:applicationOutboxContext.xml", inheritLocations = false)
 public class AllOutboxLogsIT extends SpringIntegrationTest {
 
+    public static final String TYPE_NAME = "Voice Message";
     @Autowired
     AllOutboxLogs allOutboxLogs;
 
@@ -24,7 +25,7 @@ public class AllOutboxLogsIT extends SpringIntegrationTest {
     public void shouldPersistOutboxLogs() {
         DateTime now = DateUtil.now();
 
-        OutboxMessageLog messageLog = new OutboxMessageLog("patientDocId", "messageId", now);
+        OutboxMessageLog messageLog = new OutboxMessageLog("patientDocId", "messageId", now, TYPE_NAME);
         allOutboxLogs.add(messageLog);
 
         markForDeletion(messageLog);
@@ -36,8 +37,8 @@ public class AllOutboxLogsIT extends SpringIntegrationTest {
         DateTime now = DateUtil.now();
         final String patientDocId = "patientDocId";
 
-        OutboxMessageLog messageLog1 = new OutboxMessageLog(patientDocId, "messageId", now).playedOn(now, Arrays.asList("a.wav"));
-        OutboxMessageLog messageLog2 = new OutboxMessageLog(patientDocId, "messageId", now);
+        OutboxMessageLog messageLog1 = new OutboxMessageLog(patientDocId, "messageId", now, TYPE_NAME).playedOn(now, Arrays.asList("a.wav"));
+        OutboxMessageLog messageLog2 = new OutboxMessageLog(patientDocId, "messageId", now, TYPE_NAME);
 
         allOutboxLogs.add(messageLog1);
         allOutboxLogs.add(messageLog2);

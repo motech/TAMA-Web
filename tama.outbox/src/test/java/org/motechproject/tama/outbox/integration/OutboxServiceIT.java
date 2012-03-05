@@ -2,6 +2,7 @@ package org.motechproject.tama.outbox.integration;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.outbox.service.OutboxService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class OutboxServiceIT extends SpringIntegrationTest {
 
     @Test
     public void shouldAssignMessageIdWhenAddingTheMessage() {
-        String id = outboxService.addMessage("patientId");
+        String id = outboxService.addMessage("patientId", TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
         assertTrue(StringUtils.isNotEmpty(id));
     }
 }

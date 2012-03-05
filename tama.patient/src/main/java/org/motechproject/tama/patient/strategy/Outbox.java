@@ -8,5 +8,5 @@ public interface Outbox {
 
     public void reEnroll(Patient dbPatient, Patient patient);
 
-    public String addMessage(String patientId);
+    public String addMessage(String patientId, String voiceMessageTypeName);
 }

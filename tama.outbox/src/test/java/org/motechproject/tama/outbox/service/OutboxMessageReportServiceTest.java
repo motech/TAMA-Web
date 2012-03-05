@@ -85,7 +85,7 @@ public class OutboxMessageReportServiceTest extends BaseUnitTest {
     }
 
     private OutboxMessageLog newLog(String patientDocId) {
-        return new OutboxMessageLog(patientDocId, "outboxMessageId", createdOnDate);
+        return new OutboxMessageLog(patientDocId, "outboxMessageId", createdOnDate, "Voice Message");
     }
 
     private void addPlayedLog(OutboxMessageLog outboxMessageLog) {
