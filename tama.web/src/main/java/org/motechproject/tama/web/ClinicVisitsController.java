@@ -69,10 +69,7 @@ public class ClinicVisitsController extends BaseController {
             adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
         if (adviceForPatient != null) {
             treatmentAdviceController.show(adviceForPatient.getId(), uiModel);
-            final boolean wasVisitDetailsEdited = (clinicVisit.getTreatmentAdviceId() != null ||
-                    !clinicVisit.getLabResultIds().isEmpty() ||
-                    clinicVisit.getVitalStatisticsId() != null ||
-                    clinicVisit.getReportedOpportunisticInfectionsId() != null);
+            final boolean wasVisitDetailsEdited = (clinicVisit.getVisitDate() != null);
             if (wasVisitDetailsEdited)
                 return redirectToShowClinicVisitUrl(clinicVisitId, patientDocId, httpServletRequest);
         } else {
@@ -107,7 +104,7 @@ public class ClinicVisitsController extends BaseController {
                 treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
             } catch (RuntimeException e) {
                 httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating treatment advice: " + e.getMessage());
-                return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
+                return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
             }
         }
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
@@ -118,7 +115,7 @@ public class ClinicVisitsController extends BaseController {
             allClinicVisits.updateVisitDetails(clinicVisitId, clinicVisitUIModel.getVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
-            return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId(), httpServletRequest);
+            return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
         }
         return redirectToShowClinicVisitUrl(clinicVisitId, patientId, httpServletRequest);
     }
@@ -194,8 +191,8 @@ public class ClinicVisitsController extends BaseController {
         return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + patientId;
     }
 
-    private String redirectToCreateFormUrl(String clinicVisitId, String patientId, HttpServletRequest httpServletRequest) {
+    public static String redirectToCreateFormUrl(String clinicVisitId, String patientId) {
         String queryParameters = "form&patientId=" + patientId + "&clinicVisitId=" + clinicVisitId;
-        return "redirect:/clinicvisits?" + encodeUrlPathSegment(queryParameters, httpServletRequest);
+        return "redirect:/clinicvisits?" + queryParameters;
     }
 }

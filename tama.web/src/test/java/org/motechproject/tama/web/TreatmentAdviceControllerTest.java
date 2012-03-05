@@ -194,7 +194,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldEndCurrentRegimenAndCreateANewRegimen() {
+    public void shouldEndCurrentRegimenAndCreateANewRegimen_AndRedirectsToCreateClinicVisitUrl() {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
         String clinicVisitId = "clinicVisitId";
@@ -202,7 +202,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
 
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
-        assertThat(redirectURL, is("redirect:/clinicvisits/" + clinicVisitId + "?patientId=" + PATIENT_ID));
+        assertThat(redirectURL, is("redirect:/clinicvisits?form&patientId=" + PATIENT_ID + "&clinicVisitId=" + clinicVisitId));
         verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
         verify(allClinicVisits).changeRegimen(PATIENT_ID, clinicVisitId, treatmentAdvice.getId());
     }

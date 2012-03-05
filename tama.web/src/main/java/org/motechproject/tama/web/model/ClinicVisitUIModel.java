@@ -3,6 +3,7 @@ package org.motechproject.tama.web.model;
 import org.joda.time.DateTime;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -34,5 +35,13 @@ public class ClinicVisitUIModel {
 
     public void setVisitDate(DateTime visitDate) {
         this.visitDate = visitDate;
+    }
+
+    public String getId() {
+        return clinicVisit.getId();
+    }
+
+    public Patient getPatient() {
+        return clinicVisit.getPatient();
     }
 }

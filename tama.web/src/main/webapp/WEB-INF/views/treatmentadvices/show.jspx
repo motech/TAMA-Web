@@ -76,7 +76,7 @@
         <div>
             <spring:url value="/treatmentadvices/changeRegimen" var="form_url" htmlEscape="false">
                 <spring:param name="id" value="${treatmentAdvice.treatmentAdviceId}"/>
-                <spring:param name="clinicVisitId" value="${clinicVisit.id}"/>
+                <spring:param name="clinicVisitId" value="${param.clinicVisitId}"/>
                 <spring:param name="patientId" value="${treatmentAdvice.patientIdentifier}"/>
             </spring:url>
             <c:choose>

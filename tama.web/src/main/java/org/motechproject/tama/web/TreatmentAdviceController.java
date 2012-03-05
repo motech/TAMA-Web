@@ -81,9 +81,9 @@ public class TreatmentAdviceController extends BaseController {
         try {
             treatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
             allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, treatmentAdviceId);
-            return "redirect:/clinicvisits/" + encodeUrlPathSegment(clinicVisitId, httpServletRequest) + "?patientId=" + treatmentAdvice.getPatientId();
+            return ClinicVisitsController.redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
         } catch (RuntimeException e){
-            httpServletRequest.setAttribute("flash.flashError", "Error occurred while changing Regimen. Please Retry.");
+            httpServletRequest.setAttribute("flash.flashError", "Error occurred while changing Regimen. Please try again: " + e.getMessage());
             return "redirect:/treatmentadvices/changeRegimen?id=" + treatmentAdviceId + "&clinicVisitId=" + clinicVisitId + "&patientId=" + treatmentAdvice.getPatientId();
         }
     }
