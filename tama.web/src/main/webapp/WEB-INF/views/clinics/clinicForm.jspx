@@ -7,11 +7,12 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <spring:url value="/resources/styles/clinicForm.css" var="clinicForm_css" />
-    <spring:url value="/resources/js/clinicForm.js" var="clinicForm_js" />
-    <link rel="stylesheet" type="text/css" media="screen" href="${clinicForm_css}"></link>
-    <script src="${clinicForm_js}" type="text/javascript" />
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
+    <spring:url value="/resources-${applicationVersion}/styles/clinicForm.css" var="clinicForm_css" />
+    <spring:url value="/resources-${applicationVersion}/js/clinicForm.js" var="clinicForm_js" />
+    <link rel="stylesheet" type="text/css" media="screen" href="${clinicForm_css}"/>
+    <script src="${clinicForm_js}" type="text/javascript" ></script>
 
     <form:create id="form" label="Clinic" modelAttribute="clinic" path="/clinics" >
         <c:if test="${mode == 'update'}">

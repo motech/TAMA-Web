@@ -1,6 +1,8 @@
 <jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:spring="http://www.springframework.org/tags" xmlns:form="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
   <jsp:output omit-xml-declaration="yes" />
-  <spring:url value="/resources/js/ValidationTextarea.js" var="validationTextareaJS" />
+
+  <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+  <spring:url value="/resources-${applicationVersion}/js/ValidationTextarea.js" var="validationTextareaJS" />
   <script src="${validationTextareaJS}" type="text/javascript"/>
 
   <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />

@@ -1,11 +1,13 @@
 <div xmlns:spring="http://www.springframework.org/tags"
       xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
 
-    <spring:url value="/resources/styles/timeline.css" var="timeline_css"/>
-    <spring:url value="/js/timeline_ajax" var="timeline_ajax_root"/>
-    <spring:url value="/js/timeline_js" var="timeline_js_root"/>
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/styles/timeline.css" var="timeline_css"/>
+    <spring:url value="/resources-${applicationVersion}/js/timeline_ajax" var="timeline_ajax_root"/>
+    <spring:url value="/resources-${applicationVersion}/js/timeline_js" var="timeline_js_root"/>
     <spring:url value="/json/symptoms/list" var="symptoms_list_url"/>
-    <spring:url value="/resources/js/symptomTimeline.js" var="symptomTimeline_js"/>
+    <spring:url value="/resources-${applicationVersion}/js/symptomTimeline.js" var="symptomTimeline_js"/>
 	
 	<script>
 		<![CDATA[

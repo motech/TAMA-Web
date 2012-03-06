@@ -5,11 +5,13 @@
      xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:field="http://www.springframework.org/tags/form">
 
-    <spring:url value="/resources/images/favicon.ico" var="favicon"/>
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <spring:url value="/resources/styles/create-lab-result.css" var="create_labresult_css_url"/>
+    <spring:url value="/resources-${applicationVersion}/styles/create-lab-result.css" var="create_labresult_css_url"/>
     <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"></link>
 
     <util:panel id="fc_org_motechproject_tama_domain_Lab_Result" title="Lab Results" openPane="true">

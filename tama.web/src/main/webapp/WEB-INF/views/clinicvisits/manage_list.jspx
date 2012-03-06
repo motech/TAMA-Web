@@ -6,10 +6,11 @@
      xmlns:c="http://java.sun.com/jsp/jstl/core"
      class="clinic-visit-list">
 
-<spring:url value="/resources/styles/clinic-visit.css" var="clinicVisit_css"/>
+<spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+<spring:url value="/resources-${applicationVersion}/styles/clinic-visit.css" var="clinicVisit_css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="${clinicVisit_css}"/>
 
-<spring:url value="/resources/images/favicon.ico" var="favicon"/>
+<spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
 <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 <jsp:output omit-xml-declaration="yes"/>
 <util:panel id="clinicVisitListPanel" title="Clinic Visits / Appointment Details" openPane="true">
@@ -145,8 +146,8 @@
         </div>
     </div>
 </div>
-<spring:url value="/js/schedulePopup.js" var="schedulePopupUrl"/>
-<spring:url value="/js/tamaConfirmBox.js" var="tamaConfirmBoxUrl"/>
+<spring:url value="/resources-${applicationVersion}/js/schedulePopup.js" var="schedulePopupUrl"/>
+<spring:url value="/resources-${applicationVersion}/js/tamaConfirmBox.js" var="tamaConfirmBoxUrl"/>
 <script src="${schedulePopupUrl}"><!--required--></script>
 <script src="${tamaConfirmBoxUrl}"><!--required--></script>
 

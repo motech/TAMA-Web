@@ -4,7 +4,10 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:spring="http://www.springframework.org/tags"
       xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-      xmlns:form="http://www.springframework.org/tags/form" >
+      xmlns:form="http://www.springframework.org/tags/form"
+      >
+
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
 	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
 
@@ -39,17 +42,16 @@
                <spring:url value="/" var="home"/>
                <div id="links">
                    <a href="${home}" align="right">
-                     <spring:message code="button_home"/>
+                        <spring:message code="button_home"/>
                    </a>
                    <c:if test="${pageContext['request'].userPrincipal != null}">
-
-                     <c:out value=" | "/>
-                     <span>
-                       <spring:url value="/resources/j_spring_security_logout" var="logout"/>
-                       <a href="${logout}">
-                         <spring:message code="security_logout"/>
-                       </a>
-                     </span>
+                         <c:out value=" | "/>
+                         <span>
+                             <spring:url value="/security/j_spring_security_logout" var="logout"/>
+                             <a href="${logout}">
+                                 <spring:message code="security_logout"/>
+                             </a>
+                         </span>
                    </c:if>
                    <div class="logged_in_clinic">
                        <c:if test="${sessionScope.loggedInUser != null}">

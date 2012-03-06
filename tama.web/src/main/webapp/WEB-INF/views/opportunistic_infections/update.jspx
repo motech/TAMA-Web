@@ -9,11 +9,13 @@
      xmlns:field="http://www.springframework.org/tags/form"
      xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields">
 
-    <spring:url value="/resources/images/favicon.ico" var="favicon"/>
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <spring:url value="/resources/js/opportunisticInfections.js" var="opportunisticInfectionsJs" />
+    <spring:url value="/resources-${applicationVersion}/js/opportunisticInfections.js" var="opportunisticInfectionsJs" />
     <script src="${opportunisticInfectionsJs}" type="text/javascript"> <!-- required --> </script>
 
    <util:panel id="opportunistic_infections_panel" title="Update Opportunistic Infections" openPane="true">

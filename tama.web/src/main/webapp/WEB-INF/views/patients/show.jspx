@@ -5,9 +5,11 @@
      xmlns:spring="http://www.springframework.org/tags"
      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/styles/show-patient.css" var="show_patient_css_url" />
+    <spring:url value="/resources-${applicationVersion}/styles/show-patient.css" var="show_patient_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
 
     <script type="text/javascript">

@@ -1,9 +1,11 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
 
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
     <spring:url value="/json/adherence/list" var="adherence_list_url"/>
-    <spring:url value="/resources/js/tamaChart.js" var="tama_chart_js"/>
-    <spring:url value="/resources/js/adherenceChart.js" var="adherence_chart_js"/>
+    <spring:url value="/resources-${applicationVersion}/js/tamaChart.js" var="tama_chart_js"/>
+    <spring:url value="/resources-${applicationVersion}/js/adherenceChart.js" var="adherence_chart_js"/>
 
     <script src="${tama_chart_js}" type="text/javascript"><!-- required--></script>
     <script src="${adherence_chart_js}" type="text/javascript"><!-- required--></script>

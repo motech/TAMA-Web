@@ -9,11 +9,13 @@
      xmlns:field="http://www.springframework.org/tags/form"
      xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields">
 
-    <spring:url value="/resources/images/favicon.ico" var="favicon"/>
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <spring:url value="/resources/styles/vital-statistics-form.css" var="vital_statistics_form_css_url" />
+    <spring:url value="/resources-${applicationVersion}/styles/vital-statistics-form.css" var="vital_statistics_form_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${vital_statistics_form_css_url}"></link>
 
     <util:panel id="vital_statistics_panel" title="Update Vital Statistics" openPane="true">

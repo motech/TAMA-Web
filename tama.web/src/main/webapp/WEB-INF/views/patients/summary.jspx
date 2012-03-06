@@ -10,9 +10,11 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      version="2.0">
 
-    <spring:url value="/resources/styles/patient-summary.css" var="patient_summary_css"/>
-    <spring:url value="/resources/js/patientDashboardChart.js" var="patient_dashboard_chart_js" />
-    <spring:url value="/resources/js/tamaChart.js" var="tama_chart_js"/>
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/styles/patient-summary.css" var="patient_summary_css"/>
+    <spring:url value="/resources-${applicationVersion}/js/patientDashboardChart.js" var="patient_dashboard_chart_js" />
+    <spring:url value="/resources-${applicationVersion}/js/tamaChart.js" var="tama_chart_js"/>
 
     <script src="${tama_chart_js}" type="text/javascript"><!-- required--></script>
     <script type="text/javascript" src="${patient_dashboard_chart_js}"> <!-- required--> </script>

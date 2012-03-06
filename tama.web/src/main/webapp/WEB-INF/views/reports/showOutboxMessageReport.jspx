@@ -5,10 +5,12 @@
      xmlns:form="http://www.springframework.org/tags/form"
      version="2.0">
 
-    <spring:url value="/resources/js/reports.js" var="reports_js"/>
-    <spring:url value="/resources/dojox/grid/resources/Grid.css" var="grid_css"/>
-    <spring:url value="/resources/styles/reports.css" var="reports_css"/>
-    <spring:url value="/resources/images/spinner.gif" var="spinner_gif"/>
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/js/reports.js" var="reports_js"/>
+    <spring:url value="/resources-${applicationVersion}/dojox/grid/resources/Grid.css" var="grid_css"/>
+    <spring:url value="/resources-${applicationVersion}/styles/reports.css" var="reports_css"/>
+    <spring:url value="/resources-${applicationVersion}/images/spinner.gif" var="spinner_gif"/>
 
     <script src="${reports_js}" type="text/javascript"><!-- required--></script>
     <link rel="stylesheet" type="text/css" media="screen" href="${grid_css}"></link>

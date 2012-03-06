@@ -35,7 +35,8 @@
     <mvc:annotation-driven conversion-service="applicationConversionService"/>
 
     <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
-    <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**"/>
+    <mvc:resources mapping="/security/**" location="/, classpath:/META-INF/web-resources/" />
+    <mvc:resources mapping="/resources-#{tamaProperties['application.version']}/**" location="/, classpath:/META-INF/web-resources/" />
 
     <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default Servlet -->
     <mvc:default-servlet-handler/>

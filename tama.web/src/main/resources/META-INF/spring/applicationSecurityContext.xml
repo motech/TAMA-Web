@@ -8,11 +8,11 @@
 
     <http auto-config="false" use-expressions="true"
           entry-point-ref="ajaxAwareAuthenticationProcessingFilterEntryPoint">
-        <form-login login-processing-url="/resources/j_spring_security_check"
+        <form-login login-processing-url="/security/j_spring_security_check"
                     login-page="/login"
                     authentication-failure-url="/login?login_error=t"
                     authentication-success-handler-ref="loginSuccessHandler"/>
-        <logout logout-url="/resources/j_spring_security_logout" logout-success-url="/login" invalidate-session="true"/>
+        <logout logout-url="/security/j_spring_security_logout" logout-success-url="/login" invalidate-session="true"/>
 
         <!-- Only admin -->
         <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="any"/>

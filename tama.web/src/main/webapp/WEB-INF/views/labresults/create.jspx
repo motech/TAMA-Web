@@ -4,9 +4,11 @@
      xmlns:field="http://www.springframework.org/tags/form"
      xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields">
 
-    <spring:url value="/resources/styles/create-lab-result.css" var="create_labresult_css_url" />
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/styles/create-lab-result.css" var="create_labresult_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"/>
-    <spring:url value="/resources/js/create_labresult.js" var="labresultjs"/>
+    <spring:url value="/resources-${applicationVersion}/js/create_labresult.js" var="labresultjs"/>
     <script src="${labresultjs}" type="text/javascript"></script>
 
     <util:panel id="fc_org_motechproject_tama_domain_Lab_Result" title="Create Lab Results" openPane="true">
