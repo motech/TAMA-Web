@@ -59,8 +59,22 @@ public class SymptomRecordingServiceTest {
     public void shouldSetAdviceGivenOnSymptomsReport() {
         SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId");
         when(allSymptomReports.findByCallId("callId")).thenReturn(expectedReport);
-        symptomRecordingService.saveAdviceGiven("callId", "some advice");
-        verify(allSymptomReports).update(expectedReport);
+        symptomRecordingService.saveAdviceGiven("patientDocumentId", "callId", "some advice");
+        verify(allSymptomReports).insertOrMerge(expectedReport);
         assertEquals("some advice", expectedReport.getAdviceGiven());
+    }
+
+    @Test
+    public void shouldCreateNewSymptomsReportLog_WhenNotPresent_WhileSettingAdvice(){
+        when(allSymptomReports.findByCallId("callId")).thenReturn(null);
+        symptomRecordingService.saveAdviceGiven("patientDocumentId", "callId", "some advice");
+
+        ArgumentCaptor<SymptomReport> newSymptomReportCaptor = ArgumentCaptor.forClass(SymptomReport.class);
+        verify(allSymptomReports).insertOrMerge(newSymptomReportCaptor.capture());
+
+        assertEquals("callId", newSymptomReportCaptor.getValue().getCallId());
+        assertEquals("patientDocumentId", newSymptomReportCaptor.getValue().getPatientDocId());
+        assertEquals("some advice", newSymptomReportCaptor.getValue().getAdviceGiven());
+
     }
 }

@@ -17,7 +17,7 @@ public class RecordAdviceGivenCommand extends BaseTreeCommand {
 
     @Override
     public String[] executeCommand(TAMAIVRContext tamaivrContext) {
-        symptomRecordingService.saveAdviceGiven(tamaivrContext.callId(), adviceNodeName);
+        symptomRecordingService.saveAdviceGiven(tamaivrContext.patientDocumentId(), tamaivrContext.callId(), adviceNodeName);
         return new String[0];
     }
 

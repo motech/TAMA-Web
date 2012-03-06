@@ -24,8 +24,8 @@ public class RecordAdviceGivenCommandTest {
         final String callId = "callId";
         final String adviceNodeName = "adv_crocin01";
         final RecordAdviceGivenCommand recordAdviceGivenCommand = new RecordAdviceGivenCommand(symptomRecordingService, adviceNodeName);
-        final TAMAIVRContextForTest context = new TAMAIVRContextForTest().callId(callId);
+        final TAMAIVRContextForTest context = new TAMAIVRContextForTest().callId(callId).patientDocumentId("patientDocId");
         recordAdviceGivenCommand.executeCommand(context);
-        verify(symptomRecordingService).saveAdviceGiven(callId, adviceNodeName);
+        verify(symptomRecordingService).saveAdviceGiven(context.patientDocumentId(), callId, adviceNodeName);
     }
 }

@@ -26,10 +26,13 @@ public class SymptomRecordingService {
         return allSymptomReports.insertOrMerge(symptomReport);
     }
 
-    public void saveAdviceGiven(String callId, String advice) {
-        final SymptomReport symptomReport = allSymptomReports.findByCallId(callId);
+    public void saveAdviceGiven(String patientDocId, String callId, String advice) {
+        SymptomReport symptomReport = allSymptomReports.findByCallId(callId);
+        if (symptomReport == null) {
+            symptomReport = new SymptomReport(patientDocId, callId);
+        }
         symptomReport.setAdviceGiven(advice);
-        allSymptomReports.update(symptomReport);
+        allSymptomReports.insertOrMerge(symptomReport);
     }
 
     public void setAsNotConnectedToDoctor(String callId) {
