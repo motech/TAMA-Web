@@ -23,11 +23,13 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CallLogServiceTest {
+    public static final String PATIENT_ID = "patientId";
     private CallLogService callLoggingService;
     @Mock
     private AllCallLogs allCallLogs;
@@ -47,7 +49,7 @@ public class CallLogServiceTest {
         callLoggingService = new CallLogService(allCallLogs, kookooCallDetailRecordsService, callLogMapper, allPatients);
 
         clinic = ClinicBuilder.startRecording().withDefaults().withId("clinicId").build();
-        patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
+        patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).withPatientId("testPatient").build();
     }
 
     @Test
@@ -75,10 +77,11 @@ public class CallLogServiceTest {
 
         assertEquals(clinic.getId(), logCapture.getValue().clinicId());
         assertEquals(0, logCapture.getValue().getLikelyPatientIds().size());
+        assertEquals(patient.getPatientId(), logCapture.getValue().patientId());
     }
 
     @Test
-    public void shouldLogCallWithoutClinicIdWhenPatientIsNotKnown() {
+    public void shouldLogCallWithoutClinicId_WhenPatientIsNotKnown() {
         KookooCallDetailRecord kookooCallDetailRecord = callDetailRecord();
         String patientDocumentId = null;
 
@@ -97,6 +100,7 @@ public class CallLogServiceTest {
         assertEquals(clinic.getId(), logCapture.getValue().clinicId());
         assertEquals(1, logCapture.getValue().getLikelyPatientIds().size());
         assertEquals(patient.getId(), logCapture.getValue().getLikelyPatientIds().get(0));
+        assertNull(logCapture.getValue().patientId());
     }
 
     @Test
@@ -109,30 +113,66 @@ public class CallLogServiceTest {
     }
 
     @Test
+    public void shouldReturnCallLogsForADateRange_AndGivenPatientId() {
+        DateTime startDate = DateUtil.now();
+        DateTime endDate = DateUtil.now().plusDays(1);
+        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, PATIENT_ID, true, null));
+
+        verify(allCallLogs).findCallLogsForDateRangeAndPatientId(Matchers.<CallLogSearch>any());
+    }
+
+    @Test
     public void shouldReturnTotalNumberOfCallLogsForADateRange() {
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, null, true, null));
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, "", true, null));
 
         verify(allCallLogs).findTotalNumberOfCallLogsForDateRange(Matchers.<CallLogSearch>any());
     }
 
     @Test
-    public void shouldReturnCallLogsForADateRangeAndClinic() {
+    public void shouldReturnTotalNumberOfCallLogsForADateRange_AndPatientId() {
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, null, false, "clinic"));
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, PATIENT_ID, true, null));
+
+        verify(allCallLogs).findTotalNumberOfCallLogsForDateRangeAndPatientId(Matchers.<CallLogSearch>any());
+    }
+
+    @Test
+    public void shouldReturnCallLogsForADateRange_AndClinic() {
+        DateTime startDate = DateUtil.now();
+        DateTime endDate = DateUtil.now().plusDays(1);
+        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, "", false, "clinic"));
 
         verify(allCallLogs).findCallLogsForDateRangeAndClinic(Matchers.<CallLogSearch>any());
     }
 
     @Test
-    public void shouldReturnTotalNumberOfCallLogsForADateRangeAndClinic() {
+    public void shouldReturnCallLogsForADateRange_AndPatientId_AndClinic() {
         DateTime startDate = DateUtil.now();
         DateTime endDate = DateUtil.now().plusDays(1);
-        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, null, false, "clinic"));
+        callLoggingService.getLogsForDateRange(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, PATIENT_ID, false, "clinic"));
+
+        verify(allCallLogs).findCallLogsForDateRangePatientIdAndClinic(Matchers.<CallLogSearch>any());
+    }
+
+    @Test
+    public void shouldReturnTotalNumberOfCallLogsForADateRange_AndClinic() {
+        DateTime startDate = DateUtil.now();
+        DateTime endDate = DateUtil.now().plusDays(1);
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, "", false, "clinic"));
 
         verify(allCallLogs).findTotalNumberOfCallLogsForDateRangeAndClinic(Matchers.<CallLogSearch>any());
+    }
+
+    @Test
+    public void shouldReturnTotalNumberOfCallLogsForADateRange_AndPatientId_AndClinic() {
+        DateTime startDate = DateUtil.now();
+        DateTime endDate = DateUtil.now().plusDays(1);
+        callLoggingService.getTotalNumberOfLogs(new CallLogSearch(startDate, endDate, CallLog.CallLogType.Answered, PATIENT_ID, false, "clinic"));
+
+        verify(allCallLogs).findTotalNumberOfCallLogsForDateRangePatientIdAndClinic(Matchers.<CallLogSearch>any());
     }
 
     private KookooCallDetailRecord callDetailRecord() {

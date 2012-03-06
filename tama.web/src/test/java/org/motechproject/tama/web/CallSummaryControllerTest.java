@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.service.CallLogService;
-import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
@@ -59,19 +58,52 @@ public class CallSummaryControllerTest {
     BindingResult bindingResult;
 
     @Mock
-    private AllPatients allPatients;
-
-    @Mock
     Properties properties;
 
 
     @Before
     public void setUp() {
         initMocks(this);
-        callSummaryController = new CallSummaryController(callLogService, callLogViewMapper, properties, allPatients);
+        callSummaryController = new CallSummaryController(callLogService, callLogViewMapper, properties);
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+    }
+
+    @Test
+    public void shouldReturnCallLogsNotFoundViewIfNoLogsAreFoundForPatient(){
+        List<CallLog> callLogs = new ArrayList<CallLog>();
+        List<CallLogView> callLogViews = new ArrayList<CallLogView>();
+        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter(PATIENT_ID);
+
+        when(user.isAdministrator()).thenReturn(true);
+        when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
+        when(callLogService.getLogsForDateRange(any(CallLogSearch.class))).thenReturn(callLogs);
+        when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        String view = callSummaryController.list(callLogPreferencesFilter, bindingResult, request, uiModel);
+
+        verify(uiModel).addAttribute("message", CallSummaryController.PATIENT_ID_WRONG_MESSAGE);
+        assertEquals("callsummary/nologs", view);
+    }
+
+    @Test
+    public void shouldReturnCallLogsNotFoundViewIfNoLogsAreFoundForDateRange(){
+        List<CallLog> callLogs = new ArrayList<CallLog>();
+        List<CallLogView> callLogViews = new ArrayList<CallLogView>();
+        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter("");
+
+        when(user.isAdministrator()).thenReturn(true);
+        when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
+        when(callLogService.getLogsForDateRange(any(CallLogSearch.class))).thenReturn(callLogs);
+        when(callLogViewMapper.toCallLogView(callLogs)).thenReturn(callLogViews);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        String view = callSummaryController.list(callLogPreferencesFilter, bindingResult, request, uiModel);
+
+        verify(uiModel).addAttribute("message", CallSummaryController.NO_LOGS_FOR_DATE_RANGE);
+        assertEquals("callsummary/nologs", view);
     }
 
     @Test
@@ -79,7 +111,7 @@ public class CallSummaryControllerTest {
         CallLog callLog = setUpCallLog();
         List<CallLog> callLogs = Arrays.asList(callLog);
         List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic", new ArrayList<String>()));
-        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
+        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter(PATIENT_ID);
 
         when(user.isAdministrator()).thenReturn(true);
         when(properties.getProperty(Matchers.<String>any(), Matchers.<String>any())).thenReturn("20");
@@ -93,10 +125,10 @@ public class CallSummaryControllerTest {
         assertEquals("callsummary/list", view);
 
         ArgumentCaptor<CallLogSearch> searchArgumentCaptor = ArgumentCaptor.forClass(CallLogSearch.class);
-        verify(allPatients).findByPatientId(PATIENT_ID);
         verify(callLogService).getLogsForDateRange(searchArgumentCaptor.capture());
         assertNull(searchArgumentCaptor.getValue().getClinicId());
         assertEquals(CallLog.CallLogType.Answered, searchArgumentCaptor.getValue().getCallLogType());
+        assertEquals(PATIENT_ID.toLowerCase(), searchArgumentCaptor.getValue().getPatientId());
         assertEquals(true, searchArgumentCaptor.getValue().isSearchAllClinics());
         assertEquals(0, searchArgumentCaptor.getValue().getStartIndex().intValue());
         assertEquals(20, searchArgumentCaptor.getValue().getLimit().intValue());
@@ -105,7 +137,7 @@ public class CallSummaryControllerTest {
     @Test
     public void shouldShowCallLogsForSecondPageBetweenEnteredDates() {
         setUpCallLog();
-        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
+        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter(PATIENT_ID);
         callLogPreferencesFilter.setPageNumber("2");
 
         when(user.isAdministrator()).thenReturn(true);
@@ -122,7 +154,7 @@ public class CallSummaryControllerTest {
         CallLog callLog = setUpCallLog();
         List<CallLog> callLogs = Arrays.asList(callLog);
         List<CallLogView> callLogViews = Arrays.asList(new CallLogView("patientId", callLog, "clinic", new ArrayList<String>()));
-        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter();
+        CallLogPreferencesFilter callLogPreferencesFilter = setUpCallLogPreferencesFilter(PATIENT_ID);
 
         when(user.isAdministrator()).thenReturn(false);
         when(user.getClinicId()).thenReturn("clinicId");
@@ -136,7 +168,7 @@ public class CallSummaryControllerTest {
         verify(uiModel).addAttribute("callSummary", callLogViews);
         assertEquals("callsummary/list", view);
     }
-    
+
     @Test
     public void shouldReturnTotalNumberOfPages() {
         assertEquals((Integer) 1, callSummaryController.calculateTotalNumberOfPages(10, 10));
@@ -152,13 +184,13 @@ public class CallSummaryControllerTest {
         assertEquals((Integer) 3, callSummaryController.getValidPageNumber("3", 10));
     }
 
-    private CallLogPreferencesFilter setUpCallLogPreferencesFilter() {
+    private CallLogPreferencesFilter setUpCallLogPreferencesFilter(String patientId) {
         CallLogPreferencesFilter callLogPreferencesFilter = new CallLogPreferencesFilter();
         callLogPreferencesFilter.setCallLogStartDate(DateUtil.today().toDate());
         callLogPreferencesFilter.setCallLogEndDate(DateUtil.tomorrow().toDate());
         callLogPreferencesFilter.setPageNumber("1");
         callLogPreferencesFilter.setCallType("Answered");
-        callLogPreferencesFilter.setPatientId(PATIENT_ID);
+        callLogPreferencesFilter.setPatientId(patientId);
         return callLogPreferencesFilter;
     }
 

@@ -34,6 +34,9 @@ public class CallLog extends CouchEntity {
     @JsonProperty
     private String clinicId;
 
+    @JsonProperty
+    private String patientId;
+
     public CallLog() {
     }
 
@@ -117,6 +120,15 @@ public class CallLog extends CouchEntity {
 
     public void setLikelyPatientIds(List<String> likelyPatientIds) {
         this.likelyPatientIds = likelyPatientIds;
+    }
+
+    public String patientId() {
+        return patientId;
+    }
+
+    public CallLog patientId(String patientId) {
+        this.patientId = patientId;
+        return this;
     }
 
     public void maskAuthenticationPin() {

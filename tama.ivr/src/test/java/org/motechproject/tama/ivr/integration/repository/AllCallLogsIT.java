@@ -18,15 +18,15 @@ import static junit.framework.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath*:applicationIVRContext.xml", inheritLocations = false)
 public class AllCallLogsIT extends SpringIntegrationTest {
-    public static final String PATIENT_DOC_ID1 = "patientDocId1";
-    public static final String PATIENT_DOC_ID2 = "patientDocId2";
+    public static final String PATIENT_ID1 = "patientId1";
+    public static final String PATIENT_ID2 = "patientId2";
     @Autowired
     private AllCallLogs allCallLogs;
 
     @Test
     public void shouldFindCallLogByClinicId() {
         createCallLog(DateUtil.now());
-        final CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(1), CallLog.CallLogType.Answered, PATIENT_DOC_ID1, false, "clinicId");
+        final CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(1), CallLog.CallLogType.Answered, PATIENT_ID1, false, "clinicId");
         callLogSearch.setPaginationParams(0, 10);
         assertEquals("clinicId", allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch).get(0).clinicId());
     }
@@ -37,11 +37,7 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         createCallLog(DateUtil.now().plusDays(1));
         createCallLog(DateUtil.now().plusDays(2));
 
-        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, false, "clinicId");
-        callLogSearch.setPaginationParams(0, 10);
-        assertEquals(3, allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch).size());
-
-        callLogSearch = new CallLogSearch(DateUtil.now(), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, true, null);
+        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now(), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, true, null);
         callLogSearch.setPaginationParams(0, 2);
         assertEquals(2, allCallLogs.findCallLogsForDateRange(callLogSearch).size());
     }
@@ -58,11 +54,7 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         createCallLog(thirdDay);
         createCallLog(thirdDay);
 
-        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, false, "clinicId");
-        callLogSearch.setPaginationParams(0, 10);
-        assertEquals(5, allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch).size());
-
-        callLogSearch = new CallLogSearch(DateUtil.now(), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, PATIENT_DOC_ID1, true, null);
+        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now(), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, PATIENT_ID1, true, null);
         callLogSearch.setPaginationParams(2, 2);
         List<CallLog> callLogs = allCallLogs.findCallLogsForDateRange(callLogSearch);
         assertEquals(2, callLogs.size());
@@ -82,11 +74,7 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         createCallLog(thirdDay);
         createCallLog(thirdDay);
 
-        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, false, "clinicId");
-        callLogSearch.setPaginationParams(0, 10);
-        assertEquals(5, allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch).size());
-
-        callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, true, null);
+        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, true, null);
         int totalNumberOfCallLogs = allCallLogs.findTotalNumberOfCallLogsForDateRange(callLogSearch);
         assertEquals(5, totalNumberOfCallLogs);
     }
@@ -97,17 +85,13 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         DateTime secondDay = DateUtil.now().plusDays(1);
         DateTime thirdDay = DateUtil.now().plusDays(2);
 
-        createCallLog(firstDay, "clinic1", "GotDTMF", PATIENT_DOC_ID1);
-        createCallLog(secondDay, "clinic1", "GotDTMF", PATIENT_DOC_ID1);
-        createCallLog(secondDay, "clinic2", "GotDTMF", PATIENT_DOC_ID1);
-        createCallLog(thirdDay, "clinic1", "GotDTMF", PATIENT_DOC_ID1);
-        createCallLog(thirdDay, "clinic2", "GotDTMF", PATIENT_DOC_ID1);
+        createCallLog(firstDay, "clinic1", "GotDTMF", PATIENT_ID1);
+        createCallLog(secondDay, "clinic1", "GotDTMF", PATIENT_ID1);
+        createCallLog(secondDay, "clinic2", "GotDTMF", PATIENT_ID1);
+        createCallLog(thirdDay, "clinic1", "GotDTMF", PATIENT_ID1);
+        createCallLog(thirdDay, "clinic2", "GotDTMF", PATIENT_ID1);
 
-        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, null, true, null);
-        callLogSearch.setPaginationParams(0, 10);
-        assertEquals(5, allCallLogs.findCallLogsForDateRange(callLogSearch).size());
-
-        callLogSearch = new CallLogSearch(firstDay, thirdDay, CallLog.CallLogType.Answered, null, false, "clinic2");
+        CallLogSearch callLogSearch = new CallLogSearch(firstDay, thirdDay, CallLog.CallLogType.Answered, null, false, "clinic2");
         callLogSearch.setPaginationParams(0, 10);
         int totalNumberOfCallLogs = allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch).size();
         assertEquals(2, totalNumberOfCallLogs);
@@ -115,9 +99,9 @@ public class AllCallLogsIT extends SpringIntegrationTest {
 
     @Test
     public void shouldListMissedCalls() throws Exception {
-        createCallLog(DateUtil.now(), "clinic1", "GotDTMF", PATIENT_DOC_ID1);
-        createCallLog(DateUtil.now(), "clinic1", "Missed", PATIENT_DOC_ID1);
-        createCallLog(DateUtil.now(), "clinic2", "Missed", PATIENT_DOC_ID1);
+        createCallLog(DateUtil.now(), "clinic1", "GotDTMF", PATIENT_ID1);
+        createCallLog(DateUtil.now(), "clinic1", "Missed", PATIENT_ID1);
+        createCallLog(DateUtil.now(), "clinic2", "Missed", PATIENT_ID1);
 
         CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Missed, null, true, null);
         callLogSearch.setPaginationParams(0, 10);
@@ -133,9 +117,9 @@ public class AllCallLogsIT extends SpringIntegrationTest {
 
     @Test
     public void shouldListMissedCalls_ForAClinic() throws Exception {
-        createCallLog(DateUtil.now(), "clinic1", "GotDTMF", PATIENT_DOC_ID1);
-        createCallLog(DateUtil.now(), "clinic1", "Missed", PATIENT_DOC_ID1);
-        createCallLog(DateUtil.now(), "clinic2", "Missed", PATIENT_DOC_ID1);
+        createCallLog(DateUtil.now(), "clinic1", "GotDTMF", PATIENT_ID1);
+        createCallLog(DateUtil.now(), "clinic1", "Missed", PATIENT_ID1);
+        createCallLog(DateUtil.now(), "clinic2", "Missed", PATIENT_ID1);
 
         CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Missed, null, false, "clinic1");
         callLogSearch.setPaginationParams(0, 10);
@@ -150,36 +134,65 @@ public class AllCallLogsIT extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldReturnTheTotalNumberOfCallLogs_GivenADateRangeAndPatientDocId() {
+    public void shouldReturnTheTotalNumberOfCallLogs_GivenADateRangeAndPatientId() {
         DateTime firstDay = DateUtil.now();
         DateTime secondDay = DateUtil.now().plusDays(1);
         DateTime thirdDay = DateUtil.now().plusDays(2);
 
-        createCallLog(firstDay, PATIENT_DOC_ID1);
-        createCallLog(secondDay, PATIENT_DOC_ID1);
-        createCallLog(secondDay, PATIENT_DOC_ID2);
-        createCallLog(thirdDay, PATIENT_DOC_ID1);
-        createCallLog(thirdDay, PATIENT_DOC_ID2);
+        CallLog callLog1 = createCallLog(firstDay, PATIENT_ID1);
+        CallLog callLog2 = createCallLog(secondDay, PATIENT_ID1);
+        CallLog callLog3 = createCallLog(secondDay, PATIENT_ID2);
+        CallLog callLog4 = createCallLog(thirdDay, PATIENT_ID1);
+        CallLog callLog5 = createCallLog(thirdDay, PATIENT_ID2);
 
-        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, PATIENT_DOC_ID1, false, "clinicId");
-        callLogSearch.setPaginationParams(0, 10);
-        assertEquals(3, allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch).size());
-
-        callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, PATIENT_DOC_ID1, true, null);
-        int totalNumberOfCallLogs = allCallLogs.findTotalNumberOfCallLogsForDateRange(callLogSearch);
+        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, PATIENT_ID1.toLowerCase(), true, null);
+        callLogSearch.setPaginationParams(0, 20);
+        int totalNumberOfCallLogs = allCallLogs.findTotalNumberOfCallLogsForDateRangeAndPatientId(callLogSearch);
         assertEquals(3, totalNumberOfCallLogs);
+
+        List<CallLog> expectedCallLogs = allCallLogs.findCallLogsForDateRangeAndPatientId(callLogSearch);
+
+        assertEquals(callLog1, expectedCallLogs.get(0));
+        assertEquals(callLog2, expectedCallLogs.get(1));
+        assertEquals(callLog4, expectedCallLogs.get(2));
+    }
+
+    @Test
+    public void shouldReturnTheTotalNumberOfCallLogs_GivenADateRange_AndPatientId_AndAClinicId() {
+        DateTime firstDay = DateUtil.now();
+        DateTime secondDay = DateUtil.now().plusDays(1);
+        DateTime thirdDay = DateUtil.now().plusDays(2);
+
+        CallLog callLog1 = createCallLog(firstDay, "clinic1", "Newcall", PATIENT_ID1);
+        CallLog callLog2 = createCallLog(secondDay, "clinic1", "GotDTMF", PATIENT_ID1);
+        CallLog callLog3 = createCallLog(secondDay, "clinic2", "Newcall", PATIENT_ID2);
+        CallLog callLog4 = createCallLog(thirdDay, "clinic1", "GotDTMF", PATIENT_ID1);
+        CallLog callLog5 = createCallLog(thirdDay, "clinic2", "GotDTMF", PATIENT_ID2);
+        CallLog callLog6 = createCallLog(thirdDay, "clinic1", "Newcall", PATIENT_ID2);
+
+        CallLogSearch callLogSearch = new CallLogSearch(DateUtil.now().minusDays(1), DateUtil.now().plusDays(3), CallLog.CallLogType.Answered, PATIENT_ID1.toLowerCase(), false, "clinic1");
+        callLogSearch.setPaginationParams(0, 20);
+        int totalNumberOfCallLogs = allCallLogs.findTotalNumberOfCallLogsForDateRangePatientIdAndClinic(callLogSearch);
+        assertEquals(3, totalNumberOfCallLogs);
+
+        List<CallLog> expectedCallLogs = allCallLogs.findCallLogsForDateRangePatientIdAndClinic(callLogSearch);
+
+        assertEquals(callLog1, expectedCallLogs.get(0));
+        assertEquals(callLog2, expectedCallLogs.get(1));
+        assertEquals(callLog4, expectedCallLogs.get(2));
     }
 
     private CallLog createCallLog(DateTime startTime) {
-        return createCallLog(startTime, "clinicId", "GotDTMF", PATIENT_DOC_ID1);
+        return createCallLog(startTime, "clinicId", "GotDTMF", PATIENT_ID1);
     }
 
-    private CallLog createCallLog(DateTime startTime, String patientDocId) {
-        return createCallLog(startTime, "clinicId", "GotDTMF", patientDocId);
+    private CallLog createCallLog(DateTime startTime, String patientId) {
+        return createCallLog(startTime, "clinicId", "GotDTMF", patientId);
     }
 
-    private CallLog createCallLog(DateTime startTime, String clinic, String callEventType, String patientDocId) {
-        CallLog callLog = new CallLog(patientDocId);
+    private CallLog createCallLog(DateTime startTime, String clinic, String callEventType, String patientId) {
+        CallLog callLog = new CallLog();
+        callLog.patientId(patientId);
         callLog.setStartTime(startTime);
         callLog.clinicId(clinic);
         callLog.setEndTime(startTime.plusMinutes(5));
@@ -192,4 +205,5 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         markForDeletion(callLog);
         return callLog;
     }
+
 }

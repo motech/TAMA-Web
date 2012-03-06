@@ -4,8 +4,6 @@ import org.joda.time.DateTime;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.service.CallLogService;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
@@ -32,23 +30,23 @@ import java.util.Properties;
 public class CallSummaryController {
 
     private CallLogService callLogService;
-    
-    private AllPatients allPatients;
 
     private CallLogViewMapper callLogViewMapper;
     private final String LIST_VIEW = "callsummary/list";
     private final String CREATE_VIEW = "callsummary/create";
     private static final int HOURS_OF_THE_DAY = 23;
     private static final int MINUTES_AND_SECONDS_TO_END_OF_DAY = 59;
+    public static final String PATIENT_ID_WRONG_MESSAGE = "No call logs exist for the specified patient ID.";
+    public static final String NO_LOGS_FOR_DATE_RANGE = "No call logs exist in the duration specified.";
+    private static final String NO_CALL_SUMMARY_FOUND_VIEW = "callsummary/nologs";
     private Properties properties;
 
     @Autowired
-    public CallSummaryController(CallLogService callLogService, CallLogViewMapper callLogViewMapper, 
-                                 @Qualifier("ivrProperties") Properties properties, AllPatients allPatients) {
+    public CallSummaryController(CallLogService callLogService, CallLogViewMapper callLogViewMapper,
+                                 @Qualifier("ivrProperties") Properties properties) {
         this.callLogService = callLogService;
         this.callLogViewMapper = callLogViewMapper;
         this.properties = properties;
-        this.allPatients = allPatients;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -72,6 +70,14 @@ public class CallSummaryController {
         CallLogPageNavigator callLogPageNavigator = new CallLogPageNavigator(callLogSearch, pageNumber, totalNumberOfPages, filter.getPatientId());
 
         uiModel.asMap().clear();
+        if (callLogViews.isEmpty()) {
+            if (callLogSearch.isSearchByPatientId()) {
+                uiModel.addAttribute("message", PATIENT_ID_WRONG_MESSAGE);
+            } else {
+                uiModel.addAttribute("message", NO_LOGS_FOR_DATE_RANGE);
+            }
+            return NO_CALL_SUMMARY_FOUND_VIEW;
+        }
         uiModel.addAttribute("callSummary", callLogViews);
         uiModel.addAttribute("pageNavigator", callLogPageNavigator);
         return LIST_VIEW;
@@ -81,33 +87,31 @@ public class CallSummaryController {
         DateTime startDate = DateUtil.newDateTime(filter.getCallLogStartDate());
         DateTime endDate = DateUtil.newDateTime(filter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY)
                 .plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY);
-        Patient patient = allPatients.findByPatientId(filter.getPatientId());
-        String patientDocId = patient == null ? null : patient.getId();
-        return new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(filter.getCallType()), patientDocId,
+        return new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(filter.getCallType()), filter.getPatientId().toLowerCase(),
                 user.isAdministrator(), user.getClinicId());
     }
 
     Integer getValidPageNumber(String pageNumber, Integer totalNumberOfPages) {
-        try{
+        try {
             Integer pageNo = Integer.parseInt(pageNumber);
             return (pageNo > totalNumberOfPages || pageNo < 1) ? 1 : pageNo;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return 1;
         }
     }
 
     private Integer getMaxNumberOfCallLogsPerPage() {
-        return  Integer.parseInt(properties.getProperty(CallLogService.MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20"));
+        return Integer.parseInt(properties.getProperty(CallLogService.MAX_NUMBER_OF_CALL_LOGS_PER_PAGE, "20"));
     }
 
     private int getStartIndex(Integer pageNumber, Integer callLogsPerPage) {
-        return pageNumber == 1 ? 0 : ((pageNumber -1) * callLogsPerPage);
+        return pageNumber == 1 ? 0 : ((pageNumber - 1) * callLogsPerPage);
     }
 
     Integer calculateTotalNumberOfPages(Integer maxCallLogsPerPage, Integer totalNumberOfCallLogs) {
         int numberOfPages = totalNumberOfCallLogs / maxCallLogsPerPage;
         int remainder = totalNumberOfCallLogs % maxCallLogsPerPage;
-        if(remainder != 0) numberOfPages ++;
+        if (remainder != 0) numberOfPages++;
         return numberOfPages;
     }
 

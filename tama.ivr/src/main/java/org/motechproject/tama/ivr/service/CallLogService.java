@@ -1,6 +1,5 @@
 package org.motechproject.tama.ivr.service;
 
-import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.ivr.domain.CallLog;
@@ -10,12 +9,10 @@ import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 @Component
 public class CallLogService {
@@ -46,7 +43,9 @@ public class CallLogService {
             callLog.clinicId(clinicId);
             callLog.setLikelyPatientIds(allLikelyPatientIds);
         } else {
-            callLog.clinicId(allPatients.get(patientDocumentId).getClinic_id());
+            Patient patient = allPatients.get(patientDocumentId);
+            callLog.clinicId(patient.getClinic_id());
+            callLog.patientId(patient.getPatientId());
         }
         allCallLogs.add(callLog);
     }
@@ -56,17 +55,31 @@ public class CallLogService {
     }
 
     public Integer getTotalNumberOfLogs(CallLogSearch callLogSearch) {
-        if (callLogSearch.isSearchAllClinics())
-            return allCallLogs.findTotalNumberOfCallLogsForDateRange(callLogSearch);
-        else
-            return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndClinic(callLogSearch);
+        if (callLogSearch.isSearchByPatientId()) {
+            if (callLogSearch.isSearchAllClinics())
+                return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndPatientId(callLogSearch);
+            else
+                return allCallLogs.findTotalNumberOfCallLogsForDateRangePatientIdAndClinic(callLogSearch);
+        } else {
+            if (callLogSearch.isSearchAllClinics())
+                return allCallLogs.findTotalNumberOfCallLogsForDateRange(callLogSearch);
+            else
+                return allCallLogs.findTotalNumberOfCallLogsForDateRangeAndClinic(callLogSearch);
+        }
     }
 
     public List<CallLog> getLogsForDateRange(CallLogSearch callLogSearch) {
-        if (callLogSearch.isSearchAllClinics())
-            return allCallLogs.findCallLogsForDateRange(callLogSearch);
-        else
-            return allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch);
+        if (callLogSearch.isSearchByPatientId()) {
+            if (callLogSearch.isSearchAllClinics())
+                return allCallLogs.findCallLogsForDateRangeAndPatientId(callLogSearch);
+            else
+                return allCallLogs.findCallLogsForDateRangePatientIdAndClinic(callLogSearch);
+        } else {
+            if (callLogSearch.isSearchAllClinics())
+                return allCallLogs.findCallLogsForDateRange(callLogSearch);
+            else
+                return allCallLogs.findCallLogsForDateRangeAndClinic(callLogSearch);
+        }
     }
 
     private List<String> getAllLikelyPatientIds(KookooCallDetailRecord kookooCallDetailRecord) {

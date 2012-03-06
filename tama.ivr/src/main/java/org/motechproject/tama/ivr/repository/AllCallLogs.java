@@ -22,43 +22,67 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
         initStandardDesignDocument();
     }
 
-    private String getStartPatientDocIdKey(CallLogSearch callLogSearch) {
-        return callLogSearch.getPatientDocId() == null ? null : callLogSearch.getPatientDocId();
-    }
-
-    private Object getEndPatientDocIdKey(CallLogSearch callLogSearch) {
-        return callLogSearch.getPatientDocId() == null ? ComplexKey.emptyObject() : callLogSearch.getPatientDocId();
-    }
-
     public List<CallLog> findCallLogsForDateRangeAndClinic(CallLogSearch callLogSearch) {
-        ComplexKey startDosageDateKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), getStartPatientDocIdKey(callLogSearch), callLogSearch.getFromDate());
-        ComplexKey endDosageDateKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), getEndPatientDocIdKey(callLogSearch), callLogSearch.getToDate());
-        ViewQuery q = createQuery("find_all_call_logs_between_a_given_date_range_and_by_clinicId")
-                .startKey(startDosageDateKey).endKey(endDosageDateKey).includeDocs(true)
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getFromDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_clinicId_and_date_range")
+                .startKey(startKey).endKey(endKey).includeDocs(true)
                 .skip(callLogSearch.getStartIndex()).limit(callLogSearch.getLimit()).reduce(false);
         return db.queryView(q, CallLog.class);
     }
 
     public List<CallLog> findCallLogsForDateRange(CallLogSearch callLogSearch) {
-        ComplexKey startDosageDateKey = ComplexKey.of(callLogSearch.getCallLogType().name(), getStartPatientDocIdKey(callLogSearch), callLogSearch.getFromDate());
-        ComplexKey endDosageDateKey = ComplexKey.of(callLogSearch.getCallLogType().name(), getEndPatientDocIdKey(callLogSearch), callLogSearch.getToDate());
-        ViewQuery q = createQuery("find_all_call_logs_between_a_given_date_range").startKey(startDosageDateKey).endKey(endDosageDateKey).includeDocs(true).skip(callLogSearch.getStartIndex()).limit(callLogSearch.getLimit()).reduce(false);
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getFromDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_and_date_range").startKey(startKey).endKey(endKey).includeDocs(true).skip(callLogSearch.getStartIndex()).limit(callLogSearch.getLimit()).reduce(false);
         return db.queryView(q, CallLog.class);
     }
 
-    @View(name = "find_all_call_logs_between_a_given_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.patientDocumentId, doc.startTime], doc._id); } }", reduce = "_count")
+    @View(name = "find_by_callType_and_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.startTime], doc._id); } }", reduce = "_count")
     public int findTotalNumberOfCallLogsForDateRange(CallLogSearch callLogSearch) {
-        ComplexKey startDosageDateKey = ComplexKey.of(callLogSearch.getCallLogType().name(), getStartPatientDocIdKey(callLogSearch), callLogSearch.getFromDate());
-        ComplexKey endDosageDateKey= ComplexKey.of(callLogSearch.getCallLogType().name(), getEndPatientDocIdKey(callLogSearch), callLogSearch.getToDate());
-        ViewQuery q = createQuery("find_all_call_logs_between_a_given_date_range").startKey(startDosageDateKey).endKey(endDosageDateKey).reduce(true);
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getFromDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_and_date_range").startKey(startKey).endKey(endKey).reduce(true);
         return rowCount(db.queryView(q));
     }
 
-    @View(name = "find_all_call_logs_between_a_given_date_range_and_by_clinicId", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.clinicId, doc.patientDocumentId, doc.startTime], doc._id); } }", reduce = "_count")
+    @View(name = "find_by_callType_clinicId_and_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.clinicId, doc.startTime], doc._id); } }", reduce = "_count")
     public int findTotalNumberOfCallLogsForDateRangeAndClinic(CallLogSearch callLogSearch) {
-        ComplexKey startDosageDateKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), getStartPatientDocIdKey(callLogSearch), callLogSearch.getFromDate());
-        ComplexKey endDosageDateKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), getEndPatientDocIdKey(callLogSearch), callLogSearch.getToDate());
-        ViewQuery q = createQuery("find_all_call_logs_between_a_given_date_range_and_by_clinicId").startKey(startDosageDateKey).endKey(endDosageDateKey).reduce(true);
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getFromDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_clinicId_and_date_range").startKey(startKey).endKey(endKey).reduce(true);
+        return rowCount(db.queryView(q));
+    }
+
+    public List<CallLog> findCallLogsForDateRangePatientIdAndClinic(CallLogSearch callLogSearch) {
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getPatientId(), callLogSearch.getFromDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getPatientId(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_clinicId_patientId_and_date_range")
+                .startKey(startKey).endKey(endKey).includeDocs(true)
+                .skip(callLogSearch.getStartIndex()).limit(callLogSearch.getLimit()).reduce(false);
+        return db.queryView(q, CallLog.class);
+    }
+
+    public List<CallLog> findCallLogsForDateRangeAndPatientId(CallLogSearch callLogSearch) {
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getPatientId(), callLogSearch.getFromDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getPatientId(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_patientId_and_date_range").startKey(startKey).endKey(endKey).includeDocs(true).skip(callLogSearch.getStartIndex()).limit(callLogSearch.getLimit()).reduce(false);
+        return db.queryView(q, CallLog.class);
+    }
+
+    @View(name = "find_by_callType_patientId_and_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.patientId.toLowerCase(), doc.startTime], doc._id); } }", reduce = "_count")
+    public int findTotalNumberOfCallLogsForDateRangeAndPatientId(CallLogSearch callLogSearch) {
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getPatientId(), callLogSearch.getFromDate());
+        ComplexKey endKey= ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getPatientId(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_patientId_and_date_range").startKey(startKey).endKey(endKey).reduce(true);
+        return rowCount(db.queryView(q));
+    }
+
+    @View(name = "find_by_callType_clinicId_patientId_and_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.clinicId, doc.patientId.toLowerCase(), doc.startTime], doc._id); } }", reduce = "_count")
+    public int findTotalNumberOfCallLogsForDateRangePatientIdAndClinic(CallLogSearch callLogSearch) {
+        ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getPatientId(), callLogSearch.getFromDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getClinicId(), callLogSearch.getPatientId(), callLogSearch.getToDate());
+        ViewQuery q = createQuery("find_by_callType_clinicId_patientId_and_date_range").startKey(startKey).endKey(endKey).reduce(true);
         return rowCount(db.queryView(q));
     }
 }
