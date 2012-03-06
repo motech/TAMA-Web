@@ -45,7 +45,7 @@ public class PatientAlerts extends ArrayList<PatientAlert> {
             @Override
             public boolean evaluate(Object o) {
                 PatientAlert patientAlert = (PatientAlert) o;
-                return patientAlertType == null || (patientAlert.getAlert().getData() != null && patientAlertType.name().equals(patientAlert.getType()));
+                return patientAlertType == null || (patientAlert.getAlert().getData() != null && patientAlertType.name().equals(patientAlert.getType().name()));
             }
         };
     }

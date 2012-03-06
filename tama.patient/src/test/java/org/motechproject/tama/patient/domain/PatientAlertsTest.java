@@ -84,11 +84,11 @@ public class PatientAlertsTest {
     @Test
     public void filterPatientAlerts_ByAlertType() {
         HashMap<String, String> redAdherence = new HashMap<String, String>() {{
-            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.toString());
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.name());
         }};
 
         HashMap<String, String> fallingAdherence = new HashMap<String, String>() {{
-            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.toString());
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
         }};
         Alert alert1  = new Alert(null, null, null, 0, redAdherence);
         Alert alert2  = new Alert(null, null, null, 0, fallingAdherence);
@@ -98,17 +98,17 @@ public class PatientAlertsTest {
 
         PatientAlerts alertsForAlertType = patientAlerts.filterByAlertType(PatientAlertType.AdherenceInRed);
         assertEquals(1, alertsForAlertType.size());
-        assertEquals(PatientAlertType.AdherenceInRed.toString(), alertsForAlertType.get(0).getType());
+        assertEquals(PatientAlertType.AdherenceInRed.name(), alertsForAlertType.get(0).getType().name());
     }
 
     @Test
     public void filterPatientAlerts_ShouldReturnAllAlerts_WhenNoAlertTypeSpecified() {
         HashMap<String, String> redAdherence = new HashMap<String, String>() {{
-            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.toString());
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.name());
         }};
 
         HashMap<String, String> fallingAdherence = new HashMap<String, String>() {{
-            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.toString());
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
         }};
         Alert alert1  = new Alert(null, null, null, 0, redAdherence);
         Alert alert2  = new Alert(null, null, null, 0, fallingAdherence);
@@ -118,7 +118,7 @@ public class PatientAlertsTest {
 
         PatientAlerts alertsForAlertType = patientAlerts.filterByAlertType(null);
         assertEquals(2, alertsForAlertType.size());
-        assertEquals(PatientAlertType.AdherenceInRed.toString(), alertsForAlertType.get(0).getType());
-        assertEquals(PatientAlertType.FallingAdherence.toString(), alertsForAlertType.get(1).getType());
+        assertEquals(PatientAlertType.AdherenceInRed.name(), alertsForAlertType.get(0).getType().name());
+        assertEquals(PatientAlertType.FallingAdherence.name(), alertsForAlertType.get(1).getType().name());
     }
 }

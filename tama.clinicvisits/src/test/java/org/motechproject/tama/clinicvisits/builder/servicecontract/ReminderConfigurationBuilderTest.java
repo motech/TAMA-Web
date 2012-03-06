@@ -34,7 +34,7 @@ public class ReminderConfigurationBuilderTest {
         ReminderConfiguration reminderConfiguration = builder.newVisitReminder();
         assertEquals(1, reminderConfiguration.getIntervalCount());
         assertEquals(ReminderConfiguration.IntervalUnit.DAYS, reminderConfiguration.getIntervalUnit());
-        assertEquals(5, reminderConfiguration.getRepeatCount());
+        assertEquals(5 + 1, reminderConfiguration.getRepeatCount());
         assertEquals(5, reminderConfiguration.getRemindFrom());
     }
 }

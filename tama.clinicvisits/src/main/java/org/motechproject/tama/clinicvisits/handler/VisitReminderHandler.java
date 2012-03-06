@@ -4,6 +4,7 @@ import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.criteria.VisitMissedAlertCriteria;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.clinicvisits.service.VisitReminderService;
 import org.motechproject.tama.patient.domain.Patient;
@@ -34,5 +35,7 @@ public class VisitReminderHandler {
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, visitName);
 
         visitReminderService.addOutboxMessage(patient, clinicVisit);
+
+        visitReminderService.raiseAlert(patient, clinicVisit);
     }
 }

@@ -26,6 +26,8 @@ public class TAMAConstants {
     public static final String DAILY_ADHERENCE_IN_RED_ALERT_SUBJECT = BASE_SUBJECT + ".daily.adherenceInRed.alert";
     public static final String ADHERENCE_IN_RED_ALERT = "Adherence in Red";
     public static final String APPOINTMENT_REMINDER = "Appointment reminder";
+    public static final String APPOINTMENT_LOST_REMINDER = "Appointment lost";
+    public static final String APPOINTMENT_MISSED_REMINDER = "Appointment missed";
     public static final String FALLING_ADHERENCE = "Falling Adherence";
     public static final String VOICE_MESSAGE_COMMAND_AUDIO = "Adherence";
     public static final int NO_ALERT_PRIORITY = 0;

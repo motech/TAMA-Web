@@ -20,7 +20,7 @@ public class PatientAlert {
     public static final String SYMPTOMS_ALERT_STATUS = "Symptoms Alert Status";
     public static final String PATIENT_CALL_PREFERENCE = "Patient Call Preference";
     public static final String ADHERENCE = "Adherence";
-    public static final String APPOINTMENT_DUE_DATE = "AppointmentDueDate";
+    public static final String APPOINTMENT_DATE = "AppointmentDate";
 
     private Patient patient;
     private Alert alert;
@@ -54,7 +54,7 @@ public class PatientAlert {
     }
 
     public String getAlertPriority() {
-        if (PatientAlertType.SymptomReporting.name().equals(getType()))
+        if (PatientAlertType.SymptomReporting.name().equals(getType().name()))
             return String.format("SYMPTOM PRIO-%d", this.alert.getPriority());
         if (this.alert.getPriority() > 0) return String.valueOf(this.alert.getPriority());
         return StringUtils.EMPTY;
@@ -85,11 +85,15 @@ public class PatientAlert {
     }
 
     public boolean isSymptomReportingAlert() {
-        return PatientAlertType.SymptomReporting.name().equals(getType());
+        return PatientAlertType.SymptomReporting.name().equals(getType().name());
     }
 
-    public String getType() {
-        return this.alert.getData().get(PATIENT_ALERT_TYPE);
+    public PatientAlertType getType() {
+        return PatientAlertType.valueOf(this.alert.getData().get(PATIENT_ALERT_TYPE));
+    }
+
+    public String getTypeName() {
+        return getType().toString();
     }
 
     public String getNotes() {
@@ -111,7 +115,7 @@ public class PatientAlert {
     @Temporal(TemporalType.DATE)
     @org.springframework.format.annotation.DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     public LocalDate getAppointmentDueDate() {
-        return new LocalDate(this.alert.getData().get(APPOINTMENT_DUE_DATE));
+        return new LocalDate(this.alert.getData().get(APPOINTMENT_DATE));
     }
 
     public String getConnectedToDoctor() {

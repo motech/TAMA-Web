@@ -55,4 +55,10 @@ public class VisitReminderHandlerTest {
         visitReminderHandler.handleEvent(event);
         verify(visitReminderService).addOutboxMessage(patient, clinicVisit);
     }
+    
+    @Test
+    public void shouldRaiseAlert() {
+        visitReminderHandler.handleEvent(event);
+        verify(visitReminderService).raiseAlert(patient, clinicVisit);
+    }
 }

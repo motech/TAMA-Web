@@ -78,7 +78,11 @@ public class AlertFilter {
     }
 
     public PatientAlertType getPatientAlertType() {
-        return StringUtils.isBlank(alertType) || alertType.equals("Any") ? null : PatientAlertType.valueOf(alertType);
+        if (StringUtils.isBlank(alertType) || alertType.equals("Any") ) return null;
+        for (PatientAlertType each : PatientAlertType.values()) {
+            if (each.toString().equals(alertType)) return each;
+        }
+        return  null;
     }
 
     public String getAlertStatus() {

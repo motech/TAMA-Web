@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.criteria.AppointmentConfirmationMissedAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.common.TAMAConstants;
@@ -33,6 +34,8 @@ public class AppointmentReminderServiceTest {
     @Mock
     private ReminderAlertCriteria reminderAlertCriteria;
     @Mock
+    private AppointmentConfirmationMissedAlertCriteria appointmentConfirmationMissedAlertCriteria;
+    @Mock
     private OutboxService outboxService;
     @Mock
     PatientAlertService patientAlertService;
@@ -50,7 +53,7 @@ public class AppointmentReminderServiceTest {
     @Before
     public void setup() {
         initMocks(this);
-        appointmentReminderService = new AppointmentReminderService(reminderOutboxCriteria, reminderAlertCriteria, patientAlertService, outboxService);
+        appointmentReminderService = new AppointmentReminderService(reminderOutboxCriteria, reminderAlertCriteria, patientAlertService, outboxService, appointmentConfirmationMissedAlertCriteria);
     }
 
     @Test
@@ -72,19 +75,42 @@ public class AppointmentReminderServiceTest {
         DateTime now = DateUtil.now();
         clinicVisit = new ClinicVisitBuilder().withAppointmentDueDate(now).build();
         when(reminderAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(true);
+        when(appointmentConfirmationMissedAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(false);
 
         appointmentReminderService.raiseAlert(patient, clinicVisit);
 
         ArgumentCaptor<HashMap> alertDataArgumentCaptor = ArgumentCaptor.forClass(HashMap.class);
         verify(patientAlertService).createAlert(eq(patient.getId()), eq(TAMAConstants.NO_ALERT_PRIORITY),
                 eq(TAMAConstants.APPOINTMENT_REMINDER), eq(""), eq(PatientAlertType.AppointmentReminder), alertDataArgumentCaptor.capture());
-        assertNotNull(alertDataArgumentCaptor.getValue().containsKey(PatientAlert.APPOINTMENT_DUE_DATE));
-        assertEquals(now.toLocalDate().toString(), alertDataArgumentCaptor.getValue().get(PatientAlert.APPOINTMENT_DUE_DATE));
+        assertNotNull(alertDataArgumentCaptor.getValue().containsKey(PatientAlert.APPOINTMENT_DATE));
+        assertEquals(now.toLocalDate().toString(), alertDataArgumentCaptor.getValue().get(PatientAlert.APPOINTMENT_DATE));
     }
 
     @Test
     public void shouldNotRaiseAlertIfReminderAlertCriteriaIsFalse() {
         when(reminderAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(false);
+        when(appointmentConfirmationMissedAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(false);
+        appointmentReminderService.raiseAlert(patient, clinicVisit);
+        verifyZeroInteractions(patientAlertService);
+    }
+
+    @Test
+    public void shouldRaiseAlertIfAppointmentConfirmationMissedAlertCriteriaIsTrue() {
+        DateTime now = DateUtil.now();
+        clinicVisit = new ClinicVisitBuilder().withAppointmentDueDate(now).build();
+        when(appointmentConfirmationMissedAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(true);
+        appointmentReminderService.raiseAlert(patient, clinicVisit);
+
+        ArgumentCaptor<HashMap> alertDataArgumentCaptor = ArgumentCaptor.forClass(HashMap.class);
+        verify(patientAlertService).createAlert(eq(patient.getId()), eq(TAMAConstants.NO_ALERT_PRIORITY),
+                eq(TAMAConstants.APPOINTMENT_LOST_REMINDER), eq(""), eq(PatientAlertType.AppointmentConfirmationMissed), alertDataArgumentCaptor.capture());
+        assertNotNull(alertDataArgumentCaptor.getValue().containsKey(PatientAlert.APPOINTMENT_DATE));
+        assertEquals(now.toLocalDate().toString(), alertDataArgumentCaptor.getValue().get(PatientAlert.APPOINTMENT_DATE));
+    }
+
+    @Test
+    public void shouldNotRaiseAlertIfAppointmentConfirmationMissedAlertCriteriaIsFalse() {
+        when(appointmentConfirmationMissedAlertCriteria.shouldRaiseAlert(clinicVisit)).thenReturn(false);
         appointmentReminderService.raiseAlert(patient, clinicVisit);
         verifyZeroInteractions(patientAlertService);
     }

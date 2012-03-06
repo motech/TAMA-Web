@@ -125,8 +125,8 @@ public class PatientAlertServiceTest {
         }};
         PatientAlerts alerts = new PatientAlerts() {{
             add(PatientAlert.newPatientAlert(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
-            setData(symptomReportingData);
-            setId(alertId);
+                setData(symptomReportingData);
+                setId(alertId);
             }}, patient));
         }};
 
@@ -147,13 +147,17 @@ public class PatientAlertServiceTest {
         final Patient patient = new PatientBuilder().withId(patientId).build();
         when(allPatients.get(patientId)).thenReturn(patient);
         when(patientAlertSearchService.search(patientId, startDate, endDate, null)).thenReturn(new PatientAlerts() {{
-            final HashMap<String, String> data = new HashMap<String, String>() {{
+            final HashMap<String, String> adherenceFallingAlertTypeData = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
             }};
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, new HashMap<String, String>()), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, null), null));
+
+            final HashMap<String, String> symptomReportingAlertTypeData = new HashMap<String, String>() {{
+                put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+            }};
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, adherenceFallingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, adherenceFallingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
         }});
 
         final PatientAlerts fallingAdherenceAlerts = patientAlertService.getFallingAdherenceAlerts(patientId, startDate, endDate);
@@ -173,10 +177,13 @@ public class PatientAlertServiceTest {
             final HashMap<String, String> data = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AdherenceInRed.name());
             }};
+            final HashMap<String, String> symptomReportingAlertTypeData = new HashMap<String, String>() {{
+                put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+            }};
             add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data), null));
             add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, new HashMap<String, String>()), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, null), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
         }});
 
 

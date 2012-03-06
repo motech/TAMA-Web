@@ -1,6 +1,7 @@
 package org.motechproject.tama.clinicvisits.service;
 
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.criteria.AppointmentConfirmationMissedAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.common.TAMAConstants;
@@ -19,16 +20,18 @@ public class AppointmentReminderService {
 
     private ReminderOutboxCriteria reminderOutboxCriteria;
     private ReminderAlertCriteria reminderAlertCriteria;
+    private AppointmentConfirmationMissedAlertCriteria appointmentConfirmationMissedAlertCriteria;
 
     private OutboxService outboxService;
     private PatientAlertService patientAlertService;
 
     @Autowired
-    public AppointmentReminderService(ReminderOutboxCriteria reminderOutboxCriteria, ReminderAlertCriteria reminderAlertCriteria, PatientAlertService patientAlertService, OutboxService outboxService) {
+    public AppointmentReminderService(ReminderOutboxCriteria reminderOutboxCriteria, ReminderAlertCriteria reminderAlertCriteria, PatientAlertService patientAlertService, OutboxService outboxService, AppointmentConfirmationMissedAlertCriteria appointmentConfirmationMissedAlertCriteria) {
         this.reminderOutboxCriteria = reminderOutboxCriteria;
         this.reminderAlertCriteria = reminderAlertCriteria;
         this.patientAlertService = patientAlertService;
         this.outboxService = outboxService;
+        this.appointmentConfirmationMissedAlertCriteria = appointmentConfirmationMissedAlertCriteria;
     }
 
     public void addOutboxMessage(Patient patient, ClinicVisit clinicVisit) {
@@ -39,10 +42,17 @@ public class AppointmentReminderService {
 
     public void raiseAlert(Patient patient, ClinicVisit clinicVisit) {
         if (reminderAlertCriteria.shouldRaiseAlert(clinicVisit)) {
-            HashMap<String, String> data = new HashMap<String, String>();
-            data.put(PatientAlert.APPOINTMENT_DUE_DATE, clinicVisit.getEffectiveDueDate().toString());
-            patientAlertService.createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
-                    TAMAConstants.APPOINTMENT_REMINDER, "", PatientAlertType.AppointmentReminder, data);
+            raiseAppointmentAlert(patient, clinicVisit, TAMAConstants.APPOINTMENT_REMINDER, PatientAlertType.AppointmentReminder);
         }
+        if (appointmentConfirmationMissedAlertCriteria.shouldRaiseAlert(clinicVisit)) {
+            raiseAppointmentAlert(patient, clinicVisit, TAMAConstants.APPOINTMENT_LOST_REMINDER, PatientAlertType.AppointmentConfirmationMissed);
+        }
+    }
+
+    private void raiseAppointmentAlert(Patient patient, ClinicVisit clinicVisit, String alertName, PatientAlertType alertType) {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.APPOINTMENT_DATE, clinicVisit.getEffectiveDueDate().toString());
+        patientAlertService.createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
+                alertName, "", alertType, data);
     }
 }
