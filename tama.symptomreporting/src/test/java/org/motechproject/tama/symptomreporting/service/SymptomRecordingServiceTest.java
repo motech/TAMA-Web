@@ -8,8 +8,6 @@ import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
-
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,38 +27,38 @@ public class SymptomRecordingServiceTest {
 
     @Test
     public void shouldRecordSymptomReported() {
-        SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId");
-        expectedReport.setSymptomIds(Arrays.asList(FEVER_ID));
+        SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId", DateUtil.now());
+        expectedReport.addSymptomId(FEVER_ID);
         when(allSymptomReports.findByCallId("callId")).thenReturn(null);
 
         symptomRecordingService.save(FEVER_ID, "patientDocumentId", "callId", DateUtil.now());
 
         ArgumentCaptor<SymptomReport> reportCapture = ArgumentCaptor.forClass(SymptomReport.class);
-        verify(allSymptomReports).insertOrMerge(reportCapture.capture());
+        verify(allSymptomReports).addOrReplace(reportCapture.capture());
         assertEquals(expectedReport, reportCapture.getValue());
     }
 
 
     @Test
     public void shouldInsertIfOnlySummarySymptomIdReported() {
-        SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId");
+        SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId", DateUtil.now());
         String summarySymptomId = "depression";
-        expectedReport.setSymptomIds(Arrays.asList(summarySymptomId));
+        expectedReport.addSymptomId(summarySymptomId);
         when(allSymptomReports.findByCallId("callId")).thenReturn(null);
 
         symptomRecordingService.save(summarySymptomId, "patientDocumentId", "callId", DateUtil.now());
 
         ArgumentCaptor<SymptomReport> reportCapture = ArgumentCaptor.forClass(SymptomReport.class);
-        verify(allSymptomReports).insertOrMerge(reportCapture.capture());
+        verify(allSymptomReports).addOrReplace(reportCapture.capture());
         assertEquals(expectedReport, reportCapture.getValue());
     }
 
     @Test
     public void shouldSetAdviceGivenOnSymptomsReport() {
-        SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId");
+        SymptomReport expectedReport = new SymptomReport("patientDocumentId", "callId", DateUtil.now());
         when(allSymptomReports.findByCallId("callId")).thenReturn(expectedReport);
         symptomRecordingService.saveAdviceGiven("patientDocumentId", "callId", "some advice");
-        verify(allSymptomReports).insertOrMerge(expectedReport);
+        verify(allSymptomReports).addOrReplace(expectedReport);
         assertEquals("some advice", expectedReport.getAdviceGiven());
     }
 
@@ -70,11 +68,10 @@ public class SymptomRecordingServiceTest {
         symptomRecordingService.saveAdviceGiven("patientDocumentId", "callId", "some advice");
 
         ArgumentCaptor<SymptomReport> newSymptomReportCaptor = ArgumentCaptor.forClass(SymptomReport.class);
-        verify(allSymptomReports).insertOrMerge(newSymptomReportCaptor.capture());
+        verify(allSymptomReports).addOrReplace(newSymptomReportCaptor.capture());
 
         assertEquals("callId", newSymptomReportCaptor.getValue().getCallId());
         assertEquals("patientDocumentId", newSymptomReportCaptor.getValue().getPatientDocId());
         assertEquals("some advice", newSymptomReportCaptor.getValue().getAdviceGiven());
-
     }
 }

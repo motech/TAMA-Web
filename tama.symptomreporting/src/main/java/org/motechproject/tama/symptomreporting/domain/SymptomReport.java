@@ -1,7 +1,6 @@
 package org.motechproject.tama.symptomreporting.domain;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
@@ -29,9 +28,10 @@ public class SymptomReport extends CouchEntity {
     protected SymptomReport() {
     }
 
-    public SymptomReport(String patientDocId, String callId) {
+    public SymptomReport(String patientDocId, String callId, DateTime reportedAt) {
         this.patientDocId = patientDocId;
         this.callId = callId;
+        this.reportedAt = reportedAt;
     }
 
     public String getCallId() {
@@ -43,11 +43,11 @@ public class SymptomReport extends CouchEntity {
     }
 
     public List<String> getSymptomIds() {
-        return new ArrayList<String>(symptomIds);
+        return symptomIds;
     }
 
-    public void setSymptomIds(List<String> symptomIds) {
-        this.symptomIds = symptomIds;
+    public void addSymptomId(String symptomId) {
+        symptomIds.add(symptomId);
     }
 
     public String getPatientDocId() {
@@ -80,12 +80,6 @@ public class SymptomReport extends CouchEntity {
 
     public void setAdviceGiven(String adviceGiven) {
         this.adviceGiven = adviceGiven;
-    }
-
-    @JsonIgnore
-    public SymptomReport merge(SymptomReport report) {
-        setSymptomIds((List<String>) CollectionUtils.union(getSymptomIds(), report.getSymptomIds()));
-        return this;
     }
 
     @Override
