@@ -44,6 +44,7 @@
         java.util.Date curdate = new java.util.Date();
         if (!fakeTimeAvailable)
                 curdate = DateUtil.now().toDate();
+
 %><html>
   <head>
     <script type="text/javascript">
@@ -51,9 +52,12 @@
     </script>
     <script src="<%=application.getContextPath() %>/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
     <script type="text/javascript">
+
           dojo.require("dijit.dijit"); // loads the optimized dijit layer
           dojo.require("dijit.form.DateTextBox");
           dojo.require("dijit.form.TimeTextBox");
+
+
 
           dojo.addOnLoad(function() {
                   new dijit.form.TimeTextBox({
@@ -80,6 +84,9 @@
     }
     </style>
     <script>
+
+
+
     function displayMsg(data){
     	dojo.byId('timeMessage').style.display="";
         dojo.byId('timeMessage').innerHTML = data;
@@ -110,6 +117,23 @@
     </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script src="js/Recording.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#missedCallButton').click(function () {
+            dojo.xhrPost({
+                url:'<%=application.getContextPath() %>/ivr/reply/callback?external_id=' + $('#missedCall').val() + "&call_type=Outbox",
+                content:{ 'phone_no':$('#phone').val(), 'status':'ring', 'sid':callId},
+                load:function () {
+                    alert('Posted missed call');
+                }
+            })
+        });
+
+        window.cacheControl = new CacheControl();
+        window.recording = new Recording(window.cacheControl);
+    });
+</script>
 <script type="text/javascript">
 /**
 * jQuery Cookie plugin
@@ -234,6 +258,9 @@ function call(path) {
 				collectdtmf = $(data).find('collectdtmf').attr('l');
 				$(data).find('playaudio').each(function() {
 					var filename = $(this).text();//.replace(/.*\//, "");
+					if(filename.indexOf("signature_music") === -1){
+					    window.recording.record(filename);
+					}
 					var text = filename;//.replace(/.wav/,"");
 					html += '<audio src="' + filename + '" autostart=false width=1 height=1 id="'+filename+'" enablejavascript="true" class="audio"/>' +
 					'<button id="' + filename+ '" onclick="play(\'' +filename+ '\');">&raquo;'+text+' </button>';
@@ -343,7 +370,8 @@ function play(i){
 <br/>
 <button onclick="newCall();">New Call</button>
 <button onclick="login();">Login</button>
- <button onclick="endCall();">End Call</button> 
+<button onclick="endCall();">End Call</button>
+<a href="playFiles.jsp">Play Files</a>
 <table><tr><td>
  <table>
  <tr><td><button onclick="send(1);">1</button> </td><td><button onclick="send(2);">2</button></td><td><button onclick="send(3);">3</button></td></tr>
@@ -365,9 +393,11 @@ function play(i){
 </form>
 <button onclick="submitTime();">Set Time</button>
 </td></tr></table>
-<br><br><br>
+<br><br>
+    <label for="missedCall">Patient Doc Id  </label><input id="missedCall" type="text"/><button id="missedCallButton">Missed Call</button>
+    <br><br>
 <div><input type="checkbox" id="mute"></input> Mute audio <span><input type="checkbox" id="symptoms_reporting"></input> Symptoms Reporting call
-<input type="checkbox" id="poll_call" checked></input> Accept incoming call
+<input type="checkbox" id="poll_call" ></input> Accept incoming call
 </span></div>
 <button onclick="$('.optional').toggle(600);">Show / Hide Params</button>
 <table id="params">
