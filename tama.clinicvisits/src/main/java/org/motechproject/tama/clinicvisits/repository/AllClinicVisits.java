@@ -111,7 +111,7 @@ public class AllClinicVisits {
     }
 
     public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate) {
-        appointmentService.rescheduleAppointment(patientDocId, clinicVisitId, DateUtil.newDateTime(adjustedDueDate, 0, 0, 0));
+        appointmentService.rescheduleAppointment(patientDocId, clinicVisitId, DateUtil.newDateTime(adjustedDueDate));
     }
 
     public void confirmAppointmentDate(String patientDocId, String clinicVisitId, DateTime confirmedAppointmentDate) {

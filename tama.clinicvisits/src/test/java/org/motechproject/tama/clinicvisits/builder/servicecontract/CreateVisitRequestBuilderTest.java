@@ -54,10 +54,10 @@ public class CreateVisitRequestBuilderTest {
 
     @Test
     public void shouldCreateScheduledVisitRequestGivenWeekOffSet() {
-        DateTime dueDate = DateUtil.now().plusWeeks(1);
+        DateTime dueDate = DateUtil.newDateTime(DateUtil.today().plusWeeks(1));
         CreateVisitRequest visitRequest = createVisitRequestBuilder.scheduledVisitRequest("visitName", 1);
         assertEquals("visitname", visitRequest.getVisitName());
-        assertEquals(dueDate.toLocalDate(), visitRequest.getAppointmentDueDate().toLocalDate());
+        assertEquals(dueDate, visitRequest.getAppointmentDueDate());
         assertEquals(TypeOfVisit.Scheduled.toString(), visitRequest.getTypeOfVisit());
         assertEquals(1, visitRequest.getData().get(ClinicVisit.WEEK_NUMBER));
         assertNotNull(visitRequest.getAppointmentReminderConfiguration());

@@ -5,7 +5,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxLogs;
 import org.motechproject.util.DateUtil;
@@ -33,7 +32,7 @@ public class OutboxMessageReportService {
     }
 
     public JSONObject JSONReport(String patientDocId, LocalDate start, LocalDate end) throws JSONException {
-        final List<OutboxMessageLog> outboxMessageLogs = allOutboxLogs.list(patientDocId, DateUtil.newDateTime(start, 0, 0, 0), DateUtil.newDateTime(end, 0, 0, 0));
+        final List<OutboxMessageLog> outboxMessageLogs = allOutboxLogs.list(patientDocId, DateUtil.newDateTime(start), DateUtil.newDateTime(end));
 
         JSONObject result = new JSONObject();
 

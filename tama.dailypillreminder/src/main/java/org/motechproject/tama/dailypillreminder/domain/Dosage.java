@@ -23,7 +23,7 @@ public class Dosage {
     }
 
     public int getDosesBetween(LocalDate from, DateTime to) {
-        DateTime fromDateTime = DateUtil.newDateTime(from, 0, 0, 0);
+        DateTime fromDateTime = DateUtil.newDateTime(from);
         DateTime dosageStartTime = DateUtil.newDateTime(dosageResponse.getStartDate(), getHour(), getMinute(), 0);
         LocalDate dosageEndDate = dosageResponse.getEndDate() != null ? dosageResponse.getEndDate() : to.toLocalDate();
         DateTime dosageEndTime = DateUtil.newDateTime(dosageEndDate, getHour(), getMinute(), 0);

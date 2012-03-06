@@ -24,7 +24,7 @@ public class DosageTimeLine implements Iterator<Dose> {
     private Dose computeFirstDose() {
         if (to.isBefore(from)) return null;
         if (from.toLocalDate().isBefore(dosageResponse.getStartDate())) {
-            from = DateUtil.newDateTime(dosageResponse.getStartDate(), 0, 0, 0);
+            from = DateUtil.newDateTime(dosageResponse.getStartDate());
         }
 
         DateTime tentativeFirstDoseDateTime = DateUtil.newDateTime(from.toLocalDate(), dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);

@@ -24,7 +24,7 @@ public class CreateVisitRequestBuilder {
     }
 
     public CreateVisitRequest scheduledVisitRequest(String visitName, Integer weekOffset) {
-        DateTime dueDate = DateUtil.now().plusWeeks(weekOffset);
+        DateTime dueDate = DateUtil.newDateTime(DateUtil.today().plusWeeks(weekOffset));
         return new CreateVisitRequest().setVisitName(visitName.toLowerCase())
                                        .setTypeOfVisit(TypeOfVisit.Scheduled.toString())
                                        .setAppointmentDueDate(dueDate)

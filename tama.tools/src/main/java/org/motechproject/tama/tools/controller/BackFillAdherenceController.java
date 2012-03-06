@@ -31,8 +31,8 @@ public class BackFillAdherenceController {
     @ResponseBody
     public String daily(@RequestParam String fromDateString, @RequestParam String toDateString, @RequestParam DosageStatus dosageStatus, @RequestParam String patientDocId, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            DateTime fromDate = DateUtil.newDateTime(LocalDate.parse(fromDateString), 0, 0, 0);
-            DateTime toDate = DateUtil.newDateTime(LocalDate.parse(toDateString), 0, 0, 0);
+            DateTime fromDate = DateUtil.newDateTime(LocalDate.parse(fromDateString));
+            DateTime toDate = DateUtil.newDateTime(LocalDate.parse(toDateString));
 
             dailyPillReminderAdherenceService.backFillAdherence(patientDocId, fromDate, toDate, dosageStatus);
             return "Done";
