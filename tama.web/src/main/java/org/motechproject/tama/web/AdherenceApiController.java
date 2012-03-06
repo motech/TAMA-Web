@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-@RequestMapping("/json/adherence")
+@RequestMapping("/adherence")
 @Controller
 public class AdherenceApiController {
 
@@ -29,7 +29,7 @@ public class AdherenceApiController {
         this.fourDayRecallAdherenceService = fourDayRecallAdherenceService;
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list.json", method = RequestMethod.GET)
     @ResponseBody
     public String list(@RequestParam("id") String patientDocId) throws JSONException, NoAdherenceRecordedException {
         JSONObject result = new JSONObject();

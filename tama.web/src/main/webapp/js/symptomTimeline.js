@@ -14,14 +14,11 @@ var SymptomsReportingWidget = function(targetDivId, timelineGraphDivId, noDataDi
 SymptomsReportingWidget.prototype = {
     fetchData: function(onLoad){
         var self = this;
-        dojo.xhrGet({
+        AjaxCall.get({
             url: self.dataURL,
-            handleAs: "json",
             load: function(json, ioArgs) {
                 self.data = json;
                 onLoad();
-            },
-            error: function(result, args) {
             }
         });
     },

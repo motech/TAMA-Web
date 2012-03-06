@@ -62,7 +62,7 @@
 
                     if (startDateObj.isValid() && endDateObj.isValid()){
                         spinnerBanner.show();
-                        var onCreateHandler = function(){ spinnerBanner.hide() }
+                        var onCreateHandler = function(){ spinnerBanner.hide(); }
                         dailyPillReminderReportWidget.create(startDateObj.value, endDateObj.value, onCreateHandler);
                     }
                 });

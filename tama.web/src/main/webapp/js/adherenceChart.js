@@ -61,11 +61,9 @@ var AdherenceOverTimeWidget = function(dailyAdherenceOverTimeChart, weeklyAdhere
 
 AdherenceOverTimeWidget.prototype = {
     fetchData: function(onLoad){
-        dojo.xhrGet({
+        AjaxCall.get({
             url: this.dataURL,
-            handleAs: "json",
-            load: function(json, ioArgs) { onLoad(json); },
-            error: function(result, args) { }
+            load: function(json, ioArgs) { onLoad(json); }
         });
     },
 

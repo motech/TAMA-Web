@@ -55,7 +55,7 @@ public class TreatmentAdviceController extends BaseController {
         this.callTimeSlotService = callTimeSlotService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/ajax/regimens")
+    @RequestMapping(method = RequestMethod.GET, value = "/regimens")
     @ResponseBody
     List<Regimen> allRegimens() {
         return this.allRegimens.getAll();

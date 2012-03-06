@@ -6,9 +6,9 @@
     <spring:url value="/resources-${applicationVersion}/styles/timeline.css" var="timeline_css"/>
     <spring:url value="/resources-${applicationVersion}/js/timeline_ajax" var="timeline_ajax_root"/>
     <spring:url value="/resources-${applicationVersion}/js/timeline_js" var="timeline_js_root"/>
-    <spring:url value="/json/symptoms/list" var="symptoms_list_url"/>
+    <spring:url value="/symptoms/list.json" var="symptoms_list_url"/>
     <spring:url value="/resources-${applicationVersion}/js/symptomTimeline.js" var="symptomTimeline_js"/>
-	
+
 	<script>
 		<![CDATA[
             var SimileAjax_urlPrefix = "${timeline_ajax_root}/";

@@ -1,7 +1,7 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
     <util:panel id="weight-over-time" title="Weight Over Time" openPane="true">
-        <spring:url value="/json/vitalstatistics/listWeightOverTime" var="weightOverTimeUrl" htmlEscape="false">
+        <spring:url value="/vitalstatistics/listWeightOverTime.json" var="weightOverTimeUrl" htmlEscape="false">
             <spring:param name="patientId" value="${patient.id}"/>
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>

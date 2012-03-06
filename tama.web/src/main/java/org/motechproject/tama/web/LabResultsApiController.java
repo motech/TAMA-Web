@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@RequestMapping("/json/labresults")
+@RequestMapping("/labresults")
 @Controller
 public class LabResultsApiController {
     private LabResultsService labResultsService;
@@ -20,13 +20,13 @@ public class LabResultsApiController {
         this.labResultsService = labResultsService;
     }
 
-    @RequestMapping(value = "/listCD4Count", method = RequestMethod.GET)
+    @RequestMapping(value = "/listCD4Count.json", method = RequestMethod.GET)
     @ResponseBody
     String listCD4Count(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths")int rangeInMonths) throws JSONException {
         return new LabResultsJson(labResultsService.listCD4Counts(patientId, rangeInMonths)).toString();
     }
 
-    @RequestMapping(value = "/listPVLCount", method = RequestMethod.GET)
+    @RequestMapping(value = "/listPVLCount.json", method = RequestMethod.GET)
     @ResponseBody
     public String listPVLLabResults(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths")int rangeInMonths) throws JSONException {
         return new LabResultsJson(labResultsService.listPVLLabResults(patientId, rangeInMonths)).toString();

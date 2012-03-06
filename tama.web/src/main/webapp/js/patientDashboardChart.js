@@ -25,9 +25,8 @@ var PatientDashboardChart = function(chartName, dataUrl, chartTitle, tooltipPref
 PatientDashboardChart.prototype = {
     fetchData : function(onLoadHandler, onCompleteHandler, onErrorHandler){
         var self = this;
-        dojo.xhrGet({
+        AjaxCall.get({
             url: this.dataUrl,
-            handleAs: "json",
             load: function(data, ioArgs) { if(typeof(onLoadHandler) == "function") onLoadHandler(data); },
             error: function(err, ioArgs) { self.noticeBanner.setMessage(err); },
             handle: function() { if(typeof(onCompleteHandler) == "function") onCompleteHandler(); }

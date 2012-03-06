@@ -164,25 +164,24 @@
             var patientId = dojo.attr(this, 'patientid');
             var linkElement = this;
             popup.show(this, {showTimeOption:false}, function (date) {
-                dojo.xhrPost({
-                    url:"${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                    content:{"adjustedDueDate":dojo.date.locale.format(date, {selector:"date", datePattern:'dd/MM/yyyy'})},
-                    handleAs:"json",
-                    load:function (data) {
+                AjaxCall.post({
+                    url: "${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
+                    content: {"adjustedDueDate":dojo.date.locale.format(date, {selector:"date", datePattern:'dd/MM/yyyy'})},
+                    load: function (data) {
                         linkElement.innerHTML = data.adjustedDueDate;
                     }
                 });
             });
         }
+
         var adjustDueDateAsToday = function (event) {
             var clinicVisitId = dojo.attr(this, 'visitid');
             var patientId = dojo.attr(this, 'patientid');
             var linkElement = this;
-            dojo.xhrPost({
-                url:"${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                content:{"adjustedDueDate":dojo.date.locale.format(new Date(), {selector:"date", datePattern:'dd/MM/yyyy'})},
-                handleAs:"json",
-                load:function (data) {
+            AjaxCall.post({
+                url: "${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
+                content: {"adjustedDueDate":dojo.date.locale.format(new Date(), {selector:"date", datePattern:'dd/MM/yyyy'})},
+                load: function (data) {
                     var tdElement = linkElement.parentNode;
                     dojo.query('.adjustDueDate', tdElement).forEach(function (el) {
                         el.innerHTML = data.adjustedDueDate;
@@ -190,15 +189,15 @@
                 }
             });
         }
+
         var confirmVisitDate = function (element) {
             var clinicVisitId = dojo.attr(this, 'visitid');
             var patientId = dojo.attr(this, 'patientid');
             var linkElement = this;
             popup.show(this, {showTimeOption:true}, function (confirmedDate) {
-                dojo.xhrPost({
+                AjaxCall.post({
                     url:"${confirmVisitDateUrl}/" + clinicVisitId + "?patientId=" + patientId,
                     content:{"confirmedAppointmentDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
-                    handleAs:"json",
                     load:function (data) {
                         linkElement.innerHTML = data.confirmedAppointmentDate;
                         dojo.query(".adjustDueDate", linkElement.parentNode.parentNode).forEach(function (el) {
@@ -216,10 +215,9 @@
             var linkElement = this;
 
             var okHandler = function (visitDate) {
-                dojo.xhrPost({
+                AjaxCall.post({
                     url:"${setVisitDate}/" + clinicVisitId + "?patientId=" + patientId,
                     content:{"visitDate":dojo.date.locale.format(visitDate, {selector:"date", datePattern:'dd/MM/yyyy'})},
-                    handleAs:"json",
                     load:function (data) {
                         linkElement.innerHTML = data.visitDate;
                     }
@@ -234,10 +232,8 @@
             var patientId = dojo.attr(this, 'patientid');
             var linkElement = this;
             new tama.ConfirmBox("Confirm", "Confirm visit as missed?", function () {
-                dojo.xhrPost({
+                AjaxCall.post({
                     url:"${markAsMissedUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                    content:{},
-                    handleAs:"json",
                     load:function (data) {
                         if (data.missed) {
                             var parent = linkElement.parentNode;
@@ -254,10 +250,9 @@
         var createAppointment = function (element) {
             popup.show(this, {showTimeOption:false, showVisitOptions:true}, function (appointmentDueDate, options) {
                 var typeOfVisit = options.visitOptions["optionScheduled"] ? "Scheduled" : "Unscheduled";
-                dojo.xhrPost({
+                AjaxCall.post({
                     url:"${createAppointmentUrl}",
                     content:{"appointmentDueDate":dojo.date.locale.format(appointmentDueDate, {selector:"date", datePattern:'dd/MM/yyyy'}), "typeOfVisit":typeOfVisit, "patientId":"${patient.id}"},
-                    handleAs:"json",
                     load:function (data) {
                         if (data.result === "success")
                             window.location.reload();

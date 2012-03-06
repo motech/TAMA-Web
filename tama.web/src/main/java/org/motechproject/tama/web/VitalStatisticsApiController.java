@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-@RequestMapping("/json/vitalstatistics")
+@RequestMapping("/vitalstatistics")
 @Controller
 public class VitalStatisticsApiController {
 
@@ -23,7 +23,7 @@ public class VitalStatisticsApiController {
         this.vitalStatisticsService = vitalStatisticsService;
     }
 
-    @RequestMapping(value = "/listWeightOverTime", method = RequestMethod.GET)
+    @RequestMapping(value = "/listWeightOverTime.json", method = RequestMethod.GET)
     @ResponseBody
     public String listWeightOverTime(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths") int rangeInMonths) throws JSONException {
         List<VitalStatistics> vitalStatisticsList = vitalStatisticsService.getAllFor(patientId, rangeInMonths);
@@ -31,7 +31,7 @@ public class VitalStatisticsApiController {
     }
 
 
-    @RequestMapping(value = "/listBPOverTime", method = RequestMethod.GET)
+    @RequestMapping(value = "/listBPOverTime.json", method = RequestMethod.GET)
     @ResponseBody
     public String listBPOverTime(@RequestParam(value = "patientId") String patientId, @RequestParam("rangeInMonths") int rangeInMonths) throws JSONException {
         List<VitalStatistics> vitalStatisticsList = vitalStatisticsService.getAllFor(patientId, rangeInMonths);

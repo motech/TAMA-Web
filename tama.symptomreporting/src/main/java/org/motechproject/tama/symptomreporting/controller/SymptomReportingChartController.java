@@ -16,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 @Controller
-@RequestMapping("/json/symptoms")
+@RequestMapping("/symptoms")
 public class SymptomReportingChartController {
 	
     @Autowired
@@ -32,7 +31,7 @@ public class SymptomReportingChartController {
     @Autowired @Qualifier("symptomProperties") 
     Properties symptomTable;
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list.json", method = RequestMethod.GET)
     @ResponseBody
     public String list(@RequestParam("id") String patientDocId, @RequestParam("rangeInMonths") Integer rangeInMonths) throws JSONException {
         LocalDate today = DateUtil.today().plusDays(1);

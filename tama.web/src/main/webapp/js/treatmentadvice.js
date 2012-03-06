@@ -245,16 +245,13 @@ dojo.addOnLoad(function() {
         }
     };
 
-    var requestURL = document.URL.indexOf('treatmentadvices') > 0 ? 'ajax/regimens' : 'treatmentadvices/ajax/regimens';
-    dojo.xhrGet({
+    var requestURL = document.URL.indexOf('treatmentadvices') > 0 ? 'regimens' : 'treatmentadvices/regimens';
+    AjaxCall.get({
         url: requestURL,
-        handleAs: "json",
         load: function(result) {
             regimens_data = result;
             build_regimens_hash();
             init();
-        },
-        error: function(result, args) {
         }
     });
 });

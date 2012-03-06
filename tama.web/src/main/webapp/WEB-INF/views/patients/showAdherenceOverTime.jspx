@@ -3,7 +3,7 @@
 
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
-    <spring:url value="/json/adherence/list" var="adherence_list_url"/>
+    <spring:url value="/adherence/list.json" var="adherence_list_url"/>
     <spring:url value="/resources-${applicationVersion}/js/tamaChart.js" var="tama_chart_js"/>
     <spring:url value="/resources-${applicationVersion}/js/adherenceChart.js" var="adherence_chart_js"/>
 

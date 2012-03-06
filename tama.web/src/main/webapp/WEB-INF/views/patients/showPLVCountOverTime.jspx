@@ -1,7 +1,7 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
     <util:panel id="pvl-over-time" title="PVL Over Time" openPane="true">
-        <spring:url value="/json/labresults/listPVLCount" var="listPVLCountUrl" htmlEscape="false">
+        <spring:url value="/labresults/listPVLCount.json" var="listPVLCountUrl" htmlEscape="false">
             <spring:param name="patientId" value="${patient.id}"/>
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>

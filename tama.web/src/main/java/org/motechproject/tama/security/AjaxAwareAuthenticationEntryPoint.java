@@ -13,8 +13,8 @@ public class AjaxAwareAuthenticationEntryPoint extends LoginUrlAuthenticationEnt
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        if (request.getServletPath().contains("/ajax")) {
-            response.sendError(601, "Request Timed Out");
+        if (request.getServletPath().contains(".json")) {
+            response.sendError(601, "Session Timed Out");
         } else {
             super.commence(request, response, authException);
         }

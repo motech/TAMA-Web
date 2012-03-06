@@ -13,10 +13,9 @@ dojo.declare("tama.ReportWidget", null, {
     },
     fetchData:function (startDate, endDate, onLoadHandler, onCompleteHandler, onErrorHandler) {
         var self = this;
-        dojo.xhrGet({
+        AjaxCall.get({
             url:self.url,
             content:{startDate:startDate, endDate:endDate},
-            handleAs:"json",
             load:function (data, ioArgs) {
                 if (typeof(onLoadHandler) == "function") onLoadHandler(data);
             },

@@ -1,7 +1,7 @@
 <div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
     <util:panel id="cd4-over-time" title="CD4 Over Time" openPane="true">
-        <spring:url value="/json/labresults/listCD4Count" var="listCD4CountUrl" htmlEscape="false">
+        <spring:url value="/labresults/listCD4Count.json" var="listCD4CountUrl" htmlEscape="false">
             <spring:param name="patientId" value="${patient.id}"/>
             <spring:param name="rangeInMonths" value="36"/>
         </spring:url>
