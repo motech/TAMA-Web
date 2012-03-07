@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
-import org.motechproject.tama.outbox.integration.repository.AllOutboxLogs;
+import org.motechproject.tama.outbox.domain.OutboxSummary;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -14,8 +14,9 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.web.viewbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.model.PatientReport;
+import org.motechproject.tama.web.viewbuilder.DailyPillReminderReportBuilder;
+import org.motechproject.tama.web.viewbuilder.OutboxReportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,27 @@ public class ReportsController {
             excelWorkbook.write(outputStream);
             outputStream.flush();
 
+        } catch (Exception e) {
+            logger.error("Error while generating excel report: " + e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "outboxMessageReport.xls", method = RequestMethod.GET)
+    public void buildOutboxMessageExcelReport(@PathVariable String patientDocId,
+                                      @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                      @RequestParam LocalDate startDate,
+                                      @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                      @RequestParam LocalDate endDate,
+                                      HttpServletResponse response) {
+        response.setHeader("Content-Disposition", "inline; filename=OutboxReport.xls");
+        response.setContentType("application/vnd.ms-excel");
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            List<OutboxSummary> summaryList = outboxMessageReportService.create(patientDocId, startDate, endDate);
+            OutboxReportBuilder outboxReportBuilder = new OutboxReportBuilder(summaryList, generatePatientReportSummary(patientDocId), startDate, endDate);
+            HSSFWorkbook excelWorkbook = outboxReportBuilder.getExcelWorkbook();
+            excelWorkbook.write(outputStream);
+            outputStream.flush();
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
         }

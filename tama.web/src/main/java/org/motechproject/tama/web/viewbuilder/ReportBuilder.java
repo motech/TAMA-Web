@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class ReportBuilder<T> {
@@ -23,7 +24,7 @@ public abstract class ReportBuilder<T> {
     private int firstColumnIndex = 0;
     private int lastColumnIndex;
 
-    public ReportBuilder(List<T> objects){
+    public ReportBuilder(List<T> objects) {
         this.objects = objects;
         initializeColumns();
         lastColumnIndex = columns.size();
@@ -63,7 +64,6 @@ public abstract class ReportBuilder<T> {
     }
 
     protected void buildSummary(HSSFSheet worksheet) {
-
     }
 
     private void setColumnWidths(HSSFSheet worksheet) {
@@ -140,7 +140,7 @@ public abstract class ReportBuilder<T> {
 
     private List<HSSFCellStyle> buildCellStylesForColumns(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = new ArrayList<HSSFCellStyle>();
-        for(ExcelColumn column: columns) {
+        for (ExcelColumn column : columns) {
             HSSFCellStyle cellStyle = worksheet.getWorkbook().createCellStyle();
             cellStyle.setAlignment((short) column.getTextAlignment());
             cellStyle.setWrapText(true);
@@ -149,7 +149,7 @@ public abstract class ReportBuilder<T> {
         return cellStyles;
     }
 
-    protected void buildRowData(HSSFRow row, List<Object> rowData, List<HSSFCellStyle> cellStyles)  {
+    protected void buildRowData(HSSFRow row, List<Object> rowData, List<HSSFCellStyle> cellStyles) {
         int columnIndex = firstColumnIndex;
         for (Object columnData : rowData) {
             HSSFCell cell = row.createCell(columnIndex);
@@ -175,6 +175,28 @@ public abstract class ReportBuilder<T> {
 
     private String sanitize(Object o) {
         return o == null ? "NA" : o.toString();
+    }
+
+    protected void buildSummaryRow(HSSFSheet worksheet, List<HSSFCellStyle> cellStyles, Object key, Object value) {
+        HSSFRow row = worksheet.createRow(currentRowIndex);
+        buildRowData(row, Arrays.asList(key, value), cellStyles);
+        currentRowIndex++;
+    }
+
+    protected List<HSSFCellStyle> buildCellStylesForSummary(HSSFSheet worksheet) {
+        List<HSSFCellStyle> cellStyles = new ArrayList<HSSFCellStyle>();
+        cellStyles.add(getBoldCellStyle(worksheet));
+        cellStyles.add(worksheet.getWorkbook().createCellStyle());
+        return cellStyles;
+    }
+
+    private HSSFCellStyle getBoldCellStyle(HSSFSheet worksheet) {
+        Font boldFont = worksheet.getWorkbook().createFont();
+        boldFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        HSSFCellStyle cellStyle = worksheet.getWorkbook().createCellStyle();
+        cellStyle.setFont(boldFont);
+        cellStyle.setWrapText(true);
+        return cellStyle;
     }
 
 }

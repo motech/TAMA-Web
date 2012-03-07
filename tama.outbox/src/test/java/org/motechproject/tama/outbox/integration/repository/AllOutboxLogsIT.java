@@ -3,7 +3,6 @@ package org.motechproject.tama.outbox.integration.repository;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
-import org.motechproject.tama.outbox.domain.OutboxEventType;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

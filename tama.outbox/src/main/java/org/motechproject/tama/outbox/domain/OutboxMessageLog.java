@@ -14,33 +14,25 @@ import java.util.List;
 public class OutboxMessageLog extends CouchEntity {
 
     @JsonProperty
-    @Getter
-    String patientDocId;
+    @Getter String patientDocId;
     @JsonProperty
-    @Getter
-    String outboxMessageId;
+    @Getter String outboxMessageId;
     @JsonProperty
     DateTime createdOn;
     @JsonProperty
-    @Getter
-    String typeName;
-
+    @Getter String typeName;
     @JsonProperty
-    @Getter
-    List<PlayedLog> playedLogs;
+    @Getter List<PlayedLog> playedLogs = new ArrayList<PlayedLog>();
 
     public OutboxMessageLog() {
-        playedLogs = new ArrayList<PlayedLog>();
     }
 
     public OutboxMessageLog(String patientDocId, String outboxMessageId, DateTime date, String typeName) {
-        this();
         this.patientDocId = patientDocId;
         this.outboxMessageId = outboxMessageId;
         this.createdOn = date;
         this.typeName = typeName;
     }
-
 
     public DateTime getCreatedOn() {
         return DateUtil.setTimeZone(this.createdOn);
@@ -54,11 +46,9 @@ public class OutboxMessageLog extends CouchEntity {
     public static class PlayedLog {
 
         @JsonProperty
-        @Getter
-        DateTime date;
+        @Getter DateTime date;
         @JsonProperty
-        @Getter
-        private List<String> files;
+        @Getter private List<String> files;
 
         public PlayedLog() {
         }
@@ -88,6 +78,4 @@ public class OutboxMessageLog extends CouchEntity {
             return result;
         }
     }
-
-
 }

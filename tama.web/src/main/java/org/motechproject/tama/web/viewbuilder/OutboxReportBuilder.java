@@ -1,31 +1,28 @@
 package org.motechproject.tama.web.viewbuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Font;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
+import org.motechproject.tama.outbox.domain.OutboxSummary;
 import org.motechproject.tama.web.model.PatientReport;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class DailyPillReminderReportBuilder extends ReportBuilder<DailyPillReminderSummary> {
+public class OutboxReportBuilder extends ReportBuilder<OutboxSummary> {
 
     private PatientReport patientSummary;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public DailyPillReminderReportBuilder(List<DailyPillReminderSummary> objects) {
+    public OutboxReportBuilder(List<OutboxSummary> objects) {
         super(objects);
     }
 
-    public DailyPillReminderReportBuilder(List<DailyPillReminderSummary> objects, PatientReport patientSummary, LocalDate startDate, LocalDate endDate) {
+    public OutboxReportBuilder(List<OutboxSummary> objects, PatientReport patientSummary, LocalDate startDate, LocalDate endDate) {
         super(objects);
         this.patientSummary = patientSummary;
         this.startDate = startDate;
@@ -34,33 +31,33 @@ public class DailyPillReminderReportBuilder extends ReportBuilder<DailyPillRemin
 
     @Override
     protected String getWorksheetName() {
-        return "DailyPillReminderReport";
+        return "OutboxReport";
     }
 
     @Override
     protected String getTitle() {
-        return "Daily Pill Reminder Report";
+        return "Outbox Report";
     }
 
     @Override
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
-        columns.add(new ExcelColumn("Date (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
-        columns.add(new ExcelColumn("Morning Dose Time", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Morning Adherence", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Evening Dose Time", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Evening Adherence", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Message Id", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Date/Time of Posting", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Type of Message", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Date/Time of Playing", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Message Content", Cell.CELL_TYPE_STRING));
     }
 
     @Override
     protected List<Object> getRowData(Object object) {
-        DailyPillReminderSummary summary = (DailyPillReminderSummary) object;
+        OutboxSummary summary = (OutboxSummary) object;
         List<Object> row = new ArrayList<Object>();
-        row.add(summary.getDate());
-        row.add(summary.getMorningDoseTime());
-        row.add(summary.getMorningDoseStatus());
-        row.add(summary.getEveningDoseTime());
-        row.add(summary.getEveningDoseStatus());
+        row.add(summary.getMessageId());
+        row.add(summary.getCreatedOn());
+        row.add(summary.getTypeName());
+        row.add(summary.getPlayedOn());
+        row.add(summary.getPlayedFiles());
         return row;
     }
 

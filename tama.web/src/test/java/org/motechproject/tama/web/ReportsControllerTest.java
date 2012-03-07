@@ -115,6 +115,22 @@ public class ReportsControllerTest {
         verify(allPatients).get(patientDocumentId);
         verify(patientService).currentRegimen(patient);
         verify(allTreatmentAdvices).earliestTreatmentAdvice(patientDocumentId);
+    }
+    
+    @Test
+    public void shouldBuildOutboxMessageExcelReport(){
+        String patientDocumentId = "patientId";
+        LocalDate day1 = new LocalDate(2011, 1, 1);
+        LocalDate day2 = new LocalDate(2011, 1, 3);
 
+        when(allPatients.get(patientDocumentId)).thenReturn(patient);
+
+        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
+        reportsController.buildOutboxMessageExcelReport(patientDocumentId, day1, day2, httpServletResponse);
+
+        verify(outboxReportService).create(patientDocumentId, day1, day2);
+        verify(allPatients).get(patientDocumentId);
+        verify(patientService).currentRegimen(patient);
+        verify(allTreatmentAdvices).earliestTreatmentAdvice(patientDocumentId);
     }
 }
