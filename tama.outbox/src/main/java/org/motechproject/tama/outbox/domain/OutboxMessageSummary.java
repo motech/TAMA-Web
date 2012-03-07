@@ -34,7 +34,7 @@ public class OutboxMessageSummary {
     }
 
     public void playedOn(DateTime playedOn, String playedFiles) {
-        this.playedOn = playedOn == null ? "" : playedOn.toString("yyyy-MM-dd hh:mm");
+        this.playedOn = playedOn == null ? "" : playedOn.toString("yyyy-MM-dd HH:mm");
         this.playedFiles = playedFiles;
     }
 
