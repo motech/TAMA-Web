@@ -52,10 +52,15 @@
         var playNext = function(){
             var nextElement = queue.remove();
             if(nextElement){
-               nextElement.play();
-               $(nextElement).bind('ended',function(){
+                nextElement.play();
+                $("#oops").unbind('click');
+                $("#oops").bind('click', function(){
+                    $(nextElement).unbind('ended');
+                    playNext();
+                });
+                $(nextElement).bind('ended',function(){
                    playNext();
-               });
+                });
             }else{
                 state = 0;
             }

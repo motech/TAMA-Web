@@ -2,6 +2,9 @@
 <%@page import="java.lang.reflect.Method"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Properties"%>
+<%@page import="org.springframework.context.ApplicationContext"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%
 	boolean fakeTimeAvailable = false;
         try {
@@ -50,7 +53,12 @@
     <script type="text/javascript">
         var djConfig = {parseOnLoad: false, isDebug: false, locale: 'en_in'};
     </script>
-    <script src="<%=application.getContextPath() %>/resources-1/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+    <%
+        ApplicationContext appCtx = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+        Properties tamaProperties = (Properties)appCtx.getBean("tamaProperties", Properties.class);
+        String applicationVersion = (String)tamaProperties.getProperty("application.version");
+    %>
+    <script src='<%= application.getContextPath()%>/resources-<%= applicationVersion%>/dojo/dojo.js' type="text/javascript" djConfig="parseOnLoad: true"  ></script>
     <script type="text/javascript">
 
           dojo.require("dijit.dijit"); // loads the optimized dijit layer
@@ -73,7 +81,7 @@
                   "time");
              });
     </script>
-    <link rel="stylesheet" type="text/css" href="<%= application.getContextPath() %>/resources-1/dijit/themes/tundra/tundra.css" />
+    <link rel="stylesheet" type="text/css" href="<%= application.getContextPath() %>/resources-<%= applicationVersion%>/dijit/themes/tundra/tundra.css" />
     <style>
     .dijitPopup {
         background-color: lightgray;

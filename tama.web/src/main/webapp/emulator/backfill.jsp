@@ -1,7 +1,15 @@
+<%@page import="java.util.Properties"%>
+<%@page import="org.springframework.context.ApplicationContext"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <html>
     <head>
+        <%
+            ApplicationContext appCtx = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+            Properties tamaProperties = (Properties)appCtx.getBean("tamaProperties", Properties.class);
+            String applicationVersion = (String)tamaProperties.getProperty("application.version");
+        %>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-        <script src="<%=application.getContextPath() %>/resources-1/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+        <script src="<%=application.getContextPath() %>/resources-<%= applicationVersion%>/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
         <script type="text/javascript">
             dojo.require("dijit.dijit");
             dojo.require("dijit.form.DateTextBox");
@@ -33,7 +41,7 @@
             dojo.ready(sendForm);
         </script>
 
-        <link rel="stylesheet" type="text/css" href="<%=application.getContextPath() %>/resources-1/dijit/themes/tundra/tundra.css" />
+        <link rel="stylesheet" type="text/css" href="<%=application.getContextPath() %>/resources-<%= applicationVersion%>/dijit/themes/tundra/tundra.css" />
         <style>
             .dijitPopup {
                 background-color: #bbeeff;
@@ -49,6 +57,7 @@
         </style>
     </head>
     <body>
+
         <form id="backfillForm" action="<%=application.getContextPath() %>/tama-tools/backfill/daily" method="POST">
             <h4 align="center" style="background-color:lightBlue;width:400px;">Backfill Adherence</h4>
             <table>
