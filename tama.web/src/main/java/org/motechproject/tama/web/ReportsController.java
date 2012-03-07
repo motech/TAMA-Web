@@ -6,10 +6,9 @@ import org.json.JSONException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
-import org.motechproject.tama.outbox.domain.OutboxSummary;
+import org.motechproject.tama.outbox.domain.OutboxMessageSummary;
+import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
-import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.viewbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.viewbuilder.OutboxReportBuilder;
@@ -29,25 +28,21 @@ import java.util.List;
 @Controller
 public class ReportsController {
 
-    private AllPatients allPatients;
-    private AllTreatmentAdvices allTreatmentAdvices;
     private PatientService patientService;
     private DailyPillReminderReportService dailyPillReminderReportService;
     private OutboxMessageReportService outboxMessageReportService;
+    private AllOutboxMessageSummaries allOutboxMessageSummaries;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public ReportsController(AllPatients allPatients,
-                             AllTreatmentAdvices allTreatmentAdvices,
-                             PatientService patientService,
+    public ReportsController(PatientService patientService,
                              DailyPillReminderReportService dailyPillReminderReportService,
-                             OutboxMessageReportService outboxMessageReportService) {
-        this.allPatients = allPatients;
-        this.allTreatmentAdvices = allTreatmentAdvices;
+                             OutboxMessageReportService outboxMessageReportService, AllOutboxMessageSummaries allOutboxMessageSummaries) {
         this.patientService = patientService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
+        this.allOutboxMessageSummaries = allOutboxMessageSummaries;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -111,8 +106,8 @@ public class ReportsController {
         response.setContentType("application/vnd.ms-excel");
         try {
             ServletOutputStream outputStream = response.getOutputStream();
-            List<OutboxSummary> summaryList = outboxMessageReportService.create(patientDocId, startDate, endDate);
-            OutboxReportBuilder outboxReportBuilder = new OutboxReportBuilder(summaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
+            List<OutboxMessageSummary> messageSummaryList = allOutboxMessageSummaries.find(patientDocId, startDate, endDate);
+            OutboxReportBuilder outboxReportBuilder = new OutboxReportBuilder(messageSummaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
             HSSFWorkbook excelWorkbook = outboxReportBuilder.getExcelWorkbook();
             excelWorkbook.write(outputStream);
             outputStream.flush();

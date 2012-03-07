@@ -6,13 +6,9 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
-import org.motechproject.tama.facility.builder.ClinicBuilder;
-import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
-import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -34,32 +30,23 @@ public class ReportsControllerTest {
 
     @Mock
     private AllPatients allPatients;
-
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
-
     @Mock
     private PatientService patientService;
-
     @Mock
     private DailyPillReminderReportService dailyPillReminderReportService;
-
     @Mock
     private OutboxMessageReportService outboxReportService;
+    @Mock
+    private AllOutboxMessageSummaries allOutboxMessageSummaries;
 
     private ReportsController reportsController;
-
-    private Patient patient;
-
-    private Clinic clinic;
-
 
     @Before
     public void setUp() {
         initMocks(this);
-        clinic = ClinicBuilder.startRecording().withDefaults().build();
-        patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
-        reportsController = new ReportsController(allPatients, allTreatmentAdvices, patientService, dailyPillReminderReportService, outboxReportService);
+        reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries);
     }
 
     @Test
@@ -115,9 +102,9 @@ public class ReportsControllerTest {
         verify(dailyPillReminderReportService).create(patientDocumentId, day1, day2);
         verify(patientService).getPatientReport(patientDocumentId);
     }
-    
+
     @Test
-    public void shouldBuildOutboxMessageExcelReport(){
+    public void shouldBuildOutboxMessageExcelReport() {
         String patientDocumentId = "patientId";
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
@@ -128,7 +115,8 @@ public class ReportsControllerTest {
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         reportsController.buildOutboxMessageExcelReport(patientDocumentId, day1, day2, httpServletResponse);
 
-        verify(outboxReportService).create(patientDocumentId, day1, day2);
+        verify(allOutboxMessageSummaries).find(patientDocumentId, day1, day2);
         verify(patientService).getPatientReport(patientDocumentId);
     }
+
 }

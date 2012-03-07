@@ -5,24 +5,24 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.outbox.domain.OutboxSummary;
+import org.motechproject.tama.outbox.domain.OutboxMessageSummary;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OutboxReportBuilder extends ReportBuilder<OutboxSummary> {
+public class OutboxReportBuilder extends ReportBuilder<OutboxMessageSummary> {
 
     private PatientReport patientSummary;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public OutboxReportBuilder(List<OutboxSummary> objects) {
+    public OutboxReportBuilder(List<OutboxMessageSummary> objects) {
         super(objects);
     }
 
-    public OutboxReportBuilder(List<OutboxSummary> objects, PatientReport patientSummary, LocalDate startDate, LocalDate endDate) {
+    public OutboxReportBuilder(List<OutboxMessageSummary> objects, PatientReport patientSummary, LocalDate startDate, LocalDate endDate) {
         super(objects);
         this.patientSummary = patientSummary;
         this.startDate = startDate;
@@ -50,12 +50,12 @@ public class OutboxReportBuilder extends ReportBuilder<OutboxSummary> {
 
     @Override
     protected List<Object> getRowData(Object object) {
-        OutboxSummary summary = (OutboxSummary) object;
+        OutboxMessageSummary messageSummary = (OutboxMessageSummary) object;
         List<Object> row = new ArrayList<Object>();
-        row.add(summary.getCreatedOn());
-        row.add(summary.getTypeName());
-        row.add(summary.getPlayedOn());
-        row.add(summary.getPlayedFiles());
+        row.add(messageSummary.getCreatedOn());
+        row.add(messageSummary.getTypeName());
+        row.add(messageSummary.getPlayedOn());
+        row.add(messageSummary.getPlayedFiles());
         return row;
     }
 
