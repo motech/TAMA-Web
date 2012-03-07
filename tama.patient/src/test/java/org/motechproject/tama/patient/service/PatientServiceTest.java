@@ -18,6 +18,8 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.patient.strategy.CallPlan;
 import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.tama.refdata.builder.RegimenBuilder;
+import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -261,6 +263,29 @@ public class PatientServiceTest extends BaseUnitTest {
         verify(outbox).reEnroll(dbPatient, patient);
         verify(weeklyCallPlan).reEnroll(dbPatient, currentTreatmentAdvice);
         verify(allPatients).update(patient);
+    }
+
+    @Test
+    public void shouldReturnPatientReport(){
+        String patientDocId = "patientDocId";
+        LocalDate currentRegimenStartDate = DateUtil.today();
+        LocalDate artStartDate = currentRegimenStartDate.minusDays(10);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
+        Regimen regimen = RegimenBuilder.startRecording().withDefaults().withId("regimenId").build();
+        TreatmentAdvice earliestTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(artStartDate).build();
+        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withStartDate(currentRegimenStartDate).withRegimenId("regimenId").build();
+
+        when(allPatients.get(patientDocId)).thenReturn(patient);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patientDocId)).thenReturn(currentTreatmentAdvice);
+        when(allTreatmentAdvices.earliestTreatmentAdvice(patientDocId)).thenReturn(earliestTreatmentAdvice);
+        when(allRegimens.get("regimenId")).thenReturn(regimen);
+
+        PatientReport patientReport = patientService.getPatientReport(patientDocId);
+
+        assertEquals(patient, patientReport.getPatient());
+        assertEquals(artStartDate.toDate(), patientReport.getARTStartedOn());
+        assertEquals(currentRegimenStartDate.toDate(), patientReport.getCurrentRegimenStartDate());
     }
 
 }

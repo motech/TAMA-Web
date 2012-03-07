@@ -190,7 +190,7 @@ public abstract class ReportBuilder<T> {
         return cellStyles;
     }
 
-    private HSSFCellStyle getBoldCellStyle(HSSFSheet worksheet) {
+    protected HSSFCellStyle getBoldCellStyle(HSSFSheet worksheet) {
         Font boldFont = worksheet.getWorkbook().createFont();
         boldFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
         HSSFCellStyle cellStyle = worksheet.getWorkbook().createCellStyle();
@@ -198,5 +198,4 @@ public abstract class ReportBuilder<T> {
         cellStyle.setWrapText(true);
         return cellStyle;
     }
-
 }

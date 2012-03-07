@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
@@ -8,13 +9,18 @@ import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
+import org.motechproject.tama.web.viewbuilder.AppointmentCalenderBuilder;
 import org.motechproject.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,7 +28,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,15 +48,19 @@ public class ClinicVisitsController extends BaseController {
     private OpportunisticInfectionsController opportunisticInfectionsController;
     private AllClinicVisits allClinicVisits;
     private AllTreatmentAdvices allTreatmentAdvices;
+    private PatientService patientService;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, OpportunisticInfectionsController opportunisticInfectionsController, AllClinicVisits allClinicVisits) {
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, OpportunisticInfectionsController opportunisticInfectionsController, AllClinicVisits allClinicVisits, PatientService patientService) {
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.labResultsController = labResultsController;
         this.vitalStatisticsController = vitalStatisticsController;
         this.opportunisticInfectionsController = opportunisticInfectionsController;
         this.allClinicVisits = allClinicVisits;
+        this.patientService = patientService;
     }
 
     @RequestMapping(value = "/newVisit")
@@ -144,6 +156,25 @@ public class ClinicVisitsController extends BaseController {
         if (!patient.getStatus().isActive())
             return "clinicvisits/view_list";
         return "clinicvisits/manage_list";
+    }
+
+    @RequestMapping(value = "/list.xls", method = RequestMethod.GET)
+    public void downloadList(@RequestParam(value = "patientId", required = true) String patientDocId, HttpServletResponse response) {
+        response.setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
+        response.setContentType("application/vnd.ms-excel");
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+
+            List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
+            PatientReport patientReport = patientService.getPatientReport(patientDocId);
+
+            AppointmentCalenderBuilder appointmentCalenderBuilder = new AppointmentCalenderBuilder(clinicVisitUIModels, patientReport);
+            HSSFWorkbook excelWorkbook = appointmentCalenderBuilder.getExcelWorkbook();
+            excelWorkbook.write(outputStream);
+            outputStream.flush();
+        } catch (Exception e) {
+            logger.error("Error while generating excel report: " + e.getMessage());
+        }
     }
 
     @RequestMapping(value = "/adjustDueDate.json/{clinicVisitId}", method = RequestMethod.POST)

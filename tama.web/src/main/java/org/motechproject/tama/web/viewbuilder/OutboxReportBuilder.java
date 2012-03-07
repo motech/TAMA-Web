@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.domain.OutboxSummary;
-import org.motechproject.tama.web.model.PatientReport;
+import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

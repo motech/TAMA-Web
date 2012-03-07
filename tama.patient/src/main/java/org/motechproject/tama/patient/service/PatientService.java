@@ -95,4 +95,11 @@ public class PatientService {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         return treatmentAdvice == null ? null : allRegimens.get(treatmentAdvice.getRegimenId());
     }
+
+    public PatientReport getPatientReport(String patientDocId) {
+        Patient patient = allPatients.get(patientDocId);
+        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
+        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
+        return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
+    }
 }

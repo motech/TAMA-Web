@@ -8,13 +8,9 @@ import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.outbox.domain.OutboxSummary;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.web.model.PatientReport;
 import org.motechproject.tama.web.viewbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.viewbuilder.OutboxReportBuilder;
 import org.slf4j.Logger;
@@ -56,7 +52,7 @@ public class ReportsController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index(@PathVariable String patientDocId) {
-        return new ModelAndView("reports/index", "report", generatePatientReportSummary(patientDocId));
+        return new ModelAndView("reports/index", "report", patientService.getPatientReport(patientDocId));
     }
 
 
@@ -94,7 +90,7 @@ public class ReportsController {
             ServletOutputStream outputStream = response.getOutputStream();
             List<DailyPillReminderSummary> summaryList = dailyPillReminderReportService.create(patientDocId, startDate, endDate);
 
-            DailyPillReminderReportBuilder dailyPillReminderReportBuilder = new DailyPillReminderReportBuilder(summaryList, generatePatientReportSummary(patientDocId), startDate, endDate);
+            DailyPillReminderReportBuilder dailyPillReminderReportBuilder = new DailyPillReminderReportBuilder(summaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
             HSSFWorkbook excelWorkbook = dailyPillReminderReportBuilder.getExcelWorkbook();
             excelWorkbook.write(outputStream);
             outputStream.flush();
@@ -116,20 +112,12 @@ public class ReportsController {
         try {
             ServletOutputStream outputStream = response.getOutputStream();
             List<OutboxSummary> summaryList = outboxMessageReportService.create(patientDocId, startDate, endDate);
-            OutboxReportBuilder outboxReportBuilder = new OutboxReportBuilder(summaryList, generatePatientReportSummary(patientDocId), startDate, endDate);
+            OutboxReportBuilder outboxReportBuilder = new OutboxReportBuilder(summaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
             HSSFWorkbook excelWorkbook = outboxReportBuilder.getExcelWorkbook();
             excelWorkbook.write(outputStream);
             outputStream.flush();
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
-    }
-
-    private PatientReport generatePatientReportSummary(String patientDocId) {
-        Patient patient = allPatients.get(patientDocId);
-        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
-        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-        Regimen currentRegimen = patientService.currentRegimen(patient);
-        return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen);
     }
 }

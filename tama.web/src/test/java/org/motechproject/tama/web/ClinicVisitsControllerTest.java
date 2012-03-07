@@ -17,11 +17,9 @@ import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.Status;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.tama.patient.domain.VitalStatistics;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.LabResultsUIModel;
@@ -33,6 +31,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -78,6 +77,8 @@ public class ClinicVisitsControllerTest {
         protected AllClinicVisits allClinicVisits;
         @Mock
         protected Model uiModel;
+        @Mock
+        protected PatientService patientService;
 
         protected ClinicVisitsController clinicVisitsController;
 
@@ -88,7 +89,7 @@ public class ClinicVisitsControllerTest {
             initMocks(this);
             now = DateUtil.now();
             mockCurrentDate(now);
-            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits);
+            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService);
         }
     }
 
@@ -275,6 +276,24 @@ public class ClinicVisitsControllerTest {
 
             when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(clinicVisits);
             assertEquals("clinicvisits/view_list", clinicVisitsController.list(PATIENT_ID, uiModel));
+        }
+    }
+
+    public static class DownloadList extends SubjectUnderTest {
+
+        @Test
+        public void shouldCreateExcelDocumentWithClinicVisitsAndPatientReport(){
+            String patientDocId = "patientDocId";
+            HttpServletResponse response = mock(HttpServletResponse.class);
+            PatientReport patientReport = mock(PatientReport.class);
+
+            when(allClinicVisits.clinicVisits(patientDocId)).thenReturn(new ClinicVisits());
+            when(patientService.getPatientReport(patientDocId)).thenReturn(patientReport);
+
+            clinicVisitsController.downloadList(patientDocId, response);
+
+            verify(allClinicVisits).clinicVisits(patientDocId);
+            verify(patientService).getPatientReport(patientDocId);
         }
     }
 

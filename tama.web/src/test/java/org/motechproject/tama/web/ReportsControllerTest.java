@@ -6,12 +6,14 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
@@ -63,17 +65,15 @@ public class ReportsControllerTest {
     @Test
     public void shouldReturnIndexPage() throws IOException {
         String patientDocumentId = "patientDocumentId";
-
-        when(allPatients.get(patientDocumentId)).thenReturn(patient);
+        PatientReport patientReport = mock(PatientReport.class);
+        when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
 
         ModelAndView modelAndView = reportsController.index(patientDocumentId);
+
         assertEquals("reports/index", modelAndView.getViewName());
         Map<String, Object> model = modelAndView.getModel();
         assertNotNull(model.get("report"));
-
-        verify(allPatients).get(patientDocumentId);
-        verify(patientService).currentRegimen(patient);
-        verify(allTreatmentAdvices).earliestTreatmentAdvice(patientDocumentId);
+        verify(patientService).getPatientReport(patientDocumentId);
     }
 
     @Test
@@ -106,15 +106,14 @@ public class ReportsControllerTest {
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
 
-        when(allPatients.get(patientDocumentId)).thenReturn(patient);
+        PatientReport patientReport = mock(PatientReport.class);
+        when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
 
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         reportsController.buildDailyPillReminderExcelReport(patientDocumentId, day1, day2, httpServletResponse);
 
         verify(dailyPillReminderReportService).create(patientDocumentId, day1, day2);
-        verify(allPatients).get(patientDocumentId);
-        verify(patientService).currentRegimen(patient);
-        verify(allTreatmentAdvices).earliestTreatmentAdvice(patientDocumentId);
+        verify(patientService).getPatientReport(patientDocumentId);
     }
     
     @Test
@@ -122,15 +121,14 @@ public class ReportsControllerTest {
         String patientDocumentId = "patientId";
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
+        PatientReport patientReport = mock(PatientReport.class);
 
-        when(allPatients.get(patientDocumentId)).thenReturn(patient);
+        when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
 
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         reportsController.buildOutboxMessageExcelReport(patientDocumentId, day1, day2, httpServletResponse);
 
         verify(outboxReportService).create(patientDocumentId, day1, day2);
-        verify(allPatients).get(patientDocumentId);
-        verify(patientService).currentRegimen(patient);
-        verify(allTreatmentAdvices).earliestTreatmentAdvice(patientDocumentId);
+        verify(patientService).getPatientReport(patientDocumentId);
     }
 }

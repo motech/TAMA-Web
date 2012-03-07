@@ -1,7 +1,5 @@
-package org.motechproject.tama.web.model;
+package org.motechproject.tama.patient.domain;
 
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.refdata.domain.Regimen;
 
 import java.util.Date;
