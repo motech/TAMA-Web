@@ -83,7 +83,7 @@ public class PatientAlertServiceTest {
         final String testPatientId = "testPatientId";
         String doctorsNotes = "doctorsNotes";
         String notes = "notes";
-        patientAlertService.updateAlert(testPatientId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.name());
+        patientAlertService.updateAlert(testPatientId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString());
         verify(alertService).setData(testPatientId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
         verify(alertService).setData(testPatientId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
         verify(alertService).setData(testPatientId, PatientAlert.NOTES, notes);
