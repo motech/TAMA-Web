@@ -93,6 +93,7 @@
             <option value="ta">Tamil</option>
         </select>
         <a href="/tama/emulator">Back</a>
+        <a href="#" id="oops">Oops</a>
         <div id="audios"></div>
     </body>
 </html>
