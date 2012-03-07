@@ -50,7 +50,7 @@
     <script type="text/javascript">
         var djConfig = {parseOnLoad: false, isDebug: false, locale: 'en_in'};
     </script>
-    <script src="<%=application.getContextPath() %>/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+    <script src="<%=application.getContextPath() %>/resources-1/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
     <script type="text/javascript">
 
           dojo.require("dijit.dijit"); // loads the optimized dijit layer
@@ -73,7 +73,7 @@
                   "time");
              });
     </script>
-    <link rel="stylesheet" type="text/css" href="<%= application.getContextPath() %>/resources/dijit/themes/tundra/tundra.css" />
+    <link rel="stylesheet" type="text/css" href="<%= application.getContextPath() %>/resources-1/dijit/themes/tundra/tundra.css" />
     <style>
     .dijitPopup {
         background-color: lightgray;

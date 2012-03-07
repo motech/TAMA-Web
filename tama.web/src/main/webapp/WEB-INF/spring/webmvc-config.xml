@@ -52,7 +52,7 @@
             <property name="useCacheControlNoStore" value="true"/>
             <property name="cacheMappings">
                 <props>
-                    <prop key="/resources/**">31556926</prop>
+                    <prop key="/resources-#{tamaProperties['application.version']}/**">31556926</prop>
                 </props>
             </property>
         </bean>

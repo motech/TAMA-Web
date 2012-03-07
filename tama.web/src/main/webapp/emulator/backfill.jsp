@@ -1,7 +1,7 @@
 <html>
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-        <script src="<%=application.getContextPath() %>/resources/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
+        <script src="<%=application.getContextPath() %>/resources-1/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true"  ></script>
         <script type="text/javascript">
             dojo.require("dijit.dijit");
             dojo.require("dijit.form.DateTextBox");
@@ -33,7 +33,7 @@
             dojo.ready(sendForm);
         </script>
 
-        <link rel="stylesheet" type="text/css" href="<%=application.getContextPath() %>/resources/dijit/themes/tundra/tundra.css" />
+        <link rel="stylesheet" type="text/css" href="<%=application.getContextPath() %>/resources-1/dijit/themes/tundra/tundra.css" />
         <style>
             .dijitPopup {
                 background-color: #bbeeff;
