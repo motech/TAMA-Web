@@ -4,7 +4,7 @@
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:spring="http://www.springframework.org/tags">
 
-    <util:panel id="something" title="Filter Alerts" openPane="true">
+    <util:panel id="alert_filter_pane" title="Filter Alerts" openPane="true">
             <field:input field="patientId" label="Patient ID :" id = "searchByPatientId" required="false" />
             <form:label path="patientAlertType">Alert Type :</form:label>
             <form:select title="Alert Type" field="alertType" id="searchByAlertType" path="alertType" required="false">

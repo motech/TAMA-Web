@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.tama.common.TAMAConstants;
 
 import javax.persistence.Temporal;
@@ -133,4 +134,10 @@ public class PatientAlert {
         patientAlert.setAlert(alert);
         return patientAlert;
     }
+
+    public String getAlertStatus(){
+        AlertStatus status = alert.getStatus();
+        return status.equals(AlertStatus.NEW) ? "UNREAD" : status.toString();
+    }
+
 }

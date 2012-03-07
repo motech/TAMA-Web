@@ -18,6 +18,7 @@ public class AlertFilter {
 
     public static final String STATUS_UNREAD = "Unread";
     public static final String STATUS_READ = "Read";
+    public static final String STATUS_ALL = "All";
 
     private String patientId;
 
@@ -28,7 +29,6 @@ public class AlertFilter {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date startDate = DateUtil.today().toDate();
-
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date endDate = DateUtil.today().toDate();
@@ -107,6 +107,7 @@ public class AlertFilter {
         ArrayList<String> alertStatuses = new ArrayList<String>();
         alertStatuses.add(STATUS_UNREAD);
         alertStatuses.add(STATUS_READ);
+        alertStatuses.add(STATUS_ALL);
         return alertStatuses;
     }
 }

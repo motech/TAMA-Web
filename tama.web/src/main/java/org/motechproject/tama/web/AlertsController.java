@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.collections.ListUtils;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlerts;
 import org.motechproject.tama.patient.domain.SymptomsAlertStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.List;
 
 @RequestMapping("/alerts")
 @Controller
@@ -76,8 +78,14 @@ public class AlertsController extends BaseController {
     }
 
     private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {
-        if (filter.getAlertStatus().equals(AlertFilter.STATUS_UNREAD))
-            return patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
-        return patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+        PatientAlerts unreadPatientAlerts = patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+        PatientAlerts readPatientAlerts = patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+        if (filter.getAlertStatus().equals(AlertFilter.STATUS_UNREAD)) {
+            return unreadPatientAlerts;
+        } else if (filter.getAlertStatus().equals(AlertFilter.STATUS_ALL)) {
+            List allPatientAlerts = ListUtils.union(unreadPatientAlerts, readPatientAlerts);
+            return new PatientAlerts(allPatientAlerts);
+        }
+        return readPatientAlerts;
     }
 }
