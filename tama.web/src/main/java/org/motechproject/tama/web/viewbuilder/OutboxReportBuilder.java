@@ -42,9 +42,9 @@ public class OutboxReportBuilder extends ReportBuilder<OutboxSummary> {
     @Override
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
-        columns.add(new ExcelColumn("Date of Posting (YYYY-MM-DD)", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Date of Posting (yyyy-mm-dd)", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Type of Message", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Date/Time of Playing (YYYY-MM-DD hh:mm)", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Date/Time of Playing (yyyy-mm-dd hh:mm)", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Message Content", Cell.CELL_TYPE_STRING, 10000));
     }
 

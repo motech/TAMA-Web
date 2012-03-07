@@ -39,7 +39,7 @@ public class AppointmentCalenderBuilder extends ReportBuilder<ClinicVisitUIModel
         columns.add(new ExcelColumn("Visit Name", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Appointment Due Date (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Adjusted Due Date (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
-        columns.add(new ExcelColumn("Appointment Set for (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Appointment Set for (yyyy-mm-dd hh:mm)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Actual Date of Visit (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Type of Visit", Cell.CELL_TYPE_STRING));
     }
