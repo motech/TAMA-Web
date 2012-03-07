@@ -46,4 +46,32 @@ public class AllOutboxLogsIT extends SpringIntegrationTest {
         final List<OutboxMessageLog> messages = allOutboxLogs.list(patientDocId, now.minusDays(1), now.plusMinutes(1));
         assertEquals(2, messages.size());
     }
+
+    @Test
+    public void shouldBeInclusiveOfStartDateWhenListingOutboxLogs() {
+        DateTime now = DateUtil.now();
+        final String patientDocId = "patientDocId";
+
+        OutboxMessageLog messageLog = new OutboxMessageLog(patientDocId, "messageId", now, TYPE_NAME).playedOn(now, Arrays.asList("a.wav"));
+
+        allOutboxLogs.add(messageLog);
+        markForDeletion(messageLog);
+
+        final List<OutboxMessageLog> messages = allOutboxLogs.list(patientDocId, now, now.plusMinutes(1));
+        assertEquals(1, messages.size());
+    }
+
+    @Test
+    public void shouldBeInclusiveOfEndDateWhenListingOutboxLogs() {
+        DateTime now = DateUtil.now();
+        final String patientDocId = "patientDocId";
+
+        OutboxMessageLog messageLog = new OutboxMessageLog(patientDocId, "messageId", now, TYPE_NAME).playedOn(now, Arrays.asList("a.wav"));
+
+        allOutboxLogs.add(messageLog);
+        markForDeletion(messageLog);
+
+        final List<OutboxMessageLog> messages = allOutboxLogs.list(patientDocId, now, now);
+        assertEquals(1, messages.size());
+    }
 }

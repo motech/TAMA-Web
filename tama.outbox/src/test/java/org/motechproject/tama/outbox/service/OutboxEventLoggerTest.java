@@ -28,6 +28,15 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
     @Mock
     AllOutboxLogs allOutboxEvents;
     OutboxEventLogger outboxEventLogger;
+    OutboundVoiceMessage message;
+
+    public OutboxEventLoggerTest() {
+        message = new OutboundVoiceMessage();
+        VoiceMessageType voiceMessageType = new VoiceMessageType();
+        voiceMessageType.setVoiceMessageTypeName(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
+        message.setVoiceMessageType(voiceMessageType);
+        message.setId("messageId");
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -38,12 +47,6 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
 
     @Test
     public void shouldCreateOutboxEventLogOnCreateEvent() {
-        OutboundVoiceMessage message = new OutboundVoiceMessage();
-        VoiceMessageType voiceMessageType = new VoiceMessageType();
-        voiceMessageType.setVoiceMessageTypeName(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
-        message.setVoiceMessageType(voiceMessageType);
-        message.setId("messageId");
-
         outboxEventLogger.onCreate(message);
 
         ArgumentCaptor<OutboxMessageLog> captor = ArgumentCaptor.forClass(OutboxMessageLog.class);
@@ -55,6 +58,15 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldIgnoreTimeComponentWhenCreatingMessageLog() {
+        outboxEventLogger.onCreate(message);
+
+        ArgumentCaptor<OutboxMessageLog> captor = ArgumentCaptor.forClass(OutboxMessageLog.class);
+        verify(allOutboxEvents).add(captor.capture());
+        assertEquals(DateUtil.newDateTime(DateUtil.today()), captor.getValue().getCreatedOn());
+    }
+
+    @Test
     public void shouldCreateOutboxEventLogOnPlayedEvent() {
         KookooIVRResponseBuilder responseBuilder = new KookooIVRResponseBuilder().withPlayAudios("audio1", "audio2");
         OutboxMessageLog outboxMessageLog = mock(OutboxMessageLog.class);
@@ -62,7 +74,7 @@ public class OutboxEventLoggerTest extends BaseUnitTest {
         when(allOutboxEvents.find("patientDocId", "messageId")).thenReturn(outboxMessageLog);
         outboxEventLogger.onPlayed("patientDocId", responseBuilder, "messageId");
 
-        verify(outboxMessageLog).playedOn(eq(DateUtil.now()), anyList());
+        verify(outboxMessageLog).playedOn(eq(DateUtil.newDateTime(DateUtil.today())), anyList());
         verify(allOutboxEvents).update(outboxMessageLog);
     }
 }

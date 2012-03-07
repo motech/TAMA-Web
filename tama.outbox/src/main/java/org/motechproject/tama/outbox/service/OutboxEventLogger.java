@@ -1,5 +1,6 @@
 package org.motechproject.tama.outbox.service;
 
+import org.joda.time.LocalDate;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
@@ -20,14 +21,16 @@ public class OutboxEventLogger implements OutboxEventHandler {
 
     @Override
     public void onCreate(OutboundVoiceMessage message) {
-        OutboxMessageLog log = new OutboxMessageLog(message.getPartyId(), message.getId(), DateUtil.now(), message.getVoiceMessageType().getVoiceMessageTypeName());
+        LocalDate today = DateUtil.today();
+        OutboxMessageLog log = new OutboxMessageLog(message.getPartyId(), message.getId(), DateUtil.newDateTime(today), message.getVoiceMessageType().getVoiceMessageTypeName());
         allOutboxLogs.add(log);
     }
 
     @Override
     public void onPlayed(String patientDocId, KookooIVRResponseBuilder ivrResponseBuilder, String messageId) {
+        LocalDate today = DateUtil.today();
         OutboxMessageLog messageLog = allOutboxLogs.find(patientDocId, messageId);
-        messageLog.playedOn(DateUtil.now(), ivrResponseBuilder.getPlayAudios());
+        messageLog.playedOn(DateUtil.newDateTime(today), ivrResponseBuilder.getPlayAudios());
         allOutboxLogs.update(messageLog);
     }
 }
