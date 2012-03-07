@@ -42,18 +42,16 @@ public class OutboxReportBuilder extends ReportBuilder<OutboxSummary> {
     @Override
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
-        columns.add(new ExcelColumn("Message Id", Cell.CELL_TYPE_STRING, 5000));
-        columns.add(new ExcelColumn("Date/Time of Posting", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Date of Posting (YYYY-MM-DD)", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Type of Message", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Date/Time of Playing", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Message Content", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Date/Time of Playing (YYYY-MM-DD hh:mm)", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Message Content", Cell.CELL_TYPE_STRING, 10000));
     }
 
     @Override
     protected List<Object> getRowData(Object object) {
         OutboxSummary summary = (OutboxSummary) object;
         List<Object> row = new ArrayList<Object>();
-        row.add(summary.getMessageId());
         row.add(summary.getCreatedOn());
         row.add(summary.getTypeName());
         row.add(summary.getPlayedOn());

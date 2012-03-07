@@ -40,6 +40,7 @@
 
             <div id="outboxMessageReportGridNotice"><!-- required or JSP eats me --></div>
             <div id="outboxMessageReportGrid">
+                <a id="outboxMessageReportGridExcelLink" href="#">Download as Excel</a>
                 <div id="outboxMessageReportGridPlaceholder" style="margin-top: 10px;"></div>
             </div>
         </util:panel>

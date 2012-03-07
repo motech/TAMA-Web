@@ -106,6 +106,14 @@ dojo.declare("tama.DailyPillReminderReportWidget", tama.ReportWidget, {
 dojo.declare("tama.OutboxMessagesReportWidget", tama.ReportWidget, {
     constructor:function (reportName, url) {
         this.gridElement = dojo.byId(reportName + "Placeholder");
+        this.excelLinkElement = dojo.byId(reportName + "ExcelLink");
+        this.prepareDownloadLink();
+    },
+    prepareDownloadLink:function () {
+        var self = this;
+        dojo.connect(this.excelLinkElement, "click", function () {
+            document.location = "reports/outboxMessageReport.xls?startDate=" + self.startDate + "&endDate=" + self.endDate;
+        })
     },
     columnDetails:function () {
         return [

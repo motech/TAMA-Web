@@ -7,6 +7,6 @@
     font-weight: bold;
 }
 
-#dailyPillReminderReportGrid {
+#dailyPillReminderReportGrid, #outboxMessageReportGrid {
     margin-top: 10px;
 }
