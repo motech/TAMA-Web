@@ -108,7 +108,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
         updateAlertPage.changeNotes("testnotes");
         ShowAlertPage showAlertsPage = updateAlertPage.save();
         assertEquals(patient.patientId(), showAlertsPage.patientId());
-        assertEquals("FallingAdherence", showAlertsPage.alertType());
+        assertEquals("Falling Adherence", showAlertsPage.alertType());
         assertEquals("Adherence fell by 50.00%, from 100.00% to 50.00%", showAlertsPage.description());
         assertEquals("Daily", showAlertsPage.callPreference());
         assertEquals("testnotes", showAlertsPage.notes());
