@@ -43,7 +43,6 @@ public class OutboxMessageReportService {
                 reportLogs.add(newLogJsonObject(outboxMessageLog));
             for (OutboxMessageLog.PlayedLog playedLog : playedLogs) {
                 final JSONObject log = newLogJsonObject(outboxMessageLog);
-                log.put("typeName", outboxMessageLog.getTypeName());
                 log.put("playedOn", formatDateTime(playedLog.getDate()));
                 log.put("playedFiles", getPlayedFilesAsString(playedLog));
                 reportLogs.add(log);
@@ -82,8 +81,8 @@ public class OutboxMessageReportService {
     
     private JSONObject newLogJsonObject(OutboxMessageLog outboxMessageLog) throws JSONException {
         final JSONObject log = new JSONObject();
-        log.put("messageId", outboxMessageLog.getOutboxMessageId());
         log.put("createdOn", formatDate(outboxMessageLog.getCreatedOn()));
+        log.put("typeName", outboxMessageLog.getTypeName());
         return log;
     }
 
@@ -95,15 +94,18 @@ public class OutboxMessageReportService {
         return date == null ? "" : date.toString("yyyy-MM-dd hh:mm");
     }
 
-    private String getPlayedFilesAsString(OutboxMessageLog.PlayedLog playedLogs) {
+    public String getPlayedFilesAsString(OutboxMessageLog.PlayedLog playedLogs) {
         List<String> messages = new ArrayList<String>();
+        boolean lastWordWasNumeric = false;
         for (String file : playedLogs.getFiles()) {
-            final String text = outboxWaveFileToTextMapping.getProperty(file.toLowerCase());
-            if (text != null)
-                messages.add(text);
-            else
-                log.warning("No outbox wave file mapping for " + file + " in outboxWaveFileToTextMapping.properties" );
+            String text = outboxWaveFileToTextMapping.getProperty(file.toLowerCase());
+            if (text != null) {
+                boolean currentWordIsNumeric = StringUtils.isNumeric(text);
+                messages.add(lastWordWasNumeric && currentWordIsNumeric ?text : "\n" + text);
+                lastWordWasNumeric = currentWordIsNumeric;
+            } else
+                log.warning("No outbox wave file mapping for " + file + " in outboxWaveFileToTextMapping.properties");
         }
-        return StringUtils.join(messages.toArray(), "\n");
+        return StringUtils.join(messages.toArray());
     }
 }

@@ -81,7 +81,32 @@ public class OutboxMessageReportServiceTest extends BaseUnitTest {
         final JSONArray logs = result.getJSONArray("logs");
         assertEquals(2, logs.length());
         final JSONObject jsonObject = (JSONObject) logs.get(0);
-        assertEquals(A_IN_ENGLISH_TEXT, jsonObject.getString("playedFiles"));
+        assertEquals(A_IN_ENGLISH_TEXT, jsonObject.getString("playedFiles").trim());
+    }
+
+    @Test
+    public void shouldJoinPhoneNumber() throws Exception {
+        String patientDocId = "patientDocId";
+        outboxWaveFileToTextMapping.put("a", "a");
+        outboxWaveFileToTextMapping.put("num_0", "0");
+        outboxWaveFileToTextMapping.put("num_1", "1");
+        outboxWaveFileToTextMapping.put("num_2", "2");
+        outboxWaveFileToTextMapping.put("num_3", "3");
+        outboxWaveFileToTextMapping.put("b", "b");
+        List<OutboxMessageLog> logs = Arrays.asList(
+                newLog(patientDocId).playedOn(DateUtil.now(), Arrays.asList("a", "num_1", "num_2", "num_3", "b"))
+        );
+
+        when(allOutboxLogs.list("patientDocId",
+                DateUtil.newDateTime(today.minusDays(3), 0, 0, 0),
+                DateUtil.newDateTime(today, 0, 0, 0))).thenReturn(logs);
+
+        JSONObject result = outboxMessageReportService.JSONReport(patientDocId, today.minusDays(3), today);
+        assertJSONResult(result);
+    }
+
+    private void assertJSONResult(JSONObject result) throws JSONException {
+        assertEquals("\na\n123\nb", result.getJSONArray("logs").getJSONObject(0).getString("playedFiles"));
     }
 
     @Test

@@ -29,7 +29,7 @@ public class TAMAConstants {
     public static final String APPOINTMENT_LOST_REMINDER = "Appointment lost";
     public static final String APPOINTMENT_MISSED_REMINDER = "Appointment missed";
     public static final String FALLING_ADHERENCE = "Falling Adherence";
-    public static final String VOICE_MESSAGE_COMMAND_AUDIO = "Adherence";
+    public static final String VOICE_MESSAGE_COMMAND_AUDIO = "Adherence Trend";
     public static final int NO_ALERT_PRIORITY = 0;
     public static final int DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL = 4;
     public static final String APPOINTMENT_REMINDER_VOICE_MESSAGE = APPOINTMENT_REMINDER;
