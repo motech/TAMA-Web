@@ -97,7 +97,7 @@ public class AlertsPage extends Page {
         List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
         String actualPhoneNumber = td_collection.get(1).getText();
         assertEquals(phoneNumber, actualPhoneNumber);
-        assertEquals(status, td_collection.get(5).getText());
-        assertEquals(notes, td_collection.get(6).getText());
+        assertEquals(status, td_collection.get(6).getText());
+        assertEquals(notes, td_collection.get(7).getText());
     }
 }

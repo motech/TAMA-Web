@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
@@ -220,7 +219,7 @@ public class PatientAlertServiceTest {
     }
 
     @Test
-    public void shouldReturnNoReadAlerts_filteredByAnInvalidPatientId() {
+    public void shouldReturnAllAlerts_filteredByPatientId() {
         final Clinic clinic = new Clinic() {{
             setId("testClinicId");
         }};
@@ -231,6 +230,16 @@ public class PatientAlertServiceTest {
             add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null), patient));
         }};
 
+        when(allPatients.findByPatientIdAndClinicId("patientId_1", "testClinicId")).thenReturn(patient);
+        when(patientAlertSearchService.search(patient.getId(), null, null, null)).thenReturn(readAlerts);
+
+        PatientAlerts readAlertsForClinic = patientAlertService.getAllAlertsFor("testClinicId", "patientId_1", null, null, null);
+
+        assertEquals(2, readAlertsForClinic.size());
+    }
+
+    @Test
+    public void shouldReturnNoReadAlerts_filteredByAnInvalidPatientId() {
         when(allPatients.findByPatientIdAndClinicId("invalidPatientId", "testClinicId")).thenReturn(null);
 
         PatientAlerts readAlertsForClinic = patientAlertService.getReadAlertsFor("testClinicId", "invalidPatientId", null, null, null);

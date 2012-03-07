@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.collections.ListUtils;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlerts;
 import org.motechproject.tama.patient.domain.SymptomsAlertStatus;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.List;
 
 @RequestMapping("/alerts")
 @Controller
@@ -46,16 +44,16 @@ public class AlertsController extends BaseController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
+    public String show(@PathVariable("id") String id, Model uiModel) {
         PatientAlert patientAlert = patientAlertService.readAlert(id);
         uiModel.addAttribute("alertInfo", patientAlert);
         return "alerts/show" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
+    public String updateForm(@PathVariable("id") String id, Model uiModel) {
         PatientAlert patientAlert = patientAlertService.readAlert(id);
-        initUIModel(id, uiModel, patientAlert);
+        initUIModel(uiModel, patientAlert);
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
@@ -66,26 +64,24 @@ public class AlertsController extends BaseController {
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
             PatientAlert patientAlert = patientAlertService.readAlert(alertId);
-            initUIModel(alertId, uiModel, patientAlert);
+            initUIModel(uiModel, patientAlert);
             return "alerts/update";
         }
         return "redirect:/alerts/" + encodeUrlPathSegment(alertId, request);
     }
 
-    private void initUIModel(String id, Model uiModel, PatientAlert patientAlert) {
+    private void initUIModel(Model uiModel, PatientAlert patientAlert) {
         uiModel.addAttribute("alertInfo", patientAlert);
         uiModel.addAttribute("symptomsStatuses", Arrays.asList(SymptomsAlertStatus.values()));
     }
 
     private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {
-        PatientAlerts unreadPatientAlerts = patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
-        PatientAlerts readPatientAlerts = patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
         if (filter.getAlertStatus().equals(AlertFilter.STATUS_UNREAD)) {
-            return unreadPatientAlerts;
-        } else if (filter.getAlertStatus().equals(AlertFilter.STATUS_ALL)) {
-            List allPatientAlerts = ListUtils.union(unreadPatientAlerts, readPatientAlerts);
-            return new PatientAlerts(allPatientAlerts);
+            return patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+        } else if (filter.getAlertStatus().equals(AlertFilter.STATUS_READ)) {
+            return patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+        } else {
+            return patientAlertService.getAllAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
         }
-        return readPatientAlerts;
     }
 }

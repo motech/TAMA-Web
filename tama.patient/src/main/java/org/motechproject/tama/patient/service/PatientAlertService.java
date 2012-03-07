@@ -85,6 +85,10 @@ public class PatientAlertService {
         return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.NEW);
     }
 
+    public PatientAlerts getAllAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
+        return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, null);
+    }
+
     public PatientAlerts getFallingAdherenceAlerts(String patientDocumentId, final DateTime startDate, final DateTime endDate) {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocumentId, startDate, endDate, null);
         return allAlerts.filterByAlertType(PatientAlertType.FallingAdherence);

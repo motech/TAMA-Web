@@ -71,7 +71,11 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldSetAllAlertsForDisplay() {
-        assertEquals("alerts/list", alertsController.list(uiModel, request));
+        AlertFilter filter = new AlertFilter().setPatientId("patientId").setAlertStatus(AlertFilter.STATUS_ALL).setAlertType(PatientAlertType.AdherenceInRed.toString()).setStartDate(new Date());
+
+        when(patientAlertService.getAllAlertsFor(clinicId, filter.getPatientId(), PatientAlertType.AdherenceInRed, filter.getStartDateTime(), filter.getEndDateTime())).thenReturn(patientAlerts);
+        assertEquals("alerts/list", alertsController.list(filter, uiModel, request));
+        verify(uiModel, times(1)).addAttribute("alerts", patientAlerts);
     }
 
     @Test
@@ -94,7 +98,7 @@ public class AlertsControllerTest {
         patientAlert.setAlert(alert);
 
         when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
-        assertEquals("alerts/show" + PatientAlertType.SymptomReporting.name(), alertsController.show(alertId, uiModel, request));
+        assertEquals("alerts/show" + PatientAlertType.SymptomReporting.name(), alertsController.show(alertId, uiModel));
         verify(uiModel, times(1)).addAttribute("alertInfo", patientAlert);
     }
 
@@ -106,7 +110,7 @@ public class AlertsControllerTest {
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
         when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
-        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel, request));
+        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel));
     }
 
     @Test
@@ -124,6 +128,6 @@ public class AlertsControllerTest {
         patientAlert.setAlert(alert);
         when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
         alertsController.update(uiModel, alertId, symptomsAlertStatus, notes, doctorsNotes, type, request);
-        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel, request));
+        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel));
     }
 }
