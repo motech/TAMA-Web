@@ -39,14 +39,14 @@ public class PatientReport {
     }
 
     public Date getARTStartedOn() {
-        return earliestTreatmentAdvice.getStartDate();
+        return earliestTreatmentAdvice !=null ? earliestTreatmentAdvice.getStartDate() : null;
     }
 
     public String getCurrentRegimenName() {
-        return currentRegimen.getDisplayName();
+        return currentRegimen != null ? currentRegimen.getDisplayName() : null;
     }
 
     public Date getCurrentRegimenStartDate() {
-        return currentTreatmentAdvice.getStartDate();
+        return currentTreatmentAdvice !=null ? currentTreatmentAdvice.getStartDate() : null;
     }
 }

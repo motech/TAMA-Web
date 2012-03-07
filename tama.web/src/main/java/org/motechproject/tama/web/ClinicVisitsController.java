@@ -160,7 +160,7 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/list.xls", method = RequestMethod.GET)
     public void downloadList(@RequestParam(value = "patientId", required = true) String patientDocId, HttpServletResponse response) {
-        response.setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
+        response.setHeader("Content-Disposition", "inline; filename=AppointmentCalender.xls");
         response.setContentType("application/vnd.ms-excel");
         try {
             ServletOutputStream outputStream = response.getOutputStream();

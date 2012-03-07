@@ -6,272 +6,278 @@
      xmlns:c="http://java.sun.com/jsp/jstl/core"
      class="clinic-visit-list">
 
-<spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
-<spring:url value="/resources-${applicationVersion}/styles/clinic-visit.css" var="clinicVisit_css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="${clinicVisit_css}"/>
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+    <spring:url value="/resources-${applicationVersion}/styles/clinic-visit.css" var="clinicVisit_css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="${clinicVisit_css}"/>
 
-<spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
-<jsp:directive.page contentType="text/html;charset=UTF-8"/>
-<jsp:output omit-xml-declaration="yes"/>
-<util:panel id="clinicVisitListPanel" title="Clinic Visits / Appointment Details" openPane="true">
-    <br/>
-    <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
-    <br/>
-    <spring:url value="/clinicvisits/newVisit" var="create_visit_url">
-        <spring:param name="patientDocId" value="${patient.id}"/>
+    <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/clinicvisits/list.xls" var="clinic_visits_excel_download_url">
+        <spring:param name="patientId" value="${patient.id}"/>
     </spring:url>
 
-    <div style="margin-bottom: 10px">
-        <a id="createVisit" href="javascript:void(0);" class="newVisitLink">Create Visit</a> |
-        <a id="createAppointment" href="javascript:void(0);" class="createAppointment">Create Appointment</a>
-    </div>
-    <table id="clinicVisitList">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Appointment Due Date</th>
-            <th>Adjusted Due Date</th>
-            <th>Appointment Set for</th>
-            <th>Actual Date of Visit</th>
-            <th>Type of Visit</th>
-        </tr>
-        </thead>
-        <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
-            <spring:url value="/clinicvisits" var="clinicvisitEdit">
-                <spring:param name="form"/>
-                <spring:param name="patientId" value="${visit.patientDocId}"/>
-                <spring:param name="clinicVisitId" value="${visit.id}"/>
-            </spring:url>
+    <util:panel id="clinicVisitListPanel" title="Clinic Visits / Appointment Details" openPane="true">
+        <br/>
+        <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
+        <br/>
+        <spring:url value="/clinicvisits/newVisit" var="create_visit_url">
+            <spring:param name="patientDocId" value="${patient.id}"/>
+        </spring:url>
+
+        <div style="margin-bottom: 10px">
+            <a id="createVisit" href="javascript:void(0);" class="newVisitLink">Create Visit</a> |
+            <a id="createAppointment" href="javascript:void(0);" class="createAppointment">Create Appointment</a> |
+            <a id="downloadAppointmentCalendarAsExcelLink" href="${clinic_visits_excel_download_url}">Download Appointment Calendar as Excel</a>
+        </div>
+        <table id="clinicVisitList">
+            <thead>
             <tr>
-                <td>
-                    <c:choose>
-                        <c:when test="${visit.visitEditable}">
-                            <a id="visit-${status.index}" href="${clinicvisitEdit}" class="visitTitle"><c:out value="${visit.title}"/></a>
-                        </c:when>
-                        <c:otherwise>
-                            <c:out value="${visit.title}"/>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                <td>
-                    <spring:eval expression="visit.appointmentDueDate"/>
-                </td>
-                <td>
-                    <c:choose>
-                        <c:when test="${visit.dueDateEditable}">
-                            <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
-                                <c:choose>
-                                    <c:when test="${empty visit.adjustedDueDate}">Adjust</c:when>
-                                    <c:otherwise> <spring:eval expression="visit.adjustedDueDate"/> </c:otherwise>
-                                </c:choose>
-                            </a>
-                            <![CDATA[&nbsp; | &nbsp;]]>
-                            <a href="javascript:void(0);" class="adjustDueDateAsToday" visitid="${visit.id}" patientid="${visit.patientDocId}">Today</a>
-                        </c:when>
-                        <c:otherwise>
-                            <spring:eval expression="visit.adjustedDueDate"/>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                <td>
-                    <c:choose>
-                        <c:when test="${visit.confirmedAppointmentDateEditable}">
-                            <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
-                                <c:choose>
-                                    <c:when test="${empty visit.confirmedAppointmentDate}">Schedule</c:when>
-                                    <c:otherwise> <spring:eval expression="visit.confirmedAppointmentDate"/> </c:otherwise>
-                                </c:choose>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <spring:eval expression="visit.confirmedAppointmentDate"/>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                <td>
-                    <c:choose>
-                        <c:when test="${visit.visitDateEditable}">
-                            <c:choose>
-                                <c:when test="${empty visit.visitDate}">
-                                    <a href="javascript:void(0);" class="markAsMissed" visitid="${visit.id}" patientid="${visit.patientDocId}">Mark as missed</a>
-                                </c:when>
-                                <c:otherwise>
-                                    <a class="setVisitDate" href="javascript:void(0);" visitid="${visit.id}" patientid="${visit.patientDocId}">
-                                        <spring:eval expression="visit.visitDate"/>
-                                    </a>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:when>
-                        <c:otherwise>
-                            <c:if test="${visit.missed}">Missed</c:if>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                <td><c:out value="${visit.typeOfVisit}"/></td>
+                <th></th>
+                <th>Appointment Due Date</th>
+                <th>Adjusted Due Date</th>
+                <th>Appointment Set for</th>
+                <th>Actual Date of Visit</th>
+                <th>Type of Visit</th>
             </tr>
-        </c:forEach>
-    </table>
-    <br/>
-    <jsp:include page="../patients/showPatientPageLinks.jspx">
-        <jsp:param name="patientId" value="${patient.id}"/>
-        <jsp:param name="patientInactive" value="${patient.status.inactive}" />
-    </jsp:include>
-</util:panel>
+            </thead>
+            <c:forEach items="${clinicVisits}" var="visit" varStatus="status">
+                <spring:url value="/clinicvisits" var="clinicvisitEdit">
+                    <spring:param name="form"/>
+                    <spring:param name="patientId" value="${visit.patientDocId}"/>
+                    <spring:param name="clinicVisitId" value="${visit.id}"/>
+                </spring:url>
+                <tr>
+                    <td>
+                        <c:choose>
+                            <c:when test="${visit.visitEditable}">
+                                <a id="visit-${status.index}" href="${clinicvisitEdit}" class="visitTitle"><c:out value="${visit.title}"/></a>
+                            </c:when>
+                            <c:otherwise>
+                                <c:out value="${visit.title}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <spring:eval expression="visit.appointmentDueDate"/>
+                    </td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${visit.dueDateEditable}">
+                                <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
+                                    <c:choose>
+                                        <c:when test="${empty visit.adjustedDueDate}">Adjust</c:when>
+                                        <c:otherwise> <spring:eval expression="visit.adjustedDueDate"/> </c:otherwise>
+                                    </c:choose>
+                                </a>
+                                <![CDATA[&nbsp; | &nbsp;]]>
+                                <a href="javascript:void(0);" class="adjustDueDateAsToday" visitid="${visit.id}" patientid="${visit.patientDocId}">Today</a>
+                            </c:when>
+                            <c:otherwise>
+                                <spring:eval expression="visit.adjustedDueDate"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${visit.confirmedAppointmentDateEditable}">
+                                <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
+                                    <c:choose>
+                                        <c:when test="${empty visit.confirmedAppointmentDate}">Schedule</c:when>
+                                        <c:otherwise> <spring:eval expression="visit.confirmedAppointmentDate"/> </c:otherwise>
+                                    </c:choose>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <spring:eval expression="visit.confirmedAppointmentDate"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${visit.visitDateEditable}">
+                                <c:choose>
+                                    <c:when test="${empty visit.visitDate}">
+                                        <a href="javascript:void(0);" class="markAsMissed" visitid="${visit.id}" patientid="${visit.patientDocId}">Mark as missed</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a class="setVisitDate" href="javascript:void(0);" visitid="${visit.id}" patientid="${visit.patientDocId}">
+                                            <spring:eval expression="visit.visitDate"/>
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:when>
+                            <c:otherwise>
+                                <c:if test="${visit.missed}">Missed</c:if>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td><c:out value="${visit.typeOfVisit}"/></td>
+                </tr>
+            </c:forEach>
+        </table>
+        <br/>
+        <jsp:include page="../patients/showPatientPageLinks.jspx">
+            <jsp:param name="patientId" value="${patient.id}"/>
+            <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+        </jsp:include>
+    </util:panel>
 
-<div style="display: none;">
-    <div id="scheduleAdjustedDueDate" data-dojo-type="dijit.Dialog" title="Schedule">
-        <div style="margin: 10px;">
+    <div style="display: none;">
+        <div id="scheduleAdjustedDueDate" data-dojo-type="dijit.Dialog" title="Schedule">
+            <div style="margin: 10px;">
 
-            <div class="visitTypeOptions">
-                <input style="height:1em;" type="radio" name="type" value="Scheduled" class="optionScheduled"/> Scheduled <br/>
-                <input style="height:1em;" type="radio" name="type" value="Unscheduled" checked="true"/> Unscheduled <br/>
-            </div>
-            <br/>
-
-            <div>
-                <div class="calendar"></div>
-            </div>
-            <br/>
-
-            <div>
-                <div class="timePickerDiv" style="text-align: center;display: block;">
-                    <div class="timePicker"></div>
+                <div class="visitTypeOptions">
+                    <input style="height:1em;" type="radio" name="type" value="Scheduled" class="optionScheduled"/> Scheduled <br/>
+                    <input style="height:1em;" type="radio" name="type" value="Unscheduled" checked="true"/> Unscheduled <br/>
                 </div>
-            </div>
-            <br/><br/>
-            <div class="submit">
-                <input id="cancel" type="submit" class="popupCancel" value="Cancel"/>
-                <input id="save" type="submit" class="popupOk" style="float: right;" value="Save"/>
+                <br/>
+
+                <div>
+                    <div class="calendar"></div>
+                </div>
+                <br/>
+
+                <div>
+                    <div class="timePickerDiv" style="text-align: center;display: block;">
+                        <div class="timePicker"></div>
+                    </div>
+                </div>
+                <br/><br/>
+                <div class="submit">
+                    <input id="cancel" type="submit" class="popupCancel" value="Cancel"/>
+                    <input id="save" type="submit" class="popupOk" style="float: right;" value="Save"/>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<spring:url value="/resources-${applicationVersion}/js/schedulePopup.js" var="schedulePopupUrl"/>
-<spring:url value="/resources-${applicationVersion}/js/tamaConfirmBox.js" var="tamaConfirmBoxUrl"/>
-<script src="${schedulePopupUrl}"><!--required--></script>
-<script src="${tamaConfirmBoxUrl}"><!--required--></script>
+    <spring:url value="/resources-${applicationVersion}/js/schedulePopup.js" var="schedulePopupUrl"/>
+    <spring:url value="/resources-${applicationVersion}/js/tamaConfirmBox.js" var="tamaConfirmBoxUrl"/>
+    <script src="${schedulePopupUrl}"><!--required--></script>
+    <script src="${tamaConfirmBoxUrl}"><!--required--></script>
 
-<spring:url value="/clinicvisits/adjustDueDate.json" var="adjustDatePostUrl"/>
-<spring:url value="/clinicvisits/confirmVisitDate.json" var="confirmVisitDateUrl"/>
-<spring:url value="/clinicvisits/markAsMissed.json" var="markAsMissedUrl"/>
-<spring:url value="/clinicvisits/setVisitDate.json" var="setVisitDate"/>
-<spring:url value="/clinicvisits/createAppointment.json" var="createAppointmentUrl"/>
-<script>
-    dojo.addOnLoad(function () {
-        var popup = new SchedulePopup('scheduleAdjustedDueDate', "Adjust Due Date");
-        var adjustDueDate = function (event) {
-            var clinicVisitId = dojo.attr(this, 'visitid');
-            var patientId = dojo.attr(this, 'patientid');
-            var linkElement = this;
-            popup.show(this, {showTimeOption:false}, function (date) {
+    <spring:url value="/clinicvisits/adjustDueDate.json" var="adjustDatePostUrl"/>
+    <spring:url value="/clinicvisits/confirmVisitDate.json" var="confirmVisitDateUrl"/>
+    <spring:url value="/clinicvisits/markAsMissed.json" var="markAsMissedUrl"/>
+    <spring:url value="/clinicvisits/setVisitDate.json" var="setVisitDate"/>
+    <spring:url value="/clinicvisits/createAppointment.json" var="createAppointmentUrl"/>
+    <script>
+        dojo.addOnLoad(function () {
+            var popup = new SchedulePopup('scheduleAdjustedDueDate', "Adjust Due Date");
+            var adjustDueDate = function (event) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
+                var linkElement = this;
+                popup.show(this, {showTimeOption:false}, function (date) {
+                    AjaxCall.post({
+                        url: "${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
+                        content: {"adjustedDueDate":dojo.date.locale.format(date, {selector:"date", datePattern:'dd/MM/yyyy'})},
+                        load: function (data) {
+                            linkElement.innerHTML = data.adjustedDueDate;
+                        }
+                    });
+                });
+            }
+
+            var adjustDueDateAsToday = function (event) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
+                var linkElement = this;
                 AjaxCall.post({
                     url: "${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                    content: {"adjustedDueDate":dojo.date.locale.format(date, {selector:"date", datePattern:'dd/MM/yyyy'})},
+                    content: {"adjustedDueDate":dojo.date.locale.format(new Date(), {selector:"date", datePattern:'dd/MM/yyyy'})},
                     load: function (data) {
-                        linkElement.innerHTML = data.adjustedDueDate;
-                    }
-                });
-            });
-        }
-
-        var adjustDueDateAsToday = function (event) {
-            var clinicVisitId = dojo.attr(this, 'visitid');
-            var patientId = dojo.attr(this, 'patientid');
-            var linkElement = this;
-            AjaxCall.post({
-                url: "${adjustDatePostUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                content: {"adjustedDueDate":dojo.date.locale.format(new Date(), {selector:"date", datePattern:'dd/MM/yyyy'})},
-                load: function (data) {
-                    var tdElement = linkElement.parentNode;
-                    dojo.query('.adjustDueDate', tdElement).forEach(function (el) {
-                        el.innerHTML = data.adjustedDueDate;
-                    });
-                }
-            });
-        }
-
-        var confirmVisitDate = function (element) {
-            var clinicVisitId = dojo.attr(this, 'visitid');
-            var patientId = dojo.attr(this, 'patientid');
-            var linkElement = this;
-            popup.show(this, {showTimeOption:true}, function (confirmedDate) {
-                AjaxCall.post({
-                    url:"${confirmVisitDateUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                    content:{"confirmedAppointmentDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
-                    load:function (data) {
-                        linkElement.innerHTML = data.confirmedAppointmentDate;
-                        dojo.query(".adjustDueDate", linkElement.parentNode.parentNode).forEach(function (el) {
-                            var txt = el.innerHTML;
-                            el.parentNode.innerHTML = txt.replace(/[a-z ]*/i, '');
+                        var tdElement = linkElement.parentNode;
+                        dojo.query('.adjustDueDate', tdElement).forEach(function (el) {
+                            el.innerHTML = data.adjustedDueDate;
                         });
                     }
                 });
-            });
-        }
+            }
 
-        var setVisitDate = function (element) {
-            var clinicVisitId = dojo.attr(this, 'visitid');
-            var patientId = dojo.attr(this, 'patientid');
-            var linkElement = this;
+            var confirmVisitDate = function (element) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
+                var linkElement = this;
+                popup.show(this, {showTimeOption:true}, function (confirmedDate) {
+                    AjaxCall.post({
+                        url:"${confirmVisitDateUrl}/" + clinicVisitId + "?patientId=" + patientId,
+                        content:{"confirmedAppointmentDate":dojo.date.locale.format(confirmedDate, {selector:"date", datePattern:'dd/MM/yyyy HH:mm'})},
+                        load:function (data) {
+                            linkElement.innerHTML = data.confirmedAppointmentDate;
+                            dojo.query(".adjustDueDate", linkElement.parentNode.parentNode).forEach(function (el) {
+                                var txt = el.innerHTML;
+                                el.parentNode.innerHTML = txt.replace(/[a-z ]*/i, '');
+                            });
+                        }
+                    });
+                });
+            }
 
-            var okHandler = function (visitDate) {
-                AjaxCall.post({
-                    url:"${setVisitDate}/" + clinicVisitId + "?patientId=" + patientId,
-                    content:{"visitDate":dojo.date.locale.format(visitDate, {selector:"date", datePattern:'dd/MM/yyyy'})},
-                    load:function (data) {
-                        linkElement.innerHTML = data.visitDate;
-                    }
+            var setVisitDate = function (element) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
+                var linkElement = this;
+
+                var okHandler = function (visitDate) {
+                    AjaxCall.post({
+                        url:"${setVisitDate}/" + clinicVisitId + "?patientId=" + patientId,
+                        content:{"visitDate":dojo.date.locale.format(visitDate, {selector:"date", datePattern:'dd/MM/yyyy'})},
+                        load:function (data) {
+                            linkElement.innerHTML = data.visitDate;
+                        }
+                    });
+                };
+
+                popup.show(this, {showTimeOption:false, disablePastDates:false}, okHandler);
+            }
+
+            var markAsMissed = function (element) {
+                var clinicVisitId = dojo.attr(this, 'visitid');
+                var patientId = dojo.attr(this, 'patientid');
+                var linkElement = this;
+                new tama.ConfirmBox("Confirm", "Confirm visit as missed?", function () {
+                    AjaxCall.post({
+                        url:"${markAsMissedUrl}/" + clinicVisitId + "?patientId=" + patientId,
+                        load:function (data) {
+                            if (data.missed) {
+                                var parent = linkElement.parentNode;
+                                parent.innerHTML = "Missed";
+                                dojo.query('a', parent.parentNode).forEach(function (el) {
+                                    if (el.parentNode) el.parentNode.innerHTML = el.innerHTML;
+                                });
+                            }
+                        }
+                    });
+                }).show();
+            }
+
+            var createAppointment = function (element) {
+                popup.show(this, {showTimeOption:false, showVisitOptions:true}, function (appointmentDueDate, options) {
+                    var typeOfVisit = options.visitOptions["optionScheduled"] ? "Scheduled" : "Unscheduled";
+                    AjaxCall.post({
+                        url:"${createAppointmentUrl}",
+                        content:{"appointmentDueDate":dojo.date.locale.format(appointmentDueDate, {selector:"date", datePattern:'dd/MM/yyyy'}), "typeOfVisit":typeOfVisit, "patientId":"${patient.id}"},
+                        load:function (data) {
+                            if (data.result === "success")
+                                window.location.reload();
+                        }
+                    });
                 });
             };
 
-            popup.show(this, {showTimeOption:false, disablePastDates:false}, okHandler);
-        }
-
-        var markAsMissed = function (element) {
-            var clinicVisitId = dojo.attr(this, 'visitid');
-            var patientId = dojo.attr(this, 'patientid');
-            var linkElement = this;
-            new tama.ConfirmBox("Confirm", "Confirm visit as missed?", function () {
-                AjaxCall.post({
-                    url:"${markAsMissedUrl}/" + clinicVisitId + "?patientId=" + patientId,
-                    load:function (data) {
-                        if (data.missed) {
-                            var parent = linkElement.parentNode;
-                            parent.innerHTML = "Missed";
-                            dojo.query('a', parent.parentNode).forEach(function (el) {
-                                if (el.parentNode) el.parentNode.innerHTML = el.innerHTML;
-                            });
-                        }
-                    }
-                });
-            }).show();
-        }
-
-        var createAppointment = function (element) {
-            popup.show(this, {showTimeOption:false, showVisitOptions:true}, function (appointmentDueDate, options) {
-                var typeOfVisit = options.visitOptions["optionScheduled"] ? "Scheduled" : "Unscheduled";
-                AjaxCall.post({
-                    url:"${createAppointmentUrl}",
-                    content:{"appointmentDueDate":dojo.date.locale.format(appointmentDueDate, {selector:"date", datePattern:'dd/MM/yyyy'}), "typeOfVisit":typeOfVisit, "patientId":"${patient.id}"},
-                    load:function (data) {
-                        if (data.result === "success")
-                            window.location.reload();
-                    }
-                });
+            dojo.query('a.adjustDueDate').connect('onclick', adjustDueDate);
+            dojo.query('a.adjustDueDateAsToday').connect('onclick', adjustDueDateAsToday);
+            dojo.query('a.confirmVisitDate').connect('onclick', confirmVisitDate);
+            dojo.query('a.setVisitDate').connect('onclick', setVisitDate);
+            dojo.query('a.markAsMissed').connect('onclick', markAsMissed);
+            dojo.query('a.createAppointment').connect('onclick', createAppointment);
+            dojo.query('a.newVisitLink').connect('onclick', function () {
+                new tama.ConfirmBox("Confirm", "Do you want to create a new visit?", function () {
+                    window.location.href = "${create_visit_url}";
+                }).show();
             });
-        };
-
-        dojo.query('a.adjustDueDate').connect('onclick', adjustDueDate);
-        dojo.query('a.adjustDueDateAsToday').connect('onclick', adjustDueDateAsToday);
-        dojo.query('a.confirmVisitDate').connect('onclick', confirmVisitDate);
-        dojo.query('a.setVisitDate').connect('onclick', setVisitDate);
-        dojo.query('a.markAsMissed').connect('onclick', markAsMissed);
-        dojo.query('a.createAppointment').connect('onclick', createAppointment);
-        dojo.query('a.newVisitLink').connect('onclick', function () {
-            new tama.ConfirmBox("Confirm", "Do you want to create a new visit?", function () {
-                window.location.href = "${create_visit_url}";
-            }).show();
         });
-    });
-</script>
+    </script>
 </div>

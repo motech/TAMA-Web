@@ -14,10 +14,20 @@
     <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/clinicvisits/list.xls" var="clinic_visits_excel_download_url">
+        <spring:param name="patientId" value="${patient.id}"/>
+    </spring:url>
+
     <util:panel id="clinicVisitListPanel" title="Clinic Visits / Appointment Details" openPane="true">
         <br/>
         <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
         <br/>
+
+        <div style="margin-bottom: 10px">
+            <a id="downloadAppointmentCalendarAsExcelLink" href="${clinic_visits_excel_download_url}">Download Appointment Calendar as Excel</a>
+        </div>
+
         <table id="clinicVisitList">
             <thead>
             <tr>
