@@ -57,7 +57,7 @@ public class PatientAlertService {
 
     public boolean updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType) {
         try {
-            if (PatientAlertType.SymptomReporting.name().equals(patientAlertType)) {
+            if (PatientAlertType.SymptomReporting.toString().equals(patientAlertType)) {
                 alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
                 alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
             }
