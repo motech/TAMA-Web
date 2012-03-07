@@ -32,24 +32,12 @@ public class OutboxMessageReportService {
     }
 
     public JSONObject JSONReport(String patientDocId, LocalDate start, LocalDate end) throws JSONException {
-        final List<OutboxMessageLog> outboxMessageLogs = allOutboxLogs.list(patientDocId, DateUtil.newDateTime(start), DateUtil.newDateTime(end));
-
-        JSONObject result = new JSONObject();
-
         List<JSONObject> reportLogs = new ArrayList<JSONObject>();
-        for (OutboxMessageLog outboxMessageLog : outboxMessageLogs) {
-            final List<OutboxMessageLog.PlayedLog> playedLogs = outboxMessageLog.getPlayedLogs();
-            if (playedLogs.size() == 0) //when outbox message was never played
-                reportLogs.add(newLogJsonObject(outboxMessageLog));
-            for (OutboxMessageLog.PlayedLog playedLog : playedLogs) {
-                final JSONObject log = newLogJsonObject(outboxMessageLog);
-                log.put("playedOn", formatDateTime(playedLog.getDate()));
-                log.put("playedFiles", getPlayedFilesAsString(playedLog));
-                reportLogs.add(log);
-            }
+        List<OutboxSummary> outboxSummaries = create(patientDocId, start, end);
+        for (OutboxSummary outboxSummary : outboxSummaries) {
+            reportLogs.add(new JSONObject(outboxSummary));
         }
-        result.put("logs", reportLogs);
-        return result;
+        return new JSONObject().put("logs", reportLogs);
     }
 
     public List<OutboxSummary> create(String patientDocId, LocalDate startDate, LocalDate endDate) {
@@ -73,17 +61,10 @@ public class OutboxMessageReportService {
     }
 
     private OutboxSummary outboxSummary(OutboxMessageLog outboxMessageLog) {
-        final OutboxSummary summary  = new OutboxSummary();
+        final OutboxSummary summary = new OutboxSummary();
         summary.setMessageId(outboxMessageLog.getOutboxMessageId());
         summary.setCreatedOn(formatDate(outboxMessageLog.getCreatedOn()));
         return summary;
-    }
-    
-    private JSONObject newLogJsonObject(OutboxMessageLog outboxMessageLog) throws JSONException {
-        final JSONObject log = new JSONObject();
-        log.put("createdOn", formatDate(outboxMessageLog.getCreatedOn()));
-        log.put("typeName", outboxMessageLog.getTypeName());
-        return log;
     }
 
     String formatDate(DateTime date) {
@@ -101,7 +82,7 @@ public class OutboxMessageReportService {
             String text = outboxWaveFileToTextMapping.getProperty(file.toLowerCase());
             if (text != null) {
                 boolean currentWordIsNumeric = StringUtils.isNumeric(text);
-                messages.add(lastWordWasNumeric && currentWordIsNumeric ?text : "\n" + text);
+                messages.add(lastWordWasNumeric && currentWordIsNumeric ? text : "\n" + text);
                 lastWordWasNumeric = currentWordIsNumeric;
             } else
                 log.warning("No outbox wave file mapping for " + file + " in outboxWaveFileToTextMapping.properties");
