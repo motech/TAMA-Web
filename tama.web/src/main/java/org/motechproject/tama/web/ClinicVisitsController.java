@@ -17,7 +17,7 @@ import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
-import org.motechproject.tama.web.viewbuilder.AppointmentCalenderBuilder;
+import org.motechproject.tama.web.viewbuilder.AppointmentCalendarBuilder;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,7 +160,7 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/list.xls", method = RequestMethod.GET)
     public void downloadList(@RequestParam(value = "patientId", required = true) String patientDocId, HttpServletResponse response) {
-        response.setHeader("Content-Disposition", "inline; filename=AppointmentCalender.xls");
+        response.setHeader("Content-Disposition", "inline; filename=AppointmentCalendar.xls");
         response.setContentType("application/vnd.ms-excel");
         try {
             ServletOutputStream outputStream = response.getOutputStream();
@@ -168,8 +168,8 @@ public class ClinicVisitsController extends BaseController {
             List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
             PatientReport patientReport = patientService.getPatientReport(patientDocId);
 
-            AppointmentCalenderBuilder appointmentCalenderBuilder = new AppointmentCalenderBuilder(clinicVisitUIModels, patientReport);
-            HSSFWorkbook excelWorkbook = appointmentCalenderBuilder.getExcelWorkbook();
+            AppointmentCalendarBuilder appointmentCalendarBuilder = new AppointmentCalendarBuilder(clinicVisitUIModels, patientReport);
+            HSSFWorkbook excelWorkbook = appointmentCalendarBuilder.getExcelWorkbook();
             excelWorkbook.write(outputStream);
             outputStream.flush();
         } catch (Exception e) {

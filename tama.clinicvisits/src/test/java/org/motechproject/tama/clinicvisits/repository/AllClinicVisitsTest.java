@@ -62,7 +62,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldFirstRemoveAppointmentCalenderForPatient() {
+    public void shouldFirstRemoveAppointmentCalendarForPatient() {
         allClinicVisits.addAppointmentCalendar(PATIENT_ID);
 
         verify(appointmentService).removeCalendar(PATIENT_ID);

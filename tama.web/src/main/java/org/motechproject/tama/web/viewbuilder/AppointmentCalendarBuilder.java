@@ -10,27 +10,27 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppointmentCalenderBuilder extends ReportBuilder<ClinicVisitUIModel> {
+public class AppointmentCalendarBuilder extends ReportBuilder<ClinicVisitUIModel> {
 
     private PatientReport patientReport;
 
-    public AppointmentCalenderBuilder(List<ClinicVisitUIModel> clinicVisits) {
+    public AppointmentCalendarBuilder(List<ClinicVisitUIModel> clinicVisits) {
         super(clinicVisits);
     }
 
-    public AppointmentCalenderBuilder(List<ClinicVisitUIModel> clinicVisits, PatientReport patientReport) {
+    public AppointmentCalendarBuilder(List<ClinicVisitUIModel> clinicVisits, PatientReport patientReport) {
         super(clinicVisits);
         this.patientReport = patientReport;
     }
 
     @Override
     protected String getWorksheetName() {
-        return "AppointmentCalender";
+        return "AppointmentCalendar";
     }
 
     @Override
     protected String getTitle() {
-        return "Appointment Calender";
+        return "Appointment Calendar";
     }
 
     @Override
