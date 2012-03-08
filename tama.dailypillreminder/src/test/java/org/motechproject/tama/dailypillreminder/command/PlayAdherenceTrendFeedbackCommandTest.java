@@ -11,16 +11,16 @@ import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DateUtil.class)
-public class PlayAdherenceTrendFeedbackCommandTest {
+public class PlayAdherenceTrendFeedbackCommandTest extends BaseUnitTest {
 
     PlayAdherenceTrendFeedbackCommand playAdherenceTrendFeedbackCommand;
 
@@ -34,15 +34,14 @@ public class PlayAdherenceTrendFeedbackCommandTest {
 
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
-        mockStatic(DateUtil.class);
+        initMocks(this);
         dateTime = new DateTime();
         setUpDate();
         playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
     }
 
     private void setUpDate() {
-        when(DateUtil.now()).thenReturn(dateTime);
+        mockCurrentDate(dateTime);
     }
 
     @Test
