@@ -84,7 +84,7 @@ public class VisitReminderServiceTest {
         verify(patientAlertService).createAlert(eq(patient.getId()), eq(TAMAConstants.NO_ALERT_PRIORITY),
                 eq(TAMAConstants.APPOINTMENT_MISSED_REMINDER), eq(""), eq(PatientAlertType.VisitMissed), alertDataArgumentCaptor.capture());
         assertNotNull(alertDataArgumentCaptor.getValue().containsKey(PatientAlert.APPOINTMENT_DATE));
-        assertEquals(now.toLocalDate().toString(), alertDataArgumentCaptor.getValue().get(PatientAlert.APPOINTMENT_DATE));
+        assertEquals(now.toString(), alertDataArgumentCaptor.getValue().get(PatientAlert.CONFIRMED_APPOINTMENT_DATE));
     }
 
     @Test

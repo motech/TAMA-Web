@@ -10,7 +10,7 @@
             <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
             <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time"/>
             <field:display field="type" id="s_org_motechproject_tama_alert_type" object="${alertInfo}" label="Alert Type"/>
-            <field:display field="appointmentDueDate" id="s_org_motechproject_tama_alert_AppointmentDueDate" object="${alertInfo}" label="Appointment confirmed date"/>
+            <field:display field="confirmedAppointmentDateTime" id="s_org_motechproject_tama_alert_confirmedAppointmentDateTime" object="${alertInfo}" label="Appointment confirmed date"/>
             <field:display field="patientCallPreference" id="s_org_motechproject_tama_alert_CallPreference" object="${alertInfo}" label="Call Preference"/>
             <form:form action="" method="POST" modelAttribute="alertInfo" enctype="${enctype}">
                 <form:hidden path="type" value="${alertInfo.type}"/>

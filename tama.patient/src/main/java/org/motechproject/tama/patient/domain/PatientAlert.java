@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.server.alerts.domain.Alert;
@@ -22,6 +23,7 @@ public class PatientAlert {
     public static final String PATIENT_CALL_PREFERENCE = "Patient Call Preference";
     public static final String ADHERENCE = "Adherence";
     public static final String APPOINTMENT_DATE = "AppointmentDate";
+    public static final String CONFIRMED_APPOINTMENT_DATE = "ConfirmedAppointmentDate";
 
     private Patient patient;
     private Alert alert;
@@ -119,6 +121,12 @@ public class PatientAlert {
         return new LocalDate(this.alert.getData().get(APPOINTMENT_DATE));
     }
 
+    @Temporal(TemporalType.DATE)
+    @org.springframework.format.annotation.DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
+    public DateTime getConfirmedAppointmentDateTime() {
+        return new DateTime(this.alert.getData().get(CONFIRMED_APPOINTMENT_DATE));
+    }
+
     public String getConnectedToDoctor() {
         String connectedtoDoctorStatus = this.alert.getData().get(CONNECTED_TO_DOCTOR);
         String doctorName = this.alert.getData().get(DOCTOR_NAME);
@@ -128,7 +136,7 @@ public class PatientAlert {
         return StringUtils.isEmpty(doctorName) ? connectedtoDoctorStatus : doctorName;
     }
 
-    public static PatientAlert newPatientAlert(Alert alert, Patient patient) {
+    public static PatientAlert newPatientAlert(Alert alert, org.motechproject.tama.patient.domain.Patient patient) {
         final PatientAlert patientAlert = new PatientAlert();
         patientAlert.setPatient(patient);
         patientAlert.setAlert(alert);

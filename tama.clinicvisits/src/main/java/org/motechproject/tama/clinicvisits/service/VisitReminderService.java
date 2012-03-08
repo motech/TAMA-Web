@@ -42,7 +42,7 @@ public class VisitReminderService {
     public void raiseAlert(Patient patient, ClinicVisit clinicVisit) {
         if (visitMissedAlertCriteria.shouldRaiseAlert(clinicVisit)) {
             HashMap<String, String> data = new HashMap<String, String>();
-            data.put(PatientAlert.APPOINTMENT_DATE, clinicVisit.getConfirmedAppointmentDate().toLocalDate().toString());
+            data.put(PatientAlert.CONFIRMED_APPOINTMENT_DATE, clinicVisit.getConfirmedAppointmentDate().toString());
             patientAlertService.createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
                     TAMAConstants.APPOINTMENT_MISSED_REMINDER, "", PatientAlertType.VisitMissed, data);
         }
