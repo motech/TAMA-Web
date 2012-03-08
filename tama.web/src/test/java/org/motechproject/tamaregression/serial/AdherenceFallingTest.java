@@ -122,7 +122,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
         IVRResponse ivrResponse = caller.enter("1234");
         IVRAssert.assertAudioFilesPresent(ivrResponse, DEFAULT_OUTBOUND_CLINIC_MESSAGE, FILE_050_03_01_ITS_TIME_FOR_BEST_CALL_TIME);
         ivrResponse = caller.listenMore();
-        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW, "Num_050", PERCENT, M02_07_ADHERENCE_COMMENT_LT70_FALLING);
+        IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS, "Num_050", PERCENT, M02_07_ADHERENCE_COMMENT_LT70_FALLING);
         ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, THESE_WERE_YOUR_MESSAGES_FOR_NOW);
         caller.hangup();
