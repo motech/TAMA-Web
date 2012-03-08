@@ -9,6 +9,6 @@ public class AppointmentConfirmationMissedAlertCriteria {
 
     public boolean shouldRaiseAlert(ClinicVisit clinicVisit) {
         final boolean appointmentNotConfirmed = clinicVisit.getConfirmedAppointmentDate() == null;
-        return appointmentNotConfirmed && DateUtil.today().equals(clinicVisit.getEffectiveDueDate());
+        return appointmentNotConfirmed && DateUtil.today().isAfter(clinicVisit.getEffectiveDueDate());
     }
 }

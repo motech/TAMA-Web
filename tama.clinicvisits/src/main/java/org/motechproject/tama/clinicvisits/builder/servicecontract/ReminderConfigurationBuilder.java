@@ -22,7 +22,7 @@ public class ReminderConfigurationBuilder {
 
     public ReminderConfiguration newAppointmentReminder() {
         int remindFrom = Integer.parseInt(appointmentsProperties.getProperty(REMIND_FROM));
-        return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom);
+        return new ReminderConfiguration().setRemindFrom(remindFrom).setIntervalCount(1).setIntervalUnit(ReminderConfiguration.IntervalUnit.DAYS).setRepeatCount(remindFrom + 1);
     }
 
     public ReminderConfiguration newVisitReminder() {

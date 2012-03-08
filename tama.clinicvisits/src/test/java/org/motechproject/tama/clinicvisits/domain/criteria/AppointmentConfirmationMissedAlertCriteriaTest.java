@@ -1,10 +1,18 @@
 package org.motechproject.tama.clinicvisits.domain.criteria;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeParser;
+import org.joda.time.format.DateTimePrinter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.util.DateUtil;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -19,13 +27,13 @@ public class AppointmentConfirmationMissedAlertCriteriaTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        appointmentConfirmationMissedAlertCriteria = new AppointmentConfirmationMissedAlertCriteria();
+        appointmentConfirmationMissedAlertCriteria = new org.motechproject.tama.clinicvisits.domain.criteria.AppointmentConfirmationMissedAlertCriteria();
     }
 
     @Test
     public void shouldReturnTrueForAppointmentConfirmationMiss() throws Exception {
         when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(null);
-        when(clinicVisit.getEffectiveDueDate()).thenReturn(DateUtil.today());
+        when(clinicVisit.getEffectiveDueDate()).thenReturn(DateUtil.today().minusDays(1));
         assertTrue(appointmentConfirmationMissedAlertCriteria.shouldRaiseAlert(clinicVisit));
 
     }
@@ -38,10 +46,9 @@ public class AppointmentConfirmationMissedAlertCriteriaTest {
     }
 
     @Test
-    public void shouldReturnFalseBeforeDueDate() throws Exception {
+    public void shouldReturnFalseOnDueDate() throws Exception {
         when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(null);
-        when(clinicVisit.getEffectiveDueDate()).thenReturn(DateUtil.today().minusDays(1));
+        when(clinicVisit.getEffectiveDueDate()).thenReturn(DateUtil.today());
         assertFalse(appointmentConfirmationMissedAlertCriteria.shouldRaiseAlert(clinicVisit));
-
     }
 }
