@@ -48,7 +48,7 @@
                     <spring:param name="patientId" value="${visit.patientDocId}"/>
                     <spring:param name="clinicVisitId" value="${visit.id}"/>
                 </spring:url>
-                <tr>
+                <tr visitid="${visit.id}">
                     <td>
                         <c:choose>
                             <c:when test="${visit.visitEditable}">
@@ -62,7 +62,7 @@
                     <td>
                         <spring:eval expression="visit.appointmentDueDate"/>
                     </td>
-                    <td>
+                    <td class="adjustDueDateColumn">
                         <c:choose>
                             <c:when test="${visit.dueDateEditable}">
                                 <a href="javascript:void(0);" class="adjustDueDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
@@ -94,7 +94,7 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
-                    <td>
+                    <td class="visitDateColumn">
                         <c:choose>
                             <c:when test="${visit.visitDateEditable}">
                                 <c:choose>
