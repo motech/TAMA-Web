@@ -1,6 +1,7 @@
 package org.motechproject.tama.dailypillreminder.command;
 
 
+import org.joda.time.DateTime;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -34,9 +36,13 @@ public class AdherenceCommand extends DailyPillReminderTreeCommand {
     }
 
     protected List<String> adherenceMessage(String patientId) {
+        return adherenceMessage(patientId, DateUtil.now());
+    }
+
+    protected List<String> adherenceMessage(String patientId, DateTime time) {
         List<String> adherenceMessage = new ArrayList<String>();
         try {
-            double adherence = dailyPillReminderAdherenceService.getAdherencePercentage(patientId, DateUtil.now());
+            double adherence = dailyPillReminderAdherenceService.getAdherencePercentage(patientId, time);
             adherenceMessage.add(TamaIVRMessage.getNumberFilename((int) adherence));
             adherenceMessage.add(TamaIVRMessage.PERCENT);
             return adherenceMessage;

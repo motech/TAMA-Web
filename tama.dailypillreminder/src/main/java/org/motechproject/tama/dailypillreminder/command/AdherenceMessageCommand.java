@@ -12,8 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class AdherenceMessageCommand extends DailyPillReminderTreeCommand {
+public class AdherenceMessageCommand extends AdherenceCommand {
 
     protected AllDosageAdherenceLogs allDosageAdherenceLogs;
     protected DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
@@ -21,25 +24,21 @@ public class AdherenceMessageCommand extends DailyPillReminderTreeCommand {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, DailyPillReminderAdherenceService dailyReminderAdherenceService, DailyPillReminderService dailyPillReminderService) {
-        super(dailyPillReminderService);
+    public AdherenceMessageCommand(AllDosageAdherenceLogs allDosageAdherenceLogs,
+                                   DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService,
+                                   DailyPillReminderAdherenceService dailyReminderAdherenceService,
+                                   DailyPillReminderService dailyPillReminderService) {
+        super(dailyPillReminderService, dailyReminderAdherenceService);
         this.allDosageAdherenceLogs = allDosageAdherenceLogs;
         this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
         this.dailyReminderAdherenceService = dailyReminderAdherenceService;
     }
 
     protected String[] getAdherenceMessage(DailyPillReminderContext context) {
-        int adherencePercentage = 0;
-        try {
-            adherencePercentage = (int) (dailyReminderAdherenceService.getAdherencePercentage(context.patientDocumentId(), context.currentDose().getDoseTime()));
-        } catch (NoAdherenceRecordedException ignored) {
-            logger.info("No Adherence records found!");
-        }
-        return new String[]{
-                TamaIVRMessage.YOUR_ADHERENCE_IS_NOW,
-                TamaIVRMessage.getNumberFilename(adherencePercentage),
-                TamaIVRMessage.PERCENT
-        };
+        List<String> message = new ArrayList<String>();
+        message.add(TamaIVRMessage.YOUR_ADHERENCE_IS_NOW);
+        message.addAll(super.adherenceMessage(context.patientDocumentId(), context.callStartTime()));
+        return message.toArray(new String[0]);
     }
 
     @Override
