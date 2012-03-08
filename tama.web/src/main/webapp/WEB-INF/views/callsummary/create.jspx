@@ -21,4 +21,24 @@
             </span>
         </form:form>
     </util:panel>
+
+    <script type="text/javascript">
+        <![CDATA[
+            dojo.addOnLoad(function() {
+                dojo.connect(dojo.byId("nextToShowLogs"), "onclick", function(event){
+                    var startDateObj = dijit.byId("_callLogStartDate_id");
+                    var endDateObj = dijit.byId("_callLogEndDate_id");
+
+                    endDateObj.constraints.min = startDateObj.value;
+                    Spring.decorations['_callLogStartDate_id'][0].validate();
+                    Spring.decorations['_callLogEndDate_id'][0].validate();
+
+                    if (!(startDateObj.isValid() && endDateObj.isValid())){
+                        event.preventDefault();
+                    }
+                });
+            });
+        ]]>
+    </script>
+
 </div>
