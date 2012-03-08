@@ -28,7 +28,7 @@ public class CreateVisitRequestBuilder {
         return new CreateVisitRequest().setVisitName(visitName.toLowerCase())
                                        .setTypeOfVisit(TypeOfVisit.Scheduled.toString())
                                        .setAppointmentDueDate(dueDate)
-                                       .setAppointmentReminderConfiguration(reminderConfigurationBuilder.newAppointmentReminder())
+                                       .addAppointmentReminderConfiguration(reminderConfigurationBuilder.newAppointmentReminder())
                                        .addData(ClinicVisit.WEEK_NUMBER, weekOffset);
     }
 
@@ -36,7 +36,7 @@ public class CreateVisitRequestBuilder {
         return new CreateVisitRequest().setVisitName(visitName.toLowerCase())
                                        .setTypeOfVisit(typeOfVisit.toString())
                                        .setAppointmentDueDate(dueDate)
-                                       .setAppointmentReminderConfiguration(reminderConfigurationBuilder.newAppointmentReminder());
+                                       .addAppointmentReminderConfiguration(reminderConfigurationBuilder.newAppointmentReminder());
     }
 
     public CreateVisitRequest adHocVisitRequestForToday(String visitName, TypeOfVisit typeOfVisit, DateTime dueDate) {

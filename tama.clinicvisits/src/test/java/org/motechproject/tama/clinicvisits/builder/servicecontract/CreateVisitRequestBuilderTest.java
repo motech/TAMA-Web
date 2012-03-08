@@ -49,7 +49,7 @@ public class CreateVisitRequestBuilderTest {
     public void shouldBuildVisitWithReminderRequestHavingReminderConfiguration() {
         DateTime dueDate = DateUtil.now().plusWeeks(1);
         CreateVisitRequest visitRequest = createVisitRequestBuilder.adHocVisitRequest("visitName", TypeOfVisit.Unscheduled, dueDate);
-        assertNotNull(visitRequest.getAppointmentReminderConfiguration());
+        assertNotNull(visitRequest.getAppointmentReminderConfigurations().get(0));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class CreateVisitRequestBuilderTest {
         assertEquals(dueDate, visitRequest.getAppointmentDueDate());
         assertEquals(TypeOfVisit.Scheduled.toString(), visitRequest.getTypeOfVisit());
         assertEquals(1, visitRequest.getData().get(ClinicVisit.WEEK_NUMBER));
-        assertNotNull(visitRequest.getAppointmentReminderConfiguration());
+        assertNotNull(visitRequest.getAppointmentReminderConfigurations().get(0));
     }
 
     @Test
