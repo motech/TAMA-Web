@@ -16,6 +16,8 @@ import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -54,6 +56,6 @@ public class PlayAdherenceTrendFeedbackCommandTest extends BaseUnitTest {
 
         result = playAdherenceTrendFeedbackCommand.execute(externalId);
 
-        Assert.assertEquals(TamaIVRMessage.M02_05_ADHERENCE_COMMENT_70TO90_FALLING, result[0]);
+        assertArrayEquals(new String[]{TamaIVRMessage.M02_05_ADHERENCE_COMMENT_70TO90_FALLING}, result);
     }
 }
