@@ -450,7 +450,7 @@ fieldset th {
 .opp_infection #otherOpportunisticInfectionInfo label { width:50px; }
 
 #dosages {
-    overflow: auto;
+    overflow:auto;
     border-top: 1px solid grey;
     padding-top: 12px;
 }
@@ -458,6 +458,10 @@ fieldset th {
 .dosage {
     float: left;
     margin-right: 80px;
+}
+
+.tundra .dijitTextArea{
+    padding-right:2px;
 }
 
 #_c_org_motechproject_tama_domain_TreatmentAdvice_drugName1_id {
