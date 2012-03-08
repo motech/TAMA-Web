@@ -18,13 +18,11 @@ import org.springframework.stereotype.Component;
 public class AdherenceOutboxMessageBuilder implements OutboxMessageBuilder {
 
     private PlayAdherenceTrendFeedbackCommand adherenceTrendCommand;
-    private AdherenceMessageCommand adherenceMessageCommand;
     private AllPatients allPatients;
 
     @Autowired
-    public AdherenceOutboxMessageBuilder(PlayAdherenceTrendFeedbackCommand command, @Qualifier("adherenceMessageCommand") AdherenceMessageCommand adherenceMessageCommand, AllPatients allPatients) {
+    public AdherenceOutboxMessageBuilder(PlayAdherenceTrendFeedbackCommand command, AllPatients allPatients) {
         this.adherenceTrendCommand = command;
-        this.adherenceMessageCommand = adherenceMessageCommand;
         this.allPatients = allPatients;
     }
 
@@ -42,7 +40,6 @@ public class AdherenceOutboxMessageBuilder implements OutboxMessageBuilder {
 
     @Override
     public void buildVoiceMessageResponse(KooKooIVRContext kooKooIVRContext, OutboxContext outboxContext, OutboundVoiceMessage outboundVoiceMessage, KookooIVRResponseBuilder ivrResponseBuilder) {
-        ivrResponseBuilder.withPlayAudios(adherenceMessageCommand.execute(kooKooIVRContext));
         ivrResponseBuilder.withPlayAudios(adherenceTrendCommand.execute(outboxContext.partyId()));
     }
 }

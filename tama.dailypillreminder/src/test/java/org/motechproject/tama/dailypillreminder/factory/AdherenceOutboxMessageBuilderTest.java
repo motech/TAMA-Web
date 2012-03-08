@@ -37,8 +37,6 @@ public class AdherenceOutboxMessageBuilderTest {
         @Mock
         PlayAdherenceTrendFeedbackCommand playAdherenceTrendFeedbackCommand;
         @Mock
-        AdherenceMessageCommand adherenceMessageCommand;
-        @Mock
         OutboxContext outboxContext;
         @Mock
         OutboundVoiceMessage outboundVoiceMessage;
@@ -53,7 +51,7 @@ public class AdherenceOutboxMessageBuilderTest {
             initMocks(this);
             when(outboxContext.partyId()).thenReturn(PARTY_ID);
             when(outboundVoiceMessage.getPartyId()).thenReturn(PARTY_ID);
-            adherenceOutboxMessageBuilder = new AdherenceOutboxMessageBuilder(playAdherenceTrendFeedbackCommand, adherenceMessageCommand, allPatients);
+            adherenceOutboxMessageBuilder = new AdherenceOutboxMessageBuilder(playAdherenceTrendFeedbackCommand, allPatients);
         }
     }
 
@@ -86,16 +84,14 @@ public class AdherenceOutboxMessageBuilderTest {
 
             @Test
             public void shouldAddAdherenceMessageToTheResponse() {
-                when(adherenceMessageCommand.execute(null)).thenReturn(new String[]{"percentage"});
-                when(playAdherenceTrendFeedbackCommand.execute(PARTY_ID)).thenReturn(new String[]{"trend"});
+                when(playAdherenceTrendFeedbackCommand.execute(PARTY_ID)).thenReturn(new String[]{"percentage", "trend"});
                 adherenceOutboxMessageBuilder.buildVoiceMessageResponse(null, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
                 assertEquals("percentage", ivrResponseBuilder.getPlayAudios().get(0));
             }
 
             @Test
             public void shouldAddAdherenceTrendMessageToResponse() {
-                when(adherenceMessageCommand.execute(null)).thenReturn(new String[]{"percentage"});
-                when(playAdherenceTrendFeedbackCommand.execute(PARTY_ID)).thenReturn(new String[]{"trend"});
+                when(playAdherenceTrendFeedbackCommand.execute(PARTY_ID)).thenReturn(new String[]{"percentage", "trend"});
                 adherenceOutboxMessageBuilder.buildVoiceMessageResponse(null, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
                 assertEquals("trend", ivrResponseBuilder.getPlayAudios().get(1));
             }

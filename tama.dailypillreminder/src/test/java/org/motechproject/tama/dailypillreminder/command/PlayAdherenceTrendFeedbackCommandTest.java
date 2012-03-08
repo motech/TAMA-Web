@@ -1,25 +1,19 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class PlayAdherenceTrendFeedbackCommandTest extends BaseUnitTest {
@@ -28,7 +22,8 @@ public class PlayAdherenceTrendFeedbackCommandTest extends BaseUnitTest {
 
     @Mock
     private DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
-
+    @Mock
+    private DailyPillReminderService dailyPillReminderService;
     @Mock
     private DailyPillReminderAdherenceService dailyReminderAdherenceService;
 
@@ -39,7 +34,12 @@ public class PlayAdherenceTrendFeedbackCommandTest extends BaseUnitTest {
         initMocks(this);
         dateTime = new DateTime();
         setUpDate();
-        playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(dailyReminderAdherenceTrendService, dailyReminderAdherenceService);
+
+        playAdherenceTrendFeedbackCommand = new PlayAdherenceTrendFeedbackCommand(
+                dailyReminderAdherenceTrendService,
+                dailyReminderAdherenceService,
+                dailyPillReminderService
+        );
     }
 
     private void setUpDate() {
@@ -56,6 +56,14 @@ public class PlayAdherenceTrendFeedbackCommandTest extends BaseUnitTest {
 
         result = playAdherenceTrendFeedbackCommand.execute(externalId);
 
-        assertArrayEquals(new String[]{TamaIVRMessage.M02_05_ADHERENCE_COMMENT_70TO90_FALLING}, result);
+        assertArrayEquals(
+                new String[]{
+                        "M02_01_adherence1",
+                        "Num_080",
+                        "001_06_03_HasBecomePercent",
+                        TamaIVRMessage.M02_05_ADHERENCE_COMMENT_70TO90_FALLING
+                },
+                result
+        );
     }
 }

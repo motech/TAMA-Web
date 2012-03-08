@@ -87,6 +87,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String TOMORROW = "timeOfDayTomorrow";
 
     /* -------- Adherence Feedback ----------- */
+    public static final String YOUR_ADHERENCE_IS = "M02_01_adherence1";
     public static final String YOUR_ADHERENCE_IS_NOW = "001_06_01_YourAdherenceNow"; // 001_06_01_YourAdherenceNow.wav
     public static final String PERCENT = "001_06_03_HasBecomePercent"; // 001_06_03_HasBecomePercent.wav
     public static final String MISSED_PILL_FEEDBACK_FIRST_TIME = "F01_01_doctorMissedPillFeedback"; // F01_01_doctorMissedPillFeedback.wav

@@ -29,15 +29,20 @@ public class AdherenceCommand extends DailyPillReminderTreeCommand {
 
     @Override
     public String[] executeCommand(DailyPillReminderContext context) {
+        String patientId = context.patientDocumentId();
+        return adherenceMessage(patientId).toArray(new String[0]);
+    }
+
+    protected List<String> adherenceMessage(String patientId) {
         List<String> adherenceMessage = new ArrayList<String>();
         try {
-            double adherence = dailyPillReminderAdherenceService.getAdherencePercentage(context.patientDocumentId(), DateUtil.now());
+            double adherence = dailyPillReminderAdherenceService.getAdherencePercentage(patientId, DateUtil.now());
             adherenceMessage.add(TamaIVRMessage.getNumberFilename((int) adherence));
             adherenceMessage.add(TamaIVRMessage.PERCENT);
-            return adherenceMessage.toArray(new String[0]);
+            return adherenceMessage;
         } catch (NoAdherenceRecordedException e) {
             logger.debug("No Adherence Records Found!");
         }
-        return new String[0];
+        return adherenceMessage;
     }
 }
