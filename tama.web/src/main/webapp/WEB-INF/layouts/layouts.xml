@@ -17,6 +17,11 @@
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>
 
+  <definition name="login-layout" template="/WEB-INF/layouts/login-layout.jspx">
+    <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
+    <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
+  </definition>
+
   <definition name="blank" template="/WEB-INF/layouts/blank.jspx">
   </definition>
 

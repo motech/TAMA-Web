@@ -23,7 +23,7 @@
         <put-attribute name="body" value="/WEB-INF/views/authorizationFailure.jspx"/>
     </definition>
 
-    <definition extends="public" name="login">
+    <definition extends="login-layout" name="login">
         <put-attribute name="body" value="/WEB-INF/views/login.jspx"/>
     </definition>
 
