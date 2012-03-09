@@ -16,6 +16,7 @@ public class PillReminderCallInfo implements CallInfo {
         dictionary.put(KookooCallServiceImpl.IS_OUTBOUND_CALL, "true");
         dictionary.put(PillReminderCall.TIMES_SENT, Integer.valueOf(callNumber).toString());
         dictionary.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "5");
+        dictionary.put(PillReminderCall.RETRY_INTERVAL, "15");
         outgoingCallInfo = new OutgoingCallInfo(dictionary);
     }
 
