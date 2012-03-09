@@ -45,7 +45,7 @@ public class OutboxMessageSummaryBuilder {
             String text = outboxWaveFileToTextMapping.getProperty(file.toLowerCase());
             if (text != null) {
                 boolean currentWordIsNumeric = StringUtils.isNumeric(text);
-                messages.add(lastWordWasNumeric && currentWordIsNumeric ? text : "\n" + text);
+                messages.add(lastWordWasNumeric && currentWordIsNumeric ? text : " " + text);
                 lastWordWasNumeric = currentWordIsNumeric;
             } else
                 log.warning("No outbox wave file mapping for " + file + " in outboxWaveFileToTextMapping.properties");
