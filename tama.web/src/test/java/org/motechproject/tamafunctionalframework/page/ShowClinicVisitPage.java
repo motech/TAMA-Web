@@ -3,6 +3,7 @@ package org.motechproject.tamafunctionalframework.page;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.motechproject.tamafunctionalframework.testdata.TestLabResult;
+import org.motechproject.tamafunctionalframework.testdata.TestOpportunisticInfections;
 import org.motechproject.tamafunctionalframework.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
@@ -15,6 +16,7 @@ public class ShowClinicVisitPage extends Page {
 
     private ShowTreatmentAdviceSection treatmentAdviceSection;
     private ShowVitalStatisticsSection vitalStatisticsSection;
+    private ShowOpportunisticInfectionsSection opportunisticInfectionsSection;
     private ShowLabResultsSection labResultsSection;
 
     @FindBy(how = How.ID, using = "patient_registration_details")
@@ -24,6 +26,7 @@ public class ShowClinicVisitPage extends Page {
         super(webDriver);
         treatmentAdviceSection = PageFactory.initElements(webDriver, ShowTreatmentAdviceSection.class);
         vitalStatisticsSection = PageFactory.initElements(webDriver, ShowVitalStatisticsSection.class);
+        opportunisticInfectionsSection = PageFactory.initElements(webDriver, ShowOpportunisticInfectionsSection.class);
         labResultsSection = PageFactory.initElements(webDriver, ShowLabResultsSection.class);
     }
 
@@ -46,6 +49,10 @@ public class ShowClinicVisitPage extends Page {
         return vitalStatisticsSection.getVitalStatistics();
     }
 
+    public TestOpportunisticInfections getOpportunisticInfections() {
+        return opportunisticInfectionsSection.getOpportunisticInfections();
+    }
+
     public TestLabResult getLabResult() {
         return labResultsSection.getLabResult();
     }
@@ -66,6 +73,12 @@ public class ShowClinicVisitPage extends Page {
         vitalStatisticsSection.clickEdit();
         waitForElementWithIdToLoad(UpdateVitalStatisticsPage.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, UpdateVitalStatisticsPage.class);
+    }
+
+    public UpdateOpportunisticInfectionsPage clickEditOpportunisticInfectionsLink() {
+        opportunisticInfectionsSection.clickEdit();
+        waitForElementWithIdToLoad(UpdateOpportunisticInfectionsPage.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, UpdateOpportunisticInfectionsPage.class);
     }
 
     public ShowPatientPage gotoShowPatientPage() {

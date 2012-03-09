@@ -574,4 +574,6 @@ fieldset th {
     height: 20px;
 }
 
-
+.oi_display {
+    margin: 5px;
+}

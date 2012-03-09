@@ -2,10 +2,7 @@ package org.motechproject.tamafunctionalframework.testdataservice;
 
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.page.*;
-import org.motechproject.tamafunctionalframework.testdata.TestClinician;
-import org.motechproject.tamafunctionalframework.testdata.TestLabResult;
-import org.motechproject.tamafunctionalframework.testdata.TestPatient;
-import org.motechproject.tamafunctionalframework.testdata.TestVitalStatistics;
+import org.motechproject.tamafunctionalframework.testdata.*;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
 
@@ -29,6 +26,10 @@ public class PatientDataService extends EntityDataService {
 
     public void registerAndActivate(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics, TestPatient patient, TestClinician clinician) {
         activatePatient(patient, clinician).createNewRegimen(treatmentAdvice, vitalStatistics).logout();
+    }
+
+    public void registerAndActivate(TestTreatmentAdvice treatmentAdvice, TestOpportunisticInfections testOpportunisticInfections, TestPatient patient, TestClinician clinician) {
+        activatePatient(patient, clinician).createNewRegimen(treatmentAdvice, testOpportunisticInfections).logout();
     }
 
     public void registerAndActivate(TestTreatmentAdvice treatmentAdvice, TestLabResult labResult, TestVitalStatistics vitalStatistics, TestPatient patient, TestClinician clinician) {
@@ -79,6 +80,13 @@ public class PatientDataService extends EntityDataService {
         return vitalStatistics;
     }
 
+    public TestOpportunisticInfections getSavedOpportunisticInfections(TestPatient patient, TestClinician clinician) {
+        ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowFirstClinicVisitPage();
+        TestOpportunisticInfections opportunisticInfections = clinicVisitPage.getOpportunisticInfections();
+        clinicVisitPage.logout();
+        return opportunisticInfections;
+    }
+
     public TestLabResult getSavedLabResult(TestPatient patient, TestClinician clinician) {
         ShowClinicVisitPage clinicVisitPage = viewPatient(patient, clinician).goToShowFirstClinicVisitPage();
         TestLabResult labResult = clinicVisitPage.getLabResult();
@@ -96,5 +104,9 @@ public class PatientDataService extends EntityDataService {
 
     public void updateVitalStatistics(TestPatient patient, TestClinician clinician, TestVitalStatistics vitalStatistics) {
         viewPatient(patient, clinician).goToShowFirstClinicVisitPage().clickEditVitalStatisticsLink().enterVitalStatistics(vitalStatistics).logout();
+    }
+
+    public void updateOpportunisticInfections(TestPatient patient, TestClinician clinician, TestOpportunisticInfections opportunisticInfections) {
+        viewPatient(patient, clinician).goToShowFirstClinicVisitPage().clickEditOpportunisticInfectionsLink().enterOpportunisticInfectionsAndSave(opportunisticInfections).logout();
     }
 }

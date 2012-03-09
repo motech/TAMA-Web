@@ -15,7 +15,7 @@
             <spring:param name="clinicVisitId" value="${clinicVisitId}" />
             <spring:param name="patientId" value="${patientId}" />
         </spring:url>
-        <a id="edit_link" href="${edit_url}" style="float:right">[edit]</a>
+        <a id="oi_edit_link" href="${edit_url}" style="float:right">[edit]</a>
 
         <c:choose>
 
@@ -24,16 +24,16 @@
             </c:when>
 
             <c:otherwise>
-                <c:forEach items="${opportunisticInfectionsUIModel.infections}" var="infection">
+                <c:forEach items="${opportunisticInfectionsUIModel.infections}" var="infection" varStatus="item">
 
                     <c:if test="${infection.reported == true}" >
 
                         <c:choose>
                             <c:when test="${infection.opportunisticInfection == 'Other'}">
-                                <div style="margin:5px"><c:out value="${infection.opportunisticInfection}: ${opportunisticInfectionsUIModel.otherDetails}" /></div>
+                                <div id="opportunisticInfection${item.index}" class="oi_display"><c:out value="${infection.opportunisticInfection}: ${opportunisticInfectionsUIModel.otherDetails}" /></div>
                             </c:when>
                             <c:otherwise>
-                                <div style="margin:5px"><c:out value="${infection.opportunisticInfection}" /></div>
+                                <div id="opportunisticInfection${item.index}" class="oi_display"><c:out value="${infection.opportunisticInfection}" /></div>
                             </c:otherwise>
                         </c:choose>
 

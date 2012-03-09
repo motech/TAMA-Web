@@ -2,6 +2,7 @@ package org.motechproject.tamafunctionalframework.page;
 
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.testdata.TestLabResult;
+import org.motechproject.tamafunctionalframework.testdata.TestOpportunisticInfections;
 import org.motechproject.tamafunctionalframework.testdata.TestVitalStatistics;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.openqa.selenium.WebDriver;
@@ -11,6 +12,7 @@ public class CreateClinicVisitPage extends Page {
 
     private CreateTreatmentAdviceSection createTreatmentAdviceSection;
     private CreateVitalStatisticsSection createVitalStatisticsSection;
+    private CreateOpportunisticInfectionsSection createOpportunisticInfectionsSection;
     private CreateLabResultsSection createLabResultsSection;
 
     public CreateClinicVisitPage(WebDriver webDriver) {
@@ -18,6 +20,7 @@ public class CreateClinicVisitPage extends Page {
         createTreatmentAdviceSection = PageFactory.initElements(webDriver, CreateTreatmentAdviceSection.class);
         createVitalStatisticsSection = PageFactory.initElements(webDriver, CreateVitalStatisticsSection.class);
         createLabResultsSection = PageFactory.initElements(webDriver, CreateLabResultsSection.class);
+        createOpportunisticInfectionsSection = PageFactory.initElements(webDriver, CreateOpportunisticInfectionsSection.class);
     }
 
     @Override
@@ -42,6 +45,14 @@ public class CreateClinicVisitPage extends Page {
     public ShowClinicVisitPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestVitalStatistics vitalStatistics) {
         createTreatmentAdviceSection.fillRegimenSection(treatmentAdvice, this);
         createVitalStatisticsSection.fillVitalStatistics(vitalStatistics);
+        createTreatmentAdviceSection.submit();
+        waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
+        return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);
+    }
+
+    public ShowClinicVisitPage createNewRegimen(TestTreatmentAdvice treatmentAdvice, TestOpportunisticInfections opportunisticInfections) {
+        createTreatmentAdviceSection.fillRegimenSection(treatmentAdvice, this);
+        createOpportunisticInfectionsSection.fillOpportunisticInfections(opportunisticInfections);
         createTreatmentAdviceSection.submit();
         waitForElementWithIdToLoad(ShowTreatmentAdviceSection.PAGE_LOAD_MARKER);
         return MyPageFactory.initElements(webDriver, ShowClinicVisitPage.class);

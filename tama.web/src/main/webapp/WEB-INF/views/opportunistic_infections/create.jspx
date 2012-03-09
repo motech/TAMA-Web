@@ -23,7 +23,7 @@
         <input type="hidden" value="${opportunisticInfectionsUIModel.patientId}" id="opportunisticInfectionsPatientId" name="opportunisticInfectionsPatientId"/>
         <div class="opp_infection">
             <c:forEach items="${opportunisticInfectionsUIModel.infections}" var="infection" varStatus="item" >
-                 <field:hidden path="opportunisticInfectionsUIModel.infections[${item.index}].opportunisticInfection" id="OI${item.index}"/>
+                 <field:hidden path="opportunisticInfectionsUIModel.infections[${item.index}].opportunisticInfection" id="oi${item.index}"/>
 
                 <c:if test="${infection.opportunisticInfection != 'Other'}">
                     <span><springform:checkbox id="opportunisticInfection${item.index}" path="opportunisticInfectionsUIModel.infections[${item.index}].reported" label="${infection.opportunisticInfection}"/></span>
