@@ -28,9 +28,8 @@ public class OutboxEventLogger implements OutboxEventHandler {
 
     @Override
     public void onPlayed(String patientDocId, KookooIVRResponseBuilder ivrResponseBuilder, String messageId) {
-        LocalDate today = DateUtil.today();
         OutboxMessageLog messageLog = allOutboxLogs.find(patientDocId, messageId);
-        messageLog.playedOn(DateUtil.newDateTime(today), ivrResponseBuilder.getPlayAudios());
+        messageLog.playedOn(DateUtil.now(), ivrResponseBuilder.getPlayAudios());
         allOutboxLogs.update(messageLog);
     }
 }

@@ -46,7 +46,7 @@ public class OutboxMessageLog extends CouchEntity {
     public static class PlayedLog {
 
         @JsonProperty
-        @Getter DateTime date;
+        DateTime date;
         @JsonProperty
         @Getter private List<String> files;
 
@@ -56,6 +56,10 @@ public class OutboxMessageLog extends CouchEntity {
         public PlayedLog(DateTime date, List<String> files) {
             this.date = date;
             this.files = files;
+        }
+
+        public DateTime getDate() {
+            return DateUtil.setTimeZone(date);
         }
 
         @Override
