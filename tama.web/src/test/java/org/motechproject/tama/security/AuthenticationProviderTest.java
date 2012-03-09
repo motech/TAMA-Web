@@ -2,16 +2,18 @@ package org.motechproject.tama.security;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.security.profiles.SecurityGroup;
+import org.motechproject.tama.security.repository.AllAccessEvents;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -22,11 +24,21 @@ public class AuthenticationProviderTest {
     private SecurityGroup group;
     @Mock
     private UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
+    @Mock
+    private AllAccessEvents allAccessEvents;
+    @Mock
+    private WebAuthenticationDetails details;
 
     @Before
     public void setUp() {
         initMocks(this);
-        authenticationProvider = new AuthenticationProvider(Arrays.asList(group));
+        authenticationProvider = new AuthenticationProvider(Arrays.asList(group), allAccessEvents);
+        doNothing().when(allAccessEvents).newLoginEvent(Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any());
+        doNothing().when(allAccessEvents).newLogoutEvent(Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any());
+        when(usernamePasswordAuthenticationToken.getDetails()).thenReturn(details);
+        when(details.getRemoteAddress()).thenReturn("127.0.0.1");
+        when(details.getSessionId()).thenReturn("sessionId");
+
     }
 
     @Test(expected = BadCredentialsException.class)
@@ -67,4 +79,31 @@ public class AuthenticationProviderTest {
 
         authenticationProvider.retrieveUser(username, usernamePasswordAuthenticationToken);
     }
+
+    @Test
+    public void shouldLogSuccessfulLoginEvent() {
+        String username = "jack";
+        String password = "samurai";
+        AuthenticatedUser expectedAuthenticatedUser = mock(AuthenticatedUser.class);
+        when(usernamePasswordAuthenticationToken.getCredentials()).thenReturn(password);
+        when(group.getAuthenticatedUser(username, password)).thenReturn(expectedAuthenticatedUser);
+
+        authenticationProvider.retrieveUser(username, usernamePasswordAuthenticationToken);
+
+        verify(allAccessEvents).newLoginEvent("jack", "127.0.0.1", "sessionId", "Success");
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void shouldLogFailedLoginEvent() {
+        String username = "jack";
+        String password = "samurai";
+        AuthenticatedUser expectedAuthenticatedUser = mock(AuthenticatedUser.class);
+        when(usernamePasswordAuthenticationToken.getCredentials()).thenReturn(password);
+        when(group.getAuthenticatedUser(username, password)).thenReturn(null);
+
+        authenticationProvider.retrieveUser(username, usernamePasswordAuthenticationToken);
+
+        verify(allAccessEvents).newLoginEvent("jack", "127.0.0.1", "sessionId", "Failure");
+    }
+
 }

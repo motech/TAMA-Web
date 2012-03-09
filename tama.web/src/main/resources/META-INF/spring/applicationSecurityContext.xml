@@ -12,7 +12,7 @@
                     login-page="/login"
                     authentication-failure-url="/login?login_error=t"
                     authentication-success-handler-ref="loginSuccessHandler"/>
-        <logout logout-url="/security/j_spring_security_logout" logout-success-url="/login" invalidate-session="true"/>
+        <logout logout-url="/security/j_spring_security_logout" invalidate-session="true" success-handler-ref="logoutSuccessHandler"/>
 
         <!-- Only admin -->
         <intercept-url pattern="/clinics/**" access="hasRole('ADMIN')" requires-channel="any"/>
@@ -60,6 +60,7 @@
                 <beans:ref bean="adminSecurityGroup"/>
             </beans:list>
         </beans:constructor-arg>
+        <beans:constructor-arg ref="allAccessEvents"/>
     </beans:bean>
 
     <authentication-manager alias="authenticationManager">
