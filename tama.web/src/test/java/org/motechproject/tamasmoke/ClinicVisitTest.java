@@ -2,6 +2,7 @@ package org.motechproject.tamasmoke;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
@@ -11,6 +12,7 @@ import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDr
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
+import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 
@@ -19,26 +21,26 @@ import static junit.framework.Assert.assertEquals;
 public class ClinicVisitTest extends BaseTest {
 
     private TestClinician clinician;
+    private TestPatient patient;
+    private PatientDataService patientDataService;
+    private TestTreatmentAdvice treatmentAdvice;
 
     @Before
     public void setUp() {
         super.setUp();
         clinician = TestClinician.withMandatory();
         new ClinicianDataService(webDriver).createWithClinic(clinician);
+        patient = TestPatient.withMandatory();
+        patientDataService = new PatientDataService(webDriver);
+        treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
     }
 
     @Test
     public void testCreateRegimenWithLabResults_ForTheFirstClinicVisit() {
-        TestPatient patient = TestPatient.withMandatory();
-        PatientDataService patientDataService = new PatientDataService(webDriver);
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
         TestLabResult labResult = TestLabResult.withMandatory();
-
         patientDataService.registerAndActivate(treatmentAdvice, labResult, patient, clinician);
+        ShowClinicVisitListPage showClinicVisitListPage = gotoShowClinicVisitPage();
 
-        ShowClinicVisitListPage showClinicVisitListPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
-                gotoShowPatientPage(patient).goToClinicVisitListPage();
         assertEquals("Registered with TAMA", showClinicVisitListPage.getFirstVisitDescription());
         showClinicVisitListPage.logout();
 
@@ -54,16 +56,10 @@ public class ClinicVisitTest extends BaseTest {
 
     @Test
     public void testCreateRegimenWithVitalStatistics_ForTheFirstClinicVisit() {
-        TestPatient patient = TestPatient.withMandatory();
-        PatientDataService patientDataService = new PatientDataService(webDriver);
         TestVitalStatistics vitalStatistics = TestVitalStatistics.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-
         patientDataService.registerAndActivate(treatmentAdvice, vitalStatistics, patient, clinician);
+        ShowClinicVisitListPage showClinicVisitListPage = gotoShowClinicVisitPage();
 
-        ShowClinicVisitListPage showClinicVisitListPage = MyPageFactory.initElements(webDriver, LoginPage.class).
-                loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
-                gotoShowPatientPage(patient).goToClinicVisitListPage();
         assertEquals("Registered with TAMA", showClinicVisitListPage.getFirstVisitDescription());
         showClinicVisitListPage.logout();
 
@@ -79,11 +75,7 @@ public class ClinicVisitTest extends BaseTest {
 
     @Test
     public void testCreateRegimenWithOpportunisticInfections_ForTheFirstClinicVisit() {
-        TestPatient patient = TestPatient.withMandatory();
-        PatientDataService patientDataService = new PatientDataService(webDriver);
         TestOpportunisticInfections opportunisticInfections = TestOpportunisticInfections.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
-
         patientDataService.registerAndActivate(treatmentAdvice, opportunisticInfections, patient, clinician);
 
         TestOpportunisticInfections savedOpportunisticInfections = patientDataService.getSavedOpportunisticInfections(patient, clinician);
@@ -95,5 +87,39 @@ public class ClinicVisitTest extends BaseTest {
 
         savedOpportunisticInfections = patientDataService.getSavedOpportunisticInfections(patient, clinician);
         assertEquals(opportunisticInfections, savedOpportunisticInfections);
+    }
+
+    @Test
+    public void testAdjustDueDateAsToday(){
+        ShowClinicVisitListPage showClinicVisitListPage = activatePatientAndGotoShowClinicVisitsPage();
+
+        showClinicVisitListPage.adjustDueDateAsToday();
+
+        String today = DateUtil.today().toString(TAMAConstants.DATE_FORMAT);
+        assertEquals(today, showClinicVisitListPage.getAdjustedDueDate());
+    }
+
+    @Test
+    public void testMarkAsMissed(){
+        ShowClinicVisitListPage showClinicVisitListPage = activatePatientAndGotoShowClinicVisitsPage();
+
+        showClinicVisitListPage.markAsMissed();
+
+        assertEquals("Missed", showClinicVisitListPage.getVisitDate());
+    }
+
+    private ShowClinicVisitListPage activatePatientAndGotoShowClinicVisitsPage() {
+        TestVitalStatistics vitalStatistics = TestVitalStatistics.withMandatory();
+        TestLabResult labResult = TestLabResult.withMandatory();
+
+        patientDataService.registerAndActivate(treatmentAdvice, labResult, vitalStatistics, patient, clinician);
+
+        return gotoShowClinicVisitPage();
+    }
+
+    private ShowClinicVisitListPage gotoShowClinicVisitPage() {
+        return MyPageFactory.initElements(webDriver, LoginPage.class).
+                loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).
+                gotoShowPatientPage(patient).goToClinicVisitListPage();
     }
 }

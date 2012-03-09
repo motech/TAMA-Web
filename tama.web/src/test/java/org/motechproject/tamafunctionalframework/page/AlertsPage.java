@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.ui.TimeoutException;
 
 import java.util.List;
 
@@ -99,5 +100,14 @@ public class AlertsPage extends Page {
         assertEquals(phoneNumber, actualPhoneNumber);
         assertEquals(status, td_collection.get(6).getText());
         assertEquals(notes, td_collection.get(7).getText());
+    }
+
+    public boolean hasAlertOfType(String alertType){
+        try{
+            waitForElementToLoadWithRetry(By.xpath("//tr[td='" + alertType + "']"));
+            return true;
+        } catch (TimeoutException e){
+            return false;
+        }
     }
 }

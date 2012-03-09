@@ -59,7 +59,7 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
-                    <td>
+                    <td class="appointmentDueDateColumn">
                         <spring:eval expression="visit.appointmentDueDate"/>
                     </td>
                     <td class="adjustDueDateColumn">
@@ -79,7 +79,7 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
-                    <td>
+                    <td class="confirmVisitDateColumn">
                         <c:choose>
                             <c:when test="${visit.confirmedAppointmentDateEditable}">
                                 <a href="javascript:void(0);" class="confirmVisitDate" visitid="${visit.id}" patientid="${visit.patientDocId}">
