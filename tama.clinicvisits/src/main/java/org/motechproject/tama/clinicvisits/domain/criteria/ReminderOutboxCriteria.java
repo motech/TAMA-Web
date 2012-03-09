@@ -21,7 +21,8 @@ public class ReminderOutboxCriteria {
     public boolean shouldAddOutboxMessageForAppointments(Patient patient, ClinicVisit clinicVisit) {
         return (patient.getPatientPreferences().getActivateAppointmentReminders())
                 && (!outboxService.hasPendingOutboxMessages(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE))
-                && (clinicVisit.getConfirmedAppointmentDate() == null);
+                && (clinicVisit.getConfirmedAppointmentDate() == null)
+                && (!DateUtil.today().isAfter(clinicVisit.getEffectiveDueDate()));
     }
 
     public boolean shouldAddOutboxMessageForVisits(Patient patient, ClinicVisit clinicVisit) {
