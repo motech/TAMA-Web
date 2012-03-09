@@ -92,21 +92,12 @@ AjaxCall.post = function(args) {
 }
 
 AjaxCall.createCallParams = function(args) {
-    return {
-        url: args.url,
-        content: args.content,
-        handleAs: "json",
-        load: function (jsonData, ioArgs) {
-            if(typeof(args.load) == "function") { args.load(jsonData, ioArgs); }
-        },
-        error: function(result, ioArgs) {
-            if(result.status==601) {
-                window.location.reload();
-            }
-            if(typeof(args.error) == "function") { args.error(result, ioArgs); }
-        },
-        handle: function (result, ioArgs) {
-            if(typeof(args.handle) == "function") { args.handle(result, ioArgs); }
-        }
-    }
+    args.handleAs = "json";
+    args.error = function(result, ioArgs) {
+                    if(result.status==601) {
+                        window.location.reload();
+                    }
+                    if(typeof(args.error) == "function") { args.error(result, ioArgs); }
+                };
+    return args;
 }
