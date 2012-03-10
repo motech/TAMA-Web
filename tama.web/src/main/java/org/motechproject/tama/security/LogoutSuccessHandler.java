@@ -1,6 +1,6 @@
 package org.motechproject.tama.security;
 
-import org.motechproject.tama.security.repository.AllAccessEvents;
+import org.motechproject.tama.security.repository.AllTAMAEvents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -14,17 +14,17 @@ import java.io.IOException;
 
 @Component
 public class LogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
-    private AllAccessEvents allAccessEvents;
+    private AllTAMAEvents allTAMAEvents;
 
     @Autowired
-    public LogoutSuccessHandler(AllAccessEvents allAccessEvents) {
-        this.allAccessEvents = allAccessEvents;
+    public LogoutSuccessHandler(AllTAMAEvents allTAMAEvents) {
+        this.allTAMAEvents = allTAMAEvents;
     }
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
-        allAccessEvents.newLogoutEvent(authentication.getName(), details.getRemoteAddress(), details.getSessionId());
+        allTAMAEvents.newLogoutEvent(authentication.getName(), details.getRemoteAddress(), details.getSessionId());
         super.onLogoutSuccess(request, response, authentication);
     }
 }

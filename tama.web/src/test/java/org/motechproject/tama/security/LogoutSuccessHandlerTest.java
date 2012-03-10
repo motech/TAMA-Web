@@ -3,25 +3,22 @@ package org.motechproject.tama.security;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.security.repository.AllAccessEvents;
+import org.motechproject.tama.security.repository.AllTAMAEvents;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class LogoutSuccessHandlerTest {
 
     @Mock
-    private AllAccessEvents allAccessEvents;
+    private AllTAMAEvents allTAMAEvents;
     @Mock
     HttpServletRequest request;
     @Mock
@@ -34,7 +31,7 @@ public class LogoutSuccessHandlerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        logoutSuccessHandler = new LogoutSuccessHandler(allAccessEvents);
+        logoutSuccessHandler = new LogoutSuccessHandler(allTAMAEvents);
     }
 
     @Test
@@ -48,7 +45,7 @@ public class LogoutSuccessHandlerTest {
         
         logoutSuccessHandler.onLogoutSuccess(request, response, authentication);
 
-        verify(allAccessEvents).newLogoutEvent("jack", "127.0.0.1", "sessionId");
+        verify(allTAMAEvents).newLogoutEvent("jack", "127.0.0.1", "sessionId");
 
     }
 }

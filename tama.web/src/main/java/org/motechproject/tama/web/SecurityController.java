@@ -6,6 +6,7 @@ import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.repository.AllTAMAUsers;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
+import org.motechproject.tama.security.repository.AllTAMAEvents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +23,12 @@ import javax.servlet.http.HttpServletRequest;
 public class SecurityController extends BaseController {
 
     private AllTAMAUsers allTAMAUsers;
+    private AllTAMAEvents allTAMAEvents;
 
     @Autowired
-    public SecurityController(AllTAMAUsers allTAMAUsers) {
+    public SecurityController(AllTAMAUsers allTAMAUsers, AllTAMAEvents allTAMAEvents) {
         this.allTAMAUsers = allTAMAUsers;
+        this.allTAMAEvents = allTAMAEvents;
     }
 
     @RequestMapping(value = "changePassword", method = RequestMethod.GET)
@@ -45,6 +48,7 @@ public class SecurityController extends BaseController {
         } else {
             user.setPassword(newPassword);
             allTAMAUsers.update(user.getTAMAUser());
+            allTAMAEvents.newChangePasswordEvent(user.getName(), user.getClinicName(), user.getClinicId(), user.getTAMAUser().getUsername());
             return "passwordReset";
         }
     }

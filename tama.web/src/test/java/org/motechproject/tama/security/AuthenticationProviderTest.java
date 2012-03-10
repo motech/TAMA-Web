@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.security.profiles.SecurityGroup;
-import org.motechproject.tama.security.repository.AllAccessEvents;
+import org.motechproject.tama.security.repository.AllTAMAEvents;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -25,16 +25,16 @@ public class AuthenticationProviderTest {
     @Mock
     private UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
     @Mock
-    private AllAccessEvents allAccessEvents;
+    private AllTAMAEvents allTAMAEvents;
     @Mock
     private WebAuthenticationDetails details;
 
     @Before
     public void setUp() {
         initMocks(this);
-        authenticationProvider = new AuthenticationProvider(Arrays.asList(group), allAccessEvents);
-        doNothing().when(allAccessEvents).newLoginEvent(Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any());
-        doNothing().when(allAccessEvents).newLogoutEvent(Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any());
+        authenticationProvider = new AuthenticationProvider(Arrays.asList(group), allTAMAEvents);
+        when(allTAMAEvents.newLoginEvent(Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any())).thenReturn("loginEventDocumentId");
+        when(allTAMAEvents.newLogoutEvent(Matchers.<String>any(), Matchers.<String>any(), Matchers.<String>any())).thenReturn("logoutEventDocumentId");
         when(usernamePasswordAuthenticationToken.getDetails()).thenReturn(details);
         when(details.getRemoteAddress()).thenReturn("127.0.0.1");
         when(details.getSessionId()).thenReturn("sessionId");
@@ -90,7 +90,7 @@ public class AuthenticationProviderTest {
 
         authenticationProvider.retrieveUser(username, usernamePasswordAuthenticationToken);
 
-        verify(allAccessEvents).newLoginEvent("jack", "127.0.0.1", "sessionId", "Success");
+        verify(allTAMAEvents).newLoginEvent("jack", "127.0.0.1", "sessionId", "Success");
     }
 
     @Test(expected = BadCredentialsException.class)
@@ -103,7 +103,7 @@ public class AuthenticationProviderTest {
 
         authenticationProvider.retrieveUser(username, usernamePasswordAuthenticationToken);
 
-        verify(allAccessEvents).newLoginEvent("jack", "127.0.0.1", "sessionId", "Failure");
+        verify(allTAMAEvents).newLoginEvent("jack", "127.0.0.1", "sessionId", "Failure");
     }
 
 }

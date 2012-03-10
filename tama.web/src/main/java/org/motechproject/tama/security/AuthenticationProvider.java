@@ -2,7 +2,7 @@ package org.motechproject.tama.security;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.security.profiles.SecurityGroup;
-import org.motechproject.tama.security.repository.AllAccessEvents;
+import org.motechproject.tama.security.repository.AllTAMAEvents;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -19,11 +19,11 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     public static final String SUCCESS = "Success";
 
     private List<SecurityGroup> groups;
-    private AllAccessEvents allAccessEvents;
+    private AllTAMAEvents allTAMAEvents;
 
-    public AuthenticationProvider(List<SecurityGroup> groups, AllAccessEvents allAccessEvents) {
+    public AuthenticationProvider(List<SecurityGroup> groups, AllTAMAEvents allTAMAEvents) {
         this.groups = groups;
-        this.allAccessEvents = allAccessEvents;
+        this.allTAMAEvents = allTAMAEvents;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
             }
             throw new BadCredentialsException(USER_NOT_FOUND);
         } finally {
-            allAccessEvents.newLoginEvent(username, details.getRemoteAddress(), details.getSessionId(), status);
+            allTAMAEvents.newLoginEvent(username, details.getRemoteAddress(), details.getSessionId(), status);
         }
     }
 }
