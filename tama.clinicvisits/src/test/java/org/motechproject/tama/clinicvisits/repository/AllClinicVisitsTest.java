@@ -11,6 +11,7 @@ import org.motechproject.appointments.api.contract.*;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.AppointmentCalendarRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.ConfirmAppointmentRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.CreateVisitRequestBuilder;
+import org.motechproject.tama.clinicvisits.builder.servicecontract.RescheduleAppointmentRequestBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
@@ -44,14 +45,16 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     private CreateVisitRequestBuilder createVisitRequestBuilder;
     @Mock
     private ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder;
-
+    @Mock
+    private RescheduleAppointmentRequestBuilder rescheduleAppointmentRequestBuilder;
+    
     private AllClinicVisits allClinicVisits;
 
     @Before
     public void setUp() {
         initMocks(this);
         when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build());
-        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentCalendarRequestBuilder, createVisitRequestBuilder, confirmAppointmentRequestBuilder);
+        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentCalendarRequestBuilder, createVisitRequestBuilder, confirmAppointmentRequestBuilder, rescheduleAppointmentRequestBuilder);
     }
 
     @Test
@@ -97,9 +100,11 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     @Test
     public void shouldAdjustDueDate_ChangesDate_AndSetsTimeToMidnight() throws Exception {
         final DateTime today = DateUtil.now();
+        RescheduleAppointmentRequest rescheduleAppointmentRequest = new RescheduleAppointmentRequest();
+        when(rescheduleAppointmentRequestBuilder.create(PATIENT_ID, "visit2", today.toLocalDate())).thenReturn(rescheduleAppointmentRequest);
 
         allClinicVisits.adjustDueDate(PATIENT_ID, "visit2", today.toLocalDate());
-        verify(appointmentService).rescheduleAppointment(eq(PATIENT_ID), eq("visit2"), eq(today.withTime(0 ,0 , 0, 0)));
+        verify(appointmentService).rescheduleAppointment(rescheduleAppointmentRequest);
     }
 
     @Test

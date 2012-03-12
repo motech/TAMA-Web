@@ -6,12 +6,12 @@ import org.motechproject.appointments.api.contract.*;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.AppointmentCalendarRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.ConfirmAppointmentRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.CreateVisitRequestBuilder;
+import org.motechproject.tama.clinicvisits.builder.servicecontract.RescheduleAppointmentRequestBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -26,15 +26,17 @@ public class AllClinicVisits {
     private AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder;
     private CreateVisitRequestBuilder createVisitRequestBuilder;
     private ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder;
+    private RescheduleAppointmentRequestBuilder rescheduleAppointmentRequestBuilder;
 
     @Autowired
     public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder,
-                           CreateVisitRequestBuilder createVisitRequestBuilder, ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder) {
+                           CreateVisitRequestBuilder createVisitRequestBuilder, ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder, RescheduleAppointmentRequestBuilder rescheduleAppointmentRequestBuilder) {
         this.allPatients = allPatients;
         this.appointmentService = appointmentService;
         this.appointmentCalendarRequestBuilder = appointmentCalendarRequestBuilder;
         this.createVisitRequestBuilder = createVisitRequestBuilder;
         this.confirmAppointmentRequestBuilder = confirmAppointmentRequestBuilder;
+        this.rescheduleAppointmentRequestBuilder = rescheduleAppointmentRequestBuilder;
     }
 
     public void addAppointmentCalendar(String patientDocId) {
@@ -111,7 +113,8 @@ public class AllClinicVisits {
     }
 
     public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate) {
-        appointmentService.rescheduleAppointment(patientDocId, clinicVisitId, DateUtil.newDateTime(adjustedDueDate));
+        RescheduleAppointmentRequest rescheduleAppointmentRequest = rescheduleAppointmentRequestBuilder.create(patientDocId, clinicVisitId, adjustedDueDate);
+        appointmentService.rescheduleAppointment(rescheduleAppointmentRequest);
     }
 
     public void confirmAppointmentDate(String patientDocId, String clinicVisitId, DateTime confirmedAppointmentDate) {
