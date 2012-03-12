@@ -21,27 +21,29 @@ public class TeluguTimeConstructBuilderTest {
     }
 
     @Test
-    // 3:59:59 - Midnight End
+    // 3:44:59 - Midnight End
     public void shouldCreateTimeConstruct_AtMidnight_End() {
-        LocalTime midnight = new LocalTime(3, 59, 59);
+        LocalTime midnight = new LocalTime(3, 44, 59);
         List<String> timeConstructWAVs = new TeluguTimeConstructBuilder().build(midnight);
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayMidnight", timeConstructWAVs.get(0));
         assertEquals("Num_003", timeConstructWAVs.get(1));
         assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
-        assertEquals("Num_059", timeConstructWAVs.get(3));
+        assertEquals("Num_044", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
 
     @Test
-    // 4:00:00 - Early Morning Start
+    // 3:45:00 - Early Morning Start
     public void shouldCreateTimeConstruct_AtEarlyMorning_Start() {
-        LocalTime earlyMorning = new LocalTime(4, 0, 0);
+        LocalTime earlyMorning = new LocalTime(3, 45, 0);
         List<String> timeConstructWAVs = new TeluguTimeConstructBuilder().build(earlyMorning);
-        assertEquals(3, timeConstructWAVs.size());
+        assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeofDayEarlyMorning", timeConstructWAVs.get(0));
-        assertEquals("Num_004", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHours", timeConstructWAVs.get(2));
+        assertEquals("Num_003", timeConstructWAVs.get(1));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
+        assertEquals("Num_045", timeConstructWAVs.get(3));
+        assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
 
     @Test
@@ -119,27 +121,29 @@ public class TeluguTimeConstructBuilderTest {
     }
 
     @Test
-    // 19:59:59 - Evening End
+    // 19:44:59 - Evening End
     public void shouldCreateTimeConstruct_AtEvening_End() {
-        LocalTime evening = new LocalTime(19, 59, 59);
+        LocalTime evening = new LocalTime(19, 44, 59);
         List<String> timeConstructWAVs = new TeluguTimeConstructBuilder().build(evening);
         assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayEvening", timeConstructWAVs.get(0));
         assertEquals("Num_007", timeConstructWAVs.get(1));
         assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
-        assertEquals("Num_059", timeConstructWAVs.get(3));
+        assertEquals("Num_044", timeConstructWAVs.get(3));
         assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
 
     @Test
-    // 20:00:0 - Night Start
+    // 19:45:0 - Night Start
     public void shouldCreateTimeConstruct_AtNight_Start() {
-        LocalTime night = new LocalTime(20, 0, 0);
+        LocalTime night = new LocalTime(19, 45, 0);
         List<String> timeConstructWAVs = new TeluguTimeConstructBuilder().build(night);
-        assertEquals(3, timeConstructWAVs.size());
+        assertEquals(5, timeConstructWAVs.size());
         assertEquals("timeOfDayNight", timeConstructWAVs.get(0));
-        assertEquals("Num_008", timeConstructWAVs.get(1));
-        assertEquals("timeOfDayHours", timeConstructWAVs.get(2));
+        assertEquals("Num_007", timeConstructWAVs.get(1));
+        assertEquals("timeOfDayHoursAfter", timeConstructWAVs.get(2));
+        assertEquals("Num_045", timeConstructWAVs.get(3));
+        assertEquals("timeOfDayMinutes", timeConstructWAVs.get(4));
     }
 
     @Test
