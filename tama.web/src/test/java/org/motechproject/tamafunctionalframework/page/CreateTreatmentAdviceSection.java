@@ -74,11 +74,21 @@ public class CreateTreatmentAdviceSection {
     }
 
     protected void fillRegimenSection(TestTreatmentAdvice treatmentAdvice, Page page) {
+        setRegimen(treatmentAdvice.regimenName());
+        setDrugCompositionGroup(treatmentAdvice.drugCompositionName());
         TestDrugDosage testDrugDosage1 = treatmentAdvice.drugDosages().get(0);
         TestDrugDosage testDrugDosage2 = treatmentAdvice.drugDosages().get(1);
         String dosageType = testDrugDosage1.dosageType();
         createFirstDosage(testDrugDosage1, dosageType, page);
         createSecondDosage(testDrugDosage2, dosageType, page);
+    }
+
+    private void setDrugCompositionGroup(String drugCompositionName) {
+        drugCompositionGroupElement.sendKeys(drugCompositionName);
+    }
+
+    private void setRegimen(String regimenName) {
+        regimenElement.sendKeys(regimenName);
     }
 
     protected void submit() {
