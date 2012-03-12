@@ -48,4 +48,10 @@ public class LogoutSuccessHandlerTest {
         verify(allTAMAEvents).newLogoutEvent("jack", "127.0.0.1", "sessionId");
 
     }
+
+    @Test
+    public void shouldNotRecordEventWhenSessionTimesOut() throws Exception {
+        logoutSuccessHandler.onLogoutSuccess(request, response, null);
+        verifyZeroInteractions(allTAMAEvents);
+    }
 }
