@@ -68,6 +68,10 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>org.motechproject.tama.security.TamaSessionListener</listener-class>
+    </listener>
+
     <!-- Handles Spring requests -->
     <servlet>
         <servlet-name>tama</servlet-name>
