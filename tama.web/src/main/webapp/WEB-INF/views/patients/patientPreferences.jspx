@@ -53,10 +53,10 @@
             </label>
             <div class='right_pane'>
                 <div class='radio_group'>
-                    <springform:radiobutton id="receiveOTCAdviceYes" path="patientPreferences.receiveOTCAdvice" value="true" label="Yes"/>
+                    <springform:radiobutton id="receiveOTCAdviceYes" path="patientPreferences.receiveOTCAdvice" value="true" label="Yes"  disabled="true"/>
                 </div>
                 <div class='radio_group'>
-                    <springform:radiobutton id="receiveOTCAdviceNo" path="patientPreferences.receiveOTCAdvice" value="false" label="No"/>
+                    <springform:radiobutton id="receiveOTCAdviceNo" path="patientPreferences.receiveOTCAdvice" value="false" checked="true" label="No"/>
                 </div>
             </div>
         </div>
