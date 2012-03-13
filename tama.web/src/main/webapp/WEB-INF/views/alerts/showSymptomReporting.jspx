@@ -2,7 +2,8 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
      xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-     xmlns:c="http://java.sun.com/jsp/jstl/core">
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     class='show_alert'>
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <spring:message code="label_org_motechproject_tama_domain_patient_alert_title" var="alert_title"
                     htmlEscape="false"/>

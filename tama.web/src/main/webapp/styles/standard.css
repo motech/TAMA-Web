@@ -530,6 +530,10 @@ fieldset th {
   margin-left : 155px;
 }
 
+.show_alert label {
+    width: 250px;
+}
+
 .warning {
     height: 15px;
     background-color: ORANGE;
