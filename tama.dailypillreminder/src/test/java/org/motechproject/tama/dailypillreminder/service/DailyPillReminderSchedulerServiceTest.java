@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class DailyPillReminderSchedulerServiceTest {
+public class DailyPillReminderSchedulerServiceTest extends BaseUnitTest {
 
     private final LocalDate TREATMENT_ADVICE_START_DATE = DateUtil.newDate(2012, 12, 12);
     private final LocalDate TREATMENT_ADVICE_END_DATE = DateUtil.newDate(2012, 12, 24);
@@ -40,6 +41,10 @@ public class DailyPillReminderSchedulerServiceTest {
 
     @Mock
     MotechSchedulerService motechSchedulerService;
+
+    public DailyPillReminderSchedulerServiceTest() {
+        mockCurrentDate(DateUtil.now());
+    }
 
     @Before
     public void setUp() {
@@ -57,18 +62,21 @@ public class DailyPillReminderSchedulerServiceTest {
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).safeScheduleJob(jobCaptor.capture());
         Assert.assertEquals("0 0 0 ? * 4", jobCaptor.getValue().getCronExpression());
+        assertEquals(TREATMENT_ADVICE_START_DATE.plusWeeks(5), DateUtil.newDate(jobCaptor.getValue().getStartTime()));
     }
 
     @Test
     public void shouldScheduleWeeklyAdherenceTrendJob_StartDateIsBeforeToday() {
         DateTime now = DateUtil.now();
         LocalDate today = now.toLocalDate();
+
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientId").withCallPreference(CallPreference.DailyPillReminder).build();
         treatmentAdvice.getDrugDosages().get(0).setStartDate(today.minusMonths(2));
 
-        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient , treatmentAdvice);
+        schedulerService.scheduleJobForAdherenceTrendFeedbackForDailyPillReminder(patient, treatmentAdvice);
         ArgumentCaptor<CronSchedulableJob> jobCaptor = ArgumentCaptor.forClass(CronSchedulableJob.class);
         verify(motechSchedulerService).safeScheduleJob(jobCaptor.capture());
+        assertEquals(today, DateUtil.newDate(jobCaptor.getValue().getStartTime()));
     }
 
     @Test

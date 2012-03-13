@@ -1,5 +1,6 @@
 package org.motechproject.tama.dailypillreminder.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.DayOfWeek;
@@ -49,7 +50,7 @@ public class DailyPillReminderSchedulerService {
         LocalDate startDate = callPlanStartDate(patient, treatmentAdvice).plusWeeks(5);
 
         String cronExpression = new WeeklyCronJobExpressionBuilder(DayOfWeek.getDayOfWeek(startDate.getDayOfWeek())).build();
-        Date jobStartDate = startDate.toDate();
+        Date jobStartDate = getJobStartDate(startDate);
         CronSchedulableJob adherenceJob = new CronSchedulableJob(adherenceWeeklyTrendEvent, cronExpression, jobStartDate, treatmentAdvice.getEndDate());
         motechSchedulerService.safeScheduleJob(adherenceJob);
     }
@@ -80,6 +81,7 @@ public class DailyPillReminderSchedulerService {
     }
 
     private Date getJobStartDate(LocalDate startDate) {
-        return DateUtil.newDateTime(startDate.toDate()).isBefore(DateUtil.now()) ? DateUtil.now().toDate() : startDate.toDate();
+        DateTime now = DateUtil.now();
+        return DateUtil.newDateTime(startDate.toDate()).isBefore(now) ? now.toDate() : startDate.toDate();
     }
 }
