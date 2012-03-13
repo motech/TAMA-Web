@@ -12,11 +12,13 @@ import java.util.ArrayList;
 public class TestDrugDosage extends TestEntity {
     public static String MORNING_DAILY = "Morning Daily";
     public static String EVENING_DAILY = "Evening Daily";
+    public static String VARIABLE_DOSE = "Variable Dosage";
     private String dosageSchedule;
     private String mealAdvice;
     private String brandName;
     private String dosageType;
     private LocalDate startDate;
+    private String startsFrom;
 
     private TestDrugDosage() {
     }
@@ -94,5 +96,18 @@ public class TestDrugDosage extends TestEntity {
     @Override
     public String resourceName() {
         throw new NotImplementedException();
+    }
+
+    public String startsFrom() {
+        return startsFrom;
+    }
+
+    public void setVariableDose(String startsFrom) {
+        this.startsFrom = startsFrom;
+        dosageType(VARIABLE_DOSE);
+    }
+
+    public boolean isVariableDosage() {
+        return VARIABLE_DOSE.equals(dosageType);
     }
 }
