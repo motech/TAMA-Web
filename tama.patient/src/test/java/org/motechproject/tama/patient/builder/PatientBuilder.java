@@ -114,6 +114,7 @@ public class PatientBuilder {
                 withMobileNumber(Long.toString(UniqueMobileNumber.generate())).
                 withPasscode("1234").
                 withClinic(Clinic.newClinic()).
+                withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
                 withTravelTimeToClinicInHours(3).

@@ -23,6 +23,7 @@ public class CallLog extends CouchEntity {
     private DateTime startTime;
     private DateTime endTime;
     private String phoneNumber;
+    private String callLanguage;
 
     private String callId;
     private CallDirection callDirection;
@@ -128,6 +129,15 @@ public class CallLog extends CouchEntity {
 
     public CallLog patientId(String patientId) {
         this.patientId = patientId;
+        return this;
+    }
+
+    public String callLanguage() {
+        return callLanguage;
+    }
+
+    public CallLog callLanguage(String callLanguage) {
+        this.callLanguage = callLanguage;
         return this;
     }
 

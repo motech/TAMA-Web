@@ -117,6 +117,11 @@ public class Patient extends CouchEntity {
         return this.patientPreferences.getDayOfWeeklyCall();
     }
 
+    @JsonIgnore
+    public String getLanguageCode() {
+        return this.patientPreferences.getIvrLanguage().getCode();
+    }
+
     public LocalDate getDateOfBirth() {
         return DateUtil.newDate(dateOfBirthAsDate);
     }

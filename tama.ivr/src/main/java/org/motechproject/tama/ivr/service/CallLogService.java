@@ -46,6 +46,7 @@ public class CallLogService {
             Patient patient = allPatients.get(patientDocumentId);
             callLog.clinicId(patient.getClinic_id());
             callLog.patientId(patient.getPatientId());
+            callLog.callLanguage(patient.getLanguageCode());
         }
         allCallLogs.add(callLog);
     }

@@ -78,6 +78,7 @@ public class CallLogServiceTest {
         assertEquals(clinic.getId(), logCapture.getValue().clinicId());
         assertEquals(0, logCapture.getValue().getLikelyPatientIds().size());
         assertEquals(patient.getPatientId(), logCapture.getValue().patientId());
+        assertEquals("en", logCapture.getValue().callLanguage());
     }
 
     @Test
@@ -101,6 +102,7 @@ public class CallLogServiceTest {
         assertEquals(1, logCapture.getValue().getLikelyPatientIds().size());
         assertEquals(patient.getId(), logCapture.getValue().getLikelyPatientIds().get(0));
         assertNull(logCapture.getValue().patientId());
+        assertNull(logCapture.getValue().callLanguage());
     }
 
     @Test
