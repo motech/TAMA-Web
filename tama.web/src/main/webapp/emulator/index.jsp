@@ -7,7 +7,8 @@
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%
     boolean fakeTimeAvailable = false;
-    if (System.getenv().get("OS").indexOf("indows") > 0) {
+    String os = (String) System.getenv().get("OS");
+    if (os == null || os.indexOf("indows") < 0) {
         try {
             java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
             m.setAccessible(true);
