@@ -44,7 +44,7 @@ public class TestDrugDosage extends TestEntity {
         return drugDosages.toArray(new TestDrugDosage[brandNames.length]);
     }
 
-    public TestDrugDosage dosageType(String dosageType) {
+    private TestDrugDosage dosageType(String dosageType) {
         this.dosageType = dosageType;
         return this;
     }
@@ -100,6 +100,10 @@ public class TestDrugDosage extends TestEntity {
 
     public String startsFrom() {
         return startsFrom;
+    }
+
+    public void setMorningDose() {
+        dosageType(MORNING_DAILY);
     }
 
     public void setVariableDose(String startsFrom) {

@@ -28,6 +28,7 @@ public class VariableDosageTest extends BaseIVRTest {
         patient = TestPatient.withMandatory();
         TestDrugDosage[] drugDosages = setupVariableDosages();
         enrollPatientIntoRegimen(drugDosages);
+        caller = caller(patient);
     }
 
     private void enrollPatientIntoRegimen(TestDrugDosage[] drugDosages) {
@@ -38,12 +39,12 @@ public class VariableDosageTest extends BaseIVRTest {
 
     private TestDrugDosage[] setupVariableDosages() {
         TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
+        drugDosages[0].setMorningDose();
         drugDosages[1].setVariableDose("2");
         return drugDosages;
     }
 
     @Test
     public void testAdherence() {
-//        tamaDateTimeService.adjustDateTime(DateUtil.now().minusWeeks(2));
     }
 }
