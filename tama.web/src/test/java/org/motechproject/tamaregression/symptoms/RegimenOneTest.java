@@ -60,7 +60,10 @@ public class RegimenOneTest extends BaseIVRTest {
         IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", "pilltdf3tc_ricovir-l", "pillnvp_nevimune", TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
 
         // Regimen1
-        caller.enter("2");
+        ivrResponse = caller.enter("2");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW);
+
+        caller.listenMore();
         ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, "q_fever");
 
