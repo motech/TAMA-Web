@@ -23,7 +23,6 @@ public class CallLog extends CouchEntity {
     private DateTime startTime;
     private DateTime endTime;
     private String phoneNumber;
-    private String callLanguage;
 
     private String callId;
     private CallDirection callDirection;
@@ -31,6 +30,9 @@ public class CallLog extends CouchEntity {
     private List<CallEvent> callEvents = new ArrayList<CallEvent>();
 
     public enum CallLogType { Answered, Missed }
+
+    @JsonProperty
+    private String callLanguage;
 
     @JsonProperty
     private String clinicId;
