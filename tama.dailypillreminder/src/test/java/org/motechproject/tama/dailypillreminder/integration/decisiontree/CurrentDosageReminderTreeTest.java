@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
@@ -102,6 +103,17 @@ public class CurrentDosageReminderTreeTest {
         assertEquals(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU, prompts.get(1).getName());
         assertEquals(MenuAudioPrompt.class, prompts.get(1).getClass());
         assertEquals(UpdateAdherenceAsCapturedForCurrentDosageCommand.class, nextNode.getTreeCommands().get(0).getClass());
+    }
+
+    @Test
+    public void shouldTransitionToSymptomsTree() {
+        setUpDataForPreviousDosage(true);
+
+        Node nextNode = currentDosageReminderTree.getTree().nextNode("/3", "1");
+        List<Prompt> prompts = nextNode.getPrompts();
+        assertEquals(1, prompts.size());
+        assertTrue(prompts.get(0) instanceof AudioPrompt);
+        assertEquals(TamaIVRMessage.START_SYMPTOM_FLOW, prompts.get(0).getName());
     }
 
     @Test

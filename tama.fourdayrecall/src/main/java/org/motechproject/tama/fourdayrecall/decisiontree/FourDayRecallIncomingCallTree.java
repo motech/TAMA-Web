@@ -33,7 +33,7 @@ public class FourDayRecallIncomingCallTree extends TamaDecisionTree {
                         new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand),
                         new MenuAudioPrompt().setName(TamaIVRMessage.HEALTH_TIPS_MENU_OPTION))
                 .setTransitions(new Object[][]{
-                        {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
+                        {"2", TAMATransitionFactory.createCallStateTransitionWithAudio(CallState.SYMPTOM_REPORTING, TamaIVRMessage.START_SYMPTOM_FLOW)},
                         {"3", TAMATransitionFactory.createCallStateTransition(CallState.OUTBOX)},
                         {"5", TAMATransitionFactory.createCallStateTransition(CallState.HEALTH_TIPS)}
                 });

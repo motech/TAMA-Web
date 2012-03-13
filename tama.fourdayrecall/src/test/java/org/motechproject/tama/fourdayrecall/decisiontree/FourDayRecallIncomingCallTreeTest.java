@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.decisiontree;
+package org.motechproject.tama.fourdayrecall.decisiontree;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +9,8 @@ import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.decisiontree.MenuTree;
+import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class MenuTreeTest {
-
-    private MenuTree menuTree;
+public class FourDayRecallIncomingCallTreeTest {
+    private FourDayRecallIncomingCallTree fourDayRecallIncomingCallTree;
     @Mock
     private KooKooIVRContext kookooIVRContext;
     @Mock
@@ -36,21 +41,21 @@ public class MenuTreeTest {
     @Before
     public void setUp() {
         initMocks(this);
-        menuTree = new MenuTree(new TAMATreeRegistry());
+        fourDayRecallIncomingCallTree = new FourDayRecallIncomingCallTree(new TAMATreeRegistry());
         setUpContext();
     }
 
     private void setUpContext() {
         when(kookooIVRContext.httpRequest()).thenReturn(httpRequest);
         when(httpRequest.getSession()).thenReturn(httpSession);
-        transitions = menuTree.createRootNode().getTransitions();
+        transitions = fourDayRecallIncomingCallTree.createRootNode().getTransitions();
     }
 
     @Test
     public void shouldTransitionToOutboxTreeWhenDTMFInputIs3() {
         assertCallStateTransitionForKeyPress("3", transitions, CallState.OUTBOX);
     }
-    
+
     @Test
     public void shouldTransitionToSymptomsTreeWhenDTMFInputIs2(){
         assertCallStateTransitionForKeyPress("2", transitions, CallState.SYMPTOM_REPORTING);

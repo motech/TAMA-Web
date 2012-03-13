@@ -143,6 +143,7 @@ public class TamaIVRMessage implements IVRMessage {
 
     /* ---------- Symptom Reporting Call Forwarding ----------*/
     public static final String CONNECTING_TO_DOCTOR = "connectingdr";
+    public static final String START_SYMPTOM_FLOW = "doctorWillHearYourProblemAndRevert";
     public static final String CANNOT_CONNECT_TO_DOCTOR = "cannotcontact01";
     public static final String WILL_SEND_SMS = "willSendSMS";
 

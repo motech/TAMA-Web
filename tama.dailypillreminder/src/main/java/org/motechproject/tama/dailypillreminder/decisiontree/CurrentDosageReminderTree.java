@@ -68,7 +68,7 @@ public class CurrentDosageReminderTree extends TamaDecisionTree {
                                                         new AudioPrompt().setCommand(forMissedPillFeedbackCommand),
                                                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_CANNOT_BE_TAKEN_MENU))
                                                 .setTransitions(new Object[][]{
-                                                        {"1", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
+                                                        {"1", TAMATransitionFactory.createCallStateTransitionWithAudio(CallState.SYMPTOM_REPORTING, TamaIVRMessage.START_SYMPTOM_FLOW)},
                                                         {"2", new Transition()
                                                                 .setDestinationNode(new Node()
                                                                         .setTreeCommands(recordDeclinedDosageReasonCommand)
