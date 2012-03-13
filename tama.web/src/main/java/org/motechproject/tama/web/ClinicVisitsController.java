@@ -12,9 +12,12 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
+import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
+import org.motechproject.tama.web.model.IncompletePatientDataWarning;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
 import org.motechproject.tama.web.viewbuilder.AppointmentCalendarBuilder;
@@ -47,16 +50,30 @@ public class ClinicVisitsController extends BaseController {
     private VitalStatisticsController vitalStatisticsController;
     private OpportunisticInfectionsController opportunisticInfectionsController;
     private AllClinicVisits allClinicVisits;
+    private AllVitalStatistics allVitalStatistics;
+    private AllLabResults allLabResults;
     private AllTreatmentAdvices allTreatmentAdvices;
     private PatientService patientService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     @Autowired
-    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController, AllTreatmentAdvices allTreatmentAdvices, LabResultsController labResultsController, VitalStatisticsController vitalStatisticsController, OpportunisticInfectionsController opportunisticInfectionsController, AllClinicVisits allClinicVisits, PatientService patientService) {
+    public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController,
+                                  AllTreatmentAdvices allTreatmentAdvices,
+                                  AllVitalStatistics allVitalStatistics,
+                                  AllLabResults allLabResults,
+                                  LabResultsController labResultsController,
+                                  VitalStatisticsController vitalStatisticsController,
+                                  OpportunisticInfectionsController opportunisticInfectionsController,
+                                  AllClinicVisits allClinicVisits,
+                                  PatientService patientService) {
+
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.labResultsController = labResultsController;
+        this.allVitalStatistics = allVitalStatistics;
+        this.allLabResults = allLabResults;
         this.vitalStatisticsController = vitalStatisticsController;
         this.opportunisticInfectionsController = opportunisticInfectionsController;
         this.allClinicVisits = allClinicVisits;
@@ -87,9 +104,10 @@ public class ClinicVisitsController extends BaseController {
         } else {
             treatmentAdviceController.createForm(patientDocId, uiModel);
         }
-
+        String warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
         uiModel.addAttribute("patientId", patientDocId);
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
+        uiModel.addAttribute(PatientController.WARNING, warning);
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
         opportunisticInfectionsController.createForm(clinicVisit, uiModel);
@@ -142,7 +160,9 @@ public class ClinicVisitsController extends BaseController {
         labResultsController.show(patientDocId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         opportunisticInfectionsController.show(clinicVisit, uiModel);
+        String warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
+        uiModel.addAttribute(PatientController.WARNING, warning);
         return "clinicvisits/show";
     }
 
@@ -150,9 +170,10 @@ public class ClinicVisitsController extends BaseController {
     public String list(@RequestParam(value = "patientId", required = true) String patientDocId, Model uiModel) {
         List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
         Patient patient = clinicVisitUIModels.get(0).getPatient();
+        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", patient);
-
+        uiModel.addAttribute(PatientController.WARNING, warning);
         if (!patient.getStatus().isActive())
             return "clinicvisits/view_list";
         return "clinicvisits/manage_list";

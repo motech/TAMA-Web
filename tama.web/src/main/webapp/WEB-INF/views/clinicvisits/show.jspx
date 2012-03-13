@@ -7,6 +7,10 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
+    <c:if test="${warning != null}">
+        <div class="warning"> <c:out value="${warning}"/> </div>
+    </c:if>
+
     <c:if test="${flashErrorLabResults != null}">
         <div class="error"> <c:out value="${flashErrorLabResults}"/> </div>
     </c:if>

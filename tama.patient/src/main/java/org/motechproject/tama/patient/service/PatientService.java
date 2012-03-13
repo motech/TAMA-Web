@@ -1,9 +1,7 @@
 package org.motechproject.tama.patient.service;
 
 import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.repository.AllPatientEventLogs;
-import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.patient.repository.*;
 import org.motechproject.tama.patient.strategy.CallPlan;
 import org.motechproject.tama.patient.strategy.ChangePatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.ChangePatientPreferenceStrategy;
@@ -28,7 +26,11 @@ public class PatientService {
     private Outbox outbox;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, AllRegimens allRegimens, AllPatientEventLogs allPatientEventLogs) {
+    public PatientService(AllPatients allPatients,
+                          AllTreatmentAdvices allTreatmentAdvices,
+                          AllRegimens allRegimens,
+                          AllPatientEventLogs allPatientEventLogs) {
+
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allRegimens = allRegimens;
