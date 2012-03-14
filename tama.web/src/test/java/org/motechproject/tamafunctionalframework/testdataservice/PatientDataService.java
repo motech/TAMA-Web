@@ -36,6 +36,11 @@ public class PatientDataService extends EntityDataService {
         activatePatient(patient, clinician).createNewRegimen(treatmentAdvice, labResult, vitalStatistics).logout();
     }
 
+    public ReactivatePatientPage reactivatePatient(TestPatient patient, TestClinician clinician) {
+        ShowPatientPage showPatientPage = login(clinician).gotoShowPatientPage(patient);
+        return showPatientPage.reactivatePatient();
+    }
+
     private CreateClinicVisitPage activatePatient(TestPatient patient, TestClinician clinician) {
         return registerWithoutLogout(patient, clinician).activatePatient();
     }

@@ -18,6 +18,7 @@ public class ShowPatientPage extends Page {
     public static final String PATIENT_ID_ID = "_s_org_motechproject_tama_domain_patient_patientId_patientId_id";
     public static final String ACTIVATE_PATIENT_ID = "activatePatient";
     public static final String DEACTIVATE_PATIENT_ID = "deactivatePatientButton";
+    public static final String REACTIVATE_PATIENT_ID = "reActivatePatient";
 
     @FindBy(how = How.ID, using = PATIENT_ID_ID)
     private WebElement patientId;
@@ -54,6 +55,9 @@ public class ShowPatientPage extends Page {
 
     @FindBy(how = How.ID, using = DEACTIVATE_PATIENT_ID)
     private WebElement deactivationLink;
+
+    @FindBy(how = How.ID, using = REACTIVATE_PATIENT_ID)
+    private WebElement reactivationLink;
 
     @FindBy(how = How.ID, using = "_patient.status_id")
     private WebElement deactivationReasonDropdown;
@@ -135,6 +139,11 @@ public class ShowPatientPage extends Page {
     public CreateClinicVisitPage activatePatient() {
         this.activationLink.click();
         return MyPageFactory.initElements(webDriver, CreateClinicVisitPage.class);
+    }
+
+    public ReactivatePatientPage reactivatePatient(){
+        this.reactivationLink.click();
+        return MyPageFactory.initElements(webDriver, ReactivatePatientPage.class);
     }
 
     public ShowPatientPage deactivatePatient(String reason) {
