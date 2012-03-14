@@ -9,6 +9,7 @@ public class TestTreatmentAdvice {
     private String regimenName;
     private String drugCompositionName;
     private String discontinuationReason;
+    private String drugName;
 
     public TestTreatmentAdvice() {
     }
@@ -47,6 +48,15 @@ public class TestTreatmentAdvice {
 
     public TestTreatmentAdvice discontinuationReason(String discontinuationReason) {
         this.discontinuationReason = discontinuationReason;
+        return this;
+    }
+
+    public String drugName() {
+        return this.drugName;
+    }
+
+    public TestTreatmentAdvice drugName(String drugName) {
+        this.drugName = drugName;
         return this;
     }
 }

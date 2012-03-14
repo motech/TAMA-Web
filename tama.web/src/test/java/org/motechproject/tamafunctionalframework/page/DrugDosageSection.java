@@ -30,7 +30,7 @@ public class DrugDosageSection {
         drugOffsetDaysElement = WebDriverFactory.createWebElement(drugOffsetDaysElement);
         drugMealAdviceTypeElement = WebDriverFactory.createWebElement(drugMealAdviceTypeElement);
     }
-    
+
     public void createDosage(TestDrugDosage testDrugDosage, Page page) {
         logDosage(testDrugDosage, page);
 

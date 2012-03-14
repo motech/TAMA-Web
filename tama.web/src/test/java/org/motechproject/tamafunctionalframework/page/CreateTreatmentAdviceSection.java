@@ -1,5 +1,6 @@
 package org.motechproject.tamafunctionalframework.page;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
@@ -22,6 +23,9 @@ public class CreateTreatmentAdviceSection extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugCompositionGroupId_id")
     private WebElement drugCompositionGroupElement;
 
+    @FindBy(how = How.ID, using = "_treatmentAdvice.drugCompositionId_id")
+    private WebElement drugNameElement;
+
     private DrugDosageSection[] drugDosageSections = new DrugDosageSection[2];
 
     public CreateTreatmentAdviceSection(WebDriver webDriver) {
@@ -37,6 +41,7 @@ public class CreateTreatmentAdviceSection extends Page {
 
     public void postInitialize() {
         regimenElement = WebDriverFactory.createWebElement(regimenElement);
+        drugNameElement = WebDriverFactory.createWebElement(drugNameElement);
         drugCompositionGroupElement = WebDriverFactory.createWebElement(drugCompositionGroupElement);
         for (DrugDosageSection drugDosageSection : drugDosageSections) {
             drugDosageSection.postInitialize();
@@ -55,6 +60,12 @@ public class CreateTreatmentAdviceSection extends Page {
         regimenElement.sendKeys(regimenName);
     }
 
+    private void setDrugName(TestTreatmentAdvice testTreatmentAdvice) {
+        if (StringUtils.isNotEmpty(testTreatmentAdvice.drugName())) {
+            drugNameElement.sendKeys(testTreatmentAdvice.drugName());
+        }
+    }
+
     protected void submit() {
         drugDosageSections[0].submit();
     }
@@ -62,8 +73,9 @@ public class CreateTreatmentAdviceSection extends Page {
     protected void fillRegimenSection(TestTreatmentAdvice treatmentAdvice, Page page) {
         setRegimen(treatmentAdvice.regimenName());
         setDrugCompositionGroup(treatmentAdvice.drugCompositionName());
-        List<TestDrugDosage> testDrugDosages = treatmentAdvice.drugDosages();
+        setDrugName(treatmentAdvice);
 
+        List<TestDrugDosage> testDrugDosages = treatmentAdvice.drugDosages();
         for (int i = 0; i < testDrugDosages.size(); i++) {
             drugDosageSections[i].createDosage(testDrugDosages.get(i), page);
         }
