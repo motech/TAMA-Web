@@ -54,6 +54,11 @@ public class TreatmentAdviceBuilder {
         return this;
     }
 
+    public TreatmentAdviceBuilder withDrugDosages(DrugDosage drugDosage) {
+        this.treatmentAdvice.setDrugDosages(Arrays.asList(drugDosage));
+        return this;
+    }
+
     public TreatmentAdvice build() {
         return this.treatmentAdvice;
     }
