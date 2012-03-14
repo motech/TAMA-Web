@@ -133,7 +133,7 @@ public class IVRCallTest extends BaseIVRTest {
         asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
 
         ivrResponse = caller.enter("1234#");
-        asksForCollectDtmfWith(ivrResponse, welcomeAudioForClinic(clinic), TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillazt3tc_combivir", "pillefv_efavir", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
+        asksForCollectDtmfWith(ivrResponse, welcomeAudioForClinic(clinic), TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillazt3tc_combivir", "pillefv_efferven", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
 
         ivrResponse = caller.enter("3#");
         assertAudioFilesPresent(ivrResponse, TamaIVRMessage.NO_MESSAGES);
