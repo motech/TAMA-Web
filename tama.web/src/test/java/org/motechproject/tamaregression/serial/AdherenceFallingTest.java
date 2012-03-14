@@ -57,7 +57,7 @@ public class AdherenceFallingTest extends BaseIVRTest {
     private void setupData() {
         clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
-        TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
+        TestDrugDosage[] drugDosages = TestDrugDosage.create("Combivir", "Efferven");
         LocalDate twoWeeksBack = DateUtil.today().minusWeeks(2);
         drugDosages[0].startDate(twoWeeksBack);
         drugDosages[1].startDate(twoWeeksBack);

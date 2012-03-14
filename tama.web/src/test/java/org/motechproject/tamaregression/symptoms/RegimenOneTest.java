@@ -57,7 +57,7 @@ public class RegimenOneTest extends BaseIVRTest {
         logInfo("****************************************************************************************************");
         logInfo(xStream.toXML(ivrResponse));
         logInfo("****************************************************************************************************");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", "pilltdf3tc_ricovir-l", "pillnvp_nevimune", TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", "pilltdf3tc_tavin-l", "pillnvp_nevir", TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
 
         // Regimen1
         ivrResponse = caller.enter("2");
@@ -84,7 +84,7 @@ public class RegimenOneTest extends BaseIVRTest {
     private void assertSymptomReportingAlertRaised() {
         AlertsPage alertsPage = gotoAlertsPage();
         assertTrue(alertsPage.hasAlertOfType(PatientAlertType.SymptomReporting.toString()));
-   }
+    }
 
     private AlertsPage gotoAlertsPage() {
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
@@ -118,7 +118,7 @@ public class RegimenOneTest extends BaseIVRTest {
     private TestTreatmentAdvice createRegimenOne() {
         LocalDate regimenStartDate = today.minusMonths(7);
         LocalTime doseTime = new LocalTime(10, 0, 0);
-        TestDrugDosage[] drugDosages = TestDrugDosage.create(regimenStartDate, doseTime, "Efferven", "Combivir");
+        TestDrugDosage[] drugDosages = TestDrugDosage.create(regimenStartDate, doseTime, "Tavin-L", "Nevir");
         return TestTreatmentAdvice.withExtrinsic(drugDosages).regimenName("TDF + 3TC / fTC + NVP").drugCompositionName("TDF+3TC+NVP");
     }
 }

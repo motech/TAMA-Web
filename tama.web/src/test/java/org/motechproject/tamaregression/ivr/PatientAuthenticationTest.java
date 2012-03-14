@@ -36,7 +36,7 @@ public class PatientAuthenticationTest extends BaseIVRTest {
 
         TestPatient patient = TestPatient.withMandatory();
         patient.patientPreferences().passcode("5678");
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
         new PatientDataService(webDriver).registerAndActivate(treatmentAdvice, patient, clinician);
 
         caller = caller(patient);

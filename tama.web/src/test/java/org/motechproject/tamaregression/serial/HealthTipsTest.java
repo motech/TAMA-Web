@@ -47,7 +47,7 @@ public class HealthTipsTest extends BaseIVRTest {
     }
 
     private TestTreatmentAdvice setUpTreatmentAdviceToStartFrom2WeeksAgo() {
-        TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
+        TestDrugDosage[] drugDosages = TestDrugDosage.create("Combivir", "Efferven");
         LocalDate twoWeeksAgo = DateUtil.today().minusWeeks(2);
         drugDosages[0].startDate(twoWeeksAgo);
         drugDosages[1].startDate(twoWeeksAgo);

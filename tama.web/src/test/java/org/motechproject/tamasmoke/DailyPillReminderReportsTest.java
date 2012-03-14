@@ -31,7 +31,7 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
         super.setUp();
         clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
-        TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
+        TestDrugDosage[] drugDosages = TestDrugDosage.create("Combivir", "Efferven");
         regimenStartDate = DateUtil.today().minusDays(1);
         drugDosages[0].startDate(regimenStartDate);
         drugDosages[1].startDate(regimenStartDate);

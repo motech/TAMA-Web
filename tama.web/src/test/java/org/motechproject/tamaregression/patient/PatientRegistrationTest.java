@@ -20,7 +20,7 @@ public class PatientRegistrationTest extends BaseTest {
     private TestClinician clinician;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         super.setUp();
         clinician = TestClinician.withMandatory().clinic(TestClinic.withMandatory());
         new ClinicianDataService(webDriver).createWithClinic(clinician);

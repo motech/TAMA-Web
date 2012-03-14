@@ -34,7 +34,7 @@ public class PatientUpdateTest extends BaseTest {
 
         ShowPatientPage showPatientPage = registerPatient(patient);
         CreateClinicVisitPage createClinicVisitPage = showPatientPage.activatePatient();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
         showPatientPage = createClinicVisitPage.createNewRegimen(treatmentAdvice).gotoShowPatientPage();
         showPatientPage = changePatientToWeeklyCallAndExpectWarning(showPatientPage);
         showPatientPage.logout();

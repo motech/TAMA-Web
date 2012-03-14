@@ -102,11 +102,11 @@ public class AlertsPage extends Page {
         assertEquals(notes, td_collection.get(7).getText());
     }
 
-    public boolean hasAlertOfType(String alertType){
-        try{
+    public boolean hasAlertOfType(String alertType) {
+        try {
             waitForElementToLoadWithRetry(By.xpath("//tr[td='" + alertType + "']"));
             return true;
-        } catch (TimeoutException e){
+        } catch (TimeoutException e) {
             return false;
         }
     }

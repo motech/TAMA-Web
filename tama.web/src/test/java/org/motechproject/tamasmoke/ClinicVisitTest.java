@@ -32,7 +32,7 @@ public class ClinicVisitTest extends BaseTest {
         new ClinicianDataService(webDriver).createWithClinic(clinician);
         patient = TestPatient.withMandatory();
         patientDataService = new PatientDataService(webDriver);
-        treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
     }
 
     @Test

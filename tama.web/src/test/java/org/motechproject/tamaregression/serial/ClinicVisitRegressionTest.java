@@ -98,7 +98,7 @@ public class ClinicVisitRegressionTest extends BaseTest {
     private ShowClinicVisitListPage gotoShowClinicVisitsPage() {
         TestVitalStatistics vitalStatistics = TestVitalStatistics.withMandatory();
         TestLabResult labResult = TestLabResult.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
 
         patientDataService.registerAndActivate(treatmentAdvice, labResult, vitalStatistics, patient, clinician);
 

@@ -22,7 +22,7 @@ public class CurrentDosageConfirmTest extends BaseIVRTest {
         super.setUp();
         TestClinician clinician = TestClinician.withMandatory();
         TestPatient patient = TestPatient.withMandatory();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);

@@ -60,7 +60,7 @@ public class DialClinicianTest extends BaseIVRTest {
         new ClinicianDataService(webDriver).createWithClinic(clinician);
 
         patient = TestPatient.withMandatory().patientPreferences(TestPatientPreferences.withMandatory().passcode("5678"));
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
         TestLabResult labResult = TestLabResult.withMandatory().results(Arrays.asList("60", "10"));
 
         PatientDataService patientDataService = new PatientDataService(webDriver);

@@ -36,7 +36,7 @@ public class AdherenceInRedTest extends BaseIVRTest {
         super.setUp();
         clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
-        TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
+        TestDrugDosage[] drugDosages = TestDrugDosage.create("Combivir", "Efferven");
         LocalDate yesterday = DateUtil.today().minusDays(1);
         drugDosages[0].startDate(yesterday);
         drugDosages[1].startDate(yesterday);

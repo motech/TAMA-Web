@@ -11,6 +11,7 @@ public class DrugDosageSection {
     protected WebDriver webDriver;
     protected WebElement drugDosageTypeElement;
     protected WebElement drugStartDateElement;
+    protected WebElement drugBrandElement;
     protected WebElement drugMorningDosageTimeElement;
     protected WebElement drugEveningDosageTimeElement;
     protected WebElement drugOffsetDaysElement;
@@ -23,6 +24,7 @@ public class DrugDosageSection {
     public void postInitialize() {
         drugDosageTypeElement = WebDriverFactory.createWebElement(drugDosageTypeElement);
         drugStartDateElement = WebDriverFactory.createWebElement(drugStartDateElement);
+        drugBrandElement = WebDriverFactory.createWebElement(drugBrandElement);
         drugMorningDosageTimeElement = WebDriverFactory.createWebElement(drugMorningDosageTimeElement);
         drugEveningDosageTimeElement = WebDriverFactory.createWebElement(drugEveningDosageTimeElement);
         drugOffsetDaysElement = WebDriverFactory.createWebElement(drugOffsetDaysElement);
@@ -34,6 +36,7 @@ public class DrugDosageSection {
 
         ((ExtendedWebElement) drugDosageTypeElement).select(testDrugDosage.dosageType());
         ((ExtendedWebElement) drugStartDateElement).select(testDrugDosage.startDate());
+        ((ExtendedWebElement) drugBrandElement).select(testDrugDosage.brandName());
         drugMealAdviceTypeElement.sendKeys(testDrugDosage.mealAdvice());
         if (testDrugDosage.isMorningDosage()) {
             addDetailsForMorningDose(testDrugDosage, page);

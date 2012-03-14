@@ -36,7 +36,7 @@ public class PatientActivationTest extends BaseTest {
         Assert.assertEquals("Inactive", showPatientPage.getStatus().trim());
 
         CreateClinicVisitPage createClinicVisitPage = showPatientPage.activatePatient();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
         showPatientPage = createClinicVisitPage.createNewRegimen(treatmentAdvice).gotoShowPatientPage();
 
         Assert.assertEquals("Active", showPatientPage.getStatus().trim());
@@ -52,7 +52,7 @@ public class PatientActivationTest extends BaseTest {
                 registerNewPatientOnDailyPillReminder(patient);
 
         CreateClinicVisitPage createClinicVisitPage = showPatientPage.activatePatient();
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
         showPatientPage = createClinicVisitPage.createNewRegimen(treatmentAdvice).gotoShowPatientPage();
 
         ShowPatientPage pageAfterDeactivation = showPatientPage.deactivatePatient("Study complete");

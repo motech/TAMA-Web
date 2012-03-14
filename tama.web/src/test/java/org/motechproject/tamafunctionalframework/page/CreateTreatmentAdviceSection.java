@@ -1,18 +1,14 @@
 package org.motechproject.tamafunctionalframework.page;
 
-import org.motechproject.tamafunctionalframework.framework.ExtendedWebElement;
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class CreateTreatmentAdviceSection extends Page {
 
@@ -26,12 +22,12 @@ public class CreateTreatmentAdviceSection extends Page {
     @FindBy(how = How.ID, using = "_treatmentAdvice.drugCompositionGroupId_id")
     private WebElement drugCompositionGroupElement;
 
-    private DrugDosageSection drug1Section, drug2Section;
+    private DrugDosageSection[] drugDosageSections = new DrugDosageSection[2];
 
     public CreateTreatmentAdviceSection(WebDriver webDriver) {
         super(webDriver);
-        drug1Section = new Drug1Section(webDriver);
-        drug2Section = new Drug2Section(webDriver);
+        drugDosageSections[0] = new Drug1Section(webDriver);
+        drugDosageSections[1] = new Drug2Section(webDriver);
     }
 
     @Override
@@ -42,8 +38,9 @@ public class CreateTreatmentAdviceSection extends Page {
     public void postInitialize() {
         regimenElement = WebDriverFactory.createWebElement(regimenElement);
         drugCompositionGroupElement = WebDriverFactory.createWebElement(drugCompositionGroupElement);
-        drug1Section.postInitialize();
-        drug2Section.postInitialize();
+        for (DrugDosageSection drugDosageSection : drugDosageSections) {
+            drugDosageSection.postInitialize();
+        }
     }
 
     protected void waitForPageToLoad(Page page) {
@@ -59,16 +56,17 @@ public class CreateTreatmentAdviceSection extends Page {
     }
 
     protected void submit() {
-        drug1Section.submit();
+        drugDosageSections[0].submit();
     }
 
     protected void fillRegimenSection(TestTreatmentAdvice treatmentAdvice, Page page) {
         setRegimen(treatmentAdvice.regimenName());
         setDrugCompositionGroup(treatmentAdvice.drugCompositionName());
-        TestDrugDosage testDrugDosage1 = treatmentAdvice.drugDosages().get(0);
-        TestDrugDosage testDrugDosage2 = treatmentAdvice.drugDosages().get(1);
-        drug1Section.createDosage(testDrugDosage1, page);
-        drug2Section.createDosage(testDrugDosage2, page);
+        List<TestDrugDosage> testDrugDosages = treatmentAdvice.drugDosages();
+
+        for (int i = 0; i < testDrugDosages.size(); i++) {
+            drugDosageSections[i].createDosage(testDrugDosages.get(i), page);
+        }
     }
 }
 

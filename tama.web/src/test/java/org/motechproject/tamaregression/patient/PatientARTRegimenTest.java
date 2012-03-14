@@ -28,7 +28,7 @@ public class PatientARTRegimenTest extends BaseTest {
     public void testCreateARTRegimenForPatientOnDailyCall() {
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
         patientDataService.registerAndActivate(treatmentAdvice, patient, clinician);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getSavedTreatmentAdvice(patient, clinician);
@@ -43,7 +43,7 @@ public class PatientARTRegimenTest extends BaseTest {
         patient.patientPreferences().dayOfWeeklyCall("Monday");
         patient.patientPreferences().bestCallTime("10:20");
         PatientDataService patientDataService = new PatientDataService(webDriver);
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
 
         patientDataService.registerAndActivate(treatmentAdvice, patient, clinician);
 
@@ -57,7 +57,7 @@ public class PatientARTRegimenTest extends BaseTest {
         TestPatient patient = TestPatient.withMandatory();
         PatientDataService patientDataService = new PatientDataService(webDriver);
 
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Efferven", "Combivir"));
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(TestDrugDosage.create("Combivir", "Efferven"));
         patientDataService.changeRegimen(patient, clinician, treatmentAdvice);
 
         TestTreatmentAdvice savedTreatmentAdvice = patientDataService.getSavedTreatmentAdvice(patient, clinician);

@@ -59,7 +59,7 @@ public class FourDayRecallTest extends BaseIVRTest {
     }
 
     private TestTreatmentAdvice setUpTreatmentAdviceOn(LocalDate treatmentAdviceStartDate) {
-        TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
+        TestDrugDosage[] drugDosages = TestDrugDosage.create("Combivir", "Efferven");
         drugDosages[0].startDate(treatmentAdviceStartDate);
         drugDosages[1].startDate(treatmentAdviceStartDate);
         return TestTreatmentAdvice.withExtrinsic(drugDosages);

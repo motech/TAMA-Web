@@ -54,7 +54,7 @@ public class BasicPillReminderTest extends BaseTest {
 
         int timeSlotDelta = DateUtil.now().getMinuteOfHour() % 15;
         TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(
-                TestDrugDosage.create(yesterday(), DateUtil.now().minusMinutes(timeSlotDelta).toLocalTime(), "Efferven", "Combivir")
+                TestDrugDosage.create(yesterday(), DateUtil.now().minusMinutes(timeSlotDelta).toLocalTime(), "Combivir", "Efferven")
             );
         patientDataService.registerAndActivate(treatmentAdvice, patient, clinician);
 

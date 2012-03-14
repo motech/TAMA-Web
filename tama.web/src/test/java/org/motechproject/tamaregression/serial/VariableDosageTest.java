@@ -21,26 +21,26 @@ public class VariableDosageTest extends BaseIVRTest {
         super.setUp();
         tamaDateTimeService = new TAMADateTimeService(webClient);
         setupPatient();
+        caller = caller(patient);
     }
 
     private void setupPatient() {
         clinician = TestClinician.withMandatory();
         patient = TestPatient.withMandatory();
-        TestDrugDosage[] drugDosages = setupVariableDosages();
-        enrollPatientIntoRegimen(drugDosages);
-        caller = caller(patient);
+        enrollPatientIntoRegimen();
     }
 
-    private void enrollPatientIntoRegimen(TestDrugDosage[] drugDosages) {
-        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(drugDosages);
+    private void enrollPatientIntoRegimen() {
+        TestDrugDosage[] drugDosages = setupVariableDosages();
+
+        TestTreatmentAdvice treatmentAdvice = TestTreatmentAdvice.withExtrinsic(drugDosages).regimenName("d4T + 3TC + NVP").drugCompositionName("d4T+3TC+NVP");
         PatientDataService patientDataService = new PatientDataService(webDriver);
         patientDataService.setupRegimenWithDependents(treatmentAdvice, patient, clinician);
     }
 
     private TestDrugDosage[] setupVariableDosages() {
-        TestDrugDosage[] drugDosages = TestDrugDosage.create("Efferven", "Combivir");
-        drugDosages[0].setMorningDose();
-        drugDosages[1].setVariableDose("2");
+        TestDrugDosage[] drugDosages = TestDrugDosage.create("Triomune");
+        drugDosages[0].setVariableDose("2");
         return drugDosages;
     }
 
