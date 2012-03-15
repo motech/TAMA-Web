@@ -31,6 +31,14 @@ public class TimeUtilTest {
     }
 
     @Test
+    public void shouldReturnHoursWhenTimeIsMidnight() {
+        String timeString = "12:00am";
+
+        TimeUtil timeUtil = new TimeUtil(timeString).withReminderLagTime(0);
+        Assert.assertEquals(0, timeUtil.getHours());
+    }
+
+    @Test
     public void shouldReturnHoursIn24HourFormatWithLagTime() {
         String timeString = "05:50pm";
 
