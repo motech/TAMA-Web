@@ -19,7 +19,12 @@ public class TimeUtil {
         if (found) {
             String ampm = matcher.group(3);
             int parsedHour = Integer.parseInt(matcher.group(1));
-            hours = ampm.equals("am") || parsedHour == 12 ? parsedHour : parsedHour + 12;
+            if (ampm.equals("am")) {
+                hours = parsedHour == 12 ? 0 : parsedHour;
+            }
+            else if (ampm.equals("pm")) {
+                hours = parsedHour == 12 ? parsedHour : parsedHour + 12;
+            }
             minutes = Integer.parseInt(matcher.group(2));
         }
     }
@@ -45,5 +50,4 @@ public class TimeUtil {
     public LocalTime toLocalTime() {
         return new LocalTime(getHours(), getMinutes());
     }
-
 }
