@@ -1,7 +1,6 @@
 package org.motechproject.tama.security;
 
 import org.motechproject.tama.security.repository.AllTAMAEvents;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 

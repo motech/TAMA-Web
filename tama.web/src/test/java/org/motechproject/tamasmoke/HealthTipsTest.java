@@ -16,7 +16,6 @@ import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataSe
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 

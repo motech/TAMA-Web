@@ -1,7 +1,6 @@
 package org.motechproject.tama.patient.service;
 
 import ch.lambdaj.Lambda;
-import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
 import org.joda.time.DateTime;
 import org.motechproject.server.alerts.domain.Alert;
@@ -15,11 +14,10 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
-import static java.util.Collections.reverseOrder;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static ch.lambdaj.Lambda.by;
+import static ch.lambdaj.Lambda.on;
 
 @Component
 public class PatientAlertSearchService {

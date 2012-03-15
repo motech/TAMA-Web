@@ -16,7 +16,8 @@ import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.fourdayrecall.listener.FourDayRecallListener;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -25,9 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;

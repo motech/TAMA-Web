@@ -4,7 +4,6 @@ package org.motechproject.tama.patient.domain;
 import ch.lambdaj.Lambda;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;

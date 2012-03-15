@@ -5,13 +5,11 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.dailypillreminder.command.AdherenceMessageCommand;
 import org.motechproject.tama.dailypillreminder.command.PlayAdherenceTrendFeedbackCommand;
 import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.tama.outbox.factory.OutboxMessageBuilder;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component

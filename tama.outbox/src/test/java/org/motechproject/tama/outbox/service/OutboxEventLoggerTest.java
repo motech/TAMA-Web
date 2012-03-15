@@ -2,7 +2,6 @@ package org.motechproject.tama.outbox.service;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -10,17 +9,15 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.outbox.domain.OutboxEventType;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxLogs;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OutboxEventLoggerTest extends BaseUnitTest {

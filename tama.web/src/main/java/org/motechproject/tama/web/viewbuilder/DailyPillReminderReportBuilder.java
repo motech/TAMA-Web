@@ -1,10 +1,8 @@
 package org.motechproject.tama.web.viewbuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Font;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
@@ -12,7 +10,6 @@ import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DailyPillReminderReportBuilder extends ReportBuilder<DailyPillReminderSummary> {

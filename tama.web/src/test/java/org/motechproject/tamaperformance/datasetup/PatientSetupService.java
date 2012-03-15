@@ -6,10 +6,7 @@ import org.joda.time.LocalTime;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
-import org.motechproject.tama.facility.builder.ClinicBuilder;
-import org.motechproject.tama.facility.builder.ClinicianBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.patient.builder.*;
 import org.motechproject.tama.patient.domain.*;
@@ -19,8 +16,6 @@ import org.motechproject.tama.refdata.domain.*;
 import org.motechproject.tama.refdata.repository.*;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
-import org.motechproject.tama.web.ClinicController;
-import org.motechproject.tama.web.ClinicianController;
 import org.motechproject.tama.web.PatientController;
 import org.motechproject.tama.web.TreatmentAdviceController;
 import org.motechproject.util.DateUtil;
@@ -41,21 +36,23 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @Component
-public class CreatePatients {
-    private final Logger log;
+class PatientSetupService {
+
+    final Logger log = Logger.getLogger(this.getClass().getName());
+
+    @Mock
+    BindingResult bindingResult;
+    @Mock
+    Model uiModel;
+    @Mock
+    HttpServletRequest request;
 
     @Autowired
     AllClinics allClinics;
     @Autowired
     AllClinicVisits allClinicVisits;
     @Autowired
-    AllCities allCities;
-    @Autowired
-    ClinicController clinicController;
-    @Autowired
     TreatmentAdviceController treatmentAdviceController;
-    @Autowired
-    ClinicianController clinicianController;
     @Autowired
     AllDrugs allDrugs;
     @Autowired
@@ -75,17 +72,8 @@ public class CreatePatients {
     @Autowired
     PatientController patientController;
 
-    @Mock
-    private BindingResult bindingResult;
-    @Mock
-    private Model uiModel;
-    @Mock
-    private HttpServletRequest request;
-
-
-    public CreatePatients() {
+    public PatientSetupService() {
         initMocks(this);
-        log = Logger.getLogger(this.getClass().getName());
     }
 
     private void login(Clinic clinic) {
@@ -96,17 +84,6 @@ public class CreatePatients {
         when(user.getClinicId()).thenReturn(clinic.getId());
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
-    }
-
-    public void createClinicians(int numberOfClinician) {
-        City city = allCities.getAll().get(0);
-        for (int i = 0; i < numberOfClinician; i++) {
-            Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinic" + i).withCity(city).build();
-            clinicController.create(clinic, bindingResult, uiModel, request);
-
-            Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withName("clinician" + i).withUserName("clinician" + i).withClinic(clinic).build();
-            clinicianController.create(clinician, bindingResult, uiModel, request);
-        }
     }
 
     public void createPatients(LocalDate today, int numberOfPatients) {

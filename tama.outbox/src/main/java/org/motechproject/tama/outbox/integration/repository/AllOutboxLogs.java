@@ -6,7 +6,6 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 import org.joda.time.DateTime;
 import org.motechproject.dao.MotechBaseRepository;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamafunctionalframework.framework.MyWebClient;
-import org.motechproject.tamafunctionalframework.ivr.Caller;
 import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdata.ivrreponse.IVRResponse;
 

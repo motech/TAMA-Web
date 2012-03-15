@@ -17,7 +17,10 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
-import org.motechproject.tama.dailypillreminder.domain.*;
+import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
+import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
+import org.motechproject.tama.dailypillreminder.domain.Dose;
+import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -28,7 +31,10 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.util.DateUtil;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;

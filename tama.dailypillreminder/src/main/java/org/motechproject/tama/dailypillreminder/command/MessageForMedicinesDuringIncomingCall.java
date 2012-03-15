@@ -3,13 +3,7 @@ package org.motechproject.tama.dailypillreminder.command;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
-import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
-import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

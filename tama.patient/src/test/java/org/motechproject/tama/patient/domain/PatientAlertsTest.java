@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;

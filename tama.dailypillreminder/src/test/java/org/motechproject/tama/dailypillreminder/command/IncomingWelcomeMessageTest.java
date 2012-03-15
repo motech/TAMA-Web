@@ -10,7 +10,6 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
-import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;

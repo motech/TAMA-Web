@@ -12,8 +12,7 @@ import org.motechproject.tamafunctionalframework.testdata.TestPatient;
 import org.motechproject.tamafunctionalframework.testdata.TestPatientPreferences;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
 
-import static org.junit.Assert.assertEquals;
-import static org.motechproject.tamaregression.patient.PatientAssertionUtils.*;
+import static org.motechproject.tamaregression.patient.PatientAssertionUtils.assertPatientRegistered;
 
 public class PatientRegistrationTest extends BaseTest {
 

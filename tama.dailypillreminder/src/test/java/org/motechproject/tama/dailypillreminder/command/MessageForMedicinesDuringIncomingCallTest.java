@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.contract.DosageResponse;
@@ -13,25 +12,14 @@ import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
-import org.motechproject.tama.facility.builder.ClinicBuilder;
-import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
-import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
-import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.refdata.domain.IVRLanguage;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 

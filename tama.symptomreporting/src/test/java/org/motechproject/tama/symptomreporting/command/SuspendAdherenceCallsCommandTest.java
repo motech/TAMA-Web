@@ -1,6 +1,5 @@
 package org.motechproject.tama.symptomreporting.command;
 
-import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.util.DateUtil;

@@ -1,11 +1,7 @@
 package org.motechproject.tamafunctionalframework.testdata;
 
-import org.apache.commons.collections.list.AbstractLinkedList;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class TestLabResult extends TestEntity {
 

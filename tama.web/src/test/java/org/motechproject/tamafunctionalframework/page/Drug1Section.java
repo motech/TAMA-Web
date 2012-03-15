@@ -1,6 +1,5 @@
 package org.motechproject.tamafunctionalframework.page;
 
-import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 

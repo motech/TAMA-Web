@@ -16,7 +16,6 @@ import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllLabResults;
-import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.util.DateUtil;

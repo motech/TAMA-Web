@@ -19,10 +19,9 @@ import org.motechproject.tama.outbox.service.OutboxEventLogger;
 import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OutboxControllerTest {

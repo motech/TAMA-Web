@@ -1,7 +1,10 @@
 package org.motechproject.tama.web.model;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.domain.LabResults;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;

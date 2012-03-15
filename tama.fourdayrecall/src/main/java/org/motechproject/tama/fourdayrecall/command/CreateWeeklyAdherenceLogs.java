@@ -1,18 +1,9 @@
 package org.motechproject.tama.fourdayrecall.command;
 
-import org.joda.time.LocalDate;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
-import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
-import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

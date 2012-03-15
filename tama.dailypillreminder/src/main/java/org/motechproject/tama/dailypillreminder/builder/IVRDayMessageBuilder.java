@@ -1,8 +1,8 @@
 package org.motechproject.tama.dailypillreminder.builder;
 
 import org.joda.time.DateTime;
-import org.motechproject.tama.ivr.builder.timeconstruct.TimeConstructBuilder;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.builder.timeconstruct.TimeConstructBuilder;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

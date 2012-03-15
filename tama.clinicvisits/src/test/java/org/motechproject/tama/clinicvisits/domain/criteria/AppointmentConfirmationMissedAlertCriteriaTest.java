@@ -1,18 +1,10 @@
 package org.motechproject.tama.clinicvisits.domain.criteria;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeParser;
-import org.joda.time.format.DateTimePrinter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.util.DateUtil;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

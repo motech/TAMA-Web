@@ -1,6 +1,5 @@
 package org.motechproject.tama.dailypillreminder.command;
 
-import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.repository.AllDosageAdherenceLogs;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;

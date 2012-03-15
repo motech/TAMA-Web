@@ -3,7 +3,6 @@ package org.motechproject.tama.refdata.repository;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.GenerateView;
-import org.ektorp.support.View;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.refdata.domain.LabTest;

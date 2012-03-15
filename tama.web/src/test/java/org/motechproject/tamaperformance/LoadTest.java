@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
-import org.motechproject.tamaperformance.datasetup.CreatePatients;
+import org.motechproject.tamaperformance.datasetup.LoadTestSetupService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,12 +15,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class LoadTest extends BaseTest {
 
     @Autowired
-    private CreatePatients createPatients;
+    private LoadTestSetupService loadTestSetupService;
 
     @Before
     public void setUp() {
-        createPatients.createClinicians(1);
-        createPatients.createPatients(DateUtil.today(), 100);
+        loadTestSetupService.createClinicians(1);
+        loadTestSetupService.createPatients(DateUtil.today(), 1);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package org.motechproject.tama.outbox.controller;
 
-import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooResponseFactory;

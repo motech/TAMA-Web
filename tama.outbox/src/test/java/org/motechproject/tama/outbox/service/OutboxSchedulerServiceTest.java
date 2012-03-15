@@ -11,7 +11,7 @@ import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.domain.Patient;
 
 import java.util.Map;
 import java.util.Properties;

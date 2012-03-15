@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.symptomreporting.controller.SymptomReportingChartController;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
-import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;

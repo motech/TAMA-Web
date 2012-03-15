@@ -17,13 +17,11 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;

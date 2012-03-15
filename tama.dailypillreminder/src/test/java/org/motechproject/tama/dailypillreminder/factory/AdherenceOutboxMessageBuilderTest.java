@@ -9,7 +9,6 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;
 import org.motechproject.outbox.api.model.VoiceMessageType;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.dailypillreminder.command.AdherenceMessageCommand;
 import org.motechproject.tama.dailypillreminder.command.PlayAdherenceTrendFeedbackCommand;
 import org.motechproject.tama.dailypillreminder.outbox.AdherenceOutboxMessageBuilder;
 import org.motechproject.tama.outbox.context.OutboxContext;
