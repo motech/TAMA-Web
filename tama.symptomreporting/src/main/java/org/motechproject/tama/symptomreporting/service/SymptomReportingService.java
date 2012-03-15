@@ -34,7 +34,7 @@ public class SymptomReportingService {
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllLabResults allLabResults;
     private AllRegimens allRegimens;
-    private Properties symptomReportingAdviceMap;
+    private Properties clinicianSMSProperties;
     private Properties symptomReportingProperties;
     private AllSymptomReports allSymptomReports;
     private SendSMSService sendSMSService;
@@ -46,7 +46,7 @@ public class SymptomReportingService {
                                    AllVitalStatistics allVitalStatistics,
                                    AllSymptomReports allSymptomReports, KookooCallDetailRecordsService kookooCallDetailRecordsService,
                                    SendSMSService sendSMSService,
-                                   @Qualifier("adviceMap") Properties symptomReportingAdviceMap,
+                                   @Qualifier("clinicianSMSProperties") Properties clinicianSMSProperties,
                                    @Qualifier("symptomProperties") Properties symptomReportingProperties) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -56,7 +56,7 @@ public class SymptomReportingService {
         this.allSymptomReports = allSymptomReports;
         this.kookooCallDetailRecordsService = kookooCallDetailRecordsService;
         this.sendSMSService = sendSMSService;
-        this.symptomReportingAdviceMap = symptomReportingAdviceMap;
+        this.clinicianSMSProperties = clinicianSMSProperties;
         this.symptomReportingProperties = symptomReportingProperties;
     }
 
@@ -95,6 +95,6 @@ public class SymptomReportingService {
     }
 
     public String fullAdviceGiven(String adviceGiven) {
-        return (String) symptomReportingAdviceMap.get(adviceGiven);
+        return (String) clinicianSMSProperties.get(adviceGiven);
     }
 }

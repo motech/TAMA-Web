@@ -23,13 +23,13 @@ public class SendSMSCommand extends BaseTreeCommand {
     private List<Prompt> prompts;
     private SendSMSService sendSMSService;
     private AllPatients allPatients;
-    private Properties messageDescriptions;
+    private Properties prescriptionSMSProperties;
 
-    public SendSMSCommand(List<Prompt> prompts, SendSMSService sendSMSService, AllPatients allPatients, Properties messageDescriptions) {
+    public SendSMSCommand(List<Prompt> prompts, SendSMSService sendSMSService, AllPatients allPatients, Properties prescriptionSMSProperties) {
         this.prompts = prompts;
         this.sendSMSService = sendSMSService;
         this.allPatients = allPatients;
-        this.messageDescriptions = messageDescriptions;
+        this.prescriptionSMSProperties = prescriptionSMSProperties;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SendSMSCommand extends BaseTreeCommand {
         Set<String> messages = new HashSet<String>();
         if (patient.hasAgreedToReceiveOTCAdvice()) {
             for (Prompt advicePrompt : getAdvicePrompts()) {
-                String messageBody = messageDescriptions.getProperty(advicePrompt.getName());
+                String messageBody = prescriptionSMSProperties.getProperty(advicePrompt.getName());
                 if (StringUtils.isNotEmpty(messageBody)) {
                     sendSMSService.send(patient.getMobilePhoneNumber(), messageBody);
                     messages.add(TamaIVRMessage.WILL_SEND_SMS);

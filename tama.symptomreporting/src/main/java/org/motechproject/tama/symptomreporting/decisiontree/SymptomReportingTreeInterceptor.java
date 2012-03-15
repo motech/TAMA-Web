@@ -30,7 +30,7 @@ public class SymptomReportingTreeInterceptor {
     private SMSFilter smsFilter;
     private SendSMSService sendSMSService;
     private AllPatients allPatients;
-    private Properties properties;
+    private Properties prescriptionSMSProperties;
 
     private SymptomRecordingService symptomRecordingService;
 
@@ -45,7 +45,7 @@ public class SymptomReportingTreeInterceptor {
                                            SMSFilter smsFilter,
                                            SendSMSService sendSMSService,
                                            AllPatients allPatients,
-                                           @Qualifier("symptomSMSProperties") Properties properties) {
+                                           @Qualifier("prescriptionSMSProperties") Properties prescriptionSMSProperties) {
 
         this.symptomReportingAlertsCommand = symptomReportingAlertsCommand;
         this.dialStateCommand = dialStateCommand;
@@ -56,7 +56,7 @@ public class SymptomReportingTreeInterceptor {
         this.smsFilter = smsFilter;
         this.sendSMSService = sendSMSService;
         this.allPatients = allPatients;
-        this.properties = properties;
+        this.prescriptionSMSProperties = prescriptionSMSProperties;
         this.symptomRecordingService = symptomRecordingService;
     }
 
@@ -126,7 +126,7 @@ public class SymptomReportingTreeInterceptor {
         final List<Node> nodes = smsFilter.filter(node);
         for (Node priorityNode : nodes) {
             AudioPrompt audioPrompt = new AudioPrompt();
-            SendSMSCommand sendSMSCommand = new SendSMSCommand(priorityNode.getPrompts(), sendSMSService, allPatients, properties);
+            SendSMSCommand sendSMSCommand = new SendSMSCommand(priorityNode.getPrompts(), sendSMSService, allPatients, prescriptionSMSProperties);
             audioPrompt.setName("n10:sendSMS").setCommand(sendSMSCommand);
             priorityNode.addPrompts(audioPrompt);
         }

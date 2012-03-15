@@ -51,7 +51,7 @@ public class SymptomReportingServiceTest {
     @Mock
     private SendSMSService sendSMSService;
     @Mock
-    private Properties symptomsReportingAdviceMap;
+    private Properties clinicianSMSProperties;
     @Mock
     private Properties symptomReportingProperties;
     @Mock
@@ -66,7 +66,7 @@ public class SymptomReportingServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, kookooCallDetailRecordsService, sendSMSService, symptomsReportingAdviceMap, symptomReportingProperties);
+        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, kookooCallDetailRecordsService, sendSMSService, clinicianSMSProperties, symptomReportingProperties);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class SymptomReportingServiceTest {
         SymptomReport symptomReport = mock(SymptomReport.class);
         when(regimen.getDisplayName()).thenReturn("D4T+EFV+NVP");
         when(symptomReport.getAdviceGiven()).thenReturn("adv_crocin01");
-        when(symptomsReportingAdviceMap.get("adv_crocin01")).thenReturn("ADV: Some advice");
+        when(clinicianSMSProperties.get("adv_crocin01")).thenReturn("ADV: Some advice");
         when(symptomReport.getSymptomIds()).thenReturn(Arrays.asList("fever", "nauseavomiting", "headache"));
         when(symptomReportingProperties.get("fever")).thenReturn("Fever");
         when(symptomReportingProperties.get("nauseavomiting")).thenReturn("Nausea or Vomiting");
