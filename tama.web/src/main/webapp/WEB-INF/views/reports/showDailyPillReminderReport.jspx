@@ -51,20 +51,22 @@
             dojo.addOnLoad(function() {
                 var dailyPillReminderReportWidget = new tama.DailyPillReminderReportWidget("dailyPillReminderReportGrid", "reports/dailyPillReminderReport.json");
                 var spinnerBanner = new Banner("getDailyPillReminderReportSpinner");
+                dprStartDateObj = dijit.byId("dailyPillReminderReportStartDate");
+                dprEndDateObj = dijit.byId("dailyPillReminderReportEndDate");
                 spinnerBanner.hide();
                 dojo.connect(dojo.byId("getDailyPillReminderReport"), "onclick", function(event){
-                    var startDateObj = dijit.byId("dailyPillReminderReportStartDate");
-                    var endDateObj = dijit.byId("dailyPillReminderReportEndDate");
-
-                    endDateObj.constraints.min = startDateObj.value;
                     Spring.decorations['dailyPillReminderReportStartDate'][0].validate();
                     Spring.decorations['dailyPillReminderReportEndDate'][0].validate();
 
-                    if (startDateObj.isValid() && endDateObj.isValid()){
+                    if (dprStartDateObj.isValid() && dprEndDateObj.isValid()){
                         spinnerBanner.show();
                         var onCreateHandler = function(){ spinnerBanner.hide(); }
-                        dailyPillReminderReportWidget.create(startDateObj.value, endDateObj.value, onCreateHandler);
+                        dailyPillReminderReportWidget.create(dprStartDateObj.value, dprEndDateObj.value, onCreateHandler);
                     }
+                });
+
+                dojo.connect(dprStartDateObj, "onChange", function() {
+                    setConstraintOnEndDate(dprStartDateObj, dprEndDateObj);
                 });
             });
         ]]>

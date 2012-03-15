@@ -25,17 +25,21 @@
     <script type="text/javascript">
         <![CDATA[
             dojo.addOnLoad(function() {
-                dojo.connect(dojo.byId("nextToShowLogs"), "onclick", function(event){
-                    var startDateObj = dijit.byId("_callLogStartDate_id");
-                    var endDateObj = dijit.byId("_callLogEndDate_id");
+                callLogStartDateObj = dijit.byId("_callLogStartDate_id");
+                callLogEndDateObj = dijit.byId("_callLogEndDate_id");
+                setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
 
-                    endDateObj.constraints.min = startDateObj.value;
+                dojo.connect(dojo.byId("nextToShowLogs"), "onclick", function(event){
                     Spring.decorations['_callLogStartDate_id'][0].validate();
                     Spring.decorations['_callLogEndDate_id'][0].validate();
 
-                    if (!(startDateObj.isValid() && endDateObj.isValid())){
+                    if (!(callLogStartDateObj.isValid() && callLogEndDateObj.isValid())){
                         event.preventDefault();
                     }
+                });
+
+                dojo.connect(callLogStartDateObj, "onChange", function() {
+                    setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
                 });
             });
         ]]>
