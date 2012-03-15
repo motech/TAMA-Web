@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:**/applicationDataSetupContext.xml")
+@ContextConfiguration(locations = "classpath*:**/applicationDataSetup.xml")
 public class DailyPillReminderSetup extends FunctionalTestObject {
     @Autowired
     PillReminderDataSetupConfiguration configuration;

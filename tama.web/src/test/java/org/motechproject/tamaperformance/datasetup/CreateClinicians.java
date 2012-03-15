@@ -1,4 +1,4 @@
-package org.motechproject.tamaperformance;
+package org.motechproject.tamaperformance.datasetup;
 
 import org.junit.Test;
 import org.motechproject.tamafunctionalframework.ivr.BaseIVRTest;
@@ -6,6 +6,7 @@ import org.motechproject.tamafunctionalframework.testdata.TestClinic;
 import org.motechproject.tamafunctionalframework.testdata.TestClinician;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicDataService;
 import org.motechproject.tamafunctionalframework.testdataservice.ClinicianDataService;
+import org.motechproject.tamaperformance.TestConfig;
 
 public class CreateClinicians extends BaseIVRTest {
 

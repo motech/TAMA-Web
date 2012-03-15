@@ -1,15 +1,15 @@
-package org.motechproject.tamaperformance;
+package org.motechproject.tamaperformance.datasetup;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
+import org.motechproject.tama.facility.builder.ClinicianBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.patient.builder.*;
 import org.motechproject.tama.patient.domain.*;
@@ -19,21 +19,26 @@ import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.domain.*;
 import org.motechproject.tama.refdata.repository.*;
+import org.motechproject.tama.web.ClinicController;
+import org.motechproject.tama.web.ClinicianController;
+import org.motechproject.tama.web.PatientController;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
-import org.motechproject.tamafunctionalframework.ivr.BaseIVRTest;
+import org.motechproject.tamaperformance.TestConfig;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:META-INF/spring/applicationContext.xml", inheritLocations = false)
-public class CreatePatients extends BaseIVRTest {
+import static org.mockito.MockitoAnnotations.initMocks;
 
-    private TAMADateTimeService tamaDateTimeService;
+@Component
+public class CreatePatients {
+
     @Autowired
     private PatientService patientService;
     @Autowired
@@ -58,6 +63,19 @@ public class CreatePatients extends BaseIVRTest {
     AllDosageTypes allDosageTypes;
     @Autowired
     AllMealAdviceTypes allMealAdviceTypes;
+    @Autowired
+    PatientController patientController;
+    @Autowired
+    ClinicController clinicController;
+    @Autowired
+    ClinicianController clinicianController;
+
+    @Mock
+    private BindingResult bindingResult;
+    @Mock
+    private Model uiModel;
+    @Mock
+    private HttpServletRequest request;
 
     private List<Drug> drugs;
     private List<Clinic> allClinicsData;
@@ -69,10 +87,11 @@ public class CreatePatients extends BaseIVRTest {
     private List<MealAdviceType> mealAdviceTypes;
     private DateTime now;
 
-    @Before
-    public void setUp() {
-        super.setUp();
-        tamaDateTimeService = new TAMADateTimeService(webClient);
+    public CreatePatients() {
+    }
+
+    public void setup() {
+        initMocks(this);
         drugs = allDrugs.getAll();
         allClinicsData = allClinics.getAll();
         labTests = allLabTests.getAll();
@@ -80,16 +99,24 @@ public class CreatePatients extends BaseIVRTest {
         regimens = allRegimens.getAll();
         dosageTypes = allDosageTypes.getAll();
         mealAdviceTypes = allMealAdviceTypes.getAll();
-
     }
 
-    @Test
-    public void createPatients() {
+    public void createClinicians(int numberOfClinician) {
+        setup();
+        for (int i = 0; i < numberOfClinician; i++) {
+            Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinic" + i).build();
+            Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withName("clinician" + i).withUserName("clinician" + i).build();
+
+            clinicController.create(clinic, bindingResult, uiModel, request);
+            clinicianController.create(clinician, bindingResult, uiModel, request);
+        }
+    }
+
+    public void createPatients(TAMADateTimeService tamaDateTimeService, LocalDate startDate, LocalDate endDate) {
+        setup();
         int noOfPatients = 0;
         LocalTime doseTime = new LocalTime(10, 0);
 
-        LocalDate startDate = LocalDate.parse(TestConfig.testStartDate, DateTimeFormat.forPattern("YYYY-MM-dd"));
-        LocalDate endDate = LocalDate.parse(TestConfig.testEndDate, DateTimeFormat.forPattern("YYYY-MM-dd"));
         tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(startDate));
         MedicalHistory medicalHistory = MedicalHistoryBuilder.startRecording().withDefaults().build();
         while (DateUtil.isOnOrBefore(startDate, endDate)) {
@@ -149,7 +176,7 @@ public class CreatePatients extends BaseIVRTest {
         drugDosage.setDosageTypeId(dosageTypes.get(0).getId());
         drugDosage.setMealAdviceId(mealAdviceTypes.get(0).getId());
         Object[] brands = drugs.get(0).getBrands().toArray();
-        drugDosage.setBrandId(((Brand)brands[0]).getCompanyId());
+        drugDosage.setBrandId(((Brand) brands[0]).getCompanyId());
         Regimen regimen = regimens.get(0);
         Object[] drugCompositionGroups = regimen.getDrugCompositionGroups().toArray();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withDrugDosages(drugDosage).withPatientId(patient.getId()).withRegimenId(regimen.getId()).withDrugCompositionGroupId(((DrugCompositionGroup) drugCompositionGroups[0]).getId()).build();
