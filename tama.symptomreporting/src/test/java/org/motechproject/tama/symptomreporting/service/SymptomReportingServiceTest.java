@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
@@ -66,6 +67,7 @@ public class SymptomReportingServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
+        when(clinicianSMSProperties.get("additional_sms_numbers")).thenReturn("0000000000, 1111111111, ");
         symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, kookooCallDetailRecordsService, sendSMSService, clinicianSMSProperties, symptomReportingProperties);
     }
 
@@ -103,7 +105,8 @@ public class SymptomReportingServiceTest {
 
     @Test
     public void shouldSendSMSToNotifyCliniciansAboutOTCAdvice() {
-        Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withPatientId(patientId).build();
+        Clinic clinic = ClinicBuilder.startRecording().withName("pujari").build();
+        Patient patient = PatientBuilder.startRecording().withClinic(clinic).withMobileNumber("1234567890").withPatientId(patientId).build();
         Regimen regimen = mock(Regimen.class);
         SymptomReport symptomReport = mock(SymptomReport.class);
         when(regimen.getDisplayName()).thenReturn("D4T+EFV+NVP");
@@ -116,7 +119,7 @@ public class SymptomReportingServiceTest {
 
         symptomReportingService.notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList("ph1", "ph2", "ph3"), symptomReport);
 
-        verify(sendSMSService).send(Arrays.asList("ph1", "ph2", "ph3"), "patientId:1234567890:D4T+EFV+NVP, trying to contact. Fever,Nausea or Vomiting,Headache. ADV: Some advice");
+        verify(sendSMSService).send(Arrays.asList("ph1", "ph2", "ph3", "0000000000", "1111111111"), "patientId (pujari):1234567890:D4T+EFV+NVP, trying to contact. Fever,Nausea or Vomiting,Headache. ADV: Some advice");
     }
 
     @Test

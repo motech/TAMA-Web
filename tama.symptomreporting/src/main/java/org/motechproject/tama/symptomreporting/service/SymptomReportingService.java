@@ -23,9 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 @Component
 public class SymptomReportingService {
@@ -85,13 +83,24 @@ public class SymptomReportingService {
 
     void notifyCliniciansAboutOTCAdvice(Patient patient, Regimen regimen, List<String> cliniciansMobileNumbers, SymptomReport symptomReport) {
         List<String> symptoms = new ArrayList<String>();
+        List<String> numbersToSendSMS = new ArrayList<String>();
+        numbersToSendSMS.addAll(cliniciansMobileNumbers);
+        numbersToSendSMS.addAll(additionalNumbersToSendSMS());
+
         for (String symptomId : symptomReport.getSymptomIds()) {
             symptoms.add(((String) symptomReportingProperties.get(symptomId)));
         }
         String symptomsReported = StringUtils.join(symptoms, ",");
         String adviceGiven = fullAdviceGiven(symptomReport.getAdviceGiven());
-        String message = patient.getPatientId() + ":" + patient.getMobilePhoneNumber() + ":" + regimen.getDisplayName() + ", trying to contact. " + symptomsReported + ". " + adviceGiven;
-        sendSMSService.send(cliniciansMobileNumbers, message);
+
+        String message = String.format("%s (%s):%s:%s, trying to contact. %s. %s", patient.getPatientId(), patient.getClinic().getName(), patient.getMobilePhoneNumber(), regimen.getDisplayName(), symptomsReported, adviceGiven);
+        sendSMSService.send(numbersToSendSMS, message);
+    }
+
+    private List<String> additionalNumbersToSendSMS() {
+        String additionalSMSNumbers = (String) clinicianSMSProperties.get("additional_sms_numbers");
+        if (StringUtils.isEmpty(additionalSMSNumbers)) return Collections.emptyList();
+        return Arrays.asList(additionalSMSNumbers.replaceAll(" ", "").split(","));
     }
 
     public String fullAdviceGiven(String adviceGiven) {
