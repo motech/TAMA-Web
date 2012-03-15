@@ -22,7 +22,7 @@ public class PillsDelayWarningTest {
     @Before
     public void setup() {
         retryInterval = 15;
-        pillsDelayWarning = new PillsDelayWarning(null);
+        pillsDelayWarning = new PillsDelayWarning(null, 5);
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest());
         LocalDate today = DateUtil.today();
@@ -40,16 +40,17 @@ public class PillsDelayWarningTest {
     }
 
     @Test
-    public void shouldReturnLastReminderWarningMessageNonLastReminder() {
+    public void shouldReturnLastReminderWarningMessage_WithReminderLag_WhenLastReminder() {
         context.numberOfTimesReminderSent(1).totalNumberOfTimesToSendReminder(1).callDirection(CallDirection.Outbound);
 
+        assertEquals("22:05", context.nextDose().getDoseTime().toLocalTime().toString("HH:mm"));
         String[] messages = pillsDelayWarning.executeCommand(context);
         assertEquals(7, messages.length);
         assertEquals(TamaIVRMessage.LAST_REMINDER_WARNING, messages[0]);
         assertEquals("timeOfDayToday", messages[1]);
         assertEquals("timeOfDayAt", messages[2]);
         assertEquals("Num_010", messages[3]);
-        assertEquals("Num_005", messages[4]);
+        assertEquals("Num_010", messages[4]);
         assertEquals("timeofDayPM", messages[5]);
         assertEquals("005_04_03_WillCallAgain", messages[6]);
     }
