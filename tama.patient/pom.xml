@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tama-all</artifactId>
         <groupId>org.motechproject.tama</groupId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.6-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tama.patient</artifactId>
@@ -22,17 +22,17 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.refdata</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
