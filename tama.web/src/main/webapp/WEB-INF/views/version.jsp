@@ -14,5 +14,5 @@
     version = prop.getProperty("Hudson-Build-Number");
  }
 %>
-Version: TAMA Pilot  - <% out.println(version); %>
+Version: 4.1.<% out.println(version); %>
 
