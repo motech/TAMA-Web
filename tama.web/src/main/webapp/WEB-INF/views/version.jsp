@@ -14,5 +14,5 @@
     version = prop.getProperty("Hudson-Build-Number");
  }
 %>
-Version: TAMA Study Trial  - <% out.println(version); %>
+Version: 5.0.<% out.println(version); %>
 
