@@ -28,17 +28,21 @@
     <script type="text/javascript">
         <![CDATA[
             dojo.addOnLoad(function() {
-                dojo.connect(dojo.byId("alertFilter"), "onclick", function(event){
-                    var startDateObj = dijit.byId("_startDate_id");
-                    var endDateObj = dijit.byId("_endDate_id");
+                alertStartDateObj = dijit.byId("_startDate_id");
+                alertEndDateObj = dijit.byId("_endDate_id");
+                setConstraintOnEndDate(alertStartDateObj, alertEndDateObj);
 
-                    endDateObj.constraints.min = startDateObj.value;
+                dojo.connect(dojo.byId("alertFilter"), "onclick", function(event){
                     Spring.decorations['_startDate_id'][0].validate();
                     Spring.decorations['_endDate_id'][0].validate();
 
-                    if (!(startDateObj.isValid() && endDateObj.isValid())){
+                    if (!(alertStartDateObj.isValid() && alertEndDateObj.isValid())){
                         event.preventDefault();
                     }
+                });
+
+                dojo.connect(alertStartDateObj, "onChange", function() {
+                    setConstraintOnEndDate(alertStartDateObj, alertEndDateObj);
                 });
             });
         ]]>

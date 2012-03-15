@@ -51,21 +51,22 @@
             dojo.addOnLoad(function() {
                 var dailyPillReminderReportWidget = new tama.OutboxMessagesReportWidget("outboxMessageReportGrid", "reports/outboxMessageReport.json");
                 var spinnerBanner = new Banner("getOutboxMessageReportSpinner");
+                outboxStartDateObj = dijit.byId("outboxMessageReportStartDate");
+                outboxEndDateObj = dijit.byId("outboxMessageReportEndDate");
                 spinnerBanner.hide();
                 dojo.connect(dojo.byId("getOutboxMessageReport"), "onclick", function(event){
-                    var startDateObj = dijit.byId("outboxMessageReportStartDate");
-                    var endDateObj = dijit.byId("outboxMessageReportEndDate");
-
-                    endDateObj.constraints.min = startDateObj.value;
-
                     Spring.decorations['outboxMessageReportStartDate'][0].validate();
                     Spring.decorations['outboxMessageReportEndDate'][0].validate();
 
-                    if (startDateObj.isValid() && endDateObj.isValid()){
+                    if (outboxStartDateObj.isValid() && outboxEndDateObj.isValid()){
                         spinnerBanner.show();
-                        var onCreateHandler = function(){ spinnerBanner.hide() }
-                        dailyPillReminderReportWidget.create(startDateObj.value, endDateObj.value, onCreateHandler);
+                        var onCreateHandler = function(){ spinnerBanner.hide(); }
+                        dailyPillReminderReportWidget.create(outboxStartDateObj.value, outboxEndDateObj.value, onCreateHandler);
                     }
+                });
+
+                dojo.connect(outboxStartDateObj, "onChange", function() {
+                    setConstraintOnEndDate(outboxStartDateObj, outboxEndDateObj);
                 });
             });
         ]]>

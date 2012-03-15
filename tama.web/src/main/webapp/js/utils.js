@@ -38,6 +38,12 @@ var closePanel = function(_panelWidgetArray) {
     }
 }
 
+var setConstraintOnEndDate = function(startDateObj, endDateObj) {
+    if (startDateObj != undefined && endDateObj != undefined && startDateObj.value != null) {
+        endDateObj.constraints.min = startDateObj.value;
+    }
+}
+
 function formHasErrors() {
     return dojo.query('.errors').length > 0;
 }
