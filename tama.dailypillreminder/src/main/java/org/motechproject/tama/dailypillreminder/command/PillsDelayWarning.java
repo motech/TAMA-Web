@@ -1,10 +1,12 @@
 package org.motechproject.tama.dailypillreminder.command;
 
+import org.joda.time.DateTime;
 import org.motechproject.tama.dailypillreminder.builder.IVRDayMessageBuilder;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,10 +16,14 @@ import java.util.List;
 public class PillsDelayWarning extends DailyPillReminderTreeCommand {
 
     private IVRDayMessageBuilder ivrDayMessageBuilder;
+    private Integer pillReminderLag;
+
 
     @Autowired
-    public PillsDelayWarning(DailyPillReminderService dailyPillReminderService) {
+    public PillsDelayWarning(DailyPillReminderService dailyPillReminderService,
+                             @Value("#{dailyPillReminderProperties['reminder.lag.mins']}") Integer pillReminderLag) {
         super(dailyPillReminderService);
+        this.pillReminderLag = pillReminderLag;
         this.ivrDayMessageBuilder = new IVRDayMessageBuilder();
     }
 
@@ -26,7 +32,7 @@ public class PillsDelayWarning extends DailyPillReminderTreeCommand {
         if (isLastReminder(context)) {
             List<String> messages = new ArrayList<String>();
             messages.add(TamaIVRMessage.LAST_REMINDER_WARNING);
-            messages.addAll(ivrDayMessageBuilder.getMessageForNextDosage(context.nextDose().getDoseTime(), context.preferredLanguage()));
+            messages.addAll(ivrDayMessageBuilder.getMessageForNextDosage(nextCallTime(context), context.preferredLanguage()));
             messages.add(TamaIVRMessage.LAST_REMINDER_WARNING_PADDING);
             return messages.toArray(new String[messages.size()]);
         }
@@ -35,6 +41,10 @@ public class PillsDelayWarning extends DailyPillReminderTreeCommand {
                 TamaIVRMessage.getNumberFilename(context.retryInterval()),
                 TamaIVRMessage.CALL_AFTER_SOME_TIME
         };
+    }
+
+    private DateTime nextCallTime(DailyPillReminderContext context) {
+        return context.nextDose().getDoseTime().plusMinutes(pillReminderLag);
     }
 
     private boolean isLastReminder(DailyPillReminderContext context) {
