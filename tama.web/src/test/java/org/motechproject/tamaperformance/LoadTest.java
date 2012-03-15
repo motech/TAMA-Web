@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.tamafunctionalframework.framework.BaseTest;
 import org.motechproject.tamaperformance.datasetup.CreatePatients;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,10 +20,11 @@ public class LoadTest extends BaseTest {
     @Before
     public void setUp() {
         createPatients.createClinicians(1);
+        createPatients.createPatients(DateUtil.today(), 100);
     }
 
     @Test
-    public void shouldDoSomething(){
+    public void shouldDoSomething() {
         System.out.println("some thing");
     }
 }

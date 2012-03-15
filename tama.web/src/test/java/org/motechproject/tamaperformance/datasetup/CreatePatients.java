@@ -15,15 +15,14 @@ import org.motechproject.tama.patient.builder.*;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
-import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.domain.*;
 import org.motechproject.tama.refdata.repository.*;
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.ClinicController;
 import org.motechproject.tama.web.ClinicianController;
 import org.motechproject.tama.web.PatientController;
-import org.motechproject.tamadatasetup.service.TAMADateTimeService;
-import org.motechproject.tamaperformance.TestConfig;
+import org.motechproject.tama.web.TreatmentAdviceController;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,32 +30,42 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
+import static org.mockito.Mockito.reset;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @Component
 public class CreatePatients {
+    private final Logger log;
 
     @Autowired
-    private PatientService patientService;
+    AllClinics allClinics;
     @Autowired
-    private AllClinics allClinics;
+    AllClinicVisits allClinicVisits;
     @Autowired
-    private AllClinicVisits allClinicVisits;
+    AllCities allCities;
     @Autowired
-    private TreatmentAdviceService treatmentAdviceService;
+    ClinicController clinicController;
     @Autowired
-    private AllDrugs allDrugs;
+    TreatmentAdviceController treatmentAdviceController;
     @Autowired
-    private AllLabResults allLabResults;
+    ClinicianController clinicianController;
     @Autowired
-    private AllLabTests allLabTests;
+    AllDrugs allDrugs;
     @Autowired
-    private AllVitalStatistics allVitalStatistics;
+    AllLabResults allLabResults;
     @Autowired
-    private AllGenders allGenders;
+    AllLabTests allLabTests;
+    @Autowired
+    AllVitalStatistics allVitalStatistics;
+    @Autowired
+    AllGenders allGenders;
     @Autowired
     AllRegimens allRegimens;
     @Autowired
@@ -65,10 +74,6 @@ public class CreatePatients {
     AllMealAdviceTypes allMealAdviceTypes;
     @Autowired
     PatientController patientController;
-    @Autowired
-    ClinicController clinicController;
-    @Autowired
-    ClinicianController clinicianController;
 
     @Mock
     private BindingResult bindingResult;
@@ -77,127 +82,122 @@ public class CreatePatients {
     @Mock
     private HttpServletRequest request;
 
-    private List<Drug> drugs;
-    private List<Clinic> allClinicsData;
-    private List<LabTest> labTests;
-    private LocalDate today;
-    private List<Gender> genders;
-    private List<Regimen> regimens;
-    private List<DosageType> dosageTypes;
-    private List<MealAdviceType> mealAdviceTypes;
-    private DateTime now;
 
     public CreatePatients() {
+        initMocks(this);
+        log = Logger.getLogger(this.getClass().getName());
     }
 
-    public void setup() {
-        initMocks(this);
-        drugs = allDrugs.getAll();
-        allClinicsData = allClinics.getAll();
-        labTests = allLabTests.getAll();
-        genders = allGenders.getAll();
-        regimens = allRegimens.getAll();
-        dosageTypes = allDosageTypes.getAll();
-        mealAdviceTypes = allMealAdviceTypes.getAll();
+    private void login(Clinic clinic) {
+        AuthenticatedUser user = mock(AuthenticatedUser.class);
+        HttpSession session = mock(HttpSession.class);
+
+        reset(request);
+        when(user.getClinicId()).thenReturn(clinic.getId());
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
     }
 
     public void createClinicians(int numberOfClinician) {
-        setup();
+        City city = allCities.getAll().get(0);
         for (int i = 0; i < numberOfClinician; i++) {
-            Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinic" + i).build();
-            Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withName("clinician" + i).withUserName("clinician" + i).build();
-
+            Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinic" + i).withCity(city).build();
             clinicController.create(clinic, bindingResult, uiModel, request);
+
+            Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withName("clinician" + i).withUserName("clinician" + i).withClinic(clinic).build();
             clinicianController.create(clinician, bindingResult, uiModel, request);
         }
     }
 
-    public void createPatients(TAMADateTimeService tamaDateTimeService, LocalDate startDate, LocalDate endDate) {
-        setup();
-        int noOfPatients = 0;
+    public void createPatients(LocalDate today, int numberOfPatients) {
         LocalTime doseTime = new LocalTime(10, 0);
 
-        tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(startDate));
         MedicalHistory medicalHistory = MedicalHistoryBuilder.startRecording().withDefaults().build();
-        while (DateUtil.isOnOrBefore(startDate, endDate)) {
-            today = startDate;
-            now = DateUtil.newDateTime(today, 10, 0, 0);
-            for (int i = 0; i < TestConfig.numOfClinics; i++) {
-                for (int j = 0; j < TestConfig.numPatientsPerDay; j++) {
-                    if ((noOfPatients) % 30 > 28) {
-                        doseTime = doseTime.plusMinutes(15);
-                    }
-                    Clinic clinic = allClinicsData.get(i);
-                    Patient patient = createPatient(medicalHistory, clinic);
-                    ClinicVisit baselineClinicVisit = activatePatientForFirstTime(patient);
-                    TreatmentAdvice treatmentAdvice = createTreatmentAdviceForPatient(patient, doseTime);
-                    List<String> labResultIds = createLabResults(patient);
-                    VitalStatistics vitalStatistics = createVitalStatistics(patient);
-                    allClinicVisits.updateVisitDetails(baselineClinicVisit.getId(), now, patient.getId(), treatmentAdvice.getId(), labResultIds, vitalStatistics.getId(), null);
+        List<Clinic> clinics = allClinics.getAll();
 
-                    noOfPatients++;
-                    System.out.println("Created patient:" + patient.getPatientId() + ":for clinic:" + clinic.getName() + "with dose time:" + doseTime);
-                }
-            }
-            startDate = startDate.plusDays(1);
-            tamaDateTimeService.adjustDateTime(DateUtil.newDateTime(startDate));
+        for (int patientsCreated = 0; patientsCreated < numberOfPatients; patientsCreated++) {
+            DateTime timeOfRegistration = DateUtil.newDateTime(today, 10, 0, 0);
+            doseTime = getFreeSlotTime(doseTime, patientsCreated);
+            //Divide the patients among the clinics
+            Clinic clinic = clinics.get(patientsCreated % clinics.size());
+            login(clinic);
+            Patient patient = createActivePatient(medicalHistory, clinic);
+            recordFirstClinicVisit(patient, today, doseTime, timeOfRegistration);
+            log.info("Created patient:" + patient.getPatientId() + ":for clinic:" + clinic.getName() + "with dose time:" + doseTime);
         }
     }
 
-    private VitalStatistics createVitalStatistics(Patient patient) {
-        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withDefaults().withPatientId(patient.getId()).withCaptureDate(today).build();
+    private void recordFirstClinicVisit(Patient patient, LocalDate startDate, LocalTime doseTime, DateTime now) {
+        ClinicVisit baselineClinicVisit = allClinicVisits.getBaselineVisit(patient.getId());
+        TreatmentAdvice treatmentAdvice = createTreatmentAdviceForPatient(patient, doseTime, startDate);
+        List<String> labResultIds = createLabResults(patient, startDate);
+        VitalStatistics vitalStatistics = createVitalStatistics(patient, startDate);
+        allClinicVisits.updateVisitDetails(baselineClinicVisit.getId(), now, patient.getId(), treatmentAdvice.getId(), labResultIds, vitalStatistics.getId(), null);
+    }
+
+    private LocalTime getFreeSlotTime(LocalTime doseTime, int patientsCreated) {
+        // 28 Patients per slot
+        if ((patientsCreated) % 28 == 0) {
+            doseTime = doseTime.plusMinutes(15);
+        }
+        return doseTime;
+    }
+
+    private VitalStatistics createVitalStatistics(Patient patient, LocalDate startDate) {
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withDefaults().withPatientId(patient.getId()).withCaptureDate(startDate).build();
         allVitalStatistics.add(vitalStatistics);
         return vitalStatistics;
     }
 
-    private List<String> createLabResults(Patient patient) {
+    private List<String> createLabResults(Patient patient, LocalDate startDate) {
         List<String> labResultIds = new ArrayList<String>();
-        for (LabTest labTest : labTests) {
-            LabResult labResult = LabResultBuilder.startRecording().withLabTest(labTest).withPatientId(patient.getId()).withResult("100").withTestDate(today).build();
+        for (LabTest labTest : allLabTests.getAll()) {
+            LabResult labResult = LabResultBuilder.startRecording().withLabTest(labTest).withPatientId(patient.getId()).withResult("100").withTestDate(startDate).build();
             allLabResults.add(labResult);
             labResultIds.add(labResult.getId());
         }
         return labResultIds;
     }
 
-    private Patient createPatient(MedicalHistory medicalHistory, Clinic clinic) {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withMedicalHistory(medicalHistory).withGender(genders.get(0)).build();
-        patientService.create(patient, clinic.getId());
+    private Patient createActivePatient(MedicalHistory medicalHistory, Clinic clinic) {
+        Gender gender = allGenders.getAll().get(0);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withMedicalHistory(medicalHistory).withGender(gender).build();
+        patientController.create(patient, bindingResult, uiModel, request);
+        patientController.activate(patient.getId(), uiModel, request);
         return patient;
     }
 
-    private TreatmentAdvice createTreatmentAdviceForPatient(Patient patient, LocalTime doseTime) {
-        DrugDosage drugDosage = new DrugDosage();
-        drugDosage.setDrugId(drugs.get(0).getId());
-        drugDosage.setMorningTime(doseTime.toString());
-        LocalDate startDate = today;
-        drugDosage.setStartDate(startDate);
-        drugDosage.setEndDate(startDate.plusYears(2));
-        drugDosage.setDosageTypeId(dosageTypes.get(0).getId());
-        drugDosage.setMealAdviceId(mealAdviceTypes.get(0).getId());
-        Object[] brands = drugs.get(0).getBrands().toArray();
-        drugDosage.setBrandId(((Brand) brands[0]).getCompanyId());
-        Regimen regimen = regimens.get(0);
-        Object[] drugCompositionGroups = regimen.getDrugCompositionGroups().toArray();
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withDrugDosages(drugDosage).withPatientId(patient.getId()).withRegimenId(regimen.getId()).withDrugCompositionGroupId(((DrugCompositionGroup) drugCompositionGroups[0]).getId()).build();
-        treatmentAdviceService.createRegimen(treatmentAdvice);
+    private TreatmentAdvice createTreatmentAdviceForPatient(Patient patient, LocalTime doseTime, LocalDate startDate) {
+        Drug drug = allDrugs.getAll().get(0);
+        Brand[] brands = drug.getBrands().toArray(new Brand[0]);
+        DosageType dosageType = allDosageTypes.getAll().get(0);
+        MealAdviceType mealAdviceType = allMealAdviceTypes.getAll().get(0);
+
+        DrugDosage drugDosage = DrugDosageBuilder
+                .startRecording()
+                .withDrug(drug)
+                .withMorningTime(doseTime.toString())
+                .withDateRange(startDate, startDate.plusYears(2))
+                .withDosageType(dosageType)
+                .withMealAdviceType(mealAdviceType)
+                .withBrand(brands[0])
+                .build();
+
+        Regimen regimen = allRegimens.getAll().get(0);
+
+        DrugCompositionGroup[] drugCompositionGroups = regimen.getDrugCompositionGroups().toArray(new DrugCompositionGroup[0]);
+
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder
+                .startRecording()
+                .withDefaults()
+                .withDrugDosages(drugDosage)
+                .withPatientId(patient.getId())
+                .withRegimenId(regimen.getId())
+                .withDrugCompositionGroupId(drugCompositionGroups[0].getId())
+                .build();
+
+        treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
         return treatmentAdvice;
-    }
-
-    private ClinicVisit activatePatientForFirstTime(Patient patient) {
-        allClinicVisits.addAppointmentCalendar(patient.getId());
-        ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patient.getId());
-        patientService.activate(patient.getId());
-        return clinicVisit;
-    }
-
-    private String phoneNumber(LocalDate today, int clinicIndex, int index) {
-        String dateString = today.toString("YYYYMMdd");
-        return clinicIndex + dateString + index;
-    }
-
-    private String patientId(LocalDate today, int clinicIndex, int index) {
-        return phoneNumber(today, clinicIndex, index);
     }
 }
 
