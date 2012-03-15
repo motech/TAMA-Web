@@ -24,6 +24,7 @@ import org.motechproject.util.DateUtil;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertTrue;
+import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 public class RegimenOneTest extends BaseIVRTest {
 
@@ -46,6 +47,31 @@ public class RegimenOneTest extends BaseIVRTest {
         create_50_yrsOldPatientWithRegimenOne();
         assertSymptomReportingCallFlow(patient);
         assertSymptomReportingAlertRaised();
+    }
+
+    @Test
+    public void verifyPatientIsTakenToSymptomReportingCallFlow_WhenTAMACallsPatient_AndPatientSaysCannotTakeDose(){
+        create_50_yrsOldPatientWithRegimenOne();
+        assertTransitionToSymptomReportingCallFlow();
+    }
+
+    private void assertTransitionToSymptomReportingCallFlow() {
+        caller = caller(patient);
+        IVRResponse ivrResponse = caller.replyToCall(new PillReminderCallInfo(1));
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.SIGNATURE_MUSIC);
+
+        ivrResponse = caller.enter("5678#");
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, DEFAULT_OUTBOUND_CLINIC_MESSAGE, ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE, PILL_REMINDER_RESPONSE_MENU);
+
+        ivrResponse = caller.enter("3");
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, MISSED_PILL_FEEDBACK_FIRST_TIME, DOSE_CANNOT_BE_TAKEN_MENU);
+
+        ivrResponse = caller.enter("1");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW);
+
+        caller.listenMore();
+        ivrResponse = caller.listenMore();
+        IVRAssert.assertAudioFilesPresent(ivrResponse, "q_fever");
     }
 
     private void assertSymptomReportingCallFlow(TestPatient patient) throws IOException {
